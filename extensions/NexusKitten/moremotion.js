@@ -2,6 +2,7 @@
 // ID: nkmoremotion
 // Description: More motion-related blocks.
 // By: NamelessCat <https://scratch.mit.edu/users/NamelessCat/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -17,20 +18,25 @@
     getInfo() {
       return {
         id: "nkmoremotion",
-        name: "More Motion",
+        name: Scratch.translate("More Motion"),
         color1: "#4c97ff",
         color2: "#3373cc",
         blocks: [
           {
             filter: [Scratch.TargetType.STAGE],
             blockType: Scratch.BlockType.LABEL,
-            text: "Stage selected: no motion blocks",
+            // We can copy this translation from scratch-blocks
+            text:
+              typeof ScratchBlocks !== "undefined"
+                ? ScratchBlocks.Msg["MOTION_STAGE_SELECTED"]
+                : // This is just fallback for non-editor environments, don't need to translate
+                  "Stage selected: no motion blocks",
           },
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "changexy",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change x: [X] y: [Y]",
+            text: Scratch.translate("change x: [X] y: [Y]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -41,12 +47,13 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "pointto",
             blockType: Scratch.BlockType.COMMAND,
-            text: "point towards x: [X] y: [Y]",
+            text: Scratch.translate("point towards x: [X] y: [Y]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -57,27 +64,34 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "rotationStyle",
             blockType: Scratch.BlockType.REPORTER,
-            text: "rotation style",
+            text: Scratch.translate("rotation style"),
             disableMonitor: true,
+            extensions: ["colours_motion"],
           },
           "---",
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "fence",
             blockType: Scratch.BlockType.COMMAND,
-            text: "manually fence",
+            text: Scratch.translate({
+              default: "manually fence",
+              description:
+                "This blocks forces the sprite to be onscreen if it moved offscreen.",
+            }),
+            extensions: ["colours_motion"],
           },
           "---",
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "steptowards",
             blockType: Scratch.BlockType.COMMAND,
-            text: "move [STEPS] steps towards x: [X] y: [Y]",
+            text: Scratch.translate("move [STEPS] steps towards x: [X] y: [Y]"),
             arguments: {
               STEPS: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -92,12 +106,15 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "tweentowards",
             blockType: Scratch.BlockType.COMMAND,
-            text: "move [PERCENT]% of the way to x: [X] y: [Y]",
+            text: Scratch.translate(
+              "move [PERCENT]% of the way to x: [X] y: [Y]"
+            ),
             arguments: {
               PERCENT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -112,13 +129,14 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           "---",
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "directionto",
             blockType: Scratch.BlockType.REPORTER,
-            text: "direction to x: [X] y: [Y]",
+            text: Scratch.translate("direction to x: [X] y: [Y]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -129,12 +147,13 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "distanceto",
             blockType: Scratch.BlockType.REPORTER,
-            text: "distance from x: [X] y: [Y]",
+            text: Scratch.translate("distance from x: [X] y: [Y]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -145,12 +164,13 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "spritewh",
             blockType: Scratch.BlockType.REPORTER,
-            text: "sprite [WHAT]",
+            text: Scratch.translate("sprite [WHAT]"),
             disableMonitor: true,
             arguments: {
               WHAT: {
@@ -164,7 +184,7 @@
             filter: [Scratch.TargetType.SPRITE],
             opcode: "touchingxy",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "touching x: [X] y: [Y]?",
+            text: Scratch.translate("touching x: [X] y: [Y]?"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -175,12 +195,15 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "touchingrect",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "touching rectangle x1: [X1] y1: [Y1] x2: [X2] y2: [Y2]?",
+            text: Scratch.translate(
+              "touching rectangle x1: [X1] y1: [Y1] x2: [X2] y2: [Y2]?"
+            ),
             arguments: {
               X1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -199,12 +222,30 @@
                 defaultValue: "100",
               },
             },
+            extensions: ["colours_motion"],
           },
         ],
         menus: {
           WHAT: {
             acceptreporters: true,
-            items: ["width", "height", "costume width", "costume height"],
+            items: [
+              {
+                text: Scratch.translate("width"),
+                value: "width",
+              },
+              {
+                text: Scratch.translate("height"),
+                value: "height",
+              },
+              {
+                text: Scratch.translate("costume width"),
+                value: "costume width",
+              },
+              {
+                text: Scratch.translate("costume height"),
+                value: "costume height",
+              },
+            ],
           },
         },
       };

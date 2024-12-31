@@ -1,6 +1,7 @@
 // Name: Files
 // ID: files
 // Description: Read and download files.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -56,7 +57,9 @@
         _resolve(text);
         Scratch.vm.renderer.removeOverlay(outer);
         Scratch.vm.runtime.off("PROJECT_STOP_ALL", handleProjectStopped);
-        document.body.removeEventListener("keydown", handleKeyDown);
+        document.body.removeEventListener("keydown", handleKeyDown, {
+          capture: true,
+        });
       };
 
       let isReadingFile = false;
@@ -164,14 +167,23 @@
       });
 
       const title = document.createElement("div");
-      title.textContent = "Select or drop file";
+      title.textContent = Scratch.translate("Select or drop file");
       title.style.fontSize = "1.5em";
       title.style.marginBottom = "8px";
       modal.appendChild(title);
 
       const subtitle = document.createElement("div");
-      const formattedAccept = accept || "any";
-      subtitle.textContent = `Accepted formats: ${formattedAccept}`;
+      const formattedAccept = accept || Scratch.translate("any");
+      subtitle.textContent = Scratch.translate(
+        {
+          default: "Accepted formats: {formats}",
+          description:
+            "[formats] is replaced with a comma-separated list of file types eg: .txt, .mp3, .png or the word any",
+        },
+        {
+          formats: formattedAccept,
+        }
+      );
       modal.appendChild(subtitle);
 
       // To avoid the script getting stalled forever, if cancel isn't supported, we'll just forcibly
@@ -204,25 +216,17 @@
     });
 
   /**
-   * @param {string} url a data:, blob:, or same-origin URL
-   * @param {string} file
-   */
-  const downloadURL = (url, file) => {
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = file;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  };
-
-  /**
    * @param {Blob} blob Data to download
    * @param {string} file Name of the file
+   * @returns {Promise<void>}
    */
-  const downloadBlob = (blob, file) => {
+  const downloadBlob = async (blob, file) => {
     const url = URL.createObjectURL(blob);
-    downloadURL(url, file);
+    try {
+      await Scratch.download(url, file);
+    } catch (e) {
+      console.error(e);
+    }
     URL.revokeObjectURL(url);
   };
 
@@ -243,24 +247,23 @@
    * @param {string} url
    * @param {string} file
    */
-  const downloadUntrustedURL = (url, file) => {
-    // Don't want to return a Promise here when not actually needed
+  const downloadUntrustedURL = async (url, file) => {
     if (isDataURL(url)) {
-      downloadURL(url, file);
-    } else {
-      return Scratch.fetch(url)
-        .then((res) => res.blob())
-        .then((blob) => {
-          downloadBlob(blob, file);
-        });
+      // TODO: Scratch.fetch's better handling of data: means this is probably not needed anymore
+      // and it the blob: probably works better with big files
+      return Scratch.download(url, file);
     }
+
+    const res = await Scratch.fetch(url);
+    const blob = await res.blob();
+    await downloadBlob(blob, file);
   };
 
   class Files {
     getInfo() {
       return {
         id: "files",
-        name: "Files",
+        name: Scratch.translate("Files"),
         color1: "#fcb103",
         color2: "#db9a37",
         color3: "#db8937",
@@ -268,14 +271,14 @@
           {
             opcode: "showPicker",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a file",
+            text: Scratch.translate("open a file"),
             disableMonitor: true,
             hideFromPalette: true,
           },
           {
             opcode: "showPickerExtensions",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a [extension] file",
+            text: Scratch.translate("open a [extension] file"),
             arguments: {
               extension: {
                 type: Scratch.ArgumentType.STRING,
@@ -288,7 +291,7 @@
           {
             opcode: "showPickerAs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a file as [as]",
+            text: Scratch.translate("open a file as [as]"),
             arguments: {
               as: {
                 type: Scratch.ArgumentType.STRING,
@@ -299,7 +302,7 @@
           {
             opcode: "showPickerExtensionsAs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open a [extension] file as [as]",
+            text: Scratch.translate("open a [extension] file as [as]"),
             arguments: {
               extension: {
                 type: Scratch.ArgumentType.STRING,
@@ -317,22 +320,22 @@
           {
             opcode: "download",
             blockType: Scratch.BlockType.COMMAND,
-            text: "download [text] as [file]",
+            text: Scratch.translate("download [text] as [file]"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, world!",
+                defaultValue: Scratch.translate("Hello, world!"),
               },
               file: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "save.txt",
+                defaultValue: Scratch.translate("save.txt"),
               },
             },
           },
           {
             opcode: "downloadURL",
             blockType: Scratch.BlockType.COMMAND,
-            text: "download URL [url] as [file]",
+            text: Scratch.translate("download URL [url] as [file]"),
             arguments: {
               url: {
                 type: Scratch.ArgumentType.STRING,
@@ -340,7 +343,7 @@
               },
               file: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "save.txt",
+                defaultValue: Scratch.translate("save.txt"),
               },
             },
           },
@@ -350,7 +353,7 @@
           {
             opcode: "setOpenMode",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set open file selector mode to [mode]",
+            text: Scratch.translate("set open file selector mode to [mode]"),
             arguments: {
               mode: {
                 type: Scratch.ArgumentType.STRING,
@@ -365,7 +368,7 @@
             acceptReporters: true,
             items: [
               {
-                text: "text",
+                text: Scratch.translate("text"),
                 value: AS_TEXT,
               },
               {
@@ -378,16 +381,16 @@
             acceptReporters: true,
             items: [
               {
-                text: "show modal",
+                text: Scratch.translate("show modal"),
                 value: MODE_MODAL,
               },
               {
-                text: "open selector immediately",
+                text: Scratch.translate("open selector immediately"),
                 value: MODE_IMMEDIATELY_SHOW_SELECTOR,
               },
               {
                 // Will not work if the browser doesn't think we are responding to a click event.
-                text: "only show selector (unreliable)",
+                text: Scratch.translate("only show selector (unreliable)"),
                 value: MODE_ONLY_SELECTOR,
               },
             ],
@@ -412,18 +415,26 @@
       return showFilePrompt(args.extension, args.as);
     }
 
-    download(args) {
-      downloadBlob(
-        new Blob([Scratch.Cast.toString(args.text)]),
-        Scratch.Cast.toString(args.file)
-      );
+    async download(args) {
+      try {
+        await downloadBlob(
+          new Blob([Scratch.Cast.toString(args.text)]),
+          Scratch.Cast.toString(args.file)
+        );
+      } catch (e) {
+        console.error(e);
+      }
     }
 
-    downloadURL(args) {
-      return downloadUntrustedURL(
-        Scratch.Cast.toString(args.url),
-        Scratch.Cast.toString(args.file)
-      );
+    async downloadURL(args) {
+      try {
+        await downloadUntrustedURL(
+          Scratch.Cast.toString(args.url),
+          Scratch.Cast.toString(args.file)
+        );
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     setOpenMode(args) {

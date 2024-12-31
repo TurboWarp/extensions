@@ -1,6 +1,7 @@
 // Name: Stretch
 // ID: stretch
 // Description: Stretch sprites horizontally or vertically.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -52,7 +53,7 @@
     getInfo() {
       return {
         id: "stretch",
-        name: "Stretch",
+        name: Scratch.translate("Stretch"),
         color1: "#4287f5",
         color2: "#2b62ba",
         color3: "#204785",
@@ -60,7 +61,7 @@
           {
             opcode: "setStretch",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set stretch to x: [X] y: [Y]",
+            text: Scratch.translate("set stretch to x: [X] y: [Y]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -76,7 +77,7 @@
           {
             opcode: "changeStretch",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change stretch by x: [DX] y: [DY]",
+            text: Scratch.translate("change stretch by x: [DX] y: [DY]"),
             arguments: {
               DX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -94,7 +95,7 @@
           {
             opcode: "setStretchX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set stretch x to [X]",
+            text: Scratch.translate("set stretch x to [X]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -106,7 +107,7 @@
           {
             opcode: "setStretchY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set stretch y to [Y]",
+            text: Scratch.translate("set stretch y to [Y]"),
             arguments: {
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -118,7 +119,7 @@
           {
             opcode: "changeStretchX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change stretch x by [DX]",
+            text: Scratch.translate("change stretch x by [DX]"),
             arguments: {
               DX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -129,7 +130,7 @@
           {
             opcode: "changeStretchY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change stretch y by [DY]",
+            text: Scratch.translate("change stretch y by [DY]"),
             arguments: {
               DY: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -143,14 +144,14 @@
           {
             opcode: "getX",
             blockType: Scratch.BlockType.REPORTER,
-            text: "x stretch",
+            text: Scratch.translate("x stretch"),
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
           },
           {
             opcode: "getY",
             blockType: Scratch.BlockType.REPORTER,
-            text: "y stretch",
+            text: Scratch.translate("y stretch"),
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
           },

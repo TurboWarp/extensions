@@ -1,7 +1,8 @@
-// Name: GameJolt
+// Name: Game Jolt
 // ID: GameJoltAPI
 // Description: Blocks that allow games to interact with the GameJolt API. Unofficial.
 // By: softed <https://scratch.mit.edu/users/softed/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";
@@ -20,9 +21,11 @@
     function hex_md5(a) {
       return rstr2hex(rstr_md5(str2rstr_utf8(a)));
     }
+    // eslint-disable-next-line no-unused-vars
     function hex_hmac_md5(a, b) {
       return rstr2hex(rstr_hmac_md5(str2rstr_utf8(a), str2rstr_utf8(b)));
     }
+    // eslint-disable-next-line no-unused-vars
     function md5_vm_test() {
       return hex_md5("abc").toLowerCase() == "900150983cd24fb0d6963f7d28e17f72";
     }
@@ -246,6 +249,8 @@
       },
     };
 
+    GJAPI.sStatus = "active";
+
     GJAPI.iGameID = 0;
     GJAPI.sGameKey = "";
     GJAPI.bAutoLogin = true;
@@ -275,7 +280,9 @@
       return asOutput;
     })();
 
-    GJAPI.bOnGJ = window.location.hostname.match(/gamejolt/) ? true : false;
+    GJAPI.bOnGJ = window.location.hostname.match(/gamejolt\.net/)
+      ? true
+      : false;
 
     /**
      * Log message and stack trace
@@ -353,7 +360,7 @@
             break;
 
           default:
-            pCallback(sResponse);
+            if (typeof pCallback == "function") pCallback(sResponse);
         }
       });
     };
@@ -422,7 +429,7 @@
           window.addEventListener("beforeunload", GJAPI.SessionClose, false);
         }
 
-        pCallback(pResponse);
+        if (typeof pCallback == "function") pCallback(pResponse);
       });
     };
 
@@ -438,7 +445,7 @@
       }
 
       GJAPI.SendRequest(
-        "/sessions/ping/?status=" + (GJAPI.bSessionActive ? "active" : "idle"),
+        "/sessions/ping/?status=" + GJAPI.sStatus,
         GJAPI.SEND_FOR_USER,
         pCallback
       );
@@ -1067,16 +1074,8 @@
      * @param {function} pCallback
      */
     GJAPI.UserFetchComb = (bIsUsername, sValue, pCallback) => {
-      if (bIsUsername) {
-        GJAPI.SendRequest(
-          "/users/?username=" + sValue,
-          GJAPI.SEND_GENERAL,
-          pCallback
-        );
-        return;
-      }
       GJAPI.SendRequest(
-        "/users/?user_id=" + sValue,
+        "/users/" + (bIsUsername ? "?username=" : "?user_id=") + sValue,
         GJAPI.SEND_GENERAL,
         pCallback
       );
@@ -1276,6 +1275,50 @@
       );
     };
 
+    GJAPI.SEQUENTIALLY = "sequentially";
+    GJAPI.BREAK_ON_ERROR = "break_on_error";
+    GJAPI.PARALLEL = "parallel";
+
+    /**
+     * @param {string[]} sRequests
+     * @param {string} sParam
+     * @param {function} pCallback
+     */
+    GJAPI.SendBatchRequest = (sRequests, sParam, pCallback) => {
+      if (!sRequests) {
+        pCallback(GJAPI.err.get("No requests found."));
+        return;
+      }
+      let sFinalURL = GJAPI.sAPI + "/batch?game_id=" + GJAPI.iGameID;
+      for (let i = 0; i < sRequests.length; i++) {
+        sFinalURL +=
+          "&requests[]=" +
+          encodeURIComponent(
+            encodeURI(sRequests[i]) +
+              "&signature=" +
+              md5(sRequests[i] + GJAPI.sGameKey)
+          );
+      }
+      switch (sParam) {
+        case "break_on_error":
+          sFinalURL += "&break_on_error=true";
+          break;
+        case "parallel":
+          sFinalURL += "&parallel=true";
+          break;
+        case "sequentially": // request is processed sequentially by default
+        default:
+          break;
+      }
+      sFinalURL += "&format=json";
+      sFinalURL += "&signature=" + md5(sFinalURL + GJAPI.sGameKey);
+
+      __CreateAjax(sFinalURL, "", (sResponse) => {
+        console.info(GJAPI.sLogName + " <" + sFinalURL + "> " + sResponse);
+        pCallback(JSON.parse(sResponse).response);
+      });
+    };
+
     return GJAPI;
   })();
 
@@ -1283,21 +1326,28 @@
    * Used for storing API error messages
    */
   let err = {
+    debug: true,
+
     noLogin: "No user logged in.",
-    noItem: "Item not found.",
-    noIndex: "Index not found.",
+    noData: "Data not found.",
+    noIndex: "Data at such index not found.",
 
     /**
      * Used for returning a standartized error message
      * @param {string} code
      */
-    get: (code) => (err[code] ? "Error: " + err[code] : "Error."),
+    get: (code) =>
+      err.debug
+        ? err[code]
+          ? "Error: " + err[code]
+          : "Error: Data not found."
+        : "",
 
     /**
      * Used for returning a standartized error message
      * @param {string} text
      */
-    show: (text) => "Error: " + text,
+    show: (text) => (err.debug ? "Error: " + text : ""),
   };
 
   /**
@@ -1306,20 +1356,19 @@
   let data = {};
 
   /**
-   * Apparently API response object's success property is a string and not a boolean
-   * That's why there is stuff like 'pResponse.success == bool.f'
+   * The API response object's success property is a string and not a boolean
+   * So there is stuff like "pResponse.success == trueStr"
    */
-  const bool = {
-    t: "true",
-    f: "false",
-  };
+  const trueStr = "true";
 
-  /**
+  /*!
    * GameJolt icon by GameJolt
    * Other icons by softed
    * Can be used outside of this extension
    */
   const icons = {
+    debug:
+      "data:image/png;base64,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",
     GameJolt:
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEQCAYAAABfpKr9AAAAAXNSR0IArs4c6QAAC2dJREFUeF7t3dGNZNlxRdEsjwTIJBkgmtAmiAbQJAHyqATygwbUJnDqMtb8n7nv7ojYE5nT+frrc/yf7+/v7+MIXP8wga/Dd//H1Qngegfcvj8B2ABuT8Dx2xMAARwfgdvXJwACuD0Bx29PAARwfARuX58ACOD2BBy/PQEQwPERuH19AiCA2xNw/PYEQADHR+D29QmAAG5PwPHbEwABHB+B29cnAAK4PQHHb08ABHB8BG5fnwAI4PYEHL89ARDA8RG4fX0CIIDbE/D47b++vtIMp/Dj7P7x+N4H8O9Qxbt3IIBYewKIAMWnBAgg4ieACFB8SoAAIn4CiADFpwQIIOIngAhQfEqAACJ+AogAxacECCDiJ4AIUHxKgAAifgKIAMWnBAgg4ieACFB8SoAAIn4CiADFpwQIIOIngAhQfEqAACJ+AogAxacECCDiJ4AIUHxKgAAifgKIAMWnBAgg4ieACFB8SuC8ANYD/B9//jJtAIc3Av/353/avyCm6wDH4z/Pvw+AAGoL3M4TwOP1J4DHCzh+fAIYF6AeTwCV4O08ATxefwJ4vIDjxyeAcQHq8QRQCd7OE8Dj9SeAxws4fnwCGBegHk8AleDtPAE8Xn8CeLyA48cngHEB6vEEUAnezhPA4/UngMcLOH58AhgXoB5PAJXg7TwBPF5/Ani8gOPHJ4BxAerxBFAJ3s4TwOP1J4DHCzh+fAIYF6AeTwCV4O08ATxefwJ4vIDx8a8PcMTnfQAVoBeCVIItTwCNnxeCNH4fAogAY5wAGkACaPwIIPKrcQJoBAmg8SOAyK/GCaARJIDGjwAivxongEaQABo/Aoj8apwAGkECaPwIIPKrcQJoBAmg8SOAyK/GCaARJIDGjwAivxongEaQABo/Aoj8apwAGkECaPwIIPKrcQJoBAmg8SOAyK/GCaARJIDGjwAivxongEaQABo/Aoj8apwAGkECaPwIIPKrcQJoBOcC8Hv+VsDX0wZ4W0EC+POXbQWOn04A2wYgAAKYdiABTPHv3wjkI8C2AdanE8C2AjYAG8C0Awlgit8G4JVe2wYkgC1/G4ANYNqBBDDFbwOwAWwbkAC2/G0ANoBpBxLAFL8NwAawbUAC2PK3AdgAph1IAFP8NgAbwLYBCWDL3wZgA5h2IAFM8dsAbADbBiSALX8bgA1g2oEEMMVvA7ABbBuQALb8bQA2gNSB6wFOD/9vEP76+koznML/Cn5+DfivoLj7dxDAjv3fTyaAyN9HgAaQABq/miaASJAAGkACaPxqmgAiQQJoAAmg8atpAogECaABJIDGr6YJIBIkgAaQABq/miaASJAAGkACaPxqmgAiQQJoAAmg8atpAogECaABJIDGr6YJIBIkgAaQABq/miaASJAAGkACaPxqmgAiQQJoAAmg8atpAogECaABJIDGr6YJIBIkgAaQABq/miaASJAAGkACaPxqei6A13/O+7c/f001+K8//53yr5//n5/vdP/r4TrAlV9+HwABEEBtwst5AojVryv86/8FXm8gNoDWwATQ+H0IYLuBEEBrYAJo/Ahg/B0EAbQGJoDGjwAIIHbQNk4Akb+PAD4CxBaaxgkg4icAAogtNI0TQMRPAAQQW2gaJ4CInwAIILbQNE4AET8BEEBsoWmcACJ+AiCA2ELTOAFE/ARAALGFpnECiPgJgABiC03jBBDxEwABxBaaxgkg4icAAogtNI0TQMT/v5/2i+b1r+mc3wS2fiHJeoDj+MTp+Xw+6/cBEMDtF5oQQFNA+88nAXy8T2ArIAIggETACt5W8LUACSC1v48ABEAAZYR8B/D9PX0rpO8Atiu4DeArf4wuAqrZ/PC+BLw9gARAADaAoGEfQdpHEN8BhOb7fHwHYADbANoAbAA2gCBhAmoCsgGE5rMBfD4GsA2gDcAGYAMIEiagJiAbQGg+G4AN4HUBEQABJAKvD8B6BV+fTwCp/f1fAAJoKzgB+A7AdwBBwgTUBGQDCM339+8A1n+Srz2+dCVQ/yh1PX/9dwu+/mf5K38CqAQfzxPA2yt8bT8CqAQfzxMAAUw/wz8+P88/PgEQAAE8P8Y/vwABEAAB/Hx+nk8SAAEQwPNj/PMLEAABEMDP5+f5JAEQAAE8P8Y/vwABEAAB/Hx+nk8SAAEQwPNj/PMLEAABEMDP5+f5JAEQAAE8P8Y/vwABEAAB/Hx+nk8SAAEQwPNj/PMLEAABEMDP5+f5JAEQAAE8P8Y/v0AVgN/z/5z9b0j6OfBvqMLwGQhgCP8XHE0Av6AIy0cggCX9/dkEsK/B9AkIYIp/fjgBzEuwfQAC2PJfn04A6wqMzyeAcQHGxxPAuADr4wlgXYHt+QSw5T8/nQDmJZg+AAFM8e8PJ4B9DZZPQABL+r/gbAL4BUUYPgIBDOH/hqMJ4DdUYfcMBLBj/ytOJoBfUYbZQxDADP3vOJgAfkcdVk9BACvyv+RcAvglhRg9BgGMwP+WYwngt1Ri8xwEsOH+a04lgF9TismDfE1Odeg/CXx/f59+H8PX1+0XcqxHgQDGFSAAAli2IAEs6X8+HwIggGULEsCSPgF8fATYNiABbPnbAHwHMO1AApji9xHABrBtQALY8rcB2ACmHUgAU/w2ABvAtgEJYMvfBmADmHYgAUzx2wBsANsGJIAtfxuADWDagQQwxW8DsAFsG5AAtvxtADaAaQcSwBS/DcAGsG1AAtjytwHYAKYdSABT/DYAG8C2AQlgy//5DcAAjxsoHk8AEWCNv/5zYAKoHbDNE8CWvw1gzP/68QQw7gAbwLgAx48ngHEDEMC4AMePJ4BxAxDAuADHjyeAcQMQwLgAx48ngHEDEMC4AMePJ4BxAxDAuADHjyeAcQMQwLgAx48ngHEDEMC4AMePJ4BxAxDAuADHjyeAcQMQwLgAx48ngHEDEMC4AMePJ4BxAxDAuADHjyeAcQMQwLgAx48ngNgABjgCFJ8SIICInwAiQPEpAQKI+AkgAhSfEiCAiJ8AIkDxKQECiPgJIAIUnxIggIifACJA8SkBAoj4CSACFJ8SIICInwAiQPEpAQKI+AkgAhSfEiCAiJ8AIkDxKQECiPgJIAIUnxIggIifACJA8SkBAoj4CSACFJ8SIICInwAiQPEpAQKI+AkgAhSfEiCAiJ8AIkDxKQECiPjXAvDXc8cCHo8TQGwAAogAxacECCDiJ4AIUHxKgAAifgKIAMWnBAgg4ieACFB8SoAAIn4CiADFpwQIIOIngAhQfEqAACJ+AogAxacECCDiJ4AIUHxKgAAifgKIAMWnBAgg4ieACFB8SoAAIn4CiADFpwQIIOIngAhQfEqAACJ+AogAxacECCDiJ4AIUHxKgAAifgKIAMWnBM4LwABP+8/hYwIE8P39vayBF3os6TubAAjAFBwmQAAEcLj9XZ0ACMAUHCZAAARwuP1dnQAIwBQcJkAABHC4/V2dAAjAFBwmQAAEcLj9XZ0ACMAUHCZAAARwuP1dnQAIwBQcJkAABHC4/V2dAAjAFBwmQAAEcLj9XZ0AogD8nNcQvUyAAAjg5f717JEAARBAbCHxlwkQAAG83L+ePRIgAAKILST+MgECIICX+9ezRwIEQACxhcRfJkAABPBy/3r2SIAACCC2kPjLBAiAAF7uX88eCRAAAcQWEn+ZAAEQwMv969kjAQIggNhC4i8TIAACeLl/PXskQAAEEFtI/GUCBEAAL/evZ48EnhfAtwGOLSB+mQABfH09z+ByA7t7I/B889sAWgNI3yZAADaA2xNw/PYEQADHR+D29QmAAG5PwPHbEwABHB+B29cnAAK4PQHHb08ABHB8BG5fnwAI4PYEHL89ARDA8RG4fX0CIIDbE3D89gRAAMdH4Pb1CYAAbk/A8dsTAAEcH4Hb1ycAArg9Acdv///LGLErEwwsYgAAAABJRU5ErkJggg==",
     main: "data:image/png;base64,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",
@@ -1331,10 +1380,11 @@
     store:
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAAAXNSR0IArs4c6QAABVJJREFUeF7t3d1t20AQRWGrIwMpKQXEJaiEpICUFCAdMZBebAT6WcJDz/Lyy6uJ2Z1zz44oKZJOL/4hEETgFNSLVhB4ITQJoggQOipOzRCaA1EECB0Vp2YIzYEoAoSOilMzhOZAFAFCR8WpmWGhl2VZ4EKgi8DpdBpydeiiSxOE7orSuhcChOZBFAFCR8WpGUJzIIoAoaPi1AyhORBFgNBRcWqG0ByIIkDoqDg10yb06/kNfQSGCfw9/xy6ltBDmFzUTYDQ3QlYv5QAoUtxKtZNgNDdCVi/lAChS3Eq1k2A0N0JWL+UAKFLcSrWTYDQ3QlYv5QAoUtxKtZNgNDdCVi/lAChS3Eq1k2A0N0JWL+UAKFLcSrWTYDQ3QlYv5QAoUtxKtZNgNDdCVi/lAChS3Eq1k2A0N0JWL+UAKFLcSrWTYDQ3QlYv5QAoUtxKtZNgNDdCVi/lAChS3Eq1k2A0N0JWL+UAKFLcSrWTYDQ3QlYv5QAoUtxKtZNgNDdCVi/lAChS3Eq1k1geqH/vIz9Utz3848hlr/Pv4auU+82ptn5EfqO3oQm9IXA2Dhd8cObJvRtsRy421xMaBP6SiDlgBCa0IR+8KzKLYcD0npATGgCtgpY/aoJoQlNaLcc7wSqJ4x6n3tVx4Q2oU3or5zQQ2/ruQiBlQTafqdw5T5djsAQAUIPYXLRXggQei9J2ecQAUIPYXLRXggQei9J2ecQAUIPYXLRXggQei9J2ecQAUIPYXLRXggQei9J2ecQgTahX89vQxt0EQIXAtP/Xw5CE3UNAUKvoeXa6QkQevqIbHANAUKvoeXa6QkQevqIbHANAUKvoeXa6QkQevqIbHANAUKvoeXa6QkQevqIbHANgemF9t12t+NM+equ6k+5E/rO8SfMbTDVAlbXIzShrwRSDjChCU3oBzfpvqzRAWk9ICY0AVsFdA9NwCgBCU1oQj+453XL4YBEHRBCE5rQX/kqx+hHsKrvxdTb5zuU316WoXfKp/+QLAH3KWD1GzqEvnOeHZB9HhBCE/pKIOUAE5rQhPak8J1A9T2gerftGn0EMaFNaBPahDahn702NjpRqx+RTGgT2oQ2oU1oE/o/AsuyDL2lM/qZwmeA/f0YBKa/5SD0MUSs6pLQVSTVmYIAoaeIwSaqCBC6iqQ6UxAg9BQx2EQVAUJXkVRnCgKEniIGm6giQOgqkupMQYDQU8RgE1UEphe6qlF1EPhIoO0zhWJAYAsChN6CqpptBAjdht7CWxAg9BZU1WwjQOg29BbeggCht6CqZhsBQreht/AWBAi9BVU12wgQug29hbcg0Ca0bx+9HWfX1wRUf+1Adb3p3/omNKEvBEYPMKHvPJ6NAqyeMOp97gATmtBXAikHmNCEJvSDZ53lP7zpHvpzD8FHu4UxoU1oE9qEfidwtAk4e78mtAltQpvQJvSzd++6XjWZfkL7ssZn6vj7RwKE5kMUAUJHxakZQnMgigCho+LUDKE5EEWA0FFxaobQHIgiQOioODVDaA5EESB0VJyaITQHoggQOipOzRCaA1EECB0Vp2YIzYEoAoSOilMzhOZAFAFCR8WpGUJzIIoAoaPi1AyhORBFgNBRcWqG0ByIIkDoqDg1Q2gORBEgdFScmiE0B6IIEDoqTs0QmgNRBKYXOoq2ZqYh0PbDm9MQsJEoAoSOilMzhOZAFAFCR8WpGUJzIIoAoaPi1AyhORBFgNBRcWqG0ByIIlAudBQdzcQSOMV2prFDEiD0IWPPbZrQudkesjNCHzL23KYJnZvtITsj9CFjz22a0LnZHrIzQh8y9tymCZ2b7SE7+wcob7kPY5BclgAAAABJRU5ErkJggg==",
     time: "data:image/png;base64,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",
+    batch:
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAAAAXNSR0IArs4c6QAABrBJREFUeF7t3e2R4zYQhOFVRq66kByAHcKGYAfgkFzljOQ6/VlfmVQ1biBSGD739wZc4J1mo0F93T78Q6ARgVujtVgKAh8ETQStCBB0q3ZaDEHTQCsCBN2qnRZD0DTQigBBt2qnxRA0DbQiQNCt2mkxsaDv9/sdLgTOInC73SKtRkXfF0HQZ7XS3/1OgKDpoBUBgm7VToshaBpoRYCgW7XTYgiaBloRIOhW7bQYgqaBVgQIulU7LeY0Qf/y+ftb0//n849oftYRYSoXpf0g6B3UKUCCLms1ukDaD4Im6AeBLjcmQRM0QT/bI9I3J3VxBOuIEkO5SOQoIkwBEnQRdDg87YfIIXKIHCLHFwEOHVpssYxDHwSQoIugw+EEHYLaK0sBEnQRdDg87YcMLUPL0DK0DB0a67QyDl1EmQIUOYqgw+FpP0QOkUPkEDlEjtBYp5Vx6CLKFKDIUQQdDk/7IXKIHCKHyCFyhMY6rYxDF1GmAEWOIuhweNoPkUPkEDlEDpEjNNZpZRy6iDIFKHIUQYfD036IHCKHyCFyiByhsU4r49BFlClAkaMIOhye9kPkEDlEDpFD5AiNdVoZhy6iTAGKHEXQ4fC0HyKHyCFyiBwiR2is08raOPRfn39GUH79/C2qS6/37SP7ucW/P7JfvJs9v/R6qRDS6JTyS+eXXi/tx9tHjnTBZwEk6G0fOasfBL3j66kjEDRBDx1COHRNMCLHNr8sKA78NHKXzMahazdcaljpjilyiBytdkyCJmiCPvI5dLolnXWqFjlEjlaOQNAETdBPtrjZO5KnHAc95Yhe1lOEwCCB0w6Fg/NUjkBEgKAjTIpWIUDQq3TKPCMCBB1hUrQKAYJepVPmGREg6AiTolUIEPQqnTLPiABBR5gUrUKAoFfplHlGBE4TdPp+6GgVLyia/ZLxC6YYXfJq6yDoHVlcTQhdDIagCfpBgKB3hHC/36PP/3cBaB1R8ikXpTsmh+bQHPrZ7cahy2Y09QKps3XZaTg0h+bQHPqLQBdn67IODs2hOTSH5tBTg35wsfQscJpD+7T0dhd9HcM2F4LeuetTwaQA0+w5+9Pc6fXSr9DqYjAc+qAMnQowveHS6xH0doOnf1ljF0fg0NuCSW+49AZOd0wOzaEfBLoYDEETNEHPeGzXxRFEDpGjlSMQNEET9JMtLj0kpYcuTzk85XgQSE/VHJpDD713IHUizlZ7ha3LjXnaU44uAB1u3+slfILeybNXy55dDIagCbpVBCRogiboGS+sdNniZGgZupUjEDRBE/STLW72Y8qrPU+XoWXoVgZD0ARN0DMOhWn2fPa3Xvl/s59Dv3Kuz659tXWc5tAEfYzECfrN3px0TNv//1euJoQuBsOhD8rQbswagdRgCJqgHwQ49I4Q0m8f7QLQOmrOm47m0CkpDs2hPbb7IsChi84RDufQIai9shQgQRdBh8PTfjgUihwix4zIEd6YyhAYInCaQw/NUjECIQGCDkEpW4MAQa/RJ7MMCRB0CErZGgQIeo0+mWVIgKBDUMrWIEDQa/TJLEMCBB2CUrYGAYJeo09mGRI4TdDpeyBmf6toer2rffy/Sz8IeufOJ+htMKkhnPX9IgRN0A8CHHpHCLM/sfLujuA7+raFwKF3bhCCrgkmfR8xh+bQDwIcunbDpYaVnmlkaBlahn72SFCGPsax0owqcmz3w4/X79zFIscxN7DIUTxkpgAJmqCHMlv4iuf0stlb9fQJhhe82jre/lAY9m162dWEkD62mw46vGDaD4LeAZoC7CKELusgaIJuFQEJmqAJ+sjn0GHEml4mckxHWrpg2g8OzaE5NIf+ItDlMNVlHRyaQ3NoDs2hS4H4JwbL0D8B7b9DUoBdtuou6xA5RA6RQ+QQOYob4PDwdMfk0ByaQ3NoDj1sscUBHPoggF0OU13WIXKIHCKHyCFyFDfA4eEixzCyHwekALts1V3WIXKIHCKHyCFyFDfA4eHpjsmhOTSH5tAcethiiwM49EEAuxymuqxD5BA5RA6RQ+QoboDDw0WOYWSeQxeRvXQ4QRfxpgC7ZM8u65ChZWgZWoaWoYsb4PDwdMc8zaGHV2QAAgEBgg4gKVmHAEGv0yszDQgQdABJyToECHqdXplpQICgA0hK1iFA0Ov0ykwDAgQdQFKyDgGCXqdXZhoQIOgAkpJ1CEwX9DpLN9MrE4h/GvnKkKx9HQIEvU6vzDQgQNABJCXrECDodXplpgEBgg4gKVmHAEGv0yszDQgQdABJyToECHqdXplpQICgA0hK1iHwL5ShIS3TtLVvAAAAAElFTkSuQmCC",
   };
 
-  const docs =
-    "https://softedco.github.io/GameJolt-API-Scratch-extension/DOCUMENTATION";
+  const docs = "https://extensions.turbowarp.org/gamejolt";
 
   /**
    * Mostly visual stuff for Scratch GUI
@@ -1344,7 +1394,7 @@
     getInfo() {
       return {
         id: "GameJoltAPI",
-        name: "GameJolt API",
+        name: "Game Jolt API",
         color1: "#2F7F6F",
         color2: "#2A2731",
         color3: "#CCFF00",
@@ -1355,17 +1405,23 @@
             opcode: "gamejoltBool",
             blockIconURI: icons.GameJolt,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "GameJolt?",
+            text: Scratch.translate({
+              id: "GameJoltAPI_gamejoltBool",
+              default: "on game jolt?",
+              description: 'Keep "game jolt" as is.',
+            }),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Session Blocks",
+            text: Scratch.translate("Session Blocks"),
           },
           {
             opcode: "setGame",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set game ID:[ID] and key:[key]",
+            text: Scratch.translate(
+              "set game ID to [ID] and private key to [key]"
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1373,7 +1429,7 @@
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key",
+                defaultValue: Scratch.translate("private key"),
               },
             },
           },
@@ -1381,7 +1437,7 @@
             opcode: "session",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
-            text: "[openOrClose] session",
+            text: Scratch.translate("[openOrClose] session"),
             arguments: {
               openOrClose: {
                 type: Scratch.ArgumentType.STRING,
@@ -1400,32 +1456,45 @@
             opcode: "sessionPing",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Ping session",
+            text: Scratch.translate("ping session"),
+          },
+          {
+            opcode: "sessionSetStatus",
+            blockIconURI: icons.main,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set session status to [status]"),
+            arguments: {
+              status: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "status",
+                defaultValue: "active",
+              },
+            },
           },
           {
             opcode: "sessionBool",
             blockIconURI: icons.main,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Session?",
+            text: Scratch.translate("session open?"),
             disableMonitor: true,
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "User Blocks",
+            text: Scratch.translate("user Blocks"),
           },
           {
             opcode: "loginManual",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Login with username:[username] and token:[token]",
+            text: Scratch.translate("login with [username] and [token]"),
             arguments: {
               username: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "username",
+                defaultValue: Scratch.translate("username"),
               },
               token: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "token",
+                defaultValue: Scratch.translate("private token"),
               },
             },
           },
@@ -1433,41 +1502,43 @@
             opcode: "loginAuto",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Login automatically",
+            text: Scratch.translate("login automatically"),
           },
           {
             opcode: "loginAutoBool",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Autologin?",
+            text: Scratch.translate("auto login available?"),
           },
           {
             opcode: "logout",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Logout",
+            text: Scratch.translate("logout"),
           },
           {
             opcode: "loginBool",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Login?",
+            text: Scratch.translate("logged in?"),
           },
           {
             opcode: "loginUser",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: "User logged in as",
+            text: Scratch.translate("logged in user's username"),
           },
           {
             opcode: "userFetch",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch user:[usernameOrID] by [fetchType]",
+            text: Scratch.translate(
+              "fetch user's [usernameOrID] by [fetchType]"
+            ),
             arguments: {
               usernameOrID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "username",
+                defaultValue: Scratch.translate("username"),
               },
               fetchType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1480,13 +1551,13 @@
             opcode: "userFetchCurrent",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch logged in user",
+            text: Scratch.translate("fetch logged in user"),
           },
           {
             opcode: "returnUserData",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return fetched user's [userDataType]",
+            text: Scratch.translate("fetched user's [userDataType]"),
             arguments: {
               userDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1496,10 +1567,17 @@
             },
           },
           {
+            opcode: "returnUserDataJson",
+            blockIconURI: icons.user,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched user's data in JSON"),
+          },
+          {
+            hideFromPalette: true,
             opcode: "friendsFetch",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return user's friend ID by index:[index]",
+            text: "fetched user's friend ID at index[index] (Deprecated)",
             arguments: {
               index: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1508,14 +1586,38 @@
             },
           },
           {
+            opcode: "friendsFetchNew",
+            blockIconURI: icons.user,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("fetch user's friend IDs"),
+          },
+          {
+            opcode: "friendsReturn",
+            blockIconURI: icons.user,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched user's friend ID at index[index]"),
+            arguments: {
+              index: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+          {
+            opcode: "friendsReturnJson",
+            blockIconURI: icons.user,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched user's friend IDs in JSON"),
+          },
+          {
             blockType: Scratch.BlockType.LABEL,
-            text: "Trophy Blocks",
+            text: Scratch.translate("Trophy Blocks"),
           },
           {
             opcode: "trophyAchieve",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Achieve trophy with ID:[ID]",
+            text: Scratch.translate("achieve trophy of ID [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1527,7 +1629,7 @@
             opcode: "trophyRemove",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Remove trophy with ID:[ID]",
+            text: Scratch.translate("remove trophy of ID [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1536,10 +1638,11 @@
             },
           },
           {
+            hideFromPalette: true,
             opcode: "trophyFetch",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetch trophy [trophyDataType] by [indexOrID]:[value]",
+            text: "fetched trophy [trophyDataType] at [indexOrID][value] (Deprecated)",
             arguments: {
               trophyDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1558,14 +1661,66 @@
             },
           },
           {
+            opcode: "trophyFetchId",
+            blockIconURI: icons.trophy,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("fetch trophy of ID[ID]"),
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+          {
+            opcode: "trophyFetchAll",
+            blockIconURI: icons.trophy,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("fetch [trophyFetchGroup] trophies"),
+            arguments: {
+              trophyFetchGroup: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "trophyFetchGroup",
+                defaultValue: "0",
+              },
+            },
+          },
+          {
+            opcode: "trophyReturn",
+            blockIconURI: icons.trophy,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "fetched trophy [trophyDataType] at index [index]"
+            ),
+            arguments: {
+              trophyDataType: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "trophyDataTypes",
+                defaultValue: "id",
+              },
+              index: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+          {
+            opcode: "trophyReturnJson",
+            blockIconURI: icons.trophy,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched trophies in JSON"),
+          },
+          {
             blockType: Scratch.BlockType.LABEL,
-            text: "Score Blocks",
+            text: Scratch.translate("Score Blocks"),
           },
           {
             opcode: "scoreAdd",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Add score by ID:[ID] with value:[value] text:[text] and extra data:[extraData]",
+            text: Scratch.translate(
+              "add score [value] in table of ID [ID] with text [text] and comment [extraData]"
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1577,11 +1732,11 @@
               },
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "1 point",
+                defaultValue: Scratch.translate("1 point"),
               },
               extraData: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "optional",
+                defaultValue: Scratch.translate("optional"),
               },
             },
           },
@@ -1589,7 +1744,9 @@
             opcode: "scoreAddGuest",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Add score by ID:[ID] with value:[value] text:[text] and extra data:[extraData] as guest:[username]",
+            text: Scratch.translate(
+              "add [username] score [value] in table of ID [ID] with text [text] and comment [extraData]"
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1601,15 +1758,38 @@
               },
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "1 point",
+                defaultValue: Scratch.translate("1 point"),
               },
               extraData: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "optional",
+                defaultValue: Scratch.translate("optional"),
               },
               username: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "username",
+                defaultValue: Scratch.translate("guest"),
+              },
+            },
+          },
+          {
+            opcode: "scoreFetchSimple",
+            blockIconURI: icons.score,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "fetch [amount] [globalOrPerUser] score/s in table of ID [ID]"
+            ),
+            arguments: {
+              amount: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+              globalOrPerUser: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "globalOrPerUser",
+                defaultValue: "false",
+              },
+              ID: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
               },
             },
           },
@@ -1617,7 +1797,9 @@
             opcode: "scoreFetch",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch [amount][globalOrPerUser] score/scores [betterOrWorse] than [value] by ID:[ID]",
+            text: Scratch.translate(
+              "fetch [amount] [globalOrPerUser] score/s [betterOrWorse] than [value] in table of ID [ID]"
+            ),
             arguments: {
               amount: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1644,10 +1826,12 @@
             },
           },
           {
-            opcode: "scoreFetchGuest",
+            opcode: "scoreFetchGuestSimple",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fetch [amount] guest's [username] score/scores [betterOrWorse] than [value] by ID:[ID]",
+            text: Scratch.translate(
+              "fetch [amount] [username] score/s in table of ID [ID]"
+            ),
             arguments: {
               amount: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1655,7 +1839,29 @@
               },
               username: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "username",
+                defaultValue: Scratch.translate("guest"),
+              },
+              ID: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+          {
+            opcode: "scoreFetchGuest",
+            blockIconURI: icons.score,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "fetch [amount] [username] score/s [betterOrWorse] than [value] in table of ID [ID]"
+            ),
+            arguments: {
+              amount: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+              username: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("guest"),
               },
               betterOrWorse: {
                 type: Scratch.ArgumentType.STRING,
@@ -1676,7 +1882,9 @@
             opcode: "returnScoreData",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return fetched score [scoreDataType] by index:[index]",
+            text: Scratch.translate(
+              "fetched score [scoreDataType] at index [index]"
+            ),
             arguments: {
               scoreDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1690,10 +1898,18 @@
             },
           },
           {
+            opcode: "returnScoreDataJson",
+            blockIconURI: icons.score,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched score data in JSON"),
+          },
+          {
             opcode: "scoreGetRank",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return rank of [value] by ID:[ID]",
+            text: Scratch.translate(
+              "fetched rank of [value] in table of ID [ID]"
+            ),
             arguments: {
               value: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1706,10 +1922,13 @@
             },
           },
           {
+            hideFromPalette: true,
             opcode: "scoreGetTables",
             blockIconURI: icons.score,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return table [tableDataType] by index:[index]",
+            text: Scratch.translate(
+              "fetched table [tableDataType] at index[index] (Deprecated)"
+            ),
             arguments: {
               tableDataType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1723,14 +1942,47 @@
             },
           },
           {
+            opcode: "scoreFetchTables",
+            blockIconURI: icons.score,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("fetch score tables"),
+          },
+          {
+            opcode: "scoreReturnTables",
+            blockIconURI: icons.score,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "fetched table [tableDataType] at index [index]"
+            ),
+            arguments: {
+              tableDataType: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "tableDataTypes",
+                defaultValue: "id",
+              },
+              index: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+          {
+            opcode: "scoreReturnTablesJson",
+            blockIconURI: icons.score,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched tables in JSON"),
+          },
+          {
             blockType: Scratch.BlockType.LABEL,
-            text: "Data Storage Blocks",
+            text: Scratch.translate("Data Storage Blocks"),
           },
           {
             opcode: "dataStoreSet",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set [globalOrPerUser] data with key:[key] to data:[data]",
+            text: Scratch.translate(
+              "set [globalOrPerUser] data at [key] to [data]"
+            ),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -1739,11 +1991,11 @@
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key",
+                defaultValue: Scratch.translate("key"),
               },
               data: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "data",
+                defaultValue: Scratch.translate("data"),
               },
             },
           },
@@ -1751,7 +2003,7 @@
             opcode: "dataStoreFetch",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetch [globalOrPerUser] data with key:[key]",
+            text: Scratch.translate("fetched [globalOrPerUser] data at [key]"),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -1760,7 +2012,7 @@
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key",
+                defaultValue: Scratch.translate("key"),
               },
             },
           },
@@ -1768,7 +2020,9 @@
             opcode: "dataStoreUpdate",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Update [globalOrPerUser] data with key:[key] by operation:[operationType] with value:[value]",
+            text: Scratch.translate(
+              "update [globalOrPerUser] data at [key] by [operationType] [value]"
+            ),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -1777,7 +2031,7 @@
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key",
+                defaultValue: Scratch.translate("key"),
               },
               operationType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1794,7 +2048,7 @@
             opcode: "dataStoreRemove",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.COMMAND,
-            text: "Remove [globalOrPerUser] data with key:[key]",
+            text: Scratch.translate("remove [globalOrPerUser] data at [key]"),
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -1803,15 +2057,16 @@
               },
               key: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "key",
+                defaultValue: Scratch.translate("key"),
               },
             },
           },
           {
+            hideFromPalette: true,
             opcode: "dataStoreGetKey",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Fetch [globalOrPerUser] keys with pattern [pattern] by index:[index]",
+            text: "fetched [globalOrPerUser] keys with pattern [pattern] at index [index] (Deprecated)",
             arguments: {
               globalOrPerUser: {
                 type: Scratch.ArgumentType.STRING,
@@ -1829,14 +2084,65 @@
             },
           },
           {
-            blockType: Scratch.BlockType.LABEL,
-            text: "Time Blocks",
+            opcode: "dataStoreFetchKeys",
+            blockIconURI: icons.store,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("fetch all [globalOrPerUser] keys"),
+            arguments: {
+              globalOrPerUser: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "globalOrPerUser",
+                defaultValue: "false",
+              },
+            },
           },
           {
+            opcode: "dataStoreFetchPatternKeys",
+            blockIconURI: icons.store,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "fetch [globalOrPerUser] keys matching with [pattern]"
+            ),
+            arguments: {
+              globalOrPerUser: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "globalOrPerUser",
+                defaultValue: "false",
+              },
+              pattern: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "*",
+              },
+            },
+          },
+          {
+            opcode: "dataStoreReturnKeys",
+            blockIconURI: icons.store,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched key at index [index]"),
+            arguments: {
+              index: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+          {
+            opcode: "dataStoreReturnKeysJson",
+            blockIconURI: icons.store,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched keys in JSON"),
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Time Blocks"),
+          },
+          {
+            hideFromPalette: true,
             opcode: "timeFetch",
             blockIconURI: icons.time,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Return server's current [timeType]",
+            text: "server's current [timeType] (Deprecated)",
             arguments: {
               timeType: {
                 type: Scratch.ArgumentType.STRING,
@@ -1845,110 +2151,276 @@
               },
             },
           },
+          {
+            opcode: "timeFetchNew",
+            blockIconURI: icons.time,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("fetch server's time"),
+          },
+          {
+            opcode: "timeReturn",
+            blockIconURI: icons.time,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched server's [timeType]"),
+            arguments: {
+              timeType: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "timeTypes",
+                defaultValue: "timestamp",
+              },
+            },
+          },
+          {
+            opcode: "timeReturnJson",
+            blockIconURI: icons.time,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched server's time in JSON"),
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Batch Blocks"),
+          },
+          {
+            opcode: "batchAdd",
+            blockIconURI: icons.batch,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "add [namespace] request with [parameters] to batch"
+            ),
+            arguments: {
+              namespace: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "data-store/set",
+              },
+              parameters: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"key":"key","data":"data"}',
+              },
+            },
+          },
+          {
+            opcode: "batchClear",
+            blockIconURI: icons.batch,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("clear batch"),
+          },
+          {
+            opcode: "batchJson",
+            blockIconURI: icons.batch,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("batch in JSON"),
+          },
+          {
+            opcode: "batchCall",
+            blockIconURI: icons.batch,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("fetch batch [parameter]"),
+            arguments: {
+              parameter: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "batchParameters",
+                defaultValue: "sequentially",
+              },
+            },
+          },
+          {
+            opcode: "batchReturnJson",
+            blockIconURI: icons.batch,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("fetched batch data in JSON"),
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Debug Blocks"),
+          },
+          {
+            opcode: "debug",
+            blockIconURI: icons.debug,
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("turn debug mode [toggle]"),
+            arguments: {
+              toggle: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "debug",
+                defaultValue: "",
+              },
+            },
+          },
+          {
+            opcode: "debugBool",
+            blockIconURI: icons.debug,
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("in debug mode?"),
+          },
+          {
+            opcode: "debugLastErr",
+            blockIconURI: icons.debug,
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("last API error"),
+          },
         ],
         menus: {
+          debug: {
+            items: [
+              { text: Scratch.translate("on"), value: "true" },
+              { text: Scratch.translate("off"), value: "" },
+            ],
+          },
+          status: {
+            items: [
+              { text: Scratch.translate("active"), value: "active" },
+              { text: Scratch.translate("idle"), value: "idle" },
+            ],
+          },
           fetchTypes: {
             items: [
-              { text: "username", value: "true" },
-              { text: "ID", value: "" },
+              { text: Scratch.translate("username"), value: "true" },
+              { text: Scratch.translate("ID"), value: "" },
             ],
           },
           userDataTypes: {
             items: [
-              { text: "ID", value: "id" },
-              { text: "username", value: "username" },
-              { text: "developer username", value: "developer_name" },
-              { text: "description", value: "developer_description" },
-              { text: "status", value: "status" },
-              { text: "type", value: "type" },
-              { text: "avatar URL", value: "avatar_url" },
-              { text: "website", value: "website" },
-              { text: "sign up date", value: "signed_up" },
-              { text: "sign up timestamp", value: "signed_up_timestamp" },
-              { text: "last login", value: "last_logged_in" },
+              { text: Scratch.translate("ID"), value: "id" },
+              { text: Scratch.translate("username"), value: "username" },
               {
-                text: "last login timestamp",
+                text: Scratch.translate("developer username"),
+                value: "developer_name",
+              },
+              {
+                text: Scratch.translate("description"),
+                value: "developer_description",
+              },
+              { text: Scratch.translate("status"), value: "status" },
+              { text: Scratch.translate("type"), value: "type" },
+              { text: Scratch.translate("avatar URL"), value: "avatar_url" },
+              { text: Scratch.translate("website"), value: "website" },
+              { text: Scratch.translate("sign up date"), value: "signed_up" },
+              {
+                text: Scratch.translate("sign up timestamp"),
+                value: "signed_up_timestamp",
+              },
+              {
+                text: Scratch.translate("last login"),
+                value: "last_logged_in",
+              },
+              {
+                text: Scratch.translate("last login timestamp"),
                 value: "last_logged_in_timestamp",
               },
             ],
           },
           operationTypes: {
             items: [
-              "add",
-              "subtract",
-              "multiply",
-              "divide",
-              "append",
-              "prepend",
+              { text: Scratch.translate("adding"), value: "add" },
+              { text: Scratch.translate("subtracting"), value: "subtract" },
+              { text: Scratch.translate("multiplying by"), value: "multiply" },
+              { text: Scratch.translate("dividing by"), value: "divide" },
+              { text: Scratch.translate("appending"), value: "append" },
+              { text: Scratch.translate("prepending"), value: "prepend" },
             ],
           },
           scoreDataTypes: {
             items: [
-              { text: "value", value: "sort" },
-              { text: "text", value: "score" },
-              { text: "extra data", value: "extra_data" },
-              { text: "username", value: "user" },
-              { text: "user ID", value: "user_id" },
-              { text: "score date", value: "stored" },
-              { text: "score timestamp", value: "stored_timestamp" },
+              { text: Scratch.translate("value"), value: "sort" },
+              { text: Scratch.translate("text"), value: "score" },
+              { text: Scratch.translate("comment"), value: "extra_data" },
+              { text: Scratch.translate("username"), value: "user" },
+              { text: Scratch.translate("user ID"), value: "user_id" },
+              { text: Scratch.translate("score date"), value: "stored" },
+              {
+                text: Scratch.translate("score timestamp"),
+                value: "stored_timestamp",
+              },
             ],
           },
           trophyDataTypes: {
             items: [
-              { text: "ID", value: "id" },
-              { text: "title", value: "title" },
-              { text: "description", value: "description" },
-              { text: "difficulty", value: "difficulty" },
-              { text: "image URL", value: "image_url" },
-              { text: "achievement date", value: "achieved" },
+              { text: Scratch.translate("ID"), value: "id" },
+              { text: Scratch.translate("title"), value: "title" },
+              { text: Scratch.translate("description"), value: "description" },
+              { text: Scratch.translate("difficulty"), value: "difficulty" },
+              { text: Scratch.translate("image URL"), value: "image_url" },
+              {
+                text: Scratch.translate("achievement date"),
+                value: "achieved",
+              },
             ],
           },
           timeTypes: {
             items: [
-              "timestamp",
-              "timezone",
-              "year",
-              "month",
-              "day",
-              "hour",
-              "minute",
-              "second",
+              { text: Scratch.translate("timestamp"), value: "timestamp" },
+              { text: Scratch.translate("timezone"), value: "timezone" },
+              { text: Scratch.translate("year"), value: "year" },
+              { text: Scratch.translate("month"), value: "month" },
+              { text: Scratch.translate("day"), value: "day" },
+              { text: Scratch.translate("hour"), value: "hour" },
+              { text: Scratch.translate("minute"), value: "minute" },
+              { text: Scratch.translate("second"), value: "second" },
             ],
           },
           tableDataTypes: {
             items: [
-              { text: "ID", value: "id" },
-              { text: "name", value: "name" },
-              { text: "description", value: "description" },
-              { text: "primary", value: "primary" },
+              { text: Scratch.translate("ID"), value: "id" },
+              { text: Scratch.translate("name"), value: "name" },
+              { text: Scratch.translate("description"), value: "description" },
+              { text: Scratch.translate("primary"), value: "primary" },
             ],
           },
           openOrClose: {
             items: [
-              { text: "Open", value: "true" },
-              { text: "Close", value: "" },
+              { text: Scratch.translate("Open"), value: "true" },
+              { text: Scratch.translate("Close"), value: "" },
             ],
           },
           globalOrPerUser: {
             items: [
-              { text: "global", value: "false" },
-              { text: "user", value: "true" },
+              { text: Scratch.translate("global"), value: "false" },
+              { text: Scratch.translate("user"), value: "true" },
+            ],
+          },
+          trophyFetchGroup: {
+            items: [
+              { text: Scratch.translate("all"), value: "0" },
+              { text: Scratch.translate("all achieved"), value: "1" },
+              { text: Scratch.translate("all unachieved"), value: "-1" },
             ],
           },
           indexOrID: {
             items: [
-              { text: "index", value: "true" },
-              { text: "ID", value: "" },
+              { text: Scratch.translate("index"), value: "true" },
+              { text: Scratch.translate("ID"), value: "" },
             ],
           },
           betterOrWorse: {
             items: [
-              { text: "better", value: "true" },
-              { text: "worse", value: "" },
+              { text: Scratch.translate("better"), value: "true" },
+              { text: Scratch.translate("worse"), value: "" },
+            ],
+          },
+          batchParameters: {
+            items: [
+              {
+                text: Scratch.translate("sequentially"),
+                value: "sequentially",
+              },
+              {
+                text: Scratch.translate("sequentially, break on error"),
+                value: "break_on_error",
+              },
+              { text: Scratch.translate("in parallel"), value: "parallel" },
             ],
           },
         },
       };
+    }
+    debug({ toggle }) {
+      err.debug = toggle == trueStr;
+    }
+    debugBool() {
+      return err.debug;
+    }
+    debugLastErr() {
+      return err.last ? "Error: " + err.last : "";
     }
     gamejoltBool() {
       return GameJolt.bOnGJ;
@@ -1959,7 +2431,10 @@
     }
     session({ openOrClose }) {
       return new Promise((resolve) =>
-        GameJolt.SessionSetStatus(openOrClose, resolve)
+        GameJolt.SessionSetStatus(openOrClose, (pResponse) => {
+          if (pResponse.success != trueStr) err.last = pResponse.message;
+          resolve();
+        })
       );
     }
 
@@ -1967,12 +2442,20 @@
      * Not necessary since the library handles pinging for you
      */
     sessionPing() {
-      return new Promise((resolve) => GameJolt.SessionPing(resolve));
+      return new Promise((resolve) =>
+        GameJolt.SessionPing((pResponse) => {
+          if (pResponse.success != trueStr) err.last = pResponse.message;
+          resolve();
+        })
+      );
+    }
+    sessionSetStatus({ status }) {
+      GameJolt.sStatus = status;
     }
     sessionBool() {
       return new Promise((resolve) =>
         GameJolt.SessionCheck((pResponse) =>
-          resolve(pResponse.success == bool.t)
+          resolve(pResponse.success == trueStr)
         )
       );
     }
@@ -1982,7 +2465,11 @@
      */
     loginManual({ username, token }) {
       return new Promise((resolve) =>
-        GameJolt.UserLoginManual(username, token, resolve)
+        GameJolt.UserLoginManual(username, token, (pResponse) => {
+          if (pResponse.success != trueStr)
+            [err.user, err.last] = [pResponse.message, pResponse.message];
+          resolve();
+        })
       );
     }
 
@@ -1990,50 +2477,73 @@
      * Not necessary since the library handles logging in for you
      */
     loginAuto() {
-      return new Promise((resolve) => GameJolt.UserLoginAuto(resolve));
+      return new Promise((resolve) =>
+        GameJolt.UserLoginAuto((pResponse) => {
+          if (pResponse.success != trueStr)
+            [err.user, err.last] = [pResponse.message, pResponse.message];
+          resolve();
+        })
+      );
     }
     loginAutoBool() {
       return Boolean(GameJolt.asQueryParam["gjapi_username"]);
     }
     logout() {
-      return new Promise((resolve) => GameJolt.UserLogout(resolve));
+      return new Promise((resolve) =>
+        GameJolt.UserLogout((pResponse) => {
+          if (pResponse.success != trueStr)
+            [err.user, err.last] = [pResponse.message, pResponse.message];
+          resolve();
+        })
+      );
     }
     loginBool() {
       return GameJolt.bLoggedIn;
     }
     loginUser() {
-      return GameJolt.sUserName;
+      return GameJolt.sUserName || err.get("noLogin");
     }
     userFetch({ fetchType, usernameOrID }) {
       return new Promise((resolve) =>
-        GameJolt.UserFetchComb(fetchType, usernameOrID, (pResponse) =>
-          resolve(
-            pResponse.success == bool.t
-              ? (data.user = pResponse.users[0])
-              : (err.user = pResponse.message)
-          )
-        )
+        GameJolt.UserFetchComb(fetchType, usernameOrID, (pResponse) => {
+          if (pResponse.success != trueStr) {
+            [err.user, err.last] = [pResponse.message, pResponse.message];
+            data.user = undefined;
+            resolve();
+            return;
+          }
+          data.user = pResponse.users[0];
+          err.user = undefined;
+          resolve();
+        })
       );
     }
     userFetchCurrent() {
       return new Promise((resolve) =>
-        GameJolt.UserFetchCurrent((pResponse) =>
-          resolve(
-            pResponse.success == bool.t
-              ? (data.user = pResponse.users[0])
-              : (err.user = pResponse.message)
-          )
-        )
+        GameJolt.UserFetchCurrent((pResponse) => {
+          if (pResponse.success != trueStr) {
+            [err.user, err.last] = [pResponse.message, pResponse.message];
+            data.user = undefined;
+            resolve();
+            return;
+          }
+          data.user = pResponse.users[0];
+          err.user = undefined;
+          resolve();
+        })
       );
     }
     returnUserData({ userDataType }) {
       if (!data.user) return err.get("user");
-      return data.user[userDataType] || err.get("noItem");
+      return data.user[userDataType] || err.get("noData");
+    }
+    returnUserDataJson() {
+      return JSON.stringify(data.user) || err.get("user") || "{}";
     }
     friendsFetch({ index }) {
       if (!GameJolt.bLoggedIn) return err.get("noLogin");
       GameJolt.FriendsFetch((pResponse) => {
-        if (pResponse.success == bool.f) {
+        if (pResponse.success != trueStr) {
           err.friends = pResponse.message;
           return;
         }
@@ -2041,13 +2551,48 @@
       });
       if (!data.friends) return err.get("friends");
       if (!data.friends[index]) return err.get("noIndex");
-      return data.friends[index].friend_id || err.get("noItem");
+      return data.friends[index].friend_id || err.get("noData");
+    }
+    friendsFetchNew() {
+      return new Promise((resolve) =>
+        GameJolt.FriendsFetch((pResponse) => {
+          if (pResponse.success != trueStr) {
+            [err.friends, err.last] = [pResponse.message, pResponse.message];
+            data.friends = undefined;
+            resolve();
+            return;
+          }
+          data.friends = pResponse.friends;
+          err.friends = undefined;
+          resolve();
+        })
+      );
+    }
+    friendsReturn({ index }) {
+      if (!data.friends) return err.get("friends");
+      if (!data.friends[Math.floor(index)]) return err.get("noIndex");
+      return data.friends[Math.floor(index)].friend_id || err.get("noData");
+    }
+    friendsReturnJson() {
+      return JSON.stringify(data.friends) || err.get("friends") || "{}";
     }
     trophyAchieve({ ID }) {
-      return new Promise((resolve) => GameJolt.TrophyAchieve(ID, resolve));
+      return new Promise((resolve) =>
+        GameJolt.TrophyAchieve(ID, (pResponse) => {
+          if (pResponse.success != trueStr)
+            [err.trophies, err.last] = [pResponse.message, pResponse.message];
+          resolve();
+        })
+      );
     }
     trophyRemove({ ID }) {
-      return new Promise((resolve) => GameJolt.TrophyRemove(ID, resolve));
+      return new Promise((resolve) =>
+        GameJolt.TrophyRemove(ID, (pResponse) => {
+          if (pResponse.success != trueStr)
+            [err.trophies, err.last] = [pResponse.message, pResponse.message];
+          resolve();
+        })
+      );
     }
     trophyFetch({ indexOrID, value, trophyDataType }) {
       if (!GameJolt.bLoggedIn) return err.get("noLogin");
@@ -2055,7 +2600,7 @@
         indexOrID,
         indexOrID ? GameJolt.TROPHY_ALL : value,
         (pResponse) => {
-          if (pResponse.success == bool.f) {
+          if (pResponse.success != trueStr) {
             err.trophies = pResponse.message;
             return;
           }
@@ -2067,41 +2612,142 @@
       if (!data.trophies) return err.get("trophies");
       if (indexOrID) {
         if (!data.trophies[value]) return err.get("noIndex");
-        return data.trophies[value][trophyDataType] || err.get("noItem");
+        return data.trophies[value][trophyDataType] || err.get("noData");
       }
-      return data.trophies[trophyDataType] || err.get("noItem");
+      return data.trophies[trophyDataType] || err.get("noData");
+    }
+    trophyFetchAll({ trophyFetchGroup }) {
+      return new Promise((resolve) =>
+        GameJolt.TrophyFetch(Number(trophyFetchGroup), (pResponse) => {
+          if (pResponse.success != trueStr) {
+            [err.trophies, err.last] = [pResponse.message, pResponse.message];
+            data.trophies = undefined;
+            resolve();
+            return;
+          }
+          data.trophies = pResponse.trophies;
+          err.trophies = undefined;
+          resolve();
+        })
+      );
+    }
+    trophyFetchId({ ID }) {
+      return new Promise((resolve) =>
+        GameJolt.TrophyFetchSingle(ID, (pResponse) => {
+          if (pResponse.success != trueStr) {
+            [err.trophies, err.last] = [pResponse.message, pResponse.message];
+            data.trophies = undefined;
+            resolve();
+            return;
+          }
+          data.trophies = pResponse.trophies;
+          err.trophies = undefined;
+          resolve();
+        })
+      );
+    }
+    trophyReturn({ trophyDataType, index }) {
+      if (!data.trophies) return err.get("trophies");
+      if (!data.trophies[Math.floor(index)]) return err.get("noIndex");
+      return (
+        data.trophies[Math.floor(index)][trophyDataType] || err.get("noData")
+      );
+    }
+    trophyReturnJson() {
+      return JSON.stringify(data.trophies) || err.get("trophies") || "{}";
     }
     scoreAdd({ ID, value, text, extraData }) {
       return new Promise((resolve) =>
-        GameJolt.ScoreAdd(ID, value, text, extraData, resolve)
+        GameJolt.ScoreAdd(ID, value, text, extraData, (pResponse) => {
+          if (pResponse.success != trueStr) err.last = pResponse.message;
+          resolve();
+        })
       );
     }
     scoreAddGuest({ ID, value, text, username, extraData }) {
       return new Promise((resolve) =>
-        GameJolt.ScoreAddGuest(ID, value, text, username, extraData, resolve)
+        GameJolt.ScoreAddGuest(
+          ID,
+          value,
+          text,
+          username,
+          extraData,
+          (pResponse) => {
+            if (pResponse.success != trueStr) err.last = pResponse.message;
+            resolve();
+          }
+        )
+      );
+    }
+    scoreFetchSimple({ amount, globalOrPerUser, ID }) {
+      if (globalOrPerUser == trueStr && !GameJolt.bLoggedIn) {
+        err.scores = err.noLogin;
+        data.scores = undefined;
+        return;
+      }
+      return new Promise((resolve) =>
+        GameJolt.ScoreFetch(
+          ID,
+          globalOrPerUser == trueStr
+            ? GameJolt.SCORE_ONLY_USER
+            : GameJolt.SCORE_ALL,
+          amount,
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              [err.scores, err.last] = [pResponse.message, pResponse.message];
+              data.scores = undefined;
+              resolve();
+              return;
+            }
+            data.scores = pResponse.scores;
+            err.scores = undefined;
+            resolve();
+          }
+        )
       );
     }
     scoreFetch({ globalOrPerUser, ID, amount, betterOrWorse, value }) {
-      if (globalOrPerUser == bool.t && !GameJolt.bLoggedIn) {
+      if (globalOrPerUser == trueStr && !GameJolt.bLoggedIn) {
         err.scores = err.noLogin;
+        data.scores = undefined;
         return;
       }
       return new Promise((resolve) =>
         GameJolt.ScoreFetchEx(
           ID,
-          globalOrPerUser == bool.t
+          globalOrPerUser == trueStr
             ? GameJolt.SCORE_ONLY_USER
             : GameJolt.SCORE_ALL,
           amount,
           betterOrWorse,
           value,
-          (pResponse) =>
-            resolve(
-              pResponse.success == bool.t
-                ? (data.scores = pResponse.scores)
-                : (err.scores = pResponse.message)
-            )
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              [err.scores, err.last] = [pResponse.message, pResponse.message];
+              data.scores = undefined;
+              resolve();
+              return;
+            }
+            data.scores = pResponse.scores;
+            err.scores = undefined;
+            resolve();
+          }
         )
+      );
+    }
+    scoreFetchGuestSimple({ amount, username, ID }) {
+      return new Promise((resolve) =>
+        GameJolt.ScoreFetchGuestEx(ID, username, amount, (pResponse) => {
+          if (pResponse.success != trueStr) {
+            [err.scores, err.last] = [pResponse.message, pResponse.message];
+            data.scores = undefined;
+            resolve();
+            return;
+          }
+          data.scores = pResponse.scores;
+          err.scores = undefined;
+          resolve();
+        })
       );
     }
     scoreFetchGuest({ ID, username, amount, betterOrWorse, value }) {
@@ -2112,12 +2758,17 @@
           amount,
           betterOrWorse,
           value,
-          (pResponse) =>
-            resolve(
-              pResponse.success == bool.t
-                ? (data.scores = pResponse.scores)
-                : (err.scores = pResponse.message)
-            )
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              [err.scores, err.last] = [pResponse.message, pResponse.message];
+              data.scores = undefined;
+              resolve();
+              return;
+            }
+            data.scores = pResponse.scores;
+            err.scores = undefined;
+            resolve();
+          }
         )
       );
     }
@@ -2128,24 +2779,28 @@
         return (
           data.scores[index].user ||
           data.scores[index].guest ||
-          err.get("noItem")
+          err.get("noData")
         );
-      return data.scores[index][scoreDataType] || err.get("noItem");
+      return data.scores[index][scoreDataType] || err.get("noData");
+    }
+    returnScoreDataJson() {
+      return JSON.stringify(data.scores) || err.get("scores") || "{}";
     }
     scoreGetRank({ ID, value }) {
       return new Promise((resolve) =>
-        GameJolt.ScoreGetRank(ID, value, (pResponse) =>
-          resolve(
-            pResponse.success == bool.t
-              ? pResponse.rank
-              : err.show(pResponse.message)
-          )
-        )
+        GameJolt.ScoreGetRank(ID, value, (pResponse) => {
+          if (pResponse.success != trueStr) {
+            err.last = pResponse.message;
+            resolve(err.get("last"));
+            return;
+          }
+          resolve(pResponse.rank);
+        })
       );
     }
     scoreGetTables({ index, tableDataType }) {
       GameJolt.ScoreGetTables((pResponse) => {
-        if (pResponse.success == bool.f) {
+        if (pResponse.success != trueStr) {
           err.tables = pResponse.message;
           return;
         }
@@ -2153,56 +2808,109 @@
       });
       if (!data.tables) return err.get("tables");
       if (!data.tables[index]) return err.get("noIndex");
-      return data.tables[index][tableDataType] || err.get("noItem");
+      return data.tables[index][tableDataType] || err.get("noData");
+    }
+    scoreFetchTables() {
+      return new Promise((resolve) =>
+        GameJolt.ScoreGetTables((pResponse) => {
+          if (pResponse.success != trueStr) {
+            [err.tables, err.last] = [pResponse.message, pResponse.message];
+            data.tables = undefined;
+            resolve();
+            return;
+          }
+          data.tables = pResponse.tables;
+          err.tables = undefined;
+          resolve();
+        })
+      );
+    }
+    scoreReturnTables({ tableDataType, index }) {
+      if (!data.tables) return err.get("tables");
+      if (!data.tables[Math.floor(index)]) return err.get("noIndex");
+      return (
+        !data.tables[Math.floor(index)][tableDataType] || err.get("noData")
+      );
+    }
+    scoreReturnTablesJson() {
+      return JSON.stringify(data.tables) || err.get("tables") || "{}";
     }
     dataStoreSet({ globalOrPerUser, key, data }) {
       return new Promise((resolve) =>
-        GameJolt.DataStoreSet(globalOrPerUser == bool.t, key, data, resolve)
+        GameJolt.DataStoreSet(
+          globalOrPerUser == trueStr,
+          key,
+          data,
+          (pResponse) => {
+            if (pResponse.success != trueStr) err.last = pResponse.message;
+            resolve();
+          }
+        )
       );
     }
     dataStoreFetch({ globalOrPerUser, key }) {
-      if (globalOrPerUser == bool.t && !GameJolt.bLoggedIn)
+      if (globalOrPerUser == trueStr && !GameJolt.bLoggedIn)
         return err.get("noLogin");
       return new Promise((resolve) =>
-        GameJolt.DataStoreFetch(globalOrPerUser == bool.t, key, (pResponse) =>
-          resolve(
-            pResponse.success == bool.t
-              ? pResponse.data
-              : err.show(pResponse.message)
-          )
+        GameJolt.DataStoreFetch(
+          globalOrPerUser == trueStr,
+          key,
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              err.last = pResponse.message;
+              resolve(err.get("last"));
+              return;
+            }
+            resolve(pResponse.data);
+          }
         )
       );
     }
     dataStoreUpdate({ globalOrPerUser, key, operationType, value }) {
       return new Promise((resolve) =>
         GameJolt.DataStoreUpdate(
-          globalOrPerUser == bool.t,
+          globalOrPerUser == trueStr,
           key,
           operationType,
           value,
-          resolve
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              err.last = pResponse.message;
+            }
+            resolve();
+          }
         )
       );
     }
     dataStoreRemove({ globalOrPerUser, key }) {
       return new Promise((resolve) =>
-        GameJolt.DataStoreRemove(globalOrPerUser == bool.t, key, resolve)
+        GameJolt.DataStoreRemove(
+          globalOrPerUser == trueStr,
+          key,
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              err.last = pResponse.message;
+            }
+            resolve();
+          }
+        )
       );
     }
     dataStoreGetKey({ globalOrPerUser, pattern, index }) {
-      if (globalOrPerUser == bool.t && !GameJolt.bLoggedIn)
+      if (globalOrPerUser == trueStr && !GameJolt.bLoggedIn)
         return err.get("noLogin");
       GameJolt.DataStoreGetKeysEx(
-        globalOrPerUser == bool.t,
+        globalOrPerUser == trueStr,
         pattern,
         (pResponse) => {
-          if (pResponse.success == bool.f) {
+          if (pResponse.success != trueStr) {
             err.keys = pResponse.message;
+            data.keys = undefined;
             return;
           }
           if (!pResponse.keys) {
-            data.keys = "";
             err.keys = err.noIndex;
+            data.keys = undefined;
             return;
           }
           data.keys = pResponse.keys;
@@ -2210,18 +2918,146 @@
       );
       if (!data.keys) return err.get("keys");
       if (!data.keys[index]) return err.get("noIndex");
-      return data.keys[index].key || err.get("noItem");
+      return data.keys[index].key || err.get("noData");
+    }
+    dataStoreFetchKeys({ globalOrPerUser }) {
+      return new Promise((resolve) =>
+        GameJolt.DataStoreGetKeys(globalOrPerUser == trueStr, (pResponse) => {
+          if (pResponse.success != trueStr) {
+            [err.keys, err.last] = [pResponse.message, pResponse.message];
+            data.keys = undefined;
+            resolve();
+            return;
+          }
+          if (!pResponse.keys) {
+            data.keys = undefined;
+            err.keys = err.noIndex;
+            resolve();
+            return;
+          }
+          data.keys = pResponse.keys;
+          err.keys = undefined;
+          resolve();
+        })
+      );
+    }
+    dataStoreFetchPatternKeys({ globalOrPerUser, pattern }) {
+      return new Promise((resolve) =>
+        GameJolt.DataStoreGetKeysEx(
+          globalOrPerUser == trueStr,
+          pattern,
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              [err.keys, err.last] = [pResponse.message, pResponse.message];
+              data.keys = undefined;
+              resolve();
+              return;
+            }
+            if (!pResponse.keys) {
+              data.keys = undefined;
+              err.keys = err.noIndex;
+              resolve();
+              return;
+            }
+            data.keys = pResponse.keys;
+            err.keys = undefined;
+            resolve();
+          }
+        )
+      );
+    }
+    dataStoreReturnKeys({ index }) {
+      if (!data.keys) return err.get("keys");
+      if (!data.keys[Math.floor(index)]) return err.get("noIndex");
+      return data.keys[Math.floor(index)].key || err.get("noData");
+    }
+    dataStoreReturnKeysJson() {
+      return JSON.stringify(data.keys) || err.get("keys") || "{}";
     }
     timeFetch({ timeType }) {
       return new Promise((resolve) =>
-        GameJolt.TimeFetch((pResponse) =>
-          resolve(
-            pResponse.success == bool.t
-              ? pResponse[timeType]
-              : err.show(pResponse.message)
-          )
+        GameJolt.TimeFetch((pResponse) => {
+          if (pResponse.success != trueStr) {
+            err.last = pResponse.message;
+            resolve(err.get("last"));
+          }
+          resolve(pResponse[timeType]);
+        })
+      );
+    }
+    timeFetchNew() {
+      return new Promise((resolve) =>
+        GameJolt.TimeFetch((pResponse) => {
+          if (pResponse.success != trueStr) {
+            [err.time, err.last] = [pResponse.message, pResponse.message];
+            data.time = undefined;
+            resolve();
+            return;
+          }
+          data.time = pResponse;
+          data.time.success = undefined;
+          data.time.message = undefined;
+          err.time = undefined;
+          resolve();
+        })
+      );
+    }
+    timeReturn({ timeType }) {
+      if (!data.time) return err.get("time");
+      return data.time[timeType] || err.get("noData");
+    }
+    timeReturnJson() {
+      return JSON.stringify(data.time) || err.get("time") || "{}";
+    }
+    batchAdd({ namespace, parameters }) {
+      if (!data.batchRequests) data.batchRequests = [];
+      try {
+        data.batchRequests.push({
+          namespace: namespace,
+          parameters: JSON.parse(parameters),
+        });
+      } catch (err) {
+        data.batchRequests.push({
+          namespace: namespace,
+          parameters: {},
+        });
+      }
+    }
+    batchClear() {
+      data.batchRequests = undefined;
+    }
+    batchJson() {
+      return JSON.stringify(data.batchRequests) || err.get("noData") || "{}";
+    }
+    batchCall({ parameter }) {
+      return new Promise((resolve) =>
+        GameJolt.SendBatchRequest(
+          data.batchRequests.map(
+            (I) =>
+              `/${I.namespace
+                .split("/")
+                .map((i) => encodeURIComponent(i))
+                .join("/")}/` +
+              `?game_id=${GameJolt.iGameID}` +
+              `&${new URLSearchParams(I.parameters).toString()}`
+          ),
+          parameter,
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              [err.batch, err.last] = [pResponse.message, pResponse.message];
+              data.batch = undefined;
+              resolve();
+              return;
+            }
+            data.batch = pResponse.responses;
+            err.batch = undefined;
+            resolve();
+          }
         )
       );
+    }
+    batchReturnJson() {
+      return JSON.stringify(data.batch) || err.get("batch") || "{}";
     }
   }
   Scratch.extensions.register(new GameJoltAPI());

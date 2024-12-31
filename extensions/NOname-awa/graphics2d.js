@@ -2,27 +2,10 @@
 // ID: nonameawagraph
 // Description: Blocks to compute lengths, angles, and areas in two dimensions.
 // By: NOname-awa
+// License: MIT
 
 (function (Scratch) {
   "use strict";
-  Scratch.translate.setup({
-    zh: {
-      name: "图形 2D",
-      line_section: "（[x1],[y1]）到（[x2],[y2]）的距离",
-      ray_direction: "（[x1],[y1]）到（[x2],[y2]）的方向",
-      triangle: "三角形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）的 [CS]",
-      triangle_s: "三角形 [s1] [s2] [s3] 的面积",
-      quadrilateral:
-        "四边形（[x1],[y1]）（[x2],[y2]）（[x3],[y3]）（[x4],[y4]）的 [CS]",
-      graph: "图形 [graph] 的 [CS]",
-      round: "[rd] 为 [a] 的圆的 [CS]",
-      pi: "派",
-      radius: "半径",
-      diameter: "直径",
-      area: "面积",
-      circumference: "周长",
-    },
-  });
   class graph {
     getInfo() {
       return {
@@ -60,6 +43,33 @@
           },
           {
             opcode: "ray_direction",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "ray_direction",
+              default: "direction of ([x1],[y1]) to ([x2],[y2])",
+            }),
+            hideFromPalette: true,
+            arguments: {
+              x1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              y1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              x2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "100",
+              },
+              y2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+            },
+          },
+          {
+            opcode: "ray_direction2",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "ray_direction",
@@ -311,6 +321,13 @@
       } else {
         return (180 / Math.PI) * Math.atan(dx / dy);
       }
+    }
+    ray_direction2(args) {
+      const dx =
+        Scratch.Cast.toNumber(args.x2) - Scratch.Cast.toNumber(args.x1);
+      const dy =
+        Scratch.Cast.toNumber(args.y2) - Scratch.Cast.toNumber(args.y1);
+      return (Math.atan2(dx, dy) * 180) / Math.PI;
     }
     vertical(args) {
       if (isNaN(args.a) || isNaN(args.b)) {
