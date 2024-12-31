@@ -7,19 +7,19 @@
 
   let zoom = 1;
   let hasCameraExtension = false;
-  const frames = Object.create(null)
+  const frames = Object.create(null);
   frames["frame1"] = {
-      x: 0,
-      y: 0,
-      width: 100,
-      height: 100,
-      layout: {
-        spriteOrder: [],
-        spriteMargin: 0,
-        axis: "horizontal", // vertical/horizontal
-        alignX: "left",
-        alignY: "bottom",
-      },
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+    layout: {
+      spriteOrder: [],
+      spriteMargin: 0,
+      axis: "horizontal", // vertical/horizontal
+      alignX: "left",
+      alignY: "bottom",
+    },
   };
 
   if (!Scratch.extensions.unsandboxed) {
@@ -66,20 +66,13 @@
 
   function getSizeByTargetId(targetId) {
     const currentCostumeId = Scratch.vm.runtime.targets.find(
-      (target) => target.id === targetId
+      (target) => target.id === targetId,
     ).currentCostume;
     const size = Scratch.vm.runtime.targets
       .find((target) => target.id === targetId)
-      .sprite.costumes[currentCostumeId].size.map(
-        (num) =>
-          (num *
-            Scratch.vm.runtime.targets.find((target) => target.id === targetId)
-              .size) /
-          (Scratch.vm.runtime.targets.find((target) => target.id === targetId)
-            .sprite.costumes[currentCostumeId].dataFormat != "svg"
-            ? 200
-            : 100)
-      );
+      .sprite.costumes[
+        currentCostumeId
+      ].size.map((num) => (num * Scratch.vm.runtime.targets.find((target) => target.id === targetId).size) / (Scratch.vm.runtime.targets.find((target) => target.id === targetId).sprite.costumes[currentCostumeId].dataFormat != "svg" ? 200 : 100));
     return size;
   }
 
@@ -374,13 +367,13 @@
           {
             blockType: Scratch.BlockType.LABEL,
             text: "For use with Camera Controls:",
-            hideFromPalette:!hasCameraExtension,
+            hideFromPalette: !hasCameraExtension,
           },
           {
             opcode: "setZoom",
             blockType: Scratch.BlockType.COMMAND,
             text: "set zoom [zoom]",
-            hideFromPalette:!hasCameraExtension,
+            hideFromPalette: !hasCameraExtension,
             arguments: {
               zoom: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -392,7 +385,7 @@
             opcode: "adjustNumByZoom",
             blockType: Scratch.BlockType.REPORTER,
             text: "[adjust] number [number] to zoom",
-            hideFromPalette:!hasCameraExtension,
+            hideFromPalette: !hasCameraExtension,
             arguments: {
               number: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -494,7 +487,7 @@
         moveStringToIndex(
           frames[foundInFrame].layout.spriteOrder,
           util.target.id,
-          args.elemNum
+          args.elemNum,
         );
       }
     }
@@ -521,7 +514,7 @@
       const frameWidth = frame.width;
       const frameHeight = frame.height;
       const frameCenterOffset = totalOfFrameSprite(foundInFrame).map(
-        (element) => element / 2
+        (element) => element / 2,
       );
       let costumeSize = util.target.sprite.costumes[
         util.target.currentCostume
@@ -532,7 +525,7 @@
           (util.target.sprite.costumes[util.target.currentCostume].dataFormat !=
           "svg"
             ? 2
-            : 1)
+            : 1),
       );
       let newX = 0;
       let newY = 0;
@@ -615,12 +608,12 @@
             if (frames[foundInFrame].layout.axis == "horizontal") {
               newX +=
                 getSizeByTargetId(
-                  frames[foundInFrame].layout.spriteOrder[i]
+                  frames[foundInFrame].layout.spriteOrder[i],
                 )[0] + frames[foundInFrame].layout.spriteMargin;
             } else if (frames[foundInFrame].layout.axis == "vertical") {
               newY +=
                 getSizeByTargetId(
-                  frames[foundInFrame].layout.spriteOrder[i]
+                  frames[foundInFrame].layout.spriteOrder[i],
                 )[1] + frames[foundInFrame].layout.spriteMargin;
             }
           }
@@ -754,11 +747,10 @@
   }
   Scratch.extensions.register(new guiPositioning());
 
-  Scratch.vm.on("EXTENSION_ADDED", function(info) {
+  Scratch.vm.on("EXTENSION_ADDED", function (info) {
     if (info.id === "DTcameracontrols") {
       hasCameraExtension = true;
       Scratch.vm.extensionManager.refreshBlocks("orangespriteframes");
     }
   });
-
 })(Scratch);
