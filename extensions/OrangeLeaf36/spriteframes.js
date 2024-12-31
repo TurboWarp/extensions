@@ -49,7 +49,7 @@
 
   function getSizeByTargetId(targetId) {
     const currentCostumeId = Scratch.vm.runtime.targets.find(
-      (target) => target.id === targetId,
+      (target) => target.id === targetId
     ).currentCostume;
     const size = Scratch.vm.runtime.targets
       .find((target) => target.id === targetId)
@@ -470,7 +470,7 @@
         moveStringToIndex(
           frames[foundInFrame].layout.spriteOrder,
           util.target.id,
-          args.elemNum,
+          args.elemNum
         );
       }
     }
@@ -497,7 +497,7 @@
       const frameWidth = frame.width;
       const frameHeight = frame.height;
       const frameCenterOffset = totalOfFrameSprite(foundInFrame).map(
-        (element) => element / 2,
+        (element) => element / 2
       );
       let costumeSize = util.target.sprite.costumes[
         util.target.currentCostume
@@ -508,7 +508,7 @@
           (util.target.sprite.costumes[util.target.currentCostume].dataFormat !=
           "svg"
             ? 2
-            : 1),
+            : 1)
       );
       let newX = 0;
       let newY = 0;
@@ -591,12 +591,12 @@
             if (frames[foundInFrame].layout.axis == "horizontal") {
               newX +=
                 getSizeByTargetId(
-                  frames[foundInFrame].layout.spriteOrder[i],
+                  frames[foundInFrame].layout.spriteOrder[i]
                 )[0] + frames[foundInFrame].layout.spriteMargin;
             } else if (frames[foundInFrame].layout.axis == "vertical") {
               newY +=
                 getSizeByTargetId(
-                  frames[foundInFrame].layout.spriteOrder[i],
+                  frames[foundInFrame].layout.spriteOrder[i]
                 )[1] + frames[foundInFrame].layout.spriteMargin;
             }
           }
