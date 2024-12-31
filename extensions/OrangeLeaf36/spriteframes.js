@@ -1,13 +1,14 @@
 // Name: Sprite Frames
-// ID: leaf36devgui
+// ID: orangespriteframes
 // Description: Position sprites in an interface-like manner.
 // By: OrangeLeaf36
 (function (Scratch) {
   "use strict";
 
   let zoom = 1;
-  let frames = {
-    frame1: {
+  let hasCameraExtension = false;
+  const frames = Object.create(null)
+  frames["frame1"] = {
       x: 0,
       y: 0,
       width: 100,
@@ -19,7 +20,6 @@
         alignX: "left",
         alignY: "bottom",
       },
-    },
   };
 
   if (!Scratch.extensions.unsandboxed) {
@@ -120,16 +120,10 @@
     return arr;
   }
 
-  function checkIfValidID(target) {
-    const allIDs = Object.values(Scratch.vm.runtime.targets).map(
-      (target) => target.id
-    );
-  }
-
   class guiPositioning {
     getInfo() {
       return {
-        id: "spriteframes",
+        id: "orangespriteframes",
         color1: "#8059ad",
         color2: "#6f489c",
         color3: "#5f388a",
@@ -380,19 +374,13 @@
           {
             blockType: Scratch.BlockType.LABEL,
             text: "For use with Camera Controls:",
-            hideFromPalette:
-              !Scratch.vm.extensionManager._loadedExtensions.has(
-                "DTcameracontrols"
-              ),
+            hideFromPalette:!hasCameraExtension,
           },
           {
             opcode: "setZoom",
             blockType: Scratch.BlockType.COMMAND,
             text: "set zoom [zoom]",
-            hideFromPalette:
-              !Scratch.vm.extensionManager._loadedExtensions.has(
-                "DTcameracontrols"
-              ),
+            hideFromPalette:!hasCameraExtension,
             arguments: {
               zoom: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -404,10 +392,7 @@
             opcode: "adjustNumByZoom",
             blockType: Scratch.BlockType.REPORTER,
             text: "[adjust] number [number] to zoom",
-            hideFromPalette:
-              !Scratch.vm.extensionManager._loadedExtensions.has(
-                "DTcameracontrols"
-              ),
+            hideFromPalette:!hasCameraExtension,
             arguments: {
               number: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -469,17 +454,15 @@
 
     getViewportPercentage(args, util) {
       if (args.resolution === "width") {
-        return Scratch.Scratch.vm.runtime.stageWidth * (args.percentage / 100);
+        return Scratch.vm.runtime.stageWidth * (args.percentage / 100);
       } else if (args.resolution === "height") {
-        return Scratch.Scratch.vm.runtime.stageHeight * (args.percentage / 100);
+        return Scratch.vm.runtime.stageHeight * (args.percentage / 100);
       }
       return 0;
     }
 
     //Sprite
     bindSpiteToFrame(args, util) {
-      console.log(util.target);
-      console.log(Scratch.vm.runtime.targets);
       // check if in frame
       let foundInFrame = null;
       foundInFrame = findInFrame(util.target.id);
@@ -654,11 +637,13 @@
     }
 
     deleteFrame(args, util) {
-      delete frames[args.frame];
+      if (Object.keys(frames).length > 1) {
+        delete frames[args.frame];
+      }
     }
 
     listFrames(args, util) {
-      return Object.keys(frames);
+      return JSON.stringify(Object.keys(frames));
     }
 
     keysOfFrame(args, util) {
@@ -769,18 +754,11 @@
   }
   Scratch.extensions.register(new guiPositioning());
 
-  function waitForConditionAndExecute(callback) {
-    const interval = setInterval(() => {
-      if (
-        Scratch.vm.extensionManager._loadedExtensions.has("DTcameracontrols")
-      ) {
-        clearInterval(interval);
-        callback();
-      }
-    }, 100); // Check every 100 milliseconds
-  }
-
-  waitForConditionAndExecute(() => {
-    Scratch.Scratch.vm.extensionManager.refreshBlocks();
+  Scratch.vm.on("EXTENSION_ADDED", function(info) {
+    if (info.id === "DTcameracontrols") {
+      hasCameraExtension = true;
+      Scratch.vm.extensionManager.refreshBlocks("orangespriteframes");
+    }
   });
+
 })(Scratch);
