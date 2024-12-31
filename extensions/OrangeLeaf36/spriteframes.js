@@ -2,6 +2,7 @@
 // ID: orangespriteframes
 // Description: Position sprites in an interface-like manner.
 // By: OrangeLeaf36
+// License: MIT
 (function (Scratch) {
   "use strict";
 
@@ -40,12 +41,6 @@
         alignY: "bottom",
       },
     };
-  }
-
-  function getIDs() {
-    Scratch.vm.runtime.targets.map((sprite) => {
-      return sprite.id;
-    });
   }
 
   function findInFrame(searchString) {
