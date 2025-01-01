@@ -319,3 +319,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## CubesterYT/KeySimulation.svg
  - Created by [@SharkPool-SP](https://github.com/SharkPool-SP/)
+
+## SamuelLouf/weather.png
+ - Created by [@horizontal-shading](https://github.com/horizontal-shading) for [@samuellouf](https://github.com/samuellouf)'s "Weather" extension in https://github.com/TurboWarp/extensions/pull/992
