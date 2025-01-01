@@ -130,7 +130,10 @@
           },
           TOGGLE: {
             acceptReporters: false,
-            items: ["on", "off"],
+            items: [
+              { text: Scratch.translate("on"), value: "on" },
+              { text: Scratch.translate("off"), value: "off" },
+            ],
           },
         },
       };
