@@ -2,6 +2,7 @@
 // ID: cubesterRichPresence
 // Description: Adds rich presence support to your project.
 // By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
+// License: MPL-2.0
 
 // Version V.1.0.0
 
