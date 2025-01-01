@@ -175,6 +175,7 @@
           break;
         case "party max":
           clientData.partyMax = Scratch.Cast.toNumber(args.INPUT);
+          break;
         case "JSON":
           try {
             clientData = JSON.parse(args.INPUT);
