@@ -1,7 +1,10 @@
 // Name: Files
 // ID: files
 // Description: Read, upload, and download files.
-// By: GarboMuffin, SharkPool, Drago Cuven, 0znzw
+// By: GarboMuffin
+// By: SharkPool
+// By: Drago Cuven <https://scratch.mit.edu/users/MARTINELPLAYZ/>
+// By: 0znzw <https://scratch.mit.edu/users/0znzw/>
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {
