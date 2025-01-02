@@ -64,8 +64,8 @@
    * @param {boolean} override makes modal use the File API if true
    * @returns {Promise<string>} format given by as parameter
    */
-  const showFilePrompt = async (accept, as, override) =>
-    new Promise(async (_resolve) => {
+  const showFilePrompt = (accept, as, override) =>
+    new Promise((_resolve) => {
       // We can't reliably show an <input> picker without "user interaction" in all environments,
       // so we have to show our own UI anyways. We may as well use this to implement some nice features
       // that native file pickers don't have:
@@ -267,7 +267,7 @@
         openFileSelectorMode === MODE_ONLY_SELECTOR
       ) {
         // will run "input.click()" if override is "undefined"
-        await handleOverride();
+        handleOverride();
       }
 
       if (openFileSelectorMode === MODE_ONLY_SELECTOR) {
