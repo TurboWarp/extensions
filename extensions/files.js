@@ -15,14 +15,20 @@
   }
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMzMuMTY0IiBoZWlnaHQ9IjEzMy4xNjQiIHZpZXdCb3g9IjAgMCAxMzMuMTY0IDEzMy4xNjQiPjxnIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTMgNjYuNTgyQzMgMzEuNDY3IDMxLjQ2NyAzIDY2LjU4MiAzczYzLjU4MiAyOC40NjcgNjMuNTgyIDYzLjU4Mi0yOC40NjcgNjMuNTgyLTYzLjU4MiA2My41ODJTMyAxMDEuNjk3IDMgNjYuNTgyeiIgZmlsbD0iI2ZjYjEwMyIgc3Ryb2tlPSIjYmY4YjExIiBzdHJva2Utd2lkdGg9IjYiLz48cGF0aCBkPSJNOTkuODkyIDQ5LjkyN3Y0OS45NjRjMCA0LjU4LTMuNzQ4IDguMzI4LTguMzI4IDguMzI4SDQxLjU1OGMtNC41OCAwLTguMjg1LTMuNzQ4LTguMjg1LTguMzI4bC4wNDEtNjYuNjE4YzAtNC41OCAzLjcwNi04LjMyOCA4LjI4Ni04LjMyOGgzMy4zMXoiIGZpbGw9Im5vbmUiIHN0cm9rZS1vcGFjaXR5PSIuMTQ5IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNOTkuODkyIDQ5LjkyN3Y0OS45NjRjMCA0LjU4LTMuNzQ4IDguMzI4LTguMzI4IDguMzI4SDQxLjU1OGMtNC41OCAwLTguMjg1LTMuNzQ4LTguMjg1LTguMzI4bC4wNDEtNjYuNjE4YzAtNC41OCAzLjcwNi04LjMyOCA4LjI4Ni04LjMyOGgzMy4zMXoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNzAuNzIyIDU0LjExNVYzMS4xNjdsMjIuOTQ3IDIyLjk0OHoiIGZpbGw9IiNmY2IxMDMiLz48cGF0aCBkPSJNODQuNjY4IDY5LjkxNGMtLjAyLjA4OC0uMDM2LjE3NS0uMDYyLjI2Mi0uMDc3LjMyNC0uMjM2IDEuMDktLjM5NiAyLjU4N3EuMDAxLjAzOC0uMDA1LjA2MWMuODggMy41MzgtLjYwMiA1LjY5Mi0xLjU4NCA2LjY3NGEyIDIgMCAwIDEtLjIuMTljLS45NjIuODc1LTIuNjQzIDEuOTE4LTUuMTUyIDEuOTE4YTcuNjUgNy42NSAwIDAgMS0zLjQzNS0uNzg2Yy4wMjYgMS40MDMuMDQxIDMuMzM3LjA0MSA2LjAyYTYuOSA2LjkgMCAwIDEgMi40OTQgMS41MzggNy4xIDcuMSAwIDAgMSAyLjIxIDUuMTY3YzAgMi45MS0xLjY3NSA1LjQ0LTQuMzc1IDYuNTk3cS0uMTAzLjA0OC0uMjA1LjA4OGMtLjkwNS4zNDQtMS45MjMuNTE0LTMuMTE2LjUxNC0uNDMyIDAtLjg5NS0uMDItMS4zOTktLjA2N2ExOCAxOCAwIDAgMC0xLjI5NS4wMDVjLS45NzIuMTA4LTIuMzQuMjE2LTQuMTcuMzE5LS4wMzYgMC0uMDcyLjAwNS0uMTE0LjAwNXEtLjM2LjAxNS0uNjk5LjAxNWMtMy4yNzUgMC01LjY2Ni0xLjAzOC03LjExLTMuMDhxLS4wNDYtLjA2LS4wODMtLjEyM2MtMS40Ny0yLjE5NS0xLjUxMi00Ljk3Mi0uMTEzLTcuMjRxLjAxNy0uMDM1LjA0MS0uMDcxYy44OS0xLjM5OSAyLjE5LTIuMzk2IDMuODc3LTIuOTgzLjAyLS45OTIuMDE1LTIuMjM2LS4wMTYtMy43MTJhNy41IDcuNSAwIDAgMS0yLjg5LjU1NWMtMi44NjMgMC01LjIyOC0xLjcwMS02LjA1MS00LjI4OC0uMTctLjUyNC0uMzMtMS4yOS0uNy0zLjAxOGEyIDIgMCAwIDEtLjAzNS0uMTg1bC0uNzYxLTQuMjUyYTcgNyAwIDAgMC0uMTAzLS4zMjRjLS4zOTYtMS4xMjYtLjU4MS0yLjA4My0uNTgxLTMuMDA4IDAtMS4xNDcuMzM0LTIuODggMS45MTgtNC42MDcuNzk3LS44NzQgMi4yNDctMi4wMDUgNC41ODEtMi4zN3EuNDMzLS4wNzEuODc0LS4wNzJoNS42ODdxLjE5MiAwIC4zODUuMDE1YTcyIDcyIDAgMCAwIDUuNzgtLjAwNSA4MyA4MyAwIDAgMCA2LjkzLS41OTZjLjI1OC0uMDgzLjUzNi0uMTY1LjgzNC0uMjM3LjI4My0uMDcyLjU3LS4xMTguODU4LS4xNSAyLjE5LS4yIDQuMjMyLjQzMyA1LjgyIDEuNzkgMS45NyAxLjY5MiAyLjg0IDQuMjUyIDIuMzIgNi44NTQiIGZpbGw9IiNiZjhiMTEiLz48cGF0aCBkPSJNNzkuMTIxIDY4LjgwNnEtLjMxNiAxLjI2Ni0uNTQzIDMuNDM3LS4wOSAxLjA4Ni4wOSAxLjc2NC4zMTYgMS4xMzEtLjA0NCAxLjQ5My0uNDk5LjQ1MS0xLjM1Ny40NTItLjk5NiAwLTEuMzEyLS41OTJBNDEgNDEgMCAwIDEgNzYgNzEuOTQzcS4wOS0xLjk2LjA5LTIuMDUtLjA0NSAwLS4xMzUtLjA5Mi00LjIwNy4xODMtNy45MTUuNTQ1LS4wOS40NTMgMCAxLjQ1LjE4IDEuNDA0LjE4IDEuNjMtLjE4IDEuNDA2LS4xOCA0LjE3LjE4IDEuMTc5LjE4IDEwLjEwNnYzLjMwOXEwIC43Ny4yMjUgMS4wODdoMi43NzdxLjc2Mi0uMDkgMS4yMzIuMzYyLjQ3LjQ1My40NyAxLjA4NSAwIC45OTQtLjk1IDEuNDAzLS41ODguMjI1LTIuMDguMDktLjcyMy0uMDQ1LTIuMTI2IDAtMS4yNjUuMTU3LTQuMDcuMzE2LTIuNDQzLjA5LTIuOTg1LS42NzgtLjM2My0uNTQyIDAtMS4xMy42MzItLjk5NSAzLjMwMi0uOTk1Ljk0OCAwIDEuMTc1LS4xNTguMjI2LS4xNi4yMjYtLjYxVjg5LjAzcS4xMzUtMi4zMDIgMC02Ljg2MS0uMTgtNi41NDQuMTgxLTExLjUwOWwtLjEzNy0uMTM2cS0xLjYzNy4wOS01LjI3NS0uMDktLjQxIDAtMi43NzQuMTgxLjU4NyA0LjExNy43MjMgNi4xOTYgMCAuMjcyLS4wOSAxLjIyMS0uMDQ2LjY3OC0xLjEzMS42NzktLjU4OSAwLS42NzgtLjQwNC0uMDQ2LS4wOS0uNTQzLTIuNDIybC0uNzY5LTQuMzA2cTAtLjE3OS0uMzE2LTEuMTIxLS4yNy0uNzY0LS4yNy0xLjE2Ni0uMDAxLS4zMTUuNDMtLjc4NS40My0uNDcxIDEuMjg5LS42MDZoNS42MDhxMy42NjMuMTM1IDYuNTEyIDBhODggODggMCAwIDAgOC4wNS0uNzI0cS4yNzMtLjEzNS44MTQtLjI3Ljk5NS0uMDkgMS42MjkuNDUyLjYzMy41NC40NTIgMS40NDciIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMzMuMTY0IiBoZWlnaHQ9IjEzMy4xNjQiIHZpZXdCb3g9IjAgMCAxMzMuMTY0IDEzMy4xNjQiPjxnIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTMgNjYuNTgyQzMgMzEuNDY3IDMxLjQ2NyAzIDY2LjU4MiAzczYzLjU4MiAyOC40NjcgNjMuNTgyIDYzLjU4Mi0yOC40NjcgNjMuNTgyLTYzLjU4MiA2My41ODJTMyAxMDEuNjk3IDMgNjYuNTgyeiIgZmlsbD0iI2ZjYjEwMyIgc3Ryb2tlPSIjYmY4YjExIiBzdHJva2Utd2lkdGg9IjYiLz48cGF0aCBkPSJNOTkuODkyIDQ5LjkyN3Y0OS45NjRjMCA0LjU4LTMuNzQ4IDguMzI4LTguMzI4IDguMzI4SDQxLjU1OGMtNC41OCAwLTguMjg1LTMuNzQ4LTguMjg1LTguMzI4bC4wNDEtNjYuNjE4YzAtNC41OCAzLjcwNi04LjMyOCA4LjI4Ni04LjMyOGgzMy4zMXoiIGZpbGw9Im5vbmUiIHN0cm9rZS1vcGFjaXR5PSIuMTQ5IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNOTkuODkyIDQ5LjkyN3Y0OS45NjRjMCA0LjU4LTMuNzQ4IDguMzI4LTguMzI4IDguMzI4SDQxLjU1OGMtNC41OCAwLTguMjg1LTMuNzQ4LTguMjg1LTguMzI4bC4wNDEtNjYuNjE4YzAtNC41OCAzLjcwNi04LjMyOCA4LjI4Ni04LjMyOGgzMy4zMXoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNNzAuNzIyIDU0LjExNVYzMS4xNjdsMjIuOTQ3IDIyLjk0OHoiIGZpbGw9IiNmY2IxMDMiLz48cGF0aCBkPSJNODQuNjY4IDY5LjkxNGMtLjAyLjA4OC0uMDM2LjE3NS0uMDYyLjI2Mi0uMDc3LjMyNC0uMjM2IDEuMDktLjM5NiAyLjU4N3EuMDAxLjAzOC0uMDA1LjA2MWMuODggMy41MzgtLjYwMiA1LjY5Mi0xLjU4NCA2LjY3NGEyIDIgMCAwIDEtLjIuMTljLS45NjIuODc1LTIuNjQzIDEuOTE4LTUuMTUyIDEuOTE4YTcuNjUgNy42NSAwIDAgMS0zLjQzNS0uNzg2Yy4wMjYgMS40MDMuMDQxIDMuMzM3LjA0MSA2LjAyYTYuOSA2LjkgMCAwIDEgMi40OTQgMS41MzggNy4xIDcuMSAwIDAgMSAyLjIxIDUuMTY3YzAgMi45MS0xLjY3NSA1LjQ0LTQuMzc1IDYuNTk3cS0uMTAzLjA0OC0uMjA1LjA4OGMtLjkwNS4zNDQtMS45MjMuNTE0LTMuMTE2LjUxNC0uNDMyIDAtLjg5NS0uMDItMS4zOTktLjA2N2ExOCAxOCAwIDAgMC0xLjI5NS4wMDVjLS45NzIuMTA4LTIuMzQuMjE2LTQuMTcuMzE5LS4wMzYgMC0uMDcyLjAwNS0uMTE0LjAwNXEtLjM2LjAxNS0uNjk5LjAxNWMtMy4yNzUgMC01LjY2Ni0xLjAzOC03LjExLTMuMDhxLS4wNDYtLjA2LS4wODMtLjEyM2MtMS40Ny0yLjE5NS0xLjUxMi00Ljk3Mi0uMTEzLTcuMjRxLjAxNy0uMDM1LjA0MS0uMDcxYy44OS0xLjM5OSAyLjE5LTIuMzk2IDMuODc3LTIuOTgzLjAyLS45OTIuMDE1LTIuMjM2LS4wMTYtMy43MTJhNy41IDcuNSAwIDAgMS0yLjg5LjU1NWMtMi44NjMgMC01LjIyOC0xLjcwMS02LjA1MS00LjI4OC0uMTctLjUyNC0uMzMtMS4yOS0uNy0zLjAxOGEyIDIgMCAwIDEtLjAzNS0uMTg1bC0uNzYxLTQuMjUyYTcgNyAwIDAgMC0uMTAzLS4zMjRjLS4zOTYtMS4xMjYtLjU4MS0yLjA4My0uNTgxLTMuMDA4IDAtMS4xNDcuMzM0LTIuODggMS45MTgtNC42MDcuNzk3LS44NzQgMi4yNDctMi4wMDUgNC41ODEtMi4zN3EuNDMzLS4wNzEuODc0LS4wNzJoNS42ODdxLjE5MiAwIC4zODUuMDE1YTcyIDcyIDAgMCAwIDUuNzgtLjAwNSA4MyA4MyAwIDAgMCA2LjkzLS41OTZjLjI1OC0uMDgzLjUzNi0uMTY1LjgzNC0uMjM3LjI4My0uMDcyLjU3LS4xMTguODU4LS4xNSAyLjE5LS4yIDQuMjMyLjQzMyA1LjgyIDEuNzkgMS45NyAxLjY5MiAyLjg0IDQuMjUyIDIuMzIgNi44NTQiIGZpbGw9IiNiZjhiMTEiLz48cGF0aCBkPSJNNzkuMTIxIDY4LjgwNnEtLjMxNiAxLjI2Ni0uNTQzIDMuNDM3LS4wOSAxLjA4Ni4wOSAxLjc2NC4zMTYgMS4xMzEtLjA0NCAxLjQ5My0uNDk5LjQ1MS0xLjM1Ny40NTItLjk5NiAwLTEuMzEyLS41OTJBNDEgNDEgMCAwIDEgNzYgNzEuOTQzcS4wOS0xLjk2LjA5LTIuMDUtLjA0NSAwLS4xMzUtLjA5Mi00LjIwNy4xODMtNy45MTUuNTQ1LS4wOS40NTMgMCAxLjQ1LjE4IDEuNDA0LjE4IDEuNjMtLjE4IDEuNDA2LS4xOCA0LjE3LjE4IDEuMTc5LjE4IDEwLjEwNnYzLjMwOXEwIC43Ny4yMjUgMS4wODdoMi43NzdxLjc2Mi0uMDkgMS4yMzIuMzYyLjQ3LjQ1My40NyAxLjA4NSAwIC45OTQtLjk1IDEuNDAzLS41ODguMjI1LTIuMDguMDktLjcyMy0uMDQ1LTIuMTI2IDAtMS4yNjUuMTU3LTQuMDcuMzE2LTIuNDQzLjA5LTIuOTg1LS42NzgtLjM2My0uNTQyIDAtMS4xMy42MzItLjk5NSAzLjMwMi0uOTk1Ljk0OCAwIDEuMTc1LS4xNTguMjI2LS4xNi4yMjYtLjYxVjg5LjAzcS4xMzUtMi4zMDIgMC02Ljg2MS0uMTgtNi41NDQuMTgxLTExLjUwOWwtLjEzNy0uMTM2cS0xLjYzNy4wOS01LjI3NS0uMDktLjQxIDAtMi43NzQuMTgxLjU4NyA0LjExNy43MjMgNi4xOTYgMCAuMjcyLS4wOSAxLjIyMS0uMDQ2LjY3OC0xLjEzMS42NzktLjU4OSAwLS42NzgtLjQwNC0uMDQ2LS4wOS0uNTQzLTIuNDIybC0uNzY5LTQuMzA2cTAtLjE3OS0uMzE2LTEuMTIxLS4yNy0uNzY0LS4yNy0xLjE2Ni0uMDAxLS4zMTUuNDMtLjc4NS40My0uNDcxIDEuMjg5LS42MDZoNS42MDhxMy42NjMuMTM1IDYuNTEyIDBhODggODggMCAwIDAgOC4wNS0uNzI0cS4yNzMtLjEzNS44MTQtLjI3Ljk5NS0uMDkgMS42MjkuNDUyLjYzMy41NC40NTIgMS40NDciIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
 
   const builtInFonts = [
-    "Sans Serif", "Serif", "Handwriting",
-    "Marker", "Curly", "Pixel", "Scratch", "inherit"
+    "Sans Serif",
+    "Serif",
+    "Handwriting",
+    "Marker",
+    "Curly",
+    "Pixel",
+    "Scratch",
+    "inherit",
   ];
   const MODE_MODAL = "modal";
   const MODE_IMMEDIATELY_SHOW_SELECTOR = "selector";
@@ -32,19 +38,34 @@
     MODE_IMMEDIATELY_SHOW_SELECTOR,
     MODE_ONLY_SELECTOR,
   ];
-  const AS_TEXT = "text", AS_DATA_URL = "url", AS_HEX = "hex";
-  const AS_BASE64 = "base64", AS_BUFFER = "arrayBuffer";
+  const AS_TEXT = "text",
+    AS_DATA_URL = "url",
+    AS_HEX = "hex";
+  const AS_BASE64 = "base64",
+    AS_BUFFER = "arrayBuffer";
 
   let enableVis = true;
   let openFileSelectorMode = MODE_MODAL;
   let storedFiles = {};
-  let FileName = "", FileSize = "0kb", RawFileSize = "0", fileDate = "", lastData = "";
+  let FileName = "",
+    FileSize = "0kb",
+    RawFileSize = "0",
+    fileDate = "",
+    lastData = "";
   let openModals = 0;
   let selectorOptions = {
-    borderColor: "#888", textColor: "#000", outer: "#fff",
-    sizeFont: 1.5, borderRadius: 16, borderType: "dashed",
-    font: "inherit", shadow: 0.5, image: "",
-    textV: "", fontWeight: 40, letterSpacing: "normal"
+    borderColor: "#888",
+    textColor: "#000",
+    outer: "#fff",
+    sizeFont: 1.5,
+    borderRadius: 16,
+    borderType: "dashed",
+    font: "inherit",
+    shadow: 0.5,
+    image: "",
+    textV: "",
+    fontWeight: 40,
+    letterSpacing: "normal",
   };
 
   /**
@@ -152,16 +173,18 @@
           try {
             if (override === "folder") {
               fileInfo = await window.showDirectoryPicker({
-                multiple: false, types: [{ accept: { "*/*" : [] }}]
+                multiple: false,
+                types: [{ accept: { "*/*": [] } }],
               });
             } else {
               fileInfo = await window.showOpenFilePicker({
-                multiple: false, types: [{ accept: { "*/*" : accept }}]
+                multiple: false,
+                types: [{ accept: { "*/*": accept } }],
               });
             }
             callback(fileInfo);
           } catch {
-            callback("")
+            callback("");
           }
         }
       };
@@ -233,7 +256,10 @@
       }
 
       const title = document.createElement("div");
-      title.textContent = override === undefined ? Scratch.translate("Select or drop file") : Scratch.translate("Select file");
+      title.textContent =
+        override === undefined
+          ? Scratch.translate("Select or drop file")
+          : Scratch.translate("Select file");
       title.style.marginBottom = "8px";
       modal.appendChild(title);
 
@@ -285,13 +311,15 @@
 
   const updateModalVisuals = () => {
     const allModals = document.querySelectorAll(`button[id="tw-files-modal"]`);
-    allModals.forEach(modal => {
+    allModals.forEach((modal) => {
       modal.parentNode.style.background = `rgba(0, 0, 0, ${selectorOptions.shadow})`;
       modal.parentNode.style.color = selectorOptions.textColor;
 
       modal.style.font = selectorOptions.font;
       modal.style.fontFamily = selectorOptions.font;
-      modal.style.background = selectorOptions.image ? selectorOptions.image : selectorOptions.outer;
+      modal.style.background = selectorOptions.image
+        ? selectorOptions.image
+        : selectorOptions.outer;
       modal.style.borderRadius = `${selectorOptions.borderRadius}px`;
       modal.style.borderStyle = selectorOptions.borderType;
       modal.style.borderColor = selectorOptions.borderColor;
@@ -393,7 +421,7 @@
     var bytes = new Uint8Array(buffer);
     var len = bytes.byteLength;
     for (var i = 0; i < len; i++) {
-      binary += String.fromCharCode(bytes[i])
+      binary += String.fromCharCode(bytes[i]);
     }
     return btoa(binary);
   }
@@ -411,7 +439,10 @@
         color2: "#db9a37",
         color3: "#db8937",
         blocks: [
-          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Uploading") },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Uploading"),
+          },
           {
             opcode: "showPicker",
             blockType: Scratch.BlockType.REPORTER,
@@ -457,7 +488,10 @@
               },
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Downloading") },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Downloading"),
+          },
           {
             opcode: "download",
             blockType: Scratch.BlockType.COMMAND,
@@ -488,7 +522,10 @@
               },
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Extra") },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Extra"),
+          },
           {
             opcode: "setOpenMode",
             blockType: Scratch.BlockType.COMMAND,
@@ -497,7 +534,7 @@
               mode: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: MODE_MODAL,
-                menu: "automaticallyOpen"
+                menu: "automaticallyOpen",
               },
             },
           },
@@ -516,7 +553,7 @@
           {
             opcode: "modalOpen",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is modal open?")
+            text: Scratch.translate("is modal open?"),
           },
           {
             opcode: "findFileSize",
@@ -525,7 +562,7 @@
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "FILE_SIZES"
+                menu: "FILE_SIZES",
               },
               FILE: {
                 type: Scratch.ArgumentType.STRING,
@@ -547,7 +584,9 @@
           {
             opcode: "setStoredFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("open new stored [FILE] file named [NAME] as [TYPE]"),
+            text: Scratch.translate(
+              "open new stored [FILE] file named [NAME] as [TYPE]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -566,7 +605,9 @@
           {
             opcode: "storedFolder",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("open folder and store files as [TYPE] with name [NAME]"),
+            text: Scratch.translate(
+              "open folder and store files as [TYPE] with name [NAME]"
+            ),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -630,17 +671,22 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("migrate files to CST's ZIP Extension"),
           },
-          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Visuals") },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Visuals"),
+          },
           {
             func: "toggleVis",
             blockType: Scratch.BlockType.BUTTON,
-            text: Scratch.translate(`${enableVis ? "En" : "Dis"}able Customization`),
+            text: Scratch.translate(
+              `${enableVis ? "En" : "Dis"}able Customization`
+            ),
           },
           {
             opcode: "resetStyle",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("reset selector style to default"),
-            hideFromPalette: enableVis
+            hideFromPalette: enableVis,
           },
           "---",
           {
@@ -767,51 +813,51 @@
             items: [
               {
                 text: Scratch.translate("border color"),
-                value: "border"
+                value: "border",
               },
               {
                 text: Scratch.translate("text color"),
-                value: "text"
+                value: "text",
               },
               {
                 text: Scratch.translate("background color"),
-                value: "outer"
+                value: "outer",
               },
               {
                 text: Scratch.translate("overlay opacity"),
-                value: "shadow"
+                value: "shadow",
               },
               {
                 text: Scratch.translate("font"),
-                value: "font"
+                value: "font",
               },
               {
                 text: Scratch.translate("font size"),
-                value: "sizeFont"
+                value: "sizeFont",
               },
               {
                 text: Scratch.translate("font thickness"),
-                value: "fontWeight"
+                value: "fontWeight",
               },
               {
                 text: Scratch.translate("letter spacing"),
-                value: "letterSpacing"
+                value: "letterSpacing",
               },
               {
                 text: Scratch.translate("border radius"),
-                value: "borderRadius"
+                value: "borderRadius",
               },
               {
                 text: Scratch.translate("border type"),
-                value: "borderType"
+                value: "borderType",
               },
               {
                 text: Scratch.translate("background image"),
-                value: "image"
+                value: "image",
               },
               {
                 text: Scratch.translate("text"),
-                value: "textV"
+                value: "textV",
               },
             ],
           },
@@ -820,11 +866,11 @@
             items: [
               {
                 text: Scratch.translate("formatted"),
-                value: "formatted"
+                value: "formatted",
               },
               {
                 text: Scratch.translate("unformatted"),
-                value: "unformatted"
+                value: "unformatted",
               },
             ],
           },
@@ -833,23 +879,23 @@
             items: [
               {
                 text: Scratch.translate("data"),
-                value: "data"
+                value: "data",
               },
               {
                 text: Scratch.translate("name"),
-                value: "name"
+                value: "name",
               },
               {
                 text: Scratch.translate("modified date"),
-                value: "modified date"
+                value: "modified date",
               },
               {
                 text: Scratch.translate("size formatted"),
-                value: "size formatted"
+                value: "size formatted",
               },
               {
                 text: Scratch.translate("size unformatted"),
-                value: "size unformatted"
+                value: "size unformatted",
               },
             ],
           },
@@ -858,15 +904,15 @@
             items: [
               {
                 text: Scratch.translate("storage"),
-                value: "storage"
+                value: "storage",
               },
               {
                 text: Scratch.translate("this device"),
-                value: "this device"
+                value: "this device",
               },
               {
                 text: Scratch.translate("both"),
-                value: "both"
+                value: "both",
               },
             ],
           },
@@ -875,15 +921,15 @@
             items: [
               {
                 text: Scratch.translate("border"),
-                value: "border"
+                value: "border",
               },
               {
                 text: Scratch.translate("text"),
-                value: "text"
+                value: "text",
               },
               {
                 text: Scratch.translate("background"),
-                value: "background"
+                value: "background",
               },
             ],
           },
@@ -892,23 +938,23 @@
             items: [
               {
                 text: Scratch.translate("font size"),
-                value: "font size"
+                value: "font size",
               },
               {
                 text: Scratch.translate("font thickness"),
-                value: "font thickness"
+                value: "font thickness",
               },
               {
                 text: Scratch.translate("letter spacing"),
-                value: "letter spacing"
+                value: "letter spacing",
               },
               {
                 text: Scratch.translate("border radius"),
-                value: "border radius"
+                value: "border radius",
               },
               {
                 text: Scratch.translate("overlay opacity"),
-                value: "overlay opacity"
+                value: "overlay opacity",
               },
             ],
           },
@@ -917,39 +963,39 @@
             items: [
               {
                 text: Scratch.translate("dotted"),
-                value: "dotted"
+                value: "dotted",
               },
               {
                 text: Scratch.translate("dashed"),
-                value: "dashed"
+                value: "dashed",
               },
               {
                 text: Scratch.translate("solid"),
-                value: "solid"
+                value: "solid",
               },
               {
                 text: Scratch.translate("double"),
-                value: "double"
+                value: "double",
               },
               {
                 text: Scratch.translate("groove"),
-                value: "groove"
+                value: "groove",
               },
               {
                 text: Scratch.translate("ridge"),
-                value: "ridge"
+                value: "ridge",
               },
               {
                 text: Scratch.translate("inset"),
-                value: "inset"
+                value: "inset",
               },
               {
                 text: Scratch.translate("outset"),
-                value: "outset"
+                value: "outset",
               },
               {
                 text: Scratch.translate("none"),
-                value: "none"
+                value: "none",
               },
             ],
           },
@@ -959,28 +1005,38 @@
 
     // Helper Funcs
     getFonts() {
-      const customFonts = runtime.fontManager ? runtime.fontManager.getFonts().map((i) => ({ text: i.name, value: i.family })) : [];
-      return [ ...builtInFonts, ...customFonts ];
+      const customFonts = runtime.fontManager
+        ? runtime.fontManager
+            .getFonts()
+            .map((i) => ({ text: i.name, value: i.family }))
+        : [];
+      return [...builtInFonts, ...customFonts];
     }
 
     getEncodings(onlySafe) {
       const types = [
-        { text: Scratch.translate("text"), value: AS_TEXT }, { text: "data: URL", value: AS_DATA_URL },
-        { text: "base64", value: AS_BASE64 }, { text: "hex", value: AS_HEX }
+        { text: Scratch.translate("text"), value: AS_TEXT },
+        { text: "data: URL", value: AS_DATA_URL },
+        { text: "base64", value: AS_BASE64 },
+        { text: "hex", value: AS_HEX },
       ];
-      if (this._showUnsafeOptions) types.push({ text: "arrayBuffer", value: AS_BUFFER });
+      if (this._showUnsafeOptions)
+        types.push({ text: "arrayBuffer", value: AS_BUFFER });
       return types;
     }
 
     toggleVis() {
-      enableVis = enableVis ? false : true, vm.extensionManager.refreshBlocks();
+      (enableVis = enableVis ? false : true),
+        vm.extensionManager.refreshBlocks();
     }
 
     updateStore(name, data, metaData) {
       const rawDate = new Date(metaData.lastModified);
       storedFiles[name].data = {
-        size: metaData.size, sizeFormat: formatFileSize(metaData.size),
-        dateFormat: rawDate.toLocaleString(), data
+        size: metaData.size,
+        sizeFormat: formatFileSize(metaData.size),
+        dateFormat: rawDate.toLocaleString(),
+        data,
       };
     }
 
@@ -991,7 +1047,8 @@
       else if (format === AS_BUFFER) return buffer;
       const base64 = bufferToBase64(buffer);
       if (format === AS_BASE64) return base64;
-      else if (format === AS_DATA_URL) return `data:${meta.type};charset=utf-8;base64,${base64}`;
+      else if (format === AS_DATA_URL)
+        return `data:${meta.type};charset=utf-8;base64,${base64}`;
       else if (format === AS_HEX) return base64ToHex(base64, " ");
       return text;
     }
@@ -1074,7 +1131,7 @@
         const metaData = await picker[0].getFile();
         const encodedData = await this.encodeData(metaData, args.TYPE);
         this.updateStore(args.NAME, encodedData, metaData);
-      } catch(e) {
+      } catch (e) {
         console.warn(e);
       }
     }
@@ -1099,17 +1156,19 @@
             this.updateStore(name, encodedData, metaData);
           }
         }
-      } catch(e) {
+      } catch (e) {
         console.warn(e);
       }
     }
 
     deleteStoredFile(args) {
       if (args.OPTION === "this device" || args.OPTION === "both") {
-        if (!this.checkFileAPI() || storedFiles[args.NAME] === undefined) return;
+        if (!this.checkFileAPI() || storedFiles[args.NAME] === undefined)
+          return;
         storedFiles[args.NAME].file.remove();
       }
-      if (args.OPTION === "storage" || args.OPTION === "both") delete storedFiles[args.NAME]
+      if (args.OPTION === "storage" || args.OPTION === "both")
+        delete storedFiles[args.NAME];
     }
 
     async updateFile(args) {
@@ -1118,7 +1177,10 @@
         const writable = await storedFiles[args.NAME].file.createWritable();
         await writable.write(args.TXT);
         await writable.close();
-        this.updateStore(args.NAME, args.TXT, { lastModified: Date.now(), size: args.TXT.length });
+        this.updateStore(args.NAME, args.TXT, {
+          lastModified: Date.now(),
+          size: args.TXT.length,
+        });
       } catch (e) {
         console.warn(e);
       }
@@ -1127,7 +1189,8 @@
     storedInfo(args) {
       const fileInfo = storedFiles[args.NAME];
       if (fileInfo === undefined) return "";
-      else if (args.FORMAT === "size formatted") return fileInfo.data.sizeFormat;
+      else if (args.FORMAT === "size formatted")
+        return fileInfo.data.sizeFormat;
       else if (args.FORMAT === "size unformatted") return fileInfo.data.size;
       else if (args.FORMAT === "modified date") return fileInfo.data.dateFormat;
       else if (args.FORMAT === "data") return fileInfo.data.data;
@@ -1154,10 +1217,18 @@
     // Visuals
     resetStyle() {
       selectorOptions = {
-        borderColor: "#888", textColor: "#000", outer: "#fff",
-        sizeFont: 1.5, borderRadius: 16, borderType: "dashed",
-        font: "inherit", shadow: 0.5, image: "",
-        textV: "", fontWeight: 40, letterSpacing: "normal"
+        borderColor: "#888",
+        textColor: "#000",
+        outer: "#fff",
+        sizeFont: 1.5,
+        borderRadius: 16,
+        borderType: "dashed",
+        font: "inherit",
+        shadow: 0.5,
+        image: "",
+        textV: "",
+        fontWeight: 40,
+        letterSpacing: "normal",
       };
       updateModalVisuals();
     }
@@ -1220,7 +1291,7 @@
     }
 
     imageSet(args) {
-      Scratch.canFetch(encodeURI(args.IMG)).then(canFetch => {
+      Scratch.canFetch(encodeURI(args.IMG)).then((canFetch) => {
         if (canFetch) {
           selectorOptions.image = `url(${encodeURI(args.IMG)})`;
           updateModalVisuals();
@@ -1236,5 +1307,5 @@
     }
   }
 
-  Scratch.extensions.register(runtime.ext_Files = new Files());
+  Scratch.extensions.register((runtime.ext_Files = new Files()));
 })(Scratch);
