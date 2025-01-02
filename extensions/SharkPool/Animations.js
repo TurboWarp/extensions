@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.2.0.01
+// Version V.2.0.02
 
 (function (Scratch) {
   "use strict";
@@ -77,7 +77,7 @@
             anim.keyBuffers.forEach((key) => { this.keyframeUpdate(key, anim, false) });
 
             const frameCnt = anim.frames.length;
-            const frameCheck = isReverse ? anim.currentFrame <= 0: anim.currentFrame >= frameCnt;
+            const frameCheck = isReverse ? anim.currentFrame <= 1 : anim.currentFrame >= frameCnt - 1;
             if (frameCheck && anim.keyBuffers.length === 0) {
               this.resetAnimPlayer(anim);
               if (isReverse) anim.currentFrame = frameCnt;
@@ -554,7 +554,7 @@
 
     currentFrame(args) {
       const anim = this.getAnim(args.NAME, "", true);
-      return anim ? Math.max(1, Math.min(anim.currentFrame + 1, anim.frames.length)) : 0;
+      return anim ? anim.currentFrame + 2 : 0; // + 2 since we start at -1 instead of 0
     }
 
     addPosition(args, util) {
