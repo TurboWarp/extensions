@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.4.0
+// Version V.3.4.1
 
 (function (Scratch) {
   "use strict";
@@ -363,12 +363,13 @@
           {
             opcode: "getLoudTime",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[TYPE] of sound [NAME] at time [TIME]",
+            text: "[TYPE] of sound [NAME] at time [TIME] in channel [CHANNEL]",
             blockIconURI: extraIcons.set,
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "loudProps" },
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
-              TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+              TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              CHANNEL: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Audio Effects" },
@@ -534,7 +535,7 @@
           soundProps: {
             acceptReporters: true,
             items: [
-              "length", "current time", "estimated bpm", "source", "binds", "volume",
+              "length", "current time", "source", "estimated bpm", "channels", "binds", "volume",
             ].concat(simpleEffects, complexEffects)
           },
           soundBools: {
@@ -940,6 +941,7 @@
         case "length": return src.buffer.duration;
         case "current time": return this.currentTime(sound, sound.context, src);
         case "estimated bpm": return this.getBPM(src.buffer.getChannelData(0), src.buffer.sampleRate);
+        case "channels": return src.buffer.numberOfChannels;
         case "source": return sound.src;
         case "binds": return JSON.stringify(Object.keys(sound.binds));
         case "volume": return sound.vol;
@@ -963,15 +965,18 @@
       const sound = soundBank[args.NAME];
       if (sound === undefined) return 0;
       const time = Cast.toNumber(args.TIME);
-      const duration = sound.context.sourceNode.buffer.duration;
-      if (time < 0 || time > duration) return 0;
+      const chan = Cast.toNumber(args.CHANNEL) - 1;
+      const audioCtx = sound.context.sourceNode;
+      const buffer = audioCtx.buffer;
+      const duration = buffer.duration;
+      if (time < 0 || time > duration || chan < 0 || chan > buffer.numberOfChannels - 1) return 0;
 
       let value = 0;
-      if (sound._cache[args.TYPE][time] !== undefined) value = sound._cache[args.TYPE][time];
+      if (args.TYPE !== "raw noise" && sound._cache[args.TYPE][`${time}${chan}`] !== undefined)
+        value = sound._cache[args.TYPE][`${time}${chan}`];
       else {
-        const audioBuffer = sound.context.sourceNode.buffer;
-        const sampleRate = audioBuffer.sampleRate;
-        const channelData = audioBuffer.getChannelData(0);
+        const sampleRate = buffer.sampleRate;
+        const channelData = buffer.getChannelData(chan);
         const sampleIndex = Math.floor(sampleRate * time);
         const windowSize = sampleRate * 0.1;
         const startSample = Math.max(0, sampleIndex - windowSize / 2);
@@ -1003,14 +1008,14 @@
             }
           }
           value = bestTau > 0 ? sampleRate / bestTau : 0;
-          sound._cache["tone"][time] = value;
+          sound._cache["tone"][`${time}${chan}`] = value;
           return value;
         } else if (args.TYPE === "loudness") {
           for (let i = startSample; i < endSample; i++) value += channelData[i] * channelData[i];
           const rms = Math.sqrt(value / (endSample - startSample));
           const dB = 20 * Math.log10(rms);
           value = Math.min(Math.max((dB + 50) / 50, 0), 1) * 100;
-          sound._cache["loudness"][time] = value;
+          sound._cache["loudness"][`${time}${chan}`] = value;
         } else { return "" }
       }
       return isNaN(value) ? 0 : value * sound.gain;
