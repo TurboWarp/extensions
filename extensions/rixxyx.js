@@ -9,12 +9,18 @@
  * This file is available under an informal "use with credit" license.
  */
 
-(function () {
+(function (Scratch) {
   "use strict";
 
   var count = 0;
   var isMeasure = false;
   var time = 0;
+
+  Scratch.vm.runtime.on("AFTER_EXECUTE", () => {
+    if (isMeasure) {
+      time += 1;
+    }
+  });
 
   class RixxyX {
     getInfo() {
@@ -480,11 +486,8 @@
       isMeasure = false;
     }
     returnTime(args) {
-      if (isMeasure == true) {
-        time += 1;
-      }
       return time;
     }
   }
   Scratch.extensions.register(new RixxyX());
-})();
+})(Scratch);
