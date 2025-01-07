@@ -87,89 +87,86 @@
 
   /**
    * Assumes you already checked sensorAccessRequiresPermission() === true.
-   * @returns {Promise<boolean>} Will never reject.
+   * @returns {Promise<'granted'|'denied'|'unknown'>} Will never reject.
    */
   const requestSensorPermission = () => {
     // @ts-expect-error
     return DeviceMotionEvent.requestPermission()
-      .then((status) => status === 'granted')
       .catch((error) => {
+        // Usually this means we weren't in a user gesture.
         console.error(error);
-        return false;
+        return 'unknown';
       });
   };
 
   /**
    * Assumes you already checked sensorAccessRequiresPermission() === true.
-   * @returns {Promise<boolean>}
+   * @returns {Promise<void>}
    */
   const askUserForSensorPermission = async () => {
     // Safari automatically denies any request not made directly in a user gesture handler,
     // so this request will almost certainly fail. We'll still try though, just in case.
-    let allowed = await requestSensorPermission();
-    if (allowed) {
-      sensorStatus.accelerometer = true;
-      sensorStatus.gyroscope = true;
-      return;
+    let status = await requestSensorPermission();
+
+    if (status === 'unknown') {
+      status = await new Promise((resolve) => {
+        const outer = document.createElement('div');
+        outer.style.width = '100%';
+        outer.style.height = '100%';
+        outer.style.display = 'flex';
+        outer.style.alignItems = 'center';
+        outer.style.justifyContent = 'center';
+        outer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        outer.style.backdropFilter = 'blur(10px)';
+        outer.style.pointerEvents = 'auto';
+        outer.tabIndex = 0;
+
+        const inner = document.createElement('div');
+        inner.textContent = Scratch.translate('Tap to allow access to accelerometer and gyroscope.');
+        inner.style.maxWidth = '360px';
+        inner.style.color = 'white';
+        inner.style.textAlign = 'center';
+        outer.appendChild(inner);
+
+        outer.addEventListener('click', () => {
+          resolve(requestSensorPermission());
+          Scratch.renderer.removeOverlay(outer);
+        });
+
+        Scratch.renderer.addOverlay(outer, 'scale');
+      });
     }
 
-    allowed = await new Promise((resolve) => {
-      // Have to show some sort of user interface for the user to click on
-      const outer = document.createElement('div');
-      outer.style.width = '100%';
-      outer.style.height = '100%';
-      outer.style.display = 'flex';
-      outer.style.alignItems = 'center';
-      outer.style.justifyContent = 'center';
-      outer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-      outer.style.backdropFilter = 'blur(10px)';
-      outer.style.pointerEvents = 'auto';
-      outer.tabIndex = 0;
-  
-      const inner = document.createElement('div');
-      inner.textContent = Scratch.translate('Tap to allow access to accelerometer and gyroscope.');
-      inner.style.maxWidth = '360px';
-      inner.style.color = 'white';
-      inner.style.textAlign = 'center';
-      outer.appendChild(inner);
+    if (status === 'denied') {
+      const string = Scratch.translate('To allow accelerometer and gyroscope access, go to iOS settings > Apps > Safari > Advanced > Website Data > press Edit > Clear data for {domain}, then refresh this page.');
+      alert(string.replace('{domain}', window.origin));
+    }
 
-      outer.addEventListener('click', () => {
-        resolve(requestSensorPermission());
-        Scratch.renderer.removeOverlay(outer);
-      });
-
-      Scratch.renderer.addOverlay(outer, 'scale');
-    });
-
-    sensorStatus.accelerometer = allowed;
-    sensorStatus.gyroscope = allowed;
-    return allowed;
+    const granted = status === 'granted';
+    sensorStatus.accelerometer = granted;
+    sensorStatus.gyroscope = granted;
   };
 
   /** @type {null|Promise<void>} */
   let initializingSensorsPromise = null;
-  let hasSensorPermission = false;
-  
+  /** @type {boolean} */
+  let askedForSensorPermission = false;
+
   /**
    * @template T
    * @param {() => T} callback
    * @returns {T|Promise<T>}
    */
   const whenSensorsInitialized = (callback) => {
-    if (!sensorAccessRequiresPermission() || hasSensorPermission) {
+    if (!sensorAccessRequiresPermission() || askedForSensorPermission) {
       return callback();
     }
 
     if (!initializingSensorsPromise) {
       initializingSensorsPromise = askUserForSensorPermission()
-        .then((allowed) => {
-          hasSensorPermission = allowed;
-
-          if (!hasSensorPermission) {
-            // Let the current batch of callbacks run without permission
-            // But if another block runs, we'll ask again
-            initializingSensorsPromise = null;
-          }
+        .then(() => {
+          // Whether we got permission or not, asking again won't change the result.
+          askedForSensorPermission = true;
         });
     }
 
@@ -183,6 +180,7 @@
       event.accelerationIncludingGravity.y !== null &&
       event.accelerationIncludingGravity.z !== null
     ) {
+      askedForSensorPermission = true;
       sensorStatus.accelerometer = true;
       physicalDeviceState.accelerationX = event.accelerationIncludingGravity.x;
       physicalDeviceState.accelerationY = event.accelerationIncludingGravity.y;
@@ -197,6 +195,7 @@
       event.beta !== null &&
       event.gamma !== null
     ) {
+      askedForSensorPermission = true;
       sensorStatus.gyroscope = true;
       physicalDeviceState.rotationX = event.beta;
       physicalDeviceState.rotationY = event.gamma;
