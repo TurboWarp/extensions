@@ -12,7 +12,8 @@
     "validate": "node development/validate.js",
     "lint": "eslint development extensions --max-warnings=0",
     "format": "prettier . --write",
-    "check-format": "prettier . --check"
+    "check-format": "prettier . --check",
+    "upload-translations": "node development/upload-translations.js"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
+    "@transifex/api": "^7.1.3",
     "eslint": "^9.17.0",
     "espree": "^9.6.1",
     "esquery": "^1.6.0",
