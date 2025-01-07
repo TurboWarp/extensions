@@ -69,7 +69,9 @@ jobs:
 
           # Commit
           git add .
-          git commit --author "DangoCat[bot] <dangocat@users.noreply.github.com>" -m "[Automated] Update translations"
+          git config --global user.name "DangoCat[bot]"
+          git config --global user.email "dangocat@users.noreply.github.com"
+          git commit -m "[Automated] Update translations"
 
           # Push
           git push origin "$new_branch"
