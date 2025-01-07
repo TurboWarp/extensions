@@ -10,8 +10,6 @@
   //put these back here so I don't have to define scratch.cast again.
   let notMobile = false;
 
-  /* globals Accelerometer, Gyro */
-
   const SpeechRecognition =
     typeof webkitSpeechRecognition !== "undefined"
       ? window.webkitSpeechRecognition
