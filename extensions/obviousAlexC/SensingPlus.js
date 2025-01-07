@@ -63,48 +63,142 @@
     });
   };
 
-  let initializedSensors = false;
-  const deviceMotion = {
+  const physicalDeviceState = {
     accelerationX: 0,
     accelerationY: 0,
     accelerationZ: 0,
-
     rotationX: 0,
     rotationY: 0,
     rotationZ: 0,
   };
-  const deviceStatus = {
-    gyroscope: false,
+  const sensorStatus = {
     accelerometer: false,
+    gyroscope: false,
   };
 
-  const initializeSensors = () => {
-    if (initializedSensors) {
+  /**
+   * @returns {boolean}
+   */
+  const sensorAccessRequiresPermission = () => (
+    typeof DeviceMotionEvent === "function" &&
+    // @ts-expect-error
+    typeof DeviceMotionEvent.requestPermission === "function"
+  );
+
+  /**
+   * Assumes you already checked sensorAccessRequiresPermission() === true.
+   * @returns {Promise<boolean>} Will never reject.
+   */
+  const requestSensorPermission = () => {
+    // @ts-expect-error
+    return DeviceMotionEvent.requestPermission()
+      .catch((error) => {
+        console.error(error);
+        return false;
+      });
+  };
+
+  /**
+   * Assumes you already checked sensorAccessRequiresPermission() === true.
+   * @returns {Promise<void>}
+   */
+  const askUserForSensorPermission = async () => {
+    // Safari automatically denies any request not made directly in a user gesture handler,
+    // so this attempt will almost certainly fail. We'll still try though, just in case.
+    let allowed = await requestSensorPermission();
+    if (allowed) {
+      sensorStatus.accelerometer = true;
+      sensorStatus.gyroscope = true;
       return;
     }
-    initializedSensors = true;
 
-    if (
-      typeof DeviceMotionEvent === "function" &&
-      // @ts-expect-error
-      typeof DeviceMotionEvent.requestPermission === "function"
-    ) {
-      // @ts-expect-error
-      DeviceMotionEvent.requestPermission();
-    }
+    allowed = await new Promise((resolve) => {
+      // Have to show some sort of user interface for the user to click on
+      const outer = document.createElement('div');
+      outer.style.width = '100%';
+      outer.style.height = '100%';
+      outer.style.display = 'flex';
+      outer.style.alignItems = 'center';
+      outer.style.justifyContent = 'center';
+      outer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+      outer.style.backdropFilter = 'blur(10px)';
+      outer.style.pointerEvents = 'auto';
+      outer.tabIndex = 0;
+  
+      const inner = document.createElement('div');
+      inner.textContent = Scratch.translate('Tap to allow access to accelerometer and gyroscope.');
+      inner.style.maxWidth = '360px';
+      inner.style.color = 'white';
+      inner.style.textAlign = 'center';
+      outer.appendChild(inner);
 
-    window.addEventListener("devicemotion", (event) => {
-      deviceMotion.accelerationX = event.accelerationIncludingGravity.x;
-      deviceMotion.accelerationY = event.accelerationIncludingGravity.y;
-      deviceMotion.accelerationZ = event.accelerationIncludingGravity.z;
+      outer.addEventListener('click', () => {
+        resolve(requestSensorPermission());
+        Scratch.renderer.removeOverlay(outer);
+      });
+
+      Scratch.renderer.addOverlay(outer, 'scale');
     });
 
-    window.addEventListener("deviceorientation", (event) => {
-      deviceMotion.rotationX = event.beta;
-      deviceMotion.rotationY = event.gamma;
-      deviceMotion.rotationZ = event.alpha;
-    });
+    sensorStatus.accelerometer = allowed;
+    sensorStatus.gyroscope = allowed;
   };
+
+  /** @type {null|Promise<void>} */
+  let initializingSensorsPromise = null;
+
+  /**
+   * Note that true here does not necessarily mean we got permission, just that we
+   * went through the whole flow where we ask the user to accept.
+   * @type {boolean}
+   */
+  let askedUserForSensorPermission = false;
+  
+  /**
+   * @template T
+   * @param {() => T} callback
+   * @returns {T|Promise<T>}
+   */
+  const whenSensorsInitialized = (callback) => {
+    if (!sensorAccessRequiresPermission() || askedUserForSensorPermission) {
+      return callback();
+    }
+    if (!initializingSensorsPromise) {
+      initializingSensorsPromise = askUserForSensorPermission()
+        .then(() => {
+          askedUserForSensorPermission = true;
+        });
+    }
+    return initializingSensorsPromise.then(callback);
+  };
+
+  window.addEventListener("devicemotion", (event) => {
+    // On desktops, this event is fired with nulls.
+    if (
+      event.accelerationIncludingGravity.x !== null &&
+      event.accelerationIncludingGravity.y !== null &&
+      event.accelerationIncludingGravity.z !== null
+    ) {
+      sensorStatus.accelerometer = true;
+      physicalDeviceState.accelerationX = event.accelerationIncludingGravity.x;
+      physicalDeviceState.accelerationY = event.accelerationIncludingGravity.y;
+      physicalDeviceState.accelerationZ = event.accelerationIncludingGravity.z;
+    }
+  });
+
+  window.addEventListener("deviceorientation", (event) => {
+    // On desktops, this event is fired with nulls.
+    if (
+      event.alpha !== null &&
+      event.beta !== null &&
+      event.gamma !== null
+    ) {
+      sensorStatus.gyroscope = true;
+      physicalDeviceState.rotationX = event.beta;
+      physicalDeviceState.rotationY = event.gamma;
+      physicalDeviceState.rotationZ = event.alpha;
+    }
+  });
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -820,33 +914,36 @@
     }
 
     hasDevice({ device }) {
-      if (deviceStatus[device]) {
-        return deviceStatus[device];
-      }
-      return false;
+      return whenSensorsInitialized(() => {
+        if (Object.prototype.hasOwnProperty.call(sensorStatus, device)) {
+          return sensorStatus[device];
+        }
+        return false;
+      });
     }
 
     getDeviceSpeed({ type, axis }) {
-      initializeSensors();
-      if (type === "positional") {
-        if (axis === "x") {
-          return deviceMotion.accelerationX;
-        } else if (axis === "y") {
-          return deviceMotion.accelerationY;
-        } else if (axis === "z") {
-          return deviceMotion.accelerationZ;
+      return whenSensorsInitialized(() => {
+        if (type === "positional") {
+          if (axis === "x") {
+            return physicalDeviceState.accelerationX;
+          } else if (axis === "y") {
+            return physicalDeviceState.accelerationY;
+          } else if (axis === "z") {
+            return physicalDeviceState.accelerationZ;
+          }
+        } else if (type === "rotational") {
+          if (axis === "x") {
+            return physicalDeviceState.rotationX;
+          } else if (axis === "y") {
+            return physicalDeviceState.rotationY;
+          } else if (axis === "z") {
+            return physicalDeviceState.rotationZ;
+          }
         }
-      } else if (type === "rotational") {
-        if (axis === "x") {
-          return deviceMotion.rotationX;
-        } else if (axis === "y") {
-          return deviceMotion.rotationY;
-        } else if (axis === "z") {
-          return deviceMotion.rotationZ;
-        }
-      }
-      // should never happen
-      return 0;
+        // should never happen
+        return 0;
+      });
     }
 
     getClipBoard() {
