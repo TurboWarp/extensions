@@ -138,8 +138,10 @@
     }
 
     if (status === 'denied') {
-      const string = Scratch.translate('To allow accelerometer and gyroscope access, go to iOS settings > Apps > Safari > Advanced > Website Data > press Edit > Clear data for {domain}, then refresh this page.');
-      alert(string.replace('{domain}', window.origin));
+      // Requesting permission again will be ignored no matter what.
+      // The flow for resetting this is awful, so let's at least tell the user how to do that.
+      const string = Scratch.translate('To allow accelerometer and gyroscope access, open iOS settings > Apps > Safari > Advanced > Website Data > press Edit > Clear data for {domain}, then refresh this page.');
+      alert(string.replace('{domain}', location.hostname));
     }
 
     const granted = status === 'granted';
