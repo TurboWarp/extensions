@@ -1,0 +1,89 @@
+name: Download translations
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: "download-translations"
+  cancel-in-progress: true
+
+jobs:
+  download-translations:
+    runs-on: ubuntu-latest
+
+    # This workflow is not useful to forks without setting up Transifex and modifying the
+    # workflow to use your organization, project, resources, API token, ...
+    if: ${{ github.repository == 'TurboWarp/extensions' && github.ref == 'refs/heads/master' }}
+
+    steps:
+      - name: Checkout fork
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          # Commits will be written to this fork, then pull requested to the main repository.
+          repository: "DangoCat/extensions"
+          token: "${{ secrets.UPDATE_TRANSLATIONS_FORK_GH_TOKEN }}"
+          # We will push later so the token has to be stored.
+          persist-credentials: true
+      - name: Checkout upstream
+        run: |
+          git remote add upstream "https://github.com/$UPSTREAM_REPO.git"
+          git fetch upstream
+          git checkout upstream/master
+        env:
+          UPSTREAM_REPO: "TurboWarp/extensions"
+      - name: Install Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        with:
+          node-version: 20.x
+      - name: Install dependencies
+        run: npm ci
+      - name: Download translations
+        run: npm run download-translations
+        env:
+          TRANSIFEX_TOKEN: "${{ secrets.TRANSIFEX_TOKEN }}"
+          TRANSIFEX_ORGANIZATION: "turbowarp"
+          TRANSIFEX_PROJECT: "turbowarp"
+          TRANSIFEX_RUNTIME_RESOURCE: "extensions"
+          TRANSIFEX_METADATA_RESOURCE: "extension-metadata"
+      - name: Delete old branches, commit, push, pull request
+        run: |
+          if [[ ! $(git status --porcelain) ]]; then
+            echo "No changes"
+            exit 0
+          fi
+
+          # Remove old branches, which also closes the pull requests
+          all_branches=$(GH_TOKEN="$FORK_GH_TOKEN" gh api "repos/$FORK_REPO/branches" --paginate | jq -r '.[].name')
+          for branch in $all_branches; do
+            if [[ $branch == update-translations-* ]]; then
+              echo "Deleting branch: $branch"
+              git branch -d origin "$branch"
+            else
+              echo "Keeping branch: $branch"
+            fi
+          done
+
+          # Create new branch
+          new_branch="update-translations-$(date -u +%Y%m%d%H%M%S)"
+          git checkout -b "$new_branch"
+
+          # Commit
+          git add .
+          git commit --author "DangoCat[bot] <dangocat@users.noreply.github.com>" -m "[Automated] Update translations"
+
+          # Push
+          git push origin "$new_branch"
+
+          # Create pull request
+          GH_TOKEN="$UPSTREAM_GH_TOKEN" gh pr create \
+            --head "$new_branch" \
+            --repo "$UPSTREAM_REPO" \
+            --title "[Automated] Update translations $(date -u "+%Y-%m-%d")" \
+            --body "This pull request was made by a robot."
+        env:
+          FORK_REPO: "DangoCat/extensions"
+          # This token has contents write permissions on fork repository
+          FORK_GH_TOKEN: "${{ secrets.UPDATE_TRANSLATIONS_FORK_GH_TOKEN }}"
+          UPSTREAM_REPO: "${{ github.repository }}"
+          # This token has pull request write permissions on upstream repository
+          UPSTREAM_GH_TOKEN: "${{ secrets.UPDATE_TRANSLATIONS_UPSTREAM_GH_TOKEN }}"
