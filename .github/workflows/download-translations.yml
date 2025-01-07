@@ -57,7 +57,7 @@ jobs:
           for branch in $all_branches; do
             if [[ $branch == update-translations-* ]]; then
               echo "Deleting branch: $branch"
-              git branch -d origin "$branch"
+              git push -d origin "$branch"
             else
               echo "Keeping branch: $branch"
             fi
