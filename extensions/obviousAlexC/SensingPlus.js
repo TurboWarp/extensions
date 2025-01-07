@@ -11,10 +11,14 @@
   let notMobile = false;
 
   const SpeechRecognition =
-    typeof webkitSpeechRecognition !== "undefined"
+      // @ts-expect-error
+      typeof webkitSpeechRecognition !== "undefined"
+      // @ts-expect-error
       ? window.webkitSpeechRecognition
+      // @ts-expect-error
       : typeof window.SpeechRecognition !== "undefined"
-        ? window.SpeechRecognition
+      // @ts-expect-error
+      ? window.SpeechRecognition
         : null;
 
   let recognizedSpeech = "";
@@ -85,8 +89,10 @@
 
     if (
       typeof DeviceMotionEvent === 'function' &&
+      // @ts-expect-error
       typeof DeviceMotionEvent.requestPermission === 'function'
     ) {
+      // @ts-expect-error
       DeviceMotionEvent.requestPermission();
     }
 
