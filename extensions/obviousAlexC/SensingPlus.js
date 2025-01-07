@@ -85,50 +85,25 @@
     }
     initializedSensors = true;
 
-    if (typeof Accelerometer !== "function") {
-      try {
-        const accelerometer = new Accelerometer({
-          referenceFrame: "device",
-        });
-        accelerometer.addEventListener("error", (e) => {
-          console.error("accelerometer error", e.error);
-          deviceStatus.accelerometer = false;
-        });
-        accelerometer.addEventListener("reading", () => {
-          deviceMotion.accelerationX = accelerometer.x;
-          deviceMotion.accelerationY = accelerometer.y;
-          deviceMotion.accelerationZ = accelerometer.z;
-          deviceStatus.accelerometer = true;
-        });
-        accelerometer.start();
-      } catch (e) {
-        console.error("error setting up accelerometer", e);
-      }
-    } else {
-      console.warn("accelerometer API is not supported in this browser");
+    if (
+      typeof DeviceMotionEvent === 'function' &&
+      typeof DeviceMotionEvent.requestPermission === 'function'
+    ) {
+      // TODO: Safari only, MDN doesn't even say what type this is...
+      DeviceMotionEvent.requestPermission();
+
+      window.addEventListener('devicemotion', (event) => {
+        deviceMotion.accelerationX = event.accelerationIncludingGravity.x;
+        deviceMotion.accelerationY = event.accelerationIncludingGravity.y;
+        deviceMotion.accelerationZ = event.accelerationIncludingGravity.z;
+      });
     }
 
-    if (typeof Gyro !== "undefined") {
-      try {
-        const gyro = new Gyro({
-          frequency: 30,
-        });
-        gyro.addEventListener("error", (e) => {
-          console.error("gyro error", e.error);
-          deviceStatus.gyroscope = false;
-        });
-        gyro.addEventListener("reading", () => {
-          deviceMotion.rotationX = gyro.x;
-          deviceMotion.rotationY = gyro.y;
-          deviceMotion.rotationZ = gyro.z;
-          deviceStatus.gyroscope = true;
-        });
-      } catch (e) {
-        console.error("error setting up gyro", e);
-      }
-    } else {
-      console.warn("gyro API is not supported in this browser");
-    }
+    window.addEventListener('deviceorientation', (event) => {
+      deviceMotion.rotationX = event.beta;
+      deviceMotion.rotationY = event.gamma;
+      deviceMotion.rotationZ = event.alpha;
+    });
   };
 
   const vm = Scratch.vm;
