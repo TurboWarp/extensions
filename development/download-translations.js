@@ -191,16 +191,24 @@ const downloadAllResourceTranslations = async (resource) => {
 const run = async () => {
   console.log("This is going to take a while.");
 
-  console.log('Downloading runtime...');
+  console.log("Downloading runtime...");
   fs.writeFileSync(
     pathUtil.join(__dirname, "../translations/extension-runtime.json"),
-    JSON.stringify(await downloadAllResourceTranslations(RUNTIME_RESOURCE), null, 4)
+    JSON.stringify(
+      await downloadAllResourceTranslations(RUNTIME_RESOURCE),
+      null,
+      4
+    )
   );
 
-  console.log('Downloading metadata...');
+  console.log("Downloading metadata...");
   fs.writeFileSync(
     pathUtil.join(__dirname, "../translations/extension-metadata.json"),
-    JSON.stringify(await downloadAllResourceTranslations(METADATA_RESOURCE), null, 4)
+    JSON.stringify(
+      await downloadAllResourceTranslations(METADATA_RESOURCE),
+      null,
+      4
+    )
   );
 };
 
