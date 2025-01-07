@@ -7,9 +7,6 @@
 (function (Scratch) {
   "use strict";
 
-  //put these back here so I don't have to define scratch.cast again.
-  let notMobile = false;
-
   const SpeechRecognition =
       // @ts-expect-error
       typeof webkitSpeechRecognition !== "undefined"
@@ -113,58 +110,126 @@
   const runtime = vm.runtime;
   const canvas = runtime.renderer.canvas;
 
-  let fingersDown = 0;
   const maxTouchPoints = navigator.maxTouchPoints;
   const supportsTouches = maxTouchPoints > 0;
-  /** @type {Array<[number, number]|null>} */
-  const lastFingerPositions = [];
-  /** @type {Array<[number, number]|null>} */
-  const fingerPositions = [];
+
+  /**
+   * Maps system Touch identifiers to the identifers we expose to projects.
+   * This is necessary because Safari uses incremental IDs that only ever go up,
+   * so they get very big and won't start from 0.
+   * @type {Map<number, number>}
+   */
+  const nativeTouchIdToScratchId = new Map();
+
+  /**
+   * @typedef ScratchFinger
+   * @property {number} x
+   * @property {number} y
+   * @property {number} lastX
+   * @property {number} lastY
+   */
+
+  /**
+   * Maps Scratch touch ID to internal object.
+   * @type {Map<number, ScratchFinger>}
+   */
+  const scratchFingers = new Map();
+
+  /**
+   * @returns {number} A positive integer.
+   */
+  const getUnusedScratchId = () => {
+    // This is slower than it could be but this doesn't run enough to matter.
+    // IDs start from 1, like Scratch lists.
+    let i = 1;
+    while (scratchFingers.has(i)) {
+      i++;
+    }
+    return i;
+  };
 
   /** @param {TouchEvent} event */
-  function handleTouchStart(event) {
+  const handleTouchStart = (event) => {
     event.preventDefault();
+
     const canvasPos = canvas.getBoundingClientRect();
-    fingersDown = event.touches.length;
     for (const touch of event.changedTouches) {
+      const nextAvailableScratchId = getUnusedScratchId();
+      nativeTouchIdToScratchId.set(touch.identifier, nextAvailableScratchId);
+
       const x = touch.clientX - canvasPos.left;
       const y = touch.clientY - canvasPos.top;
-      lastFingerPositions[touch.identifier] = [x, y];
-      fingerPositions[touch.identifier] = [x, y];
+      scratchFingers.set(nextAvailableScratchId, {
+        x: x,
+        y: y,
+        lastX: x,
+        lastY: y
+      });
     }
-  }
+  };
 
   /** @param {TouchEvent} event */
-  function handleTouchMove(event) {
+  const handleTouchMove = (event) => {
     event.preventDefault();
+
     const canvasPos = canvas.getBoundingClientRect();
-    fingersDown = event.touches.length;
     for (const touch of event.changedTouches) {
-      lastFingerPositions[touch.identifier] = [
-        fingerPositions[touch.identifier][0],
-        fingerPositions[touch.identifier][1]
-      ];
-      fingerPositions[touch.identifier] = [
-        touch.clientX - canvasPos.left,
-        touch.clientY - canvasPos.top,
-      ];
+      const scratchId = nativeTouchIdToScratchId.get(touch.identifier);
+      const finger = scratchFingers.get(scratchId);
+      finger.lastX = finger.x;
+      finger.lastY = finger.y;
+      finger.x = touch.clientX - canvasPos.left;
+      finger.y = touch.clientY - canvasPos.top;
     }
-  }
+  };
 
   /** @param {TouchEvent} event */
-  function handleTouchEnd(event) {
+  const handleTouchEnd = (event) => {
     event.preventDefault();
-    fingersDown = event.touches.length;
-    for (const touch of event.changedTouches) {
-      lastFingerPositions[touch.identifier] = null;
-      fingerPositions[touch.identifier] = null;
-    }
-  }
 
-  canvas.addEventListener("touchstart", handleTouchStart, false);
-  canvas.addEventListener("touchmove", handleTouchMove, false);
-  canvas.addEventListener("touchcancel", handleTouchEnd, false);
-  canvas.addEventListener("touchend", handleTouchEnd, false);
+    for (const touch of event.changedTouches) {
+      const scratchId = nativeTouchIdToScratchId.get(touch.identifier);
+      scratchFingers.delete(scratchId);
+      nativeTouchIdToScratchId.delete(touch.identifier);
+    }
+  };
+
+  /**
+   * @param {VM.Target} target
+   * @returns {number} -1 if not touching, else the Scratch ID
+   */
+  const findAnyTouchingFinger = (target) => {
+    for (const [scratchId, finger] of scratchFingers.entries()) {
+      const touching = target.isTouchingPoint(finger.x, finger.y);
+      if (touching) {
+        return scratchId;
+      }
+    }
+    return -1;
+  };
+
+  /**
+   * @param {VM.Target} target
+   * @param {number} scratchId
+   * @returns {boolean}
+   */
+  const isTouchingSpecificFinger = (target, scratchId) => {
+    const finger = scratchFingers.get(scratchId);
+    return !!finger && target.isTouchingPoint(finger.x, finger.y);
+  };
+
+  canvas.addEventListener("touchstart", handleTouchStart, {
+    passive: false
+  });
+  canvas.addEventListener("touchmove", handleTouchMove, {
+    passive: false
+  });
+  canvas.addEventListener("touchcancel", handleTouchEnd, {
+    passive: false
+  });
+  canvas.addEventListener("touchend", handleTouchEnd, {
+    passive: false
+  });
 
   const fingersMenu = [];
   for (let i = 0; i < Math.max(maxTouchPoints, 10); i++) {
@@ -226,14 +291,6 @@
         id: "obviousalexsensing",
         name: Scratch.translate("Sensing+"),
         blocks: [
-          {
-            blockType: "label",
-            text: Scratch.translate("Touch blocks are broken in Safari."),
-          },
-          {
-            blockType: "label",
-            text: Scratch.translate("We will try to fix them soon."),
-          },
           {
             opcode: "supportsTouches",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -681,61 +738,6 @@
       };
     }
 
-    _touchUtil = {
-      blankExpression: () => {},
-      isTouchingAnyFinger(util, success, fail) {
-        success = success || this.blankExpression;
-        if (success == null) {
-          success = this.blankExpression;
-        }
-        fail = fail || this.blankExpression;
-        if (fail == null) {
-          fail = this.blankExpression;
-        }
-
-        for (let index = 0; index < fingerPositions.length; index++) {
-          const fingerPos = fingerPositions[index];
-          if (fingerPos != null) {
-            const touching = util.target.isTouchingPoint(
-              fingerPos[0],
-              fingerPos[1]
-            );
-            if (touching) {
-              success(index);
-              return true;
-            }
-          }
-        }
-        fail(-1);
-        return false;
-      },
-
-      isTouchingSpecificFinger(id, util, success, fail) {
-        success = success || this.blankExpression;
-        if (success == null) {
-          success = this.blankExpression;
-        }
-        fail = fail || this.blankExpression;
-        if (fail == null) {
-          fail = this.blankExpression;
-        }
-
-        const fingerPos = fingerPositions[Scratch.Cast.toNumber(id) - 1];
-        if (fingerPos != null) {
-          const touching = util.target.isTouchingPoint(
-            fingerPos[0],
-            fingerPos[1]
-          );
-          if (touching) {
-            success(id);
-            return true;
-          }
-        }
-        fail(id);
-        return false;
-      },
-    };
-
     supportsTouches() {
       return supportsTouches;
     }
@@ -745,16 +747,13 @@
     }
 
     getFingerSpeed({ ID }) {
-      const fingerPos = fingerPositions[ID - 1];
-      const fingerLastPos = lastFingerPositions[ID - 1];
-      if (!fingerPos || !fingerLastPos) {
+      const finger = scratchFingers.get(Scratch.Cast.toNumber(ID));
+      if (!finger) {
         return 0;
       }
-      const speed = Math.sqrt(
-        Math.pow(fingerPos[0] - fingerLastPos[0], 2) +
-          Math.pow(fingerPos[1] - fingerLastPos[1], 2)
-      );
-      lastFingerPositions[ID - 1] = [fingerPos[0], fingerPos[1]];
+      const speed = Math.sqrt(Math.pow(finger.x - finger.lastX, 2) + Math.pow(finger.y - finger.lastY, 2));
+      finger.lastX = finger.x;
+      finger.lastY = finger.y;
       return speed;
     }
 
@@ -865,7 +864,7 @@
     }
 
     getFingersTouching() {
-      return fingersDown;
+      return scratchFingers.size;
     }
 
     getSprites() {
@@ -918,49 +917,40 @@
     }
 
     touchingFinger(args, util) {
-      return this._touchUtil.isTouchingAnyFinger(util);
+      return findAnyTouchingFinger(util.target) !== -1;
     }
 
     touchingSpecificFinger({ ID }, util) {
-      return this._touchUtil.isTouchingSpecificFinger(ID, util);
+      return isTouchingSpecificFinger(util.target, Scratch.Cast.toNumber(ID));
     }
 
     getTouchingFingerID(args, util) {
-      let TouchingFingerID = 0;
-      this._touchUtil.isTouchingAnyFinger(util, (FID) => {
-        TouchingFingerID = FID + 1;
-      });
-      return TouchingFingerID;
+      const touching = findAnyTouchingFinger(util.target);
+      if (touching === -1) {
+        return 0;
+      }
+      return touching;
     }
 
     fingerPosition({ ID, PositionType }) {
-      const index = Scratch.Cast.toNumber(ID) - 1;
-      const fingerPos = fingerPositions[index];
-      if (fingerPos) {
-        const positionIndex = PositionType === "x" ? 0 : 1;
-        const finger = [fingerPos[0], fingerPos[1]];
-        let scratchCoords = finger;
-        const runtime = Scratch.vm.runtime;
-
+      const finger = scratchFingers.get(Scratch.Cast.toNumber(ID));
+      if (finger) {
         const canvasRect = canvas.getBoundingClientRect();
-        if (PositionType === "x") {
+        if (Scratch.Cast.toString(PositionType) === "x") {
           const clientWidth = canvasRect.right - canvasRect.left;
           const toScratch = runtime.stageWidth / clientWidth;
-          scratchCoords[0] *= toScratch;
-          scratchCoords[0] -= runtime.stageWidth / 2;
+          return finger.x * toScratch - (runtime.stageWidth / 2);
         } else {
           const clientheight = canvasRect.bottom - canvasRect.top;
           const toScratch = runtime.stageHeight / clientheight;
-          scratchCoords[1] *= toScratch;
-          scratchCoords[1] = runtime.stageHeight / 2 - scratchCoords[1];
+          return (runtime.stageHeight / 2) - finger.y * toScratch;
         }
-        return scratchCoords[positionIndex];
       }
       return 0;
     }
 
     isFingerDown({ ID }) {
-      return !!fingerPositions[Scratch.Cast.toNumber(ID) - 1];
+      return scratchFingers.has(Scratch.Cast.toNumber(ID));
     }
 
     listInSprite({ index, List }) {
