@@ -29,8 +29,8 @@ jobs:
       - name: Upload translations
         run: npm run upload-translations
         env:
-          TRANSIFEX_TOKEN: ${{ secrets.TRANSIFEX_TOKEN }}
-          TRANSIFEX_ORGANIZATION: turbowarp
-          TRANSIFEX_PROJECT: turbowarp
-          TRANSIFEX_RUNTIME_RESOURCE: extensions
-          TRANSIFEX_METADATA_RESOURCE: extension-metadata
+          TRANSIFEX_TOKEN: "${{ secrets.TRANSIFEX_TOKEN }}"
+          TRANSIFEX_ORGANIZATION: "turbowarp"
+          TRANSIFEX_PROJECT: "turbowarp"
+          TRANSIFEX_RUNTIME_RESOURCE: "extensions"
+          TRANSIFEX_METADATA_RESOURCE: "extension-metadata"
