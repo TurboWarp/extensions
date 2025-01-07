@@ -104,11 +104,36 @@ const removeUnchangedTranslations = (source, translated) => {
 };
 
 /**
+ * @param {number} ms
+ * @returns {Promise<void>}
+ */
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+/**
+ * @param {string} url
+ * @returns {Promise<object>} JSON response
+ */
+const persistentFetch = async (url) => {
+  for (let i = 0; i < 5; i++) {
+    try {
+      const res = await fetch(url);
+      const json = await res.json();
+      return json;
+    } catch (e) {
+      const sleepFor = Math.random() * (2 ** i) * 1000;
+      await sleep(sleepFor);
+    }
+  }
+};
+
+/**
  * @param {string} resource
  * @param {string} locale
  * @returns {Promise<object>}
  */
 const downloadTranslatedResource = async (resource, locale) => {
+  console.log(`Starting download request for ${resource} ${locale}`);
+
   let urlToDownload;
   if (locale === SOURCE_LOCALE) {
     urlToDownload = await transifexApi.ResourceStringsAsyncDownload.download({
@@ -138,8 +163,10 @@ const downloadTranslatedResource = async (resource, locale) => {
       });
   }
 
-  const translationsResponse = await fetch(urlToDownload);
-  const rawTranslations = await translationsResponse.json();
+  console.log(`Started download request for ${resource} ${locale}`);
+  const rawTranslations = await persistentFetch(urlToDownload);
+
+  console.log(`Downloaded data for ${resource} ${locale}`);
   const withoutDeveloperComments = removeDeveloperComments(rawTranslations);
   const withoutEmptyTranslations = removeEmptyTranslations(
     withoutDeveloperComments
@@ -191,23 +218,25 @@ const downloadAllResourceTranslations = async (resource) => {
 const run = async () => {
   console.log("This is going to take a while.");
 
-  console.log("Downloading runtime...");
+  const [
+    runtime,
+    metadata
+  ] = await Promise.all([
+    downloadAllResourceTranslations(RUNTIME_RESOURCE),
+    downloadAllResourceTranslations(METADATA_RESOURCE)
+  ]);
+
   fs.writeFileSync(
     pathUtil.join(__dirname, "../translations/extension-runtime.json"),
     JSON.stringify(
-      await downloadAllResourceTranslations(RUNTIME_RESOURCE),
-      null,
-      4
+      runtime, null, 4
     )
   );
 
-  console.log("Downloading metadata...");
   fs.writeFileSync(
     pathUtil.join(__dirname, "../translations/extension-metadata.json"),
     JSON.stringify(
-      await downloadAllResourceTranslations(METADATA_RESOURCE),
-      null,
-      4
+      metadata, null, 4
     )
   );
 };
