@@ -92,6 +92,7 @@
   const requestSensorPermission = () => {
     // @ts-expect-error
     return DeviceMotionEvent.requestPermission()
+      .then((status) => status === 'granted')
       .catch((error) => {
         console.error(error);
         return false;
@@ -100,11 +101,11 @@
 
   /**
    * Assumes you already checked sensorAccessRequiresPermission() === true.
-   * @returns {Promise<void>}
+   * @returns {Promise<boolean>}
    */
   const askUserForSensorPermission = async () => {
     // Safari automatically denies any request not made directly in a user gesture handler,
-    // so this attempt will almost certainly fail. We'll still try though, just in case.
+    // so this request will almost certainly fail. We'll still try though, just in case.
     let allowed = await requestSensorPermission();
     if (allowed) {
       sensorStatus.accelerometer = true;
@@ -142,17 +143,12 @@
 
     sensorStatus.accelerometer = allowed;
     sensorStatus.gyroscope = allowed;
+    return allowed;
   };
 
   /** @type {null|Promise<void>} */
   let initializingSensorsPromise = null;
-
-  /**
-   * Note that true here does not necessarily mean we got permission, just that we
-   * went through the whole flow where we ask the user to accept.
-   * @type {boolean}
-   */
-  let askedUserForSensorPermission = false;
+  let hasSensorPermission = false;
   
   /**
    * @template T
@@ -160,15 +156,23 @@
    * @returns {T|Promise<T>}
    */
   const whenSensorsInitialized = (callback) => {
-    if (!sensorAccessRequiresPermission() || askedUserForSensorPermission) {
+    if (!sensorAccessRequiresPermission() || hasSensorPermission) {
       return callback();
     }
+
     if (!initializingSensorsPromise) {
       initializingSensorsPromise = askUserForSensorPermission()
-        .then(() => {
-          askedUserForSensorPermission = true;
+        .then((allowed) => {
+          hasSensorPermission = allowed;
+
+          if (!hasSensorPermission) {
+            // Let the current batch of callbacks run without permission
+            // But if another block runs, we'll ask again
+            initializingSensorsPromise = null;
+          }
         });
     }
+
     return initializingSensorsPromise.then(callback);
   };
 
