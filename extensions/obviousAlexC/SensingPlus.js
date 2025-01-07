@@ -79,11 +79,10 @@
   /**
    * @returns {boolean}
    */
-  const sensorAccessRequiresPermission = () => (
+  const sensorAccessRequiresPermission = () =>
     typeof DeviceMotionEvent === "function" &&
     // @ts-expect-error
-    typeof DeviceMotionEvent.requestPermission === "function"
-  );
+    typeof DeviceMotionEvent.requestPermission === "function";
 
   /**
    * Assumes you already checked sensorAccessRequiresPermission() === true.
@@ -91,12 +90,11 @@
    */
   const requestSensorPermission = () => {
     // @ts-expect-error
-    return DeviceMotionEvent.requestPermission()
-      .catch((error) => {
-        // Usually this means we weren't in a user gesture.
-        console.error(error);
-        return 'unknown';
-      });
+    return DeviceMotionEvent.requestPermission().catch((error) => {
+      // Usually this means we weren't in a user gesture.
+      console.error(error);
+      return "unknown";
+    });
   };
 
   /**
@@ -108,43 +106,51 @@
     // so this request will almost certainly fail. We'll still try though, just in case.
     let status = await requestSensorPermission();
 
-    if (status === 'unknown') {
+    if (status === "unknown") {
       status = await new Promise((resolve) => {
-        const outer = document.createElement('div');
-        outer.style.width = '100%';
-        outer.style.height = '100%';
-        outer.style.display = 'flex';
-        outer.style.alignItems = 'center';
-        outer.style.justifyContent = 'center';
-        outer.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        outer.style.backdropFilter = 'blur(10px)';
-        outer.style.pointerEvents = 'auto';
+        const outer = document.createElement("div");
+        outer.style.width = "100%";
+        outer.style.height = "100%";
+        outer.style.display = "flex";
+        outer.style.alignItems = "center";
+        outer.style.justifyContent = "center";
+        outer.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+        outer.style.backdropFilter = "blur(10px)";
+        outer.style.pointerEvents = "auto";
         outer.tabIndex = 0;
 
-        const inner = document.createElement('div');
-        inner.textContent = Scratch.translate('Tap to allow access to accelerometer and gyroscope.');
-        inner.style.maxWidth = '360px';
-        inner.style.color = 'white';
-        inner.style.textAlign = 'center';
+        const inner = document.createElement("div");
+        inner.textContent = Scratch.translate(
+          "Tap to allow access to accelerometer and gyroscope."
+        );
+        inner.style.maxWidth = "360px";
+        inner.style.color = "white";
+        inner.style.textAlign = "center";
         outer.appendChild(inner);
 
-        outer.addEventListener('click', () => {
+        outer.addEventListener("click", () => {
           resolve(requestSensorPermission());
           Scratch.renderer.removeOverlay(outer);
         });
 
-        Scratch.renderer.addOverlay(outer, 'scale');
+        Scratch.renderer.addOverlay(outer, "scale");
       });
     }
 
-    if (status === 'denied') {
+    if (status === "denied") {
       // Requesting permission again will be ignored no matter what.
       // The flow for resetting this is awful, so let's at least tell the user how to do that.
-      const string = Scratch.translate('To allow accelerometer and gyroscope access, open iOS settings > Apps > Safari > Advanced > Website Data > press Edit > Clear data for {domain}, then refresh this page.');
-      alert(string.replace('{domain}', location.hostname));
+      alert(
+        Scratch.translate(
+          "To allow accelerometer and gyroscope access, open iOS settings > Apps > Safari > Advanced > Website Data > press Edit > Clear data for {domain}, then refresh this page.",
+          {
+            domain: location.hostname,
+          }
+        )
+      );
     }
 
-    const granted = status === 'granted';
+    const granted = status === "granted";
     sensorStatus.accelerometer = granted;
     sensorStatus.gyroscope = granted;
   };
@@ -165,11 +171,10 @@
     }
 
     if (!initializingSensorsPromise) {
-      initializingSensorsPromise = askUserForSensorPermission()
-        .then(() => {
-          // Whether we got permission or not, asking again won't change the result.
-          askedForSensorPermission = true;
-        });
+      initializingSensorsPromise = askUserForSensorPermission().then(() => {
+        // Whether we got permission or not, asking again won't change the result.
+        askedForSensorPermission = true;
+      });
     }
 
     return initializingSensorsPromise.then(callback);
@@ -192,11 +197,7 @@
 
   window.addEventListener("deviceorientation", (event) => {
     // On desktops, this event is fired with nulls.
-    if (
-      event.alpha !== null &&
-      event.beta !== null &&
-      event.gamma !== null
-    ) {
+    if (event.alpha !== null && event.beta !== null && event.gamma !== null) {
       askedForSensorPermission = true;
       sensorStatus.gyroscope = true;
       physicalDeviceState.rotationX = event.beta;
