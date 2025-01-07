@@ -13,7 +13,8 @@
     "lint": "eslint development extensions --max-warnings=0",
     "format": "prettier . --write",
     "check-format": "prettier . --check",
-    "upload-translations": "node development/upload-translations.js"
+    "upload-translations": "node development/upload-translations.js",
+    "download-translations": "node development/download-translations.js"
   },
   "repository": {
     "type": "git",

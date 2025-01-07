@@ -57,7 +57,7 @@ jobs:
           for branch in $all_branches; do
             if [[ $branch == update-translations-* ]]; then
               echo "Deleting branch: $branch"
-              GH_TOKEN="$FORK_GH_TOKEN" gh api "repos/$FORK_REPO/git/refs/heads/$branch" -X DELETE
+              git branch -d origin "$branch"
             else
               echo "Keeping branch: $branch"
             fi

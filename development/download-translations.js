@@ -138,9 +138,7 @@ const downloadTranslatedResource = async (resource, locale) => {
       });
   }
 
-  const translationsResponse = await fetch(urlToDownload, {
-    signal: AbortSignal.timeout(10000 * 60),
-  });
+  const translationsResponse = await fetch(urlToDownload);
   const rawTranslations = await translationsResponse.json();
   const withoutDeveloperComments = removeDeveloperComments(rawTranslations);
   const withoutEmptyTranslations = removeEmptyTranslations(
@@ -193,18 +191,16 @@ const downloadAllResourceTranslations = async (resource) => {
 const run = async () => {
   console.log("This is going to take a while.");
 
-  const [runtimeStrings, metadataStrings] = await Promise.all([
-    downloadAllResourceTranslations(RUNTIME_RESOURCE),
-    downloadAllResourceTranslations(METADATA_RESOURCE),
-  ]);
-
+  console.log('Downloading runtime...');
   fs.writeFileSync(
     pathUtil.join(__dirname, "../translations/extension-runtime.json"),
-    JSON.stringify(runtimeStrings, null, 4)
+    JSON.stringify(await downloadAllResourceTranslations(RUNTIME_RESOURCE), null, 4)
   );
+
+  console.log('Downloading metadata...');
   fs.writeFileSync(
     pathUtil.join(__dirname, "../translations/extension-metadata.json"),
-    JSON.stringify(metadataStrings, null, 4)
+    JSON.stringify(await downloadAllResourceTranslations(METADATA_RESOURCE), null, 4)
   );
 };
 
