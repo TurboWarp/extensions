@@ -8,14 +8,14 @@
   "use strict";
 
   const SpeechRecognition =
-      // @ts-expect-error
-      typeof webkitSpeechRecognition !== "undefined"
-      // @ts-expect-error
-      ? window.webkitSpeechRecognition
-      // @ts-expect-error
-      : typeof window.SpeechRecognition !== "undefined"
-      // @ts-expect-error
-      ? window.SpeechRecognition
+    // @ts-expect-error
+    typeof webkitSpeechRecognition !== "undefined"
+      ? // @ts-expect-error
+        window.webkitSpeechRecognition
+      : // @ts-expect-error
+        typeof window.SpeechRecognition !== "undefined"
+        ? // @ts-expect-error
+          window.SpeechRecognition
         : null;
 
   let recognizedSpeech = "";
@@ -85,21 +85,21 @@
     initializedSensors = true;
 
     if (
-      typeof DeviceMotionEvent === 'function' &&
+      typeof DeviceMotionEvent === "function" &&
       // @ts-expect-error
-      typeof DeviceMotionEvent.requestPermission === 'function'
+      typeof DeviceMotionEvent.requestPermission === "function"
     ) {
       // @ts-expect-error
       DeviceMotionEvent.requestPermission();
     }
 
-    window.addEventListener('devicemotion', (event) => {
+    window.addEventListener("devicemotion", (event) => {
       deviceMotion.accelerationX = event.accelerationIncludingGravity.x;
       deviceMotion.accelerationY = event.accelerationIncludingGravity.y;
       deviceMotion.accelerationZ = event.accelerationIncludingGravity.z;
     });
 
-    window.addEventListener('deviceorientation', (event) => {
+    window.addEventListener("deviceorientation", (event) => {
       deviceMotion.rotationX = event.beta;
       deviceMotion.rotationY = event.gamma;
       deviceMotion.rotationZ = event.alpha;
@@ -163,7 +163,7 @@
         x: x,
         y: y,
         lastX: x,
-        lastY: y
+        lastY: y,
       });
     }
   };
@@ -219,16 +219,16 @@
   };
 
   canvas.addEventListener("touchstart", handleTouchStart, {
-    passive: false
+    passive: false,
   });
   canvas.addEventListener("touchmove", handleTouchMove, {
-    passive: false
+    passive: false,
   });
   canvas.addEventListener("touchcancel", handleTouchEnd, {
-    passive: false
+    passive: false,
   });
   canvas.addEventListener("touchend", handleTouchEnd, {
-    passive: false
+    passive: false,
   });
 
   const fingersMenu = [];
@@ -668,7 +668,8 @@
             acceptReporters: true,
             items: ["x", "y", "z"],
           },
-          velocitymenu: { // Menu is incorrectly named.
+          velocitymenu: {
+            // Menu is incorrectly named.
             acceptReporters: true,
             items: [
               {
@@ -751,7 +752,10 @@
       if (!finger) {
         return 0;
       }
-      const speed = Math.sqrt(Math.pow(finger.x - finger.lastX, 2) + Math.pow(finger.y - finger.lastY, 2));
+      const speed = Math.sqrt(
+        Math.pow(finger.x - finger.lastX, 2) +
+          Math.pow(finger.y - finger.lastY, 2)
+      );
       finger.lastX = finger.x;
       finger.lastY = finger.y;
       return speed;
@@ -939,11 +943,11 @@
         if (Scratch.Cast.toString(PositionType) === "x") {
           const clientWidth = canvasRect.right - canvasRect.left;
           const toScratch = runtime.stageWidth / clientWidth;
-          return finger.x * toScratch - (runtime.stageWidth / 2);
+          return finger.x * toScratch - runtime.stageWidth / 2;
         } else {
           const clientheight = canvasRect.bottom - canvasRect.top;
           const toScratch = runtime.stageHeight / clientheight;
-          return (runtime.stageHeight / 2) - finger.y * toScratch;
+          return runtime.stageHeight / 2 - finger.y * toScratch;
         }
       }
       return 0;
