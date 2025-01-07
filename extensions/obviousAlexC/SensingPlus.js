@@ -732,7 +732,7 @@
             arguments: {
               type: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "velocitymenu", // Menu is incorrectly named.
+                menu: "velocitymenu", // velocitymenu is poorly named
               },
               axis: {
                 type: Scratch.ArgumentType.STRING,
@@ -768,8 +768,8 @@
             acceptReporters: true,
             items: ["x", "y", "z"],
           },
+          // velocitymenu is poorly named.
           velocitymenu: {
-            // Menu is incorrectly named.
             acceptReporters: true,
             items: [
               {
