@@ -1,4 +1,4 @@
-name: Deploy
+name: Upload translations
 
 on:
   workflow_dispatch:
