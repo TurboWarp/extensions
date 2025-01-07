@@ -724,7 +724,7 @@
         "CST1229/images@description": "이미지를 다루는 블록들입니다.",
         "CST1229/images@name": "이미지",
         "CST1229/zip@description": ".zip 또는 .sb3 형식의 파일을 생성하고 수정합니다.",
-        "Clay/htmlEncode@description": "신뢰하지 않는 텍스트를 HTML에 안전하게 포함할 수 있도록 이스케이프화 합니다.",
+        "Clay/htmlEncode@description": "신뢰하지 않는 텍스트를 HTML에 안전하게 포함할 수 있도록 이스케이프 처리합니다.",
         "Clay/htmlEncode@name": "HTML 인코딩",
         "CubesterYT/KeySimulation@description": "키 입력과 마우스 입력을 시뮬레이션 합니다.",
         "CubesterYT/KeySimulation@name": "키 시뮬레이션",
@@ -1426,7 +1426,9 @@
         "vercte/dictionaries@name": "Словари"
     },
     "sl": {
-        "runtime-options@name": "Možnosti izvajanja"
+        "files@name": "Datoteke",
+        "runtime-options@name": "Možnosti izvajanja",
+        "text@name": "Besedilo"
     },
     "sv": {
         "runtime-options@name": "Körtidsalternativ"
