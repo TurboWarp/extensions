@@ -57,7 +57,7 @@ jobs:
           for branch in $all_branches; do
             if [[ $branch == update-translations-* ]]; then
               echo "Deleting branch: $branch"
-              GH_TOKEN="$FORK_GH_TOKEN" gh api "repos/$FORK_REPO/git/refs/heads/$branch" -X DELETE
+              git branch -d origin "$branch"
             else
               echo "Keeping branch: $branch"
             fi
@@ -75,7 +75,11 @@ jobs:
           git push origin "$new_branch"
 
           # Create pull request
-          gh pr create --head --fill --repo "$UPSTREAM_REPO"
+          GH_TOKEN="$UPSTREAM_GH_TOKEN" gh pr create \
+            --head "$new_branch" \
+            --repo "$UPSTREAM_REPO" \
+            --title "[Automated] Update translations $(date -u "+%Y-%m-%d")" \
+            --body "This pull request was made by a robot."
         env:
           FORK_REPO: "DangoCat/extensions"
           # This token has contents write permissions on fork repository
