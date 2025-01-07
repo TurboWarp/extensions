@@ -631,12 +631,12 @@
             opcode: "getDeviceSpeed",
             blockIconURI: deviceVelIco,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[type] speed on the [axis] axis"),
+            text: Scratch.translate("[type] on the [axis] axis"),
             disableMonitor: true,
             arguments: {
               type: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "velocitymenu",
+                menu: "velocitymenu", // Menu is incorrectly named.
               },
               axis: {
                 type: Scratch.ArgumentType.STRING,
@@ -672,15 +672,15 @@
             acceptReporters: true,
             items: ["x", "y", "z"],
           },
-          velocitymenu: {
+          velocitymenu: { // Menu is incorrectly named.
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("positional"),
+                text: Scratch.translate("positional acceleration"),
                 value: "positional",
               },
               {
-                text: Scratch.translate("rotational"),
+                text: Scratch.translate("rotation rate"),
                 value: "rotational",
               },
             ],
