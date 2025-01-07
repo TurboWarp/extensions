@@ -87,15 +87,14 @@
       typeof DeviceMotionEvent === 'function' &&
       typeof DeviceMotionEvent.requestPermission === 'function'
     ) {
-      // TODO: Safari only, MDN doesn't even say what type this is...
       DeviceMotionEvent.requestPermission();
-
-      window.addEventListener('devicemotion', (event) => {
-        deviceMotion.accelerationX = event.accelerationIncludingGravity.x;
-        deviceMotion.accelerationY = event.accelerationIncludingGravity.y;
-        deviceMotion.accelerationZ = event.accelerationIncludingGravity.z;
-      });
     }
+
+    window.addEventListener('devicemotion', (event) => {
+      deviceMotion.accelerationX = event.accelerationIncludingGravity.x;
+      deviceMotion.accelerationY = event.accelerationIncludingGravity.y;
+      deviceMotion.accelerationZ = event.accelerationIncludingGravity.z;
+    });
 
     window.addEventListener('deviceorientation', (event) => {
       deviceMotion.rotationX = event.beta;
