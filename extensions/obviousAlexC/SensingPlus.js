@@ -65,10 +65,11 @@
   };
 
   let initializedSensors = false;
-  const deviceVelocity = {
-    x: 0,
-    y: 0,
-    z: 0,
+  const deviceMotion = {
+    accelerationX: 0,
+    accelerationY: 0,
+    accelerationZ: 0,
+
     rotationX: 0,
     rotationY: 0,
     rotationZ: 0,
@@ -94,9 +95,9 @@
           deviceStatus.accelerometer = false;
         });
         accelerometer.addEventListener("reading", () => {
-          deviceVelocity.x = accelerometer.x;
-          deviceVelocity.y = accelerometer.y;
-          deviceVelocity.z = accelerometer.z;
+          deviceMotion.accelerationX = accelerometer.x;
+          deviceMotion.accelerationY = accelerometer.y;
+          deviceMotion.accelerationZ = accelerometer.z;
           deviceStatus.accelerometer = true;
         });
         accelerometer.start();
@@ -117,9 +118,9 @@
           deviceStatus.gyroscope = false;
         });
         gyro.addEventListener("reading", () => {
-          deviceVelocity.rotationX = gyro.x;
-          deviceVelocity.rotationY = gyro.y;
-          deviceVelocity.rotationZ = gyro.z;
+          deviceMotion.rotationX = gyro.x;
+          deviceMotion.rotationY = gyro.y;
+          deviceMotion.rotationZ = gyro.z;
           deviceStatus.gyroscope = true;
         });
       } catch (e) {
@@ -888,19 +889,19 @@
       initializeSensors();
       if (type === "positional") {
         if (axis === "x") {
-          return deviceVelocity.x;
+          return deviceMotion.accelerationX;
         } else if (axis === "y") {
-          return deviceVelocity.y;
+          return deviceMotion.accelerationY;
         } else if (axis === "z") {
-          return deviceVelocity.z;
+          return deviceMotion.accelerationZ;
         }
       } else if (type === "rotational") {
         if (axis === "x") {
-          return deviceVelocity.rotationX;
+          return deviceMotion.rotationX;
         } else if (axis === "y") {
-          return deviceVelocity.rotationY;
+          return deviceMotion.rotationY;
         } else if (axis === "z") {
-          return deviceVelocity.rotationZ;
+          return deviceMotion.rotationZ;
         }
       }
       // should never happen
