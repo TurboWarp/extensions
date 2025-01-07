@@ -107,7 +107,7 @@ const removeUnchangedTranslations = (source, translated) => {
  * @param {number} ms
  * @returns {Promise<void>}
  */
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * @param {string} url
@@ -120,7 +120,7 @@ const persistentFetch = async (url) => {
       const json = await res.json();
       return json;
     } catch (e) {
-      const sleepFor = Math.random() * (2 ** i) * 1000;
+      const sleepFor = Math.random() * 2 ** i * 1000;
       await sleep(sleepFor);
     }
   }
@@ -218,26 +218,19 @@ const downloadAllResourceTranslations = async (resource) => {
 const run = async () => {
   console.log("This is going to take a while.");
 
-  const [
-    runtime,
-    metadata
-  ] = await Promise.all([
+  const [runtime, metadata] = await Promise.all([
     downloadAllResourceTranslations(RUNTIME_RESOURCE),
-    downloadAllResourceTranslations(METADATA_RESOURCE)
+    downloadAllResourceTranslations(METADATA_RESOURCE),
   ]);
 
   fs.writeFileSync(
     pathUtil.join(__dirname, "../translations/extension-runtime.json"),
-    JSON.stringify(
-      runtime, null, 4
-    )
+    JSON.stringify(runtime, null, 4)
   );
 
   fs.writeFileSync(
     pathUtil.join(__dirname, "../translations/extension-metadata.json"),
-    JSON.stringify(
-      metadata, null, 4
-    )
+    JSON.stringify(metadata, null, 4)
   );
 };
 
