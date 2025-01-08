@@ -24,6 +24,7 @@
     getInfo() {
       return {
         id: "skyhigh173JSON",
+        // eslint-disable-next-line extension/should-translate
         name: "JSON",
         color1: "#3271D0",
         blocks: [

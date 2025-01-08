@@ -57,6 +57,7 @@
         name: Scratch.translate("BigInt"),
         color1: "#59C093",
         blocks: [
+          /* eslint-disable extension/should-translate */
           {
             opcode: "from",
             blockType: Scratch.BlockType.REPORTER,
@@ -371,6 +372,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
         ],
         menus: {
           op: {

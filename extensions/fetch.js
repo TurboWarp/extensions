@@ -15,6 +15,7 @@
           {
             opcode: "get",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "GET [URL]",
             arguments: {
               URL: {
