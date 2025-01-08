@@ -36,6 +36,10 @@
         name: Scratch.translate("Mobile Keyboard"),
         blocks: [
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Currently only works on Android"),
+          },
+          {
             opcode: "showKeyboardBlock",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("show [TYPE] keyboard"),
