@@ -388,7 +388,7 @@
           {
             opcode: "setBodyToForm",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("set request body to a form"),
+            text: Scratch.translate("set request body to multipart form"),
           },
           {
             opcode: "getFormProperty",
@@ -399,7 +399,7 @@
                 defaultValue: "name",
               },
             },
-            text: Scratch.translate("[name] in request form"),
+            text: Scratch.translate("[name] in multipart form"),
           },
           {
             opcode: "setFormProperty",
@@ -414,7 +414,7 @@
                 defaultValue: "value",
               },
             },
-            text: Scratch.translate("set [name] to [value] in request form"),
+            text: Scratch.translate("set [name] to [value] in multipart form"),
           },
           {
             opcode: "deleteFormProperty",
@@ -425,7 +425,7 @@
                 defaultValue: "name",
               },
             },
-            text: Scratch.translate("delete [name] from request form"),
+            text: Scratch.translate("delete [name] from multipart form"),
           },
           "---",
           {
@@ -520,10 +520,11 @@
           },
           mimeType: {
             items: [
+              "application/json",
+              "application/x-www-form-urlencoded",
               "application/javascript",
               "application/ogg",
               "application/pdf",
-              "application/json",
               "application/ld+json",
               "application/xml",
               "application/zip",
