@@ -263,12 +263,12 @@ module.exports = [
             {
               selector:
                 "MethodDefinition[key.name=getInfo] Property[key.name=name][value.type=Literal]",
-              message: "Extension name should be translated",
+              message: "Extension name should usually be translated",
             },
             {
               selector:
                 "MethodDefinition[key.name=getInfo] Property[key.name=blocks] Property[key.name=text][value.type=Literal]",
-              message: "Block text should be translated",
+              message: "Block text should usually be translated",
             },
           ]),
           "should-not-translate": createQueryRule([
