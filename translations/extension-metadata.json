@@ -313,6 +313,7 @@
         "obviousAlexC/newgroundsIO@description": "Lohkoja, joiden avulla pelit voivat olla vuorovaikutuksessa Newgrounds-ohjelmointirajapinnan kanssa. Epävirallinen.",
         "obviousAlexC/penPlus@description": "Edistyneet renderöintikyvyt.",
         "obviousAlexC/penPlus@name": "Kynä Plus V7",
+        "penplus@description": "Korvattu Kynä Plus V7:llä.",
         "penplus@name": "Kynä Plus V5 (vanha)",
         "pointerlock@description": "Lisää hiiren lukitsemiseen liittyviä lohkoja. Hiiren x- ja y-sijaintilohkot ilmoittavat muutoksen viimeisestä ruudusta, kun hiiren osoitin on lukittu. Korvaa hiiren osoittimen lukitus -kokeilun.",
         "pointerlock@name": "Hiiren osoittimen lukitus",
@@ -327,6 +328,7 @@
         "shreder95ua/resolution@name": "Näytön resoluutio",
         "sound@description": "Soita ääniä URL-osoitteista.",
         "sound@name": "Ääni",
+        "steamworks@description": "Yhdistä projektisi Steamworksin ohjelmointirajapintoihin.",
         "stretch@description": "Venytä hahmoja pysty- ja vaakasuunnassa.",
         "stretch@name": "Venytä",
         "text@description": "Käsittele merkkejä ja tekstiä.",
@@ -1233,9 +1235,15 @@
     "pl": {
         "-SIPC-/time@name": "Czas",
         "CST1229/images@name": "Obrazy",
+        "Lily/Video@name": "Film",
+        "Xeltalliv/simple3D@name": "Proste 3D",
+        "clipboard@name": "Schowek",
         "files@name": "Pliki",
+        "lab/text@name": "Animowany Tekst",
+        "qxsck/var-and-list@name": "Zmienna i lista",
         "runtime-options@name": "Opcje Uruchamiania",
-        "sound@name": "Dźwięk"
+        "sound@name": "Dźwięk",
+        "text@name": "Tekst"
     },
     "pt": {
         "runtime-options@name": "Opções de Execução"
