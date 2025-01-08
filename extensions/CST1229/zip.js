@@ -264,7 +264,9 @@
           {
             opcode: "copyFileToArchive",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("copy [FROM] in [FROMARCHIVE] to [TO] in [TOARCHIVE]"),
+            text: Scratch.translate(
+              "copy [FROM] in [FROMARCHIVE] to [TO] in [TOARCHIVE]"
+            ),
             arguments: {
               FROM: {
                 type: Scratch.ArgumentType.STRING,
