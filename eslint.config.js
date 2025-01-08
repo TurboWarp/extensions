@@ -14,7 +14,7 @@ const reportQueryMatches = (context, ast, selector, message) => {
 };
 
 /**
- * Allows creating new rules using same lgoic as ESLint no-restricted-syntax.
+ * Allows creating custom rules that work similar to ESLint's no-restricted-syntax.
  * @param {Array<{selector: string; message: string;}>} rules
  */
 const createQueryRule = (rules) => ({
@@ -224,17 +224,17 @@ module.exports = [
             {
               selector: "NewExpression[callee.name=WebSocket]",
               message:
-                "Ensure that `await Scratch.canFetch(url)` is checked first, then add // eslint-disable-next-line no-restricted-syntax",
+                "Ensure that `await Scratch.canFetch(url)` is checked first, then add // eslint-disable-next-line extension/check-can-fetch",
             },
             {
               selector: "NewExpression[callee.name=Image]",
               message:
-                "Ensure that `await Scratch.canFetch(url)` is checked first, then add // eslint-disable-next-line no-restricted-syntax",
+                "Ensure that `await Scratch.canFetch(url)` is checked first, then add // eslint-disable-next-line extension/check-can-fetch",
             },
             {
               selector: "NewExpression[callee.name=Audio]",
               message:
-                "Ensure that `await Scratch.canFetch(url)` is checked first, then add // eslint-disable-next-line no-restricted-syntax",
+                "Ensure that `await Scratch.canFetch(url)` is checked first, then add // eslint-disable-next-line extension/check-can-fetch",
             },
           ]),
           "no-translate-setup": createQueryRule([
