@@ -149,6 +149,7 @@
           {
             blockIconURI: file,
             opcode: "search",
+            hideFromPalette: true,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("search [STR]"),
             arguments: {

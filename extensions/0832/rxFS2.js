@@ -180,6 +180,7 @@
           {
             blockIconURI: folder,
             opcode: "search",
+            hideFromPalette: true,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({ id: "search", default: "search [STR]" }),
             arguments: {
