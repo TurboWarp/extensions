@@ -192,6 +192,14 @@ module.exports = [
           message: 'Do not call Scratch.translate.setup() yourself. Just use Scratch.translate() and let the build script handle it.'
         },
         {
+          selector: 'MethodDefinition[key.name=getInfo] Property[key.name=name][value.type=Literal]',
+          message: 'Extension name should be translated'
+        },
+        {
+          selector: 'MethodDefinition[key.name=getInfo] Property[key.name=blocks] Property[key.name=text][value.type=Literal]',
+          message: 'Block text should be translated'
+        },
+        {
           selector: 'MethodDefinition[key.name=getInfo] Property[key.name=id][value.callee.property.name=translate]',
           message: 'Do not translate extension ID'
         },
@@ -206,6 +214,14 @@ module.exports = [
         {
           selector: 'MemberExpression[object.name=window][property.name=vm]',
           message: 'Use Scratch.vm instead of window.vm'
+        },
+        {
+          selector: 'VariableDeclarator[init.type=MemberExpression][init.object.name=Scratch][init.property.name=translate]',
+          message: 'Do not store Scratch.translate in a variable as the build script will not be able to statically analyze the strings'
+        },
+        {
+          selector: 'AssignmentExpression[right.type=MemberExpression][right.object.name=Scratch][right.property.name=translate]',
+          message: 'Do not store Scratch.translate in a variable as the build script will not be able to statically analyze the strings'
         }
       ]
     }
