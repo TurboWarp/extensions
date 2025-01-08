@@ -200,8 +200,11 @@
 
     del({ STR }) {
       str = btoa(unescape(encodeURIComponent(STR)));
-      rxFSfi[rxFSsy.indexOf(str) + 1 - 1] = undefined;
-      rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = undefined;
+      const index = rxFSsy.indexOf(str);
+      if (index !== -1) {
+        rxFSfi.splice(index, 1);
+        rxFSsy.splice(index, 1);
+      }
     }
 
     file({ STR, STR2 }) {
