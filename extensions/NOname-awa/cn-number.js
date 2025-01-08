@@ -16,7 +16,7 @@
             opcode: "CN_number",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: "convert [a] to chinese number using [u] numerals",
+            text: Scratch.translate("convert [a] to chinese number using [u] numerals"),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,

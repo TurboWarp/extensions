@@ -227,7 +227,7 @@
           {
             opcode: "renameFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "rename [FROM] to [TO]",
+            text: Scratch.translate("rename [FROM] to [TO]"),
             arguments: {
               FROM: {
                 type: Scratch.ArgumentType.STRING,
@@ -244,7 +244,7 @@
           {
             opcode: "copyFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "copy [FROM] to [TO]",
+            text: Scratch.translate("copy [FROM] to [TO]"),
             arguments: {
               FROM: {
                 type: Scratch.ArgumentType.STRING,
@@ -264,7 +264,7 @@
           {
             opcode: "copyFileToArchive",
             blockType: Scratch.BlockType.COMMAND,
-            text: "copy [FROM] in [FROMARCHIVE] to [TO] in [TOARCHIVE]",
+            text: Scratch.translate("copy [FROM] in [FROMARCHIVE] to [TO] in [TOARCHIVE]"),
             arguments: {
               FROM: {
                 type: Scratch.ArgumentType.STRING,

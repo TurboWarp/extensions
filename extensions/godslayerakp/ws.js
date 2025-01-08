@@ -103,6 +103,7 @@
     getInfo() {
       return {
         id: "gsaWebsocket",
+        // eslint-disable-next-line extension/should-translate
         name: "WebSocket",
         docsURI: "https://extensions.turbowarp.org/godslayerakp/ws",
         color1: "#307eff",
