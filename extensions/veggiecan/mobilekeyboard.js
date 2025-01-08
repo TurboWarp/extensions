@@ -19,7 +19,8 @@
   class MobileKeyboard {
     constructor() {
       this.keyboardOpen = false;
-      this.waitCallback = null;
+      /** @type {Array<() => void>} */
+      this.waitCallbacks = [];
       this.defaultValue = "";
       this.inputElement = null;
     }
@@ -207,10 +208,10 @@
           input.parentNode.removeChild(input);
         }
 
-        if (this.waitCallback) {
-          this.waitCallback();
-          this.waitCallback = null;
+        for (const callback of this.waitCallbacks) {
+          callback();
         }
+        this.waitCallbacks.length = 0;
       };
 
       input.addEventListener("input", () => {
@@ -236,7 +237,7 @@
 
     showKeyboardAndWaitBlock(args) {
       return new Promise((resolve) => {
-        this.waitCallback = resolve;
+        this.waitCallbacks.push(() => resolve());
         this.showKeyboard(args.TYPE);
       });
     }
