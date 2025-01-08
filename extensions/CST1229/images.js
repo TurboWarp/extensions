@@ -234,7 +234,7 @@
           case "image/jpeg":
             {
               if (!(await Scratch.canFetch(IMAGEURL))) return;
-              // eslint-disable-next-line no-restricted-syntax
+              // eslint-disable-next-line extension/check-can-fetch
               const image = new Image();
               image.crossOrigin = "anonymous";
               image.src = IMAGEURL;

@@ -875,7 +875,7 @@
         }
 
         // canFetch() checked above
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line extension/no-xmlhttprequest
         var pRequest = new XMLHttpRequest();
 
         // bind callback function

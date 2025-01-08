@@ -1779,7 +1779,7 @@ Other various small fixes
         return;
       }
       // Permission is checked earlier.
-      // eslint-disable-next-line no-restricted-syntax
+      // eslint-disable-next-line extension/check-can-fetch
       const image = new Image();
       image.onload = function () {
         textureInfo.width = image.width;

@@ -293,7 +293,7 @@
               }
 
               // canFetch() checked above
-              // eslint-disable-next-line no-restricted-syntax
+              // eslint-disable-next-line extension/check-can-fetch
               const websocket = new WebSocket(url);
               instance.websocket = websocket;
 
