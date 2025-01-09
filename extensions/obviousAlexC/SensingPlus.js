@@ -773,11 +773,17 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("positional acceleration"),
+                text: Scratch.translate({
+                  default: "acceleration",
+                  description: "Part of a block that tells you how fast the device is accelerating"
+                }),
                 value: "positional",
               },
               {
-                text: Scratch.translate("rotation rate"),
+                text: Scratch.translate({
+                  default: "rotation",
+                  description: "Part of a block that tells you what angle the device is being held at"
+                }),
                 value: "rotational",
               },
             ],
