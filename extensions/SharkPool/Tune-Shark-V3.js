@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.4.1
+// Version V.3.4.2
 
 (function (Scratch) {
   "use strict";
@@ -16,12 +16,12 @@
 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3OC45NzQiIGhlaWdodD0iNzguOTc0IiB2aWV3Qm94PSIwIDAgNzguOTc0IDc4Ljk3NCI+PGcgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIj48cGF0aCBkPSJNMCA3OC45NzRWMGg3OC45NzR2NzguOTc0eiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Im02MS4yMDIgNTMuODM2LS4wMDItLjAwM2MtLjA2OCAzLjcxLTMuMzM3IDcuMjgtOC4wMTYgOC40MTYtNS4zNTkgMS4zMDItMTAuNTM4LTEuMDgtMTEuNTY4LTUuMzJzMi40OC04LjczMyA3LjgzOS0xMC4wMzVjMi40NC0uNTkzIDQuODQtLjQyIDYuODMxLjM0MnYtMjAuNTZjLTE0Ljg1IDEuMDAzLTI2LjI5OCA1LjAwNi0yNi4yOTggNS4wMDZ2MjcuNjQ0Yy40OSA0LjAxNC0yLjkxNiA4LjA3OC03Ljk3IDkuMzA2LTUuMzU4IDEuMzAxLTEwLjUzNy0xLjA4MS0xMS41NjctNS4zMjFzMi40OC04LjczMyA3LjgzOC0xMC4wMzVjMi40ODYtLjYwNCA0LjkzMy0uNDE0IDYuOTQ2LjM4NGwuMDEyLTM2Ljk5OHMxNi4xOS03LjI5IDM1Ljk1NS02LjYzM3oiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
 
   const extraIcons = {
-    set: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3OC45NzQiIGhlaWdodD0iNzguOTc0IiB2aWV3Qm94PSIwIDAgNzguOTc0IDc4Ljk3NCI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiID48cGF0aCBkPSJtNjQuNTMzIDQyLjYxIDIuMDQyLjg1NWE1LjAyIDUuMDIgMCAwIDEgMi42OSA2LjU3bC0xLjM3IDMuMjc0YTUuMDIgNS4wMiAwIDAgMS02LjU3IDIuNjlsLTIuMDQyLS44NTVhMjUgMjUgMCAwIDEtNC4yOTUgNC4yNmwuODQgMi4wNWE1LjAyIDUuMDIgMCAwIDEtMi43NDIgNi41NDhsLTMuMjg1IDEuMzQ1YTUuMDIgNS4wMiAwIDAgMS02LjU0OC0yLjc0MmwtLjg0LTIuMDVhMjUgMjUgMCAwIDEtNi4wNDktLjAyMmwtLjg1NSAyLjA0MmE1LjAyIDUuMDIgMCAwIDEtNi41NyAyLjY5bC0zLjI3NC0xLjM3YTUuMDIgNS4wMiAwIDAgMS0yLjY5LTYuNTdsLjg1NS0yLjA0MmEyNSAyNSAwIDAgMS00LjI2LTQuMjk1bC0yLjA1Ljg0YTUuMDIgNS4wMiAwIDAgMS02LjU0OC0yLjc0MmwtMS4zNDUtMy4yODVhNS4wMiA1LjAyIDAgMCAxIDIuNzQyLTYuNTQ4bDIuMDUtLjg0YTI1IDI1IDAgMCAxIC4wMjItNi4wNDlsLTIuMDQyLS44NTVhNS4wMiA1LjAyIDAgMCAxLTIuNjktNi41N2wxLjM3LTMuMjc0YTUuMDIgNS4wMiAwIDAgMSA2LjU3LTIuNjlsMi4wNDIuODU1YTI1IDI1IDAgMCAxIDQuMjk1LTQuMjZsLS44NC0yLjA1YTUuMDIgNS4wMiAwIDAgMSAyLjc0Mi02LjU0OGwzLjI4NS0xLjM0NWE1LjAyIDUuMDIgMCAwIDEgNi41NDggMi43NDJsLjg0IDIuMDVhMjUgMjUgMCAwIDEgNi4wNDkuMDIybC44NTUtMi4wNDJhNS4wMiA1LjAyIDAgMCAxIDYuNTctMi42OWwzLjI3NCAxLjM3YTUuMDIgNS4wMiAwIDAgMSAyLjY5IDYuNTdsLS44NTUgMi4wNDJhMjUgMjUgMCAwIDEgNC4yNiA0LjI5NWwyLjA1LS44NGE1LjAyIDUuMDIgMCAwIDEgNi41NDggMi43NDJsMS4zNDUgMy4yODVhNS4wMiA1LjAyIDAgMCAxLTIuNzQyIDYuNTQ4bC0yLjA1Ljg0YTI1IDI1IDAgMCAxLS4wMjIgNi4wNDltLTM3LjQ5OC04LjMzOGMtMi44OCA2Ljg3Ny4zNiAxNC43ODcgNy4yMzcgMTcuNjY3czE0Ljc4Ny0uMzYgMTcuNjY3LTcuMjM3LS4zNi0xNC43ODctNy4yMzctMTcuNjY3LTE0Ljc4Ny4zNi0xNy42NjcgNy4yMzciIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMCA3OC45NzRWMGg3OC45NzR2NzguOTc0eiIgZmlsbD0ibm9uZSIvPjwvZz48L3N2Zz4=",
-    nob: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI3OC45NzQiIGhlaWdodD0iNzguOTc0IiB2aWV3Qm94PSIwIDAgNzguOTc0IDc4Ljk3NCI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0wIDc4Ljk3NFYwaDc4Ljk3NHY3OC45NzR6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTM3Ljk2MSAxMC44NDdhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQtMi4xMDRWNS42OTJjMC0xLjE2My45NDItMi4xMDUgMi4xMDQtMi4xMDVoMy4wNTJjMS4xNjIgMCAyLjEwNC45NDIgMi4xMDQgMi4xMDV2My4wNTFhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQgMi4xMDV6bTAgNjQuNTRhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQtMi4xMDV2LTMuMDUxYzAtMS4xNjIuOTQyLTIuMTA1IDIuMTA0LTIuMTA1aDMuMDUyYzEuMTYyIDAgMi4xMDQuOTQzIDIuMTA0IDIuMTA1djMuMDUxYTIuMTA1IDIuMTA1IDAgMCAxLTIuMTA0IDIuMTA1em0yMC42OTgtNTcuMjNhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NmwyLjE1OC0yLjE1OGEyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDB6TTEzLjAyMyA2My43OTNhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NmwyLjE1OC0yLjE1OGEyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDB6bTU1LjEwNC0yNS44MzJjMC0xLjE2Mi45NDItMi4xMDQgMi4xMDQtMi4xMDRoMy4wNTFjMS4xNjMgMCAyLjEwNS45NDIgMi4xMDUgMi4xMDR2My4wNTJhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDUgMi4xMDRoLTMuMDUxYTIuMTA1IDIuMTA1IDAgMCAxLTIuMTA1LTIuMTA0em0tNjQuNTQgMGMwLTEuMTYyLjk0Mi0yLjEwNCAyLjEwNS0yLjEwNGgzLjA1MWMxLjE2MiAwIDIuMTA1Ljk0MiAyLjEwNSAyLjEwNHYzLjA1MmEyLjEwNSAyLjEwNSAwIDAgMS0yLjEwNSAyLjEwNEg1LjY5MmEyLjEwNSAyLjEwNSAwIDAgMS0yLjEwNS0yLjEwNHptNTcuMjMgMjAuNjk4YTIuMTA1IDIuMTA1IDAgMCAxIDIuOTc2IDBsMi4xNTggMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEgMCAyLjk3NmwtMi4xNTggMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEtMi45NzYgMGwtMi4xNTgtMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NnpNMTUuMTgxIDEzLjAyM2EyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDBsLTIuMTU4LTIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAtMi45NzZ6bTguNDE2IDEwLjQzYzcuNTQ2LTcuNTQ3IDE5LjA2NS04LjcwMiAyNy44MjctMy40NjUtLjEyNS4wOS0xMy4yNjQgMTcuODcyLTEyLjEzMyAxOS4wMDNsMS4wMzcgMS4wMzdjMS4xMyAxLjEzIDE4LjkxMy0xMi4wMDggMTkuMDAzLTEyLjEzMyA1LjIzNyA4Ljc2MiA0LjA4MiAyMC4yOC0zLjQ2NSAyNy44MjgtOC45MTEgOC45MS0yMy4zNTkgOC45MS0zMi4yNyAwLTguOTEtOC45MTEtOC45MS0yMy4zNTkgMC0zMi4yNyIgZmlsbD0iI2ZmZiIvPjwvZz48L3N2Zz4=",
-    flag: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNi42MyAxNy41Ij48cGF0aCBkPSJNLjc1IDJhNi40NCA2LjQ0IDAgMCAxIDcuNjkgMGgwYTYuNDQgNi40NCAwIDAgMCA3LjY5IDB2MTAuNGE2LjQ0IDYuNDQgMCAwIDEtNy42OSAwaDBhNi40NCA2LjQ0IDAgMCAwLTcuNjkgMCIgc3R5bGU9ImZpbGw6IzRjYmY1NjtzdHJva2U6IzQ1OTkzZDtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbGluZWpvaW46cm91bmQiLz48cGF0aCBzdHlsZT0iZmlsbDojNGNiZjU2O3N0cm9rZTojNDU5OTNkO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2Utd2lkdGg6MS41cHgiIGQ9Ik0uNzUgMTYuNzV2LTE2Ii8+PC9zdmc+",
-    stop: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNCAxNCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggc3R5bGU9ImZpbGw6I2VjNTk1OTtzdHJva2U6I2I4NDg0ODtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MTAiIGQ9Ik00LjMuNWg1LjRsMy44IDMuOHY1LjRsLTMuOCAzLjhINC4zTC41IDkuN1Y0LjN6Ii8+PC9zdmc+"
+    set: "dpZHRoPSI3OC45NzQiIGhlaWdodD0iNzguOTc0IiB2aWV3Qm94PSIwIDAgNzguOTc0IDc4Ljk3NCI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiID48cGF0aCBkPSJtNjQuNTMzIDQyLjYxIDIuMDQyLjg1NWE1LjAyIDUuMDIgMCAwIDEgMi42OSA2LjU3bC0xLjM3IDMuMjc0YTUuMDIgNS4wMiAwIDAgMS02LjU3IDIuNjlsLTIuMDQyLS44NTVhMjUgMjUgMCAwIDEtNC4yOTUgNC4yNmwuODQgMi4wNWE1LjAyIDUuMDIgMCAwIDEtMi43NDIgNi41NDhsLTMuMjg1IDEuMzQ1YTUuMDIgNS4wMiAwIDAgMS02LjU0OC0yLjc0MmwtLjg0LTIuMDVhMjUgMjUgMCAwIDEtNi4wNDktLjAyMmwtLjg1NSAyLjA0MmE1LjAyIDUuMDIgMCAwIDEtNi41NyAyLjY5bC0zLjI3NC0xLjM3YTUuMDIgNS4wMiAwIDAgMS0yLjY5LTYuNTdsLjg1NS0yLjA0MmEyNSAyNSAwIDAgMS00LjI2LTQuMjk1bC0yLjA1Ljg0YTUuMDIgNS4wMiAwIDAgMS02LjU0OC0yLjc0MmwtMS4zNDUtMy4yODVhNS4wMiA1LjAyIDAgMCAxIDIuNzQyLTYuNTQ4bDIuMDUtLjg0YTI1IDI1IDAgMCAxIC4wMjItNi4wNDlsLTIuMDQyLS44NTVhNS4wMiA1LjAyIDAgMCAxLTIuNjktNi41N2wxLjM3LTMuMjc0YTUuMDIgNS4wMiAwIDAgMSA2LjU3LTIuNjlsMi4wNDIuODU1YTI1IDI1IDAgMCAxIDQuMjk1LTQuMjZsLS44NC0yLjA1YTUuMDIgNS4wMiAwIDAgMSAyLjc0Mi02LjU0OGwzLjI4NS0xLjM0NWE1LjAyIDUuMDIgMCAwIDEgNi41NDggMi43NDJsLjg0IDIuMDVhMjUgMjUgMCAwIDEgNi4wNDkuMDIybC44NTUtMi4wNDJhNS4wMiA1LjAyIDAgMCAxIDYuNTctMi42OWwzLjI3NCAxLjM3YTUuMDIgNS4wMiAwIDAgMSAyLjY5IDYuNTdsLS44NTUgMi4wNDJhMjUgMjUgMCAwIDEgNC4yNiA0LjI5NWwyLjA1LS44NGE1LjAyIDUuMDIgMCAwIDEgNi41NDggMi43NDJsMS4zNDUgMy4yODVhNS4wMiA1LjAyIDAgMCAxLTIuNzQyIDYuNTQ4bC0yLjA1Ljg0YTI1IDI1IDAgMCAxLS4wMjIgNi4wNDltLTM3LjQ5OC04LjMzOGMtMi44OCA2Ljg3Ny4zNiAxNC43ODcgNy4yMzcgMTcuNjY3czE0Ljc4Ny0uMzYgMTcuNjY3LTcuMjM3LS4zNi0xNC43ODctNy4yMzctMTcuNjY3LTE0Ljc4Ny4zNi0xNy42NjcgNy4yMzciIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJNMCA3OC45NzRWMGg3OC45NzR2NzguOTc0eiIgZmlsbD0ibm9uZSIvPjwvZz48L3N2Zz4=",
+    nob: "dpZHRoPSI3OC45NzQiIGhlaWdodD0iNzguOTc0IiB2aWV3Qm94PSIwIDAgNzguOTc0IDc4Ljk3NCI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0wIDc4Ljk3NFYwaDc4Ljk3NHY3OC45NzR6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTM3Ljk2MSAxMC44NDdhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQtMi4xMDRWNS42OTJjMC0xLjE2My45NDItMi4xMDUgMi4xMDQtMi4xMDVoMy4wNTJjMS4xNjIgMCAyLjEwNC45NDIgMi4xMDQgMi4xMDV2My4wNTFhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQgMi4xMDV6bTAgNjQuNTRhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDQtMi4xMDV2LTMuMDUxYzAtMS4xNjIuOTQyLTIuMTA1IDIuMTA0LTIuMTA1aDMuMDUyYzEuMTYyIDAgMi4xMDQuOTQzIDIuMTA0IDIuMTA1djMuMDUxYTIuMTA1IDIuMTA1IDAgMCAxLTIuMTA0IDIuMTA1em0yMC42OTgtNTcuMjNhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NmwyLjE1OC0yLjE1OGEyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDB6TTEzLjAyMyA2My43OTNhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NmwyLjE1OC0yLjE1OGEyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDB6bTU1LjEwNC0yNS44MzJjMC0xLjE2Mi45NDItMi4xMDQgMi4xMDQtMi4xMDRoMy4wNTFjMS4xNjMgMCAyLjEwNS45NDIgMi4xMDUgMi4xMDR2My4wNTJhMi4xMDUgMi4xMDUgMCAwIDEtMi4xMDUgMi4xMDRoLTMuMDUxYTIuMTA1IDIuMTA1IDAgMCAxLTIuMTA1LTIuMTA0em0tNjQuNTQgMGMwLTEuMTYyLjk0Mi0yLjEwNCAyLjEwNS0yLjEwNGgzLjA1MWMxLjE2MiAwIDIuMTA1Ljk0MiAyLjEwNSAyLjEwNHYzLjA1MmEyLjEwNSAyLjEwNSAwIDAgMS0yLjEwNSAyLjEwNEg1LjY5MmEyLjEwNSAyLjEwNSAwIDAgMS0yLjEwNS0yLjEwNHptNTcuMjMgMjAuNjk4YTIuMTA1IDIuMTA1IDAgMCAxIDIuOTc2IDBsMi4xNTggMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEgMCAyLjk3NmwtMi4xNTggMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEtMi45NzYgMGwtMi4xNTgtMi4xNThhMi4xMDUgMi4xMDUgMCAwIDEgMC0yLjk3NnpNMTUuMTgxIDEzLjAyM2EyLjEwNSAyLjEwNSAwIDAgMSAyLjk3NiAwbDIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAgMi45NzZsLTIuMTU4IDIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxLTIuOTc2IDBsLTIuMTU4LTIuMTU4YTIuMTA1IDIuMTA1IDAgMCAxIDAtMi45NzZ6bTguNDE2IDEwLjQzYzcuNTQ2LTcuNTQ3IDE5LjA2NS04LjcwMiAyNy44MjctMy40NjUtLjEyNS4wOS0xMy4yNjQgMTcuODcyLTEyLjEzMyAxOS4wMDNsMS4wMzcgMS4wMzdjMS4xMyAxLjEzIDE4LjkxMy0xMi4wMDggMTkuMDAzLTEyLjEzMyA1LjIzNyA4Ljc2MiA0LjA4MiAyMC4yOC0zLjQ2NSAyNy44MjgtOC45MTEgOC45MS0yMy4zNTkgOC45MS0zMi4yNyAwLTguOTEtOC45MTEtOC45MS0yMy4zNTkgMC0zMi4yNyIgZmlsbD0iI2ZmZiIvPjwvZz48L3N2Zz4=",
+    flag: "ZpZXdCb3g9IjAgMCAxNi42MyAxNy41Ij48cGF0aCBkPSJNLjc1IDJhNi40NCA2LjQ0IDAgMCAxIDcuNjkgMGgwYTYuNDQgNi40NCAwIDAgMCA3LjY5IDB2MTAuNGE2LjQ0IDYuNDQgMCAwIDEtNy42OSAwaDBhNi40NCA2LjQ0IDAgMCAwLTcuNjkgMCIgc3R5bGU9ImZpbGw6IzRjYmY1NjtzdHJva2U6IzQ1OTkzZDtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbGluZWpvaW46cm91bmQiLz48cGF0aCBzdHlsZT0iZmlsbDojNGNiZjU2O3N0cm9rZTojNDU5OTNkO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2Utd2lkdGg6MS41cHgiIGQ9Ik0uNzUgMTYuNzV2LTE2Ii8+PC9zdmc+",
+    stop: "ZpZXdCb3g9IjAgMCAxNCAxNCIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+PHBhdGggc3R5bGU9ImZpbGw6I2VjNTk1OTtzdHJva2U6I2I4NDg0ODtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbGluZWpvaW46cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MTAiIGQ9Ik00LjMuNWg1LjRsMy44IDMuOHY1LjRsLTMuOCAzLjhINC4zTC41IDkuN1Y0LjN6Ii8+PC9zdmc+"
   };
-  for (const key in extraIcons) extraIcons[key] = "data:image/svg+xml;base64,PHN2Zy" + extraIcons[key];
+  for (const key in extraIcons) extraIcons[key] = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIH" + extraIcons[key];
 
   // Modified Pizzicato Library (Web Audio API, but with Premade Effects and Stuff)
   // uses MIT License
@@ -35,6 +35,7 @@
   const runtime = vm.runtime;
   const scratchAudio = runtime.audioEngine;
 
+  const ts3Data = Symbol("ts3Data");
   const simpleEffects = [
     "pitch", "detune", "speed", "pan",
     "gain", "distortion", "attack", "release"
@@ -44,50 +45,9 @@
     "highpass", "lowpass", "flanger", "compressor", "equalizer"
   ];
 
+  let deltaTime = 0, prevFrameTime = 0;
   let soundBank = {};
   let settings = { flagCtrl: false, canSave: false };
-  const load = (storage) => {
-    if (storage === undefined) return;
-    settings = storage.settings;
-    soundBank = storage.bank;
-    for (const item in soundBank) {
-      const sound = soundBank[item];
-      sound.loaded = false;
-      if (sound.isVanilla) {
-        const info = sound.src.substring(1, sound.src.lastIndexOf(".")).split("/");
-        let target = info[0] === "Stage" ? runtime.getTargetForStage() : runtime.getSpriteTargetByName(info[0]);
-        if (target === undefined) {
-          alert(`Tune Shark 3 -- Failed to load ${info[1]} from ${info[0]}`);
-          continue;
-        }
-
-        const scratchSound = target.sprite.sounds.find((i) => { return i.name === info[1] });
-        if (scratchSound === undefined) {
-          alert(`Tune Shark 3 -- Failed to load ${info[1]} from ${info[0]}`);
-          continue;
-        }
-        const buffer = target.sprite.soundBank.soundPlayers[scratchSound.soundId].buffer;
-        const engine = new Pizzicato.Sound({
-          source: "buffer", options: { buffer, attack: 0 }
-        });
-
-        engine.sourceNode = engine.getSourceNode();
-        sound.context = engine;
-        sound.loaded = true;
-      } else {
-        const engine = new Pizzicato.Sound({
-          source: "file", options: { path: sound.src, attack: 0 }
-        }, () => {
-          engine.sourceNode = engine.getSourceNode();
-          sound.context = engine;
-          sound.loaded = true;
-        });
-      }
-    }
-  };
-  if (!Scratch.extensions.isPenguinMod) {
-    runtime.on("PROJECT_LOADED", () => { load(runtime.extensionStorage["SPtuneShark3"]) })
-  }
 
   // Create an Event for when Pause Project is Activated
   // Save original function if it exists
@@ -103,6 +63,49 @@
 
   class SPtuneShark3 {
     constructor() {
+      this.loadStorage = function(storage) {
+        if (storage === undefined) return;
+        settings = storage.settings;
+        soundBank = storage.bank;
+        for (const item in soundBank) {
+          const sound = soundBank[item];
+          sound.loaded = false;
+          if (sound.isVanilla) {
+            const info = sound.src.substring(1, sound.src.lastIndexOf(".")).split("/");
+            let target = info[0] === "Stage" ? runtime.getTargetForStage() : runtime.getSpriteTargetByName(info[0]);
+            if (target === undefined) {
+              alert(`Tune Shark 3 -- Failed to load ${info[1]} from ${info[0]}`);
+              continue;
+            }
+
+            const scratchSound = target.sprite.sounds.find((i) => { return i.name === info[1] });
+            if (scratchSound === undefined) {
+              alert(`Tune Shark 3 -- Failed to load ${info[1]} from ${info[0]}`);
+              continue;
+            }
+            const buffer = target.sprite.soundBank.soundPlayers[scratchSound.soundId].buffer;
+            const engine = new Pizzicato.Sound({
+              source: "buffer", options: { buffer, attack: 0 }
+            });
+
+            engine.sourceNode = engine.getSourceNode();
+            sound.context = engine;
+            sound.loaded = true;
+          } else {
+            const engine = new Pizzicato.Sound({
+              source: "file", options: { path: sound.src, attack: 0 }
+            }, () => {
+              engine.sourceNode = engine.getSourceNode();
+              sound.context = engine;
+              sound.loaded = true;
+            });
+          }
+        }
+      }
+      if (!Scratch.extensions.isPenguinMod) {
+        runtime.on("PROJECT_LOADED", () => this.loadStorage(runtime.extensionStorage["SPtuneShark3"]))
+      }
+
       runtime.on("PROJECT_START", () => {
         if (settings.flagCtrl) this.ctrlSounds({ CONTROL: "stop" });
       });
@@ -110,22 +113,35 @@
         if (settings.flagCtrl) this.ctrlSounds({ CONTROL: "stop" });
       });
       runtime.on("BEFORE_EXECUTE", () => {
+        const now = performance.now();
+        deltaTime = prevFrameTime === 0 ? 0 : (now - prevFrameTime) / 1000;
+        prevFrameTime = now;
+
         const projectVal = scratchAudio.inputNode.gain.value;
-        Object.keys(soundBank).forEach(key => {
-          const bank = soundBank[key];
+        Object.values(soundBank).forEach(bank => {
           if (bank.loaded) {
             const sound = bank.context;
             // Clamp Volume to Project Volume
             const curVol = Math.min(100, Math.max(0, bank.vol)) / 100;
             sound.volume = curVol * projectVal;
-            // Apply Speed Changes
-            if (bank.speed !== 1 && sound.playing) {
-              const lastplay = sound.lastTimePlayed;
-              const time = Math.abs(lastplay - sound.sourceNode.context.currentTime);
-              sound.stop();
-              sound.play(0, time * bank.speed);
-              sound.lastTimePlayed = lastplay;
-              this.patchLinks(sound.sourceNode, bank);
+
+            if (sound.playing) {
+              // Increment Current Time
+              const leng = sound.loop && bank.loopParm[1] ? bank.loopParm[1] : sound.sourceNode.buffer.duration;
+              let time = bank.currentTime;
+              time += deltaTime * bank.rate;
+              if (sound.loop) time = Math.max(0, time % (leng - bank.loopParm[0]) + 0.00001) + bank.loopParm[0];
+              else time = Math.min(leng, Math.max(0, time));
+              bank.currentTime = time;
+
+              // Apply Speed Changes
+              if (bank.speed !== 1) {
+                const lastTime = bank.currentTime;
+                sound.stop();
+                bank.currentTime = lastTime;
+                sound.play(0, lastTime);
+                this.patchLinks(sound.sourceNode, bank);
+              }
             }
           }
         });
@@ -500,7 +516,7 @@
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "MySound" },
-              THRESH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
+              THRESH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
               KNEE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               ATTACK: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               RELEASE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
@@ -551,6 +567,49 @@
     }
 
     // Helper Funcs
+    startHats(data) {
+      let newThreads = [];
+      runtime.allScriptsByOpcodeDo("SPtuneShark3_whenSound", (script, target) => {
+        const thread = runtime._pushThread(script.blockId, target);
+        thread[ts3Data] = data;
+        newThreads.push(thread);
+      });
+      return newThreads;
+    }
+
+    generateData(name, src, context, isVanilla) {
+      return {
+        name, src, context, isVanilla, effects: {}, loaded: true, reversed: false,
+        currentTime: 0, vol: 100, gain: 1, pitch: 1, detune: 0, speed: 1, rate: 1,
+        loopParm: [0, 0], overlap: false, overlays: [], isBind: false, binds: {},
+        _cache: { loudness: {}, tone: {} }
+      };
+    }
+
+    getBPM(data, sampleRate) {
+      const peaks = [];
+      let lastPeakIndex = 0, max = 0.1;
+      for (let i = 0; i < data.length; i++) { if (data[i] > max) max = data[i] }
+      for (let i = 0; i < data.length; i++) {
+        if (data[i] > max - 0.1 && i - lastPeakIndex > sampleRate / 4) {
+          peaks.push(i);
+          lastPeakIndex = i;
+        }
+      }
+      const intervals = [];
+      for (let i = 1; i < peaks.length; i++) intervals.push(peaks[i] - peaks[i - 1]);
+      const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+      const value = Math.round((sampleRate / avgInterval) * 60);
+      return isNaN(value) ? 0 : value;
+    }
+
+    patchLinks(src, sound) {
+      src.playbackRate.value = sound.pitch;
+      src.detune.value = sound.detune;
+      src.gainSuccessor.gain.value = sound.gain;
+      if (src.loop) this.loopParams({ NAME: sound.name, START: sound.loopParm[0], END: sound.loopParm[1] });
+    }
+
     updateEffect(effect, sound, name, args) {
       delete args.NAME; delete args.TYPE;
       effect.arguments = args; // Match Original Values, not Converted
@@ -604,23 +663,6 @@
       }
     }
 
-    getBPM(data, sampleRate) {
-      const peaks = [];
-      let lastPeakIndex = 0, max = 0.1;
-      for (let i = 0; i < data.length; i++) { if (data[i] > max) max = data[i] }
-      for (let i = 0; i < data.length; i++) {
-        if (data[i] > max - 0.1 && i - lastPeakIndex > sampleRate / 4) {
-          peaks.push(i);
-          lastPeakIndex = i;
-        }
-      }
-      const intervals = [];
-      for (let i = 1; i < peaks.length; i++) intervals.push(peaks[i] - peaks[i - 1]);
-      const avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
-      const value = Math.round((sampleRate / avgInterval) * 60);
-      return isNaN(value) ? 0 : value;
-    }
-
     play(sound, atTime, con) {
       try {
         if (sound.playing && con.overlap) {
@@ -628,23 +670,24 @@
           const newName = `${con.name}_COPY_${Math.random()}`;
           soundBank[newName] = {
             ...sound,
-            context: clone, name: newName, loopParm: [0, 0], pauseTime: 0,
-            rateChange: [0,0], overlap: false, overlays: [], isBind: false, binds: {}
+            context: clone, name: newName, loopParm: [0, 0],
+            overlap: false, overlays: [], isBind: false, binds: {}
           };
-          clone.play();
+          clone.play(0, atTime);
           clone.sourceNode.playbackRate.value = con.pitch;
           clone.sourceNode.gainSuccessor.gain.value = con.gain;
           con.overlays.push(clone);
           clone.on("end", () => { delete soundBank[newName] });
         } else {
-          con.rateChange = [0,0];
-          sound.play(0, sound.loop ? con.loopParm[0] : atTime);
+          if (!sound.playing) con.currentTime = atTime;
+          sound.play(0, atTime);
           const srcNode = sound.sourceNode;
           this.patchLinks(srcNode, con);
           if (Object.keys(con.binds).length > 0) {
             Object.keys(con.binds).forEach(key => {
               const thisSound = con.binds[key];
               const context = thisSound.context;
+              if (!context.playing) thisSound.currentTime = atTime;
               context.play(0, atTime);
               this.patchLinks(context.sourceNode, thisSound);
             });
@@ -662,68 +705,24 @@
       const ctx = sound.context;
       const src = ctx.sourceNode;
       if (type === "stop") {
+        const lastTime = sound.currentTime;
         ctx.stop();
+        sound.currentTime = lastTime;
         for (let i = 0; i < sound.overlays.length; i++) sound.overlays[i].stop();
         this.startHats({ name: sound.name, type: "stops" });
       } else if (type === "pause") {
-        sound.pauseTime = src.context.currentTime;
         ctx.pause();
         for (let i = 0; i < sound.overlays.length; i++) sound.overlays[i].pause();
         this.startHats({ name: sound.name, type: "stops" });
       } else {
         this.startHats({ name: sound.name, type: "starts" });
-        if (type === "play") ctx.play();
-        else {
-          if (!ctx.paused) return;
-          const lastTime = this.currentTime(sound, ctx, src);
-          ctx.stop();
-          ctx.play(0, lastTime);
-          return this.patchLinks(ctx.sourceNode, sound);
-        }
-        this.patchLinks(src, sound);
-        for (let i = 0; i < sound.overlays.length; i++) {
-          sound.overlays[i].play();
-          this.patchLinks(sound.overlays[i].sourceNode, sound);
-        }
+        if (!ctx.paused) return;
+        const lastTime = sound.currentTime;
+        ctx.stop();
+        sound.currentTime = lastTime;
+        ctx.play(0, lastTime);
+        this.patchLinks(ctx.sourceNode, sound);
       }
-    }
-
-    currentTime(sound, ctx, src) {
-      if (!ctx.playing && !ctx.paused) return 0;
-      const rate = sound.pitch * sound.speed * Math.pow(2, sound.detune / 1200);
-      const leng = ctx.loop && sound.loopParm[1] ? sound.loopParm[1] : src.buffer.duration;
-      const loopStart = sound.loopParm[0];
-      const now = ctx.paused ? sound.pauseTime : src.context.currentTime;
-      let time = now - ctx.lastTimePlayed;
-      time = sound.rateChange[1] + ((time - sound.rateChange[0]) * rate);
-      if (ctx.loop) return Math.max(0, time % (leng - loopStart) + 0.00001) + loopStart;
-      return Math.min(leng, Math.max(0, time));
-    }
-
-    patchLinks(src, sound, optShifters) {
-      if (optShifters) {
-        const ctx = sound.context;
-        if (
-          optShifters[0] !== sound.pitch || optShifters[1] !== sound.detune || optShifters[2] !== sound.speed
-        ) sound.rateChange = [
-          this.currentTime(sound, ctx, src),
-          (ctx.paused ? sound.pauseTime : src.context.currentTime) - ctx.lastTimePlayed
-        ];
-      }
-      src.playbackRate.value = sound.pitch;
-      src.detune.value = sound.detune;
-      src.gainSuccessor.gain.value = sound.gain;
-      if (src.loop) this.loopParams({ NAME: sound.name, START: sound.loopParm[0], END: sound.loopParm[1] });
-    }
-
-    startHats(data) {
-      let newThreads = [];
-      runtime.allScriptsByOpcodeDo("SPtuneShark3_whenSound", (script, target) => {
-        const thread = runtime._pushThread(script.blockId, target);
-        thread.SPts3Data = data;
-        newThreads.push(thread);
-      });
-      return newThreads;
     }
 
     // Block Funcs
@@ -736,12 +735,10 @@
         }, () => {
           try {
             engine.sourceNode = engine.getSourceNode();
-            soundBank[args.NAME] = {
-              context: engine, name: args.NAME, src: args.URL, effects: {}, pauseTime: 0,
-              rateChange: [0,0], loaded: true, reversed: false, vol: 100, gain: 1, pitch: 1,
-              detune: 0, speed: 1, loopParm: [0, 0], overlap: false, overlays: [],
-              isBind: false, binds: {}, _cache: { loudness: {}, tone: {} }, isVanilla: false
-            };
+            const bank = soundBank[args.NAME] = this.generateData(args.NAME, args.URL, engine, false);
+            engine.on("stop", () => {
+              bank.currentTime = engine.loop && bank.loopParm[1] ? bank.loopParm[1] : engine.sourceNode.buffer.duration;
+            });
             resolve();
           } catch {
             alert("Tune Shark V3 Cant Import this Sound, File may be Corrupted or Non-Existent");
@@ -764,12 +761,10 @@
         });
         // this part of the Library was modified to work like this
         engine.sourceNode = engine.getSourceNode();
-          soundBank[args.NAME] = {
-          context: engine, name: args.NAME, src: sourceURL,
-          effects: {}, pauseTime: 0, rateChange: [0,0], loaded: true, reversed: false, vol: 100,
-          gain: 1, pitch: 1, detune: 0, speed: 1, loopParm: [0, 0], overlap: false, overlays: [],
-          isBind: false, binds: {}, _cache: { loudness: {}, tone: {} }, isVanilla: true
-        };
+        const bank = soundBank[args.NAME] = this.generateData(args.NAME, sourceURL, engine, true);
+        engine.on("stop", () => {
+          bank.currentTime = engine.loop && bank.loopParm[1] ? bank.loopParm[1] : engine.sourceNode.buffer.duration;
+        });
       }
     }
 
@@ -858,8 +853,15 @@
     toggleLoop(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
+      const oldValue = sound.context.loop;
       sound.context.loop = args.TYPE === "on";
       if (args.TYPE === "off") this.typeOverlay(sound, "stop");
+      else if (!oldValue) {
+        const lastTime = sound.currentTime;
+        sound.context.stop();
+        sound.currentTime = lastTime;
+        sound.context.play(0, lastTime);
+      }
     }
 
     toggleReverse(args) {
@@ -914,7 +916,7 @@
     }
 
     whenSound(args, util) {
-      const data = util.thread.SPts3Data ?? {};
+      const data = util.thread[ts3Data] ?? {};
       return args.CONTROL === data.type && args.NAME === data.name;
     }
 
@@ -939,7 +941,7 @@
       const src = sound.context.sourceNode;
       switch (args.PROP) {
         case "length": return src.buffer.duration;
-        case "current time": return this.currentTime(sound, sound.context, src);
+        case "current time": return sound.currentTime;
         case "estimated bpm": return this.getBPM(src.buffer.getChannelData(0), src.buffer.sampleRate);
         case "channels": return src.buffer.numberOfChannels;
         case "source": return sound.src;
@@ -1033,7 +1035,6 @@
       const ctx = sound.context;
       const effect = Cast.toString(args.EFFECT);
       const name = effect.toUpperCase();
-      const ogShifters = [sound.pitch, sound.detune, sound.speed];
       if (effect === "pitch") sound.pitch = 1;
       else if (effect === "detune") sound.detune = 0;
       else if (effect === "speed") sound.speed = 1;
@@ -1044,14 +1045,15 @@
         sound.pitch = 1; sound.detune = 0; sound.speed = 1;
         sound.gain = 1; sound.context.attack = 0; sound.context.release = 0;
         const effects = sound.effects;
-        Object.keys(effects).forEach(key => { ctx.removeEffect(effects[key]) });
+        Object.values(effects).forEach(e => ctx.removeEffect(e));
         sound.effects = {};
       }
       if (sound.effects[name] !== undefined) {
         ctx.removeEffect(sound.effects[name]);
         delete sound.effects[name];
       }
-      this.patchLinks(ctx.sourceNode, sound, ogShifters);
+      sound.rate = sound.pitch * sound.speed * Math.pow(2, sound.detune / 1200);
+      this.patchLinks(ctx.sourceNode, sound);
     }
 
     setThingNew(args) {
@@ -1059,7 +1061,6 @@
       if (sound === undefined) return;
       const ctx = sound.context;
       const value = Cast.toNumber(args.VALUE) / 100;
-      const ogShifters = [sound.pitch, sound.detune, sound.speed];
       if (args.TYPE === "pitch") sound.pitch = Math.max(0, value + 1);
       else if (args.TYPE === "detune") sound.detune = value * 1000;
       else if (args.TYPE === "speed") sound.speed = Math.max(0, value);
@@ -1073,7 +1074,8 @@
         const distort = new Pizzicato.Effects.Distortion({ gain: value });
         return this.updateEffect(distort, sound, "DISTORTION", args);
       }
-      this.patchLinks(ctx.sourceNode, sound, ogShifters);
+      sound.rate = sound.pitch * sound.speed * Math.pow(2, sound.detune / 1200);
+      this.patchLinks(ctx.sourceNode, sound);
     }
 
     setReverb(args) {
@@ -1200,7 +1202,7 @@
         return { SPtuneShark3: { bank: convertBank, settings } }
       }
     }
-    deserialize(data) { load(data.SPtuneShark3) }
+    deserialize(data) { this.loadStorage(data.SPtuneShark3) }
   }
 
   Scratch.extensions.register(new SPtuneShark3());
