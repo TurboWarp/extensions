@@ -703,7 +703,6 @@
 
     typeOverlay(sound, type) {
       const ctx = sound.context;
-      const src = ctx.sourceNode;
       if (type === "stop") {
         const lastTime = sound.currentTime;
         ctx.stop();
