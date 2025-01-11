@@ -183,7 +183,6 @@ The A-frame libary is licensed under the MIT license, which can be found at http
   });
 
   let xrProjectionMatrix, xrTransform, xrCombinedMatrix;
-  //TODO: Optimize this, too many const declarations per tick cause garbage collection & FPS drops
   //Matrix processing code from the AR extension.
   AFRAME.registerComponent("pose-matrices", {
     tick: function () {
