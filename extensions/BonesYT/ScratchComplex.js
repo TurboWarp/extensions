@@ -52,13 +52,16 @@
             : { r: +part, i: 0 };
         } else {
           const sign = input.match(/(?<!^)[+-]/)?.[0] == "-" ? -1 : 1;
-          let reversed = false
+          let reversed = false;
 
-          if (parts[0].endsWith("i")) parts.reverse(), reversed = true;
+          if (parts[0].endsWith("i")) parts.reverse(), (reversed = true);
           parts[1] = parts[1].replace(/i$/, "");
           if (!parts[1].match(/\d/)) parts[1] += "1";
           parts = parts.map((v) => v.replace("p", "e+").replace("m", "e-"));
-          return { r: +parts[0] * (reversed ? sign : 1), i: +parts[1] * (reversed ? 1 : sign) };
+          return {
+            r: +parts[0] * (reversed ? sign : 1),
+            i: +parts[1] * (reversed ? 1 : sign),
+          };
         }
       } else {
         const parts = input.split(",");
