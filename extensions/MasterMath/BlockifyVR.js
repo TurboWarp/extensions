@@ -13,8 +13,6 @@ Minified source code found at https://aframe.io/releases/1.5.0/aframe.min.js.
 Unminified source code can be found at https://aframe.io/releases/1.5.0/aframe.js
 
 The A-frame libary is licensed under the MIT license, which can be found at https://github.com/aframevr/aframe/blob/master/LICENSE.
-
-I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame should remain under MIT, while all other code recieves MPL-2.0.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
@@ -40,12 +38,12 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
 
   // prettier-ignore
   const htmlcode = `
-  <a-scene renderer="highRefreshRate: true; multiviewStereo: true; foveationLevel: 0.25;" background="color: black" pose-matrices embedded style="display: none">
+  <a-scene pose-matrices embedded renderer="highRefreshRate: true; multiviewStereo: true; foveationLevel: 0.25; antialias: false;" background="color: black" style="display: none">
     <a-entity camera look-controls id="AframeCamera" camera-logger>
       <a-plane id="scratchStageVRDisplay" material="shader: flat; src: #scratchcanvas;" update-display></a-plane>
     </a-entity>
-    <a-entity cross-platform-controls="hand: left" left-controller-manager visible="false"></a-entity>
-    <a-entity cross-platform-controls="hand: right" right-controller-manager visible="false"></a-entity>
+    <a-entity id="leftController" cross-platform-controls="hand: left" left-controller-manager visible="false"></a-entity>
+    <a-entity id="rightController" cross-platform-controls="hand: right" right-controller-manager visible="false"></a-entity>
   </a-scene>
   `;
   document.body.prepend(
@@ -53,40 +51,37 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
   );
   gl.canvas.setAttribute("id", "scratchcanvas");
   const AScene = document.querySelector("a-scene");
-  //! Fix bug where pressing the Oculus button causes the texture to zoom.
 
   function scaleDisplayPlane() {
-    requestAnimationFrame(() => {
-      const plane = document.getElementById("scratchStageVRDisplay");
-      const material = plane.getObject3D("mesh").material;
-      let canvas = document.getElementById("scratchcanvas");
-      // prevents a WebGL error where changing texture res causes confliction w/ cached texture in GPU.
-      if (material && material.map) {
-        material.map.dispose();
-      }
-      material.map = new THREE.Texture(canvas);
-      material.map.needsUpdate = true;
+    const plane = document.getElementById("scratchStageVRDisplay");
+    let canvas = AScene.renderer.domElement;
+    const fov = THREE.MathUtils.degToRad(
+      document.getElementById("AframeCamera").components.camera.data.fov
+    );
+    const canvasAspect = screen.width / screen.height;
+    const stageAspect = runtime.stageWidth / runtime.stageHeight;
+    const distance = 1;
+    let height = 2 * Math.tan(fov / 2) * distance;
+    let width = height * stageAspect;
 
-      canvas = AScene.renderer.domElement;
-      const fov = THREE.MathUtils.degToRad(
-        document.getElementById("AframeCamera").components.camera.data.fov
-      );
-      const canvasAspect = canvas.width / canvas.height;
-      const stageAspect = runtime.stageWidth / runtime.stageHeight;
-      const distance = 0.5;
+    //adjust to match ratio of scratch stage
+    if (width < height * canvasAspect) {
+      width = height * canvasAspect;
+      height = width / stageAspect;
+    }
 
-      let height = 2 * Math.tan(fov / 2) * distance;
-      let width = height * stageAspect;
+    plane.object3D.scale.set(width, height, 1);
+    plane.object3D.position.set(0, 0, -distance);
 
-      if (width < height * canvasAspect) {
-        width = height * canvasAspect;
-        height = width / stageAspect;
-      }
-
-      plane.object3D.scale.set(width, height, 1);
-      plane.object3D.position.set(0, 0, -distance);
-      material.map.needsUpdate = true;
-    });
+    let material = plane.getObject3D("mesh").material;
+    canvas = document.getElementById("scratchcanvas");
+    // prevents a WebGL error where changing texture res causes confliction w/ cached texture in GPU.
+    if (material && material.map) {
+      material.map.dispose();
+    }
+    material.map = new THREE.CanvasTexture(canvas);
+    material = plane.getObject3D("mesh").material;
+    material.map.needsUpdate = true;
   }
 
   AScene.addEventListener("enter-vr", function () {
@@ -98,7 +93,6 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
     inVR = false;
   });
 
-  //handle source texture changing resolution
   const resizeObserver = new ResizeObserver(() => {
     scaleDisplayPlane();
   });
@@ -193,68 +187,31 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
   //Matrix processing code from the AR extension.
   AFRAME.registerComponent("pose-matrices", {
     tick: function () {
-      if (inVR == true) {
-        var frame = this.el.frame;
-        var xrRefSpace = this.el.renderer.xr.getReferenceSpace();
-        if (xrRefSpace) {
-          const pose = frame.getViewerPose(xrRefSpace);
-          if (pose) {
-            xrProjectionMatrix = pose.views[0].projectionMatrix;
-            xrTransform = pose.views[0].transform;
-            const inverseTransformMatrix = xrTransform.inverse.matrix;
-            const a00 = xrProjectionMatrix[0];
-            const a01 = xrProjectionMatrix[1];
-            const a02 = xrProjectionMatrix[2];
-            const a03 = xrProjectionMatrix[3];
-            const a10 = xrProjectionMatrix[4];
-            const a11 = xrProjectionMatrix[5];
-            const a12 = xrProjectionMatrix[6];
-            const a13 = xrProjectionMatrix[7];
-            const a20 = xrProjectionMatrix[8];
-            const a21 = xrProjectionMatrix[9];
-            const a22 = xrProjectionMatrix[10];
-            const a23 = xrProjectionMatrix[11];
-            const a30 = xrProjectionMatrix[12];
-            const a31 = xrProjectionMatrix[13];
-            const a32 = xrProjectionMatrix[14];
-            const a33 = xrProjectionMatrix[15];
-            const b00 = inverseTransformMatrix[0];
-            const b01 = inverseTransformMatrix[1];
-            const b02 = inverseTransformMatrix[2];
-            const b03 = inverseTransformMatrix[3];
-            const b10 = inverseTransformMatrix[4];
-            const b11 = inverseTransformMatrix[5];
-            const b12 = inverseTransformMatrix[6];
-            const b13 = inverseTransformMatrix[7];
-            const b20 = inverseTransformMatrix[8];
-            const b21 = inverseTransformMatrix[9];
-            const b22 = inverseTransformMatrix[10];
-            const b23 = inverseTransformMatrix[11];
-            const b30 = inverseTransformMatrix[12];
-            const b31 = inverseTransformMatrix[13];
-            const b32 = inverseTransformMatrix[14];
-            const b33 = inverseTransformMatrix[15];
-            xrCombinedMatrix = [
-              b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
-              b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
-              b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32,
-              b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33,
-              b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30,
-              b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31,
-              b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32,
-              b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33,
-              b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30,
-              b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31,
-              b20 * a02 + b21 * a12 + b22 * a22 + b23 * a32,
-              b20 * a03 + b21 * a13 + b22 * a23 + b23 * a33,
-              b30 * a00 + b31 * a10 + b32 * a20 + b33 * a30,
-              b30 * a01 + b31 * a11 + b32 * a21 + b33 * a31,
-              b30 * a02 + b31 * a12 + b32 * a22 + b33 * a32,
-              b30 * a03 + b31 * a13 + b32 * a23 + b33 * a33,
-            ];
-          }
-        }
-      }
+      if (!inVR) return;
+
+      const frame = this.el.frame;
+      const xrRefSpace = this.el.renderer.xr.getReferenceSpace();
+      if (!xrRefSpace) return;
+
+      const pose = frame.getViewerPose(xrRefSpace);
+      if (!pose) return;
+
+      const projectionMatrix = pose.views[0].projectionMatrix;
+      const transformMatrix = pose.views[0].transform.inverse.matrix;
+
+      xrProjectionMatrix = projectionMatrix;
+      xrTransform = pose.views[0].transform;
+
+      xrCombinedMatrix = new Array(16).fill(0).map((_, i) => {
+        const row = Math.floor(i / 4);
+        const col = i % 4;
+        return (
+          transformMatrix[row * 4] * projectionMatrix[col] +
+          transformMatrix[row * 4 + 1] * projectionMatrix[col + 4] +
+          transformMatrix[row * 4 + 2] * projectionMatrix[col + 8] +
+          transformMatrix[row * 4 + 3] * projectionMatrix[col + 12]
+        );
+      });
     },
   });
 
@@ -1078,7 +1035,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
         ],
         menus: {
           toggleVrMode: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: ["enter", "exit"],
           },
           rotationMenu: {
@@ -1095,11 +1052,11 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
           },
           //This is from the Augmented Reality extension. Credit goes to it for the matrix processing.
           matrix: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: ["combined", "projection", "view", "inverse view"],
           },
           buttonMenu: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: [
               "any",
               "left trigger",
@@ -1119,7 +1076,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
             ],
           },
           oculusButtons: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: [
               "any",
               "left trigger",
@@ -1137,7 +1094,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
             ],
           },
           floatButtonMenu: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: ["left trigger", "right trigger", "left grip", "right grip"],
           },
           controllerMenu: {
@@ -1153,7 +1110,7 @@ I've licensed this Turbowarp extension as MPL-2.0 and MIT. All code by A-frame s
             items: ["up", "down", "left", "right"],
           },
           axisInputMenu: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: [
               "left thumbstick",
               "right thumbstick",
