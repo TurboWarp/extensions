@@ -794,7 +794,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
         blocks: [
           {
             blockType: "label",
-            text: "Utilities",
+            text: Scratch.translate("Utilities"),
           },
           {
             opcode: "toggleVrMode",
