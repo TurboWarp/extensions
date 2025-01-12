@@ -786,7 +786,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
         color1: "#00a616",
         color2: "#02ad19",
         color3: "#128211",
-        name: "BlockifyVR",
+        name: Scratch.translate("BlockifyVR"),
         menuIconURI: icon,
         blockIconURI: icon,
         //docsURI: 'https://extensions.turbowarp.org/MasterMath/BlockifyVR', //TODO: update this URL when the extension is finished.
@@ -799,7 +799,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "toggleVrMode",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[enterExit] vr mode",
+            text: Scratch.translate("[enterExit] vr mode"),
             arguments: {
               enterExit: {
                 type: Scratch.ArgumentType.STRING,
@@ -811,36 +811,36 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "inVR",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "in vr?",
+            text: Scratch.translate("in vr?"),
             disableMonitor: "true",
           },
           {
             opcode: "headsetConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is headset connected?",
+            text: Scratch.translate("is headset connected?"),
             disableMonitor: "true",
           },
           {
             opcode: "getStageWidth",
             blockType: Scratch.BlockType.REPORTER,
-            text: "stage width",
+            text: Scratch.translate("stage width"),
             disableMonitor: "true",
           },
           {
             opcode: "getStageHeight",
             blockType: Scratch.BlockType.REPORTER,
-            text: "stage height",
+            text: Scratch.translate("stage height"),
             disableMonitor: "true",
           },
           "---",
           {
             blockType: "label",
-            text: "Transformations",
+            text: Scratch.translate("Transformations"),
           },
           {
             opcode: "positionOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[position] of [Device]",
+            text: Scratch.translate("[position] of [Device]"),
             arguments: {
               position: {
                 type: Scratch.ArgumentType.STRING,
@@ -848,7 +848,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
                 menu: "positionMenu",
               },
               Device: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.translate(Scratch.ArgumentType.STRING),
                 defaultValue: "headset",
                 menu: "deviceMenu",
               },
@@ -857,7 +857,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "rotationOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[direction] of [device]",
+            text: Scratch.translate("[direction] of [device]"),
             arguments: {
               direction: {
                 type: Scratch.ArgumentType.STRING,
@@ -875,7 +875,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "getMatrix",
             blockType: Scratch.BlockType.REPORTER,
-            text: "item [ITEM] of [MATRIX] matrix",
+            text: Scratch.translate("item [ITEM] of [MATRIX] matrix"),
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -891,12 +891,12 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           "---",
           {
             blockType: "label",
-            text: "Controllers",
+            text: Scratch.translate("Controllers"),
           },
           {
             opcode: "controllerConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [controller] connected?",
+            text: Scratch.translate("is [controller] connected?"),
             arguments: {
               controller: {
                 type: Scratch.ArgumentType.STRING,
@@ -908,7 +908,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "whenControllerConnected",
             blockType: Scratch.BlockType.EVENT,
-            text: "when [controller] [connection]",
+            text: Scratch.translate("when [controller] [connection]"),
             isEdgeActivated: false,
             arguments: {
               controller: {
@@ -926,7 +926,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "whenButtonPressed",
             blockType: Scratch.BlockType.EVENT,
-            text: "when [button] pressed",
+            text: Scratch.translate("when [button] pressed"),
             isEdgeActivated: false,
             arguments: {
               button: {
@@ -939,7 +939,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "whenButtonTouched",
             blockType: Scratch.BlockType.EVENT,
-            text: "when [button] touched",
+            text: Scratch.translate("when [button] touched"),
             isEdgeActivated: false,
             arguments: {
               button: {
@@ -952,7 +952,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "isButtonPressed",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "button [button] pressed?",
+            text: Scratch.translate("button [button] pressed?"),
             arguments: {
               button: {
                 type: Scratch.ArgumentType.STRING,
@@ -964,7 +964,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "isButtonTouched",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "button [button] touched?",
+            text: Scratch.translate("button [button] touched?"),
             arguments: {
               button: {
                 type: Scratch.ArgumentType.STRING,
@@ -976,19 +976,19 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "lastButtonPressed",
             blockType: Scratch.BlockType.REPORTER,
-            text: "last button pressed",
+            text: Scratch.translate("last button pressed"),
             disableMonitor: true,
           },
           {
             opcode: "lastButtonTouched",
             blockType: Scratch.BlockType.REPORTER,
-            text: "last button touched",
+            text: Scratch.translate("last button touched"),
             disableMonitor: true,
           },
           {
             opcode: "triggerGripValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[button] value",
+            text: Scratch.translate("[button] value"),
             arguments: {
               button: {
                 type: Scratch.ArgumentType.STRING,
@@ -1000,7 +1000,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "thumbstickTrackpadInfo",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[axisInput] [value]",
+            text: Scratch.translate("[axisInput] [value]"),
             arguments: {
               axisInput: {
                 type: Scratch.ArgumentType.STRING,
@@ -1015,14 +1015,19 @@ The A-frame libary is licensed under the MIT license, which can be found at http
             },
           },
           {
-            opcode: "isThumbstickDirection",
+            opcode: "isAxisDirection",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [controller] thumbstick direction [direction]?",
+            text: Scratch.translate("is [axis] direction [direction]?"),
             arguments: {
               controller: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "left controller",
                 menu: "controllerMenu",
+              },
+              axis: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "left thumbstick",
+                menu: "axisInputMenu",
               },
               direction: {
                 type: Scratch.ArgumentType.STRING,
@@ -1035,91 +1040,317 @@ The A-frame libary is licensed under the MIT license, which can be found at http
         menus: {
           toggleVrMode: {
             acceptReporters: true,
-            items: ["enter", "exit"],
+            items: [
+              {
+                text: Scratch.translate("enter"),
+                value: "enter",
+              },
+              {
+                text: Scratch.translate("exit"),
+                value: "exit",
+              },
+            ],
           },
           rotationMenu: {
             acceptReporters: false,
-            items: ["x-rotation", "y-rotation", "z-rotation"],
+            items: [
+              {
+                text: Scratch.translate("x-rotation"),
+                value: "x-rotation",
+              },
+              {
+                text: Scratch.translate("y-rotation"),
+                value: "y-rotation",
+              },
+              {
+                text: Scratch.translate("z-rotation"),
+                value: "z-rotation",
+              },
+            ],
           },
           deviceMenu: {
             acceptReporters: false,
-            items: ["headset", "left controller", "right controller"],
+            items: [
+              {
+                text: Scratch.translate("headset"),
+                value: "headset",
+              },
+              {
+                text: Scratch.translate("left controller"),
+                value: "headset",
+              },
+              {
+                text: Scratch.translate("right controller"),
+                value: "headset",
+              },
+            ],
           },
           positionMenu: {
             acceptReporters: false,
-            items: ["x-position", "y-position", "z-position"],
+            items: [
+              {
+                text: Scratch.translate("x-position"),
+                value: "x-position",
+              },
+              {
+                text: Scratch.translate("y-position"),
+                value: "y-position",
+              },
+              {
+                text: Scratch.translate("z-position"),
+                value: "z-position",
+              },
+            ],
           },
           //This is from the Augmented Reality extension. Credit goes to it for the matrix processing.
           matrix: {
-            acceptReporters: true,
-            items: ["combined", "projection", "view", "inverse view"],
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("combined"),
+                value: "combined",
+              },
+              {
+                text: Scratch.translate("projection"),
+                value: "projection",
+              },
+              {
+                text: Scratch.translate("view"),
+                value: "view",
+              },
+              {
+                text: Scratch.translate("inverse view"),
+                value: "inverse view",
+              },
+            ],
           },
           buttonMenu: {
             acceptReporters: true,
             items: [
-              "any",
-              "left trigger",
-              "right trigger",
-              "left grip",
-              "right grip",
-              "A",
-              "B",
-              "X",
-              "Y",
-              "left thumbstick",
-              "right thumbstick",
-              "left trackpad",
-              "right trackpad",
-              "menu",
-              "system",
+              {
+                text: Scratch.translate("any"),
+                value: "any",
+              },
+              {
+                text: Scratch.translate("left trigger"),
+                value: "left trigger",
+              },
+              {
+                text: Scratch.translate("right trigger"),
+                value: "right trigger",
+              },
+              {
+                text: Scratch.translate("left grip"),
+                value: "left grip",
+              },
+              {
+                text: Scratch.translate("right grip"),
+                value: "right grip",
+              },
+              {
+                text: Scratch.translate("A"),
+                value: "A",
+              },
+              {
+                text: Scratch.translate("B"),
+                value: "B",
+              },
+              {
+                text: Scratch.translate("X"),
+                value: "X",
+              },
+              {
+                text: Scratch.translate("Y"),
+                value: "Y",
+              },
+              {
+                text: Scratch.translate("left thumbstick"),
+                value: "left thumbstick",
+              },
+              {
+                text: Scratch.translate("right thumbstick"),
+                value: "right thumbstick",
+              },
+              {
+                text: Scratch.translate("left trackpad"),
+                value: "left trackpad",
+              },
+              {
+                text: Scratch.translate("right trackpad"),
+                value: "right trackpad",
+              },
+              {
+                text: Scratch.translate("menu"),
+                value: "menu",
+              },
+              {
+                text: Scratch.translate("system"),
+                value: "system",
+              },
             ],
           },
           oculusButtons: {
             acceptReporters: true,
             items: [
-              "any",
-              "left trigger",
-              "right trigger",
-              "left grip",
-              "right grip",
-              "A",
-              "B",
-              "X",
-              "Y",
-              "left thumbstick",
-              "right thumbstick",
-              "left surface",
-              "right surface",
+              {
+                text: Scratch.translate("any"),
+                value: "any",
+              },
+              {
+                text: Scratch.translate("left trigger"),
+                value: "left trigger",
+              },
+              {
+                text: Scratch.translate("right trigger"),
+                value: "right trigger",
+              },
+              {
+                text: Scratch.translate("left grip"),
+                value: "left grip",
+              },
+              {
+                text: Scratch.translate("right grip"),
+                value: "right grip",
+              },
+              {
+                text: Scratch.translate("A"),
+                value: "A",
+              },
+              {
+                text: Scratch.translate("B"),
+                value: "B",
+              },
+              {
+                text: Scratch.translate("X"),
+                value: "X",
+              },
+              {
+                text: Scratch.translate("Y"),
+                value: "Y",
+              },
+              {
+                text: Scratch.translate("left thumbstick"),
+                value: "left thumbstick",
+              },
+              {
+                text: Scratch.translate("right thumbstick"),
+                value: "right thumbstick",
+              },
+              {
+                text: Scratch.translate("left surface"),
+                value: "left surface",
+              },
+              {
+                text: Scratch.translate("right surface"),
+                value: "right surface",
+              },
             ],
           },
           floatButtonMenu: {
             acceptReporters: true,
-            items: ["left trigger", "right trigger", "left grip", "right grip"],
+            items: [
+              {
+                text: Scratch.translate("left trigger"),
+                value: "left trigger",
+              },
+              {
+                text: Scratch.translate("right trigger"),
+                value: "right trigger",
+              },
+              {
+                text: Scratch.translate("left grip"),
+                value: "left grip",
+              },
+              {
+                text: Scratch.translate("right grip"),
+                value: "right grip",
+              },
+            ],
           },
           controllerMenu: {
             acceptReporters: false,
-            items: ["left controller", "right controller"],
+            items: [
+              {
+                text: Scratch.translate("left controller"),
+                value: "left controller",
+              },
+              {
+                text: Scratch.translate("right controller"),
+                value: "right controller",
+              },
+            ],
           },
           value: {
             acceptReporters: false,
-            items: ["direction", "x value", "y value"],
+            items: [
+              {
+                text: Scratch.translate("direction"),
+                value: "direction",
+              },
+              {
+                text: Scratch.translate("x value"),
+                value: "x value",
+              },
+              {
+                text: Scratch.translate("y value"),
+                value: "y value",
+              },
+            ],
           },
           cardinalDirection: {
             acceptReporters: false,
-            items: ["up", "down", "left", "right"],
+            items: [
+              {
+                text: Scratch.translate("up"),
+                value: "up",
+              },
+              {
+                text: Scratch.translate("down"),
+                value: "down",
+              },
+              {
+                text: Scratch.translate("left"),
+                value: "left",
+              },
+              {
+                text: Scratch.translate("right"),
+                value: "right",
+              },
+            ],
           },
           axisInputMenu: {
             acceptReporters: true,
             items: [
-              "left thumbstick",
-              "right thumbstick",
-              "left trackpad",
-              "right trackpad",
+              {
+                text: Scratch.translate("left thumbstick"),
+                value: "left thumbstick",
+              },
+              {
+                text: Scratch.translate("right thumbstick"),
+                value: "right thumbstick",
+              },
+              {
+                text: Scratch.translate("left trackpad"),
+                value: "left trackpad",
+              },
+              {
+                text: Scratch.translate("right trackpad"),
+                value: "right trackpad",
+              },
             ],
           },
           connectionMenu: {
             acceptReporters: false,
-            items: ["connected", "disconnected"],
+            items: [
+              {
+                text: Scratch.translate("connected"),
+                value: "connected",
+              },
+              {
+                text: Scratch.translate("disconnected"),
+                value: "disconnected",
+              },
+            ],
           },
         },
       };
@@ -1127,7 +1358,9 @@ The A-frame libary is licensed under the MIT license, which can be found at http
 
     toggleVrMode({ enterExit }) {
       if (enterExit == "enter") {
-        if (confirm("Would you like to enter VR mode?") == true) {
+        if (
+          confirm(Scratch.translate("Would you like to enter VR mode?")) == true
+        ) {
           AScene.enterVR(); //enter VR mode
         }
       } else if (enterExit == "exit") {
@@ -1482,8 +1715,9 @@ The A-frame libary is licensed under the MIT license, which can be found at http
       }
     }
 
-    isThumbstickDirection({ controller, direction }) {
-      if (controller == "left controller") {
+    // TODO: Add support for trackpads
+    isAxisDirection({ axis, direction }) {
+      if (axis == "left thumbstick") {
         if (leftThumbstickY > 0.95 && direction == "up") {
           return true;
         } else if (leftThumbstickY < -0.95 && direction == "down") {
@@ -1495,7 +1729,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
         } else {
           return false;
         }
-      } else if (controller == "right controller") {
+      } else if (axis == "right thumbstick") {
         if (rightThumbstickY > 0.95 && direction == "up") {
           return true;
         } else if (rightThumbstickY < -0.95 && direction == "down") {
@@ -1503,6 +1737,30 @@ The A-frame libary is licensed under the MIT license, which can be found at http
         } else if (rightThumbstickX < -0.95 && direction == "left") {
           return true;
         } else if (rightThumbstickX > 0.95 && direction == "right") {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (axis == "left trackpad") {
+        if (leftTrackpadY > 0.95 && direction == "up") {
+          return true;
+        } else if (leftTrackpadY < -0.95 && direction == "down") {
+          return true;
+        } else if (leftTrackpadX < -0.95 && direction == "left") {
+          return true;
+        } else if (leftTrackpadX > 0.95 && direction == "right") {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (axis == "right trackpad") {
+        if (rightTrackpadY > 0.95 && direction == "up") {
+          return true;
+        } else if (rightTrackpadY < -0.95 && direction == "down") {
+          return true;
+        } else if (rightTrackpadX < -0.95 && direction == "left") {
+          return true;
+        } else if (rightTrackpadX > 0.95 && direction == "right") {
           return true;
         } else {
           return false;
