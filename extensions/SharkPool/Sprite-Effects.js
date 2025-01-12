@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.7.21
+// Version V.1.7.22
 
 (function (Scratch) {
   "use strict";
@@ -1091,14 +1091,14 @@
       return svg;
     }
 
-    setXY(args, util) { return this.setATT(args, false, 0, util) }
-    async setXY2(args) { return await this.setATT(args, true, 0) }
-    setDIR(args, util) { return this.setATT(args, false, 1, util) }
-    async setDIR2(args) { return await this.setATT(args, true, 1) }
-    setSCALE(args, util) { return this.setATT(args, false, 2, util) }
-    async setSCALE2(args) { return await this.setATT(args, true, 2) }
-    setSKEW(args, util) { return this.setATT(args, false, 3, util) }
-    async setSKEW2(args) { return await this.setATT(args, true, 3) }
+    setXY(args, util) { return this.setATT(args, false, "XY", util) }
+    async setXY2(args) { return await this.setATT(args, true, "XY") }
+    setDIR(args, util) { return this.setATT(args, false, "DIR", util) }
+    async setDIR2(args) { return await this.setATT(args, true, "DIR") }
+    setSCALE(args, util) { return this.setATT(args, false, "SZ", util) }
+    async setSCALE2(args) { return await this.setATT(args, true, "SZ") }
+    setSKEW(args, util) { return this.setATT(args, false, "SKEW", util) }
+    async setSKEW2(args) { return await this.setATT(args, true, "SKEW") }
     async setATT(args, isImage, type, util) {
       let svg, transform;
       if (args.SPRITE === "_myself_") svg = await this.findAsset(util);
@@ -1115,11 +1115,11 @@
         const x = cast.toNumber(args.x ? args.x : 0) / 100;
         const y = cast.toNumber(args.y ? args.y : 0) / 100;
         let con = svg.includes("style=\"transform-origin: center; transform:");
-        if (type === 0) return svg.replace(/translate\([^)]*\)/, `translate(${currentX + (x * 100)},${currentY + (y * -100)})`);
-        else if (type === 1) {
+        if (type === "XY") return svg.replace(/translate\([^)]*\)/, `translate(${currentX + (x * 100)},${currentY + (y * -100)})`);
+        else if (type === "DIR") {
           if (con) svg = svg.replace(/(style="[^"]*transform:[^"]*)/, `$1 rotate(${cast.toNumber(args.DIR) - 90}deg)`);
           else svg = svg.replace(`width="${width}" height="${height}"`, `width="${width}" height="${height}" style="transform-origin: center; transform: rotate(${cast.toNumber(args.DIR) - 90}deg)"`);
-        } else if (type === 2) {
+        } else if (type === "SZ") {
           let vals = "";
           const viewboxMatch = svg.match(/viewBox="([^"]+)"/);
           if (viewboxMatch) vals = viewboxMatch[1].split(/\s*,\s*/);
@@ -1133,6 +1133,7 @@
         } else {
           if (con) svg = svg.replace(/(style="[^"]*transform:[^"]*)/, `$1 skew(${args.x}deg, ${args.y}deg)`);
           else svg = svg.replace(`width="${width}" height="${height}"`, `width="${width}" height="${height}" style="transform-origin: center; transform: skew(${args.x}deg, ${args.y}deg)"`);
+          return svg;
         }
         let curTransform = /transform="([^"]*)"/.exec(svg);
         curTransform = curTransform ? curTransform[1] : "";
