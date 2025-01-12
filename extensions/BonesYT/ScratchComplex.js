@@ -177,16 +177,19 @@
           out = [Math.round(r), Math.round(i)];
           break;
         case "sqrt":
-          out = this.pow(z, { r: 0.5, i: 0 });
+          alt = this.pow(z, { r: 0.5, i: 0 });
+          out = [alt.r, alt.i];
           break;
         case "atan2":
           out = [Math.atan2(i, r), 0];
           break;
         case "e^":
-          out = this.pow({ r: Math.E, i: 0 }, z);
+          alt = this.pow({ r: Math.E, i: 0 }, z);
+          out = [alt.r, alt.i];
           break;
         case "10^":
-          out = this.pow({ r: 10, i: 0 }, z);
+          alt = this.pow({ r: 10, i: 0 }, z);
+          out = [alt.r, alt.i];
           break;
         case "sign":
           out = [Math.sign(r), Math.sign(i)];
