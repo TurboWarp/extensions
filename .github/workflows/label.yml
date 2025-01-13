@@ -54,6 +54,6 @@ jobs:
             gh pr edit "$PR_NUMBER" --add-label "$LABEL_OTHER"
           fi
         env:
-          PR_NUMBER: "${{ github.event.number }}"
+          PR_NUMBER: "${{ github.event.issue.number }}"
           BASE_REF: "${{ github.base_ref }}"
           GH_TOKEN: "${{ github.token }}"
