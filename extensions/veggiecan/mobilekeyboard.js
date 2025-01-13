@@ -21,6 +21,7 @@
       this.keyboardOpen = false;
       this.waitCallback = null;
       this.defaultValue = "";
+      this.typedText = "";
       this.inputElement = null;
     }
 
@@ -242,7 +243,7 @@
     }
 
     typedTextSinceKeyboardOpened() {
-      return this.typedText ?? "";
+      return this.typedText;
     }
 
     isKeyboardOpen() {
