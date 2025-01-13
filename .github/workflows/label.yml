@@ -1,64 +1,59 @@
-name: Label Pull Requests
+name: Autolaber
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  # pull_request_target is dangerous but necessary to assign labels to the pull request.
+  pull_request_target:
+    # Only label on initial open so as to not trigger a whole lot unnecessarily
+    # and also allow humans to override without their changes getting overwritten
+    # on the next commit.
+    types: [opened]
 
 jobs:
-  label-pr:
+  label-pull-request:
     runs-on: ubuntu-latest
 
+    permissions:
+      pull-requests: write
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Get changed files
-        id: changed-files
+      # This is a sensitive workflow because we have write permissions for pull-requests but we are
+      # processing remote code that we can't trust. Be careful not to place any trust in the contents
+      # of the pull request.
+      - name: Assign labels
         run: |
-          git fetch origin ${{ github.base_ref }} --depth=1
-          git diff --name-only origin/${{ github.base_ref }} > changed-files.txt
-          echo "##[group]Changed files"
-          cat changed-files.txt
-          echo "##[endgroup]"
-          echo "::set-output name=files::$(cat changed-files.txt)"
-
-      - name: Add labels to PR
-        env:
-          GH_TOKEN: "${{ github.token }}"
-          FILES: ${{ steps.changed-files.outputs.files }}
-        run: |
-          # Labels
-          LABEL_NEW="pr: new extension"
-          LABEL_CHANGE="pr: change existing extension"
+          LABEL_NEW_EXTENSION="pr: new extension"
+          LABEL_CHANGE_EXTENSION="pr: change existing extension"
           LABEL_OTHER="pr: other"
 
-          # Folder to monitor
-          TARGET_FOLDER="extensions/"
+          got_any_specific_label=false
 
-          # Initialize flags
-          ADD_NEW="false"
-          MODIFY_EXISTING="false"
+          if [[ "$BASE_REF" == "master" ]]; then
+            # Download just the diff so it is harder to accidentally run any code from the pull request.
+            gh pr diff "$PR_NUMBER" > pr.diff
 
-          # Process each file
-          while IFS= read -r FILE; do
-            if [[ "$FILE" == $TARGET_FOLDER* ]]; then
-              if ! git ls-tree -r origin/${{ github.base_ref }} --name-only | grep -q "^$FILE$"; then
-                ADD_NEW="true"
-              else
-                MODIFY_EXISTING="true"
-              fi
+            # Note that pcregrep exits with success on any match, failure on no match
+            if pcregrep -M "^--- /dev/null\n\+\+\+ b/extensions/" pr.diff; then
+              # Example:
+              # --- /dev/null
+              # +++ b/extensions/DangoCat/extension.js
+              gh pr edit "$PR_NUMBER" --add-label "$LABEL_NEW_EXTENSION"
+              got_any_specific_label=true
+            elif pcregrep "^\+\+\+ b/extensions/" pr.diff; then
+              # Example:
+              # --- a/extensions/DangoCat/extension.js
+              # +++ b/extensions/DangoCat/extension.js
+              gh pr edit "$PR_NUMBER" --add-label "$LABEL_CHANGE_EXTENSION"
+              got_any_specific_label=true
             fi
-          done < changed-files.txt
-
-          # Add labels
-          if [[ "$ADD_NEW" == "true" ]]; then
-            gh pr edit ${{ github.event.number }} --add-label "$LABEL_NEW"
+          else
+            echo "Unusual base ref: $BASE_REF"
           fi
 
-          if [[ "$MODIFY_EXISTING" == "true" ]]; then
-            gh pr edit ${{ github.event.number }} --add-label "$LABEL_CHANGE"
+          # Any PR that didn't get a specific label will go into other, for a human to look at.
+          if [[ "$got_any_specific_label" == "false" ]]; then
+            gh pr edit "$PR_NUMBER" --add-label "$LABEL_OTHER"
           fi
-
-          if [[ "$ADD_NEW" == "false" && "$MODIFY_EXISTING" == "false" ]]; then
-            gh pr edit ${{ github.event.number }} --add-label "$LABEL_OTHER"
-          fi
+        env:
+          PR_NUMBER: "${{ github.event.number }}"
+          BASE_REF: "${{ github.base_ref }}"
+          GH_TOKEN: "${{ github.token }}"
