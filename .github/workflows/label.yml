@@ -12,6 +12,9 @@ jobs:
   label-pull-request:
     runs-on: ubuntu-latest
 
+    # This workflow is not useful to forks without significantly updating the workflow script.
+    if: ${{ github.repository == 'TurboWarp/extensions' }}
+
     permissions:
       pull-requests: write
 
