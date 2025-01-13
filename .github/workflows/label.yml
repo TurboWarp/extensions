@@ -46,14 +46,14 @@ jobs:
               # Example:
               # --- /dev/null
               # +++ b/extensions/DangoCat/extension.js
-              echo "Labeling $LABEL_NEW_EXTENSION"
+              echo "Adding label: $LABEL_NEW_EXTENSION"
               gh pr edit --repo "$GH_REPO" "$PR_NUMBER" --add-label "$LABEL_NEW_EXTENSION"
               got_any_specific_label=true
             elif pcregrep --buffer-size 16777216 "^\+\+\+ b/extensions/" pr.diff; then
               # Example:
               # --- a/extensions/DangoCat/extension.js
               # +++ b/extensions/DangoCat/extension.js
-              echo "Labeling $LABEL_CHANGE_EXTENSION"
+              echo "Adding label: $LABEL_CHANGE_EXTENSION"
               gh pr edit --repo "$GH_REPO" "$PR_NUMBER" --add-label "$LABEL_CHANGE_EXTENSION"
               got_any_specific_label=true
             fi
@@ -63,7 +63,7 @@ jobs:
 
           # Any PR that didn't get a specific label will go into other, for a human to look at.
           if [[ "$got_any_specific_label" == "false" ]]; then
-            echo "Labeling $LABEL_OTHER"
+            echo "Adding label: $LABEL_OTHER"
             gh pr edit --repo "$GH_REPO" "$PR_NUMBER" --add-label "$LABEL_OTHER"
           fi
         env:
