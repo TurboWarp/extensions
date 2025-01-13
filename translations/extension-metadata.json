@@ -313,6 +313,7 @@
         "obviousAlexC/newgroundsIO@description": "Lohkoja, joiden avulla pelit voivat olla vuorovaikutuksessa Newgrounds-ohjelmointirajapinnan kanssa. Epävirallinen.",
         "obviousAlexC/penPlus@description": "Edistyneet renderöintikyvyt.",
         "obviousAlexC/penPlus@name": "Kynä Plus V7",
+        "penplus@description": "Korvattu Kynä Plus V7:llä.",
         "penplus@name": "Kynä Plus V5 (vanha)",
         "pointerlock@description": "Lisää hiiren lukitsemiseen liittyviä lohkoja. Hiiren x- ja y-sijaintilohkot ilmoittavat muutoksen viimeisestä ruudusta, kun hiiren osoitin on lukittu. Korvaa hiiren osoittimen lukitus -kokeilun.",
         "pointerlock@name": "Hiiren osoittimen lukitus",
@@ -327,6 +328,7 @@
         "shreder95ua/resolution@name": "Näytön resoluutio",
         "sound@description": "Soita ääniä URL-osoitteista.",
         "sound@name": "Ääni",
+        "steamworks@description": "Yhdistä projektisi Steamworksin ohjelmointirajapintoihin.",
         "stretch@description": "Venytä hahmoja pysty- ja vaakasuunnassa.",
         "stretch@name": "Venytä",
         "text@description": "Käsittele merkkejä ja tekstiä.",
@@ -494,6 +496,7 @@
         "obviousAlexC/newgroundsIO@description": "Blocchi che permettono ai giochi di interagire con l'API Newgrounds API. Non ufficiale.",
         "obviousAlexC/penPlus@description": "Capacità di rendering avanzate.",
         "obviousAlexC/penPlus@name": "Penna+ V7",
+        "penplus@description": "Rimpiazzata da Penna Plus V7.",
         "penplus@name": "Penna Plus V5 (Vecchio)",
         "pointerlock@description": "Aggiunge blocchi per bloccare il mouse. I blocchi\" x/y del mouse\" restituiscono di quanto è cambiata la posizione rispetto al frame precedente mentre il puntatore è bloccato. Rimpiazza il \"blocco puntatore\" sperimentale.",
         "pointerlock@name": "Blocco Puntatore",
@@ -508,6 +511,7 @@
         "shreder95ua/resolution@name": "Risoluzione Schermo",
         "sound@description": "Riproduce suoni dai loro URL.",
         "sound@name": "Suoni",
+        "steamworks@description": "Collega il tuo progetto all'API di Steamworks.",
         "stretch@description": "Stira gli sprite in orizzontale e in verticale.",
         "stretch@name": "Stira",
         "text@description": "Manipola caratteri e testi.",
@@ -722,7 +726,7 @@
         "CST1229/images@description": "이미지를 다루는 블록들입니다.",
         "CST1229/images@name": "이미지",
         "CST1229/zip@description": ".zip 또는 .sb3 형식의 파일을 생성하고 수정합니다.",
-        "Clay/htmlEncode@description": "신뢰하지 않는 텍스트를 HTML에 안전하게 포함할 수 있도록 이스케이프화 합니다.",
+        "Clay/htmlEncode@description": "신뢰하지 않는 텍스트를 HTML에 안전하게 포함할 수 있도록 이스케이프 처리합니다.",
         "Clay/htmlEncode@name": "HTML 인코딩",
         "CubesterYT/KeySimulation@description": "키 입력과 마우스 입력을 시뮬레이션 합니다.",
         "CubesterYT/KeySimulation@name": "키 시뮬레이션",
@@ -835,7 +839,8 @@
         "godslayerakp/ws@description": "WebSocket 서버에 직접적으로 연결합니다.",
         "iframe@description": "무대 위에 웹페이지 또는 HTML을 띄웁니다.",
         "itchio@description": "itch.io 웹사이트와 상호작용하는 블록들입니다. 비공식.",
-        "lab/text@description": "텍스트를 간편하게 나타내고 움직입니다. Scratch Lab의 Animated Text 실험판과 호환됩니다.",
+        "lab/text@description": "텍스트를 간편하게 나타내고 애니메이션을 적용합니다. Scratch Lab의 Animated Text 실험판과 호환됩니다.",
+        "lab/text@name": "애니메이션 텍스트",
         "local-storage@description": "일시적으로 데이터를 저장합니다. 쿠키와 유사하지만, 보다 향상되었습니다.",
         "local-storage@name": "로컬 스토리지",
         "mbw/xml@description": "XML을 통해 값을 생성하거나 추출합니다.",
@@ -1230,9 +1235,15 @@
     "pl": {
         "-SIPC-/time@name": "Czas",
         "CST1229/images@name": "Obrazy",
+        "Lily/Video@name": "Film",
+        "Xeltalliv/simple3D@name": "Proste 3D",
+        "clipboard@name": "Schowek",
         "files@name": "Pliki",
+        "lab/text@name": "Animowany Tekst",
+        "qxsck/var-and-list@name": "Zmienna i lista",
         "runtime-options@name": "Opcje Uruchamiania",
-        "sound@name": "Dźwięk"
+        "sound@name": "Dźwięk",
+        "text@name": "Tekst"
     },
     "pt": {
         "runtime-options@name": "Opções de Execução"
@@ -1423,7 +1434,9 @@
         "vercte/dictionaries@name": "Словари"
     },
     "sl": {
-        "runtime-options@name": "Možnosti izvajanja"
+        "files@name": "Datoteke",
+        "runtime-options@name": "Možnosti izvajanja",
+        "text@name": "Besedilo"
     },
     "sv": {
         "runtime-options@name": "Körtidsalternativ"

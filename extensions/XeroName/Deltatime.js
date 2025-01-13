@@ -46,11 +46,13 @@
           {
             opcode: "dt",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "ΔT",
           },
           {
             opcode: "fps",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "fps",
           },
         ],

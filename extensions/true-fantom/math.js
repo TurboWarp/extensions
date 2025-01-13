@@ -109,6 +109,7 @@
         menuIconURI: icon,
 
         blocks: [
+          /* eslint-disable extension/should-translate */
           {
             opcode: "exponent_block",
             blockType: Scratch.BlockType.REPORTER,
@@ -364,6 +365,7 @@
             },
             extensions: ["colours_operators"],
           },
+          /* eslint-enable extension/should-translate */
           "---",
           {
             opcode: "exactly_cont_block",
@@ -496,6 +498,7 @@
             extensions: ["colours_operators"],
           },
           "---",
+          /* eslint-disable extension/should-translate */
           {
             opcode: "pi_block",
             blockType: Scratch.BlockType.REPORTER,
@@ -514,6 +517,7 @@
             text: "∞",
             extensions: ["colours_operators"],
           },
+          /* eslint-enable extension/should-translate */
           "---",
           {
             opcode: "is_safe_number_block",

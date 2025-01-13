@@ -13,7 +13,7 @@
     getInfo() {
       return {
         id: "lmsCast",
-        name: "Cast",
+        name: Scratch.translate("Cast"),
         blocks: [
           {
             opcode: "toType",

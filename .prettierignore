@@ -2,7 +2,6 @@ build
 images
 licenses
 website
-eslint.config.js
 *.json
 *.yml
 *.md

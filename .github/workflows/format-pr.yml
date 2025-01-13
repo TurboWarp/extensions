@@ -1,0 +1,127 @@
+name: Format pull request
+
+on:
+  workflow_dispatch:
+  issue_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  # Handling workflow_dispatch is simple. Just checkout whatever branch it was run on.
+  # The workflow will run in that repository's context and thus can safely get write permissions.
+  manual-dispatch:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          # Commits made by workflow_dispatch trigger can trigger new workflows to run,
+          # so just use the default workflow token.
+          # Credentials needed for pushing changes at the end.
+          # This is already the default, but it's good to be explicit about this.
+          persist-credentials: true
+      - name: Install Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm ci
+      - name: Format
+        run: npm run format
+      - name: Commit
+        run: |
+          git config --global user.name "$GITHUB_ACTOR"
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git stage .
+          git commit --author "DangoCat[bot] <dangocat@users.noreply.github.com>" -m "[Automated] Format code" || echo "No changes to commit"
+      - name: Push
+        run: git push
+
+  # Comments are more complicated because the action runs in the context of TurboWarp/extensions but
+  # we are processing content from the possibly malicious pull request. We break this into two
+  # separate jobs.
+  # The first job downloads the pull request, formats it, and uploads the new files to an artifact.
+  # Important to have no permissions for this because the code can't be trusted.
+  comment-format-untrusted:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '!format') &&
+      (
+        github.event.comment.author_association == 'MEMBER' ||
+        github.event.comment.user.id == github.event.issue.user.id
+      )
+    steps:
+      - name: Checkout upstream
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: TurboWarp/extensions
+          persist-credentials: false
+      - name: Checkout pull request
+        run: gh pr checkout "$PR_NUM"
+        env:
+          PR_NUM: "${{ github.event.issue.number }}"
+          GH_TOKEN: "${{ github.token }}"
+      - name: Install Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm ci
+      - name: Format
+        run: npm run format
+      - name: Upload formatted code
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b
+        with:
+          name: comment-format-untrusted-artifact
+          path: extensions/
+          if-no-files-found: error
+          retention-days: 7
+
+  # Second job downloads the artifact, extracts it, and pushes it.
+  comment-push:
+    runs-on: ubuntu-latest
+    needs: comment-format-untrusted
+    steps:
+      - name: Checkout upstream
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: TurboWarp/extensions
+          # Can't use the default workflow token because commits made by it won't cause more
+          # workflows to un, so any commits it pushes get stuck in limbo waiting for workflows
+          # to run that will never run.
+          # Can't use a deploy key because it won't be able to access the fork that the pull
+          # request is coming from.
+          # Thus we use a manually created fine-grained personal access token under the
+          # @DangoCat account.
+          token: "${{ secrets.FORMAT_PR_GH_TOKEN }}"
+          # Credentials needed for pushing changes at the end.
+          # This is already the default, but it's good to be explicit about this.
+          persist-credentials: true
+      - name: Checkout pull request
+        run: gh pr checkout "$PR_NUM"
+        env:
+          PR_NUM: "${{ github.event.issue.number }}"
+          GH_TOKEN: "${{ github.token }}"
+      - name: Download formatted code
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        with:
+          name: comment-format-untrusted-artifact
+          path: extensions
+      - name: Commit
+        run: |
+          git config --global user.name "$GITHUB_ACTOR"
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git stage .
+          git commit --author "DangoCat[bot] <dangocat@users.noreply.github.com>" -m "[Automated] Format code" || echo "No changes to commit"
+      - name: Push
+        # Explicitly set push.default to upstream, otherwise by default git might complain about us being on a
+        # branch called "DangoCat/master" but the corresponding branch on remote "DangoCat" is just "master".
+        run: |
+          git config --global push.default upstream
+          git push
