@@ -16,6 +16,9 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: Install dependencies:
+        run: sudo apt-get install -y pcregrep
+
       # This is a sensitive workflow because we have write permissions for pull-requests but we are
       # processing remote code that we can't trust. Be careful not to place any trust in the contents
       # of the pull request.
