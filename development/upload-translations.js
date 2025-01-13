@@ -10,7 +10,8 @@ const Builder = require("./builder");
 const uploadRuntimeStrings = async (strings) => {
   if (
     strings["lab/text@_Animated Text"].string !== "Animated Text" ||
-    strings["lab/text@_Animated Text"].developer_comment !== "Part of the 'Animated Text' extension." ||
+    strings["lab/text@_Animated Text"].developer_comment !==
+      "Part of the 'Animated Text' extension." ||
     Object.keys(strings).length < 1500
   ) {
     throw new Error("Sanity check failed.");
@@ -30,7 +31,8 @@ const uploadRuntimeStrings = async (strings) => {
 const uploadMetadataStrings = async (strings) => {
   if (
     strings["lab/text@name"].string !== "Animated Text" ||
-    strings["lab/text@name"].developer_comment !== "Name of the 'Animated Text' extension in the extension gallery." ||
+    strings["lab/text@name"].developer_comment !==
+      "Name of the 'Animated Text' extension in the extension gallery." ||
     Object.keys(strings).length < 150
   ) {
     throw new Error("Sanity check failed.");
