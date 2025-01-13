@@ -51,22 +51,23 @@ The A-frame libary is licensed under the MIT license, which can be found at http
   );
   gl.canvas.setAttribute("id", "scratchcanvas");
   const AScene = document.querySelector("a-scene");
+  let camWidth;
+  let camHeight;
 
   function scaleDisplayPlane() {
     const plane = document.getElementById("scratchStageVRDisplay");
-    let canvas = AScene.renderer.domElement;
     const fov = THREE.MathUtils.degToRad(
       document.getElementById("AframeCamera").components.camera.data.fov
     );
-    const canvasAspect = screen.width / screen.height;
+    const cameraAspect = camWidth / camHeight;
     const stageAspect = runtime.stageWidth / runtime.stageHeight;
     const distance = 1;
     let height = 2 * Math.tan(fov / 2) * distance;
     let width = height * stageAspect;
 
     //adjust to match ratio of scratch stage
-    if (width < height * canvasAspect) {
-      width = height * canvasAspect;
+    if (width < height * cameraAspect) {
+      width = height * cameraAspect;
       height = width / stageAspect;
     }
 
@@ -74,7 +75,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
     plane.object3D.position.set(0, 0, -distance);
 
     let material = plane.getObject3D("mesh").material;
-    canvas = document.getElementById("scratchcanvas");
+    let canvas = document.getElementById("scratchcanvas");
     // prevents a WebGL error where changing texture res causes confliction w/ cached texture in GPU.
     if (material && material.map) {
       material.map.dispose();
@@ -85,6 +86,8 @@ The A-frame libary is licensed under the MIT license, which can be found at http
   }
 
   AScene.addEventListener("enter-vr", function () {
+    camWidth = AScene.renderer.domElement.width;
+    camHeight = AScene.renderer.domElement.height;
     inVR = true;
     scaleDisplayPlane();
   });
@@ -1019,11 +1022,6 @@ The A-frame libary is licensed under the MIT license, which can be found at http
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("is [axis] direction [direction]?"),
             arguments: {
-              controller: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "left controller",
-                menu: "controllerMenu",
-              },
               axis: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "left thumbstick",
