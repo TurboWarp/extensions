@@ -24,6 +24,7 @@ jobs:
 
       - name: Add labels to PR
         env:
+          GH_TOKEN: "${{ github.token }}"
           FILES: ${{ steps.changed-files.outputs.files }}
         run: |
           # Labels
