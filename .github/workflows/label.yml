@@ -1,0 +1,63 @@
+name: Label Pull Requests
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  label-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get changed files
+        id: changed-files
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          git diff --name-only origin/${{ github.base_ref }} > changed-files.txt
+          echo "##[group]Changed files"
+          cat changed-files.txt
+          echo "##[endgroup]"
+          echo "::set-output name=files::$(cat changed-files.txt)"
+
+      - name: Add labels to PR
+        env:
+          FILES: ${{ steps.changed-files.outputs.files }}
+        run: |
+          # Labels
+          LABEL_NEW="pr: new extension"
+          LABEL_CHANGE="pr: change existing extension"
+          LABEL_OTHER="pr: other"
+
+          # Folder to monitor
+          TARGET_FOLDER="extensions/"
+
+          # Initialize flags
+          ADD_NEW="false"
+          MODIFY_EXISTING="false"
+
+          # Process each file
+          while IFS= read -r FILE; do
+            if [[ "$FILE" == $TARGET_FOLDER* ]]; then
+              if ! git ls-tree -r origin/${{ github.base_ref }} --name-only | grep -q "^$FILE$"; then
+                ADD_NEW="true"
+              else
+                MODIFY_EXISTING="true"
+              fi
+            fi
+          done < changed-files.txt
+
+          # Add labels
+          if [[ "$ADD_NEW" == "true" ]]; then
+            gh pr edit ${{ github.event.number }} --add-label "$LABEL_NEW"
+          fi
+
+          if [[ "$MODIFY_EXISTING" == "true" ]]; then
+            gh pr edit ${{ github.event.number }} --add-label "$LABEL_CHANGE"
+          fi
+
+          if [[ "$ADD_NEW" == "false" && "$MODIFY_EXISTING" == "false" ]]; then
+            gh pr edit ${{ github.event.number }} --add-label "$LABEL_OTHER"
+          fi
