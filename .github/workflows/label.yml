@@ -1,0 +1,62 @@
+name: Autolaber
+
+on:
+  # pull_request_target is dangerous but necessary to assign labels to the pull request.
+  pull_request_target:
+    # Only label on initial open so as to not trigger a whole lot unnecessarily
+    # and also allow humans to override without their changes getting overwritten
+    # on the next commit.
+    types: [opened]
+
+jobs:
+  label-pull-request:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Install dependencies
+        run: sudo apt-get install -y pcregrep
+
+      # This is a sensitive workflow because we have write permissions for pull-requests but we are
+      # processing remote code that we can't trust. Be careful not to place any trust in the contents
+      # of the pull request.
+      - name: Assign labels
+        run: |
+          LABEL_NEW_EXTENSION="pr: new extension"
+          LABEL_CHANGE_EXTENSION="pr: change existing extension"
+          LABEL_OTHER="pr: other"
+
+          got_any_specific_label=false
+
+          if [[ "$BASE_REF" == "master" ]]; then
+            # Download just the diff so it is harder to accidentally run any code from the pull request.
+            gh pr diff "$PR_NUMBER" > pr.diff
+
+            # Note that pcregrep exits with success on any match, failure on no match
+            if pcregrep -M "^--- /dev/null\n\+\+\+ b/extensions/" pr.diff; then
+              # Example:
+              # --- /dev/null
+              # +++ b/extensions/DangoCat/extension.js
+              gh pr edit "$PR_NUMBER" --add-label "$LABEL_NEW_EXTENSION"
+              got_any_specific_label=true
+            elif pcregrep "^\+\+\+ b/extensions/" pr.diff; then
+              # Example:
+              # --- a/extensions/DangoCat/extension.js
+              # +++ b/extensions/DangoCat/extension.js
+              gh pr edit "$PR_NUMBER" --add-label "$LABEL_CHANGE_EXTENSION"
+              got_any_specific_label=true
+            fi
+          else
+            echo "Unusual base ref: $BASE_REF"
+          fi
+
+          # Any PR that didn't get a specific label will go into other, for a human to look at.
+          if [[ "$got_any_specific_label" == "false" ]]; then
+            gh pr edit "$PR_NUMBER" --add-label "$LABEL_OTHER"
+          fi
+        env:
+          PR_NUMBER: "${{ github.event.number }}"
+          BASE_REF: "${{ github.base_ref }}"
+          GH_TOKEN: "${{ github.token }}"
