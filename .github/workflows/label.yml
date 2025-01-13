@@ -34,7 +34,7 @@ jobs:
           got_any_specific_label=false
 
           if [[ "$BASE_REF" == "master" ]]; then
-            echo "Download diff"
+            echo "Downloading pull request diff"
 
             # Download just the diff so it is harder to accidentally run any code from the pull request.
             gh pr diff --repo "$GH_REPO" "$PR_NUMBER" | tee pr.diff
