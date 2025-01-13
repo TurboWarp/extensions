@@ -242,7 +242,7 @@
     }
 
     typedTextSinceKeyboardOpened() {
-      return this.typedText;
+      return this.typedText ?? "";
     }
 
     isKeyboardOpen() {
