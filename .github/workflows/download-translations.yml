@@ -2,6 +2,9 @@ name: Download translations
 
 on:
   workflow_dispatch:
+  schedule:
+    # Time 10:44 was chosen at random to avoid periods of high load.
+    - cron: "44 10 * * WED,SAT"
 
 concurrency:
   group: "download-translations"
