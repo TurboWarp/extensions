@@ -12,7 +12,7 @@ jobs:
   label-pull-request:
     runs-on: ubuntu-latest
 
-    # This workflow is not useful to forks without significantly updating the workflow script.
+    # Disabled by default for forks since this is probably not useful.
     if: ${{ github.repository == 'TurboWarp/extensions' }}
 
     permissions:
@@ -34,21 +34,27 @@ jobs:
           got_any_specific_label=false
 
           if [[ "$BASE_REF" == "master" ]]; then
-            # Download just the diff so it is harder to accidentally run any code from the pull request.
-            gh pr diff --repo TurboWarp/extensions "$PR_NUMBER" > pr.diff
+            echo "Downloading pull request diff"
 
-            # Note that pcregrep exits with success on any match, failure on no match
-            if pcregrep -M "^--- /dev/null\n\+\+\+ b/extensions/" pr.diff; then
+            # Download just the diff so it is harder to accidentally run any code from the pull request.
+            gh pr diff --repo "$GH_REPO" "$PR_NUMBER" | tee pr.diff
+
+            # Note that pcregrep exits with success on any match, failure on no match or internal buffer overflow.
+            # To avoid errors on big diffs like compressed SVGs, increase the internal buffer size dramatically.
+            # This is pretty big and uses ~50MB of RAM but the machines can fit that just fine.
+            if pcregrep --buffer-size 16777216 -M "^--- /dev/null\n\+\+\+ b/extensions/" pr.diff; then
               # Example:
               # --- /dev/null
               # +++ b/extensions/DangoCat/extension.js
-              gh pr edit --repo TurboWarp/extensions "$PR_NUMBER" --add-label "$LABEL_NEW_EXTENSION"
+              echo "Adding label: $LABEL_NEW_EXTENSION"
+              gh pr edit --repo "$GH_REPO" "$PR_NUMBER" --add-label "$LABEL_NEW_EXTENSION"
               got_any_specific_label=true
-            elif pcregrep "^\+\+\+ b/extensions/" pr.diff; then
+            elif pcregrep --buffer-size 16777216 "^\+\+\+ b/extensions/" pr.diff; then
               # Example:
               # --- a/extensions/DangoCat/extension.js
               # +++ b/extensions/DangoCat/extension.js
-              gh pr edit --repo TurboWarp/extensions "$PR_NUMBER" --add-label "$LABEL_CHANGE_EXTENSION"
+              echo "Adding label: $LABEL_CHANGE_EXTENSION"
+              gh pr edit --repo "$GH_REPO" "$PR_NUMBER" --add-label "$LABEL_CHANGE_EXTENSION"
               got_any_specific_label=true
             fi
           else
@@ -57,9 +63,11 @@ jobs:
 
           # Any PR that didn't get a specific label will go into other, for a human to look at.
           if [[ "$got_any_specific_label" == "false" ]]; then
-            gh pr edit --repo TurboWarp/extensions "$PR_NUMBER" --add-label "$LABEL_OTHER"
+            echo "Adding label: $LABEL_OTHER"
+            gh pr edit --repo "$GH_REPO" "$PR_NUMBER" --add-label "$LABEL_OTHER"
           fi
         env:
           PR_NUMBER: "${{ github.event.number }}"
           BASE_REF: "${{ github.base_ref }}"
           GH_TOKEN: "${{ github.token }}"
+          GH_REPO: "${{ github.repository }}"
