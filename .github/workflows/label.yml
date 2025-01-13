@@ -37,10 +37,7 @@ jobs:
             echo "Download diff"
 
             # Download just the diff so it is harder to accidentally run any code from the pull request.
-            gh pr diff --repo "$GH_REPO" "$PR_NUMBER" > pr.diff
-
-            # Print diff for debugging
-            cat pr.diff
+            gh pr diff --repo "$GH_REPO" "$PR_NUMBER" | tee pr.diff
 
             # Note that pcregrep exits with success on any match, failure on no match or internal buffer overflow.
             # To avoid errors on big diffs like compressed SVGs, increase the internal buffer size dramatically.
