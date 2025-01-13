@@ -37,14 +37,16 @@ jobs:
             # Download just the diff so it is harder to accidentally run any code from the pull request.
             gh pr diff --repo TurboWarp/extensions "$PR_NUMBER" > pr.diff
 
-            # Note that pcregrep exits with success on any match, failure on no match
-            if pcregrep -M "^--- /dev/null\n\+\+\+ b/extensions/" pr.diff; then
+            # Note that pcregrep exits with success on any match, failure on no match or internal buffer overflow.
+            # To avoid errors on big diffs like compressed SVGs, increase the internal buffer size dramatically.
+            # This is pretty big and uses ~50MB of RAM but the machines can fit that just fine.
+            if pcregrep --buffer-size 16777216 -M "^--- /dev/null\n\+\+\+ b/extensions/" pr.diff; then
               # Example:
               # --- /dev/null
               # +++ b/extensions/DangoCat/extension.js
               gh pr edit --repo TurboWarp/extensions "$PR_NUMBER" --add-label "$LABEL_NEW_EXTENSION"
               got_any_specific_label=true
-            elif pcregrep "^\+\+\+ b/extensions/" pr.diff; then
+            elif pcregrep --buffer-size 16777216 "^\+\+\+ b/extensions/" pr.diff; then
               # Example:
               # --- a/extensions/DangoCat/extension.js
               # +++ b/extensions/DangoCat/extension.js
