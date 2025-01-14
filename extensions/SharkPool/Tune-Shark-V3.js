@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.4.2
+// Version V.3.4.21
 
 (function (Scratch) {
   "use strict";
@@ -808,18 +808,17 @@
       if (sound !== undefined) this.play(sound.context, time, sound);
     }
 
-    async playAndStop(args) {
+    playAndStop(args, util) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
-      const time = Cast.toNumber(args.TIME);
-      const max = Cast.toNumber(args.MAX);
-      this.play(sound.context, time, sound);
-      await new Promise((resolve) => {
-        setTimeout(() => {
-          this.typeOverlay(sound, "stop");
-          resolve();
-        }, (max - time) * 1000);
-      });
+      if (util.stackFrame.awaitingSound === undefined) {
+        util.stackFrame.awaitingSound = true;
+        this.play(sound.context, Cast.toNumber(args.TIME), sound);
+        util.yield();
+      } else if (util.stackFrame.awaitingSound) {
+        if (sound.currentTime >= Cast.toNumber(args.MAX)) this.typeOverlay(sound, "stop");
+        else util.yield();
+      }
     }
 
     stopSound(args) {
@@ -855,7 +854,7 @@
       const oldValue = sound.context.loop;
       sound.context.loop = args.TYPE === "on";
       if (args.TYPE === "off") this.typeOverlay(sound, "stop");
-      else if (!oldValue) {
+      else if (!oldValue && sound.context.playing) {
         const lastTime = sound.currentTime;
         sound.context.stop();
         sound.currentTime = lastTime;
