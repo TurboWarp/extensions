@@ -2,8 +2,9 @@
 // ID: HyperSenseSP
 // Description: Cool New Sensing Blocks
 // By: SharkPool
+// License: MIT
 
-// Version 3.0.21 (TW Ver)
+// Version 3.0.22 (TW Ver)
 
 (function (Scratch) {
   "use strict";
@@ -522,7 +523,7 @@
       const target = args.SPRITE1 === "_myself_" ? util.target : runtime.getSpriteTargetByName(args.SPRITE1);
       if (!target) return false;
       const oldDir = target.direction;
-      runtime.ext_scratch3_motion.pointTowards({ TOWARDS : args.SPRITE2 }, { ...util, target, ioQuery : util.ioQuery });
+      runtime.ext_scratch3_motion.pointTowards({ TOWARDS: args.SPRITE2 }, { ...util, target, ioQuery : util.ioQuery });
       const newDir = target.direction;
       target.setDirection(oldDir);
       return Math.round(newDir) === Math.round(oldDir);
@@ -532,7 +533,7 @@
       const sprite2 = args.SPRITE2;
       const target = sprite2 === "_myself_" ? util.target : runtime.getSpriteTargetByName(sprite2);
       if (!target) return false;
-      return target.isTouchingObject(args.SPRITE1);
+      return target.sprite.clones.some((t) => { return t.isTouchingObject(args.SPRITE1) })
     }
 
     spriteTouchingClone(args, util) {
