@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.4.21
+// Version V.3.4.22
 
 (function (Scratch) {
   "use strict";
@@ -48,18 +48,6 @@
   let deltaTime = 0, prevFrameTime = 0;
   let soundBank = {};
   let settings = { flagCtrl: false, canSave: false };
-
-  // Create an Event for when Pause Project is Activated
-  // Save original function if it exists
-  let ogPauseFunc = Object.getOwnPropertyDescriptor(runtime.ioDevices.clock, "_paused")?.set;
-  Object.defineProperty(runtime.ioDevices.clock, "_paused", {
-    set: function(value) {
-      this._pausedValue = value;
-      runtime.emit("SP_TUNE3_PROJECT_PAUSE", value);
-      if (ogPauseFunc) ogPauseFunc.call(this, value);
-    },
-    get: function() { return this._pausedValue }
-  });
 
   class SPtuneShark3 {
     constructor() {
@@ -146,10 +134,8 @@
           }
         });
       });
-      runtime.on("SP_TUNE3_PROJECT_PAUSE", () => {
-        if (runtime.ioDevices.clock._paused) this.ctrlSounds({ CONTROL: "pause" });
-        else this.ctrlSounds({ CONTROL: "unpause" });
-      });
+      runtime.on("RUNTIME_PAUSED", () => this.ctrlSounds({ CONTROL: "pause" }));
+      runtime.on("RUNTIME_UNPAUSED", () => this.ctrlSounds({ CONTROL: "unpause" }));
     }
     getInfo() {
       return {
