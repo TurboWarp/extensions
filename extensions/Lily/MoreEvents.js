@@ -342,7 +342,7 @@
           {
             opcode: "broadcastToTarget",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("broadcast [BROADCAST_OPTION] to [TARGET]"),
+            text: Scratch.translate("send [BROADCAST_OPTION] to [TARGET]"),
             arguments: {
               BROADCAST_OPTION: {
                 type: null,
@@ -359,7 +359,7 @@
             opcode: "broadcastToTargetAndWait",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "broadcast [BROADCAST_OPTION] to [TARGET] and wait"
+              "send [BROADCAST_OPTION] to [TARGET] and wait"
             ),
             arguments: {
               BROADCAST_OPTION: {
@@ -429,7 +429,7 @@
             opcode: "broadcastDataToTarget",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]"
+              "send [BROADCAST_OPTION] to [TARGET] with data [DATA]"
             ),
             func: "broadcastToTarget",
             arguments: {
@@ -451,7 +451,7 @@
             opcode: "broadcastDataToTargetAndWait",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA] and wait"
+              "send [BROADCAST_OPTION] to [TARGET] with data [DATA] and wait"
             ),
             func: "broadcastToTargetAndWait",
             arguments: {
