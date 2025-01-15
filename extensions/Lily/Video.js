@@ -144,20 +144,20 @@
           }
         }
       });
-      
+
       runtime.on("RUNTIME_PAUSED", () => {
         for (const skin of renderer._allSkins) {
           if (skin instanceof VideoSkin) {
-            skin.videoElement.pause()
+            skin.videoElement.pause();
             skin.markVideoDirty();
           }
         }
       });
-      
+
       runtime.on("RUNTIME_UNPAUSED", () => {
         for (const skin of renderer._allSkins) {
           if (skin instanceof VideoSkin) {
-            skin.videoElement.play()
+            skin.videoElement.play();
             skin.markVideoDirty();
           }
         }
