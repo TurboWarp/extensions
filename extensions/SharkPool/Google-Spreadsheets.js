@@ -3,7 +3,7 @@
 // Description: Fetch Spreadsheet Data
 // By: SharkPool
 
-// Version 1.2.11
+// Version 1.2.2
 
 (function (Scratch) {
   "use strict";
@@ -81,6 +81,26 @@
               DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "hello world!" },
               COL: { type: Scratch.ArgumentType.STRING, defaultValue: "messages" },
               URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://script.google.com/macros/..." }
+            }
+          },
+          "---",
+          {
+            opcode: "write2SheetAdvanced",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "write [DATA] from webhook URL [URL]",
+            arguments: {
+              DATA: null, // intentional for empty input
+              URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://script.google.com/macros/..." }
+            }
+          },
+          {
+            opcode: "advancedWriter",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "column [COL] data [DATA] [NEXT]",
+            arguments: {
+              DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "hello world!" },
+              COL: { type: Scratch.ArgumentType.STRING, defaultValue: "messages" },
+              NEXT: null, // intentional for empty input
             }
           },
           "---",
@@ -182,6 +202,24 @@
       } catch (e) {
         console.warn(e);
       }
+    }
+
+    async write2SheetAdvanced(args) {
+      const url = Scratch.Cast.toString(args.URL);
+      if (!url.startsWith("https://script.google.com/macros/")) return console.warn("Invalid URL!");
+      if (!args.DATA) return;
+      try {
+        const response = await Scratch.fetch(`${url}${args.DATA}&cache=${Math.random()}`);
+        if (!response.ok) console.warn("Failed to Write to Spreadsheet!");
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    advancedWriter(args) {
+      const column = encodeURIComponent(Scratch.Cast.toString(args.COL));
+      const data = encodeURIComponent(Scratch.Cast.toString(args.DATA));
+      return `&${column}=${data}${args.NEXT || ""}`;
     }
   }
 
