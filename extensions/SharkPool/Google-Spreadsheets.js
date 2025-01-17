@@ -89,7 +89,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "write [DATA] from webhook URL [URL]",
             arguments: {
-              DATA: null, // intentional for empty input
+              DATA: { type: null }, // intentional for empty input
               URL: { type: Scratch.ArgumentType.STRING, defaultValue: "https://script.google.com/macros/..." }
             }
           },
@@ -100,7 +100,7 @@
             arguments: {
               DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "hello world!" },
               COL: { type: Scratch.ArgumentType.STRING, defaultValue: "messages" },
-              NEXT: null, // intentional for empty input
+              NEXT: { type: null }, // intentional for empty input
             }
           },
           "---",
