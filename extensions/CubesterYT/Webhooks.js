@@ -25,6 +25,15 @@
   setupStorage();
   Scratch.vm.runtime.on("PROJECT_LOADED", setupStorage);
 
+  function isURLValid(string) {
+    try {
+      const url = new URL(string);
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch (error) {
+      return false;
+    }
+  }
+
   function toForm(data) {
     const parts = [];
     const process = (name, value) => {
@@ -147,7 +156,20 @@
           );
         }
       } while (Object.keys(webhooks).includes(name));
-      let URL = prompt(Scratch.translate("Enter Webhook URL:"));
+      let URL;
+      do {
+        URL = prompt(Scratch.translate("Enter Webhook URL:"));
+        if (URL === null) {
+          return;
+        }
+        if (!isURLValid(URL)) {
+          alert(
+            Scratch.translate(
+              "Invalid URL! Please make sure you provide a valid URL."
+            )
+          );
+        }
+      } while (!isURLValid(URL));
       webhooks[name] = { URL, DATA: {}, TYPE: "application/json" };
       hideFromPalette = false;
       Scratch.vm.extensionManager.refreshBlocks();
