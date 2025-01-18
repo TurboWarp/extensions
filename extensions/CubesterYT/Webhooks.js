@@ -201,8 +201,8 @@
       delete webhooks[name];
       if (Object.keys(webhooks).length === 0) {
         hideFromPalette = true;
-        Scratch.vm.extensionManager.refreshBlocks();
       }
+      Scratch.vm.extensionManager.refreshBlocks();
     }
     data(args) {
       try {
