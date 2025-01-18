@@ -22,6 +22,7 @@
         color2: "#50ad50",
         color3: "#479a47",
         blocks: [
+          /* eslint-disable extension/should-translate */
           {
             opcode: 'Logic_NAND',
             blockType: Scratch.BlockType.BOOLEAN,
