@@ -1,7 +1,7 @@
 // Name: Text
 // ID: strings
 // Description: Manipulate characters and text.
-// Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
+// By: CST1229 <https://scratch.mit.edu/users/CST1229/>
 // By: BludIsAnLemon <https://scratch.mit.edu/users/BludIsAnLemon/>
 // License: MIT AND MPL-2.0
 
