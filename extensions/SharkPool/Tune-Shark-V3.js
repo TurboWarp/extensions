@@ -4,12 +4,12 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.4.22
+// Version V.3.4.23
 
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed)
-    throw new Error("Tune Shark V3 must be run unsandboxed");
+    throw new Error(Scratch.translate("Tune Shark V3 must be run unsandboxed"));
 
   const menuIconURI =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDIuMTg1IiBoZWlnaHQ9IjEwMi4xODUiIHZpZXdCb3g9IjAgMCAxMDIuMTg1IDEwMi4xODUiPjxnIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTAgNTEuMDkzQzAgMjIuODc1IDIyLjg3NSAwIDUxLjA5MyAwczUxLjA5MyAyMi44NzUgNTEuMDkzIDUxLjA5My0yMi44NzUgNTEuMDkzLTUxLjA5MyA1MS4wOTNTMCA3OS4zMTEgMCA1MS4wOTMiIGZpbGw9IiM0MDQwNDAiLz48cGF0aCBkPSJNNC44NiA1MS4wOTNjMC0yNS41MzQgMjAuNy00Ni4yMzMgNDYuMjMzLTQ2LjIzMyAyNS41MzQgMCA0Ni4yMzMgMjAuNyA0Ni4yMzMgNDYuMjMzIDAgMjUuNTM0LTIwLjcgNDYuMjMzLTQ2LjIzMyA0Ni4yMzMtMjUuNTM0IDAtNDYuMjMzLTIwLjctNDYuMjMzLTQ2LjIzMyIgZmlsbD0iIzY2NiIvPjxwYXRoIGQ9Ik03Mi44MzcgODYuNjQzdi0uMDAzYy0xLjI1NCAyLjUzNi00LjY2OCAzLjkzNS04LjI2NCAzLjE5Ny00LjExOC0uODQ0LTYuOTE1LTQuMTctNi4yNDYtNy40MjguNjY4LTMuMjYgNC41NDgtNS4yMTYgOC42NjYtNC4zNzEgMS44NzUuMzg0IDMuNDc0IDEuMjg0IDQuNiAyLjQ1N2w2LjY4My0xNC4xNzhjLTEwLjU2Ni00LjEzNS0xOS43Ni01LjA5Ni0xOS43Ni01LjA5NmwtOC45ODcgMTkuMDYxYy0uOTY2IDIuOTI3LTQuNjM2IDQuNjIyLTguNTIgMy44MjYtNC4xMTctLjg0NC02LjkxNC00LjE3LTYuMjQ2LTcuNDMuNjY5LTMuMjU4IDQuNTQ4LTUuMjE0IDguNjY3LTQuMzcgMS45MS4zOTEgMy41MzYgMS4zMTcgNC42NjQgMi41MjJsMTIuMDM1LTI1LjUwN3MxMy41MzIuMjM2IDI2Ljk0NyA3LjExNHoiIGZpbGw9IiNmZmYiLz48cGF0aCBkPSJtMjguMzA5IDMwLjgzMSA0LjA0MyAyMy42ODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIi8+PHBhdGggZD0iTTM0LjAzMyA1NS4yMTljMS4zOCAyLjYwNi0uNzcyIDYuMDQtNC44MDggNy42Ny00LjAzNyAxLjYzLTguNDI5LjgzNy05LjgxLTEuNzctMS4zOC0yLjYwNi43NzItNi4wNCA0LjgwOS03LjY3IDQuMDM2LTEuNjI5IDguNDI4LS44MzcgOS44MDkgMS43N20tNy45NS0yNy4wNjhzOS43MDUtMS43MDQgMTIuMzYzIDIuNzdjMi4zNzUgNCAuMDcxIDguNjk1LjIxMiAxMC4xMjguMTQgMS40MzMgMi4xNzUgMS4xMDkgMi4xNzUgMS4xMDlsLS4wMTQgMS42NzRzLTIuODY0LjY2OS0zLjQxMi0xLjMyYy0uNTQ3LTEuOTg4LS41Ni01Ljk3OC0yLjgyMy04LjIyNy0yLjI2NS0yLjI1LTcuNTM3LS43NTktNy41MzctLjc1OSIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik02MC40MzYgMzUuMzcxYy0uMzMzIDIuMTE4LTIuMzUzIDMuMzA5LTQuMTg5IDQuMDAyLTEuNjUuNzI2LTMuNTUgMS4wMDgtNS4yNzYuMzctMS42MzEtLjM4MS0zLjE4OC0xLjgwNy0yLjk5NC0zLjU5OC4xNTQtMi4wODUgMS44OTYtMy44MjIgMy44NDItNC40MDUgMS45NC0uNzk5IDQuMjUzLS43MyA2LjEwNS4yNi45MTMuNDIxIDIuMTg5LTE0LjE0MiAzLjAzNS0yMC41ODMuMS0uNjQyIDIuNTg0LS40NyAyLjUxMy4xNTEgMCAwLTEuODU0IDE1LjUyMi0zLjAzNiAyMy44MDMiIGZpbGw9IiNmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvZz48L3N2Zz4=";
@@ -40,26 +40,26 @@
 
   const ts3Data = Symbol("ts3Data");
   const simpleEffects = [
-    "pitch",
-    "detune",
-    "speed",
-    "pan",
-    "gain",
-    "distortion",
-    "attack",
-    "release",
+    { text: Scratch.translate("pitch"), value: "pitch" },
+    { text: Scratch.translate("detune"), value: "detune" },
+    { text: Scratch.translate("speed"), value: "speed" },
+    { text: Scratch.translate("pan"), value: "pan" },
+    { text: Scratch.translate("gain"), value: "gain" },
+    { text: Scratch.translate("distortion"), value: "distortion" },
+    { text: Scratch.translate("attack"), value: "attack" },
+    { text: Scratch.translate("release"), value: "release" },
   ];
   const complexEffects = [
-    "reverb",
-    "delay",
-    "tremolo",
-    "fuzz",
-    "bitcrush",
-    "highpass",
-    "lowpass",
-    "flanger",
-    "compressor",
-    "equalizer",
+    { text: Scratch.translate("reverb"), value: "reverb" },
+    { text: Scratch.translate("delay"), value: "delay" },
+    { text: Scratch.translate("tremolo"), value: "tremolo" },
+    { text: Scratch.translate("fuzz"), value: "fuzz" },
+    { text: Scratch.translate("bitcrush"), value: "bitcrush" },
+    { text: Scratch.translate("highpass"), value: "highpass" },
+    { text: Scratch.translate("lowpass"), value: "lowpass" },
+    { text: Scratch.translate("flanger"), value: "flanger" },
+    { text: Scratch.translate("compressor"), value: "compressor" },
+    { text: Scratch.translate("equalizer"), value: "equalizer" },
   ];
 
   let deltaTime = 0,
@@ -86,7 +86,9 @@
                 : runtime.getSpriteTargetByName(info[0]);
             if (target === undefined) {
               alert(
-                `Tune Shark 3 -- Failed to load ${info[1]} from ${info[0]}`
+                Scratch.translate(
+                  `Tune Shark 3 -- Failed to load ${info[1]} from ${info[0]}`
+                )
               );
               continue;
             }
@@ -96,7 +98,9 @@
             });
             if (scratchSound === undefined) {
               alert(
-                `Tune Shark 3 -- Failed to load ${info[1]} from ${info[0]}`
+                Scratch.translate(
+                  `Tune Shark 3 -- Failed to load ${info[1]} from ${info[0]}`
+                )
               );
               continue;
             }
@@ -185,7 +189,7 @@
     getInfo() {
       return {
         id: "SPtuneShark3",
-        name: "Tune Shark V3",
+        name: Scratch.translate("Tune Shark V3"),
         color1: "#666666",
         menuIconURI,
         blockIconURI,
@@ -193,7 +197,7 @@
           {
             opcode: "importURL",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import sound from URL [URL] named [NAME]",
+            text: Scratch.translate("import sound from URL [URL] named [NAME]"),
             blockIconURI: extraIcons.set,
             arguments: {
               URL: {
@@ -202,85 +206,90 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
             },
           },
           {
             opcode: "importMenu",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import sound [SOUND] named [NAME]",
+            text: Scratch.translate("import sound [SOUND] named [NAME]"),
             blockIconURI: extraIcons.set,
             arguments: {
               SOUND: { type: Scratch.ArgumentType.SOUND },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
             },
           },
           {
             opcode: "convertSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "convert sound [NAME1] from URL to URI and save to [NAME2]",
+            text: Scratch.translate(
+              "convert sound [NAME1] from URL to URI and save to [NAME2]"
+            ),
             blockIconURI: extraIcons.set,
             arguments: {
               NAME1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               NAME2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound2",
+                defaultValue: Scratch.translate("MySound2"),
               },
             },
           },
           {
             opcode: "bindSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[TYPE] sound [NAME2] and sound [NAME]",
+            text: Scratch.translate("[TYPE] sound [NAME2] and sound [NAME]"),
             blockIconURI: extraIcons.set,
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "bindMenu" },
               NAME2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound2",
+                defaultValue: Scratch.translate("MySound2"),
               },
             },
           },
           {
             opcode: "save2Project",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[SAVE] all sounds to project",
+            text: Scratch.translate("[SAVE] all sounds to project"),
             blockIconURI: extraIcons.set,
             arguments: {
               SAVE: { type: Scratch.ArgumentType.STRING, menu: "saveMenu" },
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: "Audio Playback" },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Audio Playback"),
+          },
           {
             opcode: "startSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start sound [NAME]",
+            text: Scratch.translate("start sound [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
             },
           },
           {
             opcode: "startSoundAt",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start sound [NAME] at time [TIME]",
+            text: Scratch.translate("start sound [NAME] at time [TIME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
@@ -288,11 +297,13 @@
           {
             opcode: "playAndStop",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start sound [NAME] at time [TIME] and stop at [MAX] seconds",
+            text: Scratch.translate(
+              "start sound [NAME] at time [TIME] and stop at [MAX] seconds"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               MAX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 },
@@ -301,22 +312,22 @@
           {
             opcode: "stopSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop sound [NAME]",
+            text: Scratch.translate("stop sound [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
             },
           },
           {
             opcode: "pauseSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[UN_PAUSE] sound [NAME]",
+            text: Scratch.translate("[UN_PAUSE] sound [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               UN_PAUSE: {
                 type: Scratch.ArgumentType.STRING,
@@ -328,16 +339,21 @@
           {
             opcode: "ctrlSounds",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[CONTROL] all sounds",
+            text: Scratch.translate("[CONTROL] all sounds"),
             arguments: {
               CONTROL: { type: Scratch.ArgumentType.STRING, menu: "playMenu" },
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: "Audio Operations" },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Audio Operations"),
+          },
           {
             opcode: "enableControl",
             blockType: Scratch.BlockType.COMMAND,
-            text: "toggle sound link to [GO] [STOP] [ON_OFF]",
+            text: Scratch.translate(
+              "toggle sound link to [GO] [STOP] [ON_OFF]"
+            ),
             blockIconURI: extraIcons.set,
             arguments: {
               GO: {
@@ -354,12 +370,12 @@
           {
             opcode: "toggleOverlap",
             blockType: Scratch.BlockType.COMMAND,
-            text: "toggle sound [NAME] overlapping [TYPE]",
+            text: Scratch.translate("toggle sound [NAME] overlapping [TYPE]"),
             blockIconURI: extraIcons.set,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "toggleMenu" },
             },
@@ -367,12 +383,12 @@
           {
             opcode: "toggleReverse",
             blockType: Scratch.BlockType.COMMAND,
-            text: "toggle sound [NAME] reverse mode [TYPE]",
+            text: Scratch.translate("toggle sound [NAME] reverse mode [TYPE]"),
             blockIconURI: extraIcons.set,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "toggleMenu" },
             },
@@ -380,12 +396,12 @@
           {
             opcode: "toggleLoop",
             blockType: Scratch.BlockType.COMMAND,
-            text: "toggle sound [NAME] looping [TYPE]",
+            text: Scratch.translate("toggle sound [NAME] looping [TYPE]"),
             blockIconURI: extraIcons.set,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "toggleMenu" },
             },
@@ -393,12 +409,14 @@
           {
             opcode: "loopParams",
             blockType: Scratch.BlockType.COMMAND,
-            text: "sound [NAME] loop start [START] end [END]",
+            text: Scratch.translate(
+              "sound [NAME] loop start [START] end [END]"
+            ),
             blockIconURI: extraIcons.set,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               START: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               END: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 },
@@ -408,44 +426,44 @@
           {
             opcode: "deleteSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete sound [NAME]",
+            text: Scratch.translate("delete sound [NAME]"),
             blockIconURI: extraIcons.set,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
             },
           },
           {
             opcode: "deleteAllSounds",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete all sounds",
+            text: Scratch.translate("delete all sounds"),
             blockIconURI: extraIcons.set,
           },
           {
             opcode: "allSounds",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all sounds",
+            text: Scratch.translate("all sounds"),
             blockIconURI: extraIcons.set,
           },
           {
             opcode: "allPlaySounds",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all playing sounds",
+            text: Scratch.translate("all playing sounds"),
             blockIconURI: extraIcons.set,
           },
           "---",
           {
             opcode: "whenSound",
             blockType: Scratch.BlockType.HAT,
-            text: "when sound [NAME] [CONTROL]",
+            text: Scratch.translate("when sound [NAME] [CONTROL]"),
             isEdgeActivated: false,
             blockIconURI: extraIcons.set,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               CONTROL: { type: Scratch.ArgumentType.STRING, menu: "hatPlayer" },
             },
@@ -453,12 +471,12 @@
           {
             opcode: "soundCheck",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "sound [NAME] [CONTROL] ?",
+            text: Scratch.translate("sound [NAME] [CONTROL] ?"),
             blockIconURI: extraIcons.set,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               CONTROL: {
                 type: Scratch.ArgumentType.STRING,
@@ -469,12 +487,12 @@
           {
             opcode: "soundProperty",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[PROP] of sound [NAME]",
+            text: Scratch.translate("[PROP] of sound [NAME]"),
             blockIconURI: extraIcons.set,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               PROP: { type: Scratch.ArgumentType.STRING, menu: "soundProps" },
             },
@@ -482,28 +500,33 @@
           {
             opcode: "getLoudTime",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[TYPE] of sound [NAME] at time [TIME] in channel [CHANNEL]",
+            text: Scratch.translate(
+              "[TYPE] of sound [NAME] at time [TIME] in channel [CHANNEL]"
+            ),
             blockIconURI: extraIcons.set,
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "loudProps" },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               CHANNEL: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: "Audio Effects" },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Audio Effects"),
+          },
           {
             opcode: "setVol",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set volume of sound [NAME] to [NUM]",
+            text: Scratch.translate("set volume of sound [NAME] to [NUM]"),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
             },
@@ -511,13 +534,13 @@
           {
             opcode: "resetEffect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reset [EFFECT] of sound [NAME]",
+            text: Scratch.translate("reset [EFFECT] of sound [NAME]"),
             blockIconURI: extraIcons.nob,
             arguments: {
               EFFECT: { type: Scratch.ArgumentType.STRING, menu: "effectMenu" },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
             },
           },
@@ -525,12 +548,12 @@
           {
             opcode: "setThingNew",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [TYPE] of sound [NAME] to [VALUE]",
+            text: Scratch.translate("set [TYPE] of sound [NAME] to [VALUE]"),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -542,12 +565,14 @@
           {
             opcode: "setReverb",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set reverb of sound [NAME] to time [TIME] decay [DECAY] mix [MIX]",
+            text: Scratch.translate(
+              "set reverb of sound [NAME] to time [TIME] decay [DECAY] mix [MIX]"
+            ),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
               DECAY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
@@ -557,12 +582,14 @@
           {
             opcode: "setDelay",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set delay of sound [NAME] to time [TIME] feedback [FEED] mix [MIX]",
+            text: Scratch.translate(
+              "set delay of sound [NAME] to time [TIME] feedback [FEED] mix [MIX]"
+            ),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               FEED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 60 },
               TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
@@ -572,12 +599,14 @@
           {
             opcode: "setTremolo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set tremolo of sound [NAME] to speed [SPEED] depth [DEPTH] mix [MIX]",
+            text: Scratch.translate(
+              "set tremolo of sound [NAME] to speed [SPEED] depth [DEPTH] mix [MIX]"
+            ),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               SPEED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 35 },
               DEPTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 80 },
@@ -588,12 +617,14 @@
           {
             opcode: "setFuzz",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set fuzz of sound [NAME] to low [LOW] med-low [MED1] med-high [MED2] high [HIGH] mix [MIX]",
+            text: Scratch.translate(
+              "set fuzz of sound [NAME] to low [LOW] med-low [MED1] med-high [MED2] high [HIGH] mix [MIX]"
+            ),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               LOW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 60 },
               MED1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 80 },
@@ -605,12 +636,14 @@
           {
             opcode: "setBitcrush",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set bitcrush of sound [NAME] bits [BITS] freq [FREQ]",
+            text: Scratch.translate(
+              "set bitcrush of sound [NAME] bits [BITS] freq [FREQ]"
+            ),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               BITS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 65 },
               FREQ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 60000 },
@@ -619,12 +652,14 @@
           {
             opcode: "setPass",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [TYPE] of sound [NAME] to frequency [FREQ] peak [PEAK]",
+            text: Scratch.translate(
+              "set [TYPE] of sound [NAME] to frequency [FREQ] peak [PEAK]"
+            ),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "typePass" },
               FREQ: { type: Scratch.ArgumentType.NUMBER, defaultValue: 400 },
@@ -634,12 +669,14 @@
           {
             opcode: "setFlanger",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set flanger of sound [NAME] to time [TIME] speed [SPEED] depth [DEPTH] feed [FEED] mix [MIX]",
+            text: Scratch.translate(
+              "set flanger of sound [NAME] to time [TIME] speed [SPEED] depth [DEPTH] feed [FEED] mix [MIX]"
+            ),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               TIME: { type: Scratch.ArgumentType.NUMBER, defaultValue: 45 },
               SPEED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 20 },
@@ -651,12 +688,14 @@
           {
             opcode: "setCompress",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set compressor of sound [NAME] to threshold [THRESH] knee [KNEE] attack [ATTACK] release [RELEASE] ratio [RATIO]",
+            text: Scratch.translate(
+              "set compressor of sound [NAME] to threshold [THRESH] knee [KNEE] attack [ATTACK] release [RELEASE] ratio [RATIO]"
+            ),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               THRESH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
               KNEE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
@@ -668,12 +707,14 @@
           {
             opcode: "setEqualize",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set equalizer of sound [NAME] to gain low [LOW] mid [MID] high [HIGH] cutoff low [CUT_LOW] cutoff high [CUT_HIGH]",
+            text: Scratch.translate(
+              "set equalizer of sound [NAME] to gain low [LOW] mid [MID] high [HIGH] cutoff low [CUT_LOW] cutoff high [CUT_HIGH]"
+            ),
             blockIconURI: extraIcons.nob,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MySound",
+                defaultValue: Scratch.translate("MySound"),
               },
               LOW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
               MID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
@@ -684,42 +725,77 @@
           },
         ],
         menus: {
-          saveMenu: ["save", "dont save"],
-          un_pauseMenu: ["pause", "unpause"],
-          playMenu: ["start", "stop", "pause", "unpause"],
-          hatPlayer: ["starts", "stops"],
-          toggleMenu: ["on", "off"],
-          bindMenu: ["bind", "unBind"],
-          loudProps: ["loudness", "raw noise", "tone"],
-          typePass: ["highpass", "lowpass"],
+          saveMenu: [
+            { text: Scratch.translate("save"), value: "save" },
+            { text: Scratch.translate("dont save"), value: "dont save" },
+          ],
+          un_pauseMenu: [
+            { text: Scratch.translate("pause"), value: "pause" },
+            { text: Scratch.translate("unpause"), value: "unpause" },
+          ],
+          playMenu: [
+            { text: Scratch.translate("start"), value: "start" },
+            { text: Scratch.translate("stop"), value: "stop" },
+            { text: Scratch.translate("pause"), value: "pause" },
+            { text: Scratch.translate("unpause"), value: "unpause" },
+          ],
+          hatPlayer: [
+            { text: Scratch.translate("starts"), value: "starts" },
+            { text: Scratch.translate("stops"), value: "stops" },
+          ],
+          toggleMenu: [
+            { text: Scratch.translate("on"), value: "on" },
+            { text: Scratch.translate("off"), value: "off" },
+          ],
+          bindMenu: [
+            { text: Scratch.translate("bind"), value: "bind" },
+            { text: Scratch.translate("unBind"), value: "unBind" },
+          ],
+          loudProps: [
+            { text: Scratch.translate("loudness"), value: "loudness" },
+            { text: Scratch.translate("raw noise"), value: "raw noise" },
+            { text: Scratch.translate("tone"), value: "tone" },
+          ],
+          typePass: [
+            { text: Scratch.translate("highpass"), value: "highpass" },
+            { text: Scratch.translate("lowpass"), value: "lowpass" },
+          ],
           singleEffectNew: { acceptReporters: true, items: simpleEffects },
           soundProps: {
             acceptReporters: true,
             items: [
-              "length",
-              "current time",
-              "source",
-              "estimated bpm",
-              "channels",
-              "binds",
-              "volume",
+              { text: Scratch.translate("length"), value: "length" },
+              {
+                text: Scratch.translate("current time"),
+                value: "current time",
+              },
+              { text: Scratch.translate("source"), value: "source" },
+              {
+                text: Scratch.translate("estimated bpm"),
+                value: "estimated bpm",
+              },
+              { text: Scratch.translate("channels"), value: "channels" },
+              { text: Scratch.translate("binds"), value: "binds" },
+              { text: Scratch.translate("volume"), value: "volume" },
             ].concat(simpleEffects, complexEffects),
           },
           soundBools: {
             acceptReporters: true,
             items: [
-              "exists",
-              "playing",
-              "paused",
-              "looped",
-              "overlaped",
-              "reversed",
-              "binded",
+              { text: Scratch.translate("exists"), value: "exists" },
+              { text: Scratch.translate("playing"), value: "playing" },
+              { text: Scratch.translate("paused"), value: "paused" },
+              { text: Scratch.translate("looped"), value: "looped" },
+              { text: Scratch.translate("overlaped"), value: "overlaped" },
+              { text: Scratch.translate("reversed"), value: "reversed" },
+              { text: Scratch.translate("binded"), value: "binded" },
             ],
           },
           effectMenu: {
             acceptReporters: true,
-            items: ["all effects"].concat(simpleEffects, complexEffects),
+            items: [
+              { text: Scratch.translate("all effects"), value: "all effects" },
+            ].concat(simpleEffects, complexEffects),
           },
         },
       };
@@ -916,7 +992,9 @@
         }
         this.startHats({ name: con.name, type: "starts" });
       } catch {
-        console.warn("Audio has not Loaded Yet, Ignore Next Error");
+        console.warn(
+          Scratch.translate("Audio has not loaded yet, ignore next error.")
+        );
         sound.stop(); // Reset
       }
     }
@@ -974,7 +1052,9 @@
               resolve();
             } catch {
               alert(
-                "Tune Shark V3 Cant Import this Sound, File may be Corrupted or Non-Existent"
+                Scratch.translate(
+                  "Tune Shark V3 can't import this sound, file may be corrupted or non-existent."
+                )
               );
               resolve();
             }
