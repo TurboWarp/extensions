@@ -33,9 +33,9 @@
               },
               B: {
                 type: Scratch.ArgumentType.BOOLEAN
-              }
+              },
             },
-            extensions: ["colours_operators"]
+            extensions: ["colours_operators"],
           },
           {
             opcode: "Logic_NOR",
@@ -47,9 +47,9 @@
               },
               B: {
                 type: Scratch.ArgumentType.BOOLEAN
-              }
+              },
             },
-            extensions: ["colours_operators"]
+            extensions: ["colours_operators"],
           },
           {
             opcode: "Logic_XOR",
@@ -61,9 +61,9 @@
               },
               B: {
                 type: Scratch.ArgumentType.BOOLEAN
-              }
+              },
             },
-            extensions: ["colours_operators"]
+            extensions: ["colours_operators"],
           },
           {
             opcode: "Logic_XNOR",
@@ -75,9 +75,9 @@
               },
               B: {
                 type: Scratch.ArgumentType.BOOLEAN
-              }
+              },
             },
-            extensions: ["colours_operators"]
+            extensions: ["colours_operators"],
           },
           {
             opcode: "Logic_IMPLY",
@@ -89,9 +89,9 @@
               },
               B: {
                 type: Scratch.ArgumentType.BOOLEAN
-              }
+              },
             },
-            extensions: ["colours_operators"]
+            extensions: ["colours_operators"],
           },
           {
             opcode: "Logic_NIMPLY",
@@ -103,9 +103,9 @@
               },
               B: {
                 type: Scratch.ArgumentType.BOOLEAN
-              }
+              },
             },
-            extensions: ["colours_operators"]
+            extensions: ["colours_operators"],
           },
         ],
       };
