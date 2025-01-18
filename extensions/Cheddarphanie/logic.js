@@ -4,15 +4,15 @@
 // By: Cheddarphanie <https://scratch.mit.edu/users/Cheddarphanie/>
 // License: Apache-2.0
 
-(function(Scratch) {
+(function (Scratch) {
   "use strict";
-  
-  if(!Scratch.extensions.unsandboxed) {
+
+  if (!Scratch.extensions.unsandboxed) {
     throw new Error("Logic must run unsandboxed.");
   }
-  
+
   const Cast = Scratch.Cast;
-  
+
   class LogicExt {
     getInfo() {
       return {
@@ -110,31 +110,32 @@
         ],
       };
     }
-  
-    Logic_NAND({A, B}) {
-      [A, B] = [A, B].map(arg => Cast.toBoolean(arg));
+
+    Logic_NAND({ A, B }) {
+      [A, B] = [A, B].map((arg) => Cast.toBoolean(arg));
       return !(A && B);
     }
-    Logic_NOR({A, B}) {
-      [A, B] = [A, B].map(arg => Cast.toBoolean(arg));
+    Logic_NOR({ A, B }) {
+      [A, B] = [A, B].map((arg) => Cast.toBoolean(arg));
       return !(A || B);
     }
-    Logic_XOR({A, B}) {
-      [A, B] = [A, B].map(arg => Cast.toBoolean(arg));
+    Logic_XOR({ A, B }) {
+      [A, B] = [A, B].map((arg) => Cast.toBoolean(arg));
       return A !== B;
     }
-    Logic_XNOR({A, B}) {
-      [A, B] = [A, B].map(arg => Cast.toBoolean(arg));
+    Logic_XNOR({ A, B }) {
+      [A, B] = [A, B].map((arg) => Cast.toBoolean(arg));
       return A === B;
     }
-    Logic_IMPLY({A, B}) {
-      [A, B] = [A, B].map(arg => Cast.toBoolean(arg));
+    Logic_IMPLY({ A, B }) {
+      [A, B] = [A, B].map((arg) => Cast.toBoolean(arg));
       return !A || B;
     }
-    Logic_NIMPLY({A, B}) {
-      [A, B] = [A, B].map(arg => Cast.toBoolean(arg));
+    Logic_NIMPLY({ A, B }) {
+      [A, B] = [A, B].map((arg) => Cast.toBoolean(arg));
       return A && !B;
     }
   }
 
-Scratch.extensions.register(new LogicExt());})(Scratch)
+  Scratch.extensions.register(new LogicExt());
+})(Scratch);
