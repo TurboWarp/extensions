@@ -1,6 +1,6 @@
 // Name: Tune Shark V3
 // ID: SPtuneShark3
-// Description: Advanced Audio Engine, giving Complex Sound Control
+// Description: Advanced Audio Engine, giving Complex Sound Control.
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
