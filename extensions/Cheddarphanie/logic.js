@@ -29,10 +29,10 @@
             text: "[A] NAND [B]",
             arguments: {
               A: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
               B: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
             },
             extensions: ["colours_operators"],
@@ -43,10 +43,10 @@
             text: "[A] NOR [B]",
             arguments: {
               A: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
               B: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
             },
             extensions: ["colours_operators"],
@@ -57,10 +57,10 @@
             text: "[A] XOR [B]",
             arguments: {
               A: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
               B: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
             },
             extensions: ["colours_operators"],
@@ -71,10 +71,10 @@
             text: "[A] XNOR [B]",
             arguments: {
               A: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
               B: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
             },
             extensions: ["colours_operators"],
@@ -85,10 +85,10 @@
             text: "[A] IMPLY [B]",
             arguments: {
               A: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
               B: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
             },
             extensions: ["colours_operators"],
@@ -99,10 +99,10 @@
             text: "[A] NIMPLY [B]",
             arguments: {
               A: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
               B: {
-                type: Scratch.ArgumentType.BOOLEAN
+                type: Scratch.ArgumentType.BOOLEAN,
               },
             },
             extensions: ["colours_operators"],
