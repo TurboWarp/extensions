@@ -24,7 +24,7 @@
         blocks: [
           /* eslint-disable extension/should-translate */
           {
-            opcode: 'Logic_NAND',
+            opcode: "Logic_NAND",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[A] NAND [B]",
             arguments: {
@@ -38,7 +38,7 @@
             extensions: ["colours_operators"]
           },
           {
-            opcode: 'Logic_NOR',
+            opcode: "Logic_NOR",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[A] NOR [B]",
             arguments: {
@@ -52,7 +52,7 @@
             extensions: ["colours_operators"]
           },
           {
-            opcode: 'Logic_XOR',
+            opcode: "Logic_XOR",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[A] XOR [B]",
             arguments: {
@@ -66,7 +66,7 @@
             extensions: ["colours_operators"]
           },
           {
-            opcode: 'Logic_XNOR',
+            opcode: "Logic_XNOR",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[A] XNOR [B]",
             arguments: {
@@ -80,7 +80,7 @@
             extensions: ["colours_operators"]
           },
           {
-            opcode: 'Logic_IMPLY',
+            opcode: "Logic_IMPLY",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[A] IMPLY [B]",
             arguments: {
@@ -94,7 +94,7 @@
             extensions: ["colours_operators"]
           },
           {
-            opcode: 'Logic_NIMPLY',
+            opcode: "Logic_NIMPLY",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "[A] NIMPLY [B]",
             arguments: {
