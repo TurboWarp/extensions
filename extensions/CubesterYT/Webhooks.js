@@ -51,9 +51,7 @@
       } else if (Array.isArray(value)) {
         value.forEach((elem, index) => process(`${name}[${index}]`, elem));
       } else if (typeof value === "object") {
-        keys(value).forEach((key) =>
-          process(`${name}[${key}]`, value[key])
-        );
+        keys(value).forEach((key) => process(`${name}[${key}]`, value[key]));
       }
     };
     keys(data).forEach((key) => process(key, data[key]));
