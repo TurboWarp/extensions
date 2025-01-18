@@ -3,6 +3,7 @@
 // Description: Manipulate characters and text.
 // By: CST1229 <https://scratch.mit.edu/users/CST1229/>
 // By: BludIsAnLemon <https://scratch.mit.edu/users/BludIsAnLemon/>
+// By: Man-o-Valor <https://scratch.mit.edu/users/man-o-valor/>
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {
@@ -14,6 +15,9 @@
     MIXEDCASE: "mixedcase",
     TITLECASE: "titlecase",
     EXACTTITLECASE: "exacttitlecase",
+    RANDOMCASE: "randomcase",
+    SENTENCECASE: "sentencecase",
+    CAMELCASE: "camelcase",
   };
 
   let splitCache;
@@ -40,6 +44,14 @@
         },
         {
           text: Scratch.translate({
+            default: "Sentence case",
+            description:
+              "Starts words after ., !, and ? with captialized letters",
+          }),
+          value: CaseParam.SENTENCECASE,
+        },
+        {
+          text: Scratch.translate({
             default: "Title Case",
             description:
               "If your language has Title Case, style it accordingly. 'Abc' is title case and exactly title case but 'ABC' is only title case.",
@@ -61,6 +73,22 @@
               "If your language has mixed case, style it accordingly",
           }),
           value: CaseParam.MIXEDCASE,
+        },
+        {
+          text: Scratch.translate({
+            default: "RAndoMCaSe",
+            description:
+              "If your language has randomcase, style it accordingly",
+          }),
+          value: CaseParam.RANDOMCASE,
+        },
+        {
+          text: Scratch.translate({
+            default: "camelCase",
+            description:
+              "Removes all spaces and capitalizes all words after the first",
+          }),
+          value: CaseParam.CAMELCASE,
         },
       ];
     }
@@ -658,6 +686,12 @@
               word[0].toUpperCase() + word.substring(1).toLowerCase();
             return word === titleCased;
           });
+        case CaseParam.CAMELCASE:
+          return /^[^A-Z\s][^\s]*$/.test(string);
+        case CaseParam.RANDOMCASE:
+          return true;
+        case CaseParam.SENTENCECASE:
+          return /^[A-Z][^?.!]*(?:[?.!]\s+[A-Z][^?.!]*)*$/.test(string);
         default:
           return false;
       }
@@ -666,6 +700,8 @@
     toCase(args, util) {
       const string = args.STRING.toString();
       const textCase = args.TEXTCASE.toString();
+      let workingText = "";
+      let sentenceCapitalFlag = false;
       switch (textCase) {
         case CaseParam.LOWERCASE:
           return string.toLowerCase();
@@ -693,6 +729,41 @@
               return word[0].toUpperCase() + word.substring(1).toLowerCase();
             })
             .join("");
+        case CaseParam.SENTENCECASE:
+          for (let i = 0; i < string.length; i++) {
+            if (
+              /^\s*$/.test(string[i - 1] ?? " ") &&
+              !sentenceCapitalFlag &&
+              string[i].toUpperCase() != string[i].toLowerCase()
+            ) {
+              workingText += string[i].toUpperCase();
+              sentenceCapitalFlag = true;
+            } else {
+              if (string[i] == "." || string[i] == "!" || string[i] == "?") {
+                sentenceCapitalFlag = false;
+              }
+              workingText += string[i].toLowerCase();
+            }
+          }
+          return workingText;
+        case CaseParam.RANDOMCASE:
+          for (let i = 0; i < string.length; i++) {
+            if (Math.random() > 0.5) {
+              workingText += string[i].toUpperCase();
+            } else {
+              workingText += string[i].toLowerCase();
+            }
+          }
+          return workingText;
+        case CaseParam.CAMELCASE:
+          for (let i = 0; i < string.length; i++) {
+            if (/^\s*$/.test(string[i - 1] ?? "x")) {
+              workingText += string[i].toUpperCase();
+            } else {
+              workingText += string[i].toLowerCase();
+            }
+          }
+          return workingText.replace(/\s/g, "");
         default:
           return string;
       }
