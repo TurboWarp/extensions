@@ -181,7 +181,7 @@
       } while (!isURLValid(URL));
       webhooks[name] = { URL, DATA: {}, TYPE: "application/json" };
       hideFromPalette = false;
-      Scratch.vm.extensionManager.refreshBlocks();
+      Scratch.vm.extensionManager.refreshBlocks("cubesterWebhooks");
     }
     deleteWebhook() {
       let name;
@@ -202,7 +202,7 @@
       if (Object.keys(webhooks).length === 0) {
         hideFromPalette = true;
       }
-      Scratch.vm.extensionManager.refreshBlocks();
+      Scratch.vm.extensionManager.refreshBlocks("cubesterWebhooks");
     }
     data(args) {
       try {
