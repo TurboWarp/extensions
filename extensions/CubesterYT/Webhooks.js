@@ -147,8 +147,15 @@
       let name;
       do {
         name = prompt(Scratch.translate("Enter Webhook name:"));
-        if (name === null || name === "") {
+        if (name === null) {
           return;
+        }
+        if (name === "") {
+          alert(
+            Scratch.translate(
+              "Please enter a name with at least one character!"
+            )
+          );
         }
         if (Object.keys(webhooks).includes(name)) {
           alert(
@@ -157,7 +164,7 @@
             )
           );
         }
-      } while (Object.keys(webhooks).includes(name));
+      } while (Object.keys(webhooks).includes(name) || name === "");
       let URL;
       do {
         URL = prompt(Scratch.translate("Enter Webhook URL:"));
