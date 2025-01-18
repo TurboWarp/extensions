@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.04
+// Version V.1.0.1
 
 (function (Scratch) {
   "use strict";
@@ -15,30 +15,21 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
+
+  const acceptableRatios = ["1:1", "4:3", "4:5", "16:9", "9:16"];
   const acceptableImgs = [
     "250x250 Square", "300x250 Rectangle", "480x270 Widescreen",
     "300x50 Horizontal Banner", "50x300 Vertical Banner",
     "360x120 Large Horizontal Banner", "120x360 Large Vertical Banner"
   ];
+
   let tags = [];
   let initialized = false;
 
   // Community Spotlight Exports
   // Uses MIT Licence (https://github.com/Community-Spotlight)
   // eslint-disable-next-line
-  window.CSPromos={};const base="https://raw.githubusercontent.com/Community-Spotlight/";async function refreshPromos(){try{let e=await fetch(`${base}promotion-index/main/index.json`);if(!e.ok)throw Error("Couldn't fetch promotions!");window.CSPromos=await e.json()}catch(t){console.error(t)}}function getPromotion(e,t){let o=e=>e[Math.floor(Math.random()*e.length)];e="video"===e?"video":"image",t="object"==typeof t?t:{};let i={...window.CSPromos};t.tags&&t.tags.length>0&&(i=Object.fromEntries(Object.entries(i).filter(([e,o])=>o.tags.some(e=>t.tags.includes(e.toLowerCase())))));let n=Object.keys(i).filter(t=>{let o=i[t].media;return"image"===e?o.images.length>0:o.videos.length>0});if(0===n.length)return console.warn("CS -- No promotions found with given parameters"),{};let r,s,a=0,l=[...n];for(;a<n.length;){let m=o(l);r=i[m],l.splice(l.indexOf(m),1);let g=r.media;if("image"===e){let d=g.images.find(e=>!t.aspectRatio||e.size===t.aspectRatio);s=d?`${d.size}.${d.type}`:null}else if("video"===e){let f=g.videos.find(e=>(!t.aspectRatio||e.size===t.aspectRatio)&&(!t.videoLength||e.length===t.videoLength));s=f?`sz${f.size.replace(":","x")}leng${f.length}.${f.type}`:null}if(s)break;a++}if(!s)return console.warn("CS -- No promotions found with given parameters"),{};let h={...r};return delete h.media,{...h,url:`${base}promotion-media/main/${encodeURIComponent(h.id)}/${s}`}}
-
-  // Create an Event for when Pause Project is Activated
-  // Save original function if it exists
-  let ogPauseFunc = Object.getOwnPropertyDescriptor(runtime.ioDevices.clock, "_paused")?.set;
-  Object.defineProperty(runtime.ioDevices.clock, "_paused", {
-    set: function(value) {
-      this._pausedValue = value;
-      runtime.emit("SP_CS_PROJECT_PAUSE", value);
-      if (ogPauseFunc) ogPauseFunc.call(this, value);
-    },
-    get: function() { return this._pausedValue }
-  });
+  window.CommunitySpotlight={b:"https://raw.githubusercontent.com/Community-Spotlight/",u:{},c:{}};window.CommunitySpotlight.u["fetchIndex"]=async function(){const r=await fetch(`${window.CommunitySpotlight.b}promotion-index/main/index.json`);if(!r.ok)throw new Error("Couldn't fetch promotions!");return await r.json()};window.CommunitySpotlight.u["filterPromos"]=function(j,t,p){const r=(a)=>a[Math.floor(Math.random()*a.length)];t=t==="video"?"video":t==="html"?"html":"image";p=typeof p==="object"?p:{};if(p.tags){if(p.tags.constructor.name==="Array"){p.tags=p.tags.map((e)=>{return e.toLowerCase()})}else{console.warn("CS -- 'tags' parameter must be an Array");return{}}}const{aspectRatio,videoLength}=p;let c=Object.values(j).filter(q=>{return q.media[t+"s"].length>0});if(c.length===0){console.warn("CS -- No promotions found with given type");return {}}if(p.tags&&p.tags.length>0)c=c.filter((q)=>q.tags.some(tag=>p.tags.includes(tag)));if(aspectRatio)c=c.filter(q=>{return q.media[t+"s"].some((i)=>{return i.size===aspectRatio})});if(t==="video"&&videoLength)c=c.filter(q=>{return q.media.videos.some((i)=>{return i.length===videoLength})});if(c.length===0){console.warn("CS -- No promotions found with given parameters");return{}}const g=r(c);let m,l,f;switch(t){case"video":f=g.media.videos,m=aspectRatio&&videoLength?f.find(e=>e.size===aspectRatio&&e.length===videoLength):!aspectRatio&&videoLength?f.find(e=>e.length===videoLength):aspectRatio&&!videoLength?f.find(e=>e.size===aspectRatio):r(f),l=`sz${m.size.replace(":","x")}leng${m.length}.${m.type}`;break;case"html":f=g.media.htmls,l=`sz${(m=aspectRatio?f.find(e=>e.size===aspectRatio):r(f)).size.replace(":","x")}.html`;break;default:f=g.media.images,m=aspectRatio?f.find(e=>e.size===aspectRatio):r(f),l=`${m.size}.${m.type}`}delete g.media;g.url=`${window.CommunitySpotlight.b}promotion-media/main/${encodeURIComponent(g.id)}/${l}`;return g};async function refreshPromoCacheCS(){try{window.CommunitySpotlight.c = await window.CommunitySpotlight.u["fetchIndex"]()}catch (e){console.error(e)}}async function getOnlinePromoCS(t,p){return window.CommunitySpotlight.u["filterPromos"](await window.CommunitySpotlight.u["fetchIndex"](),t,p)}function getCachedPromoCS(t,p){return window.CommunitySpotlight.u["filterPromos"](structuredClone(window.CommunitySpotlight.c),t,p)}
 
   class SPspotlight {
     constructor() {
@@ -47,14 +38,16 @@
       this.promoSpaceInfo = { pos: [0, 0], sz: [1, 1] };
       this.promoSpace = document.createElement("div");
       vm.renderer.addOverlay(this.promoSpace, "scale-centered");
+
       runtime.on("PROJECT_STOP_ALL", () => { this.deletePromo() });
       runtime.on("PROJECT_START", () => { this.deletePromo() });
-      runtime.on("SP_CS_PROJECT_PAUSE", () => {
+      runtime.on("RUNTIME_PAUSED", () => {
         const video = this.promoSpace.querySelector("video");
-        if (video) {
-          if (runtime.ioDevices.clock._paused) video.pause();
-          else video.play();
-        }
+        if (video) video.pause();
+      });
+      runtime.on("RUNTIME_UNPAUSED", () => {
+        const video = this.promoSpace.querySelector("video");
+        if (video) video.play();
       });
     }
     getInfo() {
@@ -71,30 +64,29 @@
             blockType: Scratch.BlockType.BUTTON,
             text: "Promotion Disclaimer"
           },
-          "---",
           {
             func: "addPromo",
             blockType: Scratch.BlockType.BUTTON,
             text: "Add My Promotion"
           },
+          "---",
           {
-            opcode: "refresh",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "refresh promos"
+            opcode: "activeTags",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "active tags"
           },
           {
             opcode: "filterTags",
             blockType: Scratch.BlockType.COMMAND,
             text: "filter promos with tags [TAGS]",
             arguments: {
-              TAGS: { type: Scratch.ArgumentType.STRING, defaultValue: "[\"Gaming\", \"Sharks\"]" }
+              TAGS: { type: Scratch.ArgumentType.STRING, defaultValue: "[\"Gaming\", \"Art\"]" }
             },
           },
           {
-            opcode: "activeTags",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "active tags",
-            disableMonitor: true
+            opcode: "refresh",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "refresh promo cache"
           },
           { blockType: Scratch.BlockType.LABEL, text: "Manual Display" },
           {
@@ -112,6 +104,14 @@
             arguments: {
               SIZE: { type: Scratch.ArgumentType.STRING, menu: "VID_RATIO" },
               LENGTH: { type: Scratch.ArgumentType.STRING, menu: "VID_LENGTH" }
+            },
+          },
+          {
+            opcode: "getHTMLPromo",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get promo html with size [SIZE]",
+            arguments: {
+              SIZE: { type: Scratch.ArgumentType.STRING, menu: "VID_RATIO" },
             },
           },
           { blockType: Scratch.BlockType.LABEL, text: "Auto Display" },
@@ -132,6 +132,15 @@
               LENGTH: { type: Scratch.ArgumentType.STRING, menu: "VID_LENGTH" }
             },
           },
+          {
+            opcode: "showHTMLPromo",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "display promo HTML with size [SIZE]",
+            arguments: {
+              SIZE: { type: Scratch.ArgumentType.STRING, menu: "VID_RATIO" }
+            },
+          },
+          "---",
           {
             opcode: "visiblePromo",
             blockType: Scratch.BlockType.COMMAND,
@@ -168,10 +177,7 @@
         menus: {
           VISIBLE: { acceptReporters: true, items: ["show", "hide"] },
           IMGS: { acceptReporters: true, items: acceptableImgs },
-          VID_RATIO: {
-            acceptReporters: true,
-            items: ["1:1", "4:3", "4:5", "16:9", "9:16"]
-          },
+          VID_RATIO: { acceptReporters: true, items: acceptableRatios },
           VID_LENGTH: {
             acceptReporters: true,
             items: ["any", "5", "10", "15", "30"]
@@ -187,24 +193,27 @@
 
     addPromo() { Scratch.openWindow("https://community-spotlight.github.io/uploader-site/") }
 
-    displayPromo(promo, args) {
+    displayPromo(promo, scale) {
       if (promo.id === undefined) return;
-      const isVideo = promo.url.includes(".mp4");
-      const div = document.createElement("div");
-      div.style.width = "100%"; div.style.height = "100%";
-      div.style.position = "absolute";
-      div.style.top = "-50%"; div.style.left = "-50%";
+      const isVideo = promo.url.endsWith(".mp4");
+      const isHTML = promo.url.endsWith(".html");
 
-      const newSpace = document.createElement(isVideo ? "video" : "img");
+      const div = document.createElement("div");
+      div.setAttribute("style", "width: 100%; height: 100%; position: absolute; top: -50%; left: -50%;");
+
+      const newSpace = document.createElement(isVideo ? "video" : isHTML ? "iframe" : "img");
+      newSpace.setAttribute("title", promo.promoter);
       newSpace.src = promo.url;
       newSpace.draggable = false;
       newSpace.crossOrigin = "anonymous";
-      newSpace.style.pointerEvents = "auto";
-      newSpace.style.position = "absolute";
-      newSpace.style.top = "50%"; newSpace.style.left = "50%";
-      newSpace.style.transform = "translate(-50%, -50%)";
-      let sz = args.SIZE.split(" ")[0];
-      if (isVideo) {
+      newSpace.setAttribute("style", "pointer-events: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);");
+      if (!isVideo && !isHTML) newSpace.style.cursor = "pointer";
+
+      // even though HTML is Moderated, its good to have some sandboxes
+      if (isHTML) newSpace.setAttribute("sandbox", "allow-scripts allow-forms allow-same-origin");
+
+      let sz = scale.split(" ")[0];
+      if (isVideo || isHTML) {
         const scaleAmt = sz === "1:1" ? 240 : 120;
         newSpace.style.width = `${parseInt(sz.split(":")[0]) * scaleAmt}px`;
         newSpace.style.height = `${parseInt(sz.split(":")[1]) * scaleAmt}px`;
@@ -217,8 +226,10 @@
       this.promoSpace.firstChild?.remove();
       this.promoSpace.appendChild(div);
       this.updatePromo();
+
       newSpace.addEventListener("click", (e) => {
         if (isVideo && e.target !== newSpace) return;
+        // TODO add proper click detection for iframes. Maybe make a content holder?
         Scratch.openWindow(promo["promoter-url"]);
       });
       if (isVideo) {
@@ -234,26 +245,6 @@
     }
 
     // Block Funcs
-    async getImgPromo(args) {
-      if (!initialized) await this.refresh();
-      if (acceptableImgs.indexOf(args.SIZE) === -1) return "{}";
-      const aspectRatio = args.SIZE.split(" ")[0];
-      return JSON.stringify(getPromotion("image", { tags, aspectRatio }));
-    }
-
-    async getVidPromo(args) {
-      if (!initialized) await this.refresh();
-      if (["1:1", "4:3", "4:5", "16:9", "9:16"].indexOf(args.SIZE) === -1) return "{}";
-      const obj = { tags, aspectRatio: args.SIZE };
-      if (args.LENGTH !== "any") obj.videoLength = Scratch.Cast.toNumber(args.LENGTH);
-      return JSON.stringify(getPromotion("video", obj));
-    }
-
-    async refresh() {
-      await refreshPromos();
-      initialized = true;
-    }
-
     activeTags() { return JSON.stringify(tags) }
 
     filterTags(args) {
@@ -261,22 +252,62 @@
       catch { tags = [] }
     }
 
-    async showImgPromo(args) {
-      if (!initialized) await this.refresh();
-      if (acceptableImgs.indexOf(args.SIZE) === -1) return;
+    async refresh() {
+      await refreshPromoCacheCS();
+      initialized = true;
+    }
+
+    getImgPromo(args) {
+      if (!initialized) return "{}";
+      if (acceptableImgs.indexOf(args.SIZE) === -1) return "{}";
       const aspectRatio = args.SIZE.split(" ")[0];
-      this.displayPromo(getPromotion("image", { tags, aspectRatio }), args);
+      return JSON.stringify(
+        getCachedPromoCS("image", { tags, aspectRatio })
+      );
+    }
+    showImgPromo(args) {
+      if (!initialized) return;
+      this.displayPromo(
+        JSON.parse(this.getImgPromo(args)), args.SIZE
+      );
     }
 
-    async showVidPromo(args) {
-      if (!initialized) await this.refresh();
-      if (["1:1", "4:3", "4:5", "16:9", "9:16"].indexOf(args.SIZE) === -1) return;
-      this.displayPromo(getPromotion("video", {
-        tags, aspectRatio: args.SIZE, videoLength: Scratch.Cast.toNumber(args.LENGTH)
-      }), args);
+    getVidPromo(args) {
+      if (!initialized) return "{}";
+      if (acceptableRatios.indexOf(args.SIZE) === -1) return "{}";
+      const videoLength = args.LENGTH === "any" ? undefined : Scratch.Cast.toNumber(args.LENGTH);
+      return JSON.stringify(
+        getCachedPromoCS("video", {
+          tags, videoLength, aspectRatio: args.SIZE
+        })
+      );
+    }
+    showVidPromo(args) {
+      if (!initialized) return;
+      this.displayPromo(
+        JSON.parse(this.getVidPromo(args)), args.SIZE
+      );
     }
 
-    visiblePromo(args) { this.promoSpace.style.display = args.TYPE === "show" ? "" : "none" }
+    getHTMLPromo(args) {
+      if (!initialized) return "{}";
+      if (acceptableRatios.indexOf(args.SIZE) === -1) return "{}";
+      return JSON.stringify(
+        getCachedPromoCS("html", {
+          tags, aspectRatio: args.SIZE
+        })
+      );
+    }
+    showHTMLPromo(args) {
+      if (!initialized) return;
+      this.displayPromo(
+        JSON.parse(this.getHTMLPromo(args)), args.SIZE
+      );
+    }
+
+    visiblePromo(args) {
+      this.promoSpace.style.display = args.TYPE === "show" ? "" : "none";
+    }
 
     deletePromo() { this.promoSpace.firstChild?.remove() }
 
