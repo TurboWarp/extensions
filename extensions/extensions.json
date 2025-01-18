@@ -13,6 +13,7 @@
   "local-storage",
   "true-fantom/base",
   "bitwise",
+  "Cheddarphanie/logic",
   "Skyhigh173/bigint",
   "utilities",
   "sound",
