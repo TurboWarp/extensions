@@ -147,7 +147,7 @@
       let name;
       do {
         name = prompt(Scratch.translate("Enter Webhook name:"));
-        if (name === null) {
+        if (name === null || name === "") {
           return;
         }
         if (Object.keys(webhooks).includes(name)) {
