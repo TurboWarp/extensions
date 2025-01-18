@@ -106,7 +106,7 @@
               }
             },
             extensions: ["colours_operators"]
-          }
+          },
         ]
       };
     }
