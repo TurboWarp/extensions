@@ -1,7 +1,7 @@
 // Name: Steam API
 // ID: SteamAPI
 // Description: Do things with the steam protocol, and api.
-// By: _FN10_ <https://scratch.mit.edu/users/Xplate>
+// By: _FN10_ <https://Scratch.mit.edu/users/Xplate>
 // License: MIT
 
 (function (Scratch) {
@@ -283,7 +283,7 @@
     }
     async getuserinfo(args) {
       try {
-        const response = await scratch.fetch(
+        const response = await Scratch.fetch(
           `https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FGetPlayerSummaries%2Fv0002%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26steamids%3D${Scratch.Cast.toString(args.ID)}`
         );
         if (!response.ok) {
@@ -302,7 +302,7 @@
     }
     async getglobalachievementpercentage(args) {
       try {
-        const response = await scratch.fetch(
+        const response = await Scratch.fetch(
           `https://api.codetabs.com/v1/proxy/?quest=https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${Scratch.Cast.toString(args.ID)}`
         );
         if (!response.ok) {
@@ -330,7 +330,7 @@
     async getuseridfromurl(args) {
       //DONT UNCOMMENT THIS!!! console.log(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`)
       try {
-        const response = await scratch.fetch(
+        const response = await Scratch.fetch(
           `https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`
         );
         if (!response.ok) {
@@ -350,7 +350,7 @@
     async getnewsforappid(args) {
       //console.info("Getting News from " + `https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=${Scratch.Cast.toString(args.amount)}&maxlength=300&format=json`)
       try {
-        const response = await scratch.fetch(
+        const response = await Scratch.fetch(
           `https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=20&maxlength=300&format=json`
         );
         if (!response.ok) {
@@ -399,7 +399,7 @@
     }
     async getidname(args) {
       try {
-        const response = await scratch.fetch(
+        const response = await Scratch.fetch(
           "https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/"
         );
         if (!response.ok) {
@@ -431,7 +431,7 @@
     }
     async getnameid(args) {
       try {
-        const response = await scratch.fetch(
+        const response = await Scratch.fetch(
           "https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/"
         );
         if (!response.ok) {
