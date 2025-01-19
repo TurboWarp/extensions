@@ -28,7 +28,7 @@
       }
       return {
         id: "steamapu",
-        name: "Steam API",
+        name: Scratch.translate("Steam API"),
         color1: "#1a2736",
         color2: "#1a2736",
         color3: "#1a2736",
@@ -38,12 +38,12 @@
           {
             opcode: "text1",
             blockType: Scratch.BlockType.LABEL,
-            text: "Steam Protocol",
+            text: Scratch.translate("Steam Protocol"),
           },
           {
             opcode: "opengame",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Launch Game ID [id]",
+            text: Scratch.translate("Launch Game ID [id]"),
             arguments: {
               id: {
                 type: Scratch.ArgumentType.STRING,
@@ -54,7 +54,7 @@
           {
             opcode: "openstorepage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Open Store Page for Game ID [id]",
+            text: Scratch.translate("Open Store Page for Game ID [id]"),
             arguments: {
               id: {
                 type: Scratch.ArgumentType.STRING,
@@ -65,7 +65,7 @@
           {
             opcode: "installgame",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Install Game ID [id]",
+            text: Scratch.translate("Install Game ID [id]"),
             arguments: {
               id: {
                 type: Scratch.ArgumentType.STRING,
@@ -76,7 +76,7 @@
           {
             opcode: "preloadgame",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Preload Game ID [id]",
+            text: Scratch.translate("Preload Game ID [id]"),
             arguments: {
               id: {
                 type: Scratch.ArgumentType.STRING,
@@ -87,24 +87,24 @@
           {
             opcode: "opensteam",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Open Steam",
+            text: Scratch.translate("Open Steam"),
           },
           {
             opcode: "exitsteam",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Shutdown Steam",
+            text: Scratch.translate("Shutdown Steam"),
           },
           {
             opcode: "nonsteamgame",
             blockType: Scratch.BlockType.COMMAND,
             hideFromPalette: true,
-            text: "Add Non-Steam game",
+            text: Scratch.translate("Add Non-Steam game"),
           },
           {
             opcode: "openwindow",
             blockType: Scratch.BlockType.COMMAND,
             // hideFromPalette: true,
-            text: "Open Steam Window [menu]",
+            text: Scratch.translate("Open Steam Window [menu]"),
             arguments: {
               menu: {
                 type: Scratch.ArgumentType.STRING,
@@ -115,12 +115,12 @@
           {
             opcode: "text2",
             blockType: Scratch.BlockType.LABEL,
-            text: "Steam API (Without Key)",
+            text: Scratch.translate("Steam API (Without Key)"),
           },
           {
             opcode: "getidname",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get Steam Game ID with Name [NAME]",
+            text: Scratch.translate("Get Steam Game ID with Name [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -131,7 +131,7 @@
           {
             opcode: "getnewsforappid",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get The Last 20 News for Game ID [ID]",
+            text: Scratch.translate("Get The Last 20 News for Game ID [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -150,7 +150,7 @@
           {
             opcode: "getnameid",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get Steam Game Name with ID [ID]",
+            text: Scratch.translate("Get Steam Game Name with ID [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -161,7 +161,7 @@
           {
             opcode: "getglobalachievementpercentage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get Global Achievement Percentages for Game ID [ID]",
+            text: Scratch.translate("Get Global Achievement Percentages for Game ID [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -172,22 +172,22 @@
           {
             opcode: "text3",
             blockType: Scratch.BlockType.LABEL,
-            text: "Steam API (WITH Key)",
+            text: Scratch.translate("Steam API (WITH Key)"),
           },
           {
             func: "warning",
             blockType: Scratch.BlockType.BUTTON,
-            text: "READ THIS BEFORE USING YOUR KEY!",
+            text: Scratch.translate("READ THIS BEFORE USING YOUR KEY!"),
           },
           {
             func: "howtogetkey",
             blockType: Scratch.BlockType.BUTTON,
-            text: "How to get your API Key",
+            text: Scratch.translate("How to get your API Key"),
           },
           {
             opcode: "setkey",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set Key to [KEY]",
+            text: Scratch.translate("Set Key to [KEY]"),
             hideFromPalette: true,
             arguments: {
               KEY: {
@@ -200,13 +200,13 @@
             opcode: "getkey",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: true,
-            text: "Get Key",
+            text: Scratch.translate("Get Key"),
           },
           {
             opcode: "getuseridfromurl",
             blockType: Scratch.BlockType.REPORTER,
             //hideFromPalette: true,
-            text: "Get User ID from Custom URL [URL] with API key [KEY]",
+            text: Scratch.translate("Get User ID from Custom URL [URL] with API key [KEY]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -222,7 +222,7 @@
             opcode: "getuserinfo",
             blockType: Scratch.BlockType.REPORTER,
             //hideFromPalette: true,
-            text: "Get User Info from User ID [ID] with API key [KEY]",
+            text: Scratch.translate("Get User Info from User ID [ID] with API key [KEY]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -287,7 +287,6 @@
           `https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FGetPlayerSummaries%2Fv0002%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26steamids%3D${Scratch.Cast.toString(args.ID)}`
         );
         if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
           return false;
         }
         //console.log(response)
@@ -306,7 +305,6 @@
           `https://api.codetabs.com/v1/proxy/?quest=https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${Scratch.Cast.toString(args.ID)}`
         );
         if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
           return false;
         }
         //console.log(response)
@@ -334,7 +332,6 @@
           `https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`
         );
         if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
           return false;
         }
         //console.log(response)
@@ -354,7 +351,6 @@
           `https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=20&maxlength=300&format=json`
         );
         if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
           return false;
         }
         //console.log(response)
@@ -403,7 +399,6 @@
           "https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/"
         );
         if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
           return false;
         }
 
@@ -435,7 +430,6 @@
           "https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/"
         );
         if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
           return false;
         }
 
