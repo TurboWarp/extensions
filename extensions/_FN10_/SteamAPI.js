@@ -18,385 +18,426 @@
   class SteamAPI {
     //constructor() {
 
-        //}
-        getInfo() {
-            if (!Scratch.vm.runtime.extensionStorage["SteamAPI"]) { Scratch.vm.runtime.extensionStorage["SteamAPI"] = {} };
-            if (!Scratch.vm.runtime.extensionStorage["SteamAPI"].key) { Scratch.vm.runtime.extensionStorage["SteamAPI"].key = "Not Set!" };
-            return {
-                id: 'steamapu',
-                name: 'Steam API',
-                color1: "#1a2736",
-                color2: "#1a2736",
-                color3: "#1a2736",
-                menuIconURI,
-                blockIconURI,
-                blocks: [
-                    {
-                        opcode: 'text1',
-                        blockType: Scratch.BlockType.LABEL,
-                        text: 'Steam Protocol'
-                    },
-                    {
-                        opcode: 'opengame',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Launch Game ID [id]',
-                        arguments: {
-                            id: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '400'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'openstorepage',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Open Store Page for Game ID [id]',
-                        arguments: {
-                            id: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '400'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'installgame',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Install Game ID [id]',
-                        arguments: {
-                            id: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '400'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'preloadgame',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Preload Game ID [id]',
-                        arguments: {
-                            id: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '400'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'opensteam',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Open Steam'
-                    },
-                    {
-                        opcode: 'exitsteam',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Shutdown Steam'
-                    },
-                    {
-                        opcode: 'nonsteamgame',
-                        blockType: Scratch.BlockType.COMMAND,
-                        hideFromPalette: true,
-                        text: 'Add Non-Steam game'
-                    },
-                    {
-                        opcode: 'openwindow',
-                        blockType: Scratch.BlockType.COMMAND,
-                       // hideFromPalette: true,
-                        text: 'Open Steam Window [menu]',
-                        arguments: {
-                            menu: {
-                                type: Scratch.ArgumentType.STRING,
-                                menu: "steamwindows"
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'text2',
-                        blockType: Scratch.BlockType.LABEL,
-                        text: 'Steam API (Without Key)'
-                    },
-                    {
-                        opcode: 'getidname',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get Steam Game ID with Name [NAME]',
-                        arguments: {
-                            NAME: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'Team Fortress 2'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'getnewsforappid',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get The Last 20 News for Game ID [ID]',
-                        arguments: {
-                            ID: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '440'
-                            },
-                            // amount: {
-                            //     type: Scratch.ArgumentType.NUMBER,
-                            //     defaultValue: 3
-                            // },
-                            //FORMAT: {
-                            //    type: Scratch.ArgumentType.STRING,
-                            //    menu: "format",
-                            //}
+    //}
+    getInfo() {
+      if (!Scratch.vm.runtime.extensionStorage["SteamAPI"]) {
+        Scratch.vm.runtime.extensionStorage["SteamAPI"] = {};
+      }
+      if (!Scratch.vm.runtime.extensionStorage["SteamAPI"].key) {
+        Scratch.vm.runtime.extensionStorage["SteamAPI"].key = "Not Set!";
+      }
+      return {
+        id: "steamapu",
+        name: "Steam API",
+        color1: "#1a2736",
+        color2: "#1a2736",
+        color3: "#1a2736",
+        menuIconURI,
+        blockIconURI,
+        blocks: [
+          {
+            opcode: "text1",
+            blockType: Scratch.BlockType.LABEL,
+            text: "Steam Protocol",
+          },
+          {
+            opcode: "opengame",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Launch Game ID [id]",
+            arguments: {
+              id: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "400",
+              },
+            },
+          },
+          {
+            opcode: "openstorepage",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Open Store Page for Game ID [id]",
+            arguments: {
+              id: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "400",
+              },
+            },
+          },
+          {
+            opcode: "installgame",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Install Game ID [id]",
+            arguments: {
+              id: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "400",
+              },
+            },
+          },
+          {
+            opcode: "preloadgame",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Preload Game ID [id]",
+            arguments: {
+              id: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "400",
+              },
+            },
+          },
+          {
+            opcode: "opensteam",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Open Steam",
+          },
+          {
+            opcode: "exitsteam",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Shutdown Steam",
+          },
+          {
+            opcode: "nonsteamgame",
+            blockType: Scratch.BlockType.COMMAND,
+            hideFromPalette: true,
+            text: "Add Non-Steam game",
+          },
+          {
+            opcode: "openwindow",
+            blockType: Scratch.BlockType.COMMAND,
+            // hideFromPalette: true,
+            text: "Open Steam Window [menu]",
+            arguments: {
+              menu: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "steamwindows",
+              },
+            },
+          },
+          {
+            opcode: "text2",
+            blockType: Scratch.BlockType.LABEL,
+            text: "Steam API (Without Key)",
+          },
+          {
+            opcode: "getidname",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Get Steam Game ID with Name [NAME]",
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Team Fortress 2",
+              },
+            },
+          },
+          {
+            opcode: "getnewsforappid",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Get The Last 20 News for Game ID [ID]",
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "440",
+              },
+              // amount: {
+              //     type: Scratch.ArgumentType.NUMBER,
+              //     defaultValue: 3
+              // },
+              //FORMAT: {
+              //    type: Scratch.ArgumentType.STRING,
+              //    menu: "format",
+              //}
+            },
+          },
+          {
+            opcode: "getnameid",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Get Steam Game Name with ID [ID]",
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "440",
+              },
+            },
+          },
+          {
+            opcode: "getglobalachievementpercentage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Get Global Achievement Percentages for Game ID [ID]",
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "440",
+              },
+            },
+          },
+          {
+            opcode: "text3",
+            blockType: Scratch.BlockType.LABEL,
+            text: "Steam API (WITH Key)",
+          },
+          {
+            func: "warning",
+            blockType: Scratch.BlockType.BUTTON,
+            text: "READ THIS BEFORE USING YOUR KEY!",
+          },
+          {
+            func: "howtogetkey",
+            blockType: Scratch.BlockType.BUTTON,
+            text: "How to get your API Key",
+          },
+          {
+            opcode: "setkey",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Set Key to [KEY]",
+            hideFromPalette: true,
+            arguments: {
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "YOUR_API_KEY",
+              },
+            },
+          },
+          {
+            opcode: "getkey",
+            blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true,
+            text: "Get Key",
+          },
+          {
+            opcode: "getuseridfromurl",
+            blockType: Scratch.BlockType.REPORTER,
+            //hideFromPalette: true,
+            text: "Get User ID from Custom URL [URL] with API key [KEY]",
+            arguments: {
+              URL: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "fn10_",
+              },
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "YOUR_API_KEY",
+              },
+            },
+          },
+          {
+            opcode: "getuserinfo",
+            blockType: Scratch.BlockType.REPORTER,
+            //hideFromPalette: true,
+            text: "Get User Info from User ID [ID] with API key [KEY]",
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "76561198934186337",
+              },
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "YOUR_API_KEY",
+              },
+            },
+          },
+        ],
+        menus: {
+          format: {
+            acceptReporters: false,
+            items: [
+              {
+                text: "JSON",
+                value: "json",
+              },
+              {
+                text: "VDF",
+                value: "vdf",
+              },
+              {
+                text: "XML",
+                value: "xml",
+              },
+            ],
+          },
+          steamwindows: {
+            acceptReporters: false,
+            items: [
+              "activateproduct",
+              "bigpicture",
+              "console",
+              "downloads",
+              "friends",
+              "games",
+              "games / details",
+              "games / grid",
+              "games / list",
+              "largegameslist",
+              "minigameslist",
+              "main",
+              "music",
+              "musicplayer",
+              "mymedia",
+              "news",
+              "registerproduct",
+              "servers",
+              "settings",
+              "tools",
+            ],
+          },
+        },
+      };
+    }
+    async getuserinfo(args) {
+      try {
+        const response = await fetch(
+          `https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FGetPlayerSummaries%2Fv0002%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26steamids%3D${Scratch.Cast.toString(args.ID)}`
+        );
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+          return false;
+        }
+        //console.log(response)
+        const json = await response.json();
+        const jsonobj = json["response"];
+        //console.log(jsonobj);
+        return JSON.stringify(jsonobj);
+      } catch (error) {
+        console.error(error.message);
+        return false;
+      }
+    }
+    async getglobalachievementpercentage(args) {
+      try {
+        const response = await fetch(
+          `https://api.codetabs.com/v1/proxy/?quest=https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${Scratch.Cast.toString(args.ID)}`
+        );
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+          return false;
+        }
+        //console.log(response)
+        const json = await response.json();
+        const jsonobj = json["achievementpercentages"]["achievements"];
+        //console.log(jsonobj);
+        return JSON.stringify(jsonobj);
+      } catch (error) {
+        console.error(error.message);
+        return false;
+      }
+    }
+    getkey() {
+      return Scratch.Cast.toString(
+        Scratch.vm.runtime.extensionStorage["SteamAPI"]?.key
+      );
+    }
+    setkey(args) {
+      Scratch.vm.runtime.extensionStorage["SteamAPI"].key = args.KEY;
+    }
+    async getuseridfromurl(args) {
+      //DONT UNCOMMENT THIS!!! console.log(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`)
+      try {
+        const response = await fetch(
+          `https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`
+        );
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+          return false;
+        }
+        //console.log(response)
+        const json = await response.json();
+        const jsonobj = json["response"]["steamid"];
+        //console.log(jsonobj);
+        return Scratch.Cast.toString(jsonobj);
+      } catch (error) {
+        console.error(error.message);
+        return false;
+      }
+    }
+    async getnewsforappid(args) {
+      //console.info("Getting News from " + `https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=${Scratch.Cast.toString(args.amount)}&maxlength=300&format=json`)
+      try {
+        const response = await fetch(
+          `https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=20&maxlength=300&format=json`
+        );
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+          return false;
+        }
+        //console.log(response)
+        const json = await response.json();
+        const jsonobj = json["appnews"]["newsitems"];
+        //console.log(jsonobj);
+        return JSON.stringify(jsonobj);
+      } catch (error) {
+        console.error(error.message);
+        return false;
+      }
+    }
+    openwindow(args) {
+      window.open(`steam://open/${Scratch.Cast.toString(args.menu)}`);
+    }
+    howtogetkey() {
+      alert(
+        'To get your API key, you must have at least one paid game on your account. If you meet those requirments, click "OK".'
+      );
+      Scratch.openWindow("https://steamcommunity.com/dev/apikey");
+    }
+    opengame(args) {
+      window.open(`steam://launch/${Scratch.Cast.toString(args.id)}`);
+    }
+    preloadgame(args) {
+      window.open(`steam://preload/${Scratch.Cast.toString(args.id)}`);
+    }
+    nonsteamgame(args) {
+      window.open("steam://AddNonSteamGame");
+    }
+    installgame(args) {
+      window.open(`steam://install/${Scratch.Cast.toString(args.id)}`);
+    }
+    openstorepage(args) {
+      window.open(`steam://advertise/${Scratch.Cast.toString(args.id)}`);
+    }
+    exitsteam(args) {
+      window.open("steam://exit");
+    }
+    opensteam(args) {
+      window.open("steam://");
+    }
+    async getidname(args) {
+      try {
+        const response = await fetch(
+          "https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/"
+        );
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+          return false;
+        }
 
-                        }
-                    },
-                    {
-                        opcode: 'getnameid',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get Steam Game Name with ID [ID]',
-                        arguments: {
-                            ID: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '440'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'getglobalachievementpercentage',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'Get Global Achievement Percentages for Game ID [ID]',
-                        arguments: {
-                            ID: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '440'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'text3',
-                        blockType: Scratch.BlockType.LABEL,
-                        text: 'Steam API (WITH Key)'
-                    },
-                    {
-                        func: 'warning',
-                        blockType: Scratch.BlockType.BUTTON,
-                        text: 'READ THIS BEFORE USING YOUR KEY!'
-                    },
-                    {
-                        func: 'howtogetkey',
-                        blockType: Scratch.BlockType.BUTTON,
-                        text: 'How to get your API Key'
-                    },
-                    {
-                        opcode: 'setkey',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'Set Key to [KEY]',
-                        hideFromPalette: true,
-                        arguments: {
-                            KEY: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'YOUR_API_KEY'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'getkey',
-                        blockType: Scratch.BlockType.REPORTER,
-                        hideFromPalette: true,
-                        text: 'Get Key'
-                    },
-                    {
-                        opcode: 'getuseridfromurl',
-                        blockType: Scratch.BlockType.REPORTER,
-                        //hideFromPalette: true,
-                        text: 'Get User ID from Custom URL [URL] with API key [KEY]',
-                        arguments: {
-                            URL: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'fn10_'
-                            },
-                            KEY: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'YOUR_API_KEY'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'getuserinfo',
-                        blockType: Scratch.BlockType.REPORTER,
-                        //hideFromPalette: true,
-                        text: 'Get User Info from User ID [ID] with API key [KEY]',
-                        arguments: {
-                            ID: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '76561198934186337'
-                            },
-                            KEY: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'YOUR_API_KEY'
-                            }
-                        }
-                    }
-                ],
-                menus: {
-                    format: {
-                        acceptReporters: false,
-                        items: [
-                            {
-                                text: "JSON",
-                                value: "json",
-                            },
-                            {
-                                text: "VDF",
-                                value: "vdf"
-                            },
-                            {
-                                text: "XML",
-                                value: "xml"
-                            }
-                        ]
-                    },
-                    steamwindows: {
-                        acceptReporters: false,
-                        items: ["activateproduct", "bigpicture", "console", "downloads", "friends", "games", "games / details", "games / grid", "games / list", "largegameslist", "minigameslist", "main", "music", "musicplayer", "mymedia", "news", "registerproduct", "servers", "settings", "tools"]
-                    }
-                }
-            };
+        const json = await response.json();
+        const jsonobj = json["applist"]["apps"];
+        //console.log(jsonobj);
+        for (var key in jsonobj) {
+          // console.info(jsonobj[key])
+          if (jsonobj[key]["name"] === Scratch.Cast.toString(args.NAME)) {
+            return jsonobj[key]["appid"];
+          }
         }
-        async getuserinfo(args) {
-            try {
-                const response = await fetch(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FGetPlayerSummaries%2Fv0002%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26steamids%3D${Scratch.Cast.toString(args.ID)}`);
-                if (!response.ok) {
-                    throw new Error(`Response status: ${response.status}`)
-                    return false;
-                }
-                //console.log(response)
-                const json = await response.json();
-                const jsonobj = json['response']
-                //console.log(jsonobj);
-                return JSON.stringify(jsonobj);
-            } catch (error) {
-                console.error(error.message)
-                return false;
-            }
+        return false;
+      } catch (error) {
+        console.error(error.message);
+        return false;
+      }
+    }
+    warning() {
+      alert(
+        "NEVER SHARE YOUR API KEY WITH ANYONE!! And also, every game you make with penguinmod, or turbowarp can be unpackaged, and people can steal the key; or they can use inspect element to view the requests. Only use these blocks at your own risk. If it ever does get stolen, you can revoke it from https://steamcommunity.com/dev/apikey."
+      );
+      //const confirm1 = window.confirm(`Do you wish to add that obfuscator? (If you dont use it with these blocks, dont release the project publicly.)`);
+      //if (confirm1) { Scratch.openWindow('https://github.com/FurryR/kylin-extension?tab=readme-ov-file#how-to-use') }
+    }
+    async getnameid(args) {
+      try {
+        const response = await fetch(
+          "https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/"
+        );
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+          return false;
         }
-        async getglobalachievementpercentage(args) {
-            try {
-                const response = await fetch(`https://api.codetabs.com/v1/proxy/?quest=https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${Scratch.Cast.toString(args.ID)}`);
-                if (!response.ok) {
-                    throw new Error(`Response status: ${response.status}`)
-                    return false;
-                }
-                //console.log(response)
-                const json = await response.json();
-                const jsonobj = json['achievementpercentages']['achievements']
-                //console.log(jsonobj);
-                return JSON.stringify(jsonobj);
-            } catch (error) {
-                console.error(error.message)
-                return false;
-            }
-        }
-        getkey() {
-            return Scratch.Cast.toString(Scratch.vm.runtime.extensionStorage["SteamAPI"]?.key)
-        }
-        setkey(args) {
-            Scratch.vm.runtime.extensionStorage["SteamAPI"].key = args.KEY;
-        }
-        async getuseridfromurl(args) {
-            //DONT UNCOMMENT THIS!!! console.log(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`)
-            try {
-                const response = await fetch(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`);
-                if (!response.ok) {
-                    throw new Error(`Response status: ${response.status}`)
-                    return false;
-                }
-                //console.log(response)
-                const json = await response.json();
-                const jsonobj = json['response']['steamid']
-                //console.log(jsonobj);
-                return Scratch.Cast.toString(jsonobj);
-            } catch (error) {
-                console.error(error.message)
-                return false;
-            }
-        }
-        async getnewsforappid(args) {
-            //console.info("Getting News from " + `https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=${Scratch.Cast.toString(args.amount)}&maxlength=300&format=json`)
-            try {
-                const response = await fetch(`https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=20&maxlength=300&format=json`);
-                if (!response.ok) {
-                    throw new Error(`Response status: ${response.status}`)
-                    return false;
-                }
-                //console.log(response)
-                const json = await response.json();
-                const jsonobj = json['appnews']['newsitems']
-                //console.log(jsonobj);
-                return JSON.stringify(jsonobj);
-            } catch (error) {
-                console.error(error.message)
-                return false;
-            }
-        }
-        openwindow(args) {
-            window.open(`steam://open/${Scratch.Cast.toString(args.menu)}`);
-        }
-        howtogetkey() {
-            alert('To get your API key, you must have at least one paid game on your account. If you meet those requirments, click "OK".')
-            Scratch.openWindow('https://steamcommunity.com/dev/apikey')
-        }
-        opengame(args) {
-            window.open(`steam://launch/${Scratch.Cast.toString(args.id)}`);
-        }
-        preloadgame(args) {
-            window.open(`steam://preload/${Scratch.Cast.toString(args.id)}`);
-        }
-        nonsteamgame(args) {
-            window.open('steam://AddNonSteamGame')
-        }
-        installgame(args) {
-            window.open(`steam://install/${Scratch.Cast.toString(args.id)}`);
-        }
-        openstorepage(args) {
-            window.open(`steam://advertise/${Scratch.Cast.toString(args.id)}`);
-        }
-        exitsteam(args) {
-            window.open('steam://exit')
-        }
-        opensteam(args) {
-            window.open('steam://')
-        }
-        async getidname(args) {
-            try {
-                const response = await fetch('https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/');
-                if (!response.ok) {
-                    throw new Error(`Response status: ${response.status}`)
-                    return false;
-                }
-
-                const json = await response.json();
-                const jsonobj = json['applist']['apps']
-                //console.log(jsonobj);
-                for (var key in jsonobj) {
-                    // console.info(jsonobj[key])
-                    if (jsonobj[key]['name'] === Scratch.Cast.toString(args.NAME)) {
-                        return jsonobj[key]['appid'];
-                    }
-                }
-                return false;
-            } catch (error) {
-                console.error(error.message)
-                return false;
-            }
-        }
-        warning() {
-            alert('NEVER SHARE YOUR API KEY WITH ANYONE!! And also, every game you make with penguinmod, or turbowarp can be unpackaged, and people can steal the key; or they can use inspect element to view the requests. Only use these blocks at your own risk. If it ever does get stolen, you can revoke it from https://steamcommunity.com/dev/apikey.')
-            //const confirm1 = window.confirm(`Do you wish to add that obfuscator? (If you dont use it with these blocks, dont release the project publicly.)`);
-            //if (confirm1) { Scratch.openWindow('https://github.com/FurryR/kylin-extension?tab=readme-ov-file#how-to-use') }
-
-        }
-        async getnameid(args) {
-            try {
-                const response = await fetch('https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/');
-                if (!response.ok) {
-                    throw new Error(`Response status: ${response.status}`)
-                    return false;
-                }
 
         const json = await response.json();
         const jsonobj = json["applist"]["apps"];
