@@ -1,7 +1,7 @@
 // Name: Steam API
 // ID: SteamAPI
 // Description: Do things with the steam protocol, and api.
-// By: _FN10_ <https://Scratch.mit.edu/users/Xplate>
+// By: _FN10_ <https://scratch.mit.edu/users/Xplate>
 // License: MIT
 
 (function (Scratch) {
