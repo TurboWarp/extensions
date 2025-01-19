@@ -161,7 +161,9 @@
           {
             opcode: "getglobalachievementpercentage",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Get Global Achievement Percentages for Game ID [ID]"),
+            text: Scratch.translate(
+              "Get Global Achievement Percentages for Game ID [ID]"
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -206,7 +208,9 @@
             opcode: "getuseridfromurl",
             blockType: Scratch.BlockType.REPORTER,
             //hideFromPalette: true,
-            text: Scratch.translate("Get User ID from Custom URL [URL] with API key [KEY]"),
+            text: Scratch.translate(
+              "Get User ID from Custom URL [URL] with API key [KEY]"
+            ),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -222,7 +226,9 @@
             opcode: "getuserinfo",
             blockType: Scratch.BlockType.REPORTER,
             //hideFromPalette: true,
-            text: Scratch.translate("Get User Info from User ID [ID] with API key [KEY]"),
+            text: Scratch.translate(
+              "Get User Info from User ID [ID] with API key [KEY]"
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
