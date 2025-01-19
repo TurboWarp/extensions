@@ -260,7 +260,7 @@
         }
         async getuserinfo(args) {
             try {
-                const response = await fetch(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FGetPlayerSummaries%2Fv0002%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26steamids%3D${Scratch.Cast.toString(args.ID)}`);
+                const response = await Scratch.fetch(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FGetPlayerSummaries%2Fv0002%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26steamids%3D${Scratch.Cast.toString(args.ID)}`);
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`)
                     return false;
@@ -277,7 +277,7 @@
         }
         async getglobalachievementpercentage(args) {
             try {
-                const response = await fetch(`https://api.codetabs.com/v1/proxy/?quest=https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${Scratch.Cast.toString(args.ID)}`);
+                const response = await Scratch.fetch(`https://api.codetabs.com/v1/proxy/?quest=https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${Scratch.Cast.toString(args.ID)}`);
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`)
                     return false;
@@ -301,7 +301,7 @@
         async getuseridfromurl(args) {
             //DONT UNCOMMENT THIS!!! console.log(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`)
             try {
-                const response = await fetch(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`);
+                const response = await Scratch.fetch(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`);
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`)
                     return false;
@@ -319,7 +319,7 @@
         async getnewsforappid(args) {
             //console.info("Getting News from " + `https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=${Scratch.Cast.toString(args.amount)}&maxlength=300&format=json`)
             try {
-                const response = await fetch(`https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=20&maxlength=300&format=json`);
+                const response = await Scratch.fetch(`https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=20&maxlength=300&format=json`);
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`)
                     return false;
@@ -335,36 +335,36 @@
             }
         }
         openwindow(args) {
-            window.open(`steam://open/${Scratch.Cast.toString(args.menu)}`);
+            Scratch.openWindow(`steam://open/${Scratch.Cast.toString(args.menu)}`);
         }
         howtogetkey() {
             alert('To get your API key, you must have at least one paid game on your account. If you meet those requirments, click "OK".')
             Scratch.openWindow('https://steamcommunity.com/dev/apikey')
         }
         opengame(args) {
-            window.open(`steam://launch/${Scratch.Cast.toString(args.id)}`);
+            Scratch.openWindow(`steam://launch/${Scratch.Cast.toString(args.id)}`);
         }
         preloadgame(args) {
-            window.open(`steam://preload/${Scratch.Cast.toString(args.id)}`);
+            Scratch.openWindow(`steam://preload/${Scratch.Cast.toString(args.id)}`);
         }
         nonsteamgame(args) {
-            window.open('steam://AddNonSteamGame')
+            Scratch.openWindow('steam://AddNonSteamGame')
         }
         installgame(args) {
-            window.open(`steam://install/${Scratch.Cast.toString(args.id)}`);
+            Scratch.openWindow(`steam://install/${Scratch.Cast.toString(args.id)}`);
         }
         openstorepage(args) {
-            window.open(`steam://advertise/${Scratch.Cast.toString(args.id)}`);
+            Scratch.openWindow(`steam://advertise/${Scratch.Cast.toString(args.id)}`);
         }
         exitsteam(args) {
-            window.open('steam://exit')
+            Scratch.openWindow('steam://exit')
         }
         opensteam(args) {
-            window.open('steam://')
+            Scratch.openWindow('steam://')
         }
         async getidname(args) {
             try {
-                const response = await fetch('https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/');
+                const response = await Scratch.fetch('https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/');
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`)
                     return false;
@@ -393,7 +393,7 @@
         }
         async getnameid(args) {
             try {
-                const response = await fetch('https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/');
+                const response = await Scratch.fetch('https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/');
                 if (!response.ok) {
                     throw new Error(`Response status: ${response.status}`)
                     return false;
