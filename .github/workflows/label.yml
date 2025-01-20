@@ -19,9 +19,6 @@ jobs:
       pull-requests: write
 
     steps:
-      - name: Install dependencies
-        run: sudo apt-get install -y pcregrep
-
       # This is a sensitive workflow because we have write permissions for pull-requests but we are
       # processing remote code that we can't trust. Be careful not to place any trust in the contents
       # of the pull request.
@@ -39,17 +36,34 @@ jobs:
             # Download just the diff so it is harder to accidentally run any code from the pull request.
             gh pr diff --repo "$GH_REPO" "$PR_NUMBER" | tee pr.diff
 
-            # Note that pcregrep exits with success on any match, failure on no match or internal buffer overflow.
-            # To avoid errors on big diffs like compressed SVGs, increase the internal buffer size dramatically.
-            # This is pretty big and uses ~50MB of RAM but the machines can fit that just fine.
-            if pcregrep --buffer-size 16777216 -M "^--- /dev/null\n\+\+\+ b/extensions/" pr.diff; then
+            # grep doesn't have good multiline support and installing pcregrep through apt is slow, so
+            # make our own tiny regex checker tool.
+            cat > matches <<EOF
+            #!/usr/bin/env python3
+            import sys
+            import re
+
+            pattern = sys.argv[1]
+            file = sys.argv[2]
+
+            with open(file, 'r') as f:
+              contents = f.read()
+
+            if re.search(pattern, contents, re.MULTILINE):
+              sys.exit(0)
+            else:
+              sys.exit(1)
+            EOF
+            chmod +x matches
+
+            if ./matches "^--- /dev/null\n\+\+\+ b/extensions/" pr.diff; then
               # Example:
               # --- /dev/null
               # +++ b/extensions/DangoCat/extension.js
               echo "Adding label: $LABEL_NEW_EXTENSION"
               gh pr edit --repo "$GH_REPO" "$PR_NUMBER" --add-label "$LABEL_NEW_EXTENSION"
               got_any_specific_label=true
-            elif pcregrep --buffer-size 16777216 "^\+\+\+ b/extensions/" pr.diff; then
+            elif ./matches "^\+\+\+ b/extensions/" pr.diff; then
               # Example:
               # --- a/extensions/DangoCat/extension.js
               # +++ b/extensions/DangoCat/extension.js
