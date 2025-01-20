@@ -175,71 +175,71 @@
             opcode: "text3",
             blockType: Scratch.BlockType.LABEL,
             text: Scratch.translate("Steam API (WITH Key)"),
-          },
-          {
-            func: "warning",
-            blockType: Scratch.BlockType.BUTTON,
-            text: Scratch.translate("READ THIS BEFORE USING YOUR KEY!"),
-          },
-          {
-            func: "howtogetkey",
-            blockType: Scratch.BlockType.BUTTON,
-            text: Scratch.translate("How to get your API Key"),
-          },
-          {
-            opcode: "no",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Set Key to [KEY]"),
-            hideFromPalette: true,
-            arguments: {
-              KEY: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "YOUR_API_KEY",
-              },
-            },
-          },
-          {
-            opcode: "no",
-            blockType: Scratch.BlockType.REPORTER,
-            hideFromPalette: true,
-            text: Scratch.translate("Get Key"),
-          },
-          {
-            opcode: "getuseridfromurl",
-            blockType: Scratch.BlockType.REPORTER,
+          }//,
+          //{
+          //  func: "warning",
+          //  blockType: Scratch.BlockType.BUTTON,
+          //  text: Scratch.translate("READ THIS BEFORE USING YOUR KEY!"),
+          //},
+          //{
+          //  func: "howtogetkey",
+          //  blockType: Scratch.BlockType.BUTTON,
+          //  text: Scratch.translate("How to get your API Key"),
+          //},
+          //{
+          //  opcode: "no",
+          //  blockType: Scratch.BlockType.COMMAND,
+          //  text: Scratch.translate("Set Key to [KEY]"),
+          //  hideFromPalette: true,
+          //  arguments: {
+          //    KEY: {
+          //      type: Scratch.ArgumentType.STRING,
+          //      defaultValue: "YOUR_API_KEY",
+          //    },
+          //  },
+          //},
+          //{
+          //  opcode: "no",
+          //  blockType: Scratch.BlockType.REPORTER,
+          //  hideFromPalette: true,
+          //  text: Scratch.translate("Get Key"),
+          //},
+          //{
+          //  opcode: "getuseridfromurl",
+          //  blockType: Scratch.BlockType.REPORTER,
             //hideFromPalette: true,
-            text: Scratch.translate(
-              "Get User ID from Custom URL [URL] with API key [KEY]"
-            ),
-            arguments: {
-              URL: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "fn10_",
-              },
-              KEY: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "YOUR_API_KEY",
-              },
-            },
-          },
-          {
-            opcode: "getuserinfo",
-            blockType: Scratch.BlockType.REPORTER,
-            //hideFromPalette: true,
-            text: Scratch.translate(
-              "Get User Info from User ID [ID] with API key [KEY]"
-            ),
-            arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "76561198934186337",
-              },
-              KEY: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "YOUR_API_KEY",
-              },
-            },
-          },
+          //  text: Scratch.translate(
+          //    "Get User ID from Custom URL [URL] with API key [KEY]"
+          //  ),
+          //  arguments: {
+          //    URL: {
+          //      type: Scratch.ArgumentType.STRING,
+          //      defaultValue: "fn10_",
+          //    },
+          //    KEY: {
+          //      type: Scratch.ArgumentType.STRING,
+          //      defaultValue: "YOUR_API_KEY",
+          //    },
+          //  },
+          //},
+          //{
+          //  opcode: "getuserinfo",
+          //  blockType: Scratch.BlockType.REPORTER,
+          //  //hideFromPalette: true,
+          //  text: Scratch.translate(
+          //    "Get User Info from User ID [ID] with API key [KEY]"
+          //  ),
+          //  arguments: {
+          //    ID: {
+          //      type: Scratch.ArgumentType.STRING,
+          //      defaultValue: "76561198934186337",
+          //    },
+          //    KEY: {
+          //      type: Scratch.ArgumentType.STRING,
+          //      defaultValue: "YOUR_API_KEY",
+          //    },
+          //  },
+          //},
         ],
         menus: {
           format: {
