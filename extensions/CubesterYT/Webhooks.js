@@ -20,10 +20,13 @@
   function setupStorage() {
     if (!runtime.extensionStorage["cubesterWebhooks"]) {
       runtime.extensionStorage["cubesterWebhooks"] = {
-        webhooks: {}
+        webhooks: {},
       };
     }
     webhooks = runtime.extensionStorage["cubesterWebhooks"].webhooks;
+    if (keys(webhooks).length > 0) {
+      hideFromPalette = false;
+    }
   }
   setupStorage();
   runtime.on("PROJECT_LOADED", setupStorage);
@@ -142,10 +145,10 @@
       };
     }
 
-    addWebhook() {
+    async addWebhook() {
       let name;
       do {
-        name = prompt(Scratch.translate("Enter Webhook name:"));
+        name = await prompt(Scratch.translate("Enter Webhook name:"));
         if (name === null) {
           return;
         }
@@ -166,7 +169,7 @@
       } while (keys(webhooks).includes(name) || name === "");
       let URL;
       do {
-        URL = prompt(Scratch.translate("Enter Webhook URL:"));
+        URL = await prompt(Scratch.translate("Enter Webhook URL:"));
         if (URL === null) {
           return;
         }
@@ -182,10 +185,10 @@
       hideFromPalette = false;
       Scratch.vm.extensionManager.refreshBlocks("cubesterWebhooks");
     }
-    deleteWebhook() {
+    async deleteWebhook() {
       let name;
       do {
-        name = prompt(Scratch.translate("Enter Webhook name:"));
+        name = await prompt(Scratch.translate("Enter Webhook name:"));
         if (name === null) {
           return;
         }
