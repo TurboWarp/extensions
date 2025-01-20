@@ -210,42 +210,41 @@
       Scratch.vm.extensionManager.refreshBlocks("cubesterWebhooks");
     }
     data(args) {
-      try {
-        switch (webhooks[args.WEBHOOK].TYPE) {
-          case "application/x-www-form-urlencoded":
-            return toForm(webhooks[args.WEBHOOK].DATA);
-          default:
-            return JSON.stringify(webhooks[args.WEBHOOK].DATA);
-        }
-      } catch (error) {
+      if (!webhooks[args.WEBHOOK]) {
         return "";
+      }
+      switch (webhooks[args.WEBHOOK].TYPE) {
+        case "application/x-www-form-urlencoded":
+          return toForm(webhooks[args.WEBHOOK].DATA);
+        default:
+          return JSON.stringify(webhooks[args.WEBHOOK].DATA);
       }
     }
     setData(args) {
+      if (!webhooks[args.WEBHOOK]) {
+        return;
+      }
       try {
         webhooks[args.WEBHOOK].DATA = JSON.parse(
           Scratch.Cast.toString(args.JSON)
         );
-        webhooks[args.WEBHOOK].TYPE = args.TYPE;
-      } catch (error) {
-        return;
-      }
+      } catch (error) {}
+      webhooks[args.WEBHOOK].TYPE = args.TYPE;
     }
     postData(args) {
-      try {
-        Scratch.fetch(webhooks[args.WEBHOOK].URL, {
-          method: "POST",
-          headers: {
-            "Content-type": webhooks[args.WEBHOOK].TYPE,
-          },
-          body:
-            webhooks[args.WEBHOOK].TYPE === "application/json"
-              ? JSON.stringify(webhooks[args.WEBHOOK].DATA)
-              : toForm(webhooks[args.WEBHOOK].DATA),
-        });
-      } catch (error) {
+      if (!webhooks[args.WEBHOOK]) {
         return;
       }
+      Scratch.fetch(webhooks[args.WEBHOOK].URL, {
+        method: "POST",
+        headers: {
+          "Content-type": webhooks[args.WEBHOOK].TYPE,
+        },
+        body:
+          webhooks[args.WEBHOOK].TYPE === "application/json"
+            ? JSON.stringify(webhooks[args.WEBHOOK].DATA)
+            : toForm(webhooks[args.WEBHOOK].DATA),
+      });
     }
 
     _webhookMenu() {
