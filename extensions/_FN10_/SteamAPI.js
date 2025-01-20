@@ -31,8 +31,8 @@
       // }
       return {
         id: "fn10Steamapi",
-        // eslint-disable-next-line extension/should-translate
-        
+        // esint-disable-next-line extension/should-translate
+
         name: Scratch.translate("Steam API"),
         color1: "#1a2736",
         color2: "#1a2736",

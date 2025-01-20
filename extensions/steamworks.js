@@ -25,7 +25,9 @@
           {
             func: "newapi",
             blockType: Scratch.BlockType.BUTTON,
-            text: Scratch.translate("Consider using the new Steam API Extension"),
+            text: Scratch.translate(
+              "Consider using the new Steam API Extension"
+            ),
           },
           {
             blockType: Scratch.BlockType.BOOLEAN,
@@ -190,13 +192,17 @@
     }
 
     newapi() {
-      const exman = Scratch.vm.extensionManager
-      const confirm1 =  window.confirm("The Steamworks extension is outdated, would you like to import the new Steam API extension?")
+      const exman = Scratch.vm.extensionManager;
+      const confirm1 = window.confirm(
+        "The Steamworks extension is outdated, would you like to import the new Steam API extension?"
+      );
       if (confirm1) {
-      exman.loadExtensionURL("https://extensions.turbowarp.org/_FN10_/SteamAPI.js") //Wont work until its merged
-      exman.refreshBlocks()}
+        exman.loadExtensionURL(
+          "https://extensions.turbowarp.org/_FN10_/SteamAPI.js"
+        ); //Wont work until its merged
+        exman.refreshBlocks();
+      }
     }
-
 
     hasSteamworks() {
       return canUseSteamworks;
