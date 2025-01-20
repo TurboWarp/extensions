@@ -1,5 +1,5 @@
 // Name: Steam API
-// ID: SteamAPI
+// ID: fn10Steamapi
 // Description: Do things with the steam protocol, and api.
 // By: _FN10_ <https://scratch.mit.edu/users/Xplate>
 // License: MIT
@@ -15,19 +15,19 @@
     throw new Error("Steam API must run unsandboxed.");
   }
 
-  class SteamAPI {
+  class fn10Steamapi {
     //constructor() {
 
     //}
     getInfo() {
-      if (!Scratch.vm.runtime.extensionStorage["SteamAPI"]) {
-        Scratch.vm.runtime.extensionStorage["SteamAPI"] = {};
-      }
-      if (!Scratch.vm.runtime.extensionStorage["SteamAPI"].key) {
-        Scratch.vm.runtime.extensionStorage["SteamAPI"].key = "Not Set!";
-      }
+      //if (!Scratch.vm.runtime.extensionStorage["fn10Steamapi"]) {
+      //  Scratch.vm.runtime.extensionStorage["fn10Steamapi"] = {};
+      //}
+     // if (!Scratch.vm.runtime.extensionStorage["fn10Steamapi"].key) {
+     //   Scratch.vm.runtime.extensionStorage["fn10Steamapi"].key = "Not Set!";
+     // }
       return {
-        id: "steamapu",
+        id: "fn10Steamapi",
         name: Scratch.translate("Steam API"),
         color1: "#1a2736",
         color2: "#1a2736",
@@ -187,7 +187,7 @@
             text: Scratch.translate("How to get your API Key"),
           },
           {
-            opcode: "setkey",
+            opcode: "no",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("Set Key to [KEY]"),
             hideFromPalette: true,
@@ -199,7 +199,7 @@
             },
           },
           {
-            opcode: "getkey",
+            opcode: "no",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: true,
             text: Scratch.translate("Get Key"),
@@ -293,7 +293,7 @@
           `https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FGetPlayerSummaries%2Fv0002%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26steamids%3D${Scratch.Cast.toString(args.ID)}`
         );
         if (!response.ok) {
-          return false;
+          return "";
         }
         //console.log(response)
         const json = await response.json();
@@ -311,7 +311,7 @@
           `https://api.codetabs.com/v1/proxy/?quest=https://api.steampowered.com/ISteamUserStats/GetGlobalAchievementPercentagesForApp/v0002/?gameid=${Scratch.Cast.toString(args.ID)}`
         );
         if (!response.ok) {
-          return false;
+          return "";
         }
         //console.log(response)
         const json = await response.json();
@@ -323,13 +323,16 @@
         return false;
       }
     }
-    getkey() {
-      return Scratch.Cast.toString(
-        Scratch.vm.runtime.extensionStorage["SteamAPI"]?.key
-      );
-    }
-    setkey(args) {
-      Scratch.vm.runtime.extensionStorage["SteamAPI"].key = args.KEY;
+    //getkey() {
+    //  return Scratch.Cast.toString(
+    //    Scratch.vm.runtime.extensionStorage["fn10Steamapi"]?.key
+    //  );
+    //}
+    //setkey(args) {
+    //  Scratch.vm.runtime.extensionStorage["fn10Steamapi"].key = args.KEY;
+    //}
+    no() {
+      return "";
     }
     async getuseridfromurl(args) {
       //DONT UNCOMMENT THIS!!! console.log(`https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`)
@@ -338,7 +341,7 @@
           `https://api.codetabs.com/v1/proxy/?quest=https%3A%2F%2Fapi.steampowered.com%2FISteamUser%2FResolveVanityURL%2Fv1%2F%3Fkey%3D${Scratch.Cast.toString(args.KEY)}%26vanityurl%3D${Scratch.Cast.toString(args.URL)}`
         );
         if (!response.ok) {
-          return false;
+          return "";
         }
         //console.log(response)
         const json = await response.json();
@@ -351,13 +354,13 @@
       }
     }
     async getnewsforappid(args) {
-      //console.info("Getting News from " + `https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=${Scratch.Cast.toString(args.amount)}&maxlength=300&format=json`)
+      //console.info("Getting News from " + `https://api.codetabs.com/v1/proxy/?quest=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=${Scratch.Cast.toString(args.amount)}&maxlength=300&format=json`)
       try {
         const response = await Scratch.fetch(
-          `https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=20&maxlength=300&format=json`
+          `https://api.codetabs.com/v1/proxy/?quest=3af050dd&url=https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=${Scratch.Cast.toString(args.ID)}&count=20&maxlength=300&format=json`
         );
         if (!response.ok) {
-          return false;
+          return "";
         }
         //console.log(response)
         const json = await response.json();
@@ -402,10 +405,10 @@
     async getidname(args) {
       try {
         const response = await Scratch.fetch(
-          "https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/"
+          "https://api.codetabs.com/v1/proxy/?quest=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/"
         );
         if (!response.ok) {
-          return false;
+          return "";
         }
 
         const json = await response.json();
@@ -433,10 +436,10 @@
     async getnameid(args) {
       try {
         const response = await Scratch.fetch(
-          "https://corsproxy.io/?key=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/"
+          "https://api.codetabs.com/v1/proxy/?quest=3af050dd&url=https://api.steampowered.com/ISteamApps/GetAppList/v2/"
         );
         if (!response.ok) {
-          return false;
+          return "";
         }
 
         const json = await response.json();
@@ -455,5 +458,5 @@
       }
     }
   }
-  Scratch.extensions.register(new SteamAPI());
+  Scratch.extensions.register(new fn10Steamapi());
 })(Scratch);
