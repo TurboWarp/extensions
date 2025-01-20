@@ -190,6 +190,7 @@
       return {
         id: "SPtuneShark3",
         name: Scratch.translate("Tune Shark V3"),
+        docsURI: "https://extensions.turbowarp.org/SharkPool/Tune-Shark-V3",
         color1: "#666666",
         menuIconURI,
         blockIconURI,
