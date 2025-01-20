@@ -222,34 +222,115 @@ release | fade-out time when sound stops
 🎛️ set reverb of sound [MySound] to time (100) decay (100) mix (50) ::#666666
 ```
 
+Adds reverb to an inputted sound.
+
+**Warning:** Initializing reverb can cause framerate drops as its heavy to setup. For dynamic on/off use, you can use the Delay effect
+Parameters | What they Do
+--- | ---
+time | the length (or room space) of the reverb effect
+decay	| the rate of how long the reverb fades over time
+mix	| percentage of how dry or wet the sound is
+
 ```scratch
 🎛️ set delay of sound [MySound] to time (50) feedback (60) mix (50) ::#666666
 ```
+
+Adds an echoing delay effect to a sound.
+
+Parameters | What they Do
+--- | ---
+time | interval between each echo
+feedback | intensity of each subsequent echo
+mix	| percentage of the original sound and the delayed sound
 
 ```scratch
 🎛️ set tremolo of sound [MySound] to speed (35) depth (80) mix (100) ::#666666
 ```
 
+Modulates the volume of a sound periodically, creating a tremolo effect.
+
+Parameters | What they Do
+--- | ---
+speed | how fast the volume fluctuates
+depth | intensity of the volume variation. A higher depth means more dramatic volume changes
+mix	| amount of the tremolo effect applied
+
 ```scratch
 🎛️ set fuzz of sound [MySound] to low (60) med-low (50) med-high (80) high (60) mix (50) ::#666666
 ```
+
+Applies a fuzzy distortion to a sound.
+
+Parameters | What they Do
+--- | ---
+low	| amount of distortion applied to low frequencies
+med-low	| amount of distortion applied to mid-low frequencies
+med-high | amount of distortion applied to mid-high frequencies
+high | amount of distortion applied to high frequencies
+mix	| proportion of unfuzzed sound and fuzzed sound
 
 ```scratch
 🎛️ set bitcrush of sound [MySound] to bits (65) freq (60000) ::#666666
 ```
 
+Reduces a sound's resolution and frequency, creating a chiptune-like, retro effect.
+
+Parameters | What they Do
+--- | ---
+bits | bit depth. Lower values result in more distortion
+freq | sampling frequency. Lower values create a grittier effect
+
 ```scratch
 🎛️ set [highpass v] of sound [MySound] to frequency (400) peak (10) ::#666666
 ```
+
+Highpass: Filters out lower frequencies below the specified cutoff, allowing higher frequencies to pass through.
+
+Lowpass: Filters out higher frequencies above the specified cutoff, allowing lower frequencies to pass through.
+
+Parameters | What they Do
+--- | ---
+frequency | cutoff frequency for the filter
+peak | resonance at the cutoff frequency
 
 ```scratch
 🎛️ set flanger of sound [MySound] to time (45) speed (20) depth (10) feed (10) mix (50) ::#666666
 ```
 
+Combines the original sound with a delayed version, creating a sweeping, "jet-like" sound.
+
+Parameters | What they Do
+--- | ---
+time | delay time for the effect
+speed	| modulation controlling how quickly it oscillates
+depth	| intensity of the effect
+feed | feedback level, controlling how much flanged sound enters
+mix	| proportion of the original and flanged sound
+
 ```scratch
 🎛️ set compressor of sound [MySound] to threshold (15) knee (50) attack (50) release (50) ratio (50) ::#666666
 ```
 
+Compresses the dynamic range of a sound, making quiet sounds louder and loud sounds quieter.
+
+Parameters | What they Do
+--- | ---
+threshold | volume level at which compression begins
+knee | smoothness of the transition into compression
+attack | how quickly the compressor responds to volume changes
+release |	how quickly the compression effect fades after the volume decreases
+ratio	| amount of compression applied
+
 ```scratch
 🎛️ set equalizer of sound [MySound] to gain low (100) med (100) high (100) cutoff low (-50) cutoff high (50) ::#666666
 ```
+
+Adjusts the balance between different frequency bands of the sound. This is a 3-Band Equalizer.
+
+Parameters | What they Do
+--- | ---
+gain low | gain applied to low frequencies
+gain med | gain applied to mid frequencies
+gain high	| gain applied to high frequencies
+cutoff low | low-frequency cutoff point
+cutoff high	| high-frequency cutoff point
