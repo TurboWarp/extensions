@@ -23,9 +23,9 @@
       //if (!Scratch.vm.runtime.extensionStorage["fn10Steamapi"]) {
       //  Scratch.vm.runtime.extensionStorage["fn10Steamapi"] = {};
       //}
-     // if (!Scratch.vm.runtime.extensionStorage["fn10Steamapi"].key) {
-     //   Scratch.vm.runtime.extensionStorage["fn10Steamapi"].key = "Not Set!";
-     // }
+      // if (!Scratch.vm.runtime.extensionStorage["fn10Steamapi"].key) {
+      //   Scratch.vm.runtime.extensionStorage["fn10Steamapi"].key = "Not Set!";
+      // }
       return {
         id: "fn10Steamapi",
         name: Scratch.translate("Steam API"),
