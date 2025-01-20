@@ -19,9 +19,9 @@
   let webhooks;
   function setupStorage() {
     if (!runtime.extensionStorage["cubesterWebhooks"]) {
-      runtime.extensionStorage["cubesterWebhooks"] = Object.create(null);
-      runtime.extensionStorage["cubesterWebhooks"].webhooks =
-        Object.create(null);
+      runtime.extensionStorage["cubesterWebhooks"] = {
+        webhooks: {}
+      };
     }
     webhooks = runtime.extensionStorage["cubesterWebhooks"].webhooks;
   }
