@@ -92,8 +92,8 @@
   "veggiecan/LongmanDictionary",
   "CubesterYT/TurboHook",
   "Alestore/nfcwarp",
-  "_FN10_/SteamAPI", //Keeping next to steamworks will look nice
-  "steamworks",
+  "_FN10_/SteamAPI",
+  //"steamworks",
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",

@@ -1,7 +1,7 @@
 // Name: Steam API
 // ID: fn10Steamapi
 // Description: Do things with the steam protocol, and api.
-// By: _FN10_ <https://scratch.mit.edu/users/Xplate>
+// By: _FN10_ & GarboMuffin <https://scratch.mit.edu/users/Xplate>
 // License: MIT
 
 (function (Scratch) {
@@ -14,6 +14,9 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("Steam API must run unsandboxed.");
   }
+
+  /* globals Steamworks */
+  const canUseSteamworks = typeof Steamworks !== "undefined" && Steamworks.ok();
 
   class fn10Steamapi {
     //constructor() {
@@ -28,6 +31,8 @@
       // }
       return {
         id: "fn10Steamapi",
+        // eslint-disable-next-line extension/should-translate
+        
         name: Scratch.translate("Steam API"),
         color1: "#1a2736",
         color2: "#1a2736",
@@ -174,8 +179,104 @@
           {
             opcode: "text3",
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Steam API (WITH Key)"),
-          }//,
+            text: Scratch.translate("Steamworks"),
+          },
+          {
+            blockType: Scratch.BlockType.BOOLEAN,
+            opcode: "hasSteamworks",
+            text: Scratch.translate("has steamworks?"),
+          },
+
+          {
+            blockType: Scratch.BlockType.REPORTER,
+            opcode: "getUserInfo",
+            text: Scratch.translate({
+              default: "get user [THING]",
+              description:
+                "[THING] is a dropdown with name, steam ID, account level, IP country, etc.",
+            }),
+            arguments: {
+              THING: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "userInfo",
+              },
+            },
+          },
+
+          "---",
+
+          {
+            blockType: Scratch.BlockType.COMMAND,
+            opcode: "setAchievement",
+            text: Scratch.translate({
+              default: "set achievement [ACHIEVEMENT] unlocked to [STATUS]",
+              description: "[STATUS] is true/false dropdown",
+            }),
+            arguments: {
+              ACHIEVEMENT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
+              },
+              STATUS: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "achievementUnlocked",
+              },
+            },
+          },
+          {
+            blockType: Scratch.BlockType.BOOLEAN,
+            opcode: "getAchievement",
+            text: Scratch.translate("achievement [ACHIEVEMENT] unlocked?"),
+            arguments: {
+              ACHIEVEMENT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
+              },
+            },
+          },
+
+          "---",
+
+          {
+            blockType: Scratch.BlockType.BOOLEAN,
+            opcode: "getInstalled",
+            text: Scratch.translate({
+              default: "[TYPE] [ID] installed?",
+              description: "eg. can be read as 'DLC 1234 installed?'",
+            }),
+            arguments: {
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "installType",
+              },
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
+              },
+            },
+          },
+
+          "---",
+
+          {
+            blockType: Scratch.BlockType.COMMAND,
+            opcode: "openInOverlay",
+            text: Scratch.translate({
+              default: "open [TYPE] [DATA] in overlay",
+              description: "eg. 'open URL example.com in overlay'",
+            }),
+            arguments: {
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "overlayType",
+              },
+              DATA: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "https://example.com/",
+              },
+            },
+          },
+          //,
           //{
           //  func: "warning",
           //  blockType: Scratch.BlockType.BUTTON,
@@ -207,7 +308,7 @@
           //{
           //  opcode: "getuseridfromurl",
           //  blockType: Scratch.BlockType.REPORTER,
-            //hideFromPalette: true,
+          //hideFromPalette: true,
           //  text: Scratch.translate(
           //    "Get User ID from Custom URL [URL] with API key [KEY]"
           //  ),
@@ -259,6 +360,67 @@
               },
             ],
           },
+          userInfo: {
+            acceptReporters: true,
+            items: [
+              {
+                value: "name",
+                text: Scratch.translate("name"),
+              },
+              {
+                value: "level",
+                text: Scratch.translate({
+                  default: "level",
+                  description: "Steam account level",
+                }),
+              },
+              {
+                value: "IP country",
+                text: Scratch.translate("IP country"),
+              },
+              {
+                value: "steam ID",
+                text: Scratch.translate("steam ID"),
+              },
+            ],
+          },
+
+          achievementUnlocked: {
+            acceptReporters: true,
+            items: [
+              {
+                value: "true",
+                text: Scratch.translate("true"),
+              },
+              {
+                value: "false",
+                text: Scratch.translate("false"),
+              },
+            ],
+          },
+
+          installType: {
+            acceptReporters: true,
+            items: [
+              {
+                value: "DLC",
+                text: Scratch.translate({
+                  default: "DLC",
+                  description: "Downloadable content",
+                }),
+              },
+            ],
+          },
+
+          overlayType: {
+            acceptReporters: true,
+            items: [
+              {
+                value: "URL",
+                text: Scratch.translate("URL"),
+              },
+            ],
+          },
           steamwindows: {
             acceptReporters: false,
             items: [
@@ -286,6 +448,62 @@
           },
         },
       };
+    }
+    hasSteamworks() {
+      return canUseSteamworks;
+    }
+
+    getUserInfo({ THING }) {
+      if (!canUseSteamworks) return "Steamworks unavailable";
+      switch (THING) {
+        case "name":
+          return Steamworks.localplayer.getName();
+        case "level":
+          return Steamworks.localplayer.getLevel();
+        case "IP country":
+          return Steamworks.localplayer.getIpCountry();
+        case "steam ID":
+          return Steamworks.localplayer.getSteamId().steamId64;
+      }
+      return "???";
+    }
+
+    setAchievement({ ACHIEVEMENT, STATUS }) {
+      if (!canUseSteamworks) return;
+      if (Scratch.Cast.toBoolean(STATUS)) {
+        Steamworks.achievement.activate(Scratch.Cast.toString(ACHIEVEMENT));
+      } else {
+        Steamworks.achievement.clear(Scratch.Cast.toString(ACHIEVEMENT));
+      }
+    }
+
+    getAchievement({ ACHIEVEMENT }) {
+      if (!canUseSteamworks) return false;
+      return Steamworks.achievement.isActivated(
+        Scratch.Cast.toString(ACHIEVEMENT)
+      );
+    }
+
+    getInstalled({ TYPE, ID }) {
+      if (!canUseSteamworks) return false;
+      if (TYPE === "DLC") {
+        return Steamworks.apps.isDlcInstalled(Scratch.Cast.toNumber(ID));
+      }
+      return false;
+    }
+
+    openInOverlay({ TYPE, DATA }) {
+      if (TYPE === "URL") {
+        const url = Scratch.Cast.toString(DATA);
+        if (canUseSteamworks) {
+          // This will always be a packaged environment so don't need to bother
+          // with canOpenWindow()
+          Steamworks.overlay.activateToWebPage(DATA);
+        } else {
+          // Don't await result, we don't care
+          Scratch.openWindow(url);
+        }
+      }
     }
     async getuserinfo(args) {
       try {
