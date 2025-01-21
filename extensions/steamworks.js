@@ -1,6 +1,6 @@
 // Name: Steamworks
 // ID: steamworks
-// By: GarboMuffin & _FN10_ 
+// By: GarboMuffin & _FN10_
 // Description: Connect your project to Steamworks APIs.
 // License: MPL-2.0
 // Context: Probably don't translate the word "Steamworks".
@@ -538,7 +538,6 @@
         return false;
       }
     }
-    
 
     hasSteamworks() {
       return canUseSteamworks;
