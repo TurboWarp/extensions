@@ -6,6 +6,8 @@
 
 //* Research, planning, and preliminary project development started Friday, January 27, 2023.
 
+//* ALL XR matrix processing inspired and heavily modified/integrated from the Augmented Reality extension.
+
 /*=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=A-FRAME LIBRARY-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 A-frame library for VR support and ease of development. Their website can be found at https://aframe.io
 
@@ -38,7 +40,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
 
   // prettier-ignore
   const htmlcode = `
-  <a-scene pose-matrices embedded renderer="highRefreshRate: true; multiviewStereo: true; foveationLevel: 0.25; antialias: false;" background="color: black" style="display: none">
+  <a-scene embedded renderer="highRefreshRate: true; multiviewStereo: true; foveationLevel: 0.25; antialias: false;" background="color: black" style="display: none">
     <a-entity camera look-controls id="AframeCamera" camera-logger>
       <a-plane id="scratchStageVRDisplay" material="shader: flat; src: #scratchcanvas;" update-display></a-plane>
     </a-entity>
@@ -49,16 +51,16 @@ The A-frame libary is licensed under the MIT license, which can be found at http
   document.body.prepend(
     document.createRange().createContextualFragment(htmlcode)
   );
+
   gl.canvas.setAttribute("id", "scratchcanvas");
   const AScene = document.querySelector("a-scene");
+  const ACamera = document.getElementById("AframeCamera");
   let camWidth;
   let camHeight;
 
   function scaleDisplayPlane() {
     const plane = document.getElementById("scratchStageVRDisplay");
-    const fov = THREE.MathUtils.degToRad(
-      document.getElementById("AframeCamera").components.camera.data.fov
-    );
+    const fov = THREE.MathUtils.degToRad(ACamera.components.camera.data.fov);
     const cameraAspect = camWidth / camHeight;
     const stageAspect = runtime.stageWidth / runtime.stageHeight;
     const distance = 1;
@@ -169,8 +171,11 @@ The A-frame libary is licensed under the MIT license, which can be found at http
     rightGripAmount,
     leftGripAmount;
 
-  let rightControllerConnected,
-    leftControllerConnected = false;
+  let rightControllerConnected = false;
+  let leftControllerConnected = false;
+
+  //used later
+  let combinedMatrix = new THREE.Matrix4();
   //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
   AFRAME.registerComponent("update-display", {
     dependencies: ["geometry", "material"],
@@ -182,38 +187,6 @@ The A-frame libary is licensed under the MIT license, which can be found at http
       if (this.material && this.material.map) {
         this.material.map.needsUpdate = true;
       }
-    },
-  });
-
-  let xrProjectionMatrix, xrTransform, xrCombinedMatrix;
-  //Matrix processing code from the AR extension.
-  AFRAME.registerComponent("pose-matrices", {
-    tick: function () {
-      if (!inVR) return;
-
-      const frame = this.el.frame;
-      const xrRefSpace = this.el.renderer.xr.getReferenceSpace();
-      if (!xrRefSpace) return;
-
-      const pose = frame.getViewerPose(xrRefSpace);
-      if (!pose) return;
-
-      const projectionMatrix = pose.views[0].projectionMatrix;
-      const transformMatrix = pose.views[0].transform.inverse.matrix;
-
-      xrProjectionMatrix = projectionMatrix;
-      xrTransform = pose.views[0].transform;
-
-      xrCombinedMatrix = new Array(16).fill(0).map((_, i) => {
-        const row = Math.floor(i / 4);
-        const col = i % 4;
-        return (
-          transformMatrix[row * 4] * projectionMatrix[col] +
-          transformMatrix[row * 4 + 1] * projectionMatrix[col + 4] +
-          transformMatrix[row * 4 + 2] * projectionMatrix[col + 8] +
-          transformMatrix[row * 4 + 3] * projectionMatrix[col + 12]
-        );
-      });
     },
   });
 
@@ -835,6 +808,12 @@ The A-frame libary is licensed under the MIT license, which can be found at http
             text: Scratch.translate("stage height"),
             disableMonitor: "true",
           },
+          {
+            opcode: "fov",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("camera FOV"),
+            disableMonitor: "true",
+          },
           "---",
           {
             blockType: "label",
@@ -843,15 +822,15 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "positionOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[position] of [Device]"),
+            text: Scratch.translate("[position] of [device]"),
             arguments: {
               position: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "x-position",
                 menu: "positionMenu",
               },
-              Device: {
-                type: Scratch.translate(Scratch.ArgumentType.STRING),
+              device: {
+                type: Scratch.ArgumentType.STRING,
                 defaultValue: "headset",
                 menu: "deviceMenu",
               },
@@ -878,13 +857,13 @@ The A-frame libary is licensed under the MIT license, which can be found at http
           {
             opcode: "getMatrix",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("item [ITEM] of [MATRIX] matrix"),
+            text: Scratch.translate("item [item] of [matrix] matrix"),
             arguments: {
-              ITEM: {
+              item: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 1,
               },
-              MATRIX: {
+              matrix: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "matrix",
                 defaultValue: "combined",
@@ -935,7 +914,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
               button: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "any",
-                menu: "buttonMenu",
+                menu: "whenButtonMenu",
               },
             },
           },
@@ -948,7 +927,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
               button: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "any",
-                menu: "oculusButtons",
+                menu: "whenOculusButtons",
               },
             },
           },
@@ -1075,11 +1054,11 @@ The A-frame libary is licensed under the MIT license, which can be found at http
               },
               {
                 text: Scratch.translate("left controller"),
-                value: "headset",
+                value: "left controller",
               },
               {
                 text: Scratch.translate("right controller"),
-                value: "headset",
+                value: "right controller",
               },
             ],
           },
@@ -1100,7 +1079,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
               },
             ],
           },
-          //This is from the Augmented Reality extension. Credit goes to it for the matrix processing.
+          //* The values of these blocks match the names of their respective matrix arrays (except combined)
           matrix: {
             acceptReporters: false,
             items: [
@@ -1110,15 +1089,15 @@ The A-frame libary is licensed under the MIT license, which can be found at http
               },
               {
                 text: Scratch.translate("projection"),
-                value: "projection",
+                value: "projectionMatrix",
               },
               {
                 text: Scratch.translate("view"),
-                value: "view",
+                value: "matrixWorld",
               },
               {
                 text: Scratch.translate("inverse view"),
-                value: "inverse view",
+                value: "matrixWorldInverse",
               },
             ],
           },
@@ -1187,8 +1166,130 @@ The A-frame libary is licensed under the MIT license, which can be found at http
               },
             ],
           },
+          whenButtonMenu: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("any"),
+                value: "any",
+              },
+              {
+                text: Scratch.translate("left trigger"),
+                value: "left trigger",
+              },
+              {
+                text: Scratch.translate("right trigger"),
+                value: "right trigger",
+              },
+              {
+                text: Scratch.translate("left grip"),
+                value: "left grip",
+              },
+              {
+                text: Scratch.translate("right grip"),
+                value: "right grip",
+              },
+              {
+                text: Scratch.translate("A"),
+                value: "A",
+              },
+              {
+                text: Scratch.translate("B"),
+                value: "B",
+              },
+              {
+                text: Scratch.translate("X"),
+                value: "X",
+              },
+              {
+                text: Scratch.translate("Y"),
+                value: "Y",
+              },
+              {
+                text: Scratch.translate("left thumbstick"),
+                value: "left thumbstick",
+              },
+              {
+                text: Scratch.translate("right thumbstick"),
+                value: "right thumbstick",
+              },
+              {
+                text: Scratch.translate("left trackpad"),
+                value: "left trackpad",
+              },
+              {
+                text: Scratch.translate("right trackpad"),
+                value: "right trackpad",
+              },
+              {
+                text: Scratch.translate("menu"),
+                value: "menu",
+              },
+              {
+                text: Scratch.translate("system"),
+                value: "system",
+              },
+            ],
+          },
           oculusButtons: {
             acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("any"),
+                value: "any",
+              },
+              {
+                text: Scratch.translate("left trigger"),
+                value: "left trigger",
+              },
+              {
+                text: Scratch.translate("right trigger"),
+                value: "right trigger",
+              },
+              {
+                text: Scratch.translate("left grip"),
+                value: "left grip",
+              },
+              {
+                text: Scratch.translate("right grip"),
+                value: "right grip",
+              },
+              {
+                text: Scratch.translate("A"),
+                value: "A",
+              },
+              {
+                text: Scratch.translate("B"),
+                value: "B",
+              },
+              {
+                text: Scratch.translate("X"),
+                value: "X",
+              },
+              {
+                text: Scratch.translate("Y"),
+                value: "Y",
+              },
+              {
+                text: Scratch.translate("left thumbstick"),
+                value: "left thumbstick",
+              },
+              {
+                text: Scratch.translate("right thumbstick"),
+                value: "right thumbstick",
+              },
+              {
+                text: Scratch.translate("left surface"),
+                value: "left surface",
+              },
+              {
+                text: Scratch.translate("right surface"),
+                value: "right surface",
+              },
+            ],
+          },
+          whenOculusButtons: {
+            acceptReporters: false,
             items: [
               {
                 text: Scratch.translate("any"),
@@ -1383,27 +1484,28 @@ The A-frame libary is licensed under the MIT license, which can be found at http
       }
     }
 
-    //* This is from the augmented reality extension.
-    getMatrix(args) {
-      let item = args.ITEM | 0;
-      if (item < 1 && item > 16) return "";
-      let matrix = null;
-      switch (args.MATRIX) {
-        case "combined":
-          matrix = xrCombinedMatrix;
-          break;
-        case "projection":
-          matrix = xrProjectionMatrix;
-          break;
-        case "view":
-          matrix = xrTransform?.matrix;
-          break;
-        case "inverse view":
-          matrix = xrTransform?.inverse?.matrix;
-          break;
+    fov() {
+      return ACamera.components.camera.data.fov;
+    }
+
+    getMatrix({ matrix, item }) {
+      if (item < 1 || item > 16) return "";
+
+      let camera = ACamera.components.camera.camera;
+      if (matrix == "combined") {
+        if (
+          camera.projectionMatrix.elements.some(isNaN) ||
+          camera.inverseViewMatrix.elements.some(isNaN)
+        )
+          return 0;
+        return (
+          combinedMatrix
+            .identity()
+            .multiplyMatrices(camera.projectionMatrix, camera.inverseViewMatrix)
+            .elements[item - 1] || 0
+        );
       }
-      if (!matrix) return 0;
-      return matrix[item - 1] || 0;
+      return camera[matrix]?.elements[item - 1] || 0;
     }
 
     getStageWidth() {
@@ -1713,7 +1815,6 @@ The A-frame libary is licensed under the MIT license, which can be found at http
       }
     }
 
-    // TODO: Add support for trackpads
     isAxisDirection({ axis, direction }) {
       if (axis == "left thumbstick") {
         if (leftThumbstickY > 0.95 && direction == "up") {
