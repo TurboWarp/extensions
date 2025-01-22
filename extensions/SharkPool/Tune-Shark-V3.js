@@ -809,7 +809,7 @@
 
     // Helper Funcs
     getSound(name) {
-      return soundBank[name]
+      return soundBank[name];
     }
 
     startHats(data) {
@@ -1003,9 +1003,7 @@
         }
         this.startHats({ name: con.name, type: "starts" });
       } catch {
-        console.warn(
-          Scratch.translate("Audio has not loaded yet!")
-        );
+        console.warn(Scratch.translate("Audio has not loaded yet!"));
         sound.stop(); // Reset
       }
     }
@@ -1090,12 +1088,7 @@
         });
         // this part of the Library was modified to work like this
         engine.sourceNode = engine.getSourceNode();
-        const bank = this.generateData(
-          args.NAME,
-          sourceURL,
-          engine,
-          true
-        );
+        const bank = this.generateData(args.NAME, sourceURL, engine, true);
         soundBank[args.NAME] = bank;
         engine.on("stop", () => {
           bank.currentTime =
