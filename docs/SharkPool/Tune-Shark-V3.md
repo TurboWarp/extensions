@@ -19,12 +19,6 @@ You can import "Tune Shark" sounds via URL/URI using this block. It is important
 Alternatively, you can import "Tune Shark" sounds from pre-existing sounds from the "Sounds" tab in the editor.
 
 ```scratch
-⚙️ convert sound [MySound] from URL to URI and save to [MySound2] ::#666666
-```
-
-This block will convert the inputted sound's source from a URL to a data:URI. It will save this new sound as a new "Tune Shark" sound.
-
-```scratch
 ⚙️ [bind v] sound [MySound] and sound [MySound2] ::#666666
 ```
 
