@@ -28,6 +28,26 @@ jobs:
           LABEL_CHANGE_EXTENSION="pr: change existing extension"
           LABEL_OTHER="pr: other"
 
+          # grep doesn't have good multiline support and installing pcregrep through apt is slow, so
+          # make our own tiny regex checker tool.
+          cat > matches <<EOF
+          #!/usr/bin/env python3
+          import sys
+          import re
+
+          pattern = sys.argv[1]
+          file = sys.argv[2]
+
+          with open(file, 'r') as f:
+            contents = f.read()
+
+          if re.search(pattern, contents, re.MULTILINE):
+            sys.exit(0)
+          else:
+            sys.exit(1)
+          EOF
+          chmod +x matches
+
           got_any_specific_label=false
 
           if [[ "$BASE_REF" == "master" ]]; then
@@ -35,26 +55,6 @@ jobs:
 
             # Download just the diff so it is harder to accidentally run any code from the pull request.
             gh pr diff --repo "$GH_REPO" "$PR_NUMBER" | tee pr.diff
-
-            # grep doesn't have good multiline support and installing pcregrep through apt is slow, so
-            # make our own tiny regex checker tool.
-            cat > matches <<EOF
-            #!/usr/bin/env python3
-            import sys
-            import re
-
-            pattern = sys.argv[1]
-            file = sys.argv[2]
-
-            with open(file, 'r') as f:
-              contents = f.read()
-
-            if re.search(pattern, contents, re.MULTILINE):
-              sys.exit(0)
-            else:
-              sys.exit(1)
-            EOF
-            chmod +x matches
 
             if ./matches "^--- /dev/null\n\+\+\+ b/extensions/" pr.diff; then
               # Example:
