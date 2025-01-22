@@ -808,10 +808,6 @@
     }
 
     // Helper Funcs
-    getSound(name) {
-      return soundBank[name];
-    }
-
     startHats(data) {
       let newThreads = [];
       runtime.allScriptsByOpcodeDo(
