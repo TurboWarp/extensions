@@ -2,7 +2,7 @@
 // ID: SPcamera
 // Description: Move the visible part of the stage.
 // By: SharkPool
-// Licence: MIT
+// License: MIT
 
 // Version V.1.0.0
 
