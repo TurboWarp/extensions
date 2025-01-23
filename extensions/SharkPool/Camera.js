@@ -1,0 +1,761 @@
+// Name: Camera
+// ID: SPcamera
+// Description: Move the visible part of the stage.
+// By: SharkPool
+// Licence: MIT
+
+// Version V.1.0.0
+
+(function (Scratch) {
+  "use strict";
+  if (!Scratch.extensions.unsandboxed) throw new Error("Camera must run unsandboxed!");
+
+  const menuIconURI =
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MSIgaGVpZ2h0PSI0MSIgdmlld0JveD0iMCAwIDQxIDQxIj48ZyBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTAgMjAuNUMwIDkuMTc4IDkuMTc4IDAgMjAuNSAwUzQxIDkuMTc4IDQxIDIwLjUgMzEuODIyIDQxIDIwLjUgNDEgMCAzMS44MjIgMCAyMC41IiBmaWxsPSIjMjg1MWM5Ii8+PHBhdGggZD0iTTIuMzc4IDIwLjVjMC0xMC4wMDkgOC4xMTMtMTguMTIyIDE4LjEyMi0xOC4xMjJTMzguNjIyIDEwLjQ5MSAzOC42MjIgMjAuNSAzMC41MDkgMzguNjIyIDIwLjUgMzguNjIyIDIuMzc4IDMwLjUwOSAyLjM3OCAyMC41IiBmaWxsPSIjNTE3YWY1Ii8+PHBhdGggZD0iTTMxLjg3MSAxNS4wMDdjLjA3My4xNDkuMTI5LjI4LjEyOS4yNDN2MTAuM2MwIC4yODMtLjIzMy41LS41LjVhLjMuMyAwIDAgMS0uMTQ2LS4wNTRsLS4wOTctLjA3NUwyNSAyMi4xNjd2Mi4yODNjMCAxLjk0Ny0xLjU5OCAzLjYtMy41IDMuNmgtOC45Yy0yLjAxNS0uMDg4LTMuNi0xLjY3My0zLjYtMy42di03LjljMC0yLjAyNCAxLjU3Ni0zLjYgMy42LTMuNmg4LjljMS45MzcgMCAzLjUgMS41OSAzLjUgMy42djIuMzJsNi4xNzItNGMuMjctLjE2Mi41NTQtLjEwNS43LjEzN3oiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
+  const cameraIcon =
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDMwIDMwIj48ZyBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTI2LjM3MSA5LjUwN2MuMDczLjE0OS4xMjkuMjguMTI5LjI0M3YxMC4zYzAgLjI4My0uMjMzLjUtLjUuNWEuMy4zIDAgMCAxLS4xNDYtLjA1NGwtLjA5Ny0uMDc1LTYuMjU3LTMuNzU0djIuMjgzYzAgMS45NDctMS41OTggMy42LTMuNSAzLjZINy4xYy0yLjAxNS0uMDg4LTMuNi0xLjY3My0zLjYtMy42di03LjljMC0yLjAyNCAxLjU3Ni0zLjYgMy42LTMuNkgxNmMxLjkzNyAwIDMuNSAxLjU5IDMuNSAzLjZ2Mi4zMmw2LjE3Mi00Yy4yNy0uMTYyLjU1NC0uMTA1LjcuMTM3eiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0wIDMwVjBoMzB2MzB6IiBmaWxsPSJub25lIi8+PC9nPjwvc3ZnPg==";
+  const rightArrow =
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTIyLjY4IDEyLjJhMS42IDEuNiAwIDAgMS0xLjI3LjYzaC03LjY5YTEuNTkgMS41OSAwIDAgMS0xLjE2LTIuNThsMS4xMi0xLjQxYTQuODIgNC44MiAwIDAgMC0zLjE0LS43NyA0LjMgNC4zIDAgMCAwLTIgLjhBNC4yNSA0LjI1IDAgMCAwIDcuMiAxMC42YTUuMDYgNS4wNiAwIDAgMCAuNTQgNC42MkE1LjU4IDUuNTggMCAwIDAgMTIgMTcuNzRhMi4yNiAyLjI2IDAgMCAxLS4xNiA0LjUyQTEwLjI1IDEwLjI1IDAgMCAxIDMuNzQgMThhMTAuMTQgMTAuMTQgMCAwIDEtMS40OS05LjIyIDkuNyA5LjcgMCAwIDEgMi44My00LjE0QTkuOSA5LjkgMCAwIDEgOS42NiAyLjVhMTAuNjYgMTAuNjYgMCAwIDEgNy43MiAxLjY4bDEuMDgtMS4zNWExLjU3IDEuNTcgMCAwIDEgMS4yNC0uNiAxLjYgMS42IDAgMCAxIDEuNTQgMS4yMWwxLjcgNy4zN2ExLjU3IDEuNTcgMCAwIDEtLjI2IDEuMzkiIHN0eWxlPSJmaWxsOiMwMDA7b3BhY2l0eTouMiIvPjxwYXRoIGQ9Ik0yMS4zOCAxMS44M2gtNy42MWEuNTkuNTkgMCAwIDEtLjQzLTFsMS43NS0yLjE5YTUuOSA1LjkgMCAwIDAtNC43LTEuNTggNS4wNyA1LjA3IDAgMCAwLTQuMTEgMy4xN0E2IDYgMCAwIDAgNyAxNS43N2E2LjUxIDYuNTEgMCAwIDAgNSAyLjkyIDEuMzEgMS4zMSAwIDAgMS0uMDggMi42MiA5LjMgOS4zIDAgMCAxLTcuMzUtMy44MiA5LjE2IDkuMTYgMCAwIDEtMS40LTguMzdBOC41IDguNSAwIDAgMSA1LjcxIDUuNGE4Ljc2IDguNzYgMCAwIDEgNC4xMS0xLjkyIDkuNyA5LjcgMCAwIDEgNy43NSAyLjA3bDEuNjctMi4xYS41OS41OSAwIDAgMSAxIC4yMUwyMiAxMS4wOGEuNTkuNTkgMCAwIDEtLjYyLjc1IiBzdHlsZT0iZmlsbDojZmZmIi8+PC9zdmc+";
+  const leftArrow =
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTIwLjM0IDE4LjIxYTEwLjI0IDEwLjI0IDAgMCAxLTguMSA0LjIyIDIuMjYgMi4yNiAwIDAgMS0uMTYtNC41MiA1LjU4IDUuNTggMCAwIDAgNC4yNS0yLjUzIDUuMDYgNS4wNiAwIDAgMCAuNTQtNC42MkE0LjI1IDQuMjUgMCAwIDAgMTUuNTUgOWE0LjMgNC4zIDAgMCAwLTItLjggNC44MiA0LjgyIDAgMCAwLTMuMTUuOGwxLjEyIDEuNDFBMS41OSAxLjU5IDAgMCAxIDEwLjM2IDEzSDIuNjdhMS41NiAxLjU2IDAgMCAxLTEuMjYtLjYzQTEuNTQgMS41NCAwIDAgMSAxLjEzIDExbDEuNzItNy40M0ExLjU5IDEuNTkgMCAwIDEgNC4zOCAyLjRhMS41NyAxLjU3IDAgMCAxIDEuMjQuNkw2LjcgNC4zNWExMC42NiAxMC42NiAwIDAgMSA3LjcyLTEuNjhBOS45IDkuOSAwIDAgMSAxOSA0LjgxIDkuNiA5LjYgMCAwIDEgMjEuODMgOWExMC4wOCAxMC4wOCAwIDAgMS0xLjQ5IDkuMjEiIHN0eWxlPSJmaWxsOiMwMDA7b3BhY2l0eTouMiIvPjxwYXRoIGQ9Ik0xOS41NiAxNy42NWE5LjI5IDkuMjkgMCAwIDEtNy4zNSAzLjgzIDEuMzEgMS4zMSAwIDAgMS0uMDgtMi42MiA2LjUzIDYuNTMgMCAwIDAgNS0yLjkyIDYuMDUgNi4wNSAwIDAgMCAuNjctNS41MSA1LjMgNS4zIDAgMCAwLTEuNjQtMi4xNiA1LjIgNS4yIDAgMCAwLTIuNDgtMUE1Ljg2IDUuODYgMCAwIDAgOSA4Ljg0TDEwLjc0IDExYS41OS41OSAwIDAgMS0uNDMgMUgyLjdhLjYuNiAwIDAgMS0uNi0uNzVsMS43MS03LjQyYS41OS41OSAwIDAgMSAxLS4yMWwxLjY3IDIuMWE5LjcgOS43IDAgMCAxIDcuNzUtMi4wNyA4Ljg0IDguODQgMCAwIDEgNC4xMiAxLjkyIDguNyA4LjcgMCAwIDEgMi41NCAzLjcyIDkuMTQgOS4xNCAwIDAgMS0xLjMzIDguMzYiIHN0eWxlPSJmaWxsOiNmZmYiLz48L3N2Zz4=";
+
+  const Cast = Scratch.Cast;
+  const vm = Scratch.vm;
+  const runtime = vm.runtime;
+  const render = vm.renderer;
+  const isEditor = typeof scaffolding === "undefined";
+  const cameraSymbol = Symbol("SPcameraData"); 
+
+  let allCameras = {
+    default: {
+      xy: [0, 0],
+      zoom: 1,
+      dir: 0,
+      binds: undefined
+    }
+  };
+
+  // TODO add support for interpolation at some point
+  runtime.setInterpolation(false);
+  runtime.runtimeOptions.fencing = false;
+  render.offscreenTouching = true;
+
+  // custom gui
+  function openModal(titleName, func) {
+    // in a Button Context, ScratchBlocks always exists
+    ScratchBlocks.Variables.createVariable(ScratchBlocks.mainWorkspace, null, "broadcast_msg");
+    const modalHolder = document.querySelector(`div[class="ReactModalPortal"]`);
+    const modal = modalHolder.querySelector(`div[class="box_box_2jjDp"]`);
+
+    modal.querySelector(`div[class^="modal_header-item_"]`).textContent = "Camera Manager";
+    modal.querySelector(`div[class^="prompt_label_"]`).textContent = titleName;
+
+    const button = modal.querySelector(`button[class^="prompt_ok-button_"]`);
+    const cloneOkay = button.cloneNode(true);
+    button.parentNode.appendChild(cloneOkay);
+    button.remove();
+    cloneOkay.addEventListener("click", (e) => {
+      func(e, modal);
+      cloneOkay.previousElementSibling.click();
+      runtime.requestBlocksUpdate();
+    });
+
+    modalHolder.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        func(e, modal);
+        cloneOkay.previousElementSibling.click();
+        runtime.requestBlocksUpdate();
+      }
+    });
+  }
+
+  // camera utils
+  function setupState(drawable) {
+    drawable[cameraSymbol] = {
+      name: "default",
+      needsRefresh: false,
+      ogXY: [0,0],
+      ogSZ: 1,
+      ogDir: 0
+    };
+  }
+
+  function translatePosition(xy, invert, camData) {
+    if (invert) {
+      const invRads = (camData.ogDir / 180) * Math.PI;
+      const invSin = Math.sin(invRads), invCos = Math.cos(invRads);
+      const scaledX = xy[0] / camData.ogSZ;
+      const scaledY = xy[1] / camData.ogSZ;
+      const invOffX = scaledX * invCos + scaledY * invSin;
+      const invOffY = -scaledX * invSin + scaledY * invCos;
+      return [
+        invOffX - camData.ogXY[0],
+        invOffY - camData.ogXY[1]
+      ];
+    } else {
+      const rads = (camData.dir / 180) * Math.PI;
+      const sin = Math.sin(rads), cos = Math.cos(rads);
+      const offX = xy[0] + camData.xy[0];
+      const offY = xy[1] + camData.xy[1];
+      return [
+        camData.zoom * (offX * cos - offY * sin),
+        camData.zoom * (offX * sin + offY * cos)
+      ];
+    }
+  }
+
+  function bindDrawable(drawable, camera) {
+    const camSystem = drawable[cameraSymbol];
+    if (camSystem.name === camera) return;
+    
+    // invert camera transformations
+    const fixedPos = translatePosition(drawable._position, true, camSystem);
+    const fixedDir = drawable._direction + camSystem.ogDir;
+    const fixedScale = [
+      drawable._scale[0] / camSystem.ogSZ,
+      drawable._scale[1] / camSystem.ogSZ
+    ];
+    
+    const camData = allCameras[camera];
+    drawable[cameraSymbol] = {
+      name: camera,
+      needsRefresh: true,
+      ogXY: [0,0],
+      ogSZ: 1,
+      ogDir: 0
+    };
+
+    const id = drawable._id;
+    render.updateDrawablePosition(id, fixedPos);
+    render.updateDrawableDirection(id, fixedDir);
+    render.updateDrawableScale(id, fixedScale);
+  }
+
+  function unbindDrawable(drawable, camera) {
+    if (drawable[cameraSymbol].name === camera) return;
+    drawable[cameraSymbol] = {
+      name: camera,
+      needsRefresh: true,
+      ogXY: [0,0],
+      ogSZ: 1,
+      ogDir: 0
+    };
+
+    const id = drawable._id;
+    render.updateDrawablePosition(id, drawable._position);
+    render.updateDrawableDirection(id, drawable._direction);
+    render.updateDrawableScale(id, drawable._scale);
+  }
+
+  function updateCamera(camera) {
+    for (let i = 0; i < render._allDrawables.length; i++) {
+      const drawable = render._allDrawables[i];
+      if (!drawable || !drawable.getVisible() || !drawable.skin) continue;
+      if (!drawable[cameraSymbol]) setupState(drawable);
+
+      const camSystem = drawable[cameraSymbol];
+      if (camSystem.name === camera) {
+        camSystem.needsRefresh = true;
+        drawable.updatePosition(drawable._position);
+        drawable.updateDirection(drawable._direction);
+        drawable.updateScale(drawable._scale);
+        camSystem.needsRefresh = false;
+      }
+    }
+  }
+
+  // camera system patches
+  const ogUpdatePosition = render.exports.Drawable.prototype.updatePosition;
+  render.exports.Drawable.prototype.updatePosition = function(position) {
+    if (!this[cameraSymbol]) setupState(this);
+    const camSystem = this[cameraSymbol];
+    const thisCam = allCameras[camSystem.name];
+    if (camSystem.needsRefresh) {
+      // invert camera transformations
+      position = translatePosition(position, true, camSystem);
+    }
+
+    camSystem.ogXY = [...thisCam.xy];
+    position = translatePosition(position, false, thisCam);
+    ogUpdatePosition.call(this, position);
+  }
+
+  const ogUpdateDirection = render.exports.Drawable.prototype.updateDirection;
+  render.exports.Drawable.prototype.updateDirection = function(direction) {
+    if (!this[cameraSymbol]) setupState(this);
+    const camSystem = this[cameraSymbol];
+    const thisCam = allCameras[camSystem.name];
+    if (camSystem.needsRefresh) {
+      // invert camera transformations
+      direction += camSystem.ogDir
+    }
+
+    camSystem.ogDir = thisCam.dir;
+    direction -= thisCam.dir;
+    ogUpdateDirection.call(this, direction);
+  }
+
+  const ogUpdateScale = render.exports.Drawable.prototype.updateScale;
+  render.exports.Drawable.prototype.updateScale = function(scale) {
+    if (!this[cameraSymbol]) setupState(this);
+    const camSystem = this[cameraSymbol];
+    const thisCam = allCameras[camSystem.name];
+    if (camSystem.needsRefresh) {
+      // invert camera transformations
+      scale[0] /= camSystem.ogSZ;
+      scale[1] /= camSystem.ogSZ;
+    }
+
+    camSystem.ogSZ = thisCam.zoom;
+    scale[0] *= thisCam.zoom;
+    scale[1] *= thisCam.zoom;
+    ogUpdateScale.call(this, scale);
+    this.skin?.emitWasAltered();
+  }
+
+  // Turbowarp Extension Storage
+  runtime.on("PROJECT_LOADED", () => {
+    const stored = runtime.extensionStorage["SPcamera"];
+    if (stored) stored.cams.forEach((cam) => {
+      allCameras[cam] = {
+        xy: [0, 0],
+        zoom: 1,
+        dir: 0,
+        binds: name === "default" ? undefined : []
+      };
+    });
+  });
+
+  class SPcamera {
+    getInfo() {
+      return {
+        id: "SPcamera",
+        name: "Camera",
+        color1: "#517af5",
+        color2: "#3460e3",
+        color3: "#2851c9",
+        menuIconURI,
+        blocks: [
+          {
+            func: "addCamera",
+            blockType: Scratch.BlockType.BUTTON,
+            text: "Add Camera",
+          },
+          {
+            func: "removeCamera",
+            blockType: Scratch.BlockType.BUTTON,
+            text: "Remove Camera",
+          },
+          "---",
+          {
+            opcode: "bindTarget",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "bind [TARGET] to camera [CAMERA]",
+            blockIconURI: cameraIcon,
+            arguments: {
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "OBJECTS" },
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+            },
+          },
+          {
+            opcode: "unbindTarget",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "unbind [TARGET] from camera [CAMERA]",
+            blockIconURI: cameraIcon,
+            arguments: {
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "OBJECTS" },
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+            },
+          },
+          {
+            opcode: "targetCamera",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "camera of [TARGET]",
+            blockIconURI: cameraIcon,
+            arguments: {
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "EXACT_OBJECTS" }
+            },
+          },
+          "---",
+          {
+            opcode: "setSpaceColor",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set background color to [COLOR]",
+            blockIconURI: cameraIcon,
+            arguments: {
+              COLOR: { type: Scratch.ArgumentType.COLOR }
+            },
+          },
+          {
+            opcode: "spaceColor",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "background color",
+            blockIconURI: cameraIcon,
+          },
+          { blockType: Scratch.BlockType.LABEL, text: "Camera Controls" },
+          {
+            opcode: "setXY",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [CAMERA] camera to x: [X] y: [Y]",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              X: { type: Scratch.ArgumentType.NUMBER },
+              Y: { type: Scratch.ArgumentType.NUMBER }
+            }
+          },
+          {
+            opcode: "goToObject",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "move [CAMERA] camera to [TARGET]",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            },
+          },
+          "---",
+          {
+            opcode: "moveSteps",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "move [CAMERA] camera [NUM] steps",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
+            },
+          },
+          {
+            opcode: "setX",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [CAMERA] camera x to [NUM]",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              NUM: { type: Scratch.ArgumentType.NUMBER }
+            },
+          },
+          {
+            opcode: "changeX",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "change [CAMERA] camera x by [NUM]",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
+            },
+          },
+          {
+            opcode: "setY",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [CAMERA] camera y to [NUM]",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              NUM: { type: Scratch.ArgumentType.NUMBER }
+            },
+          },
+          {
+            opcode: "changeY",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "change [CAMERA] camera y by [NUM]",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
+            },
+          },
+          "---",
+          {
+            opcode: "getX",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[CAMERA] camera x",
+            disableMonitor: true,
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+            },
+          },
+          {
+            opcode: "getY",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[CAMERA] camera y",
+            disableMonitor: true,
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+            },
+          },
+          "---",
+          {
+            opcode: "setDirection",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [CAMERA] camera direction to [NUM]",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              NUM: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 }
+            },
+          },
+          {
+            opcode: "pointCamera",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "point [CAMERA] camera towards [TARGET]",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            },
+          },
+          "---",
+          {
+            opcode: "turnCamRight",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "turn [CAMERA] camera [IMG] [NUM] degrees",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              IMG: { type: Scratch.ArgumentType.IMAGE, dataURI: rightArrow },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 }
+            },
+          },
+          {
+            opcode: "turnCamLeft",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "turn [CAMERA] camera [IMG] [NUM] degrees",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              IMG: { type: Scratch.ArgumentType.IMAGE, dataURI: leftArrow },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 }
+            },
+          },
+          {
+            opcode: "getDirection",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[CAMERA] camera direction",
+            disableMonitor: true,
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+            },
+          },
+          "---",
+          {
+            opcode: "setZoom",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "set [CAMERA] camera zoom to [NUM]%",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
+            },
+          },
+          {
+            opcode: "changeZoom",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "change [CAMERA] camera zoom by [NUM]",
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
+            },
+          },
+          {
+            opcode: "getZoom",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "[CAMERA] camera zoom",
+            disableMonitor: true,
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+            },
+          },
+          { blockType: Scratch.BlockType.LABEL, text: "Utility" },
+          {
+            opcode: "fixedMouseX",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "mouse x in camera [CAMERA]",
+            disableMonitor: true,
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+            },
+          },
+          {
+            opcode: "fixedMouseY",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "mouse y in camera [CAMERA]",
+            disableMonitor: true,
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+            },
+          },
+        ],
+        menus: {
+          CAMERAS: { acceptReporters: false, items: "getCameras" },
+          TARGETS: { acceptReporters: true, items: "getTargets" },
+          OBJECTS: { acceptReporters: true, items: "getObjects" },
+          EXACT_OBJECTS: { acceptReporters: true, items: this.getObjects(false) },
+          BINDS: {
+            acceptReporters: true,
+            items: [
+              { text: "bind", value: "bind" },
+              { text: "unbind", value: "unbind" }
+            ]
+          }
+        },
+      };
+    }
+
+    // Helper Funcs
+    getObjects(includeAll) {
+      const objectNames = [{ text: Scratch.translate("myself"), value: "_myself_" }];
+      if (includeAll) objectNames.push({ text: Scratch.translate("all objects"), value: "_all_" });
+      objectNames.push({ text: Scratch.translate("Stage"), value: "_stage_" });
+
+      if (runtime.ext_videoSensing) objectNames.push({ text: Scratch.translate("Video Layer"), value: "_video_" });
+      if (runtime.ext_pen) objectNames.push({ text: Scratch.translate("Pen Layer"), value: "_pen_" });
+
+      // Custom Drawable Layer (CST's 3D or Simple3D Exts for Example)
+      for (var i = 0; i < render._allDrawables.length; i++) {
+        const drawable = render._allDrawables[i];
+        if (drawable !== undefined && drawable.customDrawableName !== undefined) objectNames.push({
+          text: drawable.customDrawableName, value: `${i}=SP-custLayer`
+        });
+      }
+
+      // Sprites
+      const targets = runtime.targets;
+      for (let i = 1; i < targets.length; i++) {
+        const target = targets[i];
+        if (target.isOriginal) objectNames.push({ text: target.getName(), value: target.getName() });
+      }
+      return objectNames.length > 0 ? objectNames : [""];
+    }
+
+    getTargets() {
+      const targetNames = [
+        { text: Scratch.translate("myself"), value: "_myself_" },
+        { text: Scratch.translate("Stage"), value: "_stage_" }
+      ];
+      const targets = runtime.targets;
+      for (let i = 1; i < targets.length; i++) {
+        const target = targets[i];
+        if (target.isOriginal) targetNames.push({ text: target.getName(), value: target.getName() });
+      }
+      return targetNames.length > 0 ? targetNames : [""];
+    }
+
+    getCameras() {
+      return Object.keys(allCameras);
+    }
+
+    refreshBlocks() {
+      if (isEditor) {
+        runtime.once("BEFORE_EXECUTE", () => { runtime.requestBlocksUpdate() });
+        runtime.extensionStorage["SPcamera"] = { cams: Object.keys(allCameras) };
+      }
+    }
+
+    addCamera() {
+      openModal("New Camera name:", (e, modal) =>{
+        const name = modal.querySelector(`input[class^="prompt_variable-name-text-input_"]`);
+        if (name.value) {
+          allCameras[name.value] = {
+            xy: [0, 0],
+            zoom: 1,
+            dir: 0,
+            binds: []
+          };
+          this.refreshBlocks();
+        }
+        e.stopPropagation();
+      });
+    }
+
+    removeCamera() {
+      openModal("Remove Camera named:", (e, modal) =>{
+        const name = modal.querySelector(`input[class^="prompt_variable-name-text-input_"]`);
+        if (name.value) {
+          if (name.value === "default") return; // never delete the placeholder
+          delete allCameras[name.value];
+          this.refreshBlocks();
+        }
+        e.stopPropagation();
+      });
+    }
+
+    getTarget(name, util) {
+      if (name === "_all_") return "_all_";
+      else if (name === "_stage_") return runtime.getTargetForStage();
+      else if (name === "_myself_") return util.target;
+      const penLayer = runtime.ext_pen?._penDrawableId;
+      const videoLayer = runtime.ioDevices.video._drawable;
+
+      if (name === "_pen_") return penLayer ? { drawableID: penLayer } : undefined;
+      else if (name === "_video_") return videoLayer !== -1 ? { drawableID: videoLayer } : undefined;
+      else if (name.includes("=SP-custLayer")) {
+        const drawableID = parseInt(args.TARGET);
+        if (render._allDrawables[drawableID]?.customDrawableName !== undefined) return {
+          drawableID
+        };
+      }
+      return runtime.getSpriteTargetByName(name);
+    }
+
+    translateAngledMovement(xy, steps, direction) {
+      const radians = (direction) * (Math. PI / 180);
+      return [
+        xy[0] + (steps * Math.cos(radians)),
+        xy[1] + (steps * Math.sin(radians))
+      ];
+    }
+
+    // Block Funcs
+    bindTarget(args, util) {
+      const target = this.getTarget(args.TARGET, util);
+      if (!target) return;
+      if (target === "_all_") {
+        render._allDrawables.forEach((drawable) => {
+          bindDrawable(drawable, args.CAMERA);
+        });
+      } else {
+        const drawable = render._allDrawables[target.drawableID];
+        bindDrawable(drawable, args.CAMERA);
+      }
+    }
+
+    unbindTarget(args, util) {
+      const target = this.getTarget(args.TARGET, util);
+      if (!target) return;
+      if (target === "_all_") {
+        render._allDrawables.forEach((drawable) => {
+          bindDrawable(drawable, "default");
+        });
+      } else {
+        const drawable = render._allDrawables[target.drawableID];
+        bindDrawable(drawable, "default");
+      }
+    }
+
+    targetCamera(args, util) {
+      const target = this.getTarget(args.TARGET, util);
+      if (!target) return "";
+      return render._allDrawables[target.drawableID][cameraSymbol].name;
+    }
+
+    setSpaceColor(args) {
+      const rgb = Cast.toRgbColorList(args.COLOR);
+      render.setBackgroundColor(
+        rgb[0] / 255, rgb[1] / 255, rgb[2] / 255
+      );
+    }
+
+    spaceColor() {
+      const rgb = render._backgroundColor3b;
+      const decimal = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
+      if (decimal < 0) decimal += 0xFFFFFF + 1;
+      const hex = Number(decimal).toString(16);
+      return `#${"000000".substr(0, 6 - hex.length)}${hex}`;
+    }
+
+    setXY(args) {
+      allCameras[args.CAMERA].xy = [
+        Cast.toNumber(args.X) * -1,
+        Cast.toNumber(args.Y) * -1
+      ];
+      updateCamera(args.CAMERA);
+    }
+
+    moveSteps(args) {
+      const cam = allCameras[args.CAMERA];
+      const steps = Cast.toNumber(args.NUM) * -1;
+      cam.xy = this.translateAngledMovement(cam.xy, steps, cam.dir);
+      updateCamera(args.CAMERA);
+    }
+
+    setX(args) {
+      allCameras[args.CAMERA].xy[0] = Cast.toNumber(args.NUM) * -1;
+      updateCamera(args.CAMERA);
+    }
+
+    changeX(args) {
+      const cam = allCameras[args.CAMERA];
+      const steps = Cast.toNumber(args.NUM) * -1;
+      cam.xy = this.translateAngledMovement(cam.xy, steps, 0);
+      updateCamera(args.CAMERA);
+    }
+
+    setY(args) {
+      allCameras[args.CAMERA].xy[1] = Cast.toNumber(args.NUM) * -1;
+      updateCamera(args.CAMERA);
+    }
+
+    changeY(args) {
+      const cam = allCameras[args.CAMERA];
+      const steps = Cast.toNumber(args.NUM) * -1;
+      cam.xy = this.translateAngledMovement(cam.xy, steps, 90);
+      updateCamera(args.CAMERA);
+    }
+
+    goToObject(args, util) {
+      const target = this.getTarget(args.TARGET, util);
+      if (target) {
+        allCameras[args.CAMERA].xy = [target.x, target.y];
+        updateCamera(args.CAMERA);
+      }
+    }
+
+    getX(args) {
+      return allCameras[args.CAMERA].xy[0] * -1;
+    }
+
+    getY(args) {
+      return allCameras[args.CAMERA].xy[1] * -1;
+    }
+
+    setDirection(args) {
+      allCameras[args.CAMERA].dir = Cast.toNumber(args.NUM) - 90;
+      updateCamera(args.CAMERA);
+    }
+
+    turnCamRight(args) {
+      allCameras[args.CAMERA].dir -= Cast.toNumber(args.NUM);
+      updateCamera(args.CAMERA);
+    }
+
+    turnCamLeft(args) {
+      allCameras[args.CAMERA].dir += Cast.toNumber(args.NUM);
+      updateCamera(args.CAMERA);
+    }
+
+    pointCamera(args, util) {
+      const target = this.getTarget(args.TARGET, util);
+      if (target) {
+        allCameras[args.CAMERA].dir = target.direction - 90;
+        updateCamera(args.CAMERA);
+      }
+    }
+
+    getDirection(args) {
+      return allCameras[args.CAMERA].dir + 90;
+    }
+
+    setZoom(args) {
+      allCameras[args.CAMERA].zoom = Cast.toNumber(args.NUM) / 100;
+      updateCamera(args.CAMERA);
+    }
+
+    changeZoom(args) {
+      allCameras[args.CAMERA].zoom += Cast.toNumber(args.NUM) / 100;
+      updateCamera(args.CAMERA);
+    }
+
+    getZoom(args) {
+      return allCameras[args.CAMERA].zoom * 100;
+    }
+
+    fixedMouseX(args, util) {
+      const camData = allCameras[args.CAMERA];
+      return translatePosition(
+        [util.ioQuery("mouse", "getScratchX"), util.ioQuery("mouse", "getScratchY")],
+        false,
+        camData
+      )[0];
+    }
+
+    fixedMouseY(args, util) {
+      const camData = allCameras[args.CAMERA];
+      return translatePosition(
+        [util.ioQuery("mouse", "getScratchX"), util.ioQuery("mouse", "getScratchY")],
+        false,
+        camData
+      )[1];
+    }
+  }
+
+  Scratch.extensions.register(new SPcamera());
+})(Scratch);
