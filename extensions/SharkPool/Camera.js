@@ -47,7 +47,7 @@
     const modalHolder = document.querySelector(`div[class="ReactModalPortal"]`);
     const modal = modalHolder.querySelector(`div[class="box_box_2jjDp"]`);
 
-    modal.querySelector(`div[class^="modal_header-item_"]`).textContent = "Camera Manager";
+    modal.querySelector(`div[class^="modal_header-item_"]`).textContent = Scratch.translate("Camera Manager");
     modal.querySelector(`div[class^="prompt_label_"]`).textContent = titleName;
 
     const button = modal.querySelector(`button[class^="prompt_ok-button_"]`);
@@ -115,8 +115,7 @@
       drawable._scale[0] / camSystem.ogSZ,
       drawable._scale[1] / camSystem.ogSZ
     ];
-    
-    const camData = allCameras[camera];
+
     drawable[cameraSymbol] = {
       name: camera,
       needsRefresh: true,
@@ -129,22 +128,6 @@
     render.updateDrawablePosition(id, fixedPos);
     render.updateDrawableDirection(id, fixedDir);
     render.updateDrawableScale(id, fixedScale);
-  }
-
-  function unbindDrawable(drawable, camera) {
-    if (drawable[cameraSymbol].name === camera) return;
-    drawable[cameraSymbol] = {
-      name: camera,
-      needsRefresh: true,
-      ogXY: [0,0],
-      ogSZ: 1,
-      ogDir: 0
-    };
-
-    const id = drawable._id;
-    render.updateDrawablePosition(id, drawable._position);
-    render.updateDrawableDirection(id, drawable._direction);
-    render.updateDrawableScale(id, drawable._scale);
   }
 
   function updateCamera(camera) {
@@ -230,7 +213,7 @@
     getInfo() {
       return {
         id: "SPcamera",
-        name: "Camera",
+        name: Scratch.translate("Camera"),
         color1: "#517af5",
         color2: "#3460e3",
         color3: "#2851c9",
@@ -239,18 +222,18 @@
           {
             func: "addCamera",
             blockType: Scratch.BlockType.BUTTON,
-            text: "Add Camera",
+            text: Scratch.translate("Add Camera"),
           },
           {
             func: "removeCamera",
             blockType: Scratch.BlockType.BUTTON,
-            text: "Remove Camera",
+            text: Scratch.translate("Remove Camera"),
           },
           "---",
           {
             opcode: "bindTarget",
             blockType: Scratch.BlockType.COMMAND,
-            text: "bind [TARGET] to camera [CAMERA]",
+            text: Scratch.translate("bind [TARGET] to camera [CAMERA]"),
             blockIconURI: cameraIcon,
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "OBJECTS" },
@@ -260,7 +243,7 @@
           {
             opcode: "unbindTarget",
             blockType: Scratch.BlockType.COMMAND,
-            text: "unbind [TARGET] from camera [CAMERA]",
+            text: Scratch.translate("unbind [TARGET] from camera [CAMERA]"),
             blockIconURI: cameraIcon,
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "OBJECTS" },
@@ -270,7 +253,7 @@
           {
             opcode: "targetCamera",
             blockType: Scratch.BlockType.REPORTER,
-            text: "camera of [TARGET]",
+            text: Scratch.translate("camera of [TARGET]"),
             blockIconURI: cameraIcon,
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "EXACT_OBJECTS" }
@@ -280,7 +263,7 @@
           {
             opcode: "setSpaceColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set background color to [COLOR]",
+            text: Scratch.translate("set background color to [COLOR]"),
             blockIconURI: cameraIcon,
             arguments: {
               COLOR: { type: Scratch.ArgumentType.COLOR }
@@ -289,14 +272,17 @@
           {
             opcode: "spaceColor",
             blockType: Scratch.BlockType.REPORTER,
-            text: "background color",
+            text: Scratch.translate("background color"),
             blockIconURI: cameraIcon,
           },
-          { blockType: Scratch.BlockType.LABEL, text: "Camera Controls" },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Camera Controls")
+          },
           {
             opcode: "setXY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [CAMERA] camera to x: [X] y: [Y]",
+            text: Scratch.translate("set [CAMERA] camera to x: [X] y: [Y]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               X: { type: Scratch.ArgumentType.NUMBER },
@@ -306,7 +292,7 @@
           {
             opcode: "goToObject",
             blockType: Scratch.BlockType.COMMAND,
-            text: "move [CAMERA] camera to [TARGET]",
+            text: Scratch.translate("move [CAMERA] camera to [TARGET]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
@@ -316,7 +302,7 @@
           {
             opcode: "moveSteps",
             blockType: Scratch.BlockType.COMMAND,
-            text: "move [CAMERA] camera [NUM] steps",
+            text: Scratch.translate("move [CAMERA] camera [NUM] steps"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
@@ -325,7 +311,7 @@
           {
             opcode: "setX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [CAMERA] camera x to [NUM]",
+            text: Scratch.translate("set [CAMERA] camera x to [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               NUM: { type: Scratch.ArgumentType.NUMBER }
@@ -334,7 +320,7 @@
           {
             opcode: "changeX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change [CAMERA] camera x by [NUM]",
+            text: Scratch.translate("change [CAMERA] camera x by [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
@@ -343,7 +329,7 @@
           {
             opcode: "setY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [CAMERA] camera y to [NUM]",
+            text: Scratch.translate("set [CAMERA] camera y to [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               NUM: { type: Scratch.ArgumentType.NUMBER }
@@ -352,7 +338,7 @@
           {
             opcode: "changeY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change [CAMERA] camera y by [NUM]",
+            text: Scratch.translate("change [CAMERA] camera y by [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
@@ -362,7 +348,7 @@
           {
             opcode: "getX",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[CAMERA] camera x",
+            text: Scratch.translate("[CAMERA] camera x"),
             disableMonitor: true,
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
@@ -371,7 +357,7 @@
           {
             opcode: "getY",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[CAMERA] camera y",
+            text: Scratch.translate("[CAMERA] camera y"),
             disableMonitor: true,
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
@@ -381,7 +367,7 @@
           {
             opcode: "setDirection",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [CAMERA] camera direction to [NUM]",
+            text: Scratch.translate("set [CAMERA] camera direction to [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               NUM: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 }
@@ -390,7 +376,7 @@
           {
             opcode: "pointCamera",
             blockType: Scratch.BlockType.COMMAND,
-            text: "point [CAMERA] camera towards [TARGET]",
+            text: Scratch.translate("point [CAMERA] camera towards [TARGET]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
@@ -400,7 +386,7 @@
           {
             opcode: "turnCamRight",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn [CAMERA] camera [IMG] [NUM] degrees",
+            text: Scratch.translate("turn [CAMERA] camera [IMG] [NUM] degrees"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               IMG: { type: Scratch.ArgumentType.IMAGE, dataURI: rightArrow },
@@ -410,7 +396,7 @@
           {
             opcode: "turnCamLeft",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn [CAMERA] camera [IMG] [NUM] degrees",
+            text: Scratch.translate("turn [CAMERA] camera [IMG] [NUM] degrees"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               IMG: { type: Scratch.ArgumentType.IMAGE, dataURI: leftArrow },
@@ -420,7 +406,7 @@
           {
             opcode: "getDirection",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[CAMERA] camera direction",
+            text: Scratch.translate("[CAMERA] camera direction"),
             disableMonitor: true,
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
@@ -430,7 +416,7 @@
           {
             opcode: "setZoom",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [CAMERA] camera zoom to [NUM]%",
+            text: Scratch.translate("set [CAMERA] camera zoom to [NUM]%"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
@@ -439,7 +425,7 @@
           {
             opcode: "changeZoom",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change [CAMERA] camera zoom by [NUM]",
+            text: Scratch.translate("change [CAMERA] camera zoom by [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
@@ -448,17 +434,20 @@
           {
             opcode: "getZoom",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[CAMERA] camera zoom",
+            text: Scratch.translate("[CAMERA] camera zoom"),
             disableMonitor: true,
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: "Utility" },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Utility")
+          },
           {
             opcode: "fixedMouseX",
             blockType: Scratch.BlockType.REPORTER,
-            text: "mouse x in camera [CAMERA]",
+            text: Scratch.translate("mouse x in camera [CAMERA]"),
             disableMonitor: true,
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
@@ -467,7 +456,7 @@
           {
             opcode: "fixedMouseY",
             blockType: Scratch.BlockType.REPORTER,
-            text: "mouse y in camera [CAMERA]",
+            text: Scratch.translate("mouse y in camera [CAMERA]"),
             disableMonitor: true,
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
@@ -482,8 +471,8 @@
           BINDS: {
             acceptReporters: true,
             items: [
-              { text: "bind", value: "bind" },
-              { text: "unbind", value: "unbind" }
+              { text: Scratch.translate("bind"), value: "bind" },
+              { text: Scratch.translate("unbind"), value: "unbind" }
             ]
           }
         },
@@ -541,7 +530,7 @@
     }
 
     addCamera() {
-      openModal("New Camera name:", (e, modal) =>{
+      openModal(Scratch.translate("New Camera name:"), (e, modal) =>{
         const name = modal.querySelector(`input[class^="prompt_variable-name-text-input_"]`);
         if (name.value) {
           allCameras[name.value] = {
@@ -557,7 +546,7 @@
     }
 
     removeCamera() {
-      openModal("Remove Camera named:", (e, modal) =>{
+      openModal(Scratch.translate("Remove Camera named:"), (e, modal) =>{
         const name = modal.querySelector(`input[class^="prompt_variable-name-text-input_"]`);
         if (name.value) {
           if (name.value === "default") return; // never delete the placeholder
@@ -578,7 +567,7 @@
       if (name === "_pen_") return penLayer ? { drawableID: penLayer } : undefined;
       else if (name === "_video_") return videoLayer !== -1 ? { drawableID: videoLayer } : undefined;
       else if (name.includes("=SP-custLayer")) {
-        const drawableID = parseInt(args.TARGET);
+        const drawableID = parseInt(name);
         if (render._allDrawables[drawableID]?.customDrawableName !== undefined) return {
           drawableID
         };
@@ -636,7 +625,7 @@
 
     spaceColor() {
       const rgb = render._backgroundColor3b;
-      const decimal = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
+      let decimal = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
       if (decimal < 0) decimal += 0xFFFFFF + 1;
       const hex = Number(decimal).toString(16);
       return `#${"000000".substr(0, 6 - hex.length)}${hex}`;
