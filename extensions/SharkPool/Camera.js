@@ -8,31 +8,32 @@
 
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed) throw new Error("Camera must run unsandboxed!");
+  if (!Scratch.extensions.unsandboxed)
+    throw new Error("Camera must run unsandboxed!");
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MSIgaGVpZ2h0PSI0MSIgdmlld0JveD0iMCAwIDQxIDQxIj48ZyBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTAgMjAuNUMwIDkuMTc4IDkuMTc4IDAgMjAuNSAwUzQxIDkuMTc4IDQxIDIwLjUgMzEuODIyIDQxIDIwLjUgNDEgMCAzMS44MjIgMCAyMC41IiBmaWxsPSIjMjg1MWM5Ii8+PHBhdGggZD0iTTIuMzc4IDIwLjVjMC0xMC4wMDkgOC4xMTMtMTguMTIyIDE4LjEyMi0xOC4xMjJTMzguNjIyIDEwLjQ5MSAzOC42MjIgMjAuNSAzMC41MDkgMzguNjIyIDIwLjUgMzguNjIyIDIuMzc4IDMwLjUwOSAyLjM3OCAyMC41IiBmaWxsPSIjNTE3YWY1Ii8+PHBhdGggZD0iTTMxLjg3MSAxNS4wMDdjLjA3My4xNDkuMTI5LjI4LjEyOS4yNDN2MTAuM2MwIC4yODMtLjIzMy41LS41LjVhLjMuMyAwIDAgMS0uMTQ2LS4wNTRsLS4wOTctLjA3NUwyNSAyMi4xNjd2Mi4yODNjMCAxLjk0Ny0xLjU5OCAzLjYtMy41IDMuNmgtOC45Yy0yLjAxNS0uMDg4LTMuNi0xLjY3My0zLjYtMy42di03LjljMC0yLjAyNCAxLjU3Ni0zLjYgMy42LTMuNmg4LjljMS45MzcgMCAzLjUgMS41OSAzLjUgMy42djIuMzJsNi4xNzItNGMuMjctLjE2Mi41NTQtLjEwNS43LjEzN3oiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MSIgaGVpZ2h0PSI0MSIgdmlld0JveD0iMCAwIDQxIDQxIj48ZyBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTAgMjAuNUMwIDkuMTc4IDkuMTc4IDAgMjAuNSAwUzQxIDkuMTc4IDQxIDIwLjUgMzEuODIyIDQxIDIwLjUgNDEgMCAzMS44MjIgMCAyMC41IiBmaWxsPSIjMjg1MWM5Ii8+PHBhdGggZD0iTTIuMzc4IDIwLjVjMC0xMC4wMDkgOC4xMTMtMTguMTIyIDE4LjEyMi0xOC4xMjJTMzguNjIyIDEwLjQ5MSAzOC42MjIgMjAuNSAzMC41MDkgMzguNjIyIDIwLjUgMzguNjIyIDIuMzc4IDMwLjUwOSAyLjM3OCAyMC41IiBmaWxsPSIjNTE3YWY1Ii8+PHBhdGggZD0iTTMxLjg3MSAxNS4wMDdjLjA3My4xNDkuMTI5LjI4LjEyOS4yNDN2MTAuM2MwIC4yODMtLjIzMy41LS41LjVhLjMuMyAwIDAgMS0uMTQ2LS4wNTRsLS4wOTctLjA3NUwyNSAyMi4xNjd2Mi4yODNjMCAxLjk0Ny0xLjU5OCAzLjYtMy41IDMuNmgtOC45Yy0yLjAxNS0uMDg4LTMuNi0xLjY3My0zLjYtMy42di03LjljMC0yLjAyNCAxLjU3Ni0zLjYgMy42LTMuNmg4LjljMS45MzcgMCAzLjUgMS41OSAzLjUgMy42djIuMzJsNi4xNzItNGMuMjctLjE2Mi41NTQtLjEwNS43LjEzN3oiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
   const cameraIcon =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDMwIDMwIj48ZyBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTI2LjM3MSA5LjUwN2MuMDczLjE0OS4xMjkuMjguMTI5LjI0M3YxMC4zYzAgLjI4My0uMjMzLjUtLjUuNWEuMy4zIDAgMCAxLS4xNDYtLjA1NGwtLjA5Ny0uMDc1LTYuMjU3LTMuNzU0djIuMjgzYzAgMS45NDctMS41OTggMy42LTMuNSAzLjZINy4xYy0yLjAxNS0uMDg4LTMuNi0xLjY3My0zLjYtMy42di03LjljMC0yLjAyNCAxLjU3Ni0zLjYgMy42LTMuNkgxNmMxLjkzNyAwIDMuNSAxLjU5IDMuNSAzLjZ2Mi4zMmw2LjE3Mi00Yy4yNy0uMTYyLjU1NC0uMTA1LjcuMTM3eiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0wIDMwVjBoMzB2MzB6IiBmaWxsPSJub25lIi8+PC9nPjwvc3ZnPg==";
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDMwIDMwIj48ZyBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTI2LjM3MSA5LjUwN2MuMDczLjE0OS4xMjkuMjguMTI5LjI0M3YxMC4zYzAgLjI4My0uMjMzLjUtLjUuNWEuMy4zIDAgMCAxLS4xNDYtLjA1NGwtLjA5Ny0uMDc1LTYuMjU3LTMuNzU0djIuMjgzYzAgMS45NDctMS41OTggMy42LTMuNSAzLjZINy4xYy0yLjAxNS0uMDg4LTMuNi0xLjY3My0zLjYtMy42di03LjljMC0yLjAyNCAxLjU3Ni0zLjYgMy42LTMuNkgxNmMxLjkzNyAwIDMuNSAxLjU5IDMuNSAzLjZ2Mi4zMmw2LjE3Mi00Yy4yNy0uMTYyLjU1NC0uMTA1LjcuMTM3eiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0wIDMwVjBoMzB2MzB6IiBmaWxsPSJub25lIi8+PC9nPjwvc3ZnPg==";
   const rightArrow =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTIyLjY4IDEyLjJhMS42IDEuNiAwIDAgMS0xLjI3LjYzaC03LjY5YTEuNTkgMS41OSAwIDAgMS0xLjE2LTIuNThsMS4xMi0xLjQxYTQuODIgNC44MiAwIDAgMC0zLjE0LS43NyA0LjMgNC4zIDAgMCAwLTIgLjhBNC4yNSA0LjI1IDAgMCAwIDcuMiAxMC42YTUuMDYgNS4wNiAwIDAgMCAuNTQgNC42MkE1LjU4IDUuNTggMCAwIDAgMTIgMTcuNzRhMi4yNiAyLjI2IDAgMCAxLS4xNiA0LjUyQTEwLjI1IDEwLjI1IDAgMCAxIDMuNzQgMThhMTAuMTQgMTAuMTQgMCAwIDEtMS40OS05LjIyIDkuNyA5LjcgMCAwIDEgMi44My00LjE0QTkuOSA5LjkgMCAwIDEgOS42NiAyLjVhMTAuNjYgMTAuNjYgMCAwIDEgNy43MiAxLjY4bDEuMDgtMS4zNWExLjU3IDEuNTcgMCAwIDEgMS4yNC0uNiAxLjYgMS42IDAgMCAxIDEuNTQgMS4yMWwxLjcgNy4zN2ExLjU3IDEuNTcgMCAwIDEtLjI2IDEuMzkiIHN0eWxlPSJmaWxsOiMwMDA7b3BhY2l0eTouMiIvPjxwYXRoIGQ9Ik0yMS4zOCAxMS44M2gtNy42MWEuNTkuNTkgMCAwIDEtLjQzLTFsMS43NS0yLjE5YTUuOSA1LjkgMCAwIDAtNC43LTEuNTggNS4wNyA1LjA3IDAgMCAwLTQuMTEgMy4xN0E2IDYgMCAwIDAgNyAxNS43N2E2LjUxIDYuNTEgMCAwIDAgNSAyLjkyIDEuMzEgMS4zMSAwIDAgMS0uMDggMi42MiA5LjMgOS4zIDAgMCAxLTcuMzUtMy44MiA5LjE2IDkuMTYgMCAwIDEtMS40LTguMzdBOC41IDguNSAwIDAgMSA1LjcxIDUuNGE4Ljc2IDguNzYgMCAwIDEgNC4xMS0xLjkyIDkuNyA5LjcgMCAwIDEgNy43NSAyLjA3bDEuNjctMi4xYS41OS41OSAwIDAgMSAxIC4yMUwyMiAxMS4wOGEuNTkuNTkgMCAwIDEtLjYyLjc1IiBzdHlsZT0iZmlsbDojZmZmIi8+PC9zdmc+";
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTIyLjY4IDEyLjJhMS42IDEuNiAwIDAgMS0xLjI3LjYzaC03LjY5YTEuNTkgMS41OSAwIDAgMS0xLjE2LTIuNThsMS4xMi0xLjQxYTQuODIgNC44MiAwIDAgMC0zLjE0LS43NyA0LjMgNC4zIDAgMCAwLTIgLjhBNC4yNSA0LjI1IDAgMCAwIDcuMiAxMC42YTUuMDYgNS4wNiAwIDAgMCAuNTQgNC42MkE1LjU4IDUuNTggMCAwIDAgMTIgMTcuNzRhMi4yNiAyLjI2IDAgMCAxLS4xNiA0LjUyQTEwLjI1IDEwLjI1IDAgMCAxIDMuNzQgMThhMTAuMTQgMTAuMTQgMCAwIDEtMS40OS05LjIyIDkuNyA5LjcgMCAwIDEgMi44My00LjE0QTkuOSA5LjkgMCAwIDEgOS42NiAyLjVhMTAuNjYgMTAuNjYgMCAwIDEgNy43MiAxLjY4bDEuMDgtMS4zNWExLjU3IDEuNTcgMCAwIDEgMS4yNC0uNiAxLjYgMS42IDAgMCAxIDEuNTQgMS4yMWwxLjcgNy4zN2ExLjU3IDEuNTcgMCAwIDEtLjI2IDEuMzkiIHN0eWxlPSJmaWxsOiMwMDA7b3BhY2l0eTouMiIvPjxwYXRoIGQ9Ik0yMS4zOCAxMS44M2gtNy42MWEuNTkuNTkgMCAwIDEtLjQzLTFsMS43NS0yLjE5YTUuOSA1LjkgMCAwIDAtNC43LTEuNTggNS4wNyA1LjA3IDAgMCAwLTQuMTEgMy4xN0E2IDYgMCAwIDAgNyAxNS43N2E2LjUxIDYuNTEgMCAwIDAgNSAyLjkyIDEuMzEgMS4zMSAwIDAgMS0uMDggMi42MiA5LjMgOS4zIDAgMCAxLTcuMzUtMy44MiA5LjE2IDkuMTYgMCAwIDEtMS40LTguMzdBOC41IDguNSAwIDAgMSA1LjcxIDUuNGE4Ljc2IDguNzYgMCAwIDEgNC4xMS0xLjkyIDkuNyA5LjcgMCAwIDEgNy43NSAyLjA3bDEuNjctMi4xYS41OS41OSAwIDAgMSAxIC4yMUwyMiAxMS4wOGEuNTkuNTkgMCAwIDEtLjYyLjc1IiBzdHlsZT0iZmlsbDojZmZmIi8+PC9zdmc+";
   const leftArrow =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTIwLjM0IDE4LjIxYTEwLjI0IDEwLjI0IDAgMCAxLTguMSA0LjIyIDIuMjYgMi4yNiAwIDAgMS0uMTYtNC41MiA1LjU4IDUuNTggMCAwIDAgNC4yNS0yLjUzIDUuMDYgNS4wNiAwIDAgMCAuNTQtNC42MkE0LjI1IDQuMjUgMCAwIDAgMTUuNTUgOWE0LjMgNC4zIDAgMCAwLTItLjggNC44MiA0LjgyIDAgMCAwLTMuMTUuOGwxLjEyIDEuNDFBMS41OSAxLjU5IDAgMCAxIDEwLjM2IDEzSDIuNjdhMS41NiAxLjU2IDAgMCAxLTEuMjYtLjYzQTEuNTQgMS41NCAwIDAgMSAxLjEzIDExbDEuNzItNy40M0ExLjU5IDEuNTkgMCAwIDEgNC4zOCAyLjRhMS41NyAxLjU3IDAgMCAxIDEuMjQuNkw2LjcgNC4zNWExMC42NiAxMC42NiAwIDAgMSA3LjcyLTEuNjhBOS45IDkuOSAwIDAgMSAxOSA0LjgxIDkuNiA5LjYgMCAwIDEgMjEuODMgOWExMC4wOCAxMC4wOCAwIDAgMS0xLjQ5IDkuMjEiIHN0eWxlPSJmaWxsOiMwMDA7b3BhY2l0eTouMiIvPjxwYXRoIGQ9Ik0xOS41NiAxNy42NWE5LjI5IDkuMjkgMCAwIDEtNy4zNSAzLjgzIDEuMzEgMS4zMSAwIDAgMS0uMDgtMi42MiA2LjUzIDYuNTMgMCAwIDAgNS0yLjkyIDYuMDUgNi4wNSAwIDAgMCAuNjctNS41MSA1LjMgNS4zIDAgMCAwLTEuNjQtMi4xNiA1LjIgNS4yIDAgMCAwLTIuNDgtMUE1Ljg2IDUuODYgMCAwIDAgOSA4Ljg0TDEwLjc0IDExYS41OS41OSAwIDAgMS0uNDMgMUgyLjdhLjYuNiAwIDAgMS0uNi0uNzVsMS43MS03LjQyYS41OS41OSAwIDAgMSAxLS4yMWwxLjY3IDIuMWE5LjcgOS43IDAgMCAxIDcuNzUtMi4wNyA4Ljg0IDguODQgMCAwIDEgNC4xMiAxLjkyIDguNyA4LjcgMCAwIDEgMi41NCAzLjcyIDkuMTQgOS4xNCAwIDAgMS0xLjMzIDguMzYiIHN0eWxlPSJmaWxsOiNmZmYiLz48L3N2Zz4=";
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTIwLjM0IDE4LjIxYTEwLjI0IDEwLjI0IDAgMCAxLTguMSA0LjIyIDIuMjYgMi4yNiAwIDAgMS0uMTYtNC41MiA1LjU4IDUuNTggMCAwIDAgNC4yNS0yLjUzIDUuMDYgNS4wNiAwIDAgMCAuNTQtNC42MkE0LjI1IDQuMjUgMCAwIDAgMTUuNTUgOWE0LjMgNC4zIDAgMCAwLTItLjggNC44MiA0LjgyIDAgMCAwLTMuMTUuOGwxLjEyIDEuNDFBMS41OSAxLjU5IDAgMCAxIDEwLjM2IDEzSDIuNjdhMS41NiAxLjU2IDAgMCAxLTEuMjYtLjYzQTEuNTQgMS41NCAwIDAgMSAxLjEzIDExbDEuNzItNy40M0ExLjU5IDEuNTkgMCAwIDEgNC4zOCAyLjRhMS41NyAxLjU3IDAgMCAxIDEuMjQuNkw2LjcgNC4zNWExMC42NiAxMC42NiAwIDAgMSA3LjcyLTEuNjhBOS45IDkuOSAwIDAgMSAxOSA0LjgxIDkuNiA5LjYgMCAwIDEgMjEuODMgOWExMC4wOCAxMC4wOCAwIDAgMS0xLjQ5IDkuMjEiIHN0eWxlPSJmaWxsOiMwMDA7b3BhY2l0eTouMiIvPjxwYXRoIGQ9Ik0xOS41NiAxNy42NWE5LjI5IDkuMjkgMCAwIDEtNy4zNSAzLjgzIDEuMzEgMS4zMSAwIDAgMS0uMDgtMi42MiA2LjUzIDYuNTMgMCAwIDAgNS0yLjkyIDYuMDUgNi4wNSAwIDAgMCAuNjctNS41MSA1LjMgNS4zIDAgMCAwLTEuNjQtMi4xNiA1LjIgNS4yIDAgMCAwLTIuNDgtMUE1Ljg2IDUuODYgMCAwIDAgOSA4Ljg0TDEwLjc0IDExYS41OS41OSAwIDAgMS0uNDMgMUgyLjdhLjYuNiAwIDAgMS0uNi0uNzVsMS43MS03LjQyYS41OS41OSAwIDAgMSAxLS4yMWwxLjY3IDIuMWE5LjcgOS43IDAgMCAxIDcuNzUtMi4wNyA4Ljg0IDguODQgMCAwIDEgNC4xMiAxLjkyIDguNyA4LjcgMCAwIDEgMi41NCAzLjcyIDkuMTQgOS4xNCAwIDAgMS0xLjMzIDguMzYiIHN0eWxlPSJmaWxsOiNmZmYiLz48L3N2Zz4=";
 
   const Cast = Scratch.Cast;
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const render = vm.renderer;
   const isEditor = typeof scaffolding === "undefined";
-  const cameraSymbol = Symbol("SPcameraData"); 
+  const cameraSymbol = Symbol("SPcameraData");
 
   let allCameras = {
     default: {
       xy: [0, 0],
       zoom: 1,
       dir: 0,
-      binds: undefined
-    }
+      binds: undefined,
+    },
   };
 
   // TODO add support for interpolation at some point
@@ -43,11 +44,16 @@
   // custom gui
   function openModal(titleName, func) {
     // in a Button Context, ScratchBlocks always exists
-    ScratchBlocks.Variables.createVariable(ScratchBlocks.mainWorkspace, null, "broadcast_msg");
+    ScratchBlocks.Variables.createVariable(
+      ScratchBlocks.mainWorkspace,
+      null,
+      "broadcast_msg"
+    );
     const modalHolder = document.querySelector(`div[class="ReactModalPortal"]`);
     const modal = modalHolder.querySelector(`div[class="box_box_2jjDp"]`);
 
-    modal.querySelector(`div[class^="modal_header-item_"]`).textContent = Scratch.translate("Camera Manager");
+    modal.querySelector(`div[class^="modal_header-item_"]`).textContent =
+      Scratch.translate("Camera Manager");
     modal.querySelector(`div[class^="prompt_label_"]`).textContent = titleName;
 
     const button = modal.querySelector(`button[class^="prompt_ok-button_"]`);
@@ -74,32 +80,31 @@
     drawable[cameraSymbol] = {
       name: "default",
       needsRefresh: false,
-      ogXY: [0,0],
+      ogXY: [0, 0],
       ogSZ: 1,
-      ogDir: 0
+      ogDir: 0,
     };
   }
 
   function translatePosition(xy, invert, camData) {
     if (invert) {
       const invRads = (camData.ogDir / 180) * Math.PI;
-      const invSin = Math.sin(invRads), invCos = Math.cos(invRads);
+      const invSin = Math.sin(invRads),
+        invCos = Math.cos(invRads);
       const scaledX = xy[0] / camData.ogSZ;
       const scaledY = xy[1] / camData.ogSZ;
       const invOffX = scaledX * invCos + scaledY * invSin;
       const invOffY = -scaledX * invSin + scaledY * invCos;
-      return [
-        invOffX - camData.ogXY[0],
-        invOffY - camData.ogXY[1]
-      ];
+      return [invOffX - camData.ogXY[0], invOffY - camData.ogXY[1]];
     } else {
       const rads = (camData.dir / 180) * Math.PI;
-      const sin = Math.sin(rads), cos = Math.cos(rads);
+      const sin = Math.sin(rads),
+        cos = Math.cos(rads);
       const offX = xy[0] + camData.xy[0];
       const offY = xy[1] + camData.xy[1];
       return [
         camData.zoom * (offX * cos - offY * sin),
-        camData.zoom * (offX * sin + offY * cos)
+        camData.zoom * (offX * sin + offY * cos),
       ];
     }
   }
@@ -107,21 +112,21 @@
   function bindDrawable(drawable, camera) {
     const camSystem = drawable[cameraSymbol];
     if (camSystem.name === camera) return;
-    
+
     // invert camera transformations
     const fixedPos = translatePosition(drawable._position, true, camSystem);
     const fixedDir = drawable._direction + camSystem.ogDir;
     const fixedScale = [
       drawable._scale[0] / camSystem.ogSZ,
-      drawable._scale[1] / camSystem.ogSZ
+      drawable._scale[1] / camSystem.ogSZ,
     ];
 
     drawable[cameraSymbol] = {
       name: camera,
       needsRefresh: true,
-      ogXY: [0,0],
+      ogXY: [0, 0],
       ogSZ: 1,
-      ogDir: 0
+      ogDir: 0,
     };
 
     const id = drawable._id;
@@ -149,7 +154,7 @@
 
   // camera system patches
   const ogUpdatePosition = render.exports.Drawable.prototype.updatePosition;
-  render.exports.Drawable.prototype.updatePosition = function(position) {
+  render.exports.Drawable.prototype.updatePosition = function (position) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
     const thisCam = allCameras[camSystem.name];
@@ -161,25 +166,25 @@
     camSystem.ogXY = [...thisCam.xy];
     position = translatePosition(position, false, thisCam);
     ogUpdatePosition.call(this, position);
-  }
+  };
 
   const ogUpdateDirection = render.exports.Drawable.prototype.updateDirection;
-  render.exports.Drawable.prototype.updateDirection = function(direction) {
+  render.exports.Drawable.prototype.updateDirection = function (direction) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
     const thisCam = allCameras[camSystem.name];
     if (camSystem.needsRefresh) {
       // invert camera transformations
-      direction += camSystem.ogDir
+      direction += camSystem.ogDir;
     }
 
     camSystem.ogDir = thisCam.dir;
     direction -= thisCam.dir;
     ogUpdateDirection.call(this, direction);
-  }
+  };
 
   const ogUpdateScale = render.exports.Drawable.prototype.updateScale;
-  render.exports.Drawable.prototype.updateScale = function(scale) {
+  render.exports.Drawable.prototype.updateScale = function (scale) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
     const thisCam = allCameras[camSystem.name];
@@ -194,19 +199,20 @@
     scale[1] *= thisCam.zoom;
     ogUpdateScale.call(this, scale);
     this.skin?.emitWasAltered();
-  }
+  };
 
   // Turbowarp Extension Storage
   runtime.on("PROJECT_LOADED", () => {
     const stored = runtime.extensionStorage["SPcamera"];
-    if (stored) stored.cams.forEach((cam) => {
-      allCameras[cam] = {
-        xy: [0, 0],
-        zoom: 1,
-        dir: 0,
-        binds: name === "default" ? undefined : []
-      };
-    });
+    if (stored)
+      stored.cams.forEach((cam) => {
+        allCameras[cam] = {
+          xy: [0, 0],
+          zoom: 1,
+          dir: 0,
+          binds: name === "default" ? undefined : [],
+        };
+      });
   });
 
   class SPcamera {
@@ -237,7 +243,7 @@
             blockIconURI: cameraIcon,
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "OBJECTS" },
-              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
           },
           {
@@ -247,7 +253,7 @@
             blockIconURI: cameraIcon,
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "OBJECTS" },
-              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
           },
           {
@@ -256,7 +262,10 @@
             text: Scratch.translate("camera of [TARGET]"),
             blockIconURI: cameraIcon,
             arguments: {
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "EXACT_OBJECTS" }
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "EXACT_OBJECTS",
+              },
             },
           },
           "---",
@@ -266,7 +275,7 @@
             text: Scratch.translate("set background color to [COLOR]"),
             blockIconURI: cameraIcon,
             arguments: {
-              COLOR: { type: Scratch.ArgumentType.COLOR }
+              COLOR: { type: Scratch.ArgumentType.COLOR },
             },
           },
           {
@@ -277,7 +286,7 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Camera Controls")
+            text: Scratch.translate("Camera Controls"),
           },
           {
             opcode: "setXY",
@@ -286,8 +295,8 @@
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               X: { type: Scratch.ArgumentType.NUMBER },
-              Y: { type: Scratch.ArgumentType.NUMBER }
-            }
+              Y: { type: Scratch.ArgumentType.NUMBER },
+            },
           },
           {
             opcode: "goToObject",
@@ -295,7 +304,7 @@
             text: Scratch.translate("move [CAMERA] camera to [TARGET]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
             },
           },
           "---",
@@ -305,7 +314,7 @@
             text: Scratch.translate("move [CAMERA] camera [NUM] steps"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
             },
           },
           {
@@ -314,7 +323,7 @@
             text: Scratch.translate("set [CAMERA] camera x to [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
-              NUM: { type: Scratch.ArgumentType.NUMBER }
+              NUM: { type: Scratch.ArgumentType.NUMBER },
             },
           },
           {
@@ -323,7 +332,7 @@
             text: Scratch.translate("change [CAMERA] camera x by [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
             },
           },
           {
@@ -332,7 +341,7 @@
             text: Scratch.translate("set [CAMERA] camera y to [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
-              NUM: { type: Scratch.ArgumentType.NUMBER }
+              NUM: { type: Scratch.ArgumentType.NUMBER },
             },
           },
           {
@@ -341,7 +350,7 @@
             text: Scratch.translate("change [CAMERA] camera y by [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
             },
           },
           "---",
@@ -351,7 +360,7 @@
             text: Scratch.translate("[CAMERA] camera x"),
             disableMonitor: true,
             arguments: {
-              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
           },
           {
@@ -360,7 +369,7 @@
             text: Scratch.translate("[CAMERA] camera y"),
             disableMonitor: true,
             arguments: {
-              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
           },
           "---",
@@ -370,7 +379,7 @@
             text: Scratch.translate("set [CAMERA] camera direction to [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
-              NUM: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 }
+              NUM: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 },
             },
           },
           {
@@ -379,7 +388,7 @@
             text: Scratch.translate("point [CAMERA] camera towards [TARGET]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
             },
           },
           "---",
@@ -390,7 +399,7 @@
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               IMG: { type: Scratch.ArgumentType.IMAGE, dataURI: rightArrow },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 }
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
             },
           },
           {
@@ -400,7 +409,7 @@
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               IMG: { type: Scratch.ArgumentType.IMAGE, dataURI: leftArrow },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 }
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
             },
           },
           {
@@ -409,7 +418,7 @@
             text: Scratch.translate("[CAMERA] camera direction"),
             disableMonitor: true,
             arguments: {
-              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
           },
           "---",
@@ -419,7 +428,7 @@
             text: Scratch.translate("set [CAMERA] camera zoom to [NUM]%"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
             },
           },
           {
@@ -428,7 +437,7 @@
             text: Scratch.translate("change [CAMERA] camera zoom by [NUM]"),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
             },
           },
           {
@@ -437,12 +446,12 @@
             text: Scratch.translate("[CAMERA] camera zoom"),
             disableMonitor: true,
             arguments: {
-              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Utility")
+            text: Scratch.translate("Utility"),
           },
           {
             opcode: "fixedMouseX",
@@ -450,7 +459,7 @@
             text: Scratch.translate("mouse x in camera [CAMERA]"),
             disableMonitor: true,
             arguments: {
-              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
           },
           {
@@ -459,7 +468,7 @@
             text: Scratch.translate("mouse y in camera [CAMERA]"),
             disableMonitor: true,
             arguments: {
-              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" }
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
           },
         ],
@@ -467,40 +476,60 @@
           CAMERAS: { acceptReporters: false, items: "getCameras" },
           TARGETS: { acceptReporters: true, items: "getTargets" },
           OBJECTS: { acceptReporters: true, items: "getObjects" },
-          EXACT_OBJECTS: { acceptReporters: true, items: this.getObjects(false) },
+          EXACT_OBJECTS: {
+            acceptReporters: true,
+            items: this.getObjects(false),
+          },
           BINDS: {
             acceptReporters: true,
             items: [
               { text: Scratch.translate("bind"), value: "bind" },
-              { text: Scratch.translate("unbind"), value: "unbind" }
-            ]
-          }
+              { text: Scratch.translate("unbind"), value: "unbind" },
+            ],
+          },
         },
       };
     }
 
     // Helper Funcs
     getObjects(includeAll) {
-      const objectNames = [{ text: Scratch.translate("myself"), value: "_myself_" }];
-      if (includeAll) objectNames.push({ text: Scratch.translate("all objects"), value: "_all_" });
+      const objectNames = [
+        { text: Scratch.translate("myself"), value: "_myself_" },
+      ];
+      if (includeAll)
+        objectNames.push({
+          text: Scratch.translate("all objects"),
+          value: "_all_",
+        });
       objectNames.push({ text: Scratch.translate("Stage"), value: "_stage_" });
 
-      if (runtime.ext_videoSensing) objectNames.push({ text: Scratch.translate("Video Layer"), value: "_video_" });
-      if (runtime.ext_pen) objectNames.push({ text: Scratch.translate("Pen Layer"), value: "_pen_" });
+      if (runtime.ext_videoSensing)
+        objectNames.push({
+          text: Scratch.translate("Video Layer"),
+          value: "_video_",
+        });
+      if (runtime.ext_pen)
+        objectNames.push({
+          text: Scratch.translate("Pen Layer"),
+          value: "_pen_",
+        });
 
       // Custom Drawable Layer (CST's 3D or Simple3D Exts for Example)
       for (var i = 0; i < render._allDrawables.length; i++) {
         const drawable = render._allDrawables[i];
-        if (drawable !== undefined && drawable.customDrawableName !== undefined) objectNames.push({
-          text: drawable.customDrawableName, value: `${i}=SP-custLayer`
-        });
+        if (drawable !== undefined && drawable.customDrawableName !== undefined)
+          objectNames.push({
+            text: drawable.customDrawableName,
+            value: `${i}=SP-custLayer`,
+          });
       }
 
       // Sprites
       const targets = runtime.targets;
       for (let i = 1; i < targets.length; i++) {
         const target = targets[i];
-        if (target.isOriginal) objectNames.push({ text: target.getName(), value: target.getName() });
+        if (target.isOriginal)
+          objectNames.push({ text: target.getName(), value: target.getName() });
       }
       return objectNames.length > 0 ? objectNames : [""];
     }
@@ -508,12 +537,13 @@
     getTargets() {
       const targetNames = [
         { text: Scratch.translate("myself"), value: "_myself_" },
-        { text: Scratch.translate("Stage"), value: "_stage_" }
+        { text: Scratch.translate("Stage"), value: "_stage_" },
       ];
       const targets = runtime.targets;
       for (let i = 1; i < targets.length; i++) {
         const target = targets[i];
-        if (target.isOriginal) targetNames.push({ text: target.getName(), value: target.getName() });
+        if (target.isOriginal)
+          targetNames.push({ text: target.getName(), value: target.getName() });
       }
       return targetNames.length > 0 ? targetNames : [""];
     }
@@ -524,20 +554,26 @@
 
     refreshBlocks() {
       if (isEditor) {
-        runtime.once("BEFORE_EXECUTE", () => { runtime.requestBlocksUpdate() });
-        runtime.extensionStorage["SPcamera"] = { cams: Object.keys(allCameras) };
+        runtime.once("BEFORE_EXECUTE", () => {
+          runtime.requestBlocksUpdate();
+        });
+        runtime.extensionStorage["SPcamera"] = {
+          cams: Object.keys(allCameras),
+        };
       }
     }
 
     addCamera() {
-      openModal(Scratch.translate("New Camera name:"), (e, modal) =>{
-        const name = modal.querySelector(`input[class^="prompt_variable-name-text-input_"]`);
+      openModal(Scratch.translate("New Camera name:"), (e, modal) => {
+        const name = modal.querySelector(
+          `input[class^="prompt_variable-name-text-input_"]`
+        );
         if (name.value) {
           allCameras[name.value] = {
             xy: [0, 0],
             zoom: 1,
             dir: 0,
-            binds: []
+            binds: [],
           };
           this.refreshBlocks();
         }
@@ -546,8 +582,10 @@
     }
 
     removeCamera() {
-      openModal(Scratch.translate("Remove Camera named:"), (e, modal) =>{
-        const name = modal.querySelector(`input[class^="prompt_variable-name-text-input_"]`);
+      openModal(Scratch.translate("Remove Camera named:"), (e, modal) => {
+        const name = modal.querySelector(
+          `input[class^="prompt_variable-name-text-input_"]`
+        );
         if (name.value) {
           if (name.value === "default") return; // never delete the placeholder
           delete allCameras[name.value];
@@ -564,22 +602,25 @@
       const penLayer = runtime.ext_pen?._penDrawableId;
       const videoLayer = runtime.ioDevices.video._drawable;
 
-      if (name === "_pen_") return penLayer ? { drawableID: penLayer } : undefined;
-      else if (name === "_video_") return videoLayer !== -1 ? { drawableID: videoLayer } : undefined;
+      if (name === "_pen_")
+        return penLayer ? { drawableID: penLayer } : undefined;
+      else if (name === "_video_")
+        return videoLayer !== -1 ? { drawableID: videoLayer } : undefined;
       else if (name.includes("=SP-custLayer")) {
         const drawableID = parseInt(name);
-        if (render._allDrawables[drawableID]?.customDrawableName !== undefined) return {
-          drawableID
-        };
+        if (render._allDrawables[drawableID]?.customDrawableName !== undefined)
+          return {
+            drawableID,
+          };
       }
       return runtime.getSpriteTargetByName(name);
     }
 
     translateAngledMovement(xy, steps, direction) {
-      const radians = (direction) * (Math. PI / 180);
+      const radians = direction * (Math.PI / 180);
       return [
-        xy[0] + (steps * Math.cos(radians)),
-        xy[1] + (steps * Math.sin(radians))
+        xy[0] + steps * Math.cos(radians),
+        xy[1] + steps * Math.sin(radians),
       ];
     }
 
@@ -618,15 +659,13 @@
 
     setSpaceColor(args) {
       const rgb = Cast.toRgbColorList(args.COLOR);
-      render.setBackgroundColor(
-        rgb[0] / 255, rgb[1] / 255, rgb[2] / 255
-      );
+      render.setBackgroundColor(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
     }
 
     spaceColor() {
       const rgb = render._backgroundColor3b;
       let decimal = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
-      if (decimal < 0) decimal += 0xFFFFFF + 1;
+      if (decimal < 0) decimal += 0xffffff + 1;
       const hex = Number(decimal).toString(16);
       return `#${"000000".substr(0, 6 - hex.length)}${hex}`;
     }
@@ -634,7 +673,7 @@
     setXY(args) {
       allCameras[args.CAMERA].xy = [
         Cast.toNumber(args.X) * -1,
-        Cast.toNumber(args.Y) * -1
+        Cast.toNumber(args.Y) * -1,
       ];
       updateCamera(args.CAMERA);
     }
@@ -730,7 +769,10 @@
     fixedMouseX(args, util) {
       const camData = allCameras[args.CAMERA];
       return translatePosition(
-        [util.ioQuery("mouse", "getScratchX"), util.ioQuery("mouse", "getScratchY")],
+        [
+          util.ioQuery("mouse", "getScratchX"),
+          util.ioQuery("mouse", "getScratchY"),
+        ],
         false,
         camData
       )[0];
@@ -739,7 +781,10 @@
     fixedMouseY(args, util) {
       const camData = allCameras[args.CAMERA];
       return translatePosition(
-        [util.ioQuery("mouse", "getScratchX"), util.ioQuery("mouse", "getScratchY")],
+        [
+          util.ioQuery("mouse", "getScratchX"),
+          util.ioQuery("mouse", "getScratchY"),
+        ],
         false,
         camData
       )[1];
