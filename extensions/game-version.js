@@ -1,3 +1,10 @@
+// Name: Game Version
+// ID: gameversion
+// Description: A REST API-based Game Version utility, Useful for Games!
+// By: Thebloxers998 <https://scratch.mit.edu/users/Thebloxers998/>
+// Original: Thebloxers998 
+// License: MPL-2.0 
+
 class GameVersion {
   constructor() {
     this.version = '1.0.0';
