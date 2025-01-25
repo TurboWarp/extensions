@@ -457,6 +457,9 @@ class JSONMetadataFile extends BuildFile {
       if (samples) {
         extension.samples = samples.map((i) => i.getTitle());
       }
+      if (metadata.scratchCompatible) {
+        extension.scratchCompatible = true;
+      }
 
       extensions.push(extension);
     }
