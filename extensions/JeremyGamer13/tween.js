@@ -250,7 +250,7 @@
     bounce,
   };
 
-  const now = () => Scratch.vm.runtime.currentMSecs;
+  const now = () => Scratch.vm.runtime.ioDevices.clock.projectTimer() * 1000;
 
   class Tween {
     getInfo() {
