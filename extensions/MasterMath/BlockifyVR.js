@@ -15,6 +15,8 @@ Minified source code found at https://aframe.io/releases/1.5.0/aframe.min.js.
 Unminified source code can be found at https://aframe.io/releases/1.5.0/aframe.js
 
 The A-frame libary is licensed under the MIT license, which can be found at https://github.com/aframevr/aframe/blob/master/LICENSE.
+
+All other code is under MPL-2.0.
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
 
@@ -104,72 +106,81 @@ The A-frame libary is licensed under the MIT license, which can be found at http
 
   resizeObserver.observe(document.getElementById("scratchcanvas"));
   //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+  //declare necessary global variables and their default values, sorry it's messy I was too lazy to do objects
   let inVR = false;
 
-  let cameraRotationX, cameraRotationY, cameraRotationZ;
+  let cameraRotationX = 0;
+  let cameraRotationY = 0;
+  let cameraRotationZ = 0;
 
-  let cameraPosX, cameraPosY, cameraPosZ;
+  let cameraPosX = 0;
+  let cameraPosY = 0;
+  let cameraPosZ = 0;
 
-  let leftControllerRotationX, leftControllerRotationY, leftControllerRotationZ;
+  let leftControllerRotationX = 0;
+  let leftControllerRotationY = 0;
+  let leftControllerRotationZ = 0;
 
-  let leftControllerPositionX, leftControllerPositionY, leftControllerPositionZ;
+  let leftControllerPositionX = 0;
+  let leftControllerPositionY = 0;
+  let leftControllerPositionZ = 0;
 
-  let rightControllerRotationX,
-    rightControllerRotationY,
-    rightControllerRotationZ;
+  let rightControllerRotationX = 0;
+  let rightControllerRotationY = 0;
+  let rightControllerRotationZ = 0;
 
-  let rightControllerPositionX,
-    rightControllerPositionY,
-    rightControllerPositionZ;
+  let rightControllerPositionX = 0;
+  let rightControllerPositionY = 0;
+  let rightControllerPositionZ = 0;
 
-  let rightTriggerPressed,
-    leftTriggerPressed,
-    rightThumbstickPressed,
-    leftThumbstickPressed,
-    rightGripPressed,
-    leftGripPressed,
-    aButtonPressed,
-    bButtonPressed,
-    xButtonPressed,
-    yButtonPressed,
-    menuButtonPressed,
-    systemButtonPressed,
-    leftTrackpadButtonPressed,
-    rightTrackpadButtonPressed = false;
+  let rightTriggerPressed = false;
+  let leftTriggerPressed = false;
+  let rightThumbstickPressed = false;
+  let leftThumbstickPressed = false;
+  let rightGripPressed = false;
+  let leftGripPressed = false;
+  let aButtonPressed = false;
+  let bButtonPressed = false;
+  let xButtonPressed = false;
+  let yButtonPressed = false;
+  let menuButtonPressed = false;
+  let systemButtonPressed = false;
+  let leftTrackpadButtonPressed = false;
+  let rightTrackpadButtonPressed = false;
 
-  let lastButtonPressed;
+  let lastButtonPressed = "none";
 
-  let rightTriggerTouched,
-    leftTriggerTouched,
-    rightThumbstickTouched,
-    leftThumbstickTouched,
-    rightGripTouched,
-    leftGripTouched,
-    aButtonTouched,
-    bButtonTouched,
-    xButtonTouched,
-    yButtonTouched,
-    leftSurfaceTouched,
-    rightSurfaceTouched = false;
+  let rightTriggerTouched = false;
+  let leftTriggerTouched = false;
+  let rightThumbstickTouched = false;
+  let leftThumbstickTouched = false;
+  let rightGripTouched = false;
+  let leftGripTouched = false;
+  let aButtonTouched = false;
+  let bButtonTouched = false;
+  let xButtonTouched = false;
+  let yButtonTouched = false;
+  let leftSurfaceTouched = false;
+  let rightSurfaceTouched = false;
 
-  let lastButtonTouched;
+  let lastButtonTouched = "none";
 
-  let leftThumbstickX,
-    leftThumbstickY,
-    rightThumbstickX,
-    rightThumbstickY,
-    rightThumbstickDirection,
-    leftThumbstickDirection,
-    leftTrackpadX,
-    leftTrackpadY,
-    rightTrackpadX,
-    rightTrackpadY,
-    rightTrackpadDirection,
-    leftTrackpadDirection,
-    rightTriggerAmount,
-    leftTriggerAmount,
-    rightGripAmount,
-    leftGripAmount;
+  let leftThumbstickX = 0;
+  let leftThumbstickY = 0;
+  let rightThumbstickX = 0;
+  let rightThumbstickY = 0;
+  let rightThumbstickDirection = 0;
+  let leftThumbstickDirection = 0;
+  let leftTrackpadX = 0;
+  let leftTrackpadY = 0;
+  let rightTrackpadX = 0;
+  let rightTrackpadY = 0;
+  let rightTrackpadDirection = 0;
+  let leftTrackpadDirection = 0;
+  let rightTriggerAmount = 0;
+  let leftTriggerAmount = 0;
+  let rightGripAmount = 0;
+  let leftGripAmount = 0;
 
   let rightControllerConnected = false;
   let leftControllerConnected = false;
@@ -517,6 +528,24 @@ The A-frame libary is licensed under the MIT license, which can be found at http
         });
       });
 
+      el.addEventListener("buttondown", function (event) {
+        runtime.startHats("blockifyvr_whenButtonPressed", {
+          button: "any",
+        });
+        if (event.detail.id == 6) {
+          menuButtonPressed = true;
+          lastButtonPressed = "menu";
+          runtime.startHats("blockifyvr_whenButtonPressed", {
+            button: lastButtonPressed,
+          });
+        }
+      });
+      el.addEventListener("buttonup", function (event) {
+        if (event.detail.id == 6) {
+          menuButtonPressed = false;
+        }
+      });
+
       el.addEventListener("triggerdown", function () {
         leftTriggerPressed = true;
         lastButtonPressed = "left trigger";
@@ -684,7 +713,7 @@ The A-frame libary is licensed under the MIT license, which can be found at http
 
       el.addEventListener("menubuttonup", function () {
         menuButtonPressed = true;
-        lastButtonPressed = "Menu";
+        lastButtonPressed = "menu";
         runtime.startHats("blockifyvr_whenButtonPressed", {
           button: "any",
         });
@@ -766,7 +795,6 @@ The A-frame libary is licensed under the MIT license, which can be found at http
         menuIconURI: icon,
         blockIconURI: icon,
         //docsURI: 'https://extensions.turbowarp.org/MasterMath/BlockifyVR', //TODO: update this URL when the extension is finished.
-        //TODO: Add "Give Feedback" button.
         blocks: [
           {
             blockType: "label",
@@ -809,10 +837,16 @@ The A-frame libary is licensed under the MIT license, which can be found at http
             disableMonitor: "true",
           },
           {
-            opcode: "fov",
+            opcode: "getCamera",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("camera FOV"),
-            disableMonitor: "true",
+            text: Scratch.translate("get camera [property]"),
+            arguments: {
+              property: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "FOV",
+                menu: "cameraMenu",
+              },
+            },
           },
           "---",
           {
@@ -1025,6 +1059,23 @@ The A-frame libary is licensed under the MIT license, which can be found at http
               {
                 text: Scratch.translate("exit"),
                 value: "exit",
+              },
+            ],
+          },
+          cameraMenu: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("field of view"),
+                value: "FOV",
+              },
+              {
+                text: Scratch.translate("near clip plane"),
+                value: "near",
+              },
+              {
+                text: Scratch.translate("far clip plane"),
+                value: "far",
               },
             ],
           },
@@ -1484,25 +1535,27 @@ The A-frame libary is licensed under the MIT license, which can be found at http
       }
     }
 
-    fov() {
-      return ACamera.components.camera.data.fov;
+    getCamera({ property }) {
+      if (property == "FOV") {
+        return ACamera.components.camera.data.fov;
+      } else if (property == "near") {
+        return ACamera.components.camera.camera.near;
+      } else if (property == "far") {
+        return ACamera.components.camera.camera.far;
+      }
     }
 
     getMatrix({ matrix, item }) {
       if (item < 1 || item > 16) return "";
-
       let camera = ACamera.components.camera.camera;
       if (matrix == "combined") {
-        if (
-          camera.projectionMatrix.elements.some(isNaN) ||
-          camera.inverseViewMatrix.elements.some(isNaN)
-        )
-          return 0;
         return (
           combinedMatrix
             .identity()
-            .multiplyMatrices(camera.projectionMatrix, camera.inverseViewMatrix)
-            .elements[item - 1] || 0
+            .multiplyMatrices(
+              camera.projectionMatrix,
+              camera.matrixWorldInverse
+            ).elements[item - 1] || 0
         );
       }
       return camera[matrix]?.elements[item - 1] || 0;
@@ -1516,40 +1569,40 @@ The A-frame libary is licensed under the MIT license, which can be found at http
       return runtime.stageHeight;
     }
 
-    positionOf({ position, Device }) {
-      if (position == "x-position" && Device == "headset") {
+    positionOf({ position, device }) {
+      if (position == "x-position" && device == "headset") {
         return cameraPosX;
       }
 
-      if (position == "y-position" && Device == "headset") {
+      if (position == "y-position" && device == "headset") {
         return cameraPosY;
       }
 
-      if (position == "z-position" && Device == "headset") {
+      if (position == "z-position" && device == "headset") {
         return cameraPosZ;
       }
 
-      if (position == "x-position" && Device == "left controller") {
+      if (position == "x-position" && device == "left controller") {
         return leftControllerPositionX;
       }
 
-      if (position == "y-position" && Device == "left controller") {
+      if (position == "y-position" && device == "left controller") {
         return leftControllerPositionY;
       }
 
-      if (position == "z-position" && Device == "left controller") {
+      if (position == "z-position" && device == "left controller") {
         return leftControllerPositionZ;
       }
 
-      if (position == "x-position" && Device == "right controller") {
+      if (position == "x-position" && device == "right controller") {
         return rightControllerPositionX;
       }
 
-      if (position == "y-position" && Device == "right controller") {
+      if (position == "y-position" && device == "right controller") {
         return rightControllerPositionY;
       }
 
-      if (position == "z-position" && Device == "right controller") {
+      if (position == "z-position" && device == "right controller") {
         return rightControllerPositionZ;
       }
     }
