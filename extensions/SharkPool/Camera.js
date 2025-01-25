@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.0
+// Version V.1.0.01
 
 (function (Scratch) {
   "use strict";
@@ -37,6 +37,7 @@
   };
 
   // TODO add support for interpolation at some point
+  // we need a api to allow pushing interpolation data
   runtime.setInterpolation(false);
   runtime.runtimeOptions.fencing = false;
   render.offscreenTouching = true;
@@ -44,35 +45,13 @@
   // custom gui
   function openModal(titleName, func) {
     // in a Button Context, ScratchBlocks always exists
-    ScratchBlocks.Variables.createVariable(
-      ScratchBlocks.mainWorkspace,
-      null,
+    ScratchBlocks.prompt(
+      titleName,
+      "",
+      (value) => func(value),
+      Scratch.translate("Camera Manager"),
       "broadcast_msg"
     );
-    const modalHolder = document.querySelector(`div[class="ReactModalPortal"]`);
-    const modal = modalHolder.querySelector(`div[class="box_box_2jjDp"]`);
-
-    modal.querySelector(`div[class^="modal_header-item_"]`).textContent =
-      Scratch.translate("Camera Manager");
-    modal.querySelector(`div[class^="prompt_label_"]`).textContent = titleName;
-
-    const button = modal.querySelector(`button[class^="prompt_ok-button_"]`);
-    const cloneOkay = button.cloneNode(true);
-    button.parentNode.appendChild(cloneOkay);
-    button.remove();
-    cloneOkay.addEventListener("click", (e) => {
-      func(e, modal);
-      cloneOkay.previousElementSibling.click();
-      runtime.requestBlocksUpdate();
-    });
-
-    modalHolder.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        func(e, modal);
-        cloneOkay.previousElementSibling.click();
-        runtime.requestBlocksUpdate();
-      }
-    });
   }
 
   // camera utils
@@ -110,6 +89,7 @@
   }
 
   function bindDrawable(drawable, camera) {
+    if (!drawable[cameraSymbol]) setupState(drawable);
     const camSystem = drawable[cameraSymbol];
     if (camSystem.name === camera) return;
 
@@ -564,12 +544,9 @@
     }
 
     addCamera() {
-      openModal(Scratch.translate("New Camera name:"), (e, modal) => {
-        const name = modal.querySelector(
-          `input[class^="prompt_variable-name-text-input_"]`
-        );
-        if (name.value) {
-          allCameras[name.value] = {
+      openModal(Scratch.translate("New Camera name:"), (name) => {
+        if (name) {
+          allCameras[name] = {
             xy: [0, 0],
             zoom: 1,
             dir: 0,
@@ -577,21 +554,16 @@
           };
           this.refreshBlocks();
         }
-        e.stopPropagation();
       });
     }
 
     removeCamera() {
-      openModal(Scratch.translate("Remove Camera named:"), (e, modal) => {
-        const name = modal.querySelector(
-          `input[class^="prompt_variable-name-text-input_"]`
-        );
-        if (name.value) {
-          if (name.value === "default") return; // never delete the placeholder
-          delete allCameras[name.value];
+      openModal(Scratch.translate("Remove Camera named:"), (name) => {
+        if (name) {
+          if (name === "default") return; // never delete the placeholder
+          delete allCameras[name];
           this.refreshBlocks();
         }
-        e.stopPropagation();
       });
     }
 
@@ -626,6 +598,7 @@
 
     // Block Funcs
     bindTarget(args, util) {
+      if (!allCameras[args.CAMERA]) return;
       const target = this.getTarget(args.TARGET, util);
       if (!target) return;
       if (target === "_all_") {
@@ -639,6 +612,7 @@
     }
 
     unbindTarget(args, util) {
+      if (!allCameras[args.CAMERA]) return;
       const target = this.getTarget(args.TARGET, util);
       if (!target) return;
       if (target === "_all_") {
@@ -671,6 +645,7 @@
     }
 
     setXY(args) {
+      if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].xy = [
         Cast.toNumber(args.X) * -1,
         Cast.toNumber(args.Y) * -1,
@@ -679,6 +654,7 @@
     }
 
     moveSteps(args) {
+      if (!allCameras[args.CAMERA]) return;
       const cam = allCameras[args.CAMERA];
       const steps = Cast.toNumber(args.NUM) * -1;
       cam.xy = this.translateAngledMovement(cam.xy, steps, cam.dir);
@@ -686,11 +662,13 @@
     }
 
     setX(args) {
+      if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].xy[0] = Cast.toNumber(args.NUM) * -1;
       updateCamera(args.CAMERA);
     }
 
     changeX(args) {
+      if (!allCameras[args.CAMERA]) return;
       const cam = allCameras[args.CAMERA];
       const steps = Cast.toNumber(args.NUM) * -1;
       cam.xy = this.translateAngledMovement(cam.xy, steps, 0);
@@ -698,11 +676,13 @@
     }
 
     setY(args) {
+      if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].xy[1] = Cast.toNumber(args.NUM) * -1;
       updateCamera(args.CAMERA);
     }
 
     changeY(args) {
+      if (!allCameras[args.CAMERA]) return;
       const cam = allCameras[args.CAMERA];
       const steps = Cast.toNumber(args.NUM) * -1;
       cam.xy = this.translateAngledMovement(cam.xy, steps, 90);
@@ -710,6 +690,7 @@
     }
 
     goToObject(args, util) {
+      if (!allCameras[args.CAMERA]) return;
       const target = this.getTarget(args.TARGET, util);
       if (target) {
         allCameras[args.CAMERA].xy = [target.x, target.y];
@@ -718,29 +699,35 @@
     }
 
     getX(args) {
+      if (!allCameras[args.CAMERA]) return 0;
       return allCameras[args.CAMERA].xy[0] * -1;
     }
 
     getY(args) {
+      if (!allCameras[args.CAMERA]) return 0;
       return allCameras[args.CAMERA].xy[1] * -1;
     }
 
     setDirection(args) {
+      if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].dir = Cast.toNumber(args.NUM) - 90;
       updateCamera(args.CAMERA);
     }
 
     turnCamRight(args) {
+      if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].dir -= Cast.toNumber(args.NUM);
       updateCamera(args.CAMERA);
     }
 
     turnCamLeft(args) {
+      if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].dir += Cast.toNumber(args.NUM);
       updateCamera(args.CAMERA);
     }
 
     pointCamera(args, util) {
+      if (!allCameras[args.CAMERA]) return;
       const target = this.getTarget(args.TARGET, util);
       if (target) {
         allCameras[args.CAMERA].dir = target.direction - 90;
@@ -749,24 +736,29 @@
     }
 
     getDirection(args) {
+      if (!allCameras[args.CAMERA]) return 0;
       return allCameras[args.CAMERA].dir + 90;
     }
 
     setZoom(args) {
+      if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].zoom = Cast.toNumber(args.NUM) / 100;
       updateCamera(args.CAMERA);
     }
 
     changeZoom(args) {
+      if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].zoom += Cast.toNumber(args.NUM) / 100;
       updateCamera(args.CAMERA);
     }
 
     getZoom(args) {
+      if (!allCameras[args.CAMERA]) return 0;
       return allCameras[args.CAMERA].zoom * 100;
     }
 
     fixedMouseX(args, util) {
+      if (!allCameras[args.CAMERA]) return 0;
       const camData = allCameras[args.CAMERA];
       return translatePosition(
         [
@@ -779,6 +771,7 @@
     }
 
     fixedMouseY(args, util) {
+      if (!allCameras[args.CAMERA]) return 0;
       const camData = allCameras[args.CAMERA];
       return translatePosition(
         [
