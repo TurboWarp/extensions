@@ -104,7 +104,7 @@ const parseMetadata = (extensionCode) => {
         metadata.context = value;
         break;
       case "scratch-compatible":
-        metadata.scratchCompatible = value === 'true';
+        metadata.scratchCompatible = value === "true";
         break;
       default:
         // TODO
