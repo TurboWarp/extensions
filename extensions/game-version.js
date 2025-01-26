@@ -2,8 +2,8 @@
 // ID: gameversion
 // Description: A REST API-based Game Version utility, Useful for Games!
 // By: Thebloxers998 <https://scratch.mit.edu/users/Thebloxers998/>
-// Original: Thebloxers998 
-// License: MPL-2.0 
+// Original: Thebloxers998
+// License: MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -94,15 +94,15 @@
 
     getVersion() {
       return Scratch.fetch(this.serverURL)
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           if (data.length > 0) {
             this.version = data[0].version;
             this.versionID = data[0].id;
           }
           return this.version;
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error fetching current version:", error);
           return this.version;
         });
@@ -119,14 +119,14 @@
         },
         body: JSON.stringify({ version: Scratch.Cast.toString(args.VERSION) }),
       })
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           this.version = data.version;
           if (!this.versionID) {
             this.versionID = data.id;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error setting version:", error);
         });
     }
@@ -137,13 +137,13 @@
 
     fetchLatestVersion() {
       Scratch.fetch(this.serverURL)
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           if (data.length > 0) {
             this.latestVersion = data[0].version;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error fetching latest version:", error);
         });
     }
@@ -154,15 +154,15 @@
 
     checkForUpdates() {
       Scratch.fetch(this.serverURL)
-        .then(response => response.json())
-        .then(data => {
+        .then((response) => response.json())
+        .then((data) => {
           if (data.length > 0 && data[0].version !== this.version) {
             this.updateStatus = "Update available";
           } else {
             this.updateStatus = "No updates available";
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error checking for updates:", error);
           this.updateStatus = "Error checking for updates";
         });
