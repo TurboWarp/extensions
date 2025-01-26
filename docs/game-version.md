@@ -5,8 +5,8 @@ The Game Version extension is a REST API-based utility designed for managing gam
 
 ## Installation
 To use the Game Version extension, follow these steps:
-1. Download the `gameversion.js` file from the repository.
-2. Add the extension to your TurboWarp project by uploading the `gameversion.js` file.
+1. Open the `gameversion` extension from TurboWarp 
+2. Add the extension to your TurboWarp project by implementing the `gameversion` extension.
 
 ## Blocks
 The Game Version extension provides the following blocks:
