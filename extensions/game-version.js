@@ -7,83 +7,83 @@
 
 class GameVersion {
   constructor() {
-    this.version = '1.0.0';
-    this.latestVersion = '1.0.0';
-    this.serverURL = 'https://example.com/version'; // Your server URL
-    this.updateStatus = 'No updates checked';
+    this.version = "1.0.0";
+    this.latestVersion = "1.0.0";
+    this.serverURL = "https://example.com/version"; // Your server URL
+    this.updateStatus = "No updates checked";
     this.versionID = null; // Store the ID of the version
   }
 
   getInfo() {
     return {
-      id: 'gameversion',
-      name: 'Game Version',
-      color1: '#FF5733', // Primary color
-      color2: '#FFBD33', // Secondary color
-      color3: '#FFBD33', // Tertiary color
+      id: "gameversion",
+      name: Scratch.translate("Game Version"),
+      color1: "#FF5733", // Primary color
+      color2: "#FFBD33", // Secondary color
+      color3: "#FFBD33", // Tertiary color
       blocks: [
         {
           blockType: Scratch.BlockType.LABEL,
-          text: 'Version Management',
+          text: Scratch.translate("Version Management"),
         },
         {
-          opcode: 'getVersion',
+          opcode: "getVersion",
           blockType: Scratch.BlockType.REPORTER,
-          text: 'current game version',
+          text: Scratch.translate("current game version"),
         },
         {
-          opcode: 'setVersion',
+          opcode: "setVersion",
           blockType: Scratch.BlockType.COMMAND,
-          text: 'set game version to [VERSION]',
+          text: Scratch.translate("set game version to [VERSION]"),
           arguments: {
             VERSION: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: '1.0.0',
+              defaultValue: "1.0.0",
             },
           },
         },
         {
           blockType: Scratch.BlockType.LABEL,
-          text: 'Latest Version',
+          text: Scratch.translate("Latest Version"),
         },
         {
-          opcode: 'getLatestVersion',
+          opcode: "getLatestVersion",
           blockType: Scratch.BlockType.REPORTER,
-          text: 'latest game version',
+          text: Scratch.translate("latest game version"),
         },
         {
-          opcode: 'fetchLatestVersion',
+          opcode: "fetchLatestVersion",
           blockType: Scratch.BlockType.COMMAND,
-          text: 'fetch latest game version from server',
+          text: Scratch.translate("fetch latest game version from server"),
         },
         {
           blockType: Scratch.BlockType.LABEL,
-          text: 'Server Settings',
+          text: Scratch.translate("Server Settings"),
         },
         {
-          opcode: 'setServerURL',
+          opcode: "setServerURL",
           blockType: Scratch.BlockType.COMMAND,
-          text: 'set server URL to [URL]',
+          text: Scratch.translate("set server URL to [URL]"),
           arguments: {
             URL: {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: 'https://example.com/version',
+              defaultValue: "https://example.com/version",
             },
           },
         },
         {
           blockType: Scratch.BlockType.LABEL,
-          text: 'Update Management',
+          text: Scratch.translate("Update Management"),
         },
         {
-          opcode: 'checkForUpdates',
+          opcode: "checkForUpdates",
           blockType: Scratch.BlockType.COMMAND,
-          text: 'check for updates',
+          text: Scratch.translate("check for updates"),
         },
         {
-          opcode: 'getUpdateStatus',
+          opcode: "getUpdateStatus",
           blockType: Scratch.BlockType.REPORTER,
-          text: 'update status',
+          text: Scratch.translate("update status"),
         },
       ],
     };
@@ -100,21 +100,21 @@ class GameVersion {
         return this.version;
       })
       .catch(error => {
-        console.error('Error fetching current version:', error);
+        console.error("Error fetching current version:", error);
         return this.version;
       });
   }
 
   setVersion(args) {
-    const method = this.versionID ? 'PUT' : 'POST';
+    const method = this.versionID ? "PUT" : "POST";
     const url = this.serverURL;
 
     Scratch.fetch(url, {
       method: method,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ version: args.VERSION }),
+      body: JSON.stringify({ version: Scratch.Cast.toString(args.VERSION) }),
     })
       .then(response => response.json())
       .then(data => {
@@ -124,7 +124,7 @@ class GameVersion {
         }
       })
       .catch(error => {
-        console.error('Error setting version:', error);
+        console.error("Error setting version:", error);
       });
   }
 
@@ -141,12 +141,12 @@ class GameVersion {
         }
       })
       .catch(error => {
-        console.error('Error fetching latest version:', error);
+        console.error("Error fetching latest version:", error);
       });
   }
 
   setServerURL(args) {
-    this.serverURL = args.URL;
+    this.serverURL = Scratch.Cast.toString(args.URL);
   }
 
   checkForUpdates() {
@@ -154,14 +154,14 @@ class GameVersion {
       .then(response => response.json())
       .then(data => {
         if (data.length > 0 && data[0].version !== this.version) {
-          this.updateStatus = 'Update available';
+          this.updateStatus = "Update available";
         } else {
-          this.updateStatus = 'No updates available';
+          this.updateStatus = "No updates available";
         }
       })
       .catch(error => {
-        console.error('Error checking for updates:', error);
-        this.updateStatus = 'Error checking for updates';
+        console.error("Error checking for updates:", error);
+        this.updateStatus = "Error checking for updates";
       });
   }
 
