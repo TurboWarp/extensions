@@ -368,8 +368,20 @@
         });
         return animSearch;
       }
-      const anim = allAnimations[util.target.id]?.[name];
+      const target = util.target;
+      let anim = allAnimations[target.id]?.[name];
       if (anim) return anim;
+      else if (!target.isOriginal) {
+        anim = allAnimations[target.sprite.clones[0].id]?.[name];
+        if (anim) {
+          if (allAnimations[target.id] === undefined) allAnimations[target.id] = {};
+          const cloneCopy = { ...anim };
+          cloneCopy.target = target;
+ 
+          allAnimations[target.id][name] = cloneCopy;
+          return cloneCopy;
+        }
+      }
       return this.createAnimation({ NAME: name, SECRET: true }, util);
     }
 
