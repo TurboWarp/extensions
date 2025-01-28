@@ -98,18 +98,18 @@
     getInfo() {
       return {
         id: "midi",
-        name: "MIDI",
+        name: Scratch.translate("MIDI"),
         blocks: [
           {
             opcode: "MIDIinputDevices",
             blockType: Scratch.BlockType.REPORTER,
-            text: "connected MIDI input devices",
+            text: Scratch.translate("connected MIDI input devices"),
             disableMonitor: true,
           },
           {
             opcode: "midiDeviceInfo",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[info] of MIDI device [number]",
+            text: Scratch.translate("[info] of MIDI device [number]"),
             arguments: {
               info: {
                 type: Scratch.ArgumentType.STRING,
@@ -126,7 +126,7 @@
           {
             opcode: "whenAnyNote",
             blockType: Scratch.BlockType.EVENT,
-            text: "when any note [pressedReleased]",
+            text: Scratch.translate("when any note [pressedReleased]"),
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
             arguments: {
@@ -140,7 +140,7 @@
           {
             opcode: "whenNote",
             blockType: Scratch.BlockType.EVENT,
-            text: "when note [note] [pressedReleased]",
+            text: Scratch.translate("when note [note] [pressedReleased]"),
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
             arguments: {
@@ -158,7 +158,7 @@
           {
             opcode: "noteOn",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is note [note] on?",
+            text: Scratch.translate("is note [note] on?"),
             arguments: {
               note: {
                 type: Scratch.ArgumentType.NOTE,
@@ -169,7 +169,7 @@
           {
             opcode: "noteVelocity",
             blockType: Scratch.BlockType.REPORTER,
-            text: "velocity of note [note]",
+            text: Scratch.translate("velocity of note [note]"),
             arguments: {
               note: {
                 type: Scratch.ArgumentType.NOTE,
@@ -186,7 +186,7 @@
           {
             opcode: "lastNote",
             blockType: Scratch.BlockType.REPORTER,
-            text: "last note [pressedReleased]",
+            text: Scratch.translate("last note [pressedReleased]"),
             disableMonitor: true,
             arguments: {
               pressedReleased: {
@@ -200,11 +200,29 @@
         menus: {
           infoMenu: {
             acceptReporters: false,
-            items: ["name", "id"],
+            items: [
+              {
+                text: Scratch.translate("name"),
+                value: "name",
+              },
+              {
+                text: Scratch.translate("id"),
+                value: "id",
+              },
+            ],
           },
           pressedReleased: {
             acceptReporters: false,
-            items: ["pressed", "released"],
+            items: [
+              {
+                text: Scratch.translate("pressed"),
+                value: "pressed",
+              },
+              {
+                text: Scratch.translate("released"),
+                value: "released",
+              },
+            ],
           },
         },
       };
@@ -243,7 +261,7 @@
     lastNote({ pressedReleased }) {
       if (pressedReleased == "pressed") {
         return lastNotePressed;
-      } else {
+      } else if (pressedReleased == "released") {
         return lastNoteReleased;
       }
     }
