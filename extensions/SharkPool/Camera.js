@@ -131,6 +131,18 @@
   }
 
   // camera system patches
+  const ogPostSpriteInfo = vm.postSpriteInfo;
+  vm.postSpriteInfo = function (data) {
+    if (this._dragTarget) {
+      const drawable = render._allDrawables[this._dragTarget.drawableID];
+      if (!drawable[cameraSymbol]) setupState(drawable);
+      const camSystem = drawable[cameraSymbol];
+      camSystem.needsRefresh = true;
+      camSystem.ogXY = [0, 0];
+    }
+    ogPostSpriteInfo.call(this, data);
+  }
+
   const ogUpdatePosition = render.exports.Drawable.prototype.updatePosition;
   render.exports.Drawable.prototype.updatePosition = function (position) {
     if (!this[cameraSymbol]) setupState(this);
@@ -686,7 +698,7 @@
       if (!allCameras[args.CAMERA]) return;
       const target = this.getTarget(args.TARGET, util);
       if (target) {
-        allCameras[args.CAMERA].xy = [target.x, target.y];
+        allCameras[args.CAMERA].xy = [target.x * -1, target.y * -1];
         updateCamera(args.CAMERA);
       }
     }
