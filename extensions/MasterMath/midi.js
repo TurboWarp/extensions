@@ -180,7 +180,7 @@
           {
             opcode: "activeNotes",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all active notes",
+            text: Scratch.translate("all active notes"),
             disableMonitor: true,
           },
           {
