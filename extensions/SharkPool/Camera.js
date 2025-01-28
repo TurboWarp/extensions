@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.01
+// Version V.1.0.02
 
 (function (Scratch) {
   "use strict";
@@ -13,8 +13,6 @@
 
   const menuIconURI =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MSIgaGVpZ2h0PSI0MSIgdmlld0JveD0iMCAwIDQxIDQxIj48ZyBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTAgMjAuNUMwIDkuMTc4IDkuMTc4IDAgMjAuNSAwUzQxIDkuMTc4IDQxIDIwLjUgMzEuODIyIDQxIDIwLjUgNDEgMCAzMS44MjIgMCAyMC41IiBmaWxsPSIjMjg1MWM5Ii8+PHBhdGggZD0iTTIuMzc4IDIwLjVjMC0xMC4wMDkgOC4xMTMtMTguMTIyIDE4LjEyMi0xOC4xMjJTMzguNjIyIDEwLjQ5MSAzOC42MjIgMjAuNSAzMC41MDkgMzguNjIyIDIwLjUgMzguNjIyIDIuMzc4IDMwLjUwOSAyLjM3OCAyMC41IiBmaWxsPSIjNTE3YWY1Ii8+PHBhdGggZD0iTTMxLjg3MSAxNS4wMDdjLjA3My4xNDkuMTI5LjI4LjEyOS4yNDN2MTAuM2MwIC4yODMtLjIzMy41LS41LjVhLjMuMyAwIDAgMS0uMTQ2LS4wNTRsLS4wOTctLjA3NUwyNSAyMi4xNjd2Mi4yODNjMCAxLjk0Ny0xLjU5OCAzLjYtMy41IDMuNmgtOC45Yy0yLjAxNS0uMDg4LTMuNi0xLjY3My0zLjYtMy42di03LjljMC0yLjAyNCAxLjU3Ni0zLjYgMy42LTMuNmg4LjljMS45MzcgMCAzLjUgMS41OSAzLjUgMy42djIuMzJsNi4xNzItNGMuMjctLjE2Mi41NTQtLjEwNS43LjEzN3oiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
-  const cameraIcon =
-    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMCIgaGVpZ2h0PSIzMCIgdmlld0JveD0iMCAwIDMwIDMwIj48ZyBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTI2LjM3MSA5LjUwN2MuMDczLjE0OS4xMjkuMjguMTI5LjI0M3YxMC4zYzAgLjI4My0uMjMzLjUtLjUuNWEuMy4zIDAgMCAxLS4xNDYtLjA1NGwtLjA5Ny0uMDc1LTYuMjU3LTMuNzU0djIuMjgzYzAgMS45NDctMS41OTggMy42LTMuNSAzLjZINy4xYy0yLjAxNS0uMDg4LTMuNi0xLjY3My0zLjYtMy42di03LjljMC0yLjAyNCAxLjU3Ni0zLjYgMy42LTMuNkgxNmMxLjkzNyAwIDMuNSAxLjU5IDMuNSAzLjZ2Mi4zMmw2LjE3Mi00Yy4yNy0uMTYyLjU1NC0uMTA1LjcuMTM3eiIgZmlsbD0iI2ZmZiIvPjxwYXRoIGQ9Ik0wIDMwVjBoMzB2MzB6IiBmaWxsPSJub25lIi8+PC9nPjwvc3ZnPg==";
   const rightArrow =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTIyLjY4IDEyLjJhMS42IDEuNiAwIDAgMS0xLjI3LjYzaC03LjY5YTEuNTkgMS41OSAwIDAgMS0xLjE2LTIuNThsMS4xMi0xLjQxYTQuODIgNC44MiAwIDAgMC0zLjE0LS43NyA0LjMgNC4zIDAgMCAwLTIgLjhBNC4yNSA0LjI1IDAgMCAwIDcuMiAxMC42YTUuMDYgNS4wNiAwIDAgMCAuNTQgNC42MkE1LjU4IDUuNTggMCAwIDAgMTIgMTcuNzRhMi4yNiAyLjI2IDAgMCAxLS4xNiA0LjUyQTEwLjI1IDEwLjI1IDAgMCAxIDMuNzQgMThhMTAuMTQgMTAuMTQgMCAwIDEtMS40OS05LjIyIDkuNyA5LjcgMCAwIDEgMi44My00LjE0QTkuOSA5LjkgMCAwIDEgOS42NiAyLjVhMTAuNjYgMTAuNjYgMCAwIDEgNy43MiAxLjY4bDEuMDgtMS4zNWExLjU3IDEuNTcgMCAwIDEgMS4yNC0uNiAxLjYgMS42IDAgMCAxIDEuNTQgMS4yMWwxLjcgNy4zN2ExLjU3IDEuNTcgMCAwIDEtLjI2IDEuMzkiIHN0eWxlPSJmaWxsOiMwMDA7b3BhY2l0eTouMiIvPjxwYXRoIGQ9Ik0yMS4zOCAxMS44M2gtNy42MWEuNTkuNTkgMCAwIDEtLjQzLTFsMS43NS0yLjE5YTUuOSA1LjkgMCAwIDAtNC43LTEuNTggNS4wNyA1LjA3IDAgMCAwLTQuMTEgMy4xN0E2IDYgMCAwIDAgNyAxNS43N2E2LjUxIDYuNTEgMCAwIDAgNSAyLjkyIDEuMzEgMS4zMSAwIDAgMS0uMDggMi42MiA5LjMgOS4zIDAgMCAxLTcuMzUtMy44MiA5LjE2IDkuMTYgMCAwIDEtMS40LTguMzdBOC41IDguNSAwIDAgMSA1LjcxIDUuNGE4Ljc2IDguNzYgMCAwIDEgNC4xMS0xLjkyIDkuNyA5LjcgMCAwIDEgNy43NSAyLjA3bDEuNjctMi4xYS41OS41OSAwIDAgMSAxIC4yMUwyMiAxMS4wOGEuNTkuNTkgMCAwIDEtLjYyLjc1IiBzdHlsZT0iZmlsbDojZmZmIi8+PC9zdmc+";
   const leftArrow =
@@ -220,7 +218,6 @@
             opcode: "bindTarget",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("bind [TARGET] to camera [CAMERA]"),
-            blockIconURI: cameraIcon,
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "OBJECTS" },
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
@@ -230,7 +227,6 @@
             opcode: "unbindTarget",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("unbind [TARGET] from camera [CAMERA]"),
-            blockIconURI: cameraIcon,
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "OBJECTS" },
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
@@ -240,7 +236,6 @@
             opcode: "targetCamera",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("camera of [TARGET]"),
-            blockIconURI: cameraIcon,
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -253,7 +248,6 @@
             opcode: "setSpaceColor",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set background color to [COLOR]"),
-            blockIconURI: cameraIcon,
             arguments: {
               COLOR: { type: Scratch.ArgumentType.COLOR },
             },
@@ -262,7 +256,6 @@
             opcode: "spaceColor",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("background color"),
-            blockIconURI: cameraIcon,
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -485,12 +478,12 @@
 
       if (runtime.ext_videoSensing)
         objectNames.push({
-          text: Scratch.translate("Video Layer"),
+          text: Scratch.translate("video layer"),
           value: "_video_",
         });
       if (runtime.ext_pen)
         objectNames.push({
-          text: Scratch.translate("Pen Layer"),
+          text: Scratch.translate("pen layer"),
           value: "_pen_",
         });
 
