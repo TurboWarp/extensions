@@ -32,6 +32,27 @@
   let currentBindGroup = "";
   let currentBindGroupLayout = "";
 
+  // GPU.sb3 blocks
+  const BINDGROUPLAYOUTCOLOR = "#edcf0c" // orange
+  const BINDGROUPLAYOUTCOLOR2 = "#c7ae0c"
+  const BINDGROUPCOLOR = "#e85009" // reddish-orange
+  const BINDGROUPCOLOR2 = "#ba4209"
+  const TEXTURECOLOR = "#0fb5d6" // sky blue
+  const TEXTURECOLOR2 = "#0e93ad"
+  const BUFFERCOLOR = "#b31064" // maroon
+  const BUFFERCOLOR2 = "#8c0b4e"
+  const ARRAYBUFFERCOLOR = "#b31010" // red similar to list blocks
+
+  // WGSL blocks
+  const VARIABLECOLOR = "#bfbf1b" // yellow
+  const OBJECTCOLOR = "#0c8a1d" // dark green
+  const TYPECOLOR = "#08856a" // dark cyan
+  const FUNCTIONCOLOR = "#9c1991" // purple
+  const CONTROLCOLOR = "#f5ca49" // light brown
+  const ATOMICCOLOR = "#e64e4e" // light red
+  const ARBWGSLCOLOR = "#3528bf" // dark blue
+
+
   class GPUSb3 {
     /**
      * Reconnect to WebGPU and clear resources
@@ -102,9 +123,9 @@
         id: "gpusb3",
         name: "GPU.sb3",
 
-        color1: "#4287f5",
-        color2: "#166af2",
-        color3: "#032966",
+        color1: "#27c90e",
+        // color2: "#166af2",
+        // color3: "#032966",
         docsURI: "https://extensions.derpygamer2142.com/docs/gpusb3",
         blocks: [
           {
@@ -215,6 +236,7 @@
                 defaultValue: "myBindGroupLayout",
               },
             },
+            color1: BINDGROUPLAYOUTCOLOR
           },
 
           {
@@ -236,6 +258,9 @@
                 defaultValue: "",
               },
             },
+            color1: BINDGROUPLAYOUTCOLOR,
+            color2: BINDGROUPLAYOUTCOLOR2,
+            color3: BINDGROUPLAYOUTCOLOR2,
           },
 
           {
@@ -249,6 +274,8 @@
                 menu: "BUFFERENTRYTYPE",
               },
             },
+            color1: BINDGROUPLAYOUTCOLOR,
+            color2: BINDGROUPLAYOUTCOLOR2
           },
 
           {
@@ -266,6 +293,8 @@
                 menu: "TEXTURECOLORFORMATS",
               },
             },
+            color1: BINDGROUPLAYOUTCOLOR,
+            color2: BINDGROUPLAYOUTCOLOR2
           },
 
           {
@@ -296,6 +325,7 @@
                 defaultValue: "myBindGroupLayout",
               },
             },
+            color1: BINDGROUPCOLOR
           },
 
           {
@@ -317,6 +347,25 @@
                 defaultValue: "myBuffer",
               },
             },
+            color1: BINDGROUPCOLOR
+          },
+
+          {
+            // this is technically just a binary or operator but it's what's used to join usage operators
+            blockType: Scratch.BlockType.REPORTER,
+            opcode: "binaryOr",
+            text: "Usage [A] | [B]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 128,
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 4,
+              },
+            },
+            color1: BINDGROUPCOLOR
           },
 
           {
@@ -338,6 +387,7 @@
                 defaultValue: 140, // GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
               },
             },
+            color1: BUFFERCOLOR
           },
 
           {
@@ -352,6 +402,139 @@
                 defaultValue: "STORAGE",
               },
             },
+            color1: BUFFERCOLOR
+          },
+
+          {
+            // this should be self explanatory
+            opcode: "copyTextureToBuffer",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Copy texture [TEXTURE] to buffer [BUFFER] with dimensions [WIDTH] [HEIGHT]",
+            arguments: {
+              TEXTURE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "myTexture",
+              },
+              BUFFER: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "myBuffer",
+              },
+              WIDTH: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 15,
+              },
+              HEIGHT: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 15,
+              },
+            },
+            color1: BUFFERCOLOR
+          },
+
+          {
+            // this is pretty important cuz otherwise the extension is basically useless
+            // you can write data from the cpu to the gpu which is pretty cool
+
+            opcode: "writeBuffer",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Write [SIZE] elements of data from arraybuffer [ARRAY] to buffer [BUFFER] from offset [OFF1] to offset [OFF2]",
+            arguments: {
+              SIZE: {
+                // https://www.w3.org/TR/webgpu/#dom-gpuqueue-writebuffer
+                // in elements for typesarrays and bytes otherwise
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 3,
+              },
+              ARRAY: {
+                type: Scratch.ArgumentType.STRING,
+              },
+              BUFFER: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "myBuffer",
+              },
+              OFF1: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              OFF2: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+            color1: BUFFERCOLOR
+          },
+
+          {
+            // this is primarily used for transferring stuff to MAP_WRITE | COPY_DST buffers
+            opcode: "copyBufferToBuffer",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Copy [NUMBYTES] bytes of data from buffer [BUF1] from  position [BUF1OFF] to buffer [BUF2] at position [BUF2OFF]",
+            arguments: {
+              NUMBYTES: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 256,
+              },
+              BUF1: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "myBuffer1",
+              },
+              BUF1OFF: {
+                // IMPORTANT: THIS IS IN BYTES!!!!!!!!!
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              BUF2: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "myBuffer2",
+              },
+              BUF2OFF: {
+                // IMPORTANT: THIS IS IN BYTES!!!!!!!!!
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+            color1: BUFFERCOLOR
+          },
+
+          {
+            // i don't remember why this is hidden but i think it was important
+            hideFromPalette: true,
+            opcode: "clearBuffer",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Clear [NUMBYTES] bytes(-1 for all) of buffer [BUFFER] from offset [OFFSET]",
+            arguments: {
+              NUMBYTES: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 128,
+              },
+              BUFFER: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "myBuffer",
+              },
+              OFFSET: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 128,
+              },
+            },
+            color1: BUFFERCOLOR
+          },
+
+          {
+            // gotta have the MAP_READ thing here
+            opcode: "readBuffer",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Read buffer [BUFFER] to arraybuffer [ARRAYBUFFER]",
+            arguments: {
+              BUFFER: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "myBuffer",
+              },
+              ARRAYBUFFER: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "myArrayBuffer",
+              },
+            },
+            color1: BUFFERCOLOR
           },
 
           {
@@ -382,6 +565,7 @@
                 defaultValue: 6,
               },
             },
+            color1: TEXTURECOLOR
           },
 
           {
@@ -396,6 +580,7 @@
                 defaultValue: "STORAGE_BINDING",
               },
             },
+            color1: TEXTURECOLOR
           },
 
           {
@@ -423,24 +608,7 @@
           },
 
           {
-            // this is technically just a binary or operator but it's what's used to join usage operators
-            blockType: Scratch.BlockType.REPORTER,
-            opcode: "binaryOr",
-            text: "Usage [A] | [B]",
-            arguments: {
-              A: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 128,
-              },
-              B: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 4,
-              },
-            },
-          },
-
-          {
-            // this is unused, it's still here for the 2 people(more like 0) who might have projects using this
+            // this is unused, it's still here for the 2 people(more like 0) who might have projects using this from the month period when it was in use
             // https://webidl.spec.whatwg.org/#AllowSharedBufferSource
             opcode: "genF32",
             blockType: Scratch.BlockType.REPORTER,
@@ -450,31 +618,6 @@
               ARRAY: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: JSON.stringify([1, 2, 3]),
-              },
-            },
-          },
-
-          {
-            // this should be self explanatory
-            opcode: "copyTextureToBuffer",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Copy texture [TEXTURE] to buffer [BUFFER] with dimensions [WIDTH] [HEIGHT]",
-            arguments: {
-              TEXTURE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "myTexture",
-              },
-              BUFFER: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
-              },
-              WIDTH: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 15,
-              },
-              HEIGHT: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 15,
               },
             },
           },
@@ -508,108 +651,7 @@
                 defaultValue: "myTexture",
               },
             },
-          },
-
-          {
-            // this is pretty important cuz otherwise the extension is basically useless
-            // you can write data from the cpu to the gpu which is pretty cool
-
-            opcode: "writeBuffer",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Write [SIZE] elements of data from arraybuffer [ARRAY] to buffer [BUFFER] from offset [OFF1] to offset [OFF2]",
-            arguments: {
-              SIZE: {
-                // https://www.w3.org/TR/webgpu/#dom-gpuqueue-writebuffer
-                // in elements for typesarrays and bytes otherwise
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 3,
-              },
-              ARRAY: {
-                type: Scratch.ArgumentType.STRING,
-              },
-              BUFFER: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
-              },
-              OFF1: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              OFF2: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-            },
-          },
-
-          {
-            // this is primarily used for transferring stuff to MAP_WRITE | COPY_DST buffers
-            opcode: "copyBufferToBuffer",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Copy [NUMBYTES] bytes of data from buffer [BUF1] from  position [BUF1OFF] to buffer [BUF2] at position [BUF2OFF]",
-            arguments: {
-              NUMBYTES: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 256,
-              },
-              BUF1: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer1",
-              },
-              BUF1OFF: {
-                // IMPORTANT: THIS IS IN BYTES!!!!!!!!!
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-              BUF2: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer2",
-              },
-              BUF2OFF: {
-                // IMPORTANT: THIS IS IN BYTES!!!!!!!!!
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-            },
-          },
-
-          {
-            // i don't remember why this is hidden but i think it was important
-            hideFromPalette: true,
-            opcode: "clearBuffer",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Clear [NUMBYTES] bytes(-1 for all) of buffer [BUFFER] from offset [OFFSET]",
-            arguments: {
-              NUMBYTES: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 128,
-              },
-              BUFFER: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
-              },
-              OFFSET: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 128,
-              },
-            },
-          },
-
-          {
-            // gotta have the MAP_READ thing here
-            opcode: "readBuffer",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Read buffer [BUFFER] to arraybuffer [ARRAYBUFFER]",
-            arguments: {
-              BUFFER: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
-              },
-              ARRAYBUFFER: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "myArrayBuffer",
-              },
-            },
+            color1: TEXTURECOLOR
           },
 
           {
@@ -627,6 +669,7 @@
                 defaultValue: "myTexture",
               },
             },
+            color1: TEXTURECOLOR
           },
 
           {
@@ -640,6 +683,7 @@
             opcode: "listABs",
             blockType: Scratch.BlockType.REPORTER,
             text: "List arraybuffers",
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -657,6 +701,7 @@
                 defaultValue: 16,
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -677,6 +722,7 @@
                 menu: "TYPEDARRAYTYPES",
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -689,6 +735,7 @@
                 defaultValue: "myArrayBuffer",
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -705,12 +752,14 @@
                 defaultValue: 16,
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
             opcode: "listViews",
             blockType: Scratch.BlockType.REPORTER,
             text: "List views",
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -731,6 +780,7 @@
                 defaultValue: "myView",
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -743,6 +793,7 @@
                 defaultValue: "myView",
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -763,6 +814,7 @@
                 defaultValue: 255,
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -783,6 +835,7 @@
                 defaultValue: 0,
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -807,6 +860,7 @@
                 defaultValue: 3,
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -823,6 +877,7 @@
                 defaultValue: "myView",
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -843,6 +898,7 @@
                 defaultValue: "myView",
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -855,6 +911,7 @@
                 defaultValue: "myView",
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -871,6 +928,7 @@
                 defaultValue: "myView",
               },
             },
+            color: ARRAYBUFFERCOLOR
           },
 
           {
@@ -913,6 +971,7 @@
                 defaultValue: "auto",
               },
             },
+            color1: VARIABLECOLOR
           },
 
           {
@@ -937,6 +996,7 @@
                 defaultValue: "array<f32>",
               },
             },
+            color1: VARIABLECOLOR
           },
 
           {
@@ -954,6 +1014,7 @@
                 defaultValue: "",
               },
             },
+            color1: VARIABLECOLOR
           },
 
           {
@@ -975,6 +1036,7 @@
                 defaultValue: "8",
               },
             },
+            color1: VARIABLECOLOR
           },
 
           {
@@ -987,11 +1049,7 @@
                 defaultValue: "someVariable",
               },
             },
-          },
-
-          {
-            blockType: "label",
-            text: "      ",
+            color1: VARIABLECOLOR
           },
 
           {
@@ -1004,56 +1062,10 @@
                 defaultValue: "myVariable",
               },
             },
+            color1: VARIABLECOLOR
           },
 
-          {
-            opcode: "indexObject",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "In object [ARRAY] get index [INDEX]",
-            arguments: {
-              ARRAY: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "someArray",
-              },
-              INDEX: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
-              },
-            },
-          },
-
-          {
-            opcode: "getProp",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "In object [OBJECT] get property [PROP]",
-            arguments: {
-              OBJECT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "someObject",
-              },
-              PROP: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "",
-              },
-            },
-          },
-
-          {
-            opcode: "constructFromType",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Construct type [TYPE] with values [VALUES]",
-            arguments: {
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "RAWTYPES",
-                defaultValue: "f32",
-              },
-              VALUES: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "",
-              },
-            },
-          },
+          "---",
 
           {
             opcode: "typeConstructor",
@@ -1074,6 +1086,7 @@
                 defaultValue: "",
               },
             },
+            color1: TYPECOLOR
           },
 
           {
@@ -1090,6 +1103,7 @@
                 defaultValue: 2,
               },
             },
+            color1: TYPECOLOR
           },
 
           {
@@ -1106,35 +1120,7 @@
                 menu: "VARIABLEACCESSTYPES",
               },
             },
-          },
-
-          {
-            opcode: "declareStruct",
-            blockType: Scratch.BlockType.CONDITIONAL,
-            text: "Declare struct called [NAME]",
-            arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "MyStruct",
-              },
-            },
-          },
-
-          {
-            opcode: "structProperty",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "Add property called [PROPERTY] with type [TYPE] to struct",
-            arguments: {
-              PROPERTY: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "someProperty",
-              },
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "f32",
-                menu: "RAWTYPES",
-              },
-            },
+            color1: TYPECOLOR
           },
 
           {
@@ -1147,6 +1133,7 @@
                 defaultValue: "MyStruct",
               },
             },
+            color1: TYPECOLOR
           },
 
           {
@@ -1167,45 +1154,95 @@
                 defaultValue: "f32",
               },
             },
+            color1: TYPECOLOR
           },
 
-          {
-            blockType: "label",
-            text: "      ",
-          },
+          "---",
 
           {
-            opcode: "wgslFunc",
+            opcode: "constructFromType",
             blockType: Scratch.BlockType.REPORTER,
-            text: "WGSL builtin [OPERATION] with args [VALUE]",
+            text: "Construct type [TYPE] with values [VALUES]",
             arguments: {
-              OPERATION: {
+              TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "WGSLFUNCS",
-                defaultValue: "trunc",
+                menu: "RAWTYPES",
+                defaultValue: "f32",
               },
-              VALUE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "12.345",
-              },
-            },
-          },
-          {
-            opcode: "funcArgs",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "Func arg input [ARG], next [NEXT]",
-            arguments: {
-              ARG: {
-                // yee haw i'm a pirate
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "15",
-              },
-              NEXT: {
+              VALUES: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "",
               },
             },
+            color1: OBJECTCOLOR
           },
+
+          {
+            opcode: "declareStruct",
+            blockType: Scratch.BlockType.CONDITIONAL,
+            text: "Declare struct called [NAME]",
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "MyStruct",
+              },
+            },
+            color1: OBJECTCOLOR
+          },
+
+          {
+            opcode: "structProperty",
+            blockType: Scratch.BlockType.COMMAND,
+            text: "Add property called [PROPERTY] with type [TYPE] to struct",
+            arguments: {
+              PROPERTY: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "someProperty",
+              },
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "f32",
+                menu: "RAWTYPES",
+              },
+            },
+            color1: OBJECTCOLOR
+          },
+
+          {
+            opcode: "indexObject",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "In object [ARRAY] get index [INDEX]",
+            arguments: {
+              ARRAY: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "someArray",
+              },
+              INDEX: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+            color1: OBJECTCOLOR
+          },
+
+          {
+            opcode: "getProp",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "In object [OBJECT] get property [PROP]",
+            arguments: {
+              OBJECT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "someObject",
+              },
+              PROP: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
+              },
+            },
+            color1: OBJECTCOLOR
+          },
+
+          "---",
 
           {
             opcode: "computeFunc",
@@ -1218,6 +1255,7 @@
               },
             },
             branchCount: 1,
+            color1: CONTROLCOLOR
           },
 
           {
@@ -1239,6 +1277,7 @@
               },
             },
             branchCount: 1,
+            color1: CONTROLCOLOR
           },
 
           {
@@ -1252,6 +1291,7 @@
               },
             },
             branchCount: 1,
+            color1: CONTROLCOLOR
           },
 
           {
@@ -1259,6 +1299,7 @@
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
             text: "break",
+            color1: CONTROLCOLOR
           },
 
           {
@@ -1266,6 +1307,43 @@
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
             text: "continue",
+            color1: CONTROLCOLOR
+          },
+
+          {
+            opcode: "wgslFunc",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "WGSL builtin [OPERATION] with args [VALUE]",
+            arguments: {
+              OPERATION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "WGSLFUNCS",
+                defaultValue: "trunc",
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "12.345",
+              },
+            },
+            color1: FUNCTIONCOLOR
+          },
+
+          {
+            opcode: "funcArgs",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "Func arg input [ARG], next [NEXT]",
+            arguments: {
+              ARG: {
+                // yee haw i'm a pirate
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "15",
+              },
+              NEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "",
+              },
+            },
+            color1: FUNCTIONCOLOR
           },
 
           {
@@ -1287,6 +1365,7 @@
                                 defaultValue: ""
                             }*/,
             },
+            color1: FUNCTIONCOLOR
           },
 
           {
@@ -1308,6 +1387,7 @@
                 defaultValue: "",
               },
             },
+            color1: FUNCTIONCOLOR
           },
 
           {
@@ -1320,6 +1400,7 @@
                 defaultValue: "someArg",
               },
             },
+            color1: FUNCTIONCOLOR
           },
 
           {
@@ -1333,6 +1414,7 @@
                 defaultValue: "",
               },
             },
+            color1: FUNCTIONCOLOR
           },
 
           {
@@ -1349,6 +1431,7 @@
                 defaultValue: "",
               },
             },
+            color1: FUNCTIONCOLOR
           },
 
           {
@@ -1365,6 +1448,7 @@
                 defaultValue: "",
               },
             },
+            color1: FUNCTIONCOLOR
           },
 
           {
@@ -1383,6 +1467,7 @@
                 menu: "ATOMICBASES",
               },
             },
+            color1: TYPECOLOR
           },
 
           {
@@ -1395,6 +1480,7 @@
                 defaultValue: "myAtomic",
               },
             },
+            color1: ATOMICCOLOR
           },
 
           {
@@ -1416,6 +1502,7 @@
                 defaultValue: 15,
               },
             },
+            color1: ATOMICCOLOR
           },
 
           {
@@ -1437,6 +1524,7 @@
                 defaultValue: 15,
               },
             },
+            color1: ATOMICCOLOR
           },
 
           {
@@ -1449,12 +1537,10 @@
                 menu: "BARRIERFUNCTIONS",
               },
             },
+            color1: ATOMICCOLOR
           },
 
-          {
-            blockType: "label",
-            text: "      ",
-          },
+          "---",
 
           {
             opcode: "c_arbitraryWGSL",
@@ -1465,6 +1551,7 @@
                 type: Scratch.ArgumentType.STRING,
               },
             },
+            color1: ARBWGSLCOLOR
           },
 
           {
@@ -1476,6 +1563,7 @@
                 type: Scratch.ArgumentType.STRING,
               },
             },
+            color1: ARBWGSLCOLOR
           },
         ],
 
@@ -4569,7 +4657,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
       this.device.pushErrorScope("validation");
       this.device.pushErrorScope("out-of-memory");
       this.device.pushErrorScope("internal");
-
+ 
       commandEncoder.copyBufferToTexture(
         {
           buffer: resources.buffers[args.BUFFER],
