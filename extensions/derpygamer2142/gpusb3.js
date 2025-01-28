@@ -33,25 +33,21 @@
   let currentBindGroupLayout = "";
 
   // GPU.sb3 blocks
-  const BINDGROUPLAYOUTCOLOR = "#edcf0c" // orange
-  const BINDGROUPLAYOUTCOLOR2 = "#c7ae0c"
-  const BINDGROUPCOLOR = "#e85009" // reddish-orange
-  const BINDGROUPCOLOR2 = "#ba4209"
-  const TEXTURECOLOR = "#0fb5d6" // sky blue
-  const TEXTURECOLOR2 = "#0e93ad"
-  const BUFFERCOLOR = "#b31064" // maroon
-  const BUFFERCOLOR2 = "#8c0b4e"
-  const ARRAYBUFFERCOLOR = "#b31010" // red similar to list blocks
+  const BINDGROUPLAYOUTCOLOR = "#edcf0c"; // orange
+  const BINDGROUPLAYOUTCOLOR2 = "#c7ae0c";
+  const BINDGROUPCOLOR = "#e85009"; // reddish-orange
+  const TEXTURECOLOR = "#0fb5d6"; // sky blue
+  const BUFFERCOLOR = "#b31064"; // maroon
+  const ARRAYBUFFERCOLOR = "#b31010"; // red similar to list blocks
 
   // WGSL blocks
-  const VARIABLECOLOR = "#bfbf1b" // yellow
-  const OBJECTCOLOR = "#0c8a1d" // dark green
-  const TYPECOLOR = "#08856a" // dark cyan
-  const FUNCTIONCOLOR = "#9c1991" // purple
-  const CONTROLCOLOR = "#f5ca49" // light brown
-  const ATOMICCOLOR = "#e64e4e" // light red
-  const ARBWGSLCOLOR = "#3528bf" // dark blue
-
+  const VARIABLECOLOR = "#bfbf1b"; // yellow
+  const OBJECTCOLOR = "#0c8a1d"; // dark green
+  const TYPECOLOR = "#08856a"; // dark cyan
+  const FUNCTIONCOLOR = "#9c1991"; // purple
+  const CONTROLCOLOR = "#f5ca49"; // light brown
+  const ATOMICCOLOR = "#e64e4e"; // light red
+  const ARBWGSLCOLOR = "#3528bf"; // dark blue
 
   class GPUSb3 {
     /**
@@ -236,7 +232,7 @@
                 defaultValue: "myBindGroupLayout",
               },
             },
-            color1: BINDGROUPLAYOUTCOLOR
+            color1: BINDGROUPLAYOUTCOLOR,
           },
 
           {
@@ -275,7 +271,7 @@
               },
             },
             color1: BINDGROUPLAYOUTCOLOR,
-            color2: BINDGROUPLAYOUTCOLOR2
+            color2: BINDGROUPLAYOUTCOLOR2,
           },
 
           {
@@ -294,7 +290,7 @@
               },
             },
             color1: BINDGROUPLAYOUTCOLOR,
-            color2: BINDGROUPLAYOUTCOLOR2
+            color2: BINDGROUPLAYOUTCOLOR2,
           },
 
           {
@@ -325,7 +321,7 @@
                 defaultValue: "myBindGroupLayout",
               },
             },
-            color1: BINDGROUPCOLOR
+            color1: BINDGROUPCOLOR,
           },
 
           {
@@ -347,7 +343,7 @@
                 defaultValue: "myBuffer",
               },
             },
-            color1: BINDGROUPCOLOR
+            color1: BINDGROUPCOLOR,
           },
 
           {
@@ -365,7 +361,7 @@
                 defaultValue: 4,
               },
             },
-            color1: BINDGROUPCOLOR
+            color1: BINDGROUPCOLOR,
           },
 
           {
@@ -387,7 +383,7 @@
                 defaultValue: 140, // GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC | GPUBufferUsage.COPY_DST
               },
             },
-            color1: BUFFERCOLOR
+            color1: BUFFERCOLOR,
           },
 
           {
@@ -402,7 +398,7 @@
                 defaultValue: "STORAGE",
               },
             },
-            color1: BUFFERCOLOR
+            color1: BUFFERCOLOR,
           },
 
           {
@@ -428,7 +424,7 @@
                 defaultValue: 15,
               },
             },
-            color1: BUFFERCOLOR
+            color1: BUFFERCOLOR,
           },
 
           {
@@ -461,7 +457,7 @@
                 defaultValue: 0,
               },
             },
-            color1: BUFFERCOLOR
+            color1: BUFFERCOLOR,
           },
 
           {
@@ -493,7 +489,7 @@
                 defaultValue: 0,
               },
             },
-            color1: BUFFERCOLOR
+            color1: BUFFERCOLOR,
           },
 
           {
@@ -516,7 +512,7 @@
                 defaultValue: 128,
               },
             },
-            color1: BUFFERCOLOR
+            color1: BUFFERCOLOR,
           },
 
           {
@@ -534,7 +530,7 @@
                 defaultValue: "myArrayBuffer",
               },
             },
-            color1: BUFFERCOLOR
+            color1: BUFFERCOLOR,
           },
 
           {
@@ -565,7 +561,7 @@
                 defaultValue: 6,
               },
             },
-            color1: TEXTURECOLOR
+            color1: TEXTURECOLOR,
           },
 
           {
@@ -580,7 +576,7 @@
                 defaultValue: "STORAGE_BINDING",
               },
             },
-            color1: TEXTURECOLOR
+            color1: TEXTURECOLOR,
           },
 
           {
@@ -651,7 +647,7 @@
                 defaultValue: "myTexture",
               },
             },
-            color1: TEXTURECOLOR
+            color1: TEXTURECOLOR,
           },
 
           {
@@ -669,7 +665,7 @@
                 defaultValue: "myTexture",
               },
             },
-            color1: TEXTURECOLOR
+            color1: TEXTURECOLOR,
           },
 
           {
@@ -683,7 +679,7 @@
             opcode: "listABs",
             blockType: Scratch.BlockType.REPORTER,
             text: "List arraybuffers",
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -701,7 +697,7 @@
                 defaultValue: 16,
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -722,7 +718,7 @@
                 menu: "TYPEDARRAYTYPES",
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -735,7 +731,7 @@
                 defaultValue: "myArrayBuffer",
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -752,14 +748,14 @@
                 defaultValue: 16,
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
             opcode: "listViews",
             blockType: Scratch.BlockType.REPORTER,
             text: "List views",
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -780,7 +776,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -793,7 +789,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -814,7 +810,7 @@
                 defaultValue: 255,
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -835,7 +831,7 @@
                 defaultValue: 0,
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -860,7 +856,7 @@
                 defaultValue: 3,
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -877,7 +873,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -898,7 +894,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -911,7 +907,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -928,7 +924,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR
+            color: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -971,7 +967,7 @@
                 defaultValue: "auto",
               },
             },
-            color1: VARIABLECOLOR
+            color1: VARIABLECOLOR,
           },
 
           {
@@ -996,7 +992,7 @@
                 defaultValue: "array<f32>",
               },
             },
-            color1: VARIABLECOLOR
+            color1: VARIABLECOLOR,
           },
 
           {
@@ -1014,7 +1010,7 @@
                 defaultValue: "",
               },
             },
-            color1: VARIABLECOLOR
+            color1: VARIABLECOLOR,
           },
 
           {
@@ -1036,7 +1032,7 @@
                 defaultValue: "8",
               },
             },
-            color1: VARIABLECOLOR
+            color1: VARIABLECOLOR,
           },
 
           {
@@ -1049,7 +1045,7 @@
                 defaultValue: "someVariable",
               },
             },
-            color1: VARIABLECOLOR
+            color1: VARIABLECOLOR,
           },
 
           {
@@ -1062,7 +1058,7 @@
                 defaultValue: "myVariable",
               },
             },
-            color1: VARIABLECOLOR
+            color1: VARIABLECOLOR,
           },
 
           "---",
@@ -1086,7 +1082,7 @@
                 defaultValue: "",
               },
             },
-            color1: TYPECOLOR
+            color1: TYPECOLOR,
           },
 
           {
@@ -1103,7 +1099,7 @@
                 defaultValue: 2,
               },
             },
-            color1: TYPECOLOR
+            color1: TYPECOLOR,
           },
 
           {
@@ -1120,7 +1116,7 @@
                 menu: "VARIABLEACCESSTYPES",
               },
             },
-            color1: TYPECOLOR
+            color1: TYPECOLOR,
           },
 
           {
@@ -1133,7 +1129,7 @@
                 defaultValue: "MyStruct",
               },
             },
-            color1: TYPECOLOR
+            color1: TYPECOLOR,
           },
 
           {
@@ -1154,7 +1150,7 @@
                 defaultValue: "f32",
               },
             },
-            color1: TYPECOLOR
+            color1: TYPECOLOR,
           },
 
           "---",
@@ -1174,7 +1170,7 @@
                 defaultValue: "",
               },
             },
-            color1: OBJECTCOLOR
+            color1: OBJECTCOLOR,
           },
 
           {
@@ -1187,7 +1183,7 @@
                 defaultValue: "MyStruct",
               },
             },
-            color1: OBJECTCOLOR
+            color1: OBJECTCOLOR,
           },
 
           {
@@ -1205,7 +1201,7 @@
                 menu: "RAWTYPES",
               },
             },
-            color1: OBJECTCOLOR
+            color1: OBJECTCOLOR,
           },
 
           {
@@ -1222,7 +1218,7 @@
                 defaultValue: 0,
               },
             },
-            color1: OBJECTCOLOR
+            color1: OBJECTCOLOR,
           },
 
           {
@@ -1239,7 +1235,7 @@
                 defaultValue: "",
               },
             },
-            color1: OBJECTCOLOR
+            color1: OBJECTCOLOR,
           },
 
           "---",
@@ -1255,7 +1251,7 @@
               },
             },
             branchCount: 1,
-            color1: CONTROLCOLOR
+            color1: CONTROLCOLOR,
           },
 
           {
@@ -1277,7 +1273,7 @@
               },
             },
             branchCount: 1,
-            color1: CONTROLCOLOR
+            color1: CONTROLCOLOR,
           },
 
           {
@@ -1291,7 +1287,7 @@
               },
             },
             branchCount: 1,
-            color1: CONTROLCOLOR
+            color1: CONTROLCOLOR,
           },
 
           {
@@ -1299,7 +1295,7 @@
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
             text: "break",
-            color1: CONTROLCOLOR
+            color1: CONTROLCOLOR,
           },
 
           {
@@ -1307,7 +1303,7 @@
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
             text: "continue",
-            color1: CONTROLCOLOR
+            color1: CONTROLCOLOR,
           },
 
           {
@@ -1325,7 +1321,7 @@
                 defaultValue: "12.345",
               },
             },
-            color1: FUNCTIONCOLOR
+            color1: FUNCTIONCOLOR,
           },
 
           {
@@ -1343,7 +1339,7 @@
                 defaultValue: "",
               },
             },
-            color1: FUNCTIONCOLOR
+            color1: FUNCTIONCOLOR,
           },
 
           {
@@ -1365,7 +1361,7 @@
                                 defaultValue: ""
                             }*/,
             },
-            color1: FUNCTIONCOLOR
+            color1: FUNCTIONCOLOR,
           },
 
           {
@@ -1387,7 +1383,7 @@
                 defaultValue: "",
               },
             },
-            color1: FUNCTIONCOLOR
+            color1: FUNCTIONCOLOR,
           },
 
           {
@@ -1400,7 +1396,7 @@
                 defaultValue: "someArg",
               },
             },
-            color1: FUNCTIONCOLOR
+            color1: FUNCTIONCOLOR,
           },
 
           {
@@ -1414,7 +1410,7 @@
                 defaultValue: "",
               },
             },
-            color1: FUNCTIONCOLOR
+            color1: FUNCTIONCOLOR,
           },
 
           {
@@ -1431,7 +1427,7 @@
                 defaultValue: "",
               },
             },
-            color1: FUNCTIONCOLOR
+            color1: FUNCTIONCOLOR,
           },
 
           {
@@ -1448,7 +1444,7 @@
                 defaultValue: "",
               },
             },
-            color1: FUNCTIONCOLOR
+            color1: FUNCTIONCOLOR,
           },
 
           {
@@ -1467,7 +1463,7 @@
                 menu: "ATOMICBASES",
               },
             },
-            color1: TYPECOLOR
+            color1: TYPECOLOR,
           },
 
           {
@@ -1480,7 +1476,7 @@
                 defaultValue: "myAtomic",
               },
             },
-            color1: ATOMICCOLOR
+            color1: ATOMICCOLOR,
           },
 
           {
@@ -1502,7 +1498,7 @@
                 defaultValue: 15,
               },
             },
-            color1: ATOMICCOLOR
+            color1: ATOMICCOLOR,
           },
 
           {
@@ -1524,7 +1520,7 @@
                 defaultValue: 15,
               },
             },
-            color1: ATOMICCOLOR
+            color1: ATOMICCOLOR,
           },
 
           {
@@ -1537,7 +1533,7 @@
                 menu: "BARRIERFUNCTIONS",
               },
             },
-            color1: ATOMICCOLOR
+            color1: ATOMICCOLOR,
           },
 
           "---",
@@ -1551,7 +1547,7 @@
                 type: Scratch.ArgumentType.STRING,
               },
             },
-            color1: ARBWGSLCOLOR
+            color1: ARBWGSLCOLOR,
           },
 
           {
@@ -1563,7 +1559,7 @@
                 type: Scratch.ArgumentType.STRING,
               },
             },
-            color1: ARBWGSLCOLOR
+            color1: ARBWGSLCOLOR,
           },
         ],
 
@@ -4657,7 +4653,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
       this.device.pushErrorScope("validation");
       this.device.pushErrorScope("out-of-memory");
       this.device.pushErrorScope("internal");
- 
+
       commandEncoder.copyBufferToTexture(
         {
           buffer: resources.buffers[args.BUFFER],
