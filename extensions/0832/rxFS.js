@@ -23,6 +23,7 @@
     getInfo() {
       return {
         id: "0832rxfs",
+        // eslint-disable-next-line extension/should-translate
         name: "rxFS",
         color1: "#2bdab7",
         blocks: [

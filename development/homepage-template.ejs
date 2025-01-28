@@ -376,8 +376,15 @@
             <h2><%= metadata.name %></h2>
             <p>
               <%= metadata.description %>
-              <%- metadata.by.length ? `Created by ${peopleToHTML(metadata.by)}.` : '' %>
-              <%- metadata.original.length ? `Originally created by ${peopleToHTML(metadata.original)}.` : '' %>
+              <%-
+                (metadata.original.length && metadata.by.length) ? (
+                  `Created by ${peopleToHTML(metadata.original)}. Updated by ${peopleToHTML(metadata.by)}.`
+                ) : metadata.by.length ? (
+                  `Created by ${peopleToHTML(metadata.by)}.`
+                ) : metadata.original.length ? (
+                  `Created by ${peopleToHTML(metadata.original)}.`
+                ) : ''
+              %>
             </p>
           </div>
         <% } %>
