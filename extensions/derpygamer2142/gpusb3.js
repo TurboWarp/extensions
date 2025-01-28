@@ -3348,7 +3348,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
               t.blockContainer._blocks[t.topBlock].inputs.NAME.block
             ];
           if (nameInput.opcode != "text" || bglInput.opcode != "text") {
-            this.throwError(
+            return this.throwError(
               "UnexpectedInput",
               "Unexpected input for block input!",
               "ShaderDefinition",
@@ -3361,7 +3361,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
               bglInput.fields.TEXT.value
             )
           ) {
-            this.throwError(
+            return this.throwError(
               "BindGroupLayoutNotFound",
               "Bind group layout not found!",
               `Shader "${nameInput.fields.TEXT.value}"`,
@@ -3477,7 +3477,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     runGPU(args, util) {
       // run the given shader using a bind group
       if (!Object.prototype.hasOwnProperty.call(shaders, args.GPUFUNC)) {
-        this.throwError(
+        return this.throwError(
           "ShaderNotFound",
           "Couldn't find specified shader!",
           "RunShaderBlock",
@@ -3486,7 +3486,6 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
             '"!',
           util
         );
-        return;
       }
       if (
         !Object.prototype.hasOwnProperty.call(
@@ -3494,7 +3493,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
           Scratch.Cast.toString(args.BINDGROUP)
         )
       ) {
-        this.throwError(
+        return this.throwError(
           "BindGroupNotFound",
           "Couldn't find specified bind group!",
           "RunShaderBlock",
@@ -3503,7 +3502,6 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
             '"!',
           util
         );
-        return;
       }
       let shader = shaders[args.GPUFUNC];
 
@@ -3741,14 +3739,13 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         parsed = JSON.parse(args.DESC);
         // if (!Object.prototype.hasOwnProperty.call(parsed,"type")) throw new Error("skibidi toilet ohio grimace shake rizz")
       } catch {
-        this.throwError(
+        return this.throwError(
           "InvalidEntryDescriptor",
           "Invalid bind group layout entry descriptor!",
           "BindGroupLayoutEntryBlock",
           "The recieved descriptor for the bind group layout entry block is invalid, did you use the wrong block?",
           util
         );
-        return;
       }
       let o = {
         binding: Scratch.Cast.toNumber(args.BINDING),
@@ -3831,14 +3828,13 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
           Scratch.Cast.toString(args.RESOURCE)
         )
       ) {
-        this.throwError(
+        return this.throwError(
           "ResourceNotFound",
           "The specified resource doesn't exist",
           "BindGroupEntryBlock",
           `Either the resource type is invalid or the provided resource name doesn't exist.`,
           util
         );
-        return;
       }
       if (type == "buffers") {
         o = {
@@ -3891,7 +3887,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
           Scratch.Cast.toString(args.BUFFER)
         )
       ) {
-        this.throwError(
+        return this.throwError(
           "BufferNotFound",
           "The provided buffer doesn't exist",
           "ClearBuffer",
@@ -3905,11 +3901,11 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
           Scratch.Cast.toString(args.ARRAY)
         )
       ) {
-        this.throwError(
-          "ArrayNotFound",
-          "The provided array doesn't exist",
+        return this.throwError(
+          "ArrayBufferNotFound",
+          "The provided arraybuffer doesn't exist",
           "ClearBuffer",
-          `The array "${Scratch.Cast.toString(args.ARRAY)}" doesn't exist`,
+          `The arraybuffer "${Scratch.Cast.toString(args.ARRAY)}" doesn't exist`,
           util
         );
       }
@@ -3929,14 +3925,13 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         !Object.prototype.hasOwnProperty.call(resources.buffers, args.BUF1) ||
         !Object.prototype.hasOwnProperty.call(resources.buffers, args.BUF1)
       ) {
-        this.throwError(
+        return this.throwError(
           "InvalidInput",
           "Invalid input recieved when trying to copy data",
           "CopyDataBlock",
           "Failed to copy data between buffers, check that the buffers exist, buffer 1 isn't the same as buffer 2, and the number of bytes is more than or equal to 0",
           util
         );
-        return;
       }
       const commandEncoder = this.device.createCommandEncoder({
         label: "copyBuffer encoder",
@@ -3979,7 +3974,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         Scratch.Cast.toNumber(args.NUMBYTES) <= 0 &&
         Scratch.Cast.toNumber(args.NUMBYTES) !== -1
       ) {
-        this.throwError(
+        return this.throwError(
           "InvalidInput",
           "Invalid number of bytes to clear",
           "ClearBuffer",
@@ -3993,7 +3988,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
           Scratch.Cast.toString(args.BUFFER)
         )
       ) {
-        this.throwError(
+        return this.throwError(
           "BufferNotFound",
           "The provided buffer doesn't exist",
           "ClearBuffer",
@@ -4026,14 +4021,13 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
       if (
         !Object.prototype.hasOwnProperty.call(resources.buffers, args.BUFFER)
       ) {
-        this.throwError(
+        return this.throwError(
           "BufferNotFound",
           "The buffer provided doesn't exist",
           "ReadBuffer",
           `Buffer "${args.BUFFER}" doesn't exist.`,
           util
         );
-        return;
       }
 
       // let data = ["you done messed up"]
@@ -4186,7 +4180,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         j = JSON.parse(args.ARRAY);
         if (!Array.isArray(j)) throw new Error("skibidi toilet ohio rizz");
       } catch {
-        this.throwError(
+        return this.throwError(
           "InvalidArray",
           "The provided array is invalid",
           "CreateArrayBufferFromArrayBlock",
@@ -4209,7 +4203,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
       ) {
         delete resources.arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)];
       } else {
-        this.throwError(
+        return this.throwError(
           "ArrayBufferNotFound",
           "Array buffer not found",
           "DeleteArrayBufferBlock",
@@ -4230,7 +4224,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
           Scratch.Cast.toNumber(args.SIZE)
         );
       } else {
-        this.throwError(
+        return this.throwError(
           "ArrayBufferNotFound",
           "Array buffer not found",
           "ResizeArrayBufferBlock",
@@ -4249,7 +4243,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
       ) {
         delete resources.views[Scratch.Cast.toString(args.VIEW)];
       } else {
-        this.throwError(
+        return this.throwError(
           "ViewNotFound",
           "View not found",
           "DeleteViewBlock",
@@ -4271,7 +4265,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         ] = Scratch.Cast.toNumber(args.VALUE);
       } else {
         console.log("aaaaa");
-        this.throwError(
+        return this.throwError(
           "ViewNotFound",
           "View not found",
           "SetItemInViewBlock",
@@ -4286,9 +4280,9 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
       try {
         j = JSON.parse(args.ARRAY);
         if (!Array.isArray(j))
-          throw new Error("balkan rage winter arc jonkler trollge phonk");
+          throw new Error("balkan rage winter arc jonkler trollge phonk"); // 🤫🧏
       } catch {
-        this.throwError(
+        return this.throwError(
           "InvalidArray",
           "The provided array is invalid",
           "SetViewBlock",
@@ -4308,7 +4302,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
           Scratch.Cast.toNumber(args.INDEX)
         );
       } else {
-        this.throwError(
+        return this.throwError(
           "ViewNotFound",
           "View not found",
           "SetViewBlock",
@@ -4331,7 +4325,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
           Scratch.Cast.toNumber(args.END)
         );
       } else {
-        this.throwError(
+        return this.throwError(
           "ViewNotFound",
           "View not found",
           "FillViewBlock",
@@ -4463,14 +4457,6 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         throw new Error("Texture missing - " + args.IMAGE);
       }
       const t = resources.textures[Scratch.Cast.toString(args.TEXTURE)];
-      console.log(
-        {
-          texture: t,
-        },
-        textureData,
-        { bytesPerRow: this.bytesFromFormat(t.format) * t.width }, // get the number of bytes per pixel, multiplied by the width of the row.
-        { width: t.width, height: t.height }
-      );
       this.device.queue.writeTexture(
         {
           texture: t,
@@ -4560,6 +4546,47 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     copyTextureToBuffer(args, util) {
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          resources.buffers,
+          Scratch.Cast.toString(args.BUFFER)
+        )
+      ) {
+        return this.throwError(
+          "BufferNotFound",
+          "Buffer not found",
+          "CopyTextureToBufferBlock",
+          "The specified buffer doesn't exist",
+          util
+        );
+      }
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          resources.textures,
+          Scratch.Cast.toString(args.TEXTURE)
+        )
+      ) {
+        return this.throwError(
+          "TextureNotFound",
+          "Texture not found",
+          "CopyTextureToBufferBlock",
+          "The specified texture doesn't exist",
+          util
+        );
+      }
+      if (
+        Scratch.Cast.toNumber(args.WIDTH) < 0 ||
+        Scratch.Cast.toNumber(args.HEIGHT) < 0
+      ) {
+        return this.throwError(
+          "InvalidDimensions",
+          "Invalid copy dimensions",
+          "CopyTextureToBufferBlock",
+          "The provided texture dimensions are invalid",
+          util
+        );
+      }
+
       const commandEncoder = this.device.createCommandEncoder({
         label: "copyTextureToBuffer encoder",
       });
@@ -4641,7 +4668,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
           util
         );
       if (args.WIDTH <= 0 || args.HEIGHT <= 0)
-        this.throwError(
+        return this.throwError(
           "InvalidDimension",
           "Invalid width or height",
           "CopyBufferToTextureBlock",
