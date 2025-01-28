@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.4.23
+// Version V.3.4.24
 
 (function (Scratch) {
   "use strict";
@@ -96,6 +96,12 @@
     constructor() {
       this.loadStorage = function (storage) {
         if (storage === undefined) return;
+        const getTargetName = (name) => {
+          return runtime.targets.find((t) => {
+            return t.getName().replaceAll("/", "") === name;
+          });
+        };
+
         settings = storage.settings;
         soundBank = storage.bank;
         for (const item in soundBank) {
@@ -108,7 +114,7 @@
             let target =
               info[0] === "Stage"
                 ? runtime.getTargetForStage()
-                : runtime.getSpriteTargetByName(info[0]);
+                : getTargetName(info[0]);
             if (target === undefined) {
               alert(
                 Scratch.translate(
@@ -119,7 +125,7 @@
             }
 
             const scratchSound = target.sprite.sounds.find((i) => {
-              return i.name === info[1];
+              return i.name.replaceAll("/", "") === info[1];
             });
             if (scratchSound === undefined) {
               alert(
