@@ -141,7 +141,7 @@
       camSystem.ogXY = [0, 0];
     }
     ogPostSpriteInfo.call(this, data);
-  }
+  };
 
   const ogUpdatePosition = render.exports.Drawable.prototype.updatePosition;
   render.exports.Drawable.prototype.updatePosition = function (position) {
