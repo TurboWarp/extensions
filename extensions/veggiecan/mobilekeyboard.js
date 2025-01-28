@@ -22,6 +22,7 @@
       /** @type {Array<() => void>} */
       this.waitCallbacks = [];
       this.defaultValue = "";
+      this.typedText = "";
       this.inputElement = null;
     }
 

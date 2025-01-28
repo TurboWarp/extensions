@@ -155,7 +155,7 @@
           {
             opcode: "cleareffects",
             blockType: Scratch.BlockType.COMMAND,
-            text: "clear canvas effects",
+            text: Scratch.translate("clear canvas effects"),
           },
           "---",
           {

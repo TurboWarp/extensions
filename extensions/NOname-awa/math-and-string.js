@@ -9,6 +9,7 @@
         id: "nonameawamathandstring",
         name: Scratch.translate("Math And String"),
         blocks: [
+          /* eslint-disable extension/should-translate */
           {
             opcode: "exponent",
             blockType: Scratch.BlockType.REPORTER,
@@ -50,6 +51,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
           "---",
           {
             opcode: "astrict",
@@ -90,6 +92,7 @@
             },
           },
           "---",
+          /* eslint-disable extension/should-translate */
           {
             opcode: "boolean",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -332,6 +335,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
           {
             opcode: "trim",
             blockType: Scratch.BlockType.REPORTER,
@@ -339,7 +343,7 @@
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("   Text   "),
+                defaultValue: `   ${Scratch.translate("Text")}   `,
               },
             },
           },
@@ -733,6 +737,7 @@
             text: Scratch.translate("false"),
             disableMonitor: true,
           },
+          /* eslint-disable extension/should-translate */
           {
             opcode: "new_line",
             disableMonitor: true,
@@ -763,6 +768,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: "∞",
           },
+          /* eslint-enable extension/should-translate */
         ],
         menus: {
           rd: {

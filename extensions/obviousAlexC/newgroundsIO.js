@@ -9129,6 +9129,7 @@
     getInfo() {
       return {
         id: "NGIO",
+        // eslint-disable-next-line extension/should-translate
         name: "Newgrounds",
 
         color1: "#EB7522",

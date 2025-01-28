@@ -239,6 +239,7 @@
     getInfo() {
       return {
         id: extensionId,
+        // eslint-disable-next-line extension/should-translate
         name: "HTTP",
         color1: "#307eff",
         color2: "#2c5eb0",

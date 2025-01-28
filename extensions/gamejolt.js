@@ -875,7 +875,7 @@
         }
 
         // canFetch() checked above
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line extension/no-xmlhttprequest
         var pRequest = new XMLHttpRequest();
 
         // bind callback function
@@ -1394,6 +1394,7 @@
     getInfo() {
       return {
         id: "GameJoltAPI",
+        // eslint-disable-next-line extension/should-translate
         name: "Game Jolt API",
         color1: "#2F7F6F",
         color2: "#2A2731",
@@ -1577,6 +1578,7 @@
             opcode: "friendsFetch",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- deprecated
             text: "fetched user's friend ID at index[index] (Deprecated)",
             arguments: {
               index: {
@@ -1642,6 +1644,7 @@
             opcode: "trophyFetch",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- deprecated
             text: "fetched trophy [trophyDataType] at [indexOrID][value] (Deprecated)",
             arguments: {
               trophyDataType: {
@@ -2066,6 +2069,7 @@
             opcode: "dataStoreGetKey",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- deprecated
             text: "fetched [globalOrPerUser] keys with pattern [pattern] at index [index] (Deprecated)",
             arguments: {
               globalOrPerUser: {
@@ -2142,6 +2146,7 @@
             opcode: "timeFetch",
             blockIconURI: icons.time,
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- deprecated
             text: "server's current [timeType] (Deprecated)",
             arguments: {
               timeType: {
