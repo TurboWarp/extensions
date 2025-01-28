@@ -179,10 +179,10 @@
     const camSystem = this[cameraSymbol];
     const thisCam = allCameras[camSystem.name];
     if (camSystem.needsRefresh) {
-        // invert camera transformations
-        const safeOgSZ = camSystem.ogSZ !== 0 ? camSystem.ogSZ : 1e-10;
-        scale[0] /= safeOgSZ;
-        scale[1] /= safeOgSZ;
+      // invert camera transformations
+      const safeOgSZ = camSystem.ogSZ !== 0 ? camSystem.ogSZ : 1e-10;
+      scale[0] /= safeOgSZ;
+      scale[1] /= safeOgSZ;
     }
 
     // avoid dividing 0 by 0
