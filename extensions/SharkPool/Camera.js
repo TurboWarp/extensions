@@ -8,6 +8,7 @@
 
 (function (Scratch) {
   "use strict";
+
   if (!Scratch.extensions.unsandboxed)
     throw new Error("Camera must run unsandboxed!");
 
