@@ -5,7 +5,7 @@ The Wake Lock feature allows you to keep your computer's screen on while a proje
 ## Activating and Releasing Wake Lock
 
 ```scratch
-set wake lock to [on v] :: #0FBD8C
+set wake lock to (on v) :: #0FBD8C
 ```
 This block will activate wake lock.
 
