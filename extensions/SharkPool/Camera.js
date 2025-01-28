@@ -133,7 +133,7 @@
   // camera system patches
   const ogPostSpriteInfo = vm.postSpriteInfo;
   vm.postSpriteInfo = function (data) {
-    if (this._dragTarget) {
+    if (this._dragTarget && data.x !== undefined) {
       const drawable = render._allDrawables[this._dragTarget.drawableID];
       if (!drawable[cameraSymbol]) setupState(drawable);
       const camSystem = drawable[cameraSymbol];
@@ -179,14 +179,20 @@
     const camSystem = this[cameraSymbol];
     const thisCam = allCameras[camSystem.name];
     if (camSystem.needsRefresh) {
-      // invert camera transformations
-      scale[0] /= camSystem.ogSZ;
-      scale[1] /= camSystem.ogSZ;
+        // invert camera transformations
+        const safeOgSZ = camSystem.ogSZ !== 0 ? camSystem.ogSZ : 1e-10;
+        scale[0] /= safeOgSZ;
+        scale[1] /= safeOgSZ;
     }
 
-    camSystem.ogSZ = thisCam.zoom;
-    scale[0] *= thisCam.zoom;
-    scale[1] *= thisCam.zoom;
+    // avoid dividing 0 by 0
+    camSystem.ogSZ = thisCam.zoom || 1e-10;
+    const safeZoom = thisCam.zoom || 1e-10;
+    scale[0] *= safeZoom;
+    scale[1] *= safeZoom;
+    if (scale[0] === 0) scale[0] = 1e-10 * Math.sign(safeZoom);
+    if (scale[1] === 0) scale[1] = 1e-10 * Math.sign(safeZoom);
+
     ogUpdateScale.call(this, scale);
     this.skin?.emitWasAltered();
   };
