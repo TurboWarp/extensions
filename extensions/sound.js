@@ -16,7 +16,7 @@
   const fetchAsArrayBufferWithTimeout = (url) =>
     new Promise((resolve, reject) => {
       // Permission is checked in playSound()
-      // eslint-disable-next-line no-restricted-syntax
+      // eslint-disable-next-line extension/no-xmlhttprequest
       const xhr = new XMLHttpRequest();
       let timeout = setTimeout(() => {
         xhr.abort();
@@ -121,7 +121,7 @@
       // For these sounds, fall back to a primitive <audio>-based solution that will work for all
       // sounds, even those without CORS.
       // Permission is checked in playSound()
-      // eslint-disable-next-line no-restricted-syntax
+      // eslint-disable-next-line extension/check-can-fetch
       const mediaElement = new Audio(url);
 
       // Make a minimal effort to simulate Scratch's sound effects.
