@@ -1,5 +1,5 @@
 // Name: MIDI
-// ID: midi
+// ID: masterMathMidi
 // Description: An extension that retrieves input from MIDI devices.
 // By: -MasterMath- <https://scratch.mit.edu/users/-MasterMath-/>
 // License: MPL-2.0
@@ -8,7 +8,6 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    alert("This MIDI extension must run unsandboxed!");
     throw new Error("This MIDI extension must run unsandboxed!");
   }
 
@@ -86,18 +85,16 @@
     }
 
     function onError(err) {
-      alert("MIDI Access Error:", err);
       throw new Error("MIDI Access Error:", err);
     }
   } else {
-    alert("MIDI is not supported on this browser.");
     throw new Error("MIDI is not supported on this browser.");
   }
 
   class MIDI {
     getInfo() {
       return {
-        id: "midi",
+        id: "masterMathMidi",
         name: Scratch.translate("MIDI"),
         blocks: [
           {
@@ -113,7 +110,6 @@
             arguments: {
               info: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "name",
                 menu: "infoMenu",
               },
               number: {
@@ -132,7 +128,6 @@
             arguments: {
               pressedReleased: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "pressed",
                 menu: "pressedReleased",
               },
             },
@@ -150,7 +145,6 @@
               },
               pressedReleased: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "pressed",
                 menu: "pressedReleased",
               },
             },
@@ -191,7 +185,6 @@
             arguments: {
               pressedReleased: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "pressed",
                 menu: "pressedReleased",
               },
             },
@@ -233,6 +226,7 @@
     }
 
     midiDeviceInfo(args) {
+      args.number = Scratch.Cast.toNumber(args.number);
       if (midiInputDevices[args.number] != null) {
         return midiDeviceInfo[args.number][args.info == "id" ? 0 : 1];
       } else {
@@ -241,10 +235,11 @@
     }
 
     noteOn(args) {
-      return notesOn.includes(Number(args.note));
+      return notesOn.includes(Scratch.Cast.toNumber(args.note));
     }
 
     noteVelocity(args) {
+      args.note = Scratch.Cast.toNumber(args.note);
       if (
         notesOn.includes(args.note) &&
         noteVelocities.find((subArray) => subArray[0] === args.note)[1] !==
@@ -259,10 +254,13 @@
     }
 
     lastNote({ pressedReleased }) {
-      if (pressedReleased == "pressed") {
-        return lastNotePressed;
-      } else if (pressedReleased == "released") {
-        return lastNoteReleased;
+      switch (pressedReleased) {
+        case "pressed":
+          return lastNotePressed;
+        case "released":
+          return lastNoteReleased;
+        default:
+          return "";
       }
     }
   }
