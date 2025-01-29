@@ -25,7 +25,8 @@
    */
   const timerValue = (timer) => {
     return (
-      ((timer.paused ? 0 : Math.floor(performance.now()) - timer.startTime) + timer.pauseTime) /
+      ((timer.paused ? 0 : Math.floor(performance.now()) - timer.startTime) +
+        timer.pauseTime) /
       1000
     );
   };
