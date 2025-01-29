@@ -11,8 +11,9 @@ desktop.ini
 .DS_Store
 
 # Popular editors
-.vscode
 .idea
 *.sublime-workspace
+.vscode/*
+!.vscode/*.code-snippets
 
 # Tip: .git/info/exclude is your personal gitignore for things that don't belong here
