@@ -52,6 +52,7 @@
   "Lily/MoreTimers",
   "clouddata-ping",
   "cloudlink",
+  "peerjs",
   "true-fantom/network",
   "true-fantom/math",
   "true-fantom/regexp",
