@@ -179,7 +179,7 @@
         id = id === "/d/..." ? defaultID : Scratch.Cast.toString(id);
         name = encodeURIComponent(Scratch.Cast.toString(name));
         const url = `https://docs.google.com/spreadsheets/d/${id}/export?format=tsv&id=${id}&gid=${name}&cache=${Math.random()}`;
-        const response = await Scratch.fetch(`${url}`);
+        const response = await Scratch.fetch(url);
         if (!response.ok) return defaultReturn;
         const content = await response.text();
         return JSON.stringify(this.tsvParser(content));
