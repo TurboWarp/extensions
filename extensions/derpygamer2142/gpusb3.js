@@ -2121,6 +2121,7 @@
                 code = code.concat(
                   ` (${this.resolveInput(util, blocks[i + 1])} + ${this.resolveInput(util, blocks[i + 2])}) `
                 );
+                i += 2;
                 break;
               }
 
@@ -3326,7 +3327,8 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
       );
 
       if (threads.length > 0) {
-        await threads.forEach(async (t, i) => {
+        for (let i = 0; i < threads.length; i++) {
+          let t = threads[i];
           const arraycompiled = this.compile(
             util,
             threads[i],
@@ -3380,7 +3382,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
             });
             let errored = false;
 
-            this.device.popErrorScope().then((error) => {
+            await this.device.popErrorScope().then((error) => {
               if (error) {
                 this.throwError(
                   "ShaderCreationError",
@@ -3392,7 +3394,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
                 errored = true;
               }
             });
-            this.device.popErrorScope().then((error) => {
+            await this.device.popErrorScope().then((error) => {
               if (error) {
                 this.throwError(
                   "ShaderCreationError",
@@ -3437,7 +3439,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
                 entryPoint: "computeShader",
               },
             });
-            this.device.popErrorScope().then((error) => {
+            await this.device.popErrorScope().then((error) => {
               if (error) {
                 this.throwError(
                   "ComputePipelineError",
@@ -3449,7 +3451,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
                 errored = true;
               }
             });
-            this.device.popErrorScope().then((error) => {
+            await this.device.popErrorScope().then((error) => {
               if (error) {
                 this.throwError(
                   "ComputePipelineError",
@@ -3464,7 +3466,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
 
             if (errored) delete shaders[funcname];
           }
-        });
+        };
       }
     }
 
