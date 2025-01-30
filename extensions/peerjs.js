@@ -35,8 +35,8 @@
 // prettier-ignore
 "use strict";
 function fatalAlert(message) {
-    alert(message);
-    throw new Error(message);
+  alert(message);
+  throw new Error(message);
 }
 
 /*
