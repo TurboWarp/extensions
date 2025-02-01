@@ -65,7 +65,6 @@
               },
             },
             extensions: ["colours_motion"],
-            hideFromPalette: true,
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -297,7 +296,7 @@
     }
 
     directionto(args, util) {
-      // Old version, returns values from 0 to 360
+      // Old version, returns values from -90 to 270
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
       if (util.target.y > y) {
