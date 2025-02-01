@@ -9,7 +9,7 @@
       "// ID: ${2:myextension}",
       "// Description: $3",
       "// By: ${4:me} <https://scratch.mit.edu/users/$4/>",
-      "// License: ${5|Choose,MPL-2.0,MIT,Apache-2.0,LGPL-3.0|}",
+      "// License: ${5|Choose,MPL-2.0,MIT|}",
       "",
       "(function (Scratch) {",
       "\t\"use strict\";",
