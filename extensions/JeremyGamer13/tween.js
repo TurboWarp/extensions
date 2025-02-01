@@ -553,7 +553,8 @@
         // Still running
         util.yield();
 
-        const progress = util.stackFrame.timer.timeElapsed() / util.stackFrame.duration;
+        const progress =
+          util.stackFrame.timer.timeElapsed() / util.stackFrame.duration;
         const tweened = state.easingFunction(progress, state.easeDirection);
         return interpolate(tweened, state.start, state.end);
       }
