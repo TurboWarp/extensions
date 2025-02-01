@@ -276,7 +276,7 @@
       util.target.setXY(util.target.x + x, util.target.y + y);
     }
 
-    pointto_v2(args, util) {
+    pointto(args, util) {
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
       util.target.setDirection(
