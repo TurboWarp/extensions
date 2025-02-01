@@ -34,7 +34,7 @@
       "    $7(args, util) {}",
       "  }",
       "",
-      "  Scratch.extensions.register(new ${6:MyExtension}());",
+      "  Scratch.extensions.register(new $6());",
       "})(Scratch);",
     ],
   },
