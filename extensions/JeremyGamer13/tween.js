@@ -478,12 +478,11 @@
 
     getVariables() {
       const variables =
-        // @ts-expect-error
         typeof Blockly === "undefined"
           ? []
-          : // @ts-expect-error
-            Blockly.getMainWorkspace()
+          : Blockly.getMainWorkspace()
               .getVariableMap()
+              // @ts-expect-error
               .getVariablesOfType("")
               .map((model) => ({
                 text: model.name,
