@@ -69,23 +69,6 @@
           },
           {
             filter: [Scratch.TargetType.SPRITE],
-            opcode: "pointto_v2",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("point towards x: [X] y: [Y]"),
-            arguments: {
-              X: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0",
-              },
-              Y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "0",
-              },
-            },
-            extensions: ["colours_motion"],
-          },
-          {
-            filter: [Scratch.TargetType.SPRITE],
             opcode: "rotationStyle",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("rotation style"),
@@ -170,7 +153,7 @@
           },
           {
             filter: [Scratch.TargetType.SPRITE],
-            opcode: "directionto_v2",
+            opcode: "directionto2",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("direction to x: [X] y: [Y]"),
             arguments: {
@@ -313,7 +296,25 @@
       util.target.setXY(newpos[0], newpos[1]);
     }
 
-    directionto_v2(args, util) {
+    directionto(args, util) {
+      // Old version, returns values from 0 to 360
+      const x = Scratch.Cast.toNumber(args.X);
+      const y = Scratch.Cast.toNumber(args.Y);
+      if (util.target.y > y) {
+        return (
+          (180 / Math.PI) *
+            Math.atan((x - util.target.x) / (y - util.target.y)) +
+          180
+        );
+      } else {
+        return (
+          (180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))
+        );
+      }
+    }
+
+    directionto2(args, util) {
+      // New version, returns values from -180 to 180, like Scratch direction reporter.
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
       return (180 / Math.PI) * Math.atan2(x - util.target.x, y - util.target.y);
@@ -442,39 +443,6 @@
         } else {
           return Math.ceil(costume.size[1]);
         }
-      }
-    }
-
-    // LORAX APPROVED
-    pointto(args, util) {
-      const x = Scratch.Cast.toNumber(args.X);
-      const y = Scratch.Cast.toNumber(args.Y);
-      if (util.target.y > y) {
-        util.target.setDirection(
-          (180 / Math.PI) *
-            Math.atan((x - util.target.x) / (y - util.target.y)) +
-            180
-        );
-      } else {
-        util.target.setDirection(
-          (180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))
-        );
-      }
-    }
-
-    directionto(args, util) {
-      const x = Scratch.Cast.toNumber(args.X);
-      const y = Scratch.Cast.toNumber(args.Y);
-      if (util.target.y > y) {
-        return (
-          (180 / Math.PI) *
-            Math.atan((x - util.target.x) / (y - util.target.y)) +
-          180
-        );
-      } else {
-        return (
-          (180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))
-        );
       }
     }
   }
