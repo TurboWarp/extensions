@@ -570,7 +570,7 @@
               },
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: "Stored Files" },
+          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Stored Files") },
           {
             opcode: "checkFileAPI",
             blockType: Scratch.BlockType.BOOLEAN,
