@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.4.24
+// Version V.3.4.25
 
 (function (Scratch) {
   "use strict";
@@ -96,16 +96,21 @@
     constructor() {
       this.loadStorage = function (storage) {
         if (storage === undefined) return;
+        settings = storage.settings;
+        const tempBank = structuredClone(storage.bank);
+        const sounds = Object.values(tempBank);
+
         const getTargetName = (name) => {
           return runtime.targets.find((t) => {
             return t.getName().replaceAll("/", "") === name;
           });
         };
+        const loadEndHandler = (index) => {
+          if (index >= sounds.length - 1) soundBank = tempBank;
+        };
 
-        settings = storage.settings;
-        soundBank = structuredClone(storage.bank);
-        for (const item in soundBank) {
-          const sound = soundBank[item];
+        for (let i = 0; i < sounds.length; i++) {
+          const sound = sounds[i];
           sound.loaded = false;
           if (sound.isVanilla) {
             const info = sound.src
@@ -145,6 +150,7 @@
             engine.sourceNode = engine.getSourceNode();
             sound.context = engine;
             sound.loaded = true;
+            loadEndHandler(i);
           } else {
             const engine = new Pizzicato.Sound(
               {
@@ -155,6 +161,7 @@
                 engine.sourceNode = engine.getSourceNode();
                 sound.context = engine;
                 sound.loaded = true;
+                loadEndHandler(i);
               }
             );
           }
