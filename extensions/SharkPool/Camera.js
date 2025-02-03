@@ -23,7 +23,6 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const render = vm.renderer;
-  const isEditor = typeof scaffolding === "undefined";
   const cameraSymbol = Symbol("SPcameraData");
 
   let allCameras = {
@@ -545,14 +544,10 @@
     }
 
     refreshBlocks() {
-      if (isEditor) {
-        runtime.once("BEFORE_EXECUTE", () => {
-          runtime.requestBlocksUpdate();
-        });
-        runtime.extensionStorage["SPcamera"] = {
-          cams: Object.keys(allCameras),
-        };
-      }
+      runtime.requestBlocksUpdate();
+      runtime.extensionStorage["SPcamera"] = {
+        cams: Object.keys(allCameras),
+      };
     }
 
     addCamera() {
