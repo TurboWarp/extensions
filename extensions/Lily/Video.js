@@ -251,7 +251,9 @@
           {
             opcode: "startVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("start video [NAME] at [DURATION] seconds and [MODE]"),
+            text: Scratch.translate(
+              "start video [NAME] at [DURATION] seconds and [MODE]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -261,10 +263,10 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 0,
               },
-			  MODE: {
-				  type: Scratch.ArgumentType.STRING,
-				  menu: "mode"
-			  }
+              MODE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "mode",
+              },
             },
           },
           {
@@ -414,19 +416,19 @@
               },
             ],
           },
-		  mode: {
-			  acceptReporters: false,
-			  items: [
-				  {
-					text: Scratch.translate("play until done"),
-					value: "play until done",
-				  },
-				  {
-					text: Scratch.translate("loop"),
-					value: "loop",
-				  },
-			  ]
-		    }
+          mode: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("play until done"),
+                value: "play until done",
+              },
+              {
+                text: Scratch.translate("loop"),
+                value: "loop",
+              },
+            ],
+          },
         },
       };
     }
@@ -527,18 +529,18 @@
     startVideo(args) {
       const videoName = Cast.toString(args.NAME);
       const duration = Cast.toNumber(args.DURATION);
-	  const mode = Cast.toString(args.MODE)
+      const mode = Cast.toString(args.MODE);
       const videoSkin = this.videos[videoName];
       if (!videoSkin) return;
-	  
-	  switch(mode) {
-			case "loop":
-				videoSkin.videoElement.loop = true;
-				break;
-			case "play until done":
-			default:
-				videoSkin.videoElement.loop = false;
-	  }
+
+      switch (mode) {
+        case "loop":
+          videoSkin.videoElement.loop = true;
+          break;
+        case "play until done":
+        default:
+          videoSkin.videoElement.loop = false;
+      }
 
       videoSkin.videoElement.play();
       videoSkin.videoElement.currentTime = duration;
