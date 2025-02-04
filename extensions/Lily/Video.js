@@ -263,10 +263,12 @@
               },
             },
           },
-		  {
+          {
             opcode: "startVideoAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("start video [NAME] at [DURATION] seconds and wait until done"),
+            text: Scratch.translate(
+              "start video [NAME] at [DURATION] seconds and wait until done"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -532,25 +534,25 @@
       videoSkin.videoElement.currentTime = duration;
       videoSkin.markVideoDirty();
     }
-	
-	startVideoAndWait(args, util) {
-		const videoName = Cast.toString(args.NAME);
-		const duration = Cast.toNumber(args.DURATION);
-		const videoSkin = this.videos[videoName];
-		if (!videoSkin) return;
-		
-		if (!util.stackFrame.hasPlayed) {
-			videoSkin.videoElement.play();
-			videoSkin.videoElement.currentTime = duration;
-			videoSkin.markVideoDirty();
-			
-			util.stackFrame.hasPlayed = true;
-		}
-		
-		if(!videoSkin.videoElement.ended) {
-			util.yield()
-		}
-	}
+
+    startVideoAndWait(args, util) {
+      const videoName = Cast.toString(args.NAME);
+      const duration = Cast.toNumber(args.DURATION);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
+
+      if (!util.stackFrame.hasPlayed) {
+        videoSkin.videoElement.play();
+        videoSkin.videoElement.currentTime = duration;
+        videoSkin.markVideoDirty();
+
+        util.stackFrame.hasPlayed = true;
+      }
+
+      if (!videoSkin.videoElement.ended) {
+        util.yield();
+      }
+    }
 
     getAttribute(args) {
       const videoName = Cast.toString(args.NAME);
