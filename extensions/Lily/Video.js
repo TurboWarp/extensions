@@ -251,9 +251,7 @@
           {
             opcode: "startVideo",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "start video [NAME] at [DURATION] seconds and [MODE]"
-            ),
+            text: Scratch.translate("start video [NAME] at [DURATION] seconds"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -263,9 +261,20 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 0,
               },
-              MODE: {
+            },
+          },
+		  {
+            opcode: "startVideoAndWait",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("start video [NAME] at [DURATION] seconds and wait until done"),
+            arguments: {
+              NAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "mode",
+                defaultValue: "my video",
+              },
+              DURATION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
               },
             },
           },
@@ -416,19 +425,6 @@
               },
             ],
           },
-          mode: {
-            acceptReporters: false,
-            items: [
-              {
-                text: Scratch.translate("play until done"),
-                value: "play until done",
-              },
-              {
-                text: Scratch.translate("loop"),
-                value: "loop",
-              },
-            ],
-          },
         },
       };
     }
@@ -529,23 +525,32 @@
     startVideo(args) {
       const videoName = Cast.toString(args.NAME);
       const duration = Cast.toNumber(args.DURATION);
-      const mode = Cast.toString(args.MODE);
       const videoSkin = this.videos[videoName];
       if (!videoSkin) return;
-
-      switch (mode) {
-        case "loop":
-          videoSkin.videoElement.loop = true;
-          break;
-        case "play until done":
-        default:
-          videoSkin.videoElement.loop = false;
-      }
 
       videoSkin.videoElement.play();
       videoSkin.videoElement.currentTime = duration;
       videoSkin.markVideoDirty();
     }
+	
+	startVideoAndWait(args, util) {
+		const videoName = Cast.toString(args.NAME);
+		const duration = Cast.toNumber(args.DURATION);
+		const videoSkin = this.videos[videoName];
+		if (!videoSkin) return;
+		
+		if (!util.stackFrame.hasPlayed) {
+			videoSkin.videoElement.play();
+			videoSkin.videoElement.currentTime = duration;
+			videoSkin.markVideoDirty();
+			
+			util.stackFrame.hasPlayed = true;
+		}
+		
+		if(!videoSkin.videoElement.ended) {
+			util.yield()
+		}
+	}
 
     getAttribute(args) {
       const videoName = Cast.toString(args.NAME);
