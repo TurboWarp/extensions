@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.02
+// Version V.1.0.03
 
 (function (Scratch) {
   "use strict";
@@ -101,7 +101,6 @@
 
     drawable[cameraSymbol] = {
       name: camera,
-      needsRefresh: true,
       ogXY: [0, 0],
       ogSZ: 1,
       ogDir: 0,
