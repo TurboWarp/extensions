@@ -263,12 +263,10 @@
               },
             },
           },
-          {
+		  {
             opcode: "startVideoAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "start video [NAME] at [DURATION] seconds and wait until done"
-            ),
+            text: Scratch.translate("start video [NAME] at [DURATION] seconds and wait until done"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -379,10 +377,13 @@
               },
             },
           },
-          {
+		  "---",
+		  {
             opcode: "toggleLooping",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set video [NAME] to [LOOP]"),
+            text: Scratch.translate(
+              "set video [NAME] to [LOOP]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -394,6 +395,19 @@
               },
             },
           },
+		  {
+            opcode: "isLooping",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate(
+              "is video [NAME] looping?"
+            ),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              }
+            },
+		  }
         ],
         menus: {
           targets: {
@@ -442,19 +456,19 @@
               },
             ],
           },
-          to_loop_or_not_to_loop: {
-            acceptReporters: false,
-            items: [
-              {
-                text: Scratch.translate("loop"),
-                value: "loop",
-              },
-              {
-                text: Scratch.translate("not loop"),
-                value: "not loop",
-              },
-            ],
-          },
+		  to_loop_or_not_to_loop: {
+			  acceptReporters: false,
+			  items: [
+				  {
+					text: Scratch.translate("loop"),
+					value: "loop",
+				  },
+				  {
+					text: Scratch.translate("not loop"),
+					value: "not loop",
+				  },
+			  ]
+		  }
         },
       };
     }
@@ -562,25 +576,25 @@
       videoSkin.videoElement.currentTime = duration;
       videoSkin.markVideoDirty();
     }
-
-    startVideoAndWait(args, util) {
-      const videoName = Cast.toString(args.NAME);
-      const duration = Cast.toNumber(args.DURATION);
-      const videoSkin = this.videos[videoName];
-      if (!videoSkin) return;
-
-      if (!util.stackFrame.hasPlayed) {
-        videoSkin.videoElement.play();
-        videoSkin.videoElement.currentTime = duration;
-        videoSkin.markVideoDirty();
-
-        util.stackFrame.hasPlayed = true;
-      }
-
-      if (!videoSkin.videoElement.ended) {
-        util.yield();
-      }
-    }
+	
+	startVideoAndWait(args, util) {
+		const videoName = Cast.toString(args.NAME);
+		const duration = Cast.toNumber(args.DURATION);
+		const videoSkin = this.videos[videoName];
+		if (!videoSkin) return;
+		
+		if (!util.stackFrame.hasPlayed) {
+			videoSkin.videoElement.play();
+			videoSkin.videoElement.currentTime = duration;
+			videoSkin.markVideoDirty();
+			
+			util.stackFrame.hasPlayed = true;
+		}
+		
+		if(!videoSkin.videoElement.ended) {
+			util.yield()
+		}
+	}
 
     getAttribute(args) {
       const videoName = Cast.toString(args.NAME);
@@ -679,14 +693,22 @@
         console.warn(e);
       }
     }
-
-    toggleLooping(args) {
-      const videoName = Cast.toString(args.NAME);
-      const videoSkin = this.videos[videoName];
-      if (!videoSkin) return;
-
-      videoSkin.videoElement.loop = args.LOOP == "loop" ? true : false;
-    }
+	
+	toggleLooping(args) {
+		const videoName = Cast.toString(args.NAME);
+		const videoSkin = this.videos[videoName];
+		if (!videoSkin) return;
+		
+		videoSkin.videoElement.loop = args.LOOP == "loop" ? true : false;
+	}
+	
+	isLooping(args) {
+		const videoName = Cast.toString(args.NAME);
+		const videoSkin = this.videos[videoName];
+		if (!videoSkin) return;
+		
+		return videoSkin.videoElement.loop
+	}
 
     /** @returns {VM.Target|undefined} */
     _getTargetFromMenu(targetName, util) {
