@@ -264,6 +264,23 @@
             },
           },
           {
+            opcode: "startVideoAndWait",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "start video [NAME] at [DURATION] seconds and wait until done"
+            ),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              },
+              DURATION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+          {
             opcode: "getAttribute",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[ATTRIBUTE] of video [NAME]"),
@@ -311,6 +328,21 @@
               NAME: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "my video",
+              },
+            },
+          },
+          {
+            opcode: "toggleLooping",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set video [NAME] to [LOOP]"),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              },
+              LOOP: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "playbackType",
               },
             },
           },
@@ -379,6 +411,10 @@
                 text: Scratch.translate("paused"),
                 value: "paused",
               },
+              {
+                text: Scratch.translate("looping"),
+                value: "looping",
+              },
             ],
           },
           attribute: {
@@ -407,6 +443,19 @@
               {
                 text: Scratch.translate("playback rate"),
                 value: "playback rate",
+              },
+            ],
+          },
+          playbackType: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("loop"),
+                value: "loop",
+              },
+              {
+                text: Scratch.translate("not loop"),
+                value: "not loop",
               },
             ],
           },
@@ -518,6 +567,25 @@
       videoSkin.markVideoDirty();
     }
 
+    startVideoAndWait(args, util) {
+      const videoName = Cast.toString(args.NAME);
+      const duration = Cast.toNumber(args.DURATION);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
+
+      if (!util.stackFrame.hasPlayed) {
+        videoSkin.videoElement.play();
+        videoSkin.videoElement.currentTime = duration;
+        videoSkin.markVideoDirty();
+
+        util.stackFrame.hasPlayed = true;
+      }
+
+      if (!videoSkin.videoElement.ended) {
+        util.yield();
+      }
+    }
+
     getAttribute(args) {
       const videoName = Cast.toString(args.NAME);
       const videoSkin = this.videos[videoName];
@@ -582,14 +650,29 @@
       videoSkin.markVideoDirty();
     }
 
+    toggleLooping(args) {
+      const videoName = Cast.toString(args.NAME);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
+
+      videoSkin.videoElement.loop = args.LOOP == "loop" ? true : false;
+    }
+
     getState(args) {
       const videoName = Cast.toString(args.NAME);
       const videoSkin = this.videos[videoName];
       if (!videoSkin) return args.STATE === "paused";
 
-      return args.STATE == "playing"
-        ? !videoSkin.videoElement.paused
-        : videoSkin.videoElement.paused;
+      switch (args.STATE) {
+        case "playing":
+          return !videoSkin.videoElement.paused;
+        case "paused":
+          return videoSkin.videoElement.paused;
+        case "looping":
+          return videoSkin.videoElement.loop;
+        default:
+          return false;
+      }
     }
 
     setVolume(args) {
