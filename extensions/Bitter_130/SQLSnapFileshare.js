@@ -89,7 +89,8 @@
         this.serverURL = args.URL;
       } catch {
         console.error("Invalid server URL", args.URL);
-        this.serverURL = "https://snapextensions.uni-goettingen.de/handleTextfile.php";
+        this.serverURL =
+          "https://snapextensions.uni-goettingen.de/handleTextfile.php";
       }
     }
 
