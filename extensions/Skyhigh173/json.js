@@ -2,6 +2,7 @@
 // ID: skyhigh173JSON
 // Description: Handle JSON strings and arrays.
 // By: Skyhigh173 <https://scratch.mit.edu/users/Skyhigh173/>
+// By: Mio <https://scratch.mit.edu/users/0znzw/>
 // License: MIT
 
 (function (Scratch) {
