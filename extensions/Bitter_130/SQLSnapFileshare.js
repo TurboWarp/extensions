@@ -2,6 +2,7 @@
 // ID: bitter130SQLSnapFileshare
 // Description: Port of the SQLSnap! Fileshare extension for cloud file share utilization.
 // By: Bitter_130
+// License: MPL-2.0
 
 (function (Scratch) {
   "use strict";
