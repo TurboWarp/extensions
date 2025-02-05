@@ -272,6 +272,18 @@ function ULID() {
                     },
                     "---",
                     {
+                        opcode: "isOtherPeerConnected",
+                        blockType: Scratch2.BlockType.BOOLEAN,
+                        text: "Connected to [ID]?",
+                        arguments: {
+                            ID: {
+                                type: Scratch2.ArgumentType.STRING,
+                                defaultValue: "B"
+                            },
+                        }
+                    },
+                    "---",
+                    {
                         opcode: "whenPeerConnects",
                         blockType: Scratch2.BlockType.EVENT,
                         isEdgeActivated: false,
@@ -281,6 +293,18 @@ function ULID() {
                         opcode: "readNewestPeerConnected",
                         blockType: Scratch2.BlockType.REPORTER,
                         text: "Newest peer connected",
+                    },
+                    {
+                        opcode: "whenSpecificPeerConnects",
+                        blockType: Scratch2.BlockType.EVENT,
+                        isEdgeActivated: false,
+                        text: "When peer [ID] connects",
+                        arguments: {
+                            ID: {
+                                type: Scratch2.ArgumentType.STRING,
+                                defaultValue: "B"
+                            },
+                        }
                     },
                     {
                         opcode: "connectToPeer",
@@ -307,9 +331,10 @@ function ULID() {
                         text: "Last peer disconnected",
                     },
                     {
-                        opcode: "isOtherPeerConnected",
-                        blockType: Scratch2.BlockType.BOOLEAN,
-                        text: "Connected to [ID]?",
+                        opcode: "whenSpecificPeerDisconnects",
+                        blockType: Scratch2.BlockType.EVENT,
+                        isEdgeActivated: false,
+                        text: "When peer [ID] disconnects",
                         arguments: {
                             ID: {
                                 type: Scratch2.ArgumentType.STRING,
@@ -496,7 +521,7 @@ function ULID() {
 
         async handleChannelData(conn, chan, data) {
             const self = this;
-            console.log("Channel " + chan.label + " data with peer " + conn.peer + ":", data);
+            // console.log("Channel " + chan.label + " data with peer " + conn.peer + ":", data);
             const { opcode, payload } = data;
             switch (opcode) {
                 case "P_MSG":
@@ -569,6 +594,7 @@ function ULID() {
                 if (conn.label === "default") {
                     self.newestConnected = conn.peer;
                     self.vm.runtime.startHats("peerjs_whenPeerConnects");
+                    self.vm.runtime.startHats("peerjs_whenSpecificPeerConnects");
                 }
             })
     
@@ -581,6 +607,7 @@ function ULID() {
                         self.voiceConnections.get(conn.peer).call.close();
                     }
                     self.vm.runtime.startHats("peerjs_whenPeerDisconnects");
+                    self.vm.runtime.startHats("peerjs_whenSpecificPeerDisconnects");
                 }
             })
     
@@ -620,7 +647,7 @@ function ULID() {
                                 urls: "turn:vpn.mikedev101.cc:5349",
                                 username: "free",
                                 credential: "free"
-                            },
+                            }, 
                         ]
                     },
                     debug: 2,
@@ -766,19 +793,20 @@ function ULID() {
             });
         }
 
-        sendMessageToPeer({MESSAGE, ID, CHANNEL}) {
+        async sendMessageToPeer({MESSAGE, ID, CHANNEL}) {
             const self = this;
             if (!self.peer) return;
+            if (!self.dataConnections.has(ID)) return;
             const conn = self.dataConnections.get(ID);
-            if (!conn) return;
-            if (!conn.channels.has(CHANNEL)) {
-                console.warn("Channel " + CHANNEL + " does not exist for peer " + ID);
-                return;
-            }
-            conn.channels.get(CHANNEL).chan.send(JSON.stringify({
-                opcode: "P_MSG",
-                payload: MESSAGE,
-            }));
+            if (!conn.channels.has(CHANNEL)) return;
+            return new Promise((resolve) => {
+                const packet = JSON.stringify({
+                    opcode: "P_MSG",
+                    payload: MESSAGE,
+                });
+                conn.channels.get(CHANNEL).chan.send(packet);
+                resolve();
+            })
         }
 
         disconnectPeer() {
@@ -808,6 +836,16 @@ function ULID() {
         whenPeerGetsMessage({ID, CHANNEL}) {
             const self = this;
             return self.doesPeerHaveChannel({ID, CHANNEL});
+        }
+
+        whenSpecificPeerConnects({ID}) {
+            const self = this;
+            return self.isOtherPeerConnected({ID});
+        }
+
+        whenSpecificPeerDisconnects({ID}) {
+            const self = this;
+            return !self.isOtherPeerConnected({ID});
         }
 
         doesPeerHaveChannel({ID, CHANNEL}) {
@@ -930,5 +968,6 @@ function ULID() {
 
     // Register the extension after the PeerJS library has loaded
     const extension = new Extension(Scratch2.vm);
+    console.log(extension);
 	Scratch2.extensions.register(extension);
 })(Scratch);
