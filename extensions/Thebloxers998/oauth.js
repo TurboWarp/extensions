@@ -188,6 +188,9 @@
 
                 const tokens = await tokenResponse.json();
                 this.tokens[service] = tokens;
+
+                // Await for a token response
+                await tokenResponse;
             }, { once: true });
         }
 
