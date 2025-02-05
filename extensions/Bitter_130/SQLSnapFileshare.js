@@ -83,8 +83,14 @@
     }
 
     setServerURL(args) {
-      args.URL = Scratch.Cast.toString(args.URL);
-      this.serverURL = args.URL;
+      try {
+        args.URL = Scratch.Cast.toString(args.URL);
+        new URL(args.URL);
+        this.serverURL = args.URL;
+      } catch {
+        console.error("Invalid server URL", args.URL);
+        this.serverURL = "https://snapextensions.uni-goettingen.de/handleTextfile.php";
+      }
     }
 
     async saveToServer(args) {
@@ -133,8 +139,7 @@
     }
 
     fits(args) {
-      args.DATA = Scratch.Cast.toString(args.DATA);
-      return args.DATA.length < 10001;
+      return Scratch.Cast.toString(args.DATA).length <= 10000;
     }
 
     async deleteFromServer(args) {
