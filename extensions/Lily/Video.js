@@ -3,6 +3,7 @@
 // Description: Play videos from URLs.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // By: SharkPool
+// By: Fath11 <https://scratch.mit.edu/users/fath11/>
 // License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
