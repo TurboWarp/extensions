@@ -129,8 +129,7 @@
       return sum / numbers.length;
     }
 
-    // Spread is not used due to overflow. Code from below.
-    // https://github.com/TurboWarp/extensions/pull/1907/commits/a262bb202fd92aff9b3b38eb3f648ff1b485692d
+    // Spread is not used due to overflow.
     maximum(args) {
       const numbers = Scratch.Cast.toString(args.NUMBERS)
         .split(" ")
