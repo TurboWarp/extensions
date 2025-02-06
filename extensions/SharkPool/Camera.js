@@ -634,7 +634,9 @@
     targetCamera(args, util) {
       const target = this.getTarget(args.TARGET, util);
       if (!target) return "";
-      return render._allDrawables[target.drawableID][cameraSymbol]?.name || "default";
+      return (
+        render._allDrawables[target.drawableID][cameraSymbol]?.name || "default"
+      );
     }
 
     setSpaceColor(args) {
