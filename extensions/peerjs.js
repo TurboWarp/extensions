@@ -201,6 +201,20 @@
           },
           "---",
           {
+            opcode: "enableVerboseLogs",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "enable verbose browser console logs? [VERBOSE]",
+            ),
+            arguments: {
+              VERBOSE: {
+                type: Scratch.ArgumentType.BOOLEAN,
+                defaultValue: false,
+              },
+            },
+          },
+          "---",
+          {
             opcode: "whenPeerCreated",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
@@ -625,6 +639,10 @@
       return this.ulidGenerator();
     }
 
+    enableVerboseLogs({ VERBOSE }) {
+      this.verboseLogs = Scratch.Cast.toBoolean(VERBOSE);
+    }
+
     createPeer({ ID }) {
       this.peer = new Peer(Scratch.Cast.toString(ID), {
         config: {
@@ -651,7 +669,8 @@
             },
           ],
         },
-        debug: 2,
+        // Only enable verbose logs if the user wants it - This can get very laggy if left enabled by accident
+        debug: this.verboseLogs ? 3 : 2
       });
 
       this.peer.errorInfo = "";
