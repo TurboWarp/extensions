@@ -1,6 +1,6 @@
 // Name: PeerJS
 // ID: mikedevpeerjs
-// Description: A port of the PeerJS library for Scratch.
+// Description: Use PeerJS in your projects.
 // By: MikeDEV <https://scratch.mit.edu/users/MikeDEVTheDucklord/>
 // License: MIT
 
