@@ -129,18 +129,38 @@
       return sum / numbers.length;
     }
 
+    // Spread is not used due to overflow. Code from below.
+    // https://github.com/TurboWarp/extensions/pull/1907/commits/a262bb202fd92aff9b3b38eb3f648ff1b485692d
     maximum(args) {
       const numbers = Scratch.Cast.toString(args.NUMBERS)
         .split(" ")
         .map(Number);
-      return Math.max(...numbers);
+      let max = 0;
+      for (
+        let i = numbers.length - 1, num = numbers[i];
+        i >= 0;
+        i--, num = numbers[i]
+      ) {
+        if (num < max) continue;
+        max = num;
+      }
+      return max;
     }
 
     minimum(args) {
       const numbers = Scratch.Cast.toString(args.NUMBERS)
         .split(" ")
         .map(Number);
-      return Math.min(...numbers);
+      let min = Infinity;
+      for (
+        let i = list.length - 1, num = list[i];
+        i >= 0;
+        i--, num = list[i]
+      ) {
+        if (num > min) continue;
+        min = num;
+      }
+      return min;
     }
 
     median(args) {
