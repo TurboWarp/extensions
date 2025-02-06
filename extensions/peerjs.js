@@ -881,16 +881,18 @@
 
     async requestMicPerms() {
       if (this.hasMicPerms || this.myVoiceStream) return;
-      await navigator.mediaDevices
-        .getUserMedia({ audio: true })
-        .then((stream) => {
-          this.myVoiceStream = stream;
-          this.hasMicPerms = true;
-        })
-        .catch((e) => {
-          console.warn(`Failed to get microphone permission. ${e}`);
-          this.hasMicPerms = false;
-        });
+      if (Scratch.canRecordAudio()) {
+        await navigator.mediaDevices
+          .getUserMedia({ audio: true })
+          .then((stream) => {
+            this.myVoiceStream = stream;
+            this.hasMicPerms = true;
+          })
+          .catch((e) => {
+            console.warn(`Failed to get microphone permission. ${e}`);
+            this.hasMicPerms = false;
+          });
+      }
     }
 
     async callPeer({ ID }) {
