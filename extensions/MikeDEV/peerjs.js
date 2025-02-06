@@ -204,7 +204,7 @@
             opcode: "enableVerboseLogs",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "enable verbose browser console logs? [VERBOSE]",
+              "enable verbose browser console logs? [VERBOSE]"
             ),
             arguments: {
               VERBOSE: {
@@ -419,7 +419,7 @@
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
             text: Scratch.translate(
-              "when I get a message from peer [ID] in channel [CHANNEL]",
+              "when I get a message from peer [ID] in channel [CHANNEL]"
             ),
             arguments: {
               ID: {
@@ -437,7 +437,7 @@
             opcode: "readMessageFromPeer",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "message from peer [ID] in channel [CHANNEL]",
+              "message from peer [ID] in channel [CHANNEL]"
             ),
             arguments: {
               ID: {
@@ -469,7 +469,7 @@
             opcode: "sendMessageToPeer",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "send [MESSAGE] to peer [ID] using channel [CHANNEL]",
+              "send [MESSAGE] to peer [ID] using channel [CHANNEL]"
             ),
             arguments: {
               MESSAGE: {
@@ -490,7 +490,7 @@
             opcode: "openNewPeerChannel",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "open a new channel [CHANNEL] with peer [ID] and require messages to be ordered? [ORDERED]",
+              "open a new channel [CHANNEL] with peer [ID] and require messages to be ordered? [ORDERED]"
             ),
             arguments: {
               ID: {
@@ -523,7 +523,7 @@
     handleChannelError(conn, chan, err) {
       console.warn(
         "Channel " + chan.label + " error with peer " + conn.peer + ":",
-        err,
+        err
       );
       this.peer.errorInfo = err;
       Scratch.vm.runtime.startHats("mikedevpeerjs_whenPeerError");
@@ -546,7 +546,7 @@
               "Attempted to call NEW_CHAN on non-default channel " +
                 chan.label +
                 " with peer " +
-                conn.peer,
+                conn.peer
             );
             return;
           }
@@ -606,7 +606,7 @@
           this.newestConnected = conn.peer;
           Scratch.vm.runtime.startHats("mikedevpeerjs_whenPeerConnects");
           Scratch.vm.runtime.startHats(
-            "mikedevpeerjs_whenSpecificPeerConnects",
+            "mikedevpeerjs_whenSpecificPeerConnects"
           );
         }
       });
@@ -621,7 +621,7 @@
           }
           Scratch.vm.runtime.startHats("mikedevpeerjs_whenPeerDisconnects");
           Scratch.vm.runtime.startHats(
-            "mikedevpeerjs_whenSpecificPeerDisconnects",
+            "mikedevpeerjs_whenSpecificPeerDisconnects"
           );
         }
       });
@@ -670,7 +670,7 @@
           ],
         },
         // Only enable verbose logs if the user wants it - This can get very laggy if left enabled by accident
-        debug: this.verboseLogs ? 3 : 2
+        debug: this.verboseLogs ? 3 : 2,
       });
 
       this.peer.errorInfo = "";
@@ -801,7 +801,7 @@
               label: CHANNEL,
               ordered: ORDERED,
             },
-          }),
+          })
         );
       });
     }
@@ -910,10 +910,10 @@
         async () => {
           const call = await this.peer.call(
             Scratch.Cast.toString(ID),
-            this.myVoiceStream,
+            this.myVoiceStream
           );
           this.handleCall(Scratch.Cast.toString(ID), call);
-        },
+        }
       );
     }
 
@@ -937,7 +937,7 @@
         async () => {
           call.answer(this.myVoiceStream);
           this.handleCall(Scratch.Cast.toString(ID), call);
-        },
+        }
       );
     }
 
