@@ -1071,7 +1071,7 @@
       const listLength = list.length;
       switch (Scratch.Cast.toString(args.analysis)) {
         case "maximum": {
-          let max = 0;
+          let max = -Infinity;
           for (
             let i = list.length - 1, num = list[i];
             i >= 0;
