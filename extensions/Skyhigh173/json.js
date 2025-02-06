@@ -1070,10 +1070,22 @@
       list = list.map(Scratch.Cast.toNumber);
       const listLength = list.length;
       switch (Scratch.Cast.toString(args.analysis)) {
-        case "maximum":
-          return Math.max(...list);
-        case "minimum":
-          return Math.min(...list);
+        case "maximum": {
+          let max = 0;
+          for (let i = list.length - 1, num = list[i]; i >= 0; i--, num = list[i]) {
+            if (num < max) continue;
+            max = num;
+          }
+          return max;
+        };
+        case "minimum": {
+          let min = Infinity;
+          for (let i = list.length - 1, num = list[i]; i >= 0; i--, num = list[i]) {
+            if (num > min) continue;
+            min = num;
+          }
+          return min;
+        };
         case "sum":
           return list.reduce((a, b) => a + b, 0);
         case "average":
