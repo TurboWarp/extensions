@@ -1069,34 +1069,43 @@
       }
       list = list.map(Scratch.Cast.toNumber);
       const listLength = list.length;
-      switch(Scratch.Cast.toString(args.analysis)) {
-        case "maximum": return Math.max(...list);
-        case "minimum": return Math.min(...list);
-        case "sum": return list.reduce((a, b) => a + b, 0);
-        case "average": return list.reduce((a, b) => a + b, 0) / listLength;
+      switch (Scratch.Cast.toString(args.analysis)) {
+        case "maximum":
+          return Math.max(...list);
+        case "minimum":
+          return Math.min(...list);
+        case "sum":
+          return list.reduce((a, b) => a + b, 0);
+        case "average":
+          return list.reduce((a, b) => a + b, 0) / listLength;
         case "median": {
           const list2 = list.sort(Scratch.Cast.compare);
           const list2Length = list2.length;
           const c = Math.floor(list2Length / 2);
-          const e = (list2Length % 2) === 0;
-          if (e) return (list2[c-1] + list2[c]) / 2;
+          const e = list2Length % 2 === 0;
+          if (e) return (list2[c - 1] + list2[c]) / 2;
           return list2[c];
-        };
+        }
         case "mode": {
-          const freqMap = new Map(), mode = [0, 0]; // current mode, max
-          for (let i = 0, num = list[0], count = null; i < listLength; i++, num = list[i], count = freqMap.get(num)) {
+          const freqMap = new Map(),
+            mode = [0, 0]; // current mode, max
+          for (
+            let i = 0, num = list[0], count = null;
+            i < listLength;
+            i++, num = list[i], count = freqMap.get(num)
+          ) {
             count ||= 1;
             if (freqMap.has(num)) ++count;
-            if (count > mode[1]) mode[0] = num, mode[1] = count;
+            if (count > mode[1]) (mode[0] = num), (mode[1] = count);
             freqMap.set(num, count);
           }
           return mode[0];
-        };
+        }
         case "variance": {
-          const average = list.reduce((a, b) => (a + b), 0) / listLength;
+          const average = list.reduce((a, b) => a + b, 0) / listLength;
           const list2 = list.map((a) => (a - average) ** 2);
-          return list2.reduce((a, b) => (a + b), 0) / listLength;
-         };
+          return list2.reduce((a, b) => a + b, 0) / listLength;
+        }
       }
       return 0;
     }
