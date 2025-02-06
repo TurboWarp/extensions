@@ -136,7 +136,8 @@
         .split(" ")
         .map(Number);
       let max = -Infinity;
-      for (let i = 0; i < numbers.length; i++) if (numbers[i] > max) max = numbers[i];
+      for (let i = 0; i < numbers.length; i++)
+        if (numbers[i] > max) max = numbers[i];
       return max;
     }
 
@@ -145,7 +146,8 @@
         .split(" ")
         .map(Number);
       let min = Infinity;
-      for (let i = 0; i < numbers.length; i++) if (numbers[i] < min) min = numbers[i];
+      for (let i = 0; i < numbers.length; i++)
+        if (numbers[i] < min) min = numbers[i];
       return min;
     }
 
