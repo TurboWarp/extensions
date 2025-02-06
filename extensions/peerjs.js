@@ -40,14 +40,14 @@
   // Require the browser to support WebRTC (used for connectivity)
   if (!RTCPeerConnection) {
     alert(
-      "The PeerJS extension could not detect WebRTC support; this extension won't work properly.",
+      "The PeerJS extension could not detect WebRTC support; this extension won't work properly."
     );
   }
 
   // Require browser to support Web Locks API (used for concurrency)
   if (!navigator.locks) {
     alert(
-      "The PeerJS extension could not detect Web Locks support; this extension won't work properly.",
+      "The PeerJS extension could not detect Web Locks support; this extension won't work properly."
     );
   }
 
@@ -534,7 +534,7 @@
     handleChannelError(conn, chan, err) {
       console.warn(
         "Channel " + chan.label + " error with peer " + conn.peer + ":",
-        err,
+        err
       );
       this.peer.errorInfo = err;
       Scratch.vm.runtime.startHats("mikedevpeerjs_whenPeerError");
@@ -556,7 +556,7 @@
               "Attempted to call NEW_CHAN on non-default channel " +
                 chan.label +
                 " with peer " +
-                conn.peer,
+                conn.peer
             );
             return;
           }
@@ -616,7 +616,7 @@
           this.newestConnected = conn.peer;
           Scratch.vm.runtime.startHats("mikedevpeerjs_whenPeerConnects");
           Scratch.vm.runtime.startHats(
-            "mikedevpeerjs_whenSpecificPeerConnects",
+            "mikedevpeerjs_whenSpecificPeerConnects"
           );
         }
       });
@@ -631,7 +631,7 @@
           }
           Scratch.vm.runtime.startHats("mikedevpeerjs_whenPeerDisconnects");
           Scratch.vm.runtime.startHats(
-            "mikedevpeerjs_whenSpecificPeerDisconnects",
+            "mikedevpeerjs_whenSpecificPeerDisconnects"
           );
         }
       });
@@ -796,7 +796,7 @@
               label: CHANNEL,
               ordered: ORDERED,
             },
-          }),
+          })
         );
       });
     }
@@ -900,7 +900,7 @@
         async () => {
           const call = await this.peer.call(ID, this.myVoiceStream);
           this.handleCall(ID, call);
-        },
+        }
       );
     }
 
@@ -924,7 +924,7 @@
         async () => {
           call.answer(this.myVoiceStream);
           this.handleCall(ID, call);
-        },
+        }
       );
     }
 
