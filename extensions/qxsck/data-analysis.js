@@ -135,7 +135,7 @@
       const numbers = Scratch.Cast.toString(args.NUMBERS)
         .split(" ")
         .map(Number);
-      let max = 0;
+      let max = -Infinity;
       for (
         let i = numbers.length - 1, num = numbers[i];
         i >= 0;
