@@ -153,9 +153,9 @@
         .map(Number);
       let min = Infinity;
       for (
-        let i = list.length - 1, num = list[i];
+        let i = numbers.length - 1, num = numbers[i];
         i >= 0;
-        i--, num = list[i]
+        i--, num = numbers[i]
       ) {
         if (num > min) continue;
         min = num;
