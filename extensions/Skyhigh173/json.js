@@ -1072,26 +1072,14 @@
       switch (Scratch.Cast.toString(args.analysis)) {
         case "maximum": {
           let max = -Infinity;
-          for (
-            let i = list.length - 1, num = list[i];
-            i >= 0;
-            i--, num = list[i]
-          ) {
-            if (num < max) continue;
-            max = num;
-          }
+          for (let i = 0; i < list.length; i++)
+            if (list[i] > max) max = list[i];
           return max;
         }
         case "minimum": {
           let min = Infinity;
-          for (
-            let i = list.length - 1, num = list[i];
-            i >= 0;
-            i--, num = list[i]
-          ) {
-            if (num > min) continue;
-            min = num;
-          }
+          for (let i = 0; i < list.length; i++)
+            if (list[i] < min) min = list[i];
           return min;
         }
         case "sum":
