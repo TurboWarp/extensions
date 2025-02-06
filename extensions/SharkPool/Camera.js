@@ -574,6 +574,7 @@
     }
 
     getTarget(name, util) {
+      name = Cast.toString(name);
       if (name === "_all_") return "_all_";
       else if (name === "_stage_") return runtime.getTargetForStage();
       else if (name === "_myself_") return util.target;
