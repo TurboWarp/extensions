@@ -5,7 +5,7 @@
 // License: MIT
 
 /*
-    PeerJS Extension for Scratch
+    PeerJS Extension
 
     MIT License
 
@@ -122,54 +122,7 @@
 
   /* eslint-disable */
   // prettier-ignore
-  function ULID() {
-        const BASE32 = [
-            '0', '1', '2', '3', '4', '5', '6', '7',
-            '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
-            'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q',
-            'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'
-        ];
-        let last = -1;
-        /* Pre-allocate work buffers / views */
-        let ulid = new Uint8Array(16);
-        let time = new DataView(ulid.buffer, 0, 6);
-        let rand = new Uint8Array(ulid.buffer, 6, 10);
-        let dest = new Array(26);
-
-        function encode(ulid) {
-            dest[0] = BASE32[ ulid[0] >> 5];
-            dest[1] = BASE32[(ulid[0] >> 0) & 0x1f];
-            for (let i = 0; i < 3; i++) {
-                dest[i*8+2] = BASE32[ ulid[i*5+1] >> 3];
-                dest[i*8+3] = BASE32[(ulid[i*5+1] << 2 | ulid[i*5+2] >> 6) & 0x1f];
-                dest[i*8+4] = BASE32[(ulid[i*5+2] >> 1) & 0x1f];
-                dest[i*8+5] = BASE32[(ulid[i*5+2] << 4 | ulid[i*5+3] >> 4) & 0x1f];
-                dest[i*8+6] = BASE32[(ulid[i*5+3] << 1 | ulid[i*5+4] >> 7) & 0x1f];
-                dest[i*8+7] = BASE32[(ulid[i*5+4] >> 2) & 0x1f];
-                dest[i*8+8] = BASE32[(ulid[i*5+4] << 3 | ulid[i*5+5] >> 5) & 0x1f];
-                dest[i*8+9] = BASE32[(ulid[i*5+5] >> 0) & 0x1f];
-            }
-            return dest.join('');
-        }
-
-        return function() {
-            let now = Date.now();
-            if (now === last) {
-                /* 80-bit overflow is so incredibly unlikely that it's not
-                    * considered as a possiblity here.
-                    */
-                for (let i = 9; i >= 0; i--)
-                    if (rand[i]++ < 255)
-                        break;
-            } else {
-                last = now;
-                time.setUint16(0, (now / 4294967296.0) | 0);
-                time.setUint32(2, now | 0);
-                window.crypto.getRandomValues(rand);
-            }
-            return encode(ulid);
-        };
-    }
+  function ULID(){let $=["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","J","K","M","N","P","Q","R","S","T","V","W","X","Y","Z"],e=-1,f=new Uint8Array(16),_=new DataView(f.buffer,0,6),n=new Uint8Array(f.buffer,6,10),t=Array(26);return function(){let r=Date.now();if(r===e)for(let o=9;o>=0&&!(n[o]++<255);o--);else e=r,_.setUint16(0,r/4294967296|0),_.setUint32(2,0|r),window.crypto.getRandomValues(n);return function e(f){t[0]=$[f[0]>>5],t[1]=$[f[0]>>0&31];for(let _=0;_<3;_++)t[8*_+2]=$[f[5*_+1]>>3],t[8*_+3]=$[(f[5*_+1]<<2|f[5*_+2]>>6)&31],t[8*_+4]=$[f[5*_+2]>>1&31],t[8*_+5]=$[(f[5*_+2]<<4|f[5*_+3]>>4)&31],t[8*_+6]=$[(f[5*_+3]<<1|f[5*_+4]>>7)&31],t[8*_+7]=$[f[5*_+4]>>2&31],t[8*_+8]=$[(f[5*_+4]<<3|f[5*_+5]>>5)&31],t[8*_+9]=$[f[5*_+5]>>0&31];return t.join("")}(f)}}
 
   class PeerJS_Scratch {
     constructor() {
@@ -197,7 +150,7 @@
             opcode: "newULID",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: Scratch.translate("generate ULID"),
+            text: Scratch.translate("generate ULID")
           },
           "---",
           {
@@ -209,44 +162,44 @@
             arguments: {
               VERBOSE: {
                 type: Scratch.ArgumentType.BOOLEAN,
-                defaultValue: false,
-              },
-            },
+                defaultValue: false
+              }
+            }
           },
           "---",
           {
             opcode: "whenPeerCreated",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text: Scratch.translate("when my peer is created"),
+            text: Scratch.translate("when my peer is created")
           },
           {
             opcode: "whenPeerDestroyed",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text: Scratch.translate("when my peer is destroyed"),
+            text: Scratch.translate("when my peer is destroyed")
           },
           {
             opcode: "whenPeerDisconnected",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text: Scratch.translate("when my peer is disconnected"),
+            text: Scratch.translate("when my peer is disconnected")
           },
           {
             opcode: "whenPeerHasError",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text: Scratch.translate("when my peer has an error"),
+            text: Scratch.translate("when my peer has an error")
           },
           {
             opcode: "readPeerErrorInfo",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("error info"),
+            text: Scratch.translate("error info")
           },
           {
             opcode: "isPeerConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("connected to PeerJS server?"),
+            text: Scratch.translate("connected to PeerJS server?")
           },
           {
             opcode: "createPeer",
@@ -255,24 +208,24 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "A",
-              },
-            },
+                defaultValue: "A"
+              }
+            }
           },
           {
             opcode: "disconnectPeer",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("disconnect from PeerJS server"),
+            text: Scratch.translate("disconnect from PeerJS server")
           },
           {
             opcode: "reconnectPeer",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("reconnect to PeerJS server"),
+            text: Scratch.translate("reconnect to PeerJS server")
           },
           {
             opcode: "destroyPeer",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("destroy PeerJS connection"),
+            text: Scratch.translate("destroy PeerJS connection")
           },
           "---",
           {
@@ -282,21 +235,21 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
-              },
-            },
+                defaultValue: "B"
+              }
+            }
           },
           "---",
           {
             opcode: "whenPeerConnects",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text: Scratch.translate("when a peer connects"),
+            text: Scratch.translate("when a peer connects")
           },
           {
             opcode: "readNewestPeerConnected",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("newest peer connected"),
+            text: Scratch.translate("newest peer connected")
           },
           {
             opcode: "whenSpecificPeerConnects",
@@ -306,9 +259,9 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
-              },
-            },
+                defaultValue: "B"
+              }
+            }
           },
           {
             opcode: "connectToPeer",
@@ -317,22 +270,22 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
-              },
-            },
+                defaultValue: "B"
+              }
+            }
           },
           "---",
           {
             opcode: "whenPeerDisconnects",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text: Scratch.translate("when a peer disconnects"),
+            text: Scratch.translate("when a peer disconnects")
           },
 
           {
             opcode: "readLastPeerDisconnected",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("last peer disconnected"),
+            text: Scratch.translate("last peer disconnected")
           },
           {
             opcode: "whenSpecificPeerDisconnects",
@@ -342,9 +295,9 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
-              },
-            },
+                defaultValue: "B"
+              }
+            }
           },
           {
             opcode: "disconnectFromPeer",
@@ -353,9 +306,9 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
-              },
-            },
+                defaultValue: "B"
+              }
+            }
           },
           "---",
           {
@@ -366,19 +319,19 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
-              },
-            },
+                defaultValue: "B"
+              }
+            }
           },
           {
             opcode: "doIHaveMicPerms",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("do I have microphone access?"),
+            text: Scratch.translate("do I have microphone access?")
           },
           {
             opcode: "requestMicPerms",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("request microphone access"),
+            text: Scratch.translate("request microphone access")
           },
           {
             opcode: "callPeer",
@@ -387,9 +340,9 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
-              },
-            },
+                defaultValue: "B"
+              }
+            }
           },
           {
             opcode: "answerPeer",
@@ -398,9 +351,9 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
-              },
-            },
+                defaultValue: "B"
+              }
+            }
           },
           {
             opcode: "hangupPeerCall",
@@ -409,9 +362,9 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
-              },
-            },
+                defaultValue: "B"
+              }
+            }
           },
           "---",
           {
@@ -424,13 +377,13 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
+                defaultValue: "B"
               },
               CHANNEL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "default",
-              },
-            },
+                defaultValue: "default"
+              }
+            }
           },
 
           {
@@ -442,13 +395,13 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
+                defaultValue: "B"
               },
               CHANNEL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "default",
-              },
-            },
+                defaultValue: "default"
+              }
+            }
           },
           {
             opcode: "doesPeerHaveChannel",
@@ -457,13 +410,13 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
+                defaultValue: "B"
               },
               CHANNEL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "blueberry",
-              },
-            },
+                defaultValue: "blueberry"
+              }
+            }
           },
           {
             opcode: "sendMessageToPeer",
@@ -474,17 +427,17 @@
             arguments: {
               MESSAGE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "hello world",
+                defaultValue: "hello world"
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
+                defaultValue: "B"
               },
               CHANNEL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "default",
-              },
-            },
+                defaultValue: "default"
+              }
+            }
           },
           {
             opcode: "openNewPeerChannel",
@@ -495,19 +448,19 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "B",
+                defaultValue: "B"
               },
               CHANNEL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "blueberry",
+                defaultValue: "blueberry"
               },
               ORDERED: {
                 type: Scratch.ArgumentType.BOOLEAN,
-                defaultValue: false,
-              },
-            },
-          },
-        ],
+                defaultValue: false
+              }
+            }
+          }
+        ]
       };
     }
 
@@ -562,7 +515,7 @@
             const newchan = conn.peerConnection.createDataChannel(label, {
               ordered: ordered,
               negotiated: true,
-              id: id,
+              id: id
             });
 
             // Synchronize channel ID counter
@@ -587,7 +540,7 @@
             // Store channel reference
             conn.channels.set(label, {
               data: "",
-              chan: newchan,
+              chan: newchan
             });
           });
           break;
@@ -656,7 +609,7 @@
             {
               urls: "turn:vpn.mikedev101.cc:3478",
               username: "free",
-              credential: "free",
+              credential: "free"
             },
             /* {
              *  urls: "stun:vpn.mikedev101.cc:5349",
@@ -665,12 +618,12 @@
             {
               urls: "turn:vpn.mikedev101.cc:5349",
               username: "free",
-              credential: "free",
-            },
-          ],
+              credential: "free"
+            }
+          ]
         },
         // Only enable verbose logs if the user wants it - This can get very laggy if left enabled by accident
-        debug: this.verboseLogs ? 3 : 2,
+        debug: this.verboseLogs ? 3 : 2
       });
 
       this.peer.errorInfo = "";
@@ -722,7 +675,7 @@
       if (this.dataConnections.has(Scratch.Cast.toString(ID))) return;
       const conn = this.peer.connect(Scratch.Cast.toString(ID), {
         label: "default",
-        reliable: true,
+        reliable: true
       });
       this.dataConnections.set(conn.peer, conn);
       conn.idCounter = 2;
@@ -767,7 +720,7 @@
         const chan = conn.peerConnection.createDataChannel(CHANNEL, {
           ordered: ORDERED,
           negotiated: true,
-          id: id,
+          id: id
         });
 
         chan.onopen = () => {
@@ -789,7 +742,7 @@
         // Store channel reference
         conn.channels.set(CHANNEL, {
           data: "",
-          chan: chan,
+          chan: chan
         });
 
         // Tell the peer about the new channel
@@ -799,8 +752,8 @@
             payload: {
               id: id,
               label: CHANNEL,
-              ordered: ORDERED,
-            },
+              ordered: ORDERED
+            }
           })
         );
       });
@@ -814,7 +767,7 @@
       return new Promise((resolve) => {
         const packet = JSON.stringify({
           opcode: "P_MSG",
-          payload: MESSAGE,
+          payload: MESSAGE
         });
         conn.channels.get(CHANNEL).chan.send(packet);
         resolve();
@@ -844,7 +797,7 @@
     whenPeerGetsMessage({ ID, CHANNEL }) {
       return this.doesPeerHaveChannel({
         ID: Scratch.Cast.toString(ID),
-        CHANNEL,
+        CHANNEL
       });
     }
 
@@ -949,7 +902,7 @@
         audio.autoplay = true;
         this.voiceConnections.set(id, {
           call: call,
-          audio: audio,
+          audio: audio
         });
         audio.play();
       });
