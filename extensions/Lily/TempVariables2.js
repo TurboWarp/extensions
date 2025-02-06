@@ -2,6 +2,7 @@
 // ID: lmsTempVars2
 // Description: Create disposable runtime or thread variables.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// By: Mio <https://scratch.mit.edu/users/0znzw/>
 // License: MIT AND LGPL-3.0
 
 (function (Scratch) {
