@@ -881,7 +881,7 @@
 
     async requestMicPerms() {
       if (this.hasMicPerms || this.myVoiceStream) return;
-      if (Scratch.canRecordAudio()) {
+      if (await Scratch.canRecordAudio()) {
         await navigator.mediaDevices
           .getUserMedia({ audio: true })
           .then((stream) => {
