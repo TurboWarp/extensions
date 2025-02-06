@@ -203,7 +203,7 @@
       // Listen for message with authorization code (assuming your app handles this securely)
       window.addEventListener(
         "message",
-        async (event) => {
+        (event) => {
           if (event.origin !== window.location.origin) return;
 
           const authorizationCode = event.data.code;
