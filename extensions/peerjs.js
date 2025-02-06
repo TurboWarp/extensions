@@ -179,6 +179,7 @@
       this.newestConnected = "";
       this.lastDisconnected = "";
       this.hasMicPerms = false;
+      this.verboseLogs = false;
       this.ringingPeers = new Map();
       this.ulidGenerator = new ULID();
       this.myVoiceStream;
@@ -196,7 +197,7 @@
             opcode: "newULID",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: Scratch.translate("generate") + " ULID",
+            text: Scratch.translate("generate ULID"),
           },
           "---",
           {
@@ -236,7 +237,7 @@
           {
             opcode: "createPeer",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("connect to PeerJS as") + " [ID]",
+            text: Scratch.translate("connect to PeerJS as [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -263,7 +264,7 @@
           {
             opcode: "isOtherPeerConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("connected to") + " [ID]?",
+            text: Scratch.translate("connected to [ID]?"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -287,10 +288,7 @@
             opcode: "whenSpecificPeerConnects",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text:
-              Scratch.translate("when peer") +
-              " [ID] " +
-              Scratch.translate("connects"),
+            text: Scratch.translate("when peer [ID] connects"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -301,7 +299,7 @@
           {
             opcode: "connectToPeer",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("connect to") + " [ID]",
+            text: Scratch.translate("connect to [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -326,10 +324,7 @@
             opcode: "whenSpecificPeerDisconnects",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text:
-              Scratch.translate("when peer") +
-              " [ID] " +
-              Scratch.translate("disconnects"),
+            text: Scratch.translate("when peer [ID] disconnects"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -340,7 +335,7 @@
           {
             opcode: "disconnectFromPeer",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("disconnect from") + " [ID]",
+            text: Scratch.translate("disconnect from [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -353,10 +348,7 @@
             opcode: "whenPeerRings",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text:
-              Scratch.translate("when peer") +
-              " [ID] " +
-              Scratch.translate("calls me"),
+            text: Scratch.translate("when peer [ID] calls me"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -377,7 +369,7 @@
           {
             opcode: "callPeer",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("call peer") + " [ID]",
+            text: Scratch.translate("call peer [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -388,7 +380,7 @@
           {
             opcode: "answerPeer",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("accept incoming call from peer") + " [ID]",
+            text: Scratch.translate("accept incoming call from peer [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -399,8 +391,7 @@
           {
             opcode: "hangupPeerCall",
             blockType: Scratch.BlockType.COMMAND,
-            text:
-              Scratch.translate("hangup or decline call from peer") + " [ID]",
+            text: Scratch.translate("hangup or decline call from peer [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -413,11 +404,9 @@
             opcode: "whenPeerGetsMessage",
             blockType: Scratch.BlockType.EVENT,
             isEdgeActivated: false,
-            text:
-              Scratch.translate("when I get a message from peer") +
-              " [ID] " +
-              Scratch.translate("in channel") +
-              " [CHANNEL]",
+            text: Scratch.translate(
+              "when I get a message from peer [ID] in channel [CHANNEL]",
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -433,11 +422,9 @@
           {
             opcode: "readMessageFromPeer",
             blockType: Scratch.BlockType.REPORTER,
-            text:
-              Scratch.translate("message from peer") +
-              " [ID] " +
-              Scratch.translate("in channel") +
-              " [CHANNEL]",
+            text: Scratch.translate(
+              "message from peer [ID] in channel [CHANNEL]",
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -452,11 +439,7 @@
           {
             opcode: "doesPeerHaveChannel",
             blockType: Scratch.BlockType.BOOLEAN,
-            text:
-              Scratch.translate("does") +
-              " [ID] " +
-              Scratch.translate("have channel") +
-              " [CHANNEL]?",
+            text: Scratch.translate("does [ID] have channel [CHANNEL]?"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -471,13 +454,9 @@
           {
             opcode: "sendMessageToPeer",
             blockType: Scratch.BlockType.COMMAND,
-            text:
-              Scratch.translate("send") +
-              " [MESSAGE] " +
-              Scratch.translate("to peer") +
-              " [ID] " +
-              Scratch.translate("using channel") +
-              " [CHANNEL]",
+            text: Scratch.translate(
+              "send [MESSAGE] to peer [ID] using channel [CHANNEL]",
+            ),
             arguments: {
               MESSAGE: {
                 type: Scratch.ArgumentType.STRING,
@@ -496,13 +475,9 @@
           {
             opcode: "openNewPeerChannel",
             blockType: Scratch.BlockType.COMMAND,
-            text:
-              Scratch.translate("open a new channel") +
-              " [CHANNEL] " +
-              Scratch.translate("with peer") +
-              " [ID] " +
-              Scratch.translate("and enforce order?") +
-              " [ORDERED]",
+            text: Scratch.translate(
+              "open a new channel [CHANNEL] with peer [ID] and require messages to be ordered? [ORDERED]",
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -534,7 +509,7 @@
     handleChannelError(conn, chan, err) {
       console.warn(
         "Channel " + chan.label + " error with peer " + conn.peer + ":",
-        err
+        err,
       );
       this.peer.errorInfo = err;
       Scratch.vm.runtime.startHats("mikedevpeerjs_whenPeerError");
@@ -542,6 +517,7 @@
 
     async handleChannelData(conn, chan, data) {
       const { opcode, payload } = data;
+      if (this.verboseLogs) console.log(conn.peer, chan.label, data);
       switch (opcode) {
         // TODO: implement other opcodes based on the CL5 spec
 
@@ -556,7 +532,7 @@
               "Attempted to call NEW_CHAN on non-default channel " +
                 chan.label +
                 " with peer " +
-                conn.peer
+                conn.peer,
             );
             return;
           }
@@ -616,7 +592,7 @@
           this.newestConnected = conn.peer;
           Scratch.vm.runtime.startHats("mikedevpeerjs_whenPeerConnects");
           Scratch.vm.runtime.startHats(
-            "mikedevpeerjs_whenSpecificPeerConnects"
+            "mikedevpeerjs_whenSpecificPeerConnects",
           );
         }
       });
@@ -631,7 +607,7 @@
           }
           Scratch.vm.runtime.startHats("mikedevpeerjs_whenPeerDisconnects");
           Scratch.vm.runtime.startHats(
-            "mikedevpeerjs_whenSpecificPeerDisconnects"
+            "mikedevpeerjs_whenSpecificPeerDisconnects",
           );
         }
       });
@@ -650,20 +626,24 @@
     }
 
     createPeer({ ID }) {
-      this.peer = new Peer(ID, {
+      this.peer = new Peer(Scratch.Cast.toString(ID), {
         config: {
+          // Disable STUN connectivity to mitigate IP leaks
+          iceTransportPolicy: "relay",
           iceServers: [
-            {
-              urls: "stun:vpn.mikedev101.cc:3478",
-            },
+            /* {
+             *  urls: "stun:vpn.mikedev101.cc:3478",
+             * },
+             */
             {
               urls: "turn:vpn.mikedev101.cc:3478",
               username: "free",
               credential: "free",
             },
-            {
-              urls: "stun:vpn.mikedev101.cc:5349",
-            },
+            /* {
+             *  urls: "stun:vpn.mikedev101.cc:5349",
+             * },
+             */
             {
               urls: "turn:vpn.mikedev101.cc:5349",
               username: "free",
@@ -677,7 +657,7 @@
       this.peer.errorInfo = "";
 
       this.peer.on("open", (id) => {
-        if (id === ID) {
+        if (id === Scratch.Cast.toString(ID)) {
           Scratch.vm.runtime.startHats("mikedevpeerjs_whenPeerCreated");
         }
       });
@@ -720,8 +700,8 @@
 
     connectToPeer({ ID }) {
       if (!this.isPeerConnected()) return;
-      if (this.dataConnections.has(ID)) return;
-      const conn = this.peer.connect(ID, {
+      if (this.dataConnections.has(Scratch.Cast.toString(ID))) return;
+      const conn = this.peer.connect(Scratch.Cast.toString(ID), {
         label: "default",
         reliable: true,
       });
@@ -733,29 +713,35 @@
 
     disconnectFromPeer({ ID }) {
       if (!this.peer) return;
-      if (!this.dataConnections.has(ID)) return;
-      this.dataConnections.get(ID).close();
+      if (!this.dataConnections.has(Scratch.Cast.toString(ID))) return;
+      this.dataConnections.get(Scratch.Cast.toString(ID)).close();
     }
 
     isOtherPeerConnected({ ID }) {
       if (!this.peer) return false;
-      if (!this.dataConnections.has(ID)) return false;
-      return !this.dataConnections.get(ID).disconnected;
+      if (!this.dataConnections.has(Scratch.Cast.toString(ID))) return false;
+      return !this.dataConnections.get(Scratch.Cast.toString(ID)).disconnected;
     }
 
     whenPeerRings({ ID }) {
-      return this.isOtherPeerConnected({ ID });
+      return this.isOtherPeerConnected({ ID: Scratch.Cast.toString(ID) });
     }
 
     async openNewPeerChannel({ ID, CHANNEL, ORDERED }) {
       if (!this.isPeerConnected()) return;
-      if (!this.dataConnections.has(ID)) return;
-      if (this.dataConnections.get(ID).channels.has(CHANNEL)) return;
+      if (!this.dataConnections.has(Scratch.Cast.toString(ID))) return;
+      if (
+        this.dataConnections
+          .get(Scratch.Cast.toString(ID))
+          .channels.has(CHANNEL)
+      )
+        return;
 
-      const lock_id = "mikedevpeerjs_" + ID + "_" + CHANNEL;
+      const lock_id =
+        "mikedevpeerjs_" + Scratch.Cast.toString(ID) + "_" + CHANNEL;
       await navigator.locks.request(lock_id, { ifAvailable: true }, () => {
         // Create a new channel with PeerJS
-        const conn = this.dataConnections.get(ID);
+        const conn = this.dataConnections.get(Scratch.Cast.toString(ID));
         const id = conn.idCounter++;
 
         // Since PeerJS doesn't natively support multiple channels, we have to create a new one manually
@@ -796,15 +782,15 @@
               label: CHANNEL,
               ordered: ORDERED,
             },
-          })
+          }),
         );
       });
     }
 
     async sendMessageToPeer({ MESSAGE, ID, CHANNEL }) {
       if (!this.peer) return;
-      if (!this.dataConnections.has(ID)) return;
-      const conn = this.dataConnections.get(ID);
+      if (!this.dataConnections.has(Scratch.Cast.toString(ID))) return;
+      const conn = this.dataConnections.get(Scratch.Cast.toString(ID));
       if (!conn.channels.has(CHANNEL)) return;
       return new Promise((resolve) => {
         const packet = JSON.stringify({
@@ -837,27 +823,30 @@
     }
 
     whenPeerGetsMessage({ ID, CHANNEL }) {
-      return this.doesPeerHaveChannel({ ID, CHANNEL });
+      return this.doesPeerHaveChannel({
+        ID: Scratch.Cast.toString(ID),
+        CHANNEL,
+      });
     }
 
     whenSpecificPeerConnects({ ID }) {
-      return this.isOtherPeerConnected({ ID });
+      return this.isOtherPeerConnected({ ID: Scratch.Cast.toString(ID) });
     }
 
     whenSpecificPeerDisconnects({ ID }) {
-      return !this.isOtherPeerConnected({ ID });
+      return !this.isOtherPeerConnected({ ID: Scratch.Cast.toString(ID) });
     }
 
     doesPeerHaveChannel({ ID, CHANNEL }) {
       if (!this.peer) return false;
-      const conn = this.dataConnections.get(ID);
+      const conn = this.dataConnections.get(Scratch.Cast.toString(ID));
       if (!conn) return false;
       return conn.channels.has(CHANNEL);
     }
 
     readMessageFromPeer({ ID, CHANNEL }) {
       if (!this.peer) return "";
-      const conn = this.dataConnections.get(ID);
+      const conn = this.dataConnections.get(Scratch.Cast.toString(ID));
       if (!conn) return "";
       if (!conn.channels.has(CHANNEL)) return "";
       return conn.channels.get(CHANNEL).data;
@@ -887,26 +876,29 @@
 
     async callPeer({ ID }) {
       if (!this.isPeerConnected()) return;
-      if (!this.dataConnections.has(ID)) return;
+      if (!this.dataConnections.has(Scratch.Cast.toString(ID))) return;
       if (!this.hasMicPerms) {
         await this.requestMicPerms();
         if (!this.hasMicPerms) return;
       }
-      if (this.voiceConnections.has(ID)) return;
-      const lock_id = "mikedevpeerjs_" + ID + "_call";
+      if (this.voiceConnections.has(Scratch.Cast.toString(ID))) return;
+      const lock_id = "mikedevpeerjs_" + Scratch.Cast.toString(ID) + "_call";
       await navigator.locks.request(
         lock_id,
         { ifAvailable: true },
         async () => {
-          const call = await this.peer.call(ID, this.myVoiceStream);
-          this.handleCall(ID, call);
-        }
+          const call = await this.peer.call(
+            Scratch.Cast.toString(ID),
+            this.myVoiceStream,
+          );
+          this.handleCall(Scratch.Cast.toString(ID), call);
+        },
       );
     }
 
     hangupPeerCall({ ID }) {
       if (this.voiceConnections.has(ID))
-        this.voiceConnections.get(ID).call.close();
+        this.voiceConnections.get(Scratch.Cast.toString(ID)).call.close();
     }
 
     async answerPeer({ ID }) {
@@ -915,16 +907,16 @@
         await this.requestMicPerms();
         if (!this.hasMicPerms) return;
       }
-      if (!this.ringingPeers.has(ID)) return;
-      const call = this.ringingPeers.get(ID);
-      const lock_id = "mikedevpeerjs_" + ID + "_call";
+      if (!this.ringingPeers.has(Scratch.Cast.toString(ID))) return;
+      const call = this.ringingPeers.get(Scratch.Cast.toString(ID));
+      const lock_id = "mikedevpeerjs_" + Scratch.Cast.toString(ID) + "_call";
       await navigator.locks.request(
         lock_id,
         { ifAvailable: true },
         async () => {
           call.answer(this.myVoiceStream);
-          this.handleCall(ID, call);
-        }
+          this.handleCall(Scratch.Cast.toString(ID), call);
+        },
       );
     }
 
