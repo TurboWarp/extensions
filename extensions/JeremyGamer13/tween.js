@@ -2,6 +2,7 @@
 // ID: jeremygamerTweening
 // Description: Easing methods for smooth animations.
 // By: JeremyGamer13 <https://scratch.mit.edu/users/JeremyGamer13/>
+// By: Fath11 <https://scratch.mit.edu/users/Fath11/>
 // License: MIT
 
 (function (Scratch) {
