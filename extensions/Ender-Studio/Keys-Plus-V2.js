@@ -619,7 +619,9 @@
           {
             opcode: "eventKeysPressed",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("[trigger] ［[keys]］ keys is pressed [ordered]"),
+            text: Scratch.translate(
+              "[trigger] ［[keys]］ keys is pressed [ordered]"
+            ),
             isEdgeActivated: false,
             arguments: {
               trigger: {
@@ -808,7 +810,9 @@
           {
             opcode: "keybindBindMultiple",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("bind ［[keys]］ keys [mode] as [trigger] to [event]"),
+            text: Scratch.translate(
+              "bind ［[keys]］ keys [mode] as [trigger] to [event]"
+            ),
             arguments: {
               keys: {
                 type: Scratch.ArgumentType.STRING,
@@ -921,65 +925,86 @@
             ],
             acceptReporters: true,
           },
-          keys: { 
-            items: "_getKeysMenu", 
-            acceptReporters: true 
+          keys: {
+            items: "_getKeysMenu",
+            acceptReporters: true,
           },
           settings: {
             items: [
-              { text: Scratch.translate("clear on blur"), value: "clearOnBlur" },
-              { text: Scratch.translate("include tags on menu"), value: "includeTags" },
+              {
+                text: Scratch.translate("clear on blur"),
+                value: "clearOnBlur",
+              },
+              {
+                text: Scratch.translate("include tags on menu"),
+                value: "includeTags",
+              },
             ],
           },
-          eventTriggerCondition: { 
+          eventTriggerCondition: {
             items: [
               { text: Scratch.translate("when"), value: "when" },
               { text: Scratch.translate("while"), value: "while" },
               { text: Scratch.translate("after"), value: "after" },
-            ] 
+            ],
           },
-          keyProperty: { 
+          keyProperty: {
             items: [
               { text: Scratch.translate("time"), value: "time" },
               { text: Scratch.translate("name"), value: "name" },
               { text: Scratch.translate("code"), value: "code" },
               { text: Scratch.translate("value"), value: "value" },
-            ] 
+            ],
           },
           returnMode: {
             items: [
-              { text: Scratch.translate("together & in order"), value: "together & in order" },
-              { text: Scratch.translate("together & ignore order"), value: "together & ignore order" },
-              { text: Scratch.translate("individually"), value: "individually" },
+              {
+                text: Scratch.translate("together & in order"),
+                value: "together & in order",
+              },
+              {
+                text: Scratch.translate("together & ignore order"),
+                value: "together & ignore order",
+              },
+              {
+                text: Scratch.translate("individually"),
+                value: "individually",
+              },
             ],
           },
           orderMode: {
             items: [
-              { text: Scratch.translate("together & in order"), value: "together & in order" },
-              { text: Scratch.translate("together & ignore order"), value: "together & ignore order" },
+              {
+                text: Scratch.translate("together & in order"),
+                value: "together & in order",
+              },
+              {
+                text: Scratch.translate("together & ignore order"),
+                value: "together & ignore order",
+              },
             ],
           },
-          toggle: { 
+          toggle: {
             items: [
               { text: Scratch.translate("enabled"), value: "enabled" },
               { text: Scratch.translate("disabled"), value: "disabled" },
-            ] 
+            ],
           },
-          data: { 
+          data: {
             items: [
               { text: Scratch.translate("all"), value: "all" },
               { text: Scratch.translate("tags"), value: "tags" },
               { text: Scratch.translate("keybinds"), value: "keybinds" },
               { text: Scratch.translate("settings"), value: "settings" },
-            ] 
+            ],
           },
-          upDown: { 
+          upDown: {
             items: [
               { text: Scratch.translate("up"), value: "up" },
               { text: Scratch.translate("down"), value: "down" },
-            ] 
+            ],
           },
-        },        
+        },
       };
     }
     // Filter
