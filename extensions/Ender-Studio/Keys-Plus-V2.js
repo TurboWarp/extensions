@@ -1,8 +1,8 @@
 // Name: Keys+ V2
 // ID: enderKeysPlusV2
 // Description: Even more powerful and flexible key press detection blocks with some additional features.
-// By: StackOverflow <https://github.com/Ender-Studio>
-// Original: StackOverflow
+// By: Ender-Studio
+// Original: Ender-Studio
 // License: MIT & LGPL-3.0
 
 (function (Scratch) {
@@ -1253,7 +1253,9 @@
     keybindBindMultiple(args) {
       const event = Cast.toString(args.event);
       const trigger = Cast.toString(args.trigger);
-      this._keybinds[event] ??= {};
+      if (!this._keybinds[event]) {
+        this._keybinds[event] = {};
+      };
       this._keybinds[event][trigger] = {
         mode: args.mode,
         keys: this._parse(args.keys),
@@ -1262,7 +1264,9 @@
     keybindBind(args) {
       const event = Cast.toString(args.event);
       const trigger = Cast.toString(args.trigger);
-      this._keybinds[event] ??= {};
+      if (!this._keybinds[event]) {
+        this._keybinds[event] = {};
+      };
       this._keybinds[event][trigger] = {
         mode: "together & in order",
         keys: [Cast.toString(args.key)],
@@ -1347,14 +1351,18 @@
       switch (args.type) {
         case "tags":
           this._tags = result.output;
+          break;
         case "keybinds":
           this._keybinds = result.output;
+          break;
         case "settings":
           this._settings = result.output;
+          break;
         case "all":
           this._tags = result.output["tags"];
           this._keybinds = result.output["keybinds"];
           this._settings = result.output["settings"];
+          break;
       }
     }
     importError() {
