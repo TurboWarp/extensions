@@ -1,6 +1,5 @@
 [
   // This file supports comments
-  "StackOverflow/keysPlusV2",
   "lab/text",
   "stretch",
   "gamepad",
@@ -32,6 +31,7 @@
   "Lily/LooksPlus",
   "Lily/MoreEvents",
   "Lily/ListTools",
+  "StackOverflow/keysPlusV2",
   "veggiecan/mobilekeyboard",
   "NexusKitten/moremotion",
   "CubesterYT/WindowControls",
