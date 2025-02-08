@@ -149,12 +149,16 @@
     const camSystem = drawable[cameraSymbol];
 
     const bounds = ogGetBubbleBounds.call(this, drawableID);
-    const realTopLeft = translatePosition([
-      bounds.left, bounds.top
-    ], true, camSystem);
-    const realBottomRight = translatePosition([
-      bounds.right, bounds.bottom
-    ], true, camSystem);
+    const realTopLeft = translatePosition(
+      [bounds.left, bounds.top],
+      true,
+      camSystem
+    );
+    const realBottomRight = translatePosition(
+      [bounds.right, bounds.bottom],
+      true,
+      camSystem
+    );
     return {
       top: realTopLeft[1],
       left: realTopLeft[0],
