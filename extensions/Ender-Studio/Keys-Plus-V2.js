@@ -3,7 +3,7 @@
 // Description: Even more powerful and flexible key press detection blocks with some additional features.
 // By: Ender-Studio
 // Original: Ender-Studio
-// License: MIT & LGPL-3.0
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -201,7 +201,7 @@
     return "_" + name.replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase();
   }
   const createLabel = (text) => ({
-    blockType: Scratch.BlockType.LABEL,
+    blockType: Scratch.translate(Scratch.BlockType.LABEL),
     text: text,
   });
 
@@ -534,7 +534,7 @@
     getInfo() {
       return {
         id: "enderKeysPlusV2",
-        name: "Keys+ V2",
+        name: Scratch.translate("Keys+ V2"),
         color1: "#647970",
         color2: "#4D5E56",
         blocks: [
@@ -542,7 +542,7 @@
           {
             opcode: "eventMouseDown",
             blockType: Scratch.BlockType.HAT,
-            text: "[trigger] [button] mouse button is down",
+            text: Scratch.translate("[trigger] [button] mouse button is down"),
             isEdgeActivated: false,
             arguments: {
               trigger: {
@@ -559,7 +559,7 @@
           {
             opcode: "isMouseDown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [button] mouse button down?",
+            text: Scratch.translate("is [button] mouse button down?"),
             arguments: {
               button: {
                 type: Scratch.ArgumentType.STRING,
@@ -570,7 +570,7 @@
           {
             opcode: "isMouseHit",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [button] mouse button clicked?",
+            text: Scratch.translate("is [button] mouse button clicked?"),
             arguments: {
               button: {
                 type: Scratch.ArgumentType.STRING,
@@ -582,7 +582,7 @@
           {
             opcode: "timeMouseDown",
             blockType: Scratch.BlockType.REPORTER,
-            text: "time [button] mouse button down",
+            text: Scratch.translate("time [button] mouse button down"),
             arguments: {
               button: {
                 type: Scratch.ArgumentType.STRING,
@@ -594,7 +594,7 @@
           {
             opcode: "eventScroll",
             blockType: Scratch.BlockType.HAT,
-            text: "when scrolling [dir]",
+            text: Scratch.translate("when scrolling [dir]"),
             isEdgeActivated: false,
             arguments: {
               dir: { type: Scratch.ArgumentType.STRING, menu: "upDown" },
@@ -603,7 +603,7 @@
           {
             opcode: "isScrolling",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is scrolling [dir]?",
+            text: Scratch.translate("is scrolling [dir]?"),
             disableMonitor: true,
             arguments: {
               dir: { type: Scratch.ArgumentType.STRING, menu: "upDown" },
@@ -613,13 +613,13 @@
           {
             opcode: "scrollDirection",
             blockType: Scratch.BlockType.REPORTER,
-            text: "scroll direction",
+            text: Scratch.translate("scroll direction"),
           },
           createLabel("Keys"),
           {
             opcode: "eventKeysPressed",
             blockType: Scratch.BlockType.HAT,
-            text: "[trigger] ［[keys]］ keys is pressed [ordered]",
+            text: Scratch.translate("[trigger] ［[keys]］ keys is pressed [ordered]"),
             isEdgeActivated: false,
             arguments: {
               trigger: {
@@ -636,7 +636,7 @@
           {
             opcode: "eventKeyPressed",
             blockType: Scratch.BlockType.HAT,
-            text: "[trigger] [key] key is pressed",
+            text: Scratch.translate("[trigger] [key] key is pressed"),
             isEdgeActivated: false,
             arguments: {
               trigger: {
@@ -650,7 +650,7 @@
           {
             opcode: "isKeysPressed",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "are ［[keys]］ keys pressed [ordered]?",
+            text: Scratch.translate("are ［[keys]］ keys pressed [ordered]?"),
             arguments: {
               ordered: { type: Scratch.ArgumentType.STRING, menu: "orderMode" },
               keys: {
@@ -662,7 +662,7 @@
           {
             opcode: "isKeyPressed",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [key] key pressed?",
+            text: Scratch.translate("is [key] key pressed?"),
             arguments: {
               key: { type: Scratch.ArgumentType.STRING, menu: "keys" },
             },
@@ -671,7 +671,7 @@
           {
             opcode: "isKeysHit",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "are ［[keys]］ keys hit [ordered]?",
+            text: Scratch.translate("are ［[keys]］ keys hit [ordered]?"),
             arguments: {
               ordered: { type: Scratch.ArgumentType.STRING, menu: "orderMode" },
               keys: {
@@ -683,7 +683,7 @@
           {
             opcode: "isKeyHit",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [key] key hit?",
+            text: Scratch.translate("is [key] key hit?"),
             arguments: {
               key: { type: Scratch.ArgumentType.STRING, menu: "keys" },
             },
@@ -692,22 +692,22 @@
           {
             opcode: "lastKeyPressed",
             blockType: Scratch.BlockType.REPORTER,
-            text: "last key pressed",
+            text: Scratch.translate("last key pressed"),
           },
           {
             opcode: "currentKeysPressed",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current keys pressed",
+            text: Scratch.translate("current keys pressed"),
           },
           {
             opcode: "currentKeyPressed",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current key pressed",
+            text: Scratch.translate("current key pressed"),
           },
           {
             opcode: "keyPressedProperty",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current key pressed [property]",
+            text: Scratch.translate("current key pressed [property]"),
             disableMonitor: true,
             arguments: {
               property: {
@@ -720,7 +720,7 @@
           {
             opcode: "timeKeysPressed",
             blockType: Scratch.BlockType.REPORTER,
-            text: "time ［[keys]］ keys pressed [mode]",
+            text: Scratch.translate("time ［[keys]］ keys pressed [mode]"),
             disableMonitor: true,
             arguments: {
               mode: { type: Scratch.ArgumentType.STRING, menu: "returnMode" },
@@ -733,7 +733,7 @@
           {
             opcode: "timeKeyPressed",
             blockType: Scratch.BlockType.REPORTER,
-            text: "time [key] key pressed",
+            text: Scratch.translate("time [key] key pressed"),
             disableMonitor: true,
             arguments: {
               key: { type: Scratch.ArgumentType.STRING, menu: "keys" },
@@ -743,7 +743,7 @@
           {
             opcode: "eventKeybindTriggered",
             blockType: Scratch.BlockType.HAT,
-            text: "[trigger] [event] is triggered",
+            text: Scratch.translate("[trigger] [event] is triggered"),
             isEdgeActivated: false,
             arguments: {
               trigger: {
@@ -752,7 +752,7 @@
               },
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
@@ -760,22 +760,22 @@
           {
             opcode: "whileKeybindTriggered",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "while [event] is triggered?",
+            text: Scratch.translate("while [event] is triggered?"),
             arguments: {
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
           {
             opcode: "whenKeybindTriggered",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "when [event] is triggered?",
+            text: Scratch.translate("when [event] is triggered?"),
             arguments: {
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
@@ -783,24 +783,24 @@
           {
             opcode: "causeKeybindTriggered",
             blockType: Scratch.BlockType.REPORTER,
-            text: "cause of [event] triggered",
+            text: Scratch.translate("cause of [event] triggered"),
             disableMonitor: true,
             arguments: {
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
           {
             opcode: "timeKeybindTriggered",
             blockType: Scratch.BlockType.REPORTER,
-            text: "time [event] is triggered",
+            text: Scratch.translate("time [event] is triggered"),
             disableMonitor: true,
             arguments: {
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
@@ -808,7 +808,7 @@
           {
             opcode: "keybindBindMultiple",
             blockType: Scratch.BlockType.COMMAND,
-            text: "bind ［[keys]］ keys [mode] as [trigger] to [event]",
+            text: Scratch.translate("bind ［[keys]］ keys [mode] as [trigger] to [event]"),
             arguments: {
               keys: {
                 type: Scratch.ArgumentType.STRING,
@@ -817,42 +817,42 @@
               mode: { type: Scratch.ArgumentType.STRING, menu: "orderMode" },
               trigger: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "trigger",
+                defaultValue: Scratch.translate("trigger"),
               },
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
           {
             opcode: "keybindBind",
             blockType: Scratch.BlockType.COMMAND,
-            text: "bind key [key] as [trigger] to [event]",
+            text: Scratch.translate("bind key [key] as [trigger] to [event]"),
             arguments: {
               key: { type: Scratch.ArgumentType.STRING, menu: "keys" },
               trigger: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "trigger",
+                defaultValue: Scratch.translate("trigger"),
               },
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
           {
             opcode: "keybindUnbind",
             blockType: Scratch.BlockType.COMMAND,
-            text: "unbind trigger [trigger] from [event]",
+            text: Scratch.translate("unbind trigger [trigger] from [event]"),
             arguments: {
               trigger: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "trigger",
+                defaultValue: Scratch.translate("trigger"),
               },
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
@@ -860,45 +860,45 @@
           {
             opcode: "keybindReset",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reset binds of [event]",
+            text: Scratch.translate("reset binds of [event]"),
             arguments: {
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
           {
             opcode: "resetAllKeybinds",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reset all keybindings",
+            text: Scratch.translate("reset all keybindings"),
           },
           "---",
           {
             opcode: "keybindListTriggers",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list triggers of [event]",
+            text: Scratch.translate("list triggers of [event]"),
             disableMonitor: true,
             arguments: {
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
           {
             opcode: "keybindKeysInTrigger",
             blockType: Scratch.BlockType.REPORTER,
-            text: "keys bound to [trigger] in [event]",
+            text: Scratch.translate("keys bound to [trigger] in [event]"),
             disableMonitor: true,
             arguments: {
               trigger: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "trigger",
+                defaultValue: Scratch.translate("trigger"),
               },
               event: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "event",
+                defaultValue: Scratch.translate("event"),
               },
             },
           },
@@ -906,139 +906,80 @@
           {
             opcode: "listAllKeybinds",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list all keybindings",
-          },
-          {
-            opcode: "listActiveKeybinds",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "list active keybindings",
-          },
-          createLabel("Tags"),
-          {
-            opcode: "createTag",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "set value of tag: #[tag] to ［[keys]］",
-            arguments: {
-              tag: { type: Scratch.ArgumentType.STRING, defaultValue: "abc" },
-              keys: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: '"a", "b", "c"',
-              },
-            },
-          },
-          "---",
-          {
-            opcode: "deleteTag",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "delete tag: #[tag]",
-            arguments: {
-              tag: { type: Scratch.ArgumentType.STRING, defaultValue: "abc" },
-            },
-          },
-          {
-            opcode: "deleteAllTags",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "delete all tags",
-          },
-          "---",
-          {
-            opcode: "valueOfTag",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "value of tag: #[tag]",
-            arguments: {
-              tag: { type: Scratch.ArgumentType.STRING, defaultValue: "abc" },
-            },
-          },
-          {
-            opcode: "listTags",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "list all tags",
-          },
-          createLabel("Storage"),
-          {
-            opcode: "import",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "import [type] from [json]",
-            arguments: {
-              type: { type: Scratch.ArgumentType.STRING, menu: "data" },
-              json: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
-            },
-          },
-          {
-            opcode: "importError",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "import error",
-          },
-          "---",
-          {
-            opcode: "export",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "export [type]",
+            text: Scratch.translate("list all keybindings"),
             disableMonitor: true,
-            arguments: {
-              type: { type: Scratch.ArgumentType.STRING, menu: "data" },
-            },
-          },
-          createLabel("Settings"),
-          {
-            opcode: "toggleSetting",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "set [setting] to [toggle]",
-            arguments: {
-              setting: { type: Scratch.ArgumentType.STRING, menu: "settings" },
-              toggle: { type: Scratch.ArgumentType.STRING, menu: "toggle" },
-            },
-          },
-          {
-            opcode: "isSettingEnabled",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [setting] enabled?",
-            disableMonitor: true,
-            arguments: {
-              setting: { type: Scratch.ArgumentType.STRING, menu: "settings" },
-            },
-          },
-          "---",
-          {
-            opcode: "resetSettings",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "reset all settings",
           },
         ],
         menus: {
           mouseButtons: {
             items: [
-              { text: "left", value: "0" },
-              { text: "scroll wheel", value: "1" },
-              { text: "right", value: "2" },
-              { text: "back", value: "3" },
-              { text: "forward", value: "4" },
+              { text: Scratch.translate("left"), value: "0" },
+              { text: Scratch.translate("scroll wheel"), value: "1" },
+              { text: Scratch.translate("right"), value: "2" },
+              { text: Scratch.translate("back"), value: "3" },
+              { text: Scratch.translate("forward"), value: "4" },
             ],
             acceptReporters: true,
           },
-          keys: { items: "_getKeysMenu", acceptReporters: true },
+          keys: { 
+            items: "_getKeysMenu", 
+            acceptReporters: true 
+          },
           settings: {
             items: [
-              { text: "clear on blur", value: "clearOnBlur" },
-              { text: "include tags on menu", value: "includeTags" },
+              { text: Scratch.translate("clear on blur"), value: "clearOnBlur" },
+              { text: Scratch.translate("include tags on menu"), value: "includeTags" },
             ],
           },
-          eventTriggerCondition: { items: ["when", "while", "after"] },
-          keyProperty: { items: ["time", "name", "code", "value"] },
+          eventTriggerCondition: { 
+            items: [
+              { text: Scratch.translate("when"), value: "when" },
+              { text: Scratch.translate("while"), value: "while" },
+              { text: Scratch.translate("after"), value: "after" },
+            ] 
+          },
+          keyProperty: { 
+            items: [
+              { text: Scratch.translate("time"), value: "time" },
+              { text: Scratch.translate("name"), value: "name" },
+              { text: Scratch.translate("code"), value: "code" },
+              { text: Scratch.translate("value"), value: "value" },
+            ] 
+          },
           returnMode: {
             items: [
-              "together & in order",
-              "together & ignore order",
-              "individually",
+              { text: Scratch.translate("together & in order"), value: "together & in order" },
+              { text: Scratch.translate("together & ignore order"), value: "together & ignore order" },
+              { text: Scratch.translate("individually"), value: "individually" },
             ],
           },
           orderMode: {
-            items: ["together & in order", "together & ignore order"],
+            items: [
+              { text: Scratch.translate("together & in order"), value: "together & in order" },
+              { text: Scratch.translate("together & ignore order"), value: "together & ignore order" },
+            ],
           },
-          toggle: { items: ["enabled", "disabled"] },
-          data: { items: ["all", "tags", "keybinds", "settings"] },
-          upDown: { items: ["up", "down"] },
-        },
+          toggle: { 
+            items: [
+              { text: Scratch.translate("enabled"), value: "enabled" },
+              { text: Scratch.translate("disabled"), value: "disabled" },
+            ] 
+          },
+          data: { 
+            items: [
+              { text: Scratch.translate("all"), value: "all" },
+              { text: Scratch.translate("tags"), value: "tags" },
+              { text: Scratch.translate("keybinds"), value: "keybinds" },
+              { text: Scratch.translate("settings"), value: "settings" },
+            ] 
+          },
+          upDown: { 
+            items: [
+              { text: Scratch.translate("up"), value: "up" },
+              { text: Scratch.translate("down"), value: "down" },
+            ] 
+          },
+        },        
       };
     }
     // Filter
