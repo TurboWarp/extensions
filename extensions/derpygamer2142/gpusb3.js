@@ -3927,6 +3927,10 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
           util
         );
       }
+
+      this.device.pushErrorScope("internal")
+      this.device.pushErrorScope("out-of-memory")
+      this.device.pushErrorScope("validation")
       this.device.queue.writeBuffer(
         resources.buffers[Scratch.Cast.toString(args.BUFFER)],
         Scratch.Cast.toNumber(args.OFF2),
@@ -3934,6 +3938,36 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         Scratch.Cast.toNumber(args.OFF1),
         Scratch.Cast.toNumber(args.SIZE)
       );
+      this.device.popErrorScope().then((error) => {
+        if (error)
+          this.throwError(
+            "BufferWriteError",
+            error.message,
+            "WriteBufferBlock",
+            error,
+            util
+          );
+      });
+      this.device.popErrorScope().then((error) => {
+        if (error)
+          this.throwError(
+            "BufferWriteError",
+            error.message,
+            "WriteBufferBlock",
+            error,
+            util
+          );
+      });
+      this.device.popErrorScope().then((error) => {
+        if (error)
+          this.throwError(
+            "BufferWriteError",
+            error.message,
+            "WriteBufferBlock",
+            error,
+            util
+          );
+      });
     }
 
     copyBufferToBuffer(args, util) {
@@ -4439,11 +4473,25 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
       });
       // todo: forgetting a lot of error handling
       this.device.popErrorScope().then((error) => {
-        
-      })
+        if (error)
+          this.throwError(
+            "CreateTextureError",
+            error.message,
+            "CreateTextureBlock",
+            error,
+            util
+          );
+      });
       this.device.popErrorScope().then((error) => {
-
-      })
+        if (error)
+          this.throwError(
+            "CreateTextureError",
+            error.message,
+            "CreateTextureBlock",
+            error,
+            util
+          );
+      });
     }
 
     textureUsage(args, util) {
@@ -4490,6 +4538,9 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         throw new Error("Texture missing - " + args.IMAGE);
       }
       const t = resources.textures[Scratch.Cast.toString(args.TEXTURE)];
+      this.device.pushErrorScope("internal")
+      this.device.pushErrorScope("out-of-memory")
+      this.device.pushErrorScope("validation")
       this.device.queue.writeTexture(
         {
           texture: t,
@@ -4498,6 +4549,36 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         { bytesPerRow: this.bytesFromFormat(t.format) * t.width }, // get the number of bytes per pixel, multiplied by the width of the row.
         { width: t.width, height: t.height }
       );
+      this.device.popErrorScope().then((error) => {
+        if (error)
+          this.throwError(
+            "WriteTextureError",
+            error.message,
+            "WriteTextureBlock",
+            error,
+            util
+          );
+      });
+      this.device.popErrorScope().then((error) => {
+        if (error)
+          this.throwError(
+            "WriteTextureError",
+            error.message,
+            "WriteTextureBlock",
+            error,
+            util
+          );
+      });
+      this.device.popErrorScope().then((error) => {
+        if (error)
+          this.throwError(
+            "WriteTextureError",
+            error.message,
+            "WriteTextureBlock",
+            error,
+            util
+          );
+      });
     }
 
     getImageList() {
@@ -4621,6 +4702,10 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         );
       }
 
+      this.device.pushErrorScope("internal")
+      this.device.pushErrorScope("out-of-memory")
+      this.device.pushErrorScope("validation")
+
       const commandEncoder = this.device.createCommandEncoder({
         label: "copyTextureToBuffer encoder",
       });
@@ -4639,6 +4724,37 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
       );
 
       this.device.queue.submit([commandEncoder.finish()]);
+
+      this.device.popErrorScope().then((error) => {
+        if (error)
+          this.throwError(
+            "CopyTextureToBufferError",
+            error.message,
+            "CopyTextureToBufferBlock",
+            error,
+            util
+          );
+      });
+      this.device.popErrorScope().then((error) => {
+        if (error)
+          this.throwError(
+            "CopyTextureToBufferError",
+            error.message,
+            "CopyTextureToBufferBlock",
+            error,
+            util
+          );
+      });
+      this.device.popErrorScope().then((error) => {
+        if (error)
+          this.throwError(
+            "CopyTextureToBufferError",
+            error.message,
+            "CopyTextureToBufferBlock",
+            error,
+            util
+          );
+      });
     }
 
     declareStruct() {
