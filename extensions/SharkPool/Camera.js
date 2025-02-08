@@ -136,7 +136,7 @@
       const drawable = render._allDrawables[this._dragTarget.drawableID];
       if (!drawable[cameraSymbol]) setupState(drawable);
       const camSystem = drawable[cameraSymbol];
-      camSystem.needsRefresh = true;
+      camSystem.needsRefresh = false;
       camSystem.ogXY = [0, 0];
     }
     ogPostSpriteInfo.call(this, data);
