@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.04
+// Version V.1.0.05
 
 (function (Scratch) {
   "use strict";
@@ -136,10 +136,35 @@
       const drawable = render._allDrawables[this._dragTarget.drawableID];
       if (!drawable[cameraSymbol]) setupState(drawable);
       const camSystem = drawable[cameraSymbol];
-      camSystem.needsRefresh = true;
+      camSystem.needsRefresh = false;
       camSystem.ogXY = [0, 0];
     }
     ogPostSpriteInfo.call(this, data);
+  };
+
+  const ogGetBubbleBounds = render.getBoundsForBubble;
+  render.getBoundsForBubble = function (drawableID) {
+    const drawable = render._allDrawables[drawableID];
+    if (!drawable[cameraSymbol]) setupState(drawable);
+    const camSystem = drawable[cameraSymbol];
+
+    const bounds = ogGetBubbleBounds.call(this, drawableID);
+    const realTopLeft = translatePosition(
+      [bounds.left, bounds.top],
+      true,
+      camSystem
+    );
+    const realBottomRight = translatePosition(
+      [bounds.right, bounds.bottom],
+      true,
+      camSystem
+    );
+
+    bounds.top = realTopLeft[1];
+    bounds.left = realTopLeft[0];
+    bounds.bottom = realBottomRight[1];
+    bounds.right = realBottomRight[0];
+    return bounds;
   };
 
   const ogUpdatePosition = render.exports.Drawable.prototype.updatePosition;
