@@ -159,12 +159,12 @@
       true,
       camSystem
     );
-    return {
-      top: realTopLeft[1],
-      left: realTopLeft[0],
-      bottom: realBottomRight[1],
-      right: realBottomRight[0],
-    };
+
+    bounds.top = realTopLeft[1];
+    bounds.left =  realTopLeft[0];
+    bounds.bottom = realBottomRight[1];
+    bounds.right = realBottomRight[0];
+    return bounds;
   };
 
   const ogUpdatePosition = render.exports.Drawable.prototype.updatePosition;
