@@ -687,7 +687,7 @@
             opcode: "listABs",
             blockType: Scratch.BlockType.REPORTER,
             text: "List arraybuffers",
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -705,7 +705,7 @@
                 defaultValue: 16,
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -726,7 +726,7 @@
                 menu: "TYPEDARRAYTYPES",
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -739,7 +739,7 @@
                 defaultValue: "myArrayBuffer",
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -756,14 +756,14 @@
                 defaultValue: 16,
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
             opcode: "listViews",
             blockType: Scratch.BlockType.REPORTER,
             text: "List views",
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -784,7 +784,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -797,7 +797,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -818,7 +818,7 @@
                 defaultValue: 255,
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -839,7 +839,7 @@
                 defaultValue: 0,
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -864,7 +864,7 @@
                 defaultValue: 3,
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -881,7 +881,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -902,7 +902,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -915,7 +915,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
@@ -932,7 +932,7 @@
                 defaultValue: "myView",
               },
             },
-            color: ARRAYBUFFERCOLOR,
+            color1: ARRAYBUFFERCOLOR,
           },
 
           {
