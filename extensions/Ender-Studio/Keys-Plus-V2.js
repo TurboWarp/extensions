@@ -1255,7 +1255,7 @@
       const trigger = Cast.toString(args.trigger);
       if (!this._keybinds[event]) {
         this._keybinds[event] = {};
-      };
+      }
       this._keybinds[event][trigger] = {
         mode: args.mode,
         keys: this._parse(args.keys),
@@ -1266,7 +1266,7 @@
       const trigger = Cast.toString(args.trigger);
       if (!this._keybinds[event]) {
         this._keybinds[event] = {};
-      };
+      }
       this._keybinds[event][trigger] = {
         mode: "together & in order",
         keys: [Cast.toString(args.key)],
