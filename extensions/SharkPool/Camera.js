@@ -161,7 +161,7 @@
     );
 
     bounds.top = realTopLeft[1];
-    bounds.left =  realTopLeft[0];
+    bounds.left = realTopLeft[0];
     bounds.bottom = realBottomRight[1];
     bounds.right = realBottomRight[0];
     return bounds;
