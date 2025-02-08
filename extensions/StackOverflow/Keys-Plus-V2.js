@@ -1,7 +1,7 @@
 // Name: Keys+ V2
 // ID: enderKeysPlusV2
 // Description: Even more powerful and flexible key press detection blocks with some additional features.
-// By: StackOverflow
+// By: StackOverflow <https://github.com/Ender-Studio>
 // Original: StackOverflow
 // License: MIT & LGPL-3.0
 
