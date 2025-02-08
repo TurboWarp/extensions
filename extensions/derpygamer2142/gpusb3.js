@@ -51,8 +51,8 @@
 
   class GPUSb3 {
     constructor() {
-      this.device = null
-      this.adapter = null
+      this.device = null;
+      this.adapter = null;
     }
 
     /**
@@ -67,13 +67,25 @@
       // @ts-ignore
       if (!navigator.gpu) {
         // why angry red lines >: (
-        return this.throwError("WebGPUUnavailable", "WebGPU is not supported", "Init", "WebGPU is unavailable in the current context", util)
+        return this.throwError(
+          "WebGPUUnavailable",
+          "WebGPU is not supported",
+          "Init",
+          "WebGPU is unavailable in the current context",
+          util
+        );
         // throw new Error("WebGPU is not supported.");
       }
       // @ts-ignore
       this.adapter = await navigator.gpu.requestAdapter();
       if (!this.adapter) {
-        return this.throwError("AdapterGetFail", "Failed to get adapter", "Init", "Failed to get a WebGPU adapter", util)
+        return this.throwError(
+          "AdapterGetFail",
+          "Failed to get adapter",
+          "Init",
+          "Failed to get a WebGPU adapter",
+          util
+        );
         // throw Error("Failed to get WebGPU adapter.");
       }
 
@@ -81,7 +93,7 @@
 
       this.device.lost.then((info) => {
         this.throwError("DeviceLost", info.message, "wgpu", info, util);
-        this.device = null // requestDevice will never return null so we need to account for that ourselves
+        this.device = null; // requestDevice will never return null so we need to account for that ourselves
       });
 
       // note to self: uncomment this on release
@@ -3327,7 +3339,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
      * @param {import("scratch-vm").BlockUtility} util util
      */
     async compileStart(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "CompileShaders", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "CompileShaders",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       util.startHats("gpusb3_compileHat"); // NOTE TO SELF: THIS DOESN'T START THE HATS THEMSELVES(why is it named that then. this is stupid and i don't like it, i am going to complain on my twitter dot com), thanks sharkpool for providing this code
       let threads = vm.runtime.threads.filter(
         (i) =>
@@ -3475,7 +3494,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
 
             if (errored) delete shaders[funcname];
           }
-        };
+        }
       }
     }
 
@@ -3486,7 +3505,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     */
 
     runGPU(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "RunShader", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "RunShader",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       // run the given shader using a bind group
       if (!Object.prototype.hasOwnProperty.call(shaders, args.GPUFUNC)) {
         return this.throwError(
@@ -3651,7 +3677,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     createBuffer(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "CreateBuffer", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "CreateBuffer",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       // essentially just device.createBuffer but with some scratch stuff
       this.device.pushErrorScope("validation");
       this.device.pushErrorScope("internal");
@@ -3696,7 +3729,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     createBindGroupLayout(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "CreateBindGroupLayout", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "CreateBindGroupLayout",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       // thanks to cst1229 for this section <3
       if (util.stackFrame.blockRanOnce) {
         this.device.pushErrorScope("validation");
@@ -3748,7 +3788,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     bindGroupLayoutEntry(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "BindGroupLayoutEntry", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "BindGroupLayoutEntry",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       let parsed;
       try {
         parsed = JSON.parse(args.DESC);
@@ -3775,7 +3822,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     createBindGroup(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "CreateBindGroup", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "CreateBindGroup",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       // thanks to cst1229 for part of this section <3
 
       if (util.stackFrame.blockRanOnce) {
@@ -3829,7 +3883,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     bindGroupEntry(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "BindGroupEntry", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "BindGroupEntry",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       const kv = {
         buffer: "buffers",
         storageTexture: "textures",
@@ -3898,7 +3959,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     continue(args, util) {}
 
     writeBuffer(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "WriteBufferBlock", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "WriteBufferBlock",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       if (
         !Object.prototype.hasOwnProperty.call(
           resources.buffers,
@@ -3928,9 +3996,9 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         );
       }
 
-      this.device.pushErrorScope("internal")
-      this.device.pushErrorScope("out-of-memory")
-      this.device.pushErrorScope("validation")
+      this.device.pushErrorScope("internal");
+      this.device.pushErrorScope("out-of-memory");
+      this.device.pushErrorScope("validation");
       this.device.queue.writeBuffer(
         resources.buffers[Scratch.Cast.toString(args.BUFFER)],
         Scratch.Cast.toNumber(args.OFF2),
@@ -3971,7 +4039,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     copyBufferToBuffer(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "CopyBufferToBufferBlock", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "CopyBufferToBufferBlock",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       if (
         Scratch.Cast.toNumber(args.NUMBYTES) <= 0 ||
         args.BUF1 === args.BUF2 ||
@@ -4023,7 +4098,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     clearBuffer(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "ClearBufferBlock", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "ClearBufferBlock",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       if (
         Scratch.Cast.toNumber(args.NUMBYTES) <= 0 &&
         Scratch.Cast.toNumber(args.NUMBYTES) !== -1
@@ -4067,7 +4149,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     async readBuffer(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "ReadBufferBlock", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "ReadBufferBlock",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       // WARNING:
       // MAY CONTAIN BAD IDEA JUICE
       // GPUMapMode.READ assumes no writing will be done
@@ -4456,21 +4545,38 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     createTexture(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "CreateTextureBlock", "Failed to run block as the connection the GPU is invalid.", util)
-      if (Scratch.Cast.toNumber(args.WIDTH) < 0 || Scratch.Cast.toNumber(args.HEIGHT) < 0) return this.throwError("InvalidDimensions", "Invalid dimensions", "CreateTextureBlock", "The provided dimensions are invalid", util)
-      this.device.pushErrorScope("validation")
-      this.device.pushErrorScope("out-of-memory")
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "CreateTextureBlock",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
+      if (
+        Scratch.Cast.toNumber(args.WIDTH) < 0 ||
+        Scratch.Cast.toNumber(args.HEIGHT) < 0
+      )
+        return this.throwError(
+          "InvalidDimensions",
+          "Invalid dimensions",
+          "CreateTextureBlock",
+          "The provided dimensions are invalid",
+          util
+        );
+      this.device.pushErrorScope("validation");
+      this.device.pushErrorScope("out-of-memory");
       resources.textures[Scratch.Cast.toString(args.NAME)] =
-      this.device.createTexture({
-        size: [
-          Scratch.Cast.toNumber(args.WIDTH),
-          Scratch.Cast.toNumber(args.HEIGHT),
-        ],
-        // @ts-expect-error
-        format: Scratch.Cast.toString(args.FORMAT),
-        usage: Scratch.Cast.toNumber(args.USAGE),
-        label: Scratch.Cast.toString(args.NAME),
-      });
+        this.device.createTexture({
+          size: [
+            Scratch.Cast.toNumber(args.WIDTH),
+            Scratch.Cast.toNumber(args.HEIGHT),
+          ],
+          // @ts-expect-error
+          format: Scratch.Cast.toString(args.FORMAT),
+          usage: Scratch.Cast.toNumber(args.USAGE),
+          label: Scratch.Cast.toString(args.NAME),
+        });
       // todo: forgetting a lot of error handling
       this.device.popErrorScope().then((error) => {
         if (error)
@@ -4519,7 +4625,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
      * @param {import("scratch-vm").BlockUtility} util
      */
     writeTexture(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "WriteTextureBlock", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "WriteTextureBlock",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       let textureData;
       // if (penPlus) {
       //  todo: pen+ costume library support?
@@ -4538,9 +4651,9 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         throw new Error("Texture missing - " + args.IMAGE);
       }
       const t = resources.textures[Scratch.Cast.toString(args.TEXTURE)];
-      this.device.pushErrorScope("internal")
-      this.device.pushErrorScope("out-of-memory")
-      this.device.pushErrorScope("validation")
+      this.device.pushErrorScope("internal");
+      this.device.pushErrorScope("out-of-memory");
+      this.device.pushErrorScope("validation");
       this.device.queue.writeTexture(
         {
           texture: t,
@@ -4660,7 +4773,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     copyTextureToBuffer(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "CopyTextureToBufferBlock", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "CopyTextureToBufferBlock",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       if (
         !Object.prototype.hasOwnProperty.call(
           resources.buffers,
@@ -4702,9 +4822,9 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
         );
       }
 
-      this.device.pushErrorScope("internal")
-      this.device.pushErrorScope("out-of-memory")
-      this.device.pushErrorScope("validation")
+      this.device.pushErrorScope("internal");
+      this.device.pushErrorScope("out-of-memory");
+      this.device.pushErrorScope("validation");
 
       const commandEncoder = this.device.createCommandEncoder({
         label: "copyTextureToBuffer encoder",
@@ -4777,7 +4897,14 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
     }
 
     copyBufferToTexture(args, util) {
-      if (!this.device) return this.throwError("InvalidDevice", "Cannot run block", "CopyBufferToTextureBlock", "Failed to run block as the connection the GPU is invalid.", util)
+      if (!this.device)
+        return this.throwError(
+          "InvalidDevice",
+          "Cannot run block",
+          "CopyBufferToTextureBlock",
+          "Failed to run block as the connection the GPU is invalid.",
+          util
+        );
       args.BUFFER = Scratch.Cast.toString(args.BUFFER);
       args.TEXTURE = Scratch.Cast.toString(args.TEXTURE);
       args.OFFSET = Scratch.Cast.toNumber(args.OFFSET);
