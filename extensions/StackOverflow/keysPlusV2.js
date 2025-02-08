@@ -148,7 +148,6 @@
             return {
                 id: "enderKeysPlusV2",
                 name: "Keys+ V2",
-                docsURI: "https://github.com/Ender-Studio/EnderStudio-Extensions/wiki/Extensions#keys",
                 color1: "#647970",
                 color2: "#4D5E56",
                 blocks: [
