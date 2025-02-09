@@ -303,7 +303,7 @@
             disableMonitor: true,
             opcode: "getProjectValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("project as [EXPORT]"),
+            text: Scratch.translate("project [EXPORT]"),
             arguments: {
               EXPORT: {
                 type: Scratch.ArgumentType.STRING,
