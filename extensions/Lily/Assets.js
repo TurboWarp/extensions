@@ -1,6 +1,8 @@
 // Name: Asset Manager
 // ID: lmsAssets
 // Description: Add, remove, and get data from various types of assets.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// By: Mio <https://scratch.mit.edu/users/0znzw/>
 // License: MIT AND LGPL-3.0
 
 // TheShovel is so epic and cool and awesome
@@ -174,9 +176,23 @@
             text: Scratch.translate("all sounds"),
           },
           {
+            // Legacy block
+            hideFromPalette: true,
             opcode: "getSpriteName",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("sprite name"),
+          },
+          {
+            disableMonitor: true,
+            opcode: "getSpriteValue",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get sprite [EXPORT]"),
+            arguments: {
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "sprite",
+              },
+            },
           },
           "---",
           {
@@ -277,9 +293,23 @@
             },
           },
           {
+            // Legacy block
+            hideFromPalette: true,
             opcode: "getProjectJSON",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("project JSON"),
+          },
+          {
+            disableMonitor: true,
+            opcode: "getProjectValue",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get project as [EXPORT]"),
+            arguments: {
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "project",
+              },
+            },
           },
           "---",
           {
@@ -327,6 +357,32 @@
               {
                 text: Scratch.translate("asset ID"),
                 value: "asset ID",
+              },
+            ],
+          },
+          project: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("JSON"),
+                value: "JSON",
+              },
+              {
+                text: Scratch.translate("dataURI"),
+                value: "dataURI",
+              },
+            ],
+          },
+          sprite: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("name"),
+                value: "name",
+              },
+              {
+                text: Scratch.translate("as dataURI"),
+                value: "dataURI",
               },
             ],
           },
@@ -525,6 +581,29 @@
       return util.target.sprite.name ?? "";
     }
 
+    getSpriteValue(args, util) {
+      const option = Cast.toString(args.EXPORT);
+      if (option === "name") {
+        return util.target.sprite.name ?? "";
+      } else if (option === "dataURI") {
+        try {
+          return new Promise((resolve) => {
+            Scratch.vm.exportSprite(util.target.id).then((blob) => {
+              const fr = new FileReader();
+              fr.onload = () => resolve(fr.result);
+              fr.onabort = () => {
+                throw new Error("Read aborted");
+              };
+              fr.readAsDataURL(blob);
+            });
+          });
+        } catch(e) {
+          console.error("Failed to export the sprite", e);
+          return "";
+        }
+      }
+    }
+
     reorderCostume(args, util) {
       const target = util.target;
       const index1 = Cast.toNumber(args.INDEX1) - 1;
@@ -632,6 +711,29 @@
 
     getProjectJSON() {
       return Scratch.vm.toJSON();
+    }
+
+    getProjectValue(args) {
+      const option = Cast.toString(args.EXPORT);
+      if (option === "JSON") {
+        return Scratch.vm.toJSON();
+      } else if (option === "dataURI") {
+        try {
+          return new Promise((resolve) => {
+            vm.saveProjectSb3().then((blob) => {
+              const fr = new FileReader();
+              fr.onload = () => resolve(fr.result);
+              fr.onabort = () => {
+                throw new Error("Read aborted");
+              };
+              fr.readAsDataURL(blob);
+            });
+          });
+        } catch(e) {
+          console.error("Failed to export the project", e);
+          return "";
+        }
+      }
     }
 
     async loadExtension(args) {
