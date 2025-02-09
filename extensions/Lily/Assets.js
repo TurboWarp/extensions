@@ -597,7 +597,7 @@
               fr.readAsDataURL(blob);
             });
           });
-        } catch(e) {
+        } catch (e) {
           console.error("Failed to export the sprite", e);
           return "";
         }
@@ -729,7 +729,7 @@
               fr.readAsDataURL(blob);
             });
           });
-        } catch(e) {
+        } catch (e) {
           console.error("Failed to export the project", e);
           return "";
         }
