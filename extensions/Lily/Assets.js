@@ -186,7 +186,7 @@
             disableMonitor: true,
             opcode: "getSpriteValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get sprite [EXPORT]"),
+            text: Scratch.translate("sprite [EXPORT]"),
             arguments: {
               EXPORT: {
                 type: Scratch.ArgumentType.STRING,
@@ -303,7 +303,7 @@
             disableMonitor: true,
             opcode: "getProjectValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get project as [EXPORT]"),
+            text: Scratch.translate("project as [EXPORT]"),
             arguments: {
               EXPORT: {
                 type: Scratch.ArgumentType.STRING,
@@ -381,7 +381,7 @@
                 value: "name",
               },
               {
-                text: Scratch.translate("as dataURI"),
+                text: Scratch.translate("dataURI"),
                 value: "dataURI",
               },
             ],
