@@ -7,7 +7,8 @@ const parseMetadata = require("./parse-extension-metadata");
 const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
 const typescript = require("typescript");
 const tsCompilerOptions = typescript.parseConfigFileTextToJson(
-  "tsconfig.json", fs.readFileSync("tsconfig.json", "utf-8")
+  "tsconfig.json",
+  fs.readFileSync("tsconfig.json", "utf-8")
 ).config;
 
 /**
@@ -141,7 +142,7 @@ class JSFile extends BuildFile {
    * @param {string} filename Path of a TS file to set the extension of
    */
   static setExtension(filename) {
-    return filename.substring(0, filename.length - 3) + ".js"
+    return filename.substring(0, filename.length - 3) + ".js";
   }
   /**
    * @param {string} absolutePath Full path to the .js file, eg. /home/.../extensions/fetch.js
@@ -825,7 +826,9 @@ class Builder {
       this.websiteRoot
     )) {
       if (filename.endsWith(".js") || filename.endsWith(".ts")) {
-        build.files[`/${JSFile.setExtension(filename)}`] = new JSFile(absolutePath);
+        build.files[`/${JSFile.setExtension(filename)}`] = new JSFile(
+          absolutePath
+        );
         continue;
       }
       build.files[`/${filename}`] = new BuildFile(absolutePath);
