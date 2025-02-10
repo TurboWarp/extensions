@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.2.5.01
+// Version V.2.5.1
 
 (function (Scratch) {
   "use strict";
@@ -67,10 +67,21 @@
           {
             opcode: "replaceColor",
             blockType: Scratch.BlockType.REPORTER,
-            text: "replace color [COLOR] with [REPLACE] from [DATA_URI]",
+            text: "replace color [COLOR] with [REPLACE] in [DATA_URI]",
             arguments: {
               COLOR: { type: Scratch.ArgumentType.COLOR },
               REPLACE: { type: Scratch.ArgumentType.COLOR, defaultValue: "#00ff00" },
+              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" }
+            }
+          },
+          {
+            opcode: "replaceColorPattern",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "replace color [COLOR] with [PATTERN] scaled [SCALE] in [DATA_URI]",
+            arguments: {
+              COLOR: { type: Scratch.ArgumentType.COLOR },
+              PATTERN: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" },
+              SCALE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue: "svg/data-uri" }
             }
           },
@@ -489,13 +500,79 @@
         const img = new Image();
         img.crossOrigin = "Anonymous";
         img.onload = () => {
+          const inRange = (val, target) => val >= target - this.softness && val <= target + this.softness;
           const pixelData = this.printImg(img);
           for (let i = 0; i < pixelData.length; i += 4) {
             const [r, g, b] = pixelData.slice(i, i + 3);
-            const inRange = (val, target) => val >= target - this.softness && val <= target + this.softness;
             if (inRange(r, colRem[0]) && inRange(g, colRem[1]) && inRange(b, colRem[2])) pixelData.set(colRep, i);
           }
           resolve(this.exportImg(img, pixelData));
+        };
+        img.src = this.convertAsset(args.DATA_URI, "png");
+      });
+    }
+
+    replaceColorPattern(args) {
+      const colRem = hexToRgb(args.COLOR);
+      const tileSize = cast.toNumber(args.SCALE);
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onload = () => {
+          const pattern = new Image();
+          pattern.crossOrigin = "Anonymous";
+          pattern.onload = () => {
+            const inRange = (val, target) => val >= target - this.softness && val <= target + this.softness;
+            const { width, height } = img;
+            const finalCanvas = document.createElement("canvas");
+            finalCanvas.width = width;
+            finalCanvas.height = height;
+            const finalCtx = finalCanvas.getContext("2d");
+
+            const ctx = this.createCanvasCtx(width, height, img, 0, 0).ctx;
+            const ogData = ctx.getImageData(0, 0, width, height);
+            const moddedData = ctx.getImageData(0, 0, width, height);
+            for (let i = 0; i < moddedData.data.length; i += 4) {
+              const r = moddedData.data[i], g = moddedData.data[i + 1], b = moddedData.data[i + 2];
+              if (inRange(r, colRem[0]) && inRange(g, colRem[1]) && inRange(b, colRem[2])) moddedData.data[i + 3] = 0;
+            }
+            finalCtx.putImageData(moddedData, 0, 0);
+
+            const maskUtil = this.createCanvasCtx(width, height, img, 0, 0);
+            const maskCanvas = maskUtil.canvas;
+            const maskCtx = maskUtil.ctx;
+            const maskData = maskCtx.createImageData(width, height);
+            for (let i = 0; i < ogData.data.length; i += 4) {
+              const r = ogData.data[i], g = ogData.data[i + 1], b = ogData.data[i + 2];
+              if (inRange(r, colRem[0]) && inRange(g, colRem[1]) && inRange(b, colRem[2])) {
+                maskData.data[i] = 255;
+                maskData.data[i + 1] = 255;
+                maskData.data[i + 2] = 255;
+                maskData.data[i + 3] = 255;
+              } else {
+                maskData.data[i] = 0;
+                maskData.data[i + 1] = 0;
+                maskData.data[i + 2] = 0;
+                maskData.data[i + 3] = 0;
+              }
+            }
+            maskCtx.putImageData(maskData, 0, 0);
+
+            const pattCanvas = document.createElement("canvas");
+            pattCanvas.width = width;
+            pattCanvas.height = height;
+            const pattCtx = pattCanvas.getContext("2d");
+            for (let y = 0; y < height; y += tileSize) {
+              for (let x = 0; x < width; x += tileSize) pattCtx.drawImage(pattern, x, y, tileSize, tileSize);
+            }
+
+            pattCtx.globalCompositeOperation = "destination-in";
+            pattCtx.drawImage(maskCanvas, 0, 0);
+            pattCtx.globalCompositeOperation = "source-over";
+            finalCtx.drawImage(pattCanvas, 0, 0);
+            resolve(finalCanvas.toDataURL());
+          };
+          pattern.src = this.convertAsset(args.PATTERN, "png");
         };
         img.src = this.convertAsset(args.DATA_URI, "png");
       });
