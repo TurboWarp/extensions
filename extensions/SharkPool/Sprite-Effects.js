@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.7.22
+// Version V.1.7.3
 
 (function (Scratch) {
   "use strict";
@@ -110,6 +110,11 @@
         color2: "#774DCB",
         menuIconURI,
         blocks: [
+          {
+            func: "applierTutorial",
+            blockType: Scratch.BlockType.BUTTON,
+            text: "How to Apply Effects"
+          },
           {
             func: "sourceSwitch",
             blockType: Scratch.BlockType.BUTTON,
@@ -539,6 +544,12 @@
     }
 
     // Helper Funcs
+    applierTutorial() {
+      alert(`With this extension, you can apply effects and filters to sprites and the canvas!
+        \nTo apply effects to sprites, you need to use the "skins" extension by LilyMakesThings or some alternative for displaying SVGs
+        \nTo apply effects to the canvas, use the "apply filter to canvas" block in this extension. Always use the "canvas" option in a block, if provided.`);
+    }
+
     canvasWarn() {
       alert(`Canvas Effects, created by TheShovel, was coded to not work with extensions like Sprite Effects,
         \nToggling Compatibility "off" will cause Sprite Effects Canvas Filters to not Work with Canvas Effects
