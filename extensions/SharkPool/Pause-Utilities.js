@@ -215,23 +215,24 @@
 
     isProjectPaused() { return runtime.ioDevices.clock._paused }
 
-    pauseSprite(args) {
+    pauseSprite(args, util) {
       const target = args.SPRITE === "Stage" ? runtime.getTargetForStage() :
         args.SPRITE === "_myself_" ? util.target :
         runtime.getSpriteTargetByName(args.SPRITE);
       if (target) this.searchThreads(target.id, 1);
     }
-    unpauseSprite(args) {
+    unpauseSprite(args, util) {
       const target = args.SPRITE === "Stage" ? runtime.getTargetForStage() :
         args.SPRITE === "_myself_" ? util.target :
         runtime.getSpriteTargetByName(args.SPRITE);
       if (target) this.searchThreads(target.id, 0);
     }
-    pauseClones(args) { this.modifyClones.call(this, args, 1) }
-    unpauseClones(args) { this.modifyClones.call(this, args, 0) }
 
-    modifyClones(args, cntrl) {
-      const target = runtime.getSpriteTargetByName(args.SPRITE);
+    pauseClones(args, util) { this.modifyClones(args, util, 1) }
+    unpauseClones(args, util) { this.modifyClones(args, util, 0) }
+    modifyClones(args, util, cntrl) {
+      const target = args.SPRITE === "_myself_" ? util.target :
+        runtime.getSpriteTargetByName(args.SPRITE);
       if (target) {
         const clones = target.sprite.clones;
         const varName = args.VAR;
