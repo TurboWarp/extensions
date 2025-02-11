@@ -3,7 +3,7 @@
 // Description: Pause the Project and certain Scripts
 // By: SharkPool
 
-// Version V.1.7.1
+// Version V.1.7.2
 
 (function (Scratch) {
   "use strict";
@@ -166,17 +166,20 @@
           }
         ],
         menus: {
-          TARGETS: { acceptReporters: true, items: this._getTargets(0) },
-          TARGETS2: { acceptReporters: true, items: this._getTargets(1) }
+          TARGETS: { acceptReporters: true, items: this._getTargets(false) },
+          TARGETS2: { acceptReporters: true, items: this._getTargets(true) }
         }
       };
     }
 
-    _getTargets(ind) {
-      const spriteNames = [];
+    _getTargets(includeStage) {
+      const spriteNames = [
+        { text: "myself", value: "_myself_" }
+      ];
+      if (includeStage) spriteNames.push({ text: "Stage", value: "Stage" });
       const targets = runtime.targets;
-      for (let index = ind; index < targets.length; index++) {
-        const target = targets[index];
+      for (let i = 1; i < targets.length; i++) {
+        const target = targets[i];
         if (target.isOriginal) spriteNames.push(target.getName());
       }
       return spriteNames.length > 0 ? spriteNames : [""];
@@ -213,11 +216,15 @@
     isProjectPaused() { return runtime.ioDevices.clock._paused }
 
     pauseSprite(args) {
-      const target = args.SPRITE === "Stage" ? runtime.getTargetForStage() : runtime.getSpriteTargetByName(args.SPRITE);
+      const target = args.SPRITE === "Stage" ? runtime.getTargetForStage() :
+        args.SPRITE === "_myself_" ? util.target :
+        runtime.getSpriteTargetByName(args.SPRITE);
       if (target) this.searchThreads(target.id, 1);
     }
     unpauseSprite(args) {
-      const target = args.SPRITE === "Stage" ? runtime.getTargetForStage() : runtime.getSpriteTargetByName(args.SPRITE);
+      const target = args.SPRITE === "Stage" ? runtime.getTargetForStage() :
+        args.SPRITE === "_myself_" ? util.target :
+        runtime.getSpriteTargetByName(args.SPRITE);
       if (target) this.searchThreads(target.id, 0);
     }
     pauseClones(args) { this.modifyClones.call(this, args, 1) }
