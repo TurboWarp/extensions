@@ -91,13 +91,13 @@ jobs:
 
           commit_failed() {
             echo "No changes to commit"
-            gh pr comment "$PR_NUM" -b "The formatting bot didn't find any formatting issues. It currently only checks the extensions folder. The author or a maintainer can run `npm run format` manually to format all files."
+            gh pr comment "$PR_NUM" -b "The formatting bot didn't find any formatting issues. It currently only checks the extensions folder. The author or a maintainer can run 'npm run format' manually to format all files."
             exit 0
           }
 
           push_failed() {
             echo "Failed to push"
-            gh pr comment "$PR_NUM" -b "The formatting bot couldn't push changes. Either maintainer edit permission is disabled or the pull request is from an organization/non-personal account. The author of the pull request can run `npm run format` manually to format all files."
+            gh pr comment "$PR_NUM" -b "The formatting bot couldn't push changes. Either maintainer edit permission is disabled or the pull request is from an organization/non-personal account. The author of the pull request can run 'npm run format' manually to format all files."
             exit 0
           }
 
