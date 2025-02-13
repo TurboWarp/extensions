@@ -1,51 +1,18 @@
 name: Format pull request
 
 on:
-  workflow_dispatch:
   issue_comment:
     types: [created]
 
 permissions: {}
 
 jobs:
-  # Handling workflow_dispatch is simple. Just checkout whatever branch it was run on.
-  # The workflow will run in that repository's context and thus can safely get write permissions.
-  manual-dispatch:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-        with:
-          # Commits made by workflow_dispatch trigger can trigger new workflows to run,
-          # so just use the default workflow token.
-          # Credentials needed for pushing changes at the end.
-          # This is already the default, but it's good to be explicit about this.
-          persist-credentials: true
-      - name: Install Node.js
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
-        with:
-          node-version: 22
-      - name: Install dependencies
-        run: npm ci
-      - name: Format
-        run: npm run format
-      - name: Commit
-        run: |
-          git config --global user.name "$GITHUB_ACTOR"
-          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git stage .
-          git commit --author "DangoCat[bot] <dangocat@users.noreply.github.com>" -m "[Automated] Format code" || echo "No changes to commit"
-      - name: Push
-        run: git push
+  # This is complicated because the action runs in the context of TurboWarp/extensions, but we
+  # are processing content from a possibly malicious pull request. To keep this safe, we break
+  # this into two stages.
 
-  # Comments are more complicated because the action runs in the context of TurboWarp/extensions but
-  # we are processing content from the possibly malicious pull request. We break this into two
-  # separate jobs.
-  # The first job downloads the pull request, formats it, and uploads the new files to an artifact.
-  # Important to have no permissions for this because the code can't be trusted.
+  # The first stage downloads the pull request, formats it, and uploads the new files to an
+  # artifact. This involves running untrusted code, so it has no permissions.
   comment-format-untrusted:
     runs-on: ubuntu-latest
     if: |
@@ -83,7 +50,8 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  # Second job downloads the artifact, extracts it, and pushes it.
+  # Second stage downloads the artifact from the first stage, extracts it, and pushes it.
+  # This stage has many more permissions, so it does not run the code from the artifact.
   comment-push:
     runs-on: ubuntu-latest
     needs: comment-format-untrusted
@@ -100,11 +68,11 @@ jobs:
           # to run that will never run.
           # Can't use a deploy key because it won't be able to access the fork that the pull
           # request is coming from.
-          # Thus we use a manually created fine-grained personal access token under the
-          # @DangoCat account.
+          # Thus we use a manually created fine-grained personal access token from a real
+          # GitHub account with write permissions for this repository.
           token: "${{ secrets.FORMAT_PR_GH_TOKEN }}"
-          # Credentials needed for pushing changes at the end.
-          # This is already the default, but it's good to be explicit about this.
+          # Credentials are needed for pushing changes at the end.
+          # This is already the default, but we'll be explicit about this.
           persist-credentials: true
       - name: Checkout pull request
         run: gh pr checkout "$PR_NUM"
@@ -123,13 +91,13 @@ jobs:
 
           commit_failed() {
             echo "No changes to commit"
-            gh pr comment "$PR_NUM" -b "The formatting bot didn't find any formatting issues. It currently only checks the extensions folder. To format all files, the pull request's author can manually run the 'Format pull request' workflow from the 'Actions' tab on the fork."
+            gh pr comment "$PR_NUM" -b "The formatting bot didn't find any formatting issues. It currently only checks the extensions folder. The author or a maintainer can run `npm run format` manually to format all files."
             exit 0
           }
 
           push_failed() {
             echo "Failed to push"
-            gh pr comment "$PR_NUM" -b "The formatting bot couldn't push changes. Either maintainer edit permission is disabled or the pull request is from a non-personal account. The pull request's author can still run the 'Format pull request' workflow from the 'Actions' tab on the fork."
+            gh pr comment "$PR_NUM" -b "The formatting bot couldn't push changes. Either maintainer edit permission is disabled or the pull request is from an organization/non-personal account. The author of the pull request can run `npm run format` manually to format all files."
             exit 0
           }
 
