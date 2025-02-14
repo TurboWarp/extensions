@@ -320,3 +320,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## CubesterYT/KeySimulation.svg
  - Created by [@SharkPool-SP](https://github.com/SharkPool-SP/)
+
+## cfupload.svg
+ - Created by [@Codefoxy](https://github.com/CodeFoxy-Github)
