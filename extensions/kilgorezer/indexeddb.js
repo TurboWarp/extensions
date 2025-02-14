@@ -60,7 +60,7 @@
           const request = objectStore.get(key);
 
           request.onsuccess = (event) =>
-            resolve(event.target.result ? event.target.result.value : '');
+            resolve(event.target.result ? event.target.result.value : "");
           request.onerror = () => reject();
         });
       });
@@ -178,7 +178,7 @@
       this.dbManager.putValue(
         prefix + "_" + args.DB_NAME,
         args.KEY,
-        args.VALUE,
+        args.VALUE
       );
     }
 
