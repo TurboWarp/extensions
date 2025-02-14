@@ -4,7 +4,7 @@
 // By: kilgorezer <https://scratch.mit.edu/users/kilgorezer/>
 // License: MPL-2.0
 
-(function (Scratch) {
+(function (Scratch, Cast) {
   "use strict";
 
   const prefix = "idb";
@@ -197,4 +197,4 @@
   }
 
   Scratch.extensions.register(new IndexedDBExtension());
-})(Scratch);
+})(Scratch, Scratch.Cast);
