@@ -167,11 +167,17 @@
     }
 
     async openDatabase(args) {
-      (await this.dbManager.openDatabase(`${prefix}_${Cast.toString(args.NAME)}`)).close();
+      (
+        await this.dbManager.openDatabase(
+          `${prefix}_${Cast.toString(args.NAME)}`
+        )
+      ).close();
     }
 
     async deleteDatabase(args) {
-      await this.dbManager.deleteDatabase(`${prefix}_${Cast.toString(args.NAME)}`);
+      await this.dbManager.deleteDatabase(
+        `${prefix}_${Cast.toString(args.NAME)}`
+      );
     }
 
     putValue(args) {
@@ -183,16 +189,28 @@
     }
 
     getValue(args) {
-      return this.dbManager.getValue(`${prefix}_${Cast.toString(args.NAME)}`, Cast.toString(args.KEY));
+      return this.dbManager.getValue(
+        `${prefix}_${Cast.toString(args.NAME)}`,
+        Cast.toString(args.KEY)
+      );
     }
 
     deleteValue(args) {
-      this.dbManager.deleteValue(`${prefix}_${Cast.toString(args.NAME)}`, Cast.toString(args.KEY));
+      this.dbManager.deleteValue(
+        `${prefix}_${Cast.toString(args.NAME)}`,
+        Cast.toString(args.KEY)
+      );
     }
 
     async clearall(args) {
-      await this.dbManager.deleteDatabase(`${prefix}_${Cast.toString(args.NAME)}`);
-      (await this.dbManager.openDatabase(`${prefix}_${Cast.toString(args.NAME)}`)).close();
+      await this.dbManager.deleteDatabase(
+        `${prefix}_${Cast.toString(args.NAME)}`
+      );
+      (
+        await this.dbManager.openDatabase(
+          `${prefix}_${Cast.toString(args.NAME)}`
+        )
+      ).close();
     }
   }
 
