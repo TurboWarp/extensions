@@ -1,5 +1,5 @@
-// Name: IndexedDB
-// ID: indexeddb
+// Name: Simplified IndexedDB
+// ID: kilgindexeddb
 // Description: Adds basic IndexedDB functionality
 // By: kilgorezer <https://scratch.mit.edu/users/kilgorezer/>
 // License: MPL-2.0
@@ -87,78 +87,78 @@
 
     getInfo() {
       return {
-        id: "indexeddb",
-        name: "IndexedDB",
+        id: "kilgindexeddb",
+        name: Scratch.translate("Simplified IndexedDB"),
         color1: "#4285F4",
         blocks: [
           {
             opcode: "openDatabase",
             blockType: Scratch.BlockType.COMMAND,
             hideFromPalette: true,
-            text: "Open/Create Database [NAME]",
+            text: `${Scratch.translate("open/create database")} [NAME]`,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myDatabase",
+                defaultValue: Scratch.translate("my database"),
               },
             },
           },
           {
             opcode: "deleteDatabase",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Delete Database [NAME]",
+            text: `${Scratch.translate("delete database")} [NAME]`,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myDatabase",
+                defaultValue: Scratch.translate("my database"),
               },
             },
           },
           {
             opcode: "putValue",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Put [KEY] : [VALUE] in Database [DB_NAME]",
+            text: `${Scratch.translate("put")} [KEY] : [VALUE] ${Scratch.translate("in database")} [NAME]`,
             arguments: {
               KEY: { type: Scratch.ArgumentType.STRING },
               VALUE: { type: Scratch.ArgumentType.STRING },
-              DB_NAME: {
+              NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myDatabase",
+                defaultValue: Scratch.translate("my database"),
               },
             },
           },
           {
             opcode: "getValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get [KEY] from Database [DB_NAME]",
+            text: `${Scratch.translate("get")} [KEY] ${Scratch.translate("from database")} [NAME]`,
             arguments: {
               KEY: { type: Scratch.ArgumentType.STRING },
-              DB_NAME: {
+              NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myDatabase",
+                defaultValue: Scratch.translate("my database"),
               },
             },
           },
           {
             opcode: "deleteValue",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Delete [KEY] from Database [DB_NAME]",
+            text: `${Scratch.translate("delete")} [KEY] ${Scratch.translate("from database")} [NAME]`,
             arguments: {
               KEY: { type: Scratch.ArgumentType.STRING },
-              DB_NAME: {
+              NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myDatabase",
+                defaultValue: Scratch.translate("my database"),
               },
             },
           },
           {
             opcode: "clearall",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Clear all keys from Database [DB_NAME]",
+            text: `${Scratch.translate("clear all keys from database")} [NAME]",
             arguments: {
-              DB_NAME: {
+              NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myDatabase",
+                defaultValue: Scratch.translate("my database"),
               },
             },
           },
@@ -167,32 +167,32 @@
     }
 
     async openDatabase(args) {
-      (await this.dbManager.openDatabase(prefix + "_" + args.NAME)).close();
+      (await this.dbManager.openDatabase(`${prefix}_${Cast.toString(args.NAME)}`)).close();
     }
 
     async deleteDatabase(args) {
-      await this.dbManager.deleteDatabase(prefix + "_" + args.NAME);
+      await this.dbManager.deleteDatabase(`${prefix}_${Cast.toString(args.NAME)}`);
     }
 
     putValue(args) {
       this.dbManager.putValue(
-        prefix + "_" + args.DB_NAME,
+        `${prefix}_${Cast.toString(args.NAME)}`,
         args.KEY,
         args.VALUE
       );
     }
 
     getValue(args) {
-      return this.dbManager.getValue(prefix + "_" + args.DB_NAME, args.KEY);
+      return this.dbManager.getValue(`${prefix}_${Cast.toString(args.NAME)}`, args.KEY);
     }
 
     deleteValue(args) {
-      this.dbManager.deleteValue(prefix + args.DB_NAME, args.KEY);
+      this.dbManager.deleteValue(`${prefix}_${Cast.toString(args.NAME)}`, args.KEY);
     }
 
     async clearall(args) {
-      await this.dbManager.deleteDatabase(prefix + args.DB_NAME);
-      (await this.dbManager.openDatabase(prefix + args.DB_NAME)).close();
+      await this.dbManager.deleteDatabase(`${prefix}_${Cast.toString(args.NAME)}`);
+      (await this.dbManager.openDatabase(`${prefix}_${Cast.toString(args.NAME)}`)).close();
     }
   }
 
