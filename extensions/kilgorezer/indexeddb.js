@@ -177,17 +177,17 @@
     putValue(args) {
       this.dbManager.putValue(
         `${prefix}_${Cast.toString(args.NAME)}`,
-        args.KEY,
-        args.VALUE
+        Cast.toString(args.KEY),
+        Cast.toString(args.VALUE)
       );
     }
 
     getValue(args) {
-      return this.dbManager.getValue(`${prefix}_${Cast.toString(args.NAME)}`, args.KEY);
+      return this.dbManager.getValue(`${prefix}_${Cast.toString(args.NAME)}`, Cast.toString(args.KEY));
     }
 
     deleteValue(args) {
-      this.dbManager.deleteValue(`${prefix}_${Cast.toString(args.NAME)}`, args.KEY);
+      this.dbManager.deleteValue(`${prefix}_${Cast.toString(args.NAME)}`, Cast.toString(args.KEY));
     }
 
     async clearall(args) {
