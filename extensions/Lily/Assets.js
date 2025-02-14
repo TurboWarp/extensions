@@ -26,6 +26,10 @@
 
   class Assets {
     getInfo() {
+      const dataURIOption = Scratch.translate({
+        default: "dataURI",
+        description: "Menu option called dataURI",
+      });
       return {
         id: "lmsAssets",
         color1: "#5779ca",
@@ -343,7 +347,7 @@
                 value: "index",
               },
               {
-                text: Scratch.translate("dataURI"),
+                text: dataURIOption,
                 value: "dataURI",
               },
               {
@@ -368,7 +372,7 @@
                 value: "JSON",
               },
               {
-                text: Scratch.translate("dataURI"),
+                text: dataURIOption,
                 value: "dataURI",
               },
             ],
@@ -381,7 +385,7 @@
                 value: "name",
               },
               {
-                text: Scratch.translate("dataURI"),
+                text: dataURIOption,
                 value: "dataURI",
               },
             ],
