@@ -154,7 +154,7 @@
           {
             opcode: "clearall",
             blockType: Scratch.BlockType.COMMAND,
-            text: `${Scratch.translate("clear all keys from database")} [NAME]",
+            text: `${Scratch.translate("clear all keys from database")} [NAME]`,
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
