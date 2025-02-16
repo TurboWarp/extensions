@@ -1,4 +1,4 @@
-// Name: Camera
+// Name: Camera V2
 // ID: SPcamera
 // Description: Move the visible part of the stage.
 // By: SharkPool
@@ -239,7 +239,7 @@
     getInfo() {
       return {
         id: "SPcamera",
-        name: Scratch.translate("Camera"),
+        name: Scratch.translate("Camera V2"),
         color1: "#517af5",
         color2: "#3460e3",
         color3: "#2851c9",
