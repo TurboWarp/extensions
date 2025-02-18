@@ -596,6 +596,10 @@
   genDefaultBox("default-popup", false);
 
   class SPpopups {
+    constructor() {
+      runtime.on("PROJECT_START", () => this.removeAllPopups());
+      runtime.on("PROJECT_STOP_ALL", () => this.removeAllPopups());
+    }
     getInfo() {
       return {
         id: "SPpopups",
