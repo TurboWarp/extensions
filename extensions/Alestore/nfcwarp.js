@@ -2,6 +2,8 @@
 // ID: alestorenfc
 // Description: Allows reading data from NFC (NDEF) devices. Only works in Chrome on Android.
 // By: Alestore Games <https://scratch.mit.edu/users/aleb2005/>
+// Context: NFC stands for "Near-field communication". Ideally check a real phone in your language to see how they translated it.
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -17,7 +19,7 @@
     getInfo() {
       return {
         id: "alestorenfc",
-        name: "NFCWarp",
+        name: Scratch.translate("NFCWarp"),
         color1: "#FF4646",
         color2: "#FF0000",
         color3: "#990033",
@@ -26,17 +28,17 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Only works in Chrome on Android",
+            text: Scratch.translate("Only works in Chrome on Android"),
           },
           {
             opcode: "supported",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "NFC supported?",
+            text: Scratch.translate("NFC supported?"),
           },
           {
             opcode: "nfcRead",
             blockType: Scratch.BlockType.REPORTER,
-            text: "read NFC tag",
+            text: Scratch.translate("read NFC tag"),
             disableMonitor: true,
           },
         ],
@@ -49,7 +51,7 @@
 
     nfcRead() {
       if (!this.supported()) {
-        return "NFC not supported";
+        return Scratch.translate("NFC not supported");
       }
       return new Promise((resolve, reject) => {
         const ndef = new NDEFReader();

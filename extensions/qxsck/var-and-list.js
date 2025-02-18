@@ -1,35 +1,18 @@
 // Name: Variable and list
 // ID: qxsckvarandlist
 // Description: More blocks related to variables and lists.
-// By: qxsck
+// By: qxsck <https://scratch.mit.edu/users/qxsck/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
-  Scratch.translate.setup({
-    zh: {
-      name: "变量与列表",
-      getVar: "[VAR] 的值",
-      seriVarsToJson: "将以 [START] 为开头的所有变量转换为json",
-      setVar: "将变量 [VAR] 的值设置为 [VALUE]",
-      getList: "列表 [LIST] 的值",
-      getValueOfList: "列表 [LIST] 的第 [INDEX] 项",
-      seriListsToJson: "将以 [START] 为开头的所有列表转换为json",
-      clearList: "清空列表 [LIST]",
-      deleteOfList: "删除列表 [LIST] 的第 [INDEX] 项",
-      addValueInList: "在列表 [LIST] 末尾添加 [VALUE]",
-      replaceOfList: "替换列表 [LIST] 的第 [INDEX] 项为 [VALUE]",
-      getIndexOfList: "列表 [LIST] 中第一个 [VALUE] 的位置",
-      getIndexesOfList: "列表 [LIST] 中 [VALUE] 的位置",
-      length: "列表 [LIST] 的长度",
-      listContains: "列表 [LIST] 包括 [VALUE] 吗？",
-      copyList: "将列表 [LIST1] 复制到列表 [LIST2]",
-    },
-  });
   class VarAndList {
     getInfo() {
       return {
         id: "qxsckvarandlist",
         name: Scratch.translate({ id: "name", default: "Variable and list" }),
+        color1: "#FF661A",
+        color2: "#EE6521",
         blocks: [
           {
             opcode: "getVar",
@@ -44,6 +27,7 @@
                 defaultValue: "variable",
               },
             },
+            extensions: ["colours_data"],
           },
           {
             opcode: "seriVarsToJson",
@@ -58,6 +42,7 @@
                 defaultValue: "variable",
               },
             },
+            extensions: ["colours_data"],
           },
           {
             opcode: "setVar",
@@ -76,6 +61,7 @@
                 defaultValue: "value",
               },
             },
+            extensions: ["colours_data"],
           },
           {
             opcode: "getList",
@@ -90,6 +76,7 @@
                 defaultValue: "list",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "getValueOfList",
@@ -108,6 +95,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "seriListsToJson",
@@ -122,6 +110,7 @@
                 defaultValue: "list",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "clearList",
@@ -136,6 +125,7 @@
                 defaultValue: "list",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "deleteOfList",
@@ -154,6 +144,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "addValueInList",
@@ -172,6 +163,7 @@
                 defaultValue: "value",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "replaceOfList",
@@ -194,6 +186,7 @@
                 defaultValue: "thing",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "getIndexOfList",
@@ -212,6 +205,7 @@
                 defaultValue: "thing",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "getIndexesOfList",
@@ -230,6 +224,7 @@
                 defaultValue: "thing",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "length",
@@ -244,6 +239,7 @@
                 defaultValue: "list",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "listContains",
@@ -262,6 +258,7 @@
                 defaultValue: "thing",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "copyList",
@@ -280,6 +277,7 @@
                 defaultValue: "list2",
               },
             },
+            extensions: ["colours_data_lists"],
           },
         ],
       };
@@ -316,6 +314,12 @@
       );
       if (variable) {
         variable.value = args.VALUE;
+        if (variable.isCloud) {
+          util.runtime.ioDevices.cloud.requestUpdateVariable(
+            variable.name,
+            variable.value
+          );
+        }
       }
     }
     getList(args, util) {
