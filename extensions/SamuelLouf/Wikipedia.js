@@ -1,7 +1,7 @@
 // Name: Wikipedia
 // ID: samuelloufwikipedia
 // Description: Allow you to fetch the content of wikipedia pages.
-// By: SamuelLouf <https://samuellouf.github.io/>
+// By: SamuelLouf <https://scratch.mit.edu/users/samuellouf/>
 // License: MPL-2.0
 
 (function (Scratch) {
