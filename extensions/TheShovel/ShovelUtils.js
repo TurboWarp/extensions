@@ -2,6 +2,8 @@
 // ID: ShovelUtils
 // Description: A bunch of miscellaneous blocks.
 // By: TheShovel
+// By: Mio <https://scratch.mit.edu/users/0znzw/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -29,7 +31,7 @@
     getInfo() {
       return {
         id: "ShovelUtils",
-        name: "ShovelUtils",
+        name: Scratch.translate("ShovelUtils"),
         color1: "#f54242",
         color2: "#f54242",
         color3: "#f54242",
@@ -38,7 +40,7 @@
           {
             opcode: "importImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import image from [TEXT] name [NAME]",
+            text: Scratch.translate("import image from [TEXT] name [NAME]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -53,7 +55,7 @@
           {
             opcode: "getlist",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get list [TEXT] as array",
+            text: Scratch.translate("list [TEXT] as array"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -64,7 +66,7 @@
           {
             opcode: "setlist",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set list [NAME] to [TEXT]",
+            text: Scratch.translate("set list [NAME] to [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -79,18 +81,18 @@
           {
             opcode: "importSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import sprite from [TEXT]",
+            text: Scratch.translate("import sprite from [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Link or data uri here",
+                defaultValue: Scratch.translate("Link or data URI here"),
               },
             },
           },
           {
             opcode: "importSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import sound from [TEXT] name [NAME]",
+            text: Scratch.translate("import sound from [TEXT] name [NAME]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -105,7 +107,7 @@
           {
             opcode: "importProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import project from [TEXT]",
+            text: Scratch.translate("import project from [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -117,7 +119,7 @@
           {
             opcode: "loadExtension",
             blockType: Scratch.BlockType.COMMAND,
-            text: "load extension from [TEXT]",
+            text: Scratch.translate("load extension from [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -129,7 +131,7 @@
           {
             opcode: "restartProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: "restart project",
+            text: Scratch.translate("restart project"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -140,7 +142,7 @@
           {
             opcode: "deleteSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete sprite [SPRITE]",
+            text: Scratch.translate("delete sprite [SPRITE]"),
             arguments: {
               SPRITE: {
                 type: Scratch.ArgumentType.STRING,
@@ -151,7 +153,7 @@
           {
             opcode: "deleteImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete costume [COSNAME] in [SPRITE]",
+            text: Scratch.translate("delete costume [COSNAME] in [SPRITE]"),
             arguments: {
               COSNAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -166,7 +168,7 @@
           {
             opcode: "setedtarget",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set editing target to [NAME]",
+            text: Scratch.translate("set editing target to [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -178,7 +180,7 @@
           {
             opcode: "brightnessByColor",
             blockType: Scratch.BlockType.REPORTER,
-            text: "brightness of [color]",
+            text: Scratch.translate("brightness of [color]"),
             arguments: {
               color: {
                 type: Scratch.ArgumentType.STRING,
@@ -190,12 +192,12 @@
           {
             opcode: "getAllSprites",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all sprites",
+            text: Scratch.translate("all sprites"),
           },
           {
             opcode: "getfps",
             blockType: Scratch.BlockType.REPORTER,
-            text: "fps",
+            text: Scratch.translate("fps"),
           },
         ],
       };

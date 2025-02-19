@@ -12,7 +12,7 @@
 
   var rxFSfi = new Array();
   var rxFSsy = new Array();
-  var Search, i, str, str2;
+  var Search, str, str2;
 
   const file =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzMC4zMTIxMiIgaGVpZ2h0PSIyNC4yNDk2NyIgdmlld0JveD0iMCwwLDMwLjMxMjEyLDI0LjI0OTY3Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMzA0Ljg0Mzk0LC0xNjcuODc1MTYpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIGZpbGw9IiNmZmI5MDAiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMzE5Ljk5OTk5LDE3MC45MDYzN2gxMi4xMjQ4M2MxLjY3NDEyLDAgMy4wMzEyNCwxLjM1NzEyIDMuMDMxMjQsMy4wMzEydjE1LjE1NjA3YzAsMS42NzQwOCAtMS4zNTcxMiwzLjAzMTIgLTMuMDMxMjQsMy4wMzEyaC0yNC4yNDk2NmMtMS42NzQxMiwwIC0zLjAzMTIyLC0xLjM1NzEyIC0zLjAzMTIyLC0zLjAzMTJ2LTE4LjE4NzI3YzAsLTEuNjgyMzIgMS4zNDg5LC0zLjAzMTIgMy4wMzEyMiwtMy4wMzEyaDkuMDkzNjN6Ii8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTUuMTU2MDYwMDAwMDAwMDI1OjEyLjEyNDgzNTAwMDAwMDAxOS0tPg==";
@@ -23,6 +23,7 @@
     getInfo() {
       return {
         id: "0832rxfs",
+        // eslint-disable-next-line extension/should-translate
         name: "rxFS",
         color1: "#2bdab7",
         blocks: [
@@ -30,7 +31,7 @@
             blockIconURI: wenj,
             opcode: "start",
             blockType: Scratch.BlockType.COMMAND,
-            text: "New [STR] ",
+            text: Scratch.translate("new [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -42,7 +43,7 @@
             blockIconURI: wenj,
             opcode: "file",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set [STR] to [STR2] ",
+            text: Scratch.translate("set [STR] to [STR2]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -50,7 +51,7 @@
               },
               STR2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "rxFS is good!",
+                defaultValue: Scratch.translate("rxFS is good!"),
               },
             },
           },
@@ -58,7 +59,7 @@
             blockIconURI: wenj,
             opcode: "sync",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Change the location of [STR] to [STR2] ",
+            text: Scratch.translate("change the location of [STR] to [STR2]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -74,7 +75,7 @@
             blockIconURI: wenj,
             opcode: "del",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Delete [STR] ",
+            text: Scratch.translate("delete [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -86,7 +87,7 @@
             blockIconURI: wenj,
             opcode: "webin",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Load [STR] from the network",
+            text: Scratch.translate("load [STR] from the network"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -98,7 +99,7 @@
             blockIconURI: wenj,
             opcode: "open",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Open [STR]",
+            text: Scratch.translate("open [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -110,14 +111,14 @@
             blockIconURI: file,
             opcode: "clean",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Clear file system",
+            text: Scratch.translate("clear file system"),
             arguments: {},
           },
           {
             blockIconURI: file,
             opcode: "in",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Import file system from [STR]",
+            text: Scratch.translate("import file system from [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -129,14 +130,16 @@
             blockIconURI: file,
             opcode: "out",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Export file system",
+            text: Scratch.translate("export file system"),
             arguments: {},
           },
           {
             blockIconURI: file,
             opcode: "list",
             blockType: Scratch.BlockType.REPORTER,
-            text: "List the contents under the same folder [STR]",
+            text: Scratch.translate(
+              "list the contents under the same folder [STR]"
+            ),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -147,8 +150,9 @@
           {
             blockIconURI: file,
             opcode: "search",
+            hideFromPalette: true,
             blockType: Scratch.BlockType.REPORTER,
-            text: "Search [STR]",
+            text: Scratch.translate("search [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -198,8 +202,11 @@
 
     del({ STR }) {
       str = btoa(unescape(encodeURIComponent(STR)));
-      rxFSfi[rxFSsy.indexOf(str) + 1 - 1] = undefined;
-      rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = undefined;
+      const index = rxFSsy.indexOf(str);
+      if (index !== -1) {
+        rxFSfi.splice(index, 1);
+        rxFSsy.splice(index, 1);
+      }
     }
 
     file({ STR, STR2 }) {

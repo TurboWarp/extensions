@@ -2,6 +2,7 @@
 // ID: nkcontrols
 // Description: Show and hide the project's controls.
 // By: NamelessCat <https://scratch.mit.edu/users/NexusKitten/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -41,6 +42,25 @@
       document.querySelector('[class*="stop-all_stop-all_"]') ||
       document.querySelector(".stop-all-button");
   };
+
+  const highlightAnimation = (outlineColor, backgroundColor) => [
+    [
+      { outline: "#0000 2px solid" },
+      {
+        outline: outlineColor + " 2px solid",
+        backgroundColor: backgroundColor,
+      },
+      { outline: "#0000 2px solid" },
+      { outline: outlineColor + " 2px solid" },
+      { outline: "#0000 2px solid" },
+      {
+        outline: outlineColor + " 2px solid",
+        backgroundColor: backgroundColor,
+      },
+      { outline: "#0000 2px solid" },
+    ],
+    { duration: 1700 },
+  ];
 
   class controlcontrols {
     constructor() {
@@ -90,6 +110,19 @@
             opcode: "optionShown",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("[OPTION] shown?"),
+            arguments: {
+              OPTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "OPTION",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          "---",
+          {
+            opcode: "highlightOption",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("highlight [OPTION]"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
@@ -161,6 +194,24 @@
         stopButton.style.display = "none";
       } else if (args.OPTION === "fullscreen" && fullScreen) {
         fullScreen.style.display = "none";
+      }
+    }
+
+    highlightOption(args) {
+      getButtons();
+      if (args.OPTION === "green flag" && greenFlag) {
+        greenFlag.animate(...highlightAnimation("#45993d", "#45993d2e"));
+      } else if (args.OPTION === "pause" && pauseButton) {
+        pauseButton.animate(...highlightAnimation("#d89400", "#d894002e"));
+      } else if (args.OPTION === "stop" && stopButton) {
+        stopButton.animate(...highlightAnimation("#b84848", "#b848482e"));
+      } else if (args.OPTION === "fullscreen" && fullScreen) {
+        fullScreen.animate(
+          ...highlightAnimation(
+            "#666",
+            "var(--ui-tertiary, hsla(215, 50%, 90%, 1))"
+          )
+        );
       }
     }
 

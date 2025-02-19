@@ -2,6 +2,7 @@
 // ID: dninwakelock
 // Description: Prevent the computer from falling asleep.
 // By: D-ScratchNinja <https://scratch.mit.edu/users/D-ScratchNinja/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -19,6 +20,16 @@
     constructor(runtime) {
       this.runtime = runtime;
       this.runtime.on("PROJECT_STOP_ALL", this.stopAll.bind(this));
+
+      document.addEventListener("visibilitychange", () => {
+        // If enabled, reacquire wake lock when document becomes visible again
+        if (wakeLock !== null && document.visibilityState === "visible") {
+          latestEnabled = false;
+          this.setWakeLock({
+            enabled: true,
+          });
+        }
+      });
     }
 
     getInfo() {
@@ -77,14 +88,26 @@
         // Not supported in this browser.
         return;
       }
+      const enable = Scratch.Cast.toBoolean(args.enabled);
+      if (enable && document.visibilityState === "hidden") {
+        // Can't request wake lock while document is hidden.
+        return;
+      }
 
       const previousEnabled = latestEnabled;
-      latestEnabled = Scratch.Cast.toBoolean(args.enabled);
+      latestEnabled = enable;
       if (latestEnabled && !previousEnabled) {
         promise = promise
           .then(() => navigator.wakeLock.request("screen"))
           .then((sentinel) => {
             wakeLock = sentinel;
+            wakeLock.addEventListener("release", () => {
+              if (document.visibilityState === "visible") {
+                // If the document is hidden, wake lock should be reacquired when it's visible again.
+                wakeLock = null;
+                latestEnabled = false;
+              }
+            });
           })
           .catch((error) => {
             console.error(error);

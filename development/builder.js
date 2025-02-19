@@ -1,6 +1,7 @@
 const fs = require("fs");
 const AdmZip = require("adm-zip");
 const pathUtil = require("path");
+const ExtendedJSON = require("@turbowarp/json");
 const compatibilityAliases = require("./compatibility-aliases");
 const parseMetadata = require("./parse-extension-metadata");
 const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
@@ -203,6 +204,22 @@ class ExtensionFile extends BuildFile {
     ) {
       throw new Error(
         `Description is missing punctuation: ${metadata.description}`
+      );
+    }
+
+    if (!metadata.license) {
+      throw new Error(
+        "Missing // License: -- We recommend using // License: MPL-2.0"
+      );
+    }
+
+    const spdxParser = require("spdx-expression-parse");
+    try {
+      // Don't care about the result -- just see if it parses.
+      spdxParser(metadata.license);
+    } catch (e) {
+      throw new Error(
+        `${metadata.license} is not a valid SPDX license. Did you typo it? It is case sensitive. We recommend using // License: MPL-2.0`
       );
     }
 
@@ -439,6 +456,9 @@ class JSONMetadataFile extends BuildFile {
       const samples = this.samples.get(extensionSlug);
       if (samples) {
         extension.samples = samples.map((i) => i.getTitle());
+      }
+      if (metadata.scratchCompatible) {
+        extension.scratchCompatible = true;
       }
 
       extensions.push(extension);
@@ -679,7 +699,7 @@ class Builder {
   build() {
     const build = new Build(this.mode);
 
-    const featuredExtensionSlugs = JSON.parse(
+    const featuredExtensionSlugs = ExtendedJSON.parse(
       fs.readFileSync(
         pathUtil.join(this.extensionsRoot, "extensions.json"),
         "utf-8"
@@ -770,37 +790,34 @@ class Builder {
       build.files[`/${filename}`] = new BuildFile(absolutePath);
     }
 
-    if (this.mode !== "desktop") {
-      for (const [filename, absolutePath] of recursiveReadDirectory(
-        this.docsRoot
-      )) {
-        if (!filename.endsWith(".md")) {
-          continue;
-        }
-        const extensionSlug = filename.split(".")[0];
-        const file = new DocsFile(absolutePath, extensionSlug);
-        extensionsWithDocs.add(extensionSlug);
-        build.files[`/${extensionSlug}.html`] = file;
+    for (const [filename, absolutePath] of recursiveReadDirectory(
+      this.docsRoot
+    )) {
+      if (!filename.endsWith(".md")) {
+        continue;
       }
-
-      const scratchblocksPath = pathUtil.join(
-        __dirname,
-        "../node_modules/@turbowarp/scratchblocks/build/scratchblocks.min.js"
-      );
-      build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
-        scratchblocksPath
-      );
-
-      build.files["/index.html"] = new HomepageFile(
-        extensionFiles,
-        extensionImages,
-        featuredExtensionSlugs,
-        extensionsWithDocs,
-        samples,
-        this.mode
-      );
-      build.files["/sitemap.xml"] = new SitemapFile(build);
+      const extensionSlug = filename.split(".")[0];
+      const file = new DocsFile(absolutePath, extensionSlug);
+      extensionsWithDocs.add(extensionSlug);
+      build.files[`/${extensionSlug}.html`] = file;
     }
+
+    // Don't rely on node_modules being stored in a specific location or having a specific structure
+    // so that this works when we are a dependency in a bigger npm tree.
+    const scratchblocksPath = require.resolve("@turbowarp/scratchblocks");
+    build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
+      scratchblocksPath
+    );
+
+    build.files["/index.html"] = new HomepageFile(
+      extensionFiles,
+      extensionImages,
+      featuredExtensionSlugs,
+      extensionsWithDocs,
+      samples,
+      this.mode
+    );
+    build.files["/sitemap.xml"] = new SitemapFile(build);
 
     build.files["/generated-metadata/extensions-v0.json"] =
       new JSONMetadataFile(
@@ -843,12 +860,12 @@ class Builder {
     chokidar
       .watch(
         [
-          `${this.extensionsRoot}/**/*`,
-          `${this.imagesRoot}/**/*`,
-          `${this.websiteRoot}/**/*`,
-          `${this.docsRoot}/**/*`,
-          `${this.samplesRoot}/**/*`,
-          `${this.translationsRoot}/**/*`,
+          this.extensionsRoot,
+          this.imagesRoot,
+          this.websiteRoot,
+          this.docsRoot,
+          this.samplesRoot,
+          this.translationsRoot,
         ],
         {
           ignoreInitial: true,

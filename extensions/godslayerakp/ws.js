@@ -2,6 +2,7 @@
 // ID: gsaWebsocket
 // Description: Manually connect to WebSocket servers.
 // By: RedMan13 <https://scratch.mit.edu/users/RedMan13/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -102,6 +103,7 @@
     getInfo() {
       return {
         id: "gsaWebsocket",
+        // eslint-disable-next-line extension/should-translate
         name: "WebSocket",
         docsURI: "https://extensions.turbowarp.org/godslayerakp/ws",
         color1: "#307eff",
@@ -116,7 +118,7 @@
                 defaultValue: "wss://echoserver.redman13.repl.co",
               },
             },
-            text: "connect to [URL]",
+            text: Scratch.translate("connect to [URL]"),
           },
           "---",
           {
@@ -124,12 +126,12 @@
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
-            text: "when connected",
+            text: Scratch.translate("when connected"),
           },
           {
             opcode: "isConnected",
             blockType: BlockType.BOOLEAN,
-            text: "is connected?",
+            text: Scratch.translate("is connected?"),
             disableMonitor: true,
           },
           "---",
@@ -138,12 +140,12 @@
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
-            text: "when message received",
+            text: Scratch.translate("when message received"),
           },
           {
             opcode: "messageData",
             blockType: BlockType.REPORTER,
-            text: "received message data",
+            text: Scratch.translate("received message data"),
             disableMonitor: true,
           },
           "---",
@@ -153,10 +155,10 @@
             arguments: {
               PAYLOAD: {
                 type: ArgumentType.STRING,
-                defaultValue: "hello!",
+                defaultValue: "Hello!",
               },
             },
-            text: "send message [PAYLOAD]",
+            text: Scratch.translate("send message [PAYLOAD]"),
           },
           "---",
           {
@@ -164,12 +166,12 @@
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
-            text: "when connection errors",
+            text: Scratch.translate("when connection errors"),
           },
           {
             opcode: "hasErrored",
             blockType: BlockType.BOOLEAN,
-            text: "has connection errored?",
+            text: Scratch.translate("connection errored?"),
             disableMonitor: true,
           },
           "---",
@@ -178,30 +180,30 @@
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
-            text: "when connection closes",
+            text: Scratch.translate("when connection closes"),
           },
           {
             opcode: "isClosed",
             blockType: BlockType.BOOLEAN,
-            text: "is connection closed?",
+            text: Scratch.translate("is connection closed?"),
             disableMonitor: true,
           },
           {
             opcode: "closeCode",
             blockType: BlockType.REPORTER,
-            text: "closing code",
+            text: Scratch.translate("closing code"),
             disableMonitor: true,
           },
           {
             opcode: "closeMessage",
             blockType: BlockType.REPORTER,
-            text: "closing message",
+            text: Scratch.translate("closing message"),
             disableMonitor: true,
           },
           {
             opcode: "closeWithoutReason",
             blockType: BlockType.COMMAND,
-            text: "close connection",
+            text: Scratch.translate("close connection"),
           },
           {
             opcode: "closeWithCode",
@@ -212,7 +214,7 @@
                 defaultValue: "1000",
               },
             },
-            text: "close connection with code [CODE]",
+            text: Scratch.translate("close connection with code [CODE]"),
           },
           {
             opcode: "closeWithReason",
@@ -227,7 +229,9 @@
                 defaultValue: "fulfilled",
               },
             },
-            text: "close connection with reason [REASON] and code [CODE]",
+            text: Scratch.translate(
+              "close connection with reason [REASON] and code [CODE]"
+            ),
           },
         ],
       };
@@ -290,7 +294,7 @@
               }
 
               // canFetch() checked above
-              // eslint-disable-next-line no-restricted-syntax
+              // eslint-disable-next-line extension/check-can-fetch
               const websocket = new WebSocket(url);
               instance.websocket = websocket;
 
