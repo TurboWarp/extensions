@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.05
+// Version V.1.0.06
 
 (function (Scratch) {
   "use strict";
@@ -142,6 +142,22 @@
     ogPostSpriteInfo.call(this, data);
   };
 
+  const ogPositionBubble = runtime.ext_scratch3_looks._positionBubble;
+  runtime.ext_scratch3_looks._positionBubble = function (target) {
+    // Expand the Bubble Limits to a Infinite Stage size if the camera
+    // goes beyond the set stage size
+    const drawable = render._allDrawables[target.drawableID];
+    if (!drawable[cameraSymbol]) setupState(drawable);
+    const camSystem = allCameras[drawable[cameraSymbol].name];
+
+    const ogNativeSize = render._nativeSize;
+    if (Math.abs(camSystem.xy[0]) > runtime.stageWidth || Math.abs(camSystem.xy[1]) > runtime.stageHeight) {
+      render._nativeSize = [Infinity, Infinity];
+    }
+    const bounds = ogPositionBubble.call(this, target);
+    render._nativeSize = ogNativeSize;
+  };
+
   const ogGetBubbleBounds = render.getBoundsForBubble;
   render.getBoundsForBubble = function (drawableID) {
     const drawable = render._allDrawables[drawableID];
@@ -230,7 +246,7 @@
           xy: [0, 0],
           zoom: 1,
           dir: 0,
-          binds: name === "default" ? undefined : [],
+          binds: cam === "default" ? undefined : [],
         };
       });
   });
@@ -389,9 +405,19 @@
           },
           "---",
           {
+            opcode: "setDirectionNew",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set [CAMERA] camera direction to [NUM]"),
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              NUM: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 },
+            },
+          },
+          {
             opcode: "setDirection",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set [CAMERA] camera direction to [NUM]"),
+            hideFromPalette: true, // deprecated, needed for compatibility
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               NUM: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 },
@@ -428,9 +454,19 @@
             },
           },
           {
+            opcode: "getDirectionNew",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("[CAMERA] camera direction"),
+            disableMonitor: true,
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+            },
+          },
+          {
             opcode: "getDirection",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[CAMERA] camera direction"),
+            hideFromPalette: true, // deprecated, needed for compatibility
             disableMonitor: true,
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
@@ -742,6 +778,11 @@
       return allCameras[args.CAMERA].xy[1] * -1;
     }
 
+    setDirectionNew(args) {
+      if (!allCameras[args.CAMERA]) return;
+      allCameras[args.CAMERA].dir = (180 - Cast.toNumber(args.NUM)) - 90;
+      updateCamera(args.CAMERA);
+    }
     setDirection(args) {
       if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].dir = Cast.toNumber(args.NUM) - 90;
@@ -769,6 +810,10 @@
       }
     }
 
+    getDirectionNew(args) {
+      if (!allCameras[args.CAMERA]) return 0;
+      return (180 - allCameras[args.CAMERA].dir) - 90;
+    }
     getDirection(args) {
       if (!allCameras[args.CAMERA]) return 0;
       return allCameras[args.CAMERA].dir + 90;
