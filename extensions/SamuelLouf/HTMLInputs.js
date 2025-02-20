@@ -177,7 +177,9 @@
           {
             opcode: "setSelectOptionsToList",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set the select menu named [NAME]'s options to the content of the list [LIST]"),
+            text: Scratch.translate(
+              "set the select menu named [NAME]'s options to the content of the list [LIST]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -192,7 +194,9 @@
           {
             opcode: "setSelectOptionsToText",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set the select menu named [NAME]'s options to the content of the list [LIST] splitted by [SPLITBY]"),
+            text: Scratch.translate(
+              "set the select menu named [NAME]'s options to the content of the list [LIST] splitted by [SPLITBY]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -211,7 +215,9 @@
           {
             opcode: "setElement",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set element named [NAME]'s [ATTRIBUTE] to [VALUE]"),
+            text: Scratch.translate(
+              "set element named [NAME]'s [ATTRIBUTE] to [VALUE]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -246,7 +252,9 @@
           {
             opcode: "waitUntilElementEvent",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("wait until element named [NAME] sends event [EVENT]"),
+            text: Scratch.translate(
+              "wait until element named [NAME] sends event [EVENT]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -326,7 +334,9 @@
           {
             opcode: "setElementX",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set element named [NAME]'s x position to [X]"),
+            text: Scratch.translate(
+              "set element named [NAME]'s x position to [X]"
+            ),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -341,7 +351,9 @@
           {
             opcode: "setElementY",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set element named [NAME]'s y position to [Y]"),
+            text: Scratch.translate(
+              "set element named [NAME]'s y position to [Y]"
+            ),
             arguments: {
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -358,7 +370,9 @@
           {
             opcode: "setElementWidth",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set element named [NAME]'s width to [WIDTH]"),
+            text: Scratch.translate(
+              "set element named [NAME]'s width to [WIDTH]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -373,7 +387,9 @@
           {
             opcode: "setElementHeight",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set element named [NAME]'s height to [HEIGHT]"),
+            text: Scratch.translate(
+              "set element named [NAME]'s height to [HEIGHT]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
