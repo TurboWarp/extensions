@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.0
+// Version V.1.0.01
 
 (function (Scratch) {
   "use strict";
@@ -1362,7 +1362,7 @@
         util.stackFrame.awaitingInput = true;
       }
 
-      if ((reportResponse ? true : args.TYPE === "wait") && popup.waiting)
+      if ((reportResponse ? true : args.TYPE === "wait") && popup?.waiting)
         util.yield();
       if (reportResponse)
         return typeof popup.value === "object"
@@ -1405,11 +1405,13 @@
 
     /* popups */
     createPopup(args) {
+      this.removePopup(args);
       const id = Cast.toString(args.ID);
       genDefaultBox(id, true);
     }
 
     deletePopup(args) {
+      this.removePopup(args);
       const id = Cast.toString(args.ID);
       delete styleStorage.popups[id];
       delete elementStorage.popups[id];
