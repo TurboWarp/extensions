@@ -2,22 +2,20 @@
 // ID: samuelloufhtmlinputs
 // Description: Add HTML inputs over the stage.
 // By: SamuelLouf <https://scratch.mit.edu/users/samuellouf/>
+// License: MPL-2.0
 
 (function (Scratch) {
   "use strict";
 
-  let html_elements = {};
-  let overlay = {};
+  const html_elements = Object.create(null);
+  const overlay = Object.create(null);
+  const elements_coordinates = Object.create(null);
 
-  let elements_coordinates = {};
-
-  let interactive = true;
-  let resizeBehavior = "scale";
+  const interactive = true;
+  const resizeBehavior = "scale";
 
   const updateElementAttributes = (name) => {
-    if (html_elements[name] == undefined) {
-      return;
-    }
+    if (html_elements[name] == undefined) return;
 
     const { stageWidth, stageHeight } = Scratch.vm.runtime;
     const effectiveWidth =
@@ -133,21 +131,26 @@
     });
   };
 
+  // data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyOS4yMTAwNyIgaGVpZ2h0PSIxNC41NTY1NiIgdmlld0JveD0iMCwwLDI5LjIxMDA3LDE0LjU1NjU2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjI1LjM5NDk2LC0xNzIuNzIxNzIpIj48ZyBmaWxsPSIjOTk2NmZmIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTIyNS4zOTkwNywxODAuODI4NjlsLTAuMDA0MSwtMS40MDA0MWw5LjY4MDIsLTQuNTk2OTNsMC4wNDA5NywxLjgyMDExbC03LjQ5NTcsMy40ODQyOGw3LjQyODk0LDMuMDMxNTlsMC4wMjU3OSwxLjc2NDM0eiIgc3Ryb2tlPSJub25lIi8+PHBhdGggZD0iTTI0NC45MjQ4MywxODUuMDQwMDRsMC4wMjU3OSwtMS43NjQzNGw3LjQyODk0LC0zLjAzMTU5bC03LjQ5NTcsLTMuNDg0MjhsMC4wNDA5NywtMS44MjAxMWw5LjY4MDIsNC41OTY5MmwtMC4wMDQxLDEuNDAwNHoiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik0yMzYuMzA4MTUsMTg3LjE5MzY1bDUuMzUyMzEsLTE0LjQ3MTkzbDIuMDYwODksMC4xNjkyNmwtNS4zMzE3NiwxNC4zODczeiIgc3Ryb2tlPSIjMDAwMDAwIi8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTQuNjA1MDM1OTMxMDM4MTc0OjcuMjc4Mjc5NTU3MjI5MDQxLS0+
+
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateElementsAttributes);
 
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", closeElements);
+  Scratch.vm.runtime.on("PROJECT_STOP", closeElements);
 
   class HTMLInputs {
     getInfo() {
       return {
-        name: "HTML Inputs",
+        name: Scratch.translate("HTML Inputs"),
         id: "samuelloufhtmlinputs",
+        color1: "#0fbd8c",
+        color2: "#0b8e69",
         blocks: [
-          label("Create"),
+          label(Scratch.translate("Create")),
           {
             opcode: "createInput",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create input of type [TYPE] named [NAME]",
+            text: Scratch.translate("create input of type [TYPE] named [NAME]"),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -162,7 +165,7 @@
           {
             opcode: "createSelect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create a select menu named [NAME]",
+            text: Scratch.translate("create a select menu named [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -174,7 +177,7 @@
           {
             opcode: "setSelectOptionsToList",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set the select menu named [NAME]'s options to the content of the list [LIST]",
+            text: Scratch.translate("set the select menu named [NAME]'s options to the content of the list [LIST]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -189,7 +192,7 @@
           {
             opcode: "setSelectOptionsToText",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set the select menu named [NAME]'s options to the content of the list [LIST] splitted by [SPLITBY]",
+            text: Scratch.translate("set the select menu named [NAME]'s options to the content of the list [LIST] splitted by [SPLITBY]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -208,7 +211,7 @@
           {
             opcode: "setElement",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set element named [NAME]'s [ATTRIBUTE] to [VALUE]",
+            text: Scratch.translate("set element named [NAME]'s [ATTRIBUTE] to [VALUE]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -228,7 +231,7 @@
           {
             opcode: "getElement",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get element named [NAME]'s [ATTRIBUTE]",
+            text: Scratch.translate("get element named [NAME]'s [ATTRIBUTE]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -243,7 +246,7 @@
           {
             opcode: "waitUntilElementEvent",
             blockType: Scratch.BlockType.COMMAND,
-            text: "wait until element named [NAME] sends event [EVENT]",
+            text: Scratch.translate("wait until element named [NAME] sends event [EVENT]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -259,7 +262,7 @@
           {
             opcode: "deleteElement",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete element named [NAME]",
+            text: Scratch.translate("delete element named [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -270,12 +273,12 @@
           {
             opcode: "deleteEveryElement",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete every element",
+            text: Scratch.translate("delete every element"),
           },
           {
             opcode: "elementExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "does element named [NAME] exists?",
+            text: Scratch.translate("does element named [NAME] exists?"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -288,7 +291,7 @@
           {
             opcode: "hide",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide element named [NAME] ",
+            text: Scratch.translate("hide element named [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -299,7 +302,7 @@
           {
             opcode: "show",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show element named [NAME] ",
+            text: Scratch.translate("show element named [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -310,7 +313,7 @@
           {
             opcode: "elementVisibility",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is element named [NAME] visible?",
+            text: Scratch.translate("is element named [NAME] visible?"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -323,7 +326,7 @@
           {
             opcode: "setElementX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set element named [NAME]'s x position to [X]",
+            text: Scratch.translate("set element named [NAME]'s x position to [X]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -338,7 +341,7 @@
           {
             opcode: "setElementY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set element named [NAME]'s y position to [Y]",
+            text: Scratch.translate("set element named [NAME]'s y position to [Y]"),
             arguments: {
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -355,7 +358,7 @@
           {
             opcode: "setElementWidth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set element named [NAME]'s width to [WIDTH]",
+            text: Scratch.translate("set element named [NAME]'s width to [WIDTH]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -370,7 +373,7 @@
           {
             opcode: "setElementHeight",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set element named [NAME]'s height to [HEIGHT]",
+            text: Scratch.translate("set element named [NAME]'s height to [HEIGHT]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -387,7 +390,7 @@
           {
             opcode: "refreshElement",
             blockType: Scratch.BlockType.COMMAND,
-            text: "refresh element named [NAME]",
+            text: Scratch.translate("refresh element named [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -398,7 +401,7 @@
           {
             opcode: "refreshAll",
             blockType: Scratch.BlockType.COMMAND,
-            text: "refresh every element",
+            text: Scratch.translate("refresh every element"),
           },
         ],
         menus: {
@@ -481,11 +484,13 @@
     }
 
     createInput({ TYPE, NAME }) {
-      createElement("input", NAME, [{ name: "type", value: TYPE }]);
+      createElement("input", Scratch.Cast.toString(NAME), [
+        { name: "type", value: TYPE },
+      ]);
     }
 
     createSelect({ NAME }) {
-      createElement("select", NAME);
+      createElement("select", Scratch.Cast.toString(NAME));
     }
 
     lookupList(list, util) {
@@ -508,6 +513,7 @@
     }
 
     emptySelectMenu({ NAME }) {
+      NAME = Scratch.Cast.toString(NAME);
       try {
         html_elements[NAME].innerText = "";
       } catch {
@@ -527,6 +533,7 @@
     }
 
     setSelectOptionsToList({ NAME, LIST }, util) {
+      NAME = Scratch.Cast.toString(NAME);
       let listVariable = this.lookupList(LIST, util).value;
       this.emptySelectMenu({ NAME });
       for (var i in listVariable) {
@@ -538,6 +545,7 @@
     }
 
     setSelectOptionsToText({ NAME, LIST, SPLITBY }) {
+      NAME = Scratch.Cast.toString(NAME);
       let listVariable = LIST.split(SPLITBY);
       this.emptySelectMenu({ NAME });
       for (var i in listVariable) {
@@ -549,6 +557,7 @@
     }
 
     setElement({ NAME, ATTRIBUTE, VALUE }) {
+      NAME = Scratch.Cast.toString(NAME);
       switch (ATTRIBUTE) {
         case "text":
           html_elements[NAME].innerText = VALUE;
@@ -587,20 +596,24 @@
     }
 
     elementExists({ NAME }) {
+      NAME = Scratch.Cast.toString(NAME);
       return html_elements[NAME] != undefined;
     }
 
     setElementX({ NAME, X }) {
+      NAME = Scratch.Cast.toString(NAME);
       elements_coordinates[NAME].x = Scratch.Cast.toNumber(X);
       updateElementAttributes(NAME);
     }
 
     setElementY({ NAME, Y }) {
+      NAME = Scratch.Cast.toString(NAME);
       elements_coordinates[NAME].y = Scratch.Cast.toNumber(Y);
       updateElementAttributes(NAME);
     }
 
     getElement({ NAME, ATTRIBUTE }) {
+      NAME = Scratch.Cast.toString(NAME);
       switch (ATTRIBUTE) {
         case "text":
           return html_elements[NAME].innerText;
@@ -622,31 +635,35 @@
     }
 
     async waitUntilElementEvent({ NAME, EVENT }) {
+      NAME = Scratch.Cast.toString(NAME);
       if (html_elements[NAME]) {
         await getPromiseFromEvent(html_elements[NAME], EVENT);
       }
     }
 
     show({ NAME }) {
+      NAME = Scratch.Cast.toString(NAME);
       if (html_elements[NAME]) {
         html_elements[NAME].style.display = "";
       }
     }
 
     hide({ NAME }) {
+      NAME = Scratch.Cast.toString(NAME);
       if (html_elements[NAME]) {
         html_elements[NAME].style.display = "none";
       }
     }
 
     elementVisibility({ NAME }) {
+      NAME = Scratch.Cast.toString(NAME);
       if (html_elements[NAME]) {
         return html_elements[NAME].style.display == "";
       }
     }
 
     deleteElement({ NAME }) {
-      closeElement(NAME);
+      closeElement(Scratch.Cast.toString(NAME));
     }
 
     deleteEveryElement() {
@@ -654,17 +671,19 @@
     }
 
     setElementWidth({ NAME, WIDTH }) {
+      NAME = Scratch.Cast.toString(NAME);
       elements_coordinates[NAME].width = Scratch.Cast.toNumber(WIDTH);
       updateElementAttributes(NAME);
     }
 
     setElementHeight({ NAME, HEIGHT }) {
+      NAME = Scratch.Cast.toString(NAME);
       elements_coordinates[NAME].height = Scratch.Cast.toNumber(HEIGHT);
       updateElementAttributes(NAME);
     }
 
     refreshElement({ NAME }) {
-      updateElementAttributes(NAME);
+      updateElementAttributes(Scratch.Cast.toString(NAME));
     }
 
     refreshAll() {
