@@ -154,7 +154,7 @@
     if (Math.abs(camSystem.xy[0]) > runtime.stageWidth || Math.abs(camSystem.xy[1]) > runtime.stageHeight) {
       render._nativeSize = [Infinity, Infinity];
     }
-    const bounds = ogPositionBubble.call(this, target);
+    ogPositionBubble.call(this, target);
     render._nativeSize = ogNativeSize;
   };
 
