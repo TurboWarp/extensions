@@ -437,11 +437,20 @@
               { text: Scratch.translate("mouse wheel"), value: "mousewheel" },
               { text: Scratch.translate("pointer down"), value: "pointerdown" },
               { text: Scratch.translate("pointer up"), value: "pointerup" },
-              { text: Scratch.translate("pointer enter"), value: "pointerenter" },
-              { text: Scratch.translate("pointer leave"), value: "pointerleave" },
+              {
+                text: Scratch.translate("pointer enter"),
+                value: "pointerenter",
+              },
+              {
+                text: Scratch.translate("pointer leave"),
+                value: "pointerleave",
+              },
               { text: Scratch.translate("pointer out"), value: "pointerout" },
               { text: Scratch.translate("double click"), value: "select" },
-              { text: Scratch.translate("selection change"), value: "selectionchange" },
+              {
+                text: Scratch.translate("selection change"),
+                value: "selectionchange",
+              },
               { text: Scratch.translate("select start"), value: "selectstart" },
             ],
           },
@@ -705,8 +714,12 @@
           return elements_coordinates[NAME][ATTRIBUTE];
         case "width":
         case "height":
-          if (elements_coordinates[NAME][ATTRIBUTE] == -1){
-            return html_elements[NAME].getBoundingClientRect().width / Scratch.renderer.canvas.getBoundingClientRect().width * Scratch.vm.runtime.stageWidth
+          if (elements_coordinates[NAME][ATTRIBUTE] == -1) {
+            return (
+              (html_elements[NAME].getBoundingClientRect().width /
+                Scratch.renderer.canvas.getBoundingClientRect().width) *
+              Scratch.vm.runtime.stageWidth
+            );
           }
           return elements_coordinates[NAME][ATTRIBUTE];
         default:
