@@ -136,7 +136,7 @@
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateElementsAttributes);
 
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", closeElements);
-  Scratch.vm.runtime.on("PROJECT_STOP", closeElements);
+  Scratch.vm.runtime.on("PROJECT_STOP_ALL", closeElements);
 
   class HTMLInputs {
     getInfo() {
@@ -424,71 +424,140 @@
           element_event: {
             acceptReporters: true,
             items: [
-              "click",
-              "change",
-              { text: "double click", value: "dblclick" },
-              "focus",
-              { text: "mouse down", value: "mousedown" },
-              { text: "mouse up", value: "mouseup" },
-              { text: "mouse enter", value: "mouseenter" },
-              { text: "mouse leave", value: "mouseleave" },
-              { text: "mouse move", value: "mousemove" },
-              { text: "mouse out", value: "mouseout" },
-              { text: "mouse wheel", value: "mousewheel" },
-              { text: "pointer down", value: "pointerdown" },
-              { text: "pointer up", value: "pointerup" },
-              { text: "pointer enter", value: "pointerenter" },
-              { text: "pointer leave", value: "pointerleave" },
-              { text: "pointer out", value: "pointerout" },
-              "select",
-              { text: "selection change", value: "selectionchange" },
-              { text: "select start", value: "selectstart" },
+              { text: Scratch.translate("click"), value: "click" },
+              { text: Scratch.translate("change"), value: "change" },
+              { text: Scratch.translate("double click"), value: "dblclick" },
+              { text: Scratch.translate("focus"), value: "focus" },
+              { text: Scratch.translate("mouse down"), value: "mousedown" },
+              { text: Scratch.translate("mouse up"), value: "mouseup" },
+              { text: Scratch.translate("mouse enter"), value: "mouseenter" },
+              { text: Scratch.translate("mouse leave"), value: "mouseleave" },
+              { text: Scratch.translate("mouse move"), value: "mousemove" },
+              { text: Scratch.translate("mouse out"), value: "mouseout" },
+              { text: Scratch.translate("mouse wheel"), value: "mousewheel" },
+              { text: Scratch.translate("pointer down"), value: "pointerdown" },
+              { text: Scratch.translate("pointer up"), value: "pointerup" },
+              { text: Scratch.translate("pointer enter"), value: "pointerenter" },
+              { text: Scratch.translate("pointer leave"), value: "pointerleave" },
+              { text: Scratch.translate("pointer out"), value: "pointerout" },
+              { text: Scratch.translate("double click"), value: "select" },
+              { text: Scratch.translate("selection change"), value: "selectionchange" },
+              { text: Scratch.translate("select start"), value: "selectstart" },
             ],
           },
           input_types: {
             acceptReporters: true,
             items: [
-              "text",
-              "username",
-              "password",
-              "range",
-              "tel",
-              "email",
-              "number",
-              "color",
-              "date",
-              "datetime-local",
-              "week",
-              "time",
-              "month",
+              {
+                text: Scratch.translate("text"),
+                value: "text",
+              },
+              {
+                text: Scratch.translate("username"),
+                value: "username",
+              },
+              {
+                text: Scratch.translate("password"),
+                value: "password",
+              },
+              {
+                text: Scratch.translate("range"),
+                value: "range",
+              },
+              {
+                text: Scratch.translate("phone number"),
+                value: "tel",
+              },
+              {
+                text: Scratch.translate("email"),
+                value: "email",
+              },
+              {
+                text: Scratch.translate("number"),
+                value: "number",
+              },
+              {
+                text: Scratch.translate("color"),
+                value: "color",
+              },
+              {
+                text: Scratch.translate("date"),
+                value: "date",
+              },
+              {
+                text: Scratch.translate("datetime local"),
+                value: "datetime-local",
+              },
+              {
+                text: Scratch.translate("week"),
+                value: "week",
+              },
+              {
+                text: Scratch.translate("time"),
+                value: "time",
+              },
+              {
+                text: Scratch.translate("month"),
+                value: "month",
+              },
             ],
           },
           element_attributes: {
             acceptReporters: true,
             items: [
-              "text",
-              "value",
-              "placeholder",
-              "max",
-              { text: "max length", value: "maxlength" },
-              "min",
-              { text: "min length", value: "minlength" },
+              {
+                text: Scratch.translate("text"),
+                value: "text",
+              },
+              {
+                text: Scratch.translate("value"),
+                value: "value",
+              },
+              {
+                text: Scratch.translate("placeholder"),
+                value: "placeholder",
+              },
+              {
+                text: Scratch.translate("max"),
+                value: "max",
+              },
+              { text: Scratch.translate("max length"), value: "maxlength" },
+              {
+                text: Scratch.translate("min"),
+                value: "min",
+              },
+              { text: Scratch.translate("min length"), value: "minlength" },
             ],
           },
           element_attributes_coordinates: {
             acceptReporters: true,
             items: [
-              "text",
-              "value",
-              "placeholder",
-              "max",
-              { text: "max length", value: "maxlength" },
-              "min",
-              { text: "min length", value: "minlength" },
+              {
+                text: Scratch.translate("text"),
+                value: "text",
+              },
+              {
+                text: Scratch.translate("value"),
+                value: "value",
+              },
+              {
+                text: Scratch.translate("placeholder"),
+                value: "placeholder",
+              },
+              {
+                text: Scratch.translate("max"),
+                value: "max",
+              },
+              { text: Scratch.translate("max length"), value: "maxlength" },
+              {
+                text: Scratch.translate("min"),
+                value: "min",
+              },
+              { text: Scratch.translate("min length"), value: "minlength" },
               "x",
               "y",
-              "width",
-              "height",
+              { text: Scratch.translate("width"), value: "width" },
+              { text: Scratch.translate("height"), value: "height" },
             ],
           },
           get_list: {
@@ -579,10 +648,8 @@
           html_elements[NAME].innerText = VALUE;
           break;
         case "value":
-          html_elements[NAME].value = VALUE;
-          break;
         case "placeholder":
-          html_elements[NAME].placeholder = VALUE;
+          html_elements[NAME][ATTRIBUTE] = VALUE;
           break;
         case "disabled":
           html_elements[NAME].disabled = VALUE == "true";
@@ -600,7 +667,7 @@
       if (uniqueLists.length === 0) {
         return [
           {
-            text: "select a list",
+            text: Scratch.translate("select a list"),
             value: "select a list",
           },
         ];
@@ -633,20 +700,17 @@
       switch (ATTRIBUTE) {
         case "text":
           return html_elements[NAME].innerText;
-        case "value":
-          return html_elements[NAME].value;
-        case "placeholder":
-          return html_elements[NAME].placeholder;
-        case "disabled":
-          return html_elements[NAME].disabled;
         case "x":
-          return elements_coordinates[NAME].x;
         case "y":
-          return elements_coordinates[NAME].y;
-        case "height":
-          return elements_coordinates[NAME].height;
+          return elements_coordinates[NAME][ATTRIBUTE];
         case "width":
-          return elements_coordinates[NAME].width;
+        case "height":
+          if (elements_coordinates[NAME][ATTRIBUTE] == -1){
+            return html_elements[NAME].getBoundingClientRect().width / Scratch.renderer.canvas.getBoundingClientRect().width * Scratch.vm.runtime.stageWidth
+          }
+          return elements_coordinates[NAME][ATTRIBUTE];
+        default:
+          return html_elements[NAME][ATTRIBUTE];
       }
     }
 
