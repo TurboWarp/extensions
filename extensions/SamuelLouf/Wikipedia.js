@@ -12,71 +12,71 @@
 
   const languages_list = [
     {
-      text: "English",
+      text: Scratch.translate("English"),
       value: "en",
     },
     {
-      text: "French",
+      text: Scratch.translate("French"),
       value: "fr",
     },
     {
-      text: "Spanish",
+      text: Scratch.translate("Spanish"),
       value: "es",
     },
     {
-      text: "German",
+      text: Scratch.translate("German"),
       value: "de",
     },
     {
-      text: "Italian",
+      text: Scratch.translate("Italian"),
       value: "it",
     },
     {
-      text: "Portuguese",
+      text: Scratch.translate("Portuguese"),
       value: "pt",
     },
     {
-      text: "Russian",
+      text: Scratch.translate("Russian"),
       value: "ru",
     },
     {
-      text: "Japanese",
+      text: Scratch.translate("Japanese"),
       value: "ja",
     },
     {
-      text: "Chinese",
+      text: Scratch.translate("Chinese"),
       value: "zh",
     },
     {
-      text: "Arabic",
+      text: Scratch.translate("Arabic"),
       value: "ar",
     },
     {
-      text: "Polish",
+      text: Scratch.translate("Polish"),
       value: "pl",
     },
     {
-      text: "Egypt",
+      text: Scratch.translate("Egypt"),
       value: "arz",
     },
     {
-      text: "Dutch",
+      text: Scratch.translate("Dutch"),
       value: "nl",
     },
     {
-      text: "Vietnamese",
+      text: Scratch.translate("Vietnamese"),
       value: "vi",
     },
     {
-      text: "Ukrainian",
+      text: Scratch.translate("Ukrainian"),
       value: "uk",
     },
     {
-      text: "Swedish",
+      text: Scratch.translate("Swedish"),
       value: "sv",
     },
     {
-      text: "Vietnamese",
+      text: Scratch.translate("Vietnamese"),
       value: "vi",
     },
   ];
@@ -131,7 +131,9 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Scratch (programming language)",
+                defaultValue: Scratch.translate(
+                  "Scratch (programming language)"
+                ),
               },
             },
           },
@@ -143,7 +145,9 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Scratch (programming language)",
+                defaultValue: Scratch.translate(
+                  "Scratch (programming language)"
+                ),
               },
             },
           },
@@ -155,7 +159,7 @@
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Unexistant page",
+                defaultValue: Scratch.translate("Unexistant page"),
               },
             },
           },
@@ -170,7 +174,7 @@
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Esperanto",
+                defaultValue: Scratch.translate("Esperanto"),
               },
               value: {
                 type: Scratch.ArgumentType.STRING,
@@ -186,7 +190,6 @@
               LANGUAGE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "languages",
-                defaultValue: "en",
               },
             },
           },
