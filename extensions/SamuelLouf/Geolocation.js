@@ -69,7 +69,6 @@
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "getCurrent_menu",
-                defaultValue: "longitude",
               },
             },
           },
@@ -113,7 +112,6 @@
               ACCURACY: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "accuracy",
-                defaultValue: "high",
               },
             },
           },
@@ -126,11 +124,33 @@
         menus: {
           coordinates: {
             acceptReporters: true,
-            items: ["longitude", "latitude", "accuracy"],
+            items: [
+              {
+                text: Scratch.translate("latitude"),
+                value: "latitude",
+              },
+              {
+                text: Scratch.translate("longitude"),
+                value: "longitude",
+              },
+              {
+                text: Scratch.translate("accuracy"),
+                value: "accuracy",
+              },
+            ],
           },
           accuracy: {
             acceptReporters: true,
-            items: ["high", "low"],
+            items: [
+              {
+                text: Scratch.translate("high"),
+                value: "high",
+              },
+              {
+                text: Scratch.translate("low"),
+                value: "low",
+              },
+            ],
           },
         },
       };
