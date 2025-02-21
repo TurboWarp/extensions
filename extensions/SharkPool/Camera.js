@@ -600,7 +600,11 @@
     }
 
     getCameras() {
-      return Object.keys(allCameras);
+      const cameraNames = Object.keys(allCameras);
+      return cameraNames.map((i) => {
+        if (i === "default") return { text: Scratch.translate("default"), value: "default" };
+        else return { text: i, value: i };
+      });
     }
 
     refreshBlocks() {
