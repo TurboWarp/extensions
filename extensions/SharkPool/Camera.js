@@ -674,9 +674,9 @@
       const videoLayer = runtime.ioDevices.video._drawable;
 
       if (name === "_pen_")
-        return penLayer ? { drawableID: penLayer } : undefined;
+        return penLayer > -1 ? { drawableID: penLayer } : undefined;
       else if (name === "_video_")
-        return videoLayer !== -1 ? { drawableID: videoLayer } : undefined;
+        return videoLayer > -1 ? { drawableID: videoLayer } : undefined;
       else if (name.includes("=SP-custLayer")) {
         const drawableID = parseInt(name);
         if (render._allDrawables[drawableID]?.customDrawableName !== undefined)
