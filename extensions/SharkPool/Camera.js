@@ -151,7 +151,10 @@
     const camSystem = allCameras[drawable[cameraSymbol].name];
 
     const ogNativeSize = render._nativeSize;
-    if (Math.abs(camSystem.xy[0]) > runtime.stageWidth || Math.abs(camSystem.xy[1]) > runtime.stageHeight) {
+    if (
+      Math.abs(camSystem.xy[0]) > runtime.stageWidth ||
+      Math.abs(camSystem.xy[1]) > runtime.stageHeight
+    ) {
       render._nativeSize = [Infinity, Infinity];
     }
     ogPositionBubble.call(this, target);
@@ -528,7 +531,10 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("rendered x position of [TARGET]"),
             arguments: {
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "EXACT_OBJECTS" },
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "EXACT_OBJECTS",
+              },
             },
           },
           {
@@ -536,7 +542,10 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("rendered y position of [TARGET]"),
             arguments: {
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "EXACT_OBJECTS" },
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "EXACT_OBJECTS",
+              },
             },
           },
         ],
@@ -619,7 +628,8 @@
     getCameras() {
       const cameraNames = Object.keys(allCameras);
       return cameraNames.map((i) => {
-        if (i === "default") return { text: Scratch.translate("default"), value: "default" };
+        if (i === "default")
+          return { text: Scratch.translate("default"), value: "default" };
         else return { text: i, value: i };
       });
     }
@@ -801,7 +811,7 @@
 
     setDirectionNew(args) {
       if (!allCameras[args.CAMERA]) return;
-      allCameras[args.CAMERA].dir = (180 - Cast.toNumber(args.NUM)) - 90;
+      allCameras[args.CAMERA].dir = 180 - Cast.toNumber(args.NUM) - 90;
       updateCamera(args.CAMERA);
     }
     setDirection(args) {
@@ -833,7 +843,7 @@
 
     getDirectionNew(args) {
       if (!allCameras[args.CAMERA]) return 0;
-      return (180 - allCameras[args.CAMERA].dir) - 90;
+      return 180 - allCameras[args.CAMERA].dir - 90;
     }
     getDirection(args) {
       if (!allCameras[args.CAMERA]) return 0;
