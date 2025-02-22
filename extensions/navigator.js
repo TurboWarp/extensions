@@ -1,6 +1,8 @@
 // Name: Navigator
 // ID: navigatorinfo
 // Description: Details about the user's browser and operating system.
+// Context: "Navigator" refers to someone's browser
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -9,27 +11,27 @@
     getInfo() {
       return {
         id: "navigatorinfo",
-        name: "Navigator Info",
+        name: Scratch.translate("Navigator Info"),
         blocks: [
           {
             opcode: "getOS",
             blockType: Scratch.BlockType.REPORTER,
-            text: "operating system",
+            text: Scratch.translate("operating system"),
           },
           {
             opcode: "getBrowser",
             blockType: Scratch.BlockType.REPORTER,
-            text: "browser",
+            text: Scratch.translate("browser"),
           },
           {
             opcode: "getMemory",
             blockType: Scratch.BlockType.REPORTER,
-            text: "device memory in GB",
+            text: Scratch.translate("device memory in GB"),
           },
           {
             opcode: "getPreferredColorScheme",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "user prefers [THEME] color scheme?",
+            text: Scratch.translate("user prefers [THEME] color scheme?"),
             arguments: {
               THEME: {
                 type: Scratch.ArgumentType.STRING,
@@ -41,18 +43,27 @@
           {
             opcode: "getPreferredReducedMotion",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "user prefers reduced motion?",
+            text: Scratch.translate("user prefers reduced motion?"),
           },
           {
             opcode: "getPreferredContrast",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "user prefers more contrast?",
+            text: Scratch.translate("user prefers more contrast?"),
           },
         ],
         menus: {
           THEME: {
             acceptReporters: true,
-            items: ["light", "dark"],
+            items: [
+              {
+                text: Scratch.translate("light"),
+                value: "light",
+              },
+              {
+                text: Scratch.translate("dark"),
+                value: "dark",
+              },
+            ],
           },
         },
       };

@@ -3,6 +3,7 @@
 // Description: Move, resize, rename the window, enter fullscreen, get screen size, and more.
 // By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
 // Original: BlueDome77
+// License: MIT
 
 // Version V.1.0.0
 
@@ -18,11 +19,37 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
+  const isFullscreenEnabled = () => {
+    if (typeof document.fullscreenElement !== "undefined") {
+      return document.fullscreenElement !== null;
+    }
+    if (typeof document.webkitFullscreenElement !== "undefined") {
+      return document.webkitFullscreenElement !== null;
+    }
+    return false;
+  };
+
+  const enterFullscreen = () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen();
+    } else if (document.documentElement.webkitRequestFullscreen) {
+      document.documentElement.webkitRequestFullscreen();
+    }
+  };
+
+  const exitFullscreen = () => {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  };
+
   class WindowControls {
     getInfo() {
       return {
         id: "cubesterWindowControls",
-        name: "Window Controls",
+        name: Scratch.translate("Window Controls"),
         color1: "#359ed4",
         color2: "#298ec2",
         color3: "#2081b3",
@@ -31,17 +58,17 @@
 
         blocks: [
           {
-            blockType: "label",
-            text: "May not work in normal browser tabs",
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("May not work in normal browser tabs"),
           },
           {
-            blockType: "label",
-            text: "Refer to Documentation for details",
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Refer to Documentation for details"),
           },
           {
             opcode: "moveTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "move window to x: [X] y: [Y]",
+            text: Scratch.translate("move window to x: [X] y: [Y]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -56,7 +83,7 @@
           {
             opcode: "moveToPresets",
             blockType: Scratch.BlockType.COMMAND,
-            text: "move window to the [PRESETS]",
+            text: Scratch.translate("move window to the [PRESETS]"),
             arguments: {
               PRESETS: {
                 type: Scratch.ArgumentType.STRING,
@@ -67,7 +94,7 @@
           {
             opcode: "changeX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change window x by [X]",
+            text: Scratch.translate("change window x by [X]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -78,7 +105,7 @@
           {
             opcode: "setX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set window x to [X]",
+            text: Scratch.translate("set window x to [X]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -89,7 +116,7 @@
           {
             opcode: "changeY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change window y by [Y]",
+            text: Scratch.translate("change window y by [Y]"),
             arguments: {
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -100,7 +127,7 @@
           {
             opcode: "setY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set window y to [Y]",
+            text: Scratch.translate("set window y to [Y]"),
             arguments: {
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -111,12 +138,12 @@
           {
             opcode: "windowX",
             blockType: Scratch.BlockType.REPORTER,
-            text: "window x",
+            text: Scratch.translate("window x"),
           },
           {
             opcode: "windowY",
             blockType: Scratch.BlockType.REPORTER,
-            text: "window y",
+            text: Scratch.translate("window y"),
           },
 
           "---",
@@ -124,7 +151,7 @@
           {
             opcode: "resizeTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "resize window to width: [W] height: [H]",
+            text: Scratch.translate("resize window to width: [W] height: [H]"),
             arguments: {
               W: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -139,7 +166,7 @@
           {
             opcode: "resizeToPresets",
             blockType: Scratch.BlockType.COMMAND,
-            text: "resize window to [PRESETS]",
+            text: Scratch.translate("resize window to [PRESETS]"),
             arguments: {
               PRESETS: {
                 type: Scratch.ArgumentType.STRING,
@@ -150,7 +177,7 @@
           {
             opcode: "changeW",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change window width by [W]",
+            text: Scratch.translate("change window width by [W]"),
             arguments: {
               W: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -161,7 +188,7 @@
           {
             opcode: "setW",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set window width to [W]",
+            text: Scratch.translate("set window width to [W]"),
             arguments: {
               W: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -172,7 +199,7 @@
           {
             opcode: "changeH",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change window height by [H]",
+            text: Scratch.translate("change window height by [H]"),
             arguments: {
               H: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -183,7 +210,7 @@
           {
             opcode: "setH",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set window height to [H]",
+            text: Scratch.translate("set window height to [H]"),
             arguments: {
               H: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -194,17 +221,17 @@
           {
             opcode: "matchStageSize",
             blockType: Scratch.BlockType.COMMAND,
-            text: "match stage size",
+            text: Scratch.translate("match stage size"),
           },
           {
             opcode: "windowW",
             blockType: Scratch.BlockType.REPORTER,
-            text: "window width",
+            text: Scratch.translate("window width"),
           },
           {
             opcode: "windowH",
             blockType: Scratch.BlockType.REPORTER,
-            text: "window height",
+            text: Scratch.translate("window height"),
           },
 
           "---",
@@ -212,17 +239,17 @@
           {
             opcode: "isTouchingEdge",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is window touching screen edge?",
+            text: Scratch.translate("is window touching screen edge?"),
           },
           {
             opcode: "screenW",
             blockType: Scratch.BlockType.REPORTER,
-            text: "screen width",
+            text: Scratch.translate("screen width"),
           },
           {
             opcode: "screenH",
             blockType: Scratch.BlockType.REPORTER,
-            text: "screen height",
+            text: Scratch.translate("screen height"),
           },
 
           "---",
@@ -230,7 +257,7 @@
           {
             opcode: "isFocused",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is window focused?",
+            text: Scratch.translate("is window focused?"),
           },
 
           "---",
@@ -238,18 +265,18 @@
           {
             opcode: "changeTitleTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set window title to [TITLE]",
+            text: Scratch.translate("set window title to [TITLE]"),
             arguments: {
               TITLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello World!",
+                defaultValue: Scratch.translate("Hello World!"),
               },
             },
           },
           {
             opcode: "windowTitle",
             blockType: Scratch.BlockType.REPORTER,
-            text: "window title",
+            text: Scratch.translate("window title"),
           },
 
           "---",
@@ -257,17 +284,17 @@
           {
             opcode: "enterFullscreen",
             blockType: Scratch.BlockType.COMMAND,
-            text: "enter fullscreen",
+            text: Scratch.translate("enter fullscreen"),
           },
           {
             opcode: "exitFullscreen",
             blockType: Scratch.BlockType.COMMAND,
-            text: "exit fullscreen",
+            text: Scratch.translate("exit fullscreen"),
           },
           {
             opcode: "isFullscreen",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is window fullscreen?",
+            text: Scratch.translate("is window fullscreen?"),
           },
 
           "---",
@@ -276,23 +303,53 @@
             opcode: "closeWindow",
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
-            text: "close window",
+            text: Scratch.translate("close window"),
           },
         ],
         menus: {
           MOVE: {
             acceptReporters: true,
             items: [
-              "center",
-              "right",
-              "left",
-              "top",
-              "bottom",
-              "top right",
-              "top left",
-              "bottom right",
-              "bottom left",
-              "random position",
+              {
+                text: Scratch.translate("center"),
+                value: "center",
+              },
+              {
+                text: Scratch.translate("right"),
+                value: "right",
+              },
+              {
+                text: Scratch.translate("left"),
+                value: "left",
+              },
+              {
+                text: Scratch.translate("top"),
+                value: "top",
+              },
+              {
+                text: Scratch.translate("bottom"),
+                value: "bottom",
+              },
+              {
+                text: Scratch.translate("top right"),
+                value: "top right",
+              },
+              {
+                text: Scratch.translate("top left"),
+                value: "top left",
+              },
+              {
+                text: Scratch.translate("bottom right"),
+                value: "bottom right",
+              },
+              {
+                text: Scratch.translate("bottom left"),
+                value: "bottom left",
+              },
+              {
+                text: Scratch.translate("random position"),
+                value: "random position",
+              },
             ],
           },
           RESIZE: {
@@ -484,24 +541,25 @@
       return document.title;
     }
     enterFullscreen() {
-      if (document.fullscreenElement == null) {
-        document.documentElement.requestFullscreen();
+      if (!isFullscreenEnabled()) {
+        enterFullscreen();
       }
     }
     exitFullscreen() {
-      if (document.fullscreenElement !== null) {
-        document.exitFullscreen();
+      if (isFullscreenEnabled()) {
+        exitFullscreen();
       }
     }
     isFullscreen() {
-      return document.fullscreenElement !== null;
+      return isFullscreenEnabled();
     }
     closeWindow() {
-      const editorConfirmation = [
-        "Are you sure you want to close this window?",
-        "",
-        "(This message will not appear when the project is packaged)",
-      ].join("\n");
+      const editorConfirmation = Scratch.translate({
+        id: "editorConfirmation",
+        default:
+          "Are you sure you want to close this window?\n\n(This message will not appear when the project is packaged)",
+      });
+      // @ts-expect-error
       if (typeof ScratchBlocks === "undefined" || confirm(editorConfirmation)) {
         window.close();
       }

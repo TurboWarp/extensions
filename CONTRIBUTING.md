@@ -19,6 +19,7 @@ Strictly, nothing is banned, but the following are *highly* discouraged:
  - Broad "Utilities" extensions (break them up into multiple extensions, see https://github.com/TurboWarp/extensions/issues/674)
  - Extensions that are very similar to existing ones (consider modifying the existing one instead)
  - One-use personal extensions (load the extension as a local file instead)
+ - Extensions whose primary purpose is monetization (not in the spirit of an open source project)
  - Joke extensions (they aren't funny when they cause us to get bug reports)
 
 Some extensions were added before these rules existed. That doesn't mean you will be exempted too.
@@ -39,23 +40,51 @@ New extensions should be added in a user folder. You can name your folder anythi
 
 Extensions must be self-contained. All libraries and hardcoded resources should be embedded into the extension's JavaScript file. If you include minified code, please link where to find the unminified code and include a copy of the original license.
 
-## Website stuff
+## License
 
-To add an extension to the homepage, you need to add metadata comments at the very start of the extension's JavaScript, and add the extension's path (without .js) to `extensions/extensions.json`. The order of that list determines the order of the library. Don't worry about putting it in the right spot, we'll move it if we disagree.
+**We are not lawyers. This is not legal advice.**
 
-The header comments look like this:
+Everything in this repository must be available under an open source license. You can use any license you want, but we **STRONGLY** recommend using the [Mozilla Public License verison 2.0](licenses/MPL-2.0.txt) for all new extensions.
+
+The following licenses are banned for being [incompatible the GPLv3](https://www.gnu.org/licenses/license-list.en.html), so do not use any code, images, etc. under them:
+
+ - Creative Commons Attribution-ShareAlike licenses prior to version 4.0
+   - This includes user-generated content on the Scratch website which [uses version 2.0](https://scratch.mit.edu/terms_of_use) of this license.
+   - This includes StackOverflow posts contributed before 2018-05-02 which [use several different versions](https://stackoverflow.com/help/licensing).
+ - Creative Commons Attribution-NoDerivs and similar "no derivatives" licenses
+ - Creative Commons Attribution-NonCommercial and similar "non commercial" or "personal use only" licenses
+
+Once you choose a license for your extension, [find its SPDX identifier from this table](https://spdx.org/licenses/). The "FSF Free/Libre?" and "OSI Approved?" columns should both contain "Y".
+
+## Metadata
+
+All extensions should need a metadata comment at the *very* start of the file, before any code. We have a script that will read these, so to make sure it understands what you write, use this exact format:
 
 ```js
-// Name: Example Extension
+// Name: My Cool Extension
 // ID: extensionid
 // Description: Does a very cool thing. This must have punctuation at the end!
 // By: GarboMuffin <https://scratch.mit.edu/users/GarboMuffin/>
 // Original: TestMuffin
+// License: MPL-2.0
 ```
 
-Remember, this has to be the *very first* thing in the JS file. `Name`, `Description`, and `ID` are required. Make sure that `ID` exactly matches what you return in `getInfo()`. You can have zero or more `By` and `Original`. Put credit links in `<angled brackets>` if you have one. It must point to a Scratch user profile. This metadata is parsed by a script to generate the website and extension library. It tries to be pretty loose, but don't deviate too far. You must use `//`, not `/* */`.
+You must use line comments; block comments `/* */` will not work. These fields are **REQUIRED**:
 
-New extensions do not *need* images, but they are highly encouraged. Save the image in the `images` folder with the same folder name and file name (but different file extension) as the extension's source code. For example, if your extension is located in `extensions/TestMuffin/fetch.js`, save the image as `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will detect it automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you.
+ - `Name` will appear on the website. It should be similar to the name returned by getInfo().
+ - `ID` should be identical to the id returned by getInfo().
+ - `Description` will appear on the website.
+ - `License` describes the license that the extension's code is under. It should be a valid [SPDX license](https://spdx.org/licenses/) expression. (use `MPL-2.0` if you are unsure)
+
+`By` is optionally used to credit the author of the extension (you!). `Original` is used if the extension is based on or ported from somewhere else. They both use the same format of `Name` or `Name <https://scratch.mit.edu/users/username>`. Links to places other than Scratch are not allowed at this time. You can repeat both of these as many times as needed, just add another `// By: ...` comment after.
+
+In addition to `// License: ...`, you can also add a larger block comment with more information if you want to.
+
+## Website stuff
+
+Add your extension's path (without `extensions/` and without `.js`) to `extensions/extensions.json`. The order of that list determines the order of the library. Don't worry about putting it in the right spot, we'll move it if we disagree.
+
+New extensions do not *need* images, but they are encouraged. Save the image in the `images` folder with the same folder name and file name (but different file extension) as the extension's source code. For example, if your extension is located in `extensions/TestMuffin/fetch.js`, save the image as `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will detect it automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Please add proper attribution to `images/README.md` for *any* resources that were not made by you. The resulting image must be licensed under the [GNU General Public License version 3](licenses/GPL-3.0.txt).
 
 Most extensions shouldn't need external documentation -- it should be obvious what to do just by looking at the blocks. That said, some do need more explanation. Documentation is written in markdown and placed in the `docs` folder with a similar layout to images. For example, documentation for `extensions/TestMuffin/fetch.js` would be saved as `docs/TestMuffin/fetch.md`. Our version of markdown is slightly extended to allow rendering [scratchblocks](https://scratchblocks.github.io/). Just look at the existing documentation for syntax examples. It's not a perfect experience: block colors have to be manually copied, and icons aren't supported, but it's better than what we had before. Once you put your markdown there, you can set a `docsURI` like `https://extensions.turbowarp.org/TestMuffin/fetch`.
 
@@ -63,57 +92,12 @@ Static resources such as example resources used by extensions go in the `website
 
 ## Banned APIs
 
-(subject to change)
+Don't use these:
 
  - `eval()`
  - `new Function()`
  - untrusted or remote `<script>` or `<iframe>`
  - other arbitrary JS/CSS/HTML evaluation
-
-## License
-
-**We are not lawyers. This is not legal advice.**
-
-The source code of the extension and any libraries it uses must be available under a **permissive** open source license that is compatible with the [GNU General Public License version 3](licenses/GPL-3.0.txt). This allows us to include it in TurboWarp Desktop and allows the packager to include it in packaged projects. If you're unsure, use our default: the [MIT License](licenses/MIT.txt). For this to be legally possible, either you must have written the entire extension yourself or have permission to use all of its components under a compatible open source license.
-
-If you use the default MIT license as we recommend, you don't need to add a comment (you can if you want to, though). If you wish to use a different license, leave a comment at the top of the file. For example, if you prefer Apache 2.0, add a comment like the one below.
-
-```js
-// (Remember: You don't need to include this if you just use the default license!)
-/*!
- * Copyright 2023 Your Name Here
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-```
-
-Update the copyright year and name appropriately. Pseudonyms are accepted. Add a copy of the full plain text version of the license in the `licenses` folder if it isn't already in there. You should use `/*!` instead of `/*` for license comments so that JavaScript minifiers won't remove it.
-
-Extension images in the [images](images) directory are instead licensed under the [GNU General Public version 3](licenses/GPL-3.0.txt).
-
-## Banned licenses
-
-You **MUST** avoid using any code or images under these licenses as we believe they are incompatible with the GPLv3:
-
- - Creative Commons Attribution-ShareAlike licenses prior to version 4.0
-   - This includes user-generated content on the Scratch website which [uses version 2.0](https://scratch.mit.edu/terms_of_use) of this license.
-   - This includes StackOverflow posts contributed before 2018-05-02 which [use several different versions](https://stackoverflow.com/help/licensing).
- - Creative Commons Attribution-NoDerivs and similar "no derivatives" licenses
- - Creative Commons Attribution-NonCommercial and similar "non commercial" licenses
- - This list is non-comprehensive
- - More information: https://www.gnu.org/licenses/license-list.en.html
-
-We take licenses very seriously. License violations are one of the few things that can force us to break project compatibility.
 
 ## Type checking
 

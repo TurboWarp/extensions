@@ -1,6 +1,7 @@
 (function (Scratch) {
   "use strict";
 
+  // eslint-disable-next-line no-unused-vars
   const encode = (str) =>
     btoa(str)
       .split("")
@@ -237,7 +238,7 @@
     getInfo() {
       return {
         id: "theshovelprofanity",
-        name: "Bad Word Remover",
+        name: Scratch.translate("Bad Word Remover"),
         color1: "#cf6a3c",
         color2: "#cf6a3c",
         color3: "#cf6a3c",
@@ -245,7 +246,9 @@
           {
             opcode: "checkProfanity",
             blockType: Scratch.BlockType.REPORTER,
-            text: "replace bad words in [TEXT] with [REPLACEMENT]",
+            text: Scratch.translate(
+              "replace bad words in [TEXT] with [REPLACEMENT]"
+            ),
             arguments: {
               REPLACEMENT: {
                 type: Scratch.ArgumentType.STRING,
@@ -253,7 +256,7 @@
               },
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello!",
+                defaultValue: Scratch.translate("Hello!"),
               },
             },
           },
