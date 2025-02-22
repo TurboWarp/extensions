@@ -27,7 +27,7 @@
   "homepage": "https://github.com/TurboWarp/extensions#readme",
   "dependencies": {
     "@turbowarp/json": "^0.1.2",
-    "@turbowarp/scratchblocks": "^3.6.5",
+    "@turbowarp/scratchblocks": "^3.6.7",
     "@turbowarp/types": "git+https://github.com/TurboWarp/types-tw.git#tw",
     "adm-zip": "^0.5.16",
     "chokidar": "^4.0.3",
@@ -38,10 +38,10 @@
   },
   "devDependencies": {
     "@transifex/api": "^7.1.3",
-    "eslint": "^9.20.0",
+    "eslint": "^9.20.1",
     "espree": "^9.6.1",
     "esquery": "^1.6.0",
-    "prettier": "^3.5.0",
+    "prettier": "^3.5.1",
     "spdx-expression-parse": "^4.0.0"
   },
   "private": true
