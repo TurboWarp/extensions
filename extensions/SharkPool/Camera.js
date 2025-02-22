@@ -811,7 +811,7 @@
 
     setDirectionNew(args) {
       if (!allCameras[args.CAMERA]) return;
-      allCameras[args.CAMERA].dir = 180 - Cast.toNumber(args.NUM) - 90;
+      allCameras[args.CAMERA].dir = 90 - Cast.toNumber(args.NUM);
       updateCamera(args.CAMERA);
     }
     setDirection(args) {
@@ -843,7 +843,7 @@
 
     getDirectionNew(args) {
       if (!allCameras[args.CAMERA]) return 0;
-      return 180 - allCameras[args.CAMERA].dir - 90;
+      return 90 - allCameras[args.CAMERA].dir;
     }
     getDirection(args) {
       if (!allCameras[args.CAMERA]) return 0;
