@@ -522,6 +522,23 @@
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
           },
+          "---",
+          {
+            opcode: "renderedX",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("rendered x position of [TARGET]"),
+            arguments: {
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "EXACT_OBJECTS" },
+            },
+          },
+          {
+            opcode: "renderedY",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("rendered y position of [TARGET]"),
+            arguments: {
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "EXACT_OBJECTS" },
+            },
+          },
         ],
         menus: {
           CAMERAS: { acceptReporters: false, items: "getCameras" },
@@ -864,6 +881,20 @@
         false,
         camData
       )[1];
+    }
+
+    renderedX(args, util) {
+      const target = this.getTarget(args.TARGET, util);
+      if (!target) return "";
+      const drawable = render._allDrawables[target.drawableID];
+      return drawable._position[0];
+    }
+
+    renderedY(args, util) {
+      const target = this.getTarget(args.TARGET, util);
+      if (!target) return "";
+      const drawable = render._allDrawables[target.drawableID];
+      return drawable._position[1];
     }
   }
 
