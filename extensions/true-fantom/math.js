@@ -507,7 +507,7 @@
                 menu: "OPERATOR",
               },
               NUM: {
-                type: Scratch.ArgumentType.NUMBER
+                type: Scratch.ArgumentType.NUMBER,
               },
             },
             extensions: ["colours_operators"],
@@ -585,11 +585,11 @@
           },
         ],
         menus: {
-            OPERATOR: {
-              acceptReporters: true,
-              items: ["sin", "cos", "tan", "asin", "acos", "atan"],
-            },
+          OPERATOR: {
+            acceptReporters: true,
+            items: ["sin", "cos", "tan", "asin", "acos", "atan"],
           },
+        },
       };
     }
 
@@ -684,17 +684,23 @@
       return Math.log(cast.toNumber(A)) / Math.log(cast.toNumber(B));
     }
     true_math_op(args) {
-        const operator = cast.toString(args.OPERATOR).toLowerCase();
-        const n = cast.toNumber(args.NUM);
-        switch (operator) {
-        case 'sin': return Math.sin(n);
-        case 'cos': return Math.cos(n);
-        case 'tan': return Math.tan(n);
-        case 'asin': return Math.asin(n);
-        case 'acos': return Math.acos(n);
-        case 'atan': return Math.atan(n);
-        }
-        return 0;
+      const operator = cast.toString(args.OPERATOR).toLowerCase();
+      const n = cast.toNumber(args.NUM);
+      switch (operator) {
+        case "sin":
+          return Math.sin(n);
+        case "cos":
+          return Math.cos(n);
+        case "tan":
+          return Math.tan(n);
+        case "asin":
+          return Math.asin(n);
+        case "acos":
+          return Math.acos(n);
+        case "atan":
+          return Math.atan(n);
+      }
+      return 0;
     }
     pi_block() {
       return Math.PI;
