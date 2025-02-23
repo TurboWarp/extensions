@@ -497,6 +497,21 @@
             },
             extensions: ["colours_operators"],
           },
+          {
+            opcode: "true_math_op",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("true [OPERATOR] [NUM]"),
+            arguments: {
+              OPERATOR: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "OPERATOR",
+              },
+              NUM: {
+                type: Scratch.ArgumentType.NUMBER
+              },
+            },
+            extensions: ["colours_operators"],
+          },
           "---",
           /* eslint-disable extension/should-translate */
           {
@@ -569,6 +584,12 @@
             extensions: ["colours_operators"],
           },
         ],
+        menus: {
+            OPERATOR: {
+              acceptReporters: true,
+              items: ["sin", "cos", "tan", "asin", "acos", "atan"],
+            },
+          },
       };
     }
 
@@ -661,6 +682,19 @@
     }
     log_with_base_block({ A, B }) {
       return Math.log(cast.toNumber(A)) / Math.log(cast.toNumber(B));
+    }
+    true_math_op(args) {
+        const operator = cast.toString(args.OPERATOR).toLowerCase();
+        const n = cast.toNumber(args.NUM);
+        switch (operator) {
+        case 'sin': return Math.sin(n);
+        case 'cos': return Math.cos(n);
+        case 'tan': return Math.tan(n);
+        case 'asin': return Math.asin(n);
+        case 'acos': return Math.acos(n);
+        case 'atan': return Math.atan(n);
+        }
+        return 0;
     }
     pi_block() {
       return Math.PI;
