@@ -668,6 +668,17 @@
 
     _create(varName, value, thread) {
       const stackFrames = thread.stackFrames;
+
+      // current block is top-level, create it in thread
+      if (stackFrames.length < 2) {
+        // initialize in thread
+        if (typeof thread.vars !== "object") {
+          thread.vars = {};
+        }
+        thread.vars[varName] = value;
+        return;
+      }
+
       const outerStackFrame = stackFrames[stackFrames.length - 2];
       const vars = this._initScope(outerStackFrame);
       vars[varName] = value;
