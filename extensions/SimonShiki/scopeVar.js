@@ -743,18 +743,13 @@
       const step = Cast.toNumber(args.STEP);
       const index = Cast.toString(args.INDEX);
 
-      if (typeof util.stackFrame.rangeInfo === "undefined") {
-        util.stackFrame.rangeInfo = {
-          from,
-          to,
-          step,
-          index: from,
-        };
+      if (typeof util.stackFrame.rangeIndex === "undefined") {
+        util.stackFrame.rangeIndex = from;
       }
 
-      if (util.stackFrame.rangeInfo.index <= util.stackFrame.rangeInfo.to) {
-        this._set(index, util.stackFrame.rangeInfo.index, util.thread);
-        util.stackFrame.rangeInfo.index += step;
+      if (util.stackFrame.rangeIndex <= to) {
+        this._set(index, util.stackFrame.rangeIndex, util.thread);
+        util.stackFrame.rangeIndex += step;
         util.startBranch(1, true);
       }
     }
