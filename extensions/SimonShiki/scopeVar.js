@@ -21,6 +21,9 @@
   const TYPE_BOOLEAN = 3;
   const TYPE_UNKNOWN = 4;
   const TYPE_NUMBER_NAN = 5;
+
+  let showUnstable = false;
+
   class TypedInput {
     constructor(source, type) {
       // for debugging
@@ -153,6 +156,7 @@
             } else {
               this._dynamicScopeVar = true;
             }
+            this.analyzeLoop();
             return {
               kind: "shikiScopeVar.range",
               from: this.descendInputOfBlock(block, "FROM"),
@@ -512,12 +516,17 @@
         color2: "#8686DF",
         blocks: [
           {
+            func: "showUnstableBlocks",
+            blockType: BlockType.BUTTON,
+            text: Scratch.translate("Show unstable blocks"),
+            hideFromPalette: showUnstable,
+          },
+          {
             opcode: "scope",
             blockType: BlockType.COMMAND,
             branchCount: 1,
             text: Scratch.translate("scope"),
           },
-          // range block now only work with static variable name
           {
             opcode: "range",
             blockType: BlockType.COMMAND,
@@ -525,7 +534,7 @@
             text: Scratch.translate(
               "range from [FROM] to [TO] step [STEP] index [INDEX]"
             ),
-            hideFromPalette: true,
+            hideFromPalette: !showUnstable,
             arguments: {
               FROM: {
                 type: ArgumentType.NUMBER,
@@ -604,6 +613,19 @@
           },
         ],
       };
+    }
+
+    showUnstableBlocks() {
+      if (
+        confirm(
+          Scratch.translate(
+            "WARNING: range block will stuck when you put promised block at the end of the stack. Do you want to use it anyway?"
+          )
+        )
+      ) {
+        showUnstable = true;
+        Scratch.vm.extensionManager.refreshBlocks("shikiScopeVar");
+      }
     }
 
     _getVarObjByName(name, thread) {
