@@ -509,6 +509,7 @@
         collaborator: "Skyhigh173, SimonShiki",
         description: "Manage your data inside.",
         color1: "#9999FF",
+        color2: "#8686DF",
         blocks: [
           {
             opcode: "scope",
@@ -719,7 +720,7 @@
       }
 
       if (util.stackFrame.rangeInfo.index <= util.stackFrame.rangeInfo.to) {
-        this._set(index, from, util.thread);
+        this._set(index, util.stackFrame.rangeInfo.index, util.thread);
         util.stackFrame.rangeInfo.index += step;
         util.startBranch(1, true);
       }
