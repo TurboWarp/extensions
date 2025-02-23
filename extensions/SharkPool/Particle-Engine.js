@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.2
+// Version V.1.0.3
 
 (function (Scratch) {
   "use strict";
@@ -109,18 +109,24 @@
   newTexture(shapes.sqr, (t) => { defaultTexture = t });
 
   const tintTexture = (texture, rgb, a, emitter) => {
-    if (rgb === "rgb(255, 255, 255)") return texture;
-    // TODO this could be improved
+    if (rgb.r === 255 && rgb.g === 255 && rgb.b === 255) return texture;
     const cacheKey = rgb + a;
     if (emitter.tintCache.has(cacheKey)) return emitter.tintCache.get(cacheKey);
+
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d", { alpha: true });
     canvas.width = texture.width; canvas.height = texture.height;
+    ctx.drawImage(texture, 0, 0);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    for (let i = 0; i < data.length; i += 4) {
+      data[i] = (data[i] * rgb.r) / 255;
+      data[i + 1] = (data[i + 1] * rgb.g) / 255;
+      data[i + 2] = (data[i + 2] * rgb.b) / 255;
+      data[i + 3] *= a;
+    }
 
-    ctx.drawImage(texture, 0, 0, texture.width, texture.height);
-    ctx.globalCompositeOperation = "source-in";
-    ctx.globalAlpha = a; ctx.fillStyle = rgb;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.putImageData(imageData, 0, 0);
     emitter.tintCache.set(cacheKey, canvas);
     return canvas;
   };
