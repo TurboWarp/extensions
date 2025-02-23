@@ -699,8 +699,9 @@
           return Math.acos(n);
         case "atan":
           return Math.atan(n);
+        default:
+          return 0;
       }
-      return 0;
     }
     pi_block() {
       return Math.PI;
