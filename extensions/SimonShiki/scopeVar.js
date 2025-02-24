@@ -8,9 +8,7 @@
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error(`
-            "Scope Variables" must be loaded in a unsandboxed environment.
-        `);
+    throw new Error("Scope Variables must run unsandboxed.");
   }
   const { BlockType, ArgumentType, Cast } = Scratch;
 
@@ -24,8 +22,7 @@
 
     patchCompiler() {
       const dangerousExports =
-        Scratch.vm.exports?.i_will_not_ask_for_help_when_these_break &&
-        Scratch.vm.exports.i_will_not_ask_for_help_when_these_break();
+        Scratch.vm.exports?.i_will_not_ask_for_help_when_these_break?.();
       // Don't patch older Turbowarp VM
       if (!dangerousExports) {
         return;
@@ -33,7 +30,8 @@
       const ASTGen = dangerousExports.ScriptTreeGenerator;
       const IRGen = dangerousExports.IRGenerator;
       const JSGen = dangerousExports.JSGenerator;
-      const { TYPE_STRING, TYPE_UNKNOWN, TypedInput, Frame } = JSGen.unstable_exports;
+      const { TYPE_STRING, TYPE_UNKNOWN, TypedInput, Frame } =
+        JSGen.unstable_exports;
 
       // AST part
       const ast_descendInput = ASTGen.prototype.descendInput;
@@ -51,7 +49,8 @@
             const isStaticName = varName.kind === "constant";
             // If the variable is static and the scope is static, we can optimize it by using `let`
             if (isStaticName && !this._dynamicScopeVar) {
-              if (this._scopeVarPool && this._scopeVarPool.has(varName.value)) {
+              // variable has been declared before
+              if (this._scopeVarPool?.has(varName.value)) {
                 return {
                   kind: "shikiScopeVar.get",
                   name: varName,
@@ -62,6 +61,7 @@
                 value: "",
               };
             } else {
+              // name is dynamic, disable all static var name optimizations.
               this._dynamicScopeVar = true;
               return {
                 kind: "shikiScopeVar.get",
@@ -177,6 +177,7 @@
           topBlockId,
           ...otherParams
         );
+        // ASTGen -> IRGen
         if (generator._hasScopeVar) this._hasScopeVar = true;
         if (generator._dynamicScopeVar) this._dynamicScopeVar = true;
         if (generator._scopeVarPool)
@@ -187,6 +188,7 @@
       const ir_generate = IRGen.prototype.generate;
       IRGen.prototype.generate = function (...otherParams) {
         const ir = ir_generate.call(this, ...otherParams);
+        // IRGen -> JSGen
         if (this._hasScopeVar) ir._hasScopeVar = true;
         if (this._dynamicScopeVar) ir._dynamicScopeVar = true;
         if (this._scopeVarPool)
@@ -195,13 +197,28 @@
       };
 
       // JS Part
+
+      JSGen.prototype.isScopeVarExist = function (scopedVarName) {
+        let varExists = false;
+        for (let i = this.frames.length - 1; i >= 0; i--) {
+          const currentFrame = this.frames[i];
+          if (
+            currentFrame &&
+            currentFrame.declaredScopeVars &&
+            currentFrame.declaredScopeVars.includes(scopedVarName)
+          ) {
+            varExists = true;
+            break;
+          }
+        }
+        return varExists;
+      };
+
       const js_descendStack = JSGen.prototype.descendStack;
       JSGen.prototype.descendStack = function (nodes, frame, ...otherParams) {
         if (this.ir._hasScopeVar) {
-          // fallback to interpreter-like logic
           if (this.ir._dynamicScopeVar) {
             // simulate sequencer logic, but may have a negative impact on performance
-            // a better solution is use 'let', but not now
             if (this.frames.length < 1 && !this.script.isProcedure) {
               this.source += "thread.pushStack();\n";
             }
@@ -231,19 +248,8 @@
             const scopedVarName = `scoped_${this.ir._scopeVarPool.indexOf(
               this.descendInput(node.name).constantValue
             )}`;
-            let varExists = false;
-            for (let i = this.frames.length - 1; i >= 0; i--) {
-              const currentFrame = this.frames[i];
-              if (
-                currentFrame &&
-                currentFrame.declaredScopeVars &&
-                currentFrame.declaredScopeVars.includes(scopedVarName)
-              ) {
-                varExists = true;
-                break;
-              }
-            }
-            if (varExists) {
+
+            if (this.isScopeVarExist(scopedVarName)) {
               return new TypedInput(scopedVarName, TYPE_UNKNOWN);
             }
             return new TypedInput(`""`, TYPE_STRING);
@@ -270,18 +276,9 @@
               const scopedVarName = `scoped_${this.ir._scopeVarPool.indexOf(
                 this.descendInput(node.index).constantValue
               )}`;
-              let varExists = false;
-              for (let i = this.frames.length - 1; i >= 0; i--) {
-                const currentFrame = this.frames[i];
-                if (
-                  currentFrame &&
-                  currentFrame.declaredScopeVars &&
-                  currentFrame.declaredScopeVars.includes(scopedVarName)
-                ) {
-                  varExists = true;
-                  break;
-                }
-              }
+
+              const varExists = this.isScopeVarExist(scopedVarName);
+
               this.source += `for (${varExists ? "" : "let "}${scopedVarName} = ${this.descendInput(node.from).asNumber()}; ${scopedVarName} <= ${this.descendInput(node.to).asNumber()}; ${scopedVarName} += ${this.descendInput(node.step).asNumber()}) {\n`;
               if (!varExists) {
                 const currentFrame = this.frames[this.frames.length - 1];
@@ -323,6 +320,8 @@
               const scopedVarName = `scoped_${this.ir._scopeVarPool.indexOf(
                 this.descendInput(node.name).constantValue
               )}`;
+
+              // If not declared in current scope, just create it
               if (
                 currentFrame &&
                 currentFrame.declaredScopeVars &&
@@ -356,19 +355,8 @@
                 this.ir._scopeVarPool.indexOf(
                   this.descendInput(node.name).constantValue
                 );
-              let varExists = false;
-              for (let i = this.frames.length - 1; i >= 0; i--) {
-                const currentFrame = this.frames[i];
-                if (
-                  currentFrame &&
-                  currentFrame.declaredScopeVars &&
-                  currentFrame.declaredScopeVars.includes(scopedVarName)
-                ) {
-                  varExists = true;
-                  break;
-                }
-              }
-              if (varExists) {
+
+              if (this.isScopeVarExist(scopedVarName)) {
                 this.source += `${scopedVarName} = ${this.descendInput(
                   node.value
                 ).asUnknown()};\n`;
@@ -398,21 +386,8 @@
                 this.ir._scopeVarPool.indexOf(
                   this.descendInput(node.name).constantValue
                 );
-              let varExists = false;
 
-              for (let i = this.frames.length - 1; i >= 0; i--) {
-                const currentFrame = this.frames[i];
-                if (
-                  currentFrame &&
-                  currentFrame.declaredScopeVars &&
-                  currentFrame.declaredScopeVars.includes(scopedVarName)
-                ) {
-                  varExists = true;
-                  break;
-                }
-              }
-
-              if (varExists) {
+              if (this.isScopeVarExist(scopedVarName)) {
                 this.source += `${scopedVarName} = ${`(+${scopedVarName} || 0)`} + ${this.descendInput(
                   node.increment
                 ).asNumberOrNaN()};\n`;
