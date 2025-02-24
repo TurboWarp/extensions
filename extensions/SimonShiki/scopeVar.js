@@ -12,8 +12,6 @@
   }
   const { BlockType, ArgumentType, Cast } = Scratch;
 
-  let showUnstable = false;
-
   class ScopeVar {
     constructor() {
       this.patchCompiler();
@@ -420,12 +418,6 @@
         color2: "#8686DF",
         blocks: [
           {
-            func: "showUnstableBlocks",
-            blockType: BlockType.BUTTON,
-            text: Scratch.translate("Show unstable blocks"),
-            hideFromPalette: showUnstable,
-          },
-          {
             opcode: "scope",
             blockType: BlockType.COMMAND,
             branchCount: 1,
@@ -438,7 +430,6 @@
             text: Scratch.translate(
               "range from [FROM] to [TO] step [STEP] index [INDEX]"
             ),
-            hideFromPalette: !showUnstable,
             arguments: {
               FROM: {
                 type: ArgumentType.NUMBER,
@@ -517,19 +508,6 @@
           },
         ],
       };
-    }
-
-    showUnstableBlocks() {
-      if (
-        confirm(
-          Scratch.translate(
-            "WARNING: range block will stuck when you put promised block at the end of the stack. Do you want to use it anyway?"
-          )
-        )
-      ) {
-        showUnstable = true;
-        Scratch.vm.extensionManager.refreshBlocks("shikiScopeVar");
-      }
     }
 
     _getVarObjByName(name, thread) {
