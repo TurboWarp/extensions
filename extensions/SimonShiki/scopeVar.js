@@ -102,6 +102,29 @@
               scoped: this.descendSubstack(block, "SUBSTACK"),
             };
           }
+          case "shikiScopeVar_forEachWithList": {
+            if (!this._hasScopeVar) this._hasScopeVar = true;
+            const varName = this.descendInputOfBlock(block, "VAR");
+            const iName = this.descendInputOfBlock(block, "I");
+            const isStaticName = varName.kind === "constant" && iName.kind === "constant";
+            if (isStaticName && !this._dynamicScopeVar) {
+              if (!this._scopeVarPool) {
+                this._scopeVarPool = new Set();
+              }
+              this._scopeVarPool.add(varName.value);
+              this._scopeVarPool.add(iName.value);
+            } else {
+              this._dynamicScopeVar = true;
+            }
+            this.analyzeLoop();
+            return {
+              kind: "shikiScopeVar.forEachWithList",
+              scoped: this.descendSubstack(block, "SUBSTACK"),
+              var: this.descendInputOfBlock(block, "VAR"),
+              idx: this.descendInputOfBlock(block, "I"),
+              list: this.descendInputOfBlock(block, "LIST"),
+            };
+          }
           case "shikiScopeVar_create": {
             if (!this._hasScopeVar) this._hasScopeVar = true;
             const varName = this.descendInputOfBlock(block, "VAR");
@@ -306,6 +329,66 @@
               this.source += "}\n";
             }
             break;
+          case "shikiScopeVar.forEachWithList":
+            if (!this.ir._dynamicScopeVar) {
+              const scopedItemName = `scoped_${this.ir._scopeVarPool.indexOf(
+                this.descendInput(node.var).constantValue
+              )}`;
+              const scopedIndexName = `scoped_${this.ir._scopeVarPool.indexOf(
+                this.descendInput(node.idx).constantValue
+              )}`;
+
+              let itemExists = this.isScopeVarExist(scopedItemName);
+              let indexExists = this.isScopeVarExist(scopedIndexName);
+              
+
+              this.source += `for (${indexExists ? "" : "let "}${scopedIndexName} = 0; ${scopedIndexName} < target.lookupOrCreateList(${this.descendInput(node.list).asString()}).value.length; ${scopedIndexName}++) {\n`;
+              if (!indexExists) {
+                const currentFrame = this.frames[this.frames.length - 1];
+                if (!currentFrame.declaredScopeVars) {
+                  currentFrame.declaredScopeVars = [];
+                }
+                currentFrame.declaredScopeVars.push(scopedIndexName);
+              }
+              if (!itemExists) {
+                const currentFrame = this.frames[this.frames.length - 1];
+                if (!currentFrame.declaredScopeVars) {
+                  currentFrame.declaredScopeVars = [];
+                }
+                currentFrame.declaredScopeVars.push(scopedItemName);
+              }
+              this.source += `${itemExists ? "" : "let "}${scopedItemName} = target.lookupOrCreateList(${this.descendInput(node.list).asString()}).value[${scopedIndexName}];\n`;
+              this.descendStack.call(this, node.scoped, {
+                isLoop: true,
+                isLastBlock: false,
+              });
+              this.yieldLoop();
+              this.source += "}\n";
+            } else {
+              const idxGetter = `runtime.ext_shikiScopeVar._get(${this.descendInput(
+                node.idx
+              ).asString()}, thread)`;
+
+
+              this.source += `runtime.ext_shikiScopeVar._create(${this.descendInput(
+                node.idx
+              ).asString()}, 0, thread);\n`;
+
+              this.source += `while (${idxGetter} < target.lookupOrCreateList(${this.descendInput(node.list).asString()}).value.length) {\n`;
+              this.source += `runtime.ext_shikiScopeVar._create(${this.descendInput(
+                node.var
+              ).asString()}, target.lookupOrCreateList(${this.descendInput(node.list).asString()}).value[${idxGetter}], thread);\n`;
+              this.descendStack.call(this, node.scoped, {
+                isLoop: true,
+                isLastBlock: false,
+              });
+              this.source += `runtime.ext_shikiScopeVar._change(${this.descendInput(
+                node.idx
+              ).asString()}, 1, thread);\n`;
+              this.yieldLoop();
+              this.source += "}\n";
+            }
+            break;
           case "shikiScopeVar.create":
             if (this.ir._dynamicScopeVar) {
               this.source += `runtime.ext_shikiScopeVar._create(${this.descendInput(
@@ -449,6 +532,26 @@
               },
             },
           },
+          {
+            opcode: "forEachWithList",
+            blockType: BlockType.COMMAND,
+            branchCount: 1,
+            text: Scratch.translate("for each [I], [VAR] of [LIST]"),
+            arguments: {
+              I: {
+                type: ArgumentType.STRING,
+                defaultValue: "index",
+              },
+              VAR: {
+                type: ArgumentType.STRING,
+                defaultValue: "item",
+              },
+              LIST: {
+                type: ArgumentType.STRING,
+                menu: "LIST_MENU",
+              },
+            },
+          },
           "---",
           {
             opcode: "create",
@@ -507,7 +610,44 @@
             },
           },
         ],
+        menus: {
+          LIST_MENU: {
+            items: "_listMenu",
+            acceptReporters: true,
+          },
+        },
       };
+    }
+
+    _listMenu() {
+      const menus = [];
+      let { variables } = Scratch.vm.runtime.getTargetForStage();
+      Object.keys(variables).forEach((variable) => {
+        if (variables[variable].type === "list") {
+          menus.push({
+            text: variables[variable].name,
+            value: variables[variable].id,
+          });
+        }
+      });
+      if (Scratch.vm.editingTarget && Scratch.vm.editingTarget !== Scratch.vm.runtime.getTargetForStage()) {
+        variables = Scratch.vm.editingTarget.variables;
+        Object.keys(variables).forEach((variable) => {
+          if (variables[variable].type) {
+            menus.push({
+              text: `[PRIVATE] ${variables[variable].name}`,
+              value: variables[variable].id,
+            });
+          }
+        });
+      }
+      if (menus.length === 0) {
+        menus.push({
+          text: "-",
+          value: "empty",
+        });
+      }
+      return menus;
     }
 
     _getVarObjByName(name, thread) {
@@ -632,6 +772,24 @@
       if (util.stackFrame.rangeIndex <= to) {
         this._set(index, util.stackFrame.rangeIndex, util.thread);
         util.stackFrame.rangeIndex += step;
+        util.startBranch(1, true);
+      }
+    }
+
+    forEachWithList(args, util) {
+      const listId = args.LIST;
+      const {value: list} = util.target.lookupOrCreateList(listId);
+      const varName = Cast.toString(args.VAR);
+      const index = Cast.toString(args.I);
+
+      if (typeof util.stackFrame.foreachIndex === "undefined") {
+        util.stackFrame.foreachIndex = 0;
+      }
+
+      if (util.stackFrame.foreachIndex < list.length) {
+        this._set(varName, list[util.stackFrame.foreachIndex], util.thread);
+        this._set(index, util.stackFrame.foreachIndex, util.thread);
+        util.stackFrame.foreachIndex++;
         util.startBranch(1, true);
       }
     }
