@@ -14,70 +14,7 @@
   }
   const { BlockType, ArgumentType, Cast } = Scratch;
 
-  // copied from Turbowarp/scratch-vm/compiler/jsgen.js
-  // used to patch compiler
-  const TYPE_NUMBER = 1;
-  const TYPE_STRING = 2;
-  const TYPE_BOOLEAN = 3;
-  const TYPE_UNKNOWN = 4;
-  const TYPE_NUMBER_NAN = 5;
-
   let showUnstable = false;
-
-  class TypedInput {
-    constructor(source, type) {
-      // for debugging
-      if (typeof type !== "number") throw new Error("type is invalid");
-      this.source = source;
-      this.type = type;
-    }
-
-    asNumber() {
-      if (this.type === TYPE_NUMBER) return this.source;
-      if (this.type === TYPE_NUMBER_NAN) return `(${this.source} || 0)`;
-      return `(+${this.source} || 0)`;
-    }
-
-    asNumberOrNaN() {
-      if (this.type === TYPE_NUMBER || this.type === TYPE_NUMBER_NAN)
-        return this.source;
-      return `(+${this.source})`;
-    }
-
-    asString() {
-      if (this.type === TYPE_STRING) return this.source;
-      return `("" + ${this.source})`;
-    }
-
-    asBoolean() {
-      if (this.type === TYPE_BOOLEAN) return this.source;
-      return `toBoolean(${this.source})`;
-    }
-
-    asColor() {
-      return this.asUnknown();
-    }
-
-    asUnknown() {
-      return this.source;
-    }
-
-    asSafe() {
-      return this.asUnknown();
-    }
-
-    isAlwaysNumber() {
-      return this.type === TYPE_NUMBER;
-    }
-
-    isAlwaysNumberOrNaN() {
-      return this.type === TYPE_NUMBER || this.type === TYPE_NUMBER_NAN;
-    }
-
-    isNeverNumber() {
-      return false;
-    }
-  }
 
   class ScopeVar {
     constructor() {
@@ -96,6 +33,7 @@
       const ASTGen = dangerousExports.ScriptTreeGenerator;
       const IRGen = dangerousExports.IRGenerator;
       const JSGen = dangerousExports.JSGenerator;
+      const { TYPE_STRING, TYPE_UNKNOWN, TypedInput, Frame } = JSGen.unstable_exports;
 
       // AST part
       const ast_descendInput = ASTGen.prototype.descendInput;
@@ -322,10 +260,7 @@
             if (!this.ir._dynamicScopeVar) {
               this.source += "{\n";
             }
-            this.descendStack.call(this, node.scoped, {
-              isLoop: false,
-              isLastBlock: false,
-            });
+            this.descendStack.call(this, node.scoped, new Frame(false));
             if (!this.ir._dynamicScopeVar) {
               this.source += "}\n";
             }
@@ -355,10 +290,7 @@
                 }
                 currentFrame.declaredScopeVars.push(scopedVarName);
               }
-              this.descendStack.call(this, node.scoped, {
-                isLoop: true,
-                isLastBlock: false,
-              });
+              this.descendStack.call(this, node.scoped, new Frame(true));
               this.yieldLoop();
               this.source += "}\n";
             } else {
@@ -371,10 +303,7 @@
                 node.from
               ).asUnknown()}, thread);\n`;
               this.source += `while (${varGetter} <= ${this.descendInput(node.to).asNumber()}) {\n`;
-              this.descendStack.call(this, node.scoped, {
-                isLoop: true,
-                isLastBlock: false,
-              });
+              this.descendStack.call(this, node.scoped, new Frame(true));
               this.source += `runtime.ext_shikiScopeVar._change(${this.descendInput(
                 node.index
               ).asString()}, ${this.descendInput(node.step).asNumberOrNaN()}, thread);\n`;
