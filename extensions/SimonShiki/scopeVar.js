@@ -15,11 +15,13 @@
   class ScopeVar {
     constructor() {
       this.patchCompiler();
+      // @ts-expect-error used for dynamic-compilation mode
       Scratch.vm.runtime.ext_shikiScopeVar = this;
     }
 
     patchCompiler() {
       const dangerousExports =
+      // @ts-expect-error used for patching compiler
         Scratch.vm.exports?.i_will_not_ask_for_help_when_these_break?.();
       // Don't patch older Turbowarp VM
       if (!dangerousExports) {
@@ -797,5 +799,6 @@
     }
   }
 
+  // @ts-expect-error '---' should be treated as a constant string
   Scratch.extensions.register(new ScopeVar());
 })(Scratch);
