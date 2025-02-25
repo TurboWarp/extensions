@@ -91,7 +91,7 @@
     getInfo() {
       return {
         id: "ngllink",
-        name: Scratch.translate('NGL Link'),
+        name: Scratch.translate("NGL Link"),
         color1: "#ff69b4", // Hot pink
         color2: "#ff1493", // Deep pink
         color3: "#c71585", // Medium violet red
@@ -99,39 +99,41 @@
           {
             opcode: "sendMessage",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('send message [MESSAGE] to [USERNAME] with game [GAME]'),
+            text: Scratch.translate(
+              "send message [MESSAGE] to [USERNAME] with game [GAME]"
+            ),
             arguments: {
               MESSAGE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello!"
+                defaultValue: "Hello!",
               },
               USERNAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "username"
+                defaultValue: "username",
               },
               GAME: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "GAME_MENU"
-              }
-            }
+                menu: "GAME_MENU",
+              },
+            },
           },
           {
             opcode: "getRandomQuestion",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('get random question'),
-            arguments: {}
+            text: Scratch.translate("get random question"),
+            arguments: {},
           },
           {
             opcode: "setLanguage",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('set questions language to [LANG]'),
+            text: Scratch.translate("set questions language to [LANG]"),
             arguments: {
               LANG: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "LANGUAGE_MENU"
-              }
-            }
-          }
+                menu: "LANGUAGE_MENU",
+              },
+            },
+          },
         ],
         menus: {
           GAME_MENU: {
@@ -141,8 +143,8 @@
               "ask_me_anything",
               "never_have_i_ever",
               "confessions",
-              "three_words"
-            ]
+              "three_words",
+            ],
           },
           LANGUAGE_MENU: {
             acceptReporters: true,
@@ -157,10 +159,10 @@
               "ru", // Russian
               "ja", // Japanese
               "ko", // Korean
-              "zh"  // Chinese
-            ]
-          }
-        }
+              "zh", // Chinese
+            ],
+          },
+        },
       };
     }
 
@@ -174,23 +176,27 @@
 
       try {
         const properOrigin = "https://ngl.link";
-        
-        const _response = await Scratch.fetch("https://ngl.link/api/fingerprint/web", {
-          method: "POST",
-          headers: {
-            'Accept': '*/*',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Origin': properOrigin,
-            'Referer': properOrigin,
-            'User-Agent': this.userAgent,
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin'
-          },
-          body: data.toString()
-        });
-        
+
+        const _response = await Scratch.fetch(
+          "https://ngl.link/api/fingerprint/web",
+          {
+            method: "POST",
+            headers: {
+              Accept: "*/*",
+              "Accept-Language": "en-US,en;q=0.9",
+              "Content-Type":
+                "application/x-www-form-urlencoded; charset=UTF-8",
+              Origin: properOrigin,
+              Referer: properOrigin,
+              "User-Agent": this.userAgent,
+              "Sec-Fetch-Dest": "empty",
+              "Sec-Fetch-Mode": "cors",
+              "Sec-Fetch-Site": "same-origin",
+            },
+            body: data.toString(),
+          }
+        );
+
         return true;
       } catch (err) {
         console.error("Failed to verify device ID:", err);
@@ -225,17 +231,17 @@
         const response = await Scratch.fetch("https://ngl.link/api/submit", {
           method: "POST",
           headers: {
-            'Accept': '*/*',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Origin': properOrigin,
-            'Referer': `${properOrigin}/${args.USERNAME}`,
-            'User-Agent': this.userAgent,
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin'
+            Accept: "*/*",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            Origin: properOrigin,
+            Referer: `${properOrigin}/${args.USERNAME}`,
+            "User-Agent": this.userAgent,
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-origin",
           },
-          body: data.toString()
+          body: data.toString(),
         });
 
         console.log("Response status:", response.status);
@@ -279,17 +285,17 @@
         const response = await Scratch.fetch("https://ngl.link/api/submit", {
           method: "POST",
           headers: {
-            'Accept': '*/*',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Origin': properOrigin,
-            'Referer': `${properOrigin}/${args.USERNAME}`,
-            'User-Agent': this.userAgent,
-            'Sec-Fetch-Dest': 'empty',
-            'Sec-Fetch-Mode': 'cors',
-            'Sec-Fetch-Site': 'same-origin'
+            Accept: "*/*",
+            "Accept-Language": "en-US,en;q=0.9",
+            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+            Origin: properOrigin,
+            Referer: `${properOrigin}/${args.USERNAME}`,
+            "User-Agent": this.userAgent,
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-origin",
           },
-          body: data.toString()
+          body: data.toString(),
         });
 
         if (response.status >= 400) {
