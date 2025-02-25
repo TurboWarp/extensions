@@ -2,7 +2,6 @@
 // ID: cloudlink
 // Description: A powerful WebSocket extension for Scratch.
 // By: MikeDEV
-// License: MIT
 
 /* eslint-disable */
 // prettier-ignore
@@ -76,7 +75,7 @@
   const version = {
     editorType: "TurboWarp",
     versionNumber: 2,
-    versionString: "0.1.3", // Styling/Parity and Translation Strings Update
+    versionString: "0.1.2",
   };
 
   // Store extension state
@@ -825,19 +824,19 @@
           {
             opcode: "returnGlobalData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("global data")
+            text: "Global data"
           },
 
           {
             opcode: "returnPrivateData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("private data")
+            text: "Private data"
           },
 
           {
             opcode: "returnDirectData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("direct data")
+            text: "Direct data"
           },
 
           "---",
@@ -845,13 +844,13 @@
           {
             opcode: "returnLinkData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("link status")
+            text: "Link status"
           },
 
           {
             opcode: "returnStatusCode",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("status code")
+            text: "Status code"
           },
 
           "---",
@@ -859,20 +858,20 @@
           {
             opcode: "returnUserListData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("usernames")
+            text: "Usernames"
           },
 
           {
             opcode: "returnUsernameDataNew",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("my username")
+            text: "My username"
           },
 
           {
             opcode: "returnUsernameData",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate("(OLD - DO NOT USE IN NEW PROJECTS) my username")
+            text: "(OLD - DO NOT USE IN NEW PROJECTS) My username"
           },
 
           "---",
@@ -880,25 +879,25 @@
           {
             opcode: "returnVersionData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("extension version")
+            text: "Extension version"
           },
 
           {
             opcode: "returnServerVersion",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("server version")
+            text: "Server version"
           },
 
           {
             opcode: "returnServerList",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("server list")
+            text: "Server list"
           },
 
           {
             opcode: "returnMOTD",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("server MOTD")
+            text: "Server MOTD"
           },
 
           "---",
@@ -906,13 +905,13 @@
           {
             opcode: "returnClientIP",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("my IP address")
+            text: "My IP address"
           },
 
           {
             opcode: "returnUserObject",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("my user object")
+            text: "My user object"
           },
 
           "---",
@@ -920,7 +919,7 @@
           {
             opcode: "returnListenerData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("response for listener [ID]"),
+            text: "Response for listener [ID]",
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -933,7 +932,7 @@
             opcode: "readQueueSize",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate("size of queue for [TYPE]"),
+            text: "Size of queue for [TYPE]",
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -947,7 +946,7 @@
             opcode: "readQueueData",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate("packet queue for [TYPE]"),
+            text: "Packet queue for [TYPE]",
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -962,11 +961,11 @@
           {
             opcode: "returnVarData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[TYPE] [VAR] data"),
+            text: "[TYPE] [VAR] data",
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Apple"),
+                defaultValue: "Apple",
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -982,7 +981,7 @@
             opcode: "parseJSON",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate("[PATH] of [JSON_STRING]"),
+            text: "[PATH] of [JSON_STRING]",
             arguments: {
               PATH: {
                 type: Scratch.ArgumentType.STRING,
@@ -999,7 +998,7 @@
             opcode: "getFromJSONArray",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate('[NUM] from JSON array [ARRAY]'),
+            text: 'Get [NUM] from JSON array [ARRAY]',
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1016,7 +1015,7 @@
             opcode: "makeJSON",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate("convert [toBeJSONified] to JSON"),
+            text: "Convert [toBeJSONified] to JSON",
             arguments: {
               toBeJSONified: {
                 type: Scratch.ArgumentType.STRING,
@@ -1029,7 +1028,7 @@
             opcode: "isValidJSON",
             blockType: Scratch.BlockType.BOOLEAN,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate("is [JSON_STRING] valid JSON?"),
+            text: "Is [JSON_STRING] valid JSON?",
             arguments: {
               JSON_STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -1045,7 +1044,7 @@
             opcode: "fetchURL",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate("fetch data from URL [url]"),
+            text: "Fetch data from URL [url]",
             arguments: {
               url: {
                 type: Scratch.ArgumentType.STRING,
@@ -1058,7 +1057,7 @@
             opcode: "requestURL",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate("send request with method [method] for URL [url] with data [data] and headers [headers]"),
+            text: "Send request with method [method] for URL [url] with data [data] and headers [headers]",
             arguments: {
               method: {
                 type: Scratch.ArgumentType.STRING,
@@ -1084,14 +1083,14 @@
           {
             opcode: "onConnect",
             blockType: Scratch.BlockType.EVENT,
-            text: Scratch.translate("when connected"),
+            text: "When connected",
             isEdgeActivated: false, // Gets called by runtime.startHats
           },
 
           {
             opcode: "onClose",
             blockType: Scratch.BlockType.EVENT,
-            text: Scratch.translate("when disconnected"),
+            text: "When disconnected",
             isEdgeActivated: false, // Gets called by runtime.startHats
           },
 
@@ -1100,7 +1099,7 @@
           {
             opcode: "onListener",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when I receive new message with listener [ID]"),
+            text: "When I receive new message with listener [ID]",
             isEdgeActivated: true,
             arguments: {
               ID: {
@@ -1113,7 +1112,7 @@
           {
             opcode: "onNewPacket",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when I receive new [TYPE] message"),
+            text: "When I receive new [TYPE] message",
             isEdgeActivated: true,
             arguments: {
               TYPE: {
@@ -1127,7 +1126,7 @@
           {
             opcode: "onNewVar",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("When I receive new [TYPE] data for [VAR]"),
+            text: "When I receive new [TYPE] data for [VAR]",
             isEdgeActivated: true,
             arguments: {
               TYPE: {
@@ -1137,7 +1136,7 @@
               },
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Apple"),
+                defaultValue: "Apple",
               },
             },
           },
@@ -1147,37 +1146,37 @@
           {
             opcode: "getComState",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("connected?"),
+            text: "Connected?",
           },
 
           {
             opcode: "getRoomState",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("linked to rooms?"),
+            text: "Linked to rooms?",
           },
 
           {
             opcode: "getComLostConnectionState",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("lost connection?"),
+            text: "Lost connection?",
           },
 
           {
             opcode: "getComFailedConnectionState",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("failed to connnect?"),
+            text: "Failed to connnect?",
           },
 
           {
             opcode: "getUsernameState",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("username synced?"),
+            text: "Username synced?",
           },
 
           {
             opcode: "returnIsNewData",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("got new [TYPE]?"),
+            text: "Got New [TYPE]?",
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1190,16 +1189,16 @@
           {
             opcode: "returnIsNewVarData",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("got new [TYPE] data for variable [VAR]?"),
+            text: "Got New [TYPE] data for variable [VAR]?",
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "varmenu",
-                defaultValue: "Global variables",
+                defaultValue: 'Global variables',
               },
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Apple"),
+                defaultValue: "Apple",
               },
             },
           },
@@ -1207,7 +1206,7 @@
           {
             opcode: "returnIsNewListener",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("got new packet with listener [ID]?"),
+            text: "Got new packet with listener [ID]?",
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -1219,11 +1218,11 @@
           {
             opcode: "checkForID",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("ID [ID] connected?"),
+            text: "ID [ID] connected?",
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Another name"),
+                defaultValue: "Another name",
               },
             },
           },
@@ -1233,7 +1232,7 @@
           {
             opcode: "openSocket",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("connect to [IP]"),
+            text: "Connect to [IP]",
             arguments: {
               IP: {
                 type: Scratch.ArgumentType.STRING,
@@ -1245,7 +1244,7 @@
           {
             opcode: "openSocketPublicServers",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("connect to server [ID]"),
+            text: "Connect to server [ID]",
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1257,7 +1256,7 @@
           {
             opcode: "closeSocket",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("disconnect")
+            text: "Disconnect"
           },
 
           "---",
@@ -1265,11 +1264,11 @@
           {
             opcode: "setMyName",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set [NAME] as username"),
+            text: "Set [NAME] as username",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("A name"),
+                defaultValue: "A name",
               },
             },
           },
@@ -1279,7 +1278,7 @@
           {
             opcode: "createListener",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("attach listener [ID] to next packet"),
+            text: "Attach listener [ID] to next packet",
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -1294,11 +1293,11 @@
           {
             opcode: 'linkToRooms',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("link to room(s) [ROOMS]"),
+            text: "Link to room(s) [ROOMS]",
             arguments: {
               ROOMS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate('["test"]'),
+                defaultValue: '["test"]',
               },
             }
           },
@@ -1306,11 +1305,11 @@
           {
             opcode: "selectRoomsInNextPacket",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("select room(s) [ROOMS] for next packet"),
+            text: "Select room(s) [ROOMS] for next packet",
             arguments: {
               ROOMS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate('["test"]'),
+                defaultValue: '["test"]',
               },
             },
           },
@@ -1318,7 +1317,7 @@
           {
             opcode: "unlinkFromRooms",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("unlink from all rooms"),
+            text: "Unlink from all rooms",
           },
 
           "---",
@@ -1326,11 +1325,11 @@
           {
             opcode: "sendGData",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("send [DATA]"),
+            text: "Send [DATA]",
             arguments: {
               DATA: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Apple"),
+                defaultValue: "Apple",
               },
             },
           },
@@ -1338,15 +1337,15 @@
           {
             opcode: "sendPData",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("send [DATA] to [ID]"),
+            text: "Send [DATA] to [ID]",
             arguments: {
               DATA: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Apple"),
+                defaultValue: "Apple",
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Another name"),
+                defaultValue: "Another name",
               },
             },
           },
@@ -1354,15 +1353,15 @@
           {
             opcode: "sendGDataAsVar",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("send variable [VAR] with data [DATA]"),
+            text: "Send variable [VAR] with data [DATA]",
             arguments: {
               DATA: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Banana"),
+                defaultValue: "Banana",
               },
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Apple"),
+                defaultValue: "Apple",
               },
             },
           },
@@ -1370,19 +1369,19 @@
           {
             opcode: "sendPDataAsVar",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("send variable [VAR] to [ID] with data [DATA]"),
+            text: "Send variable [VAR] to [ID] with data [DATA]",
             arguments: {
               DATA: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Banana"),
+                defaultValue: "Banana",
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Another name"),
+                defaultValue: "Another name",
               },
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Apple"),
+                defaultValue: "Apple",
               },
             },
           },
@@ -1393,15 +1392,15 @@
             opcode: "runCMDnoID",
             blockType: Scratch.BlockType.COMMAND,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate("send command without ID [CMD] [DATA]"),
+            text: "Send command without ID [CMD] [DATA]",
             arguments: {
               CMD: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("direct"),
+                defaultValue: "direct",
               },
               DATA: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("val"),
+                defaultValue: "val",
               },
             },
           },
@@ -1410,19 +1409,19 @@
             opcode: "runCMD",
             blockType: Scratch.BlockType.COMMAND,
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
-            text: Scratch.translate("send command [CMD] [ID] [DATA]"),
+            text: "Send command [CMD] [ID] [DATA]",
             arguments: {
               CMD: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("direct"),
+                defaultValue: "direct",
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("id"),
+                defaultValue: "id",
               },
               DATA: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("val"),
+                defaultValue: "val",
               },
             },
           },
@@ -1432,7 +1431,7 @@
           {
             opcode: "resetNewData",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("reset got new [TYPE] status"),
+            text: "Reset got new [TYPE] status",
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1445,7 +1444,7 @@
           {
             opcode: "resetNewVarData",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("reset got new [TYPE] [VAR] status"),
+            text: "Reset got new [TYPE] [VAR] status",
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1454,7 +1453,7 @@
               },
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Apple"),
+                defaultValue: "Apple",
               },
             },
           },
@@ -1464,7 +1463,7 @@
           {
             opcode: "resetNewListener",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("reset got new [ID] listener status"),
+            text: "Reset got new [ID] listener status",
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -1478,7 +1477,7 @@
           {
             opcode: "clearAllPackets",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("clear all packets for [TYPE]"),
+            text: "Clear all packets for [TYPE]",
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1493,14 +1492,14 @@
           {
             func: "showOldBlocks",
             blockType: Scratch.BlockType.BUTTON,
-            text: Scratch.translate("Show old blocks"),
+            text: "Show old blocks",
             hideFromPalette: !clVars.hideCLDeprecatedBlocks,
           },
 
           {
             func: "hideOldBlocks",
             blockType: Scratch.BlockType.BUTTON,
-            text: Scratch.translate("Hide old blocks"),
+            text: "Hide old blocks",
             hideFromPalette: clVars.hideCLDeprecatedBlocks,
           },
 
@@ -1509,39 +1508,16 @@
         ],
         menus: {
           datamenu: {
-            items: [
-              {text: Scratch.translate('Global data'), value: 'Global data'},
-              {text: Scratch.translate('Private data'), value: 'Private data'},
-              {text: Scratch.translate('Direct data'), value: 'Direct data'},
-              {text: Scratch.translate('Status code'), value: 'Status code'}
-            ]
+            items: ['Global data', 'Private data', 'Direct data', 'Status code']
           },
           varmenu: {
-            items: [
-              {text: Scratch.translate('Global variables'), value: "Global variables"},
-              {text: Scratch.translate('Private variables'), value: "Private variables"}
-            ]
+            items: ['Global variables', 'Private variables']
           },
           allmenu: {
-            items: [
-              {text: Scratch.translate('Global data'), value: 'Global data'},
-              {text: Scratch.translate('Private data'), value: 'Private data'},
-              {text: Scratch.translate('Direct data'), value: 'Direct data'},
-              {text: Scratch.translate('Status code'), value: 'Status code'},
-              {text: Scratch.translate("Global variables"), value: "Global variables"},
-              {text: Scratch.translate("Private variables"), value: "Private variables"},
-              {text: Scratch.translate("All data"), value: "All data"}
-              ]
+            items: ['Global data', 'Private data', 'Direct data', 'Status code', "Global variables", "Private variables", "All data"]
           },
           almostallmenu: {
-            items: [
-              {text: Scratch.translate('Global data'), value: 'Global data'},
-              {text: Scratch.translate('Private data'), value: 'Private data'},
-              {text: Scratch.translate('Direct data'), value: 'Direct data'},
-              {text: Scratch.translate('Status code'), value: 'Status code'},
-              {text: Scratch.translate("Global variables"), value: "Global variables"},
-              {text: Scratch.translate("Private variables"), value: "Private variables"}
-              ]
+            items: ['Global data', 'Private data', 'Direct data', 'Status code', "Global variables", "Private variables"]
           },
         }
       };

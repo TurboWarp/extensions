@@ -1,7 +1,6 @@
 // Name: Notifications
 // ID: mdwaltersnotifications
 // Description: Display notifications.
-// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -18,7 +17,7 @@
       }
 
       const allowedByBrowser = await Notification.requestPermission();
-      if (allowedByBrowser === "denied") {
+      if (!allowedByBrowser) {
         throw new Error("Denied by browser");
       }
 
@@ -49,37 +48,34 @@
     getInfo() {
       return {
         id: "mdwaltersnotifications",
-        name: Scratch.translate("Notifications"),
+        name: "Notifications",
         blocks: [
           {
             opcode: "requestPermission",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("request notification permission"),
+            text: "request notification permission",
           },
           {
             opcode: "hasPermission",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("has notification permission?"),
+            text: "has notification permission",
             disableMonitor: true,
           },
           {
             opcode: "showNotification",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("create notification with text [text]"),
+            text: "create notification with text [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate({
-                  default: "Hello, world!",
-                  description: "Default text in the create notification block",
-                }),
+                defaultValue: "Hello, world!",
               },
             },
           },
           {
             opcode: "closeNotification",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("close notification"),
+            text: "close notification",
           },
         ],
       };
@@ -98,10 +94,7 @@
 
     async _showNotification(text) {
       if (await this.hasPermission()) {
-        const title = Scratch.translate({
-          default: "Notification from project",
-          description: "Title of notifications created by the project",
-        });
+        const title = "Notification from project";
         const options = {
           body: text,
         };

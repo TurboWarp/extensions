@@ -2,7 +2,6 @@
 // Description: Adds more sound-related blocks.
 // ID: lmsSoundExpanded
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -18,188 +17,74 @@
         color1: "#CF63CF",
         color2: "#C94FC9",
         color3: "#BD42BD",
-        name: Scratch.translate("Sound Expanded"),
+        name: "Sound Expanded",
         blocks: [
           {
             opcode: "startLooping",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("start looping [SOUND]"),
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND,
-              },
-            },
-            extensions: ["colours_sounds"],
-          },
-          {
-            opcode: "startLoopingBegin",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "start looping [SOUND] loop start [START] seconds"
-            ),
+            text: "start looping [SOUND]",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
               },
               START: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "2",
+                defaultValue: 0,
               },
             },
-            extensions: ["colours_sounds"],
-          },
-          {
-            opcode: "startLoopingBeginEnd",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "start looping [SOUND] loop region [START] to [END] seconds"
-            ),
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND,
-              },
-              START: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "2",
-              },
-              END: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "4",
-              },
-            },
-            extensions: ["colours_sounds"],
           },
           {
             opcode: "stopLooping",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("end looping [SOUND]"),
+            text: "end looping [SOUND]",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
               },
             },
-            extensions: ["colours_sounds"],
           },
           {
             opcode: "isLooping",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("[SOUND] is looping?"),
+            text: "[SOUND] is looping?",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
               },
             },
-            extensions: ["colours_sounds"],
           },
 
           "---",
 
           {
-            opcode: "playSoundAtAndWait",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "play sound [SOUND] from [START] seconds until done"
-            ),
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND,
-              },
-              START: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "2",
-              },
-            },
-            extensions: ["colours_sounds"],
-          },
-          {
-            opcode: "playSoundAt",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("start sound [SOUND] from [START] seconds"),
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND,
-              },
-              START: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "2",
-              },
-            },
-            extensions: ["colours_sounds"],
-          },
-          {
-            opcode: "playSoundToAndWait",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "play sound [SOUND] from [START] to [END] seconds until done"
-            ),
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND,
-              },
-              START: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "2",
-              },
-              END: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "4",
-              },
-            },
-            extensions: ["colours_sounds"],
-          },
-          {
-            opcode: "playSoundTo",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "start sound [SOUND] from [START] to [END] seconds"
-            ),
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND,
-              },
-              START: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "2",
-              },
-              END: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "4",
-              },
-            },
-            extensions: ["colours_sounds"],
-          },
-          {
             opcode: "stopSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stop sound [SOUND]"),
+            text: "stop sound [SOUND]",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
               },
             },
-            extensions: ["colours_sounds"],
           },
           {
             opcode: "pauseSounds",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("pause all sounds"),
+            text: "pause all sounds",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
               },
             },
-            extensions: ["colours_sounds"],
           },
           {
             opcode: "resumeSounds",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("resume all sounds"),
+            text: "resume all sounds",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
               },
             },
-            extensions: ["colours_sounds"],
           },
 
           "---",
@@ -207,18 +92,17 @@
           {
             opcode: "isSoundPlaying",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("sound [SOUND] is playing?"),
+            text: "sound [SOUND] is playing?",
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
               },
             },
-            extensions: ["colours_sounds"],
           },
           {
             opcode: "attributeOfSound",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[ATTRIBUTE] of [SOUND]"),
+            text: "[ATTRIBUTE] of [SOUND]",
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -228,12 +112,11 @@
                 type: Scratch.ArgumentType.SOUND,
               },
             },
-            extensions: ["colours_sounds"],
           },
           {
             opcode: "getSoundEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("effect [EFFECT] of [TARGET]"),
+            text: "[EFFECT] of [TARGET]",
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -244,74 +127,44 @@
                 menu: "targets",
               },
             },
-            extensions: ["colours_sounds"],
           },
           "---",
           {
             opcode: "setProjectVolume",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set project volume to [VALUE]%"),
+            text: "set project volume to [VALUE]%",
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 100,
               },
             },
-            extensions: ["colours_sounds"],
           },
           {
             opcode: "changeProjectVolume",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("change project volume by [VALUE]"),
+            text: "change project volume by [VALUE]",
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: -10,
               },
             },
-            extensions: ["colours_sounds"],
           },
           {
             opcode: "getProjectVolume",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("project volume"),
-            extensions: ["colours_sounds"],
+            text: "project volume",
           },
         ],
         menus: {
           attribute: {
             acceptReporters: false,
-            items: [
-              {
-                text: Scratch.translate("length"),
-                value: "length",
-              },
-              {
-                text: Scratch.translate("channels"),
-                value: "channels",
-              },
-              {
-                text: Scratch.translate("sample rate"),
-                value: "sample rate",
-              },
-              {
-                text: Scratch.translate("dataURI"),
-                value: "dataURI",
-              },
-            ],
+            items: ["length", "channels", "sample rate", "dataURI"],
           },
           effect: {
             acceptReporters: false,
-            items: [
-              {
-                text: Scratch.translate("pitch"),
-                value: "pitch",
-              },
-              {
-                text: Scratch.translate("pan"),
-                value: "pan",
-              },
-            ],
+            items: ["pitch", "pan"],
           },
           targets: {
             acceptReporters: true,
@@ -321,10 +174,9 @@
       };
     }
 
-    _startLooping(util, sound, loopStart, loopEnd) {
-      const index = this._getSoundIndex(sound, util);
-      if (index < 0) return;
-
+    startLooping(args, util) {
+      const index = this._getSoundIndex(args.SOUND, util);
+      if (index < 0) return 0;
       const target = util.target;
       const sprite = util.target.sprite;
 
@@ -337,34 +189,7 @@
       }
 
       if (!soundPlayer.outputNode) return;
-
       soundPlayer.outputNode.loop = true;
-      soundPlayer.outputNode.loopStart = loopStart;
-      // If loopEnd is the default of 0, then loopStart is ignored
-      soundPlayer.outputNode.loopEnd =
-        loopEnd || soundPlayer.outputNode.buffer.duration;
-    }
-
-    startLooping(args, util) {
-      this._startLooping(util, args.SOUND, 0, 0);
-    }
-
-    startLoopingBegin(args, util) {
-      this._startLooping(
-        util,
-        args.SOUND,
-        Scratch.Cast.toNumber(args.START),
-        0
-      );
-    }
-
-    startLoopingBeginEnd(args, util) {
-      this._startLooping(
-        util,
-        args.SOUND,
-        Scratch.Cast.toNumber(args.START),
-        Scratch.Cast.toNumber(args.END)
-      );
     }
 
     stopLooping(args, util) {
@@ -389,110 +214,6 @@
 
       if (!soundPlayer.outputNode) return false;
       return soundPlayer.outputNode.loop;
-    }
-
-    // https://github.com/scratchfoundation/scratch-vm/blob/7c1187cc1fe1c763ef61598875acd4fc9a0c8c2e/src/blocks/scratch3_sound.js#L164
-    _playSoundAt(args, util, storeWaiting) {
-      const index = this._getSoundIndex(args.SOUND, util);
-      if (index >= 0) {
-        const { target } = util;
-        const { sprite } = target;
-        const { soundId } = sprite.sounds[index];
-        const start = Math.max(Scratch.Cast.toNumber(args.START), 0);
-        const end =
-          args.END == undefined ? undefined : Scratch.Cast.toNumber(args.END);
-        if (sprite.soundBank) {
-          if (storeWaiting === true) {
-            // @ts-expect-error not typed
-            Scratch.vm.runtime.ext_scratch3_sound._addWaitingSound(
-              target.id,
-              soundId
-            );
-          } else {
-            // @ts-expect-error not typed
-            Scratch.vm.runtime.ext_scratch3_sound._removeWaitingSound(
-              target.id,
-              soundId
-            );
-          }
-          return this._playSoundBankSound(
-            sprite.soundBank,
-            target,
-            soundId,
-            start,
-            end
-          );
-        }
-      }
-    }
-
-    // https://github.com/scratchfoundation/scratch-audio/blob/6fb4b142a5f3198483e4c4f992fb623d5e9d1ed5/src/SoundBank.js#L89
-    _playSoundBankSound(bank, target, soundId, start, end) {
-      const effects = bank.getSoundEffects(soundId);
-      const player = bank.getSoundPlayer(soundId);
-
-      if (bank.playerTargets.get(soundId) !== target) {
-        // make sure to stop the old sound, effectively "forking" the output
-        // when the target switches before we adjust it's effects
-        player.stop();
-      }
-
-      bank.playerTargets.set(soundId, target);
-      effects.addSoundPlayer(player);
-      effects.setEffectsFromTarget(target);
-      player.connect(effects);
-
-      this._playSoundPlayer(player, start, end);
-
-      return player.finished();
-    }
-
-    // https://github.com/scratchfoundation/scratch-audio/blob/6fb4b142a5f3198483e4c4f992fb623d5e9d1ed5/src/SoundPlayer.js#L253
-    _playSoundPlayer(player, start, end) {
-      if (player.isStarting) {
-        player.emit("stop");
-        player.emit("play");
-        return;
-      }
-
-      if (player.isPlaying) {
-        player.stop();
-      }
-
-      if (player.initialized) {
-        player._createSource();
-      } else {
-        player.initialize();
-      }
-
-      if (end === undefined) {
-        player.outputNode.start(0, start);
-      } else {
-        player.outputNode.start(0, start, Math.max(end - start, 0));
-      }
-
-      player.isPlaying = true;
-
-      const { currentTime, DECAY_DURATION } = player.audioEngine;
-      player.startingUntil = currentTime + DECAY_DURATION;
-
-      player.emit("play");
-    }
-
-    playSoundAt(args, util) {
-      this._playSoundAt(args, util);
-    }
-
-    playSoundAtAndWait(args, util) {
-      return this._playSoundAt(args, util, true);
-    }
-
-    playSoundTo(args, util) {
-      this._playSoundAt(args, util);
-    }
-
-    playSoundToAndWait(args, util) {
-      return this._playSoundAt(args, util, true);
     }
 
     stopSound(args, util) {
@@ -569,8 +290,8 @@
     }
 
     setProjectVolume(args) {
-      const value = Scratch.Cast.toNumber(args.VALUE) / 100;
-      const newVolume = Scratch.Cast.toNumber(Math.max(Math.min(value, 1), 0));
+      const value = Scratch.Cast.toNumber(args.VALUE);
+      const newVolume = this._wrapClamp(value / 100, 0, 1);
       runtime.audioEngine.inputNode.gain.value = newVolume;
     }
 
@@ -578,7 +299,7 @@
       const value = Scratch.Cast.toNumber(args.VALUE) / 100;
       const volume = runtime.audioEngine.inputNode.gain.value;
       const newVolume = Scratch.Cast.toNumber(
-        Math.max(Math.min(volume + value, 1), 0)
+        Math.min(Math.max(volume + value, 1), 0)
       );
       runtime.audioEngine.inputNode.gain.value = newVolume;
     }

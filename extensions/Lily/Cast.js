@@ -2,7 +2,6 @@
 // ID: lmsCast
 // Description: Convert values between types.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -13,12 +12,12 @@
     getInfo() {
       return {
         id: "lmsCast",
-        name: Scratch.translate("Cast"),
+        name: "Cast",
         blocks: [
           {
             opcode: "toType",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("cast [INPUT] to [TYPE]"),
+            text: "cast [INPUT] to [TYPE]",
             allowDropAnywhere: true,
             disableMonitor: true,
             arguments: {
@@ -35,7 +34,7 @@
           {
             opcode: "typeOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("type of [INPUT]"),
+            text: "type of [INPUT]",
             disableMonitor: true,
             arguments: {
               INPUT: {
@@ -48,24 +47,7 @@
         menus: {
           type: {
             acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("number"),
-                value: "number",
-              },
-              {
-                text: Scratch.translate("string"),
-                value: "string",
-              },
-              {
-                text: Scratch.translate("boolean"),
-                value: "boolean",
-              },
-              {
-                text: Scratch.translate("default"),
-                value: "default",
-              },
-            ],
+            items: ["number", "string", "boolean", "default"],
           },
         },
       };
@@ -86,7 +68,17 @@
     }
 
     typeOf(args) {
-      return typeof args.INPUT;
+      const input = args.INPUT;
+      switch (typeof input) {
+        case "number":
+          return "number";
+        case "string":
+          return "string";
+        case "boolean":
+          return "boolean";
+        default:
+          return "";
+      }
     }
   }
 

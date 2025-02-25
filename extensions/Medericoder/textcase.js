@@ -239,37 +239,35 @@
     getInfo() {
       return {
         id: "medericodertextcase",
-        name: Scratch.translate("Text Case"),
+        name: "Text Case",
         blocks: [
           {
             opcode: "strictlyequal",
             blockType: Scratch.BlockType.BOOLEAN,
-            // eslint-disable-next-line extension/should-translate
             text: "[TEXT1] ≡ [TEXT2]",
             arguments: {
               TEXT1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Hello"),
+                defaultValue: "Hello",
               },
               TEXT2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("hello"),
+                defaultValue: "hello",
               },
             },
           },
           {
             opcode: "quasiequal",
             blockType: Scratch.BlockType.BOOLEAN,
-            // eslint-disable-next-line extension/should-translate
             text: "[TEXT1] ≈ [TEXT2]",
             arguments: {
               TEXT1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Hello"),
+                defaultValue: "Hello",
               },
               TEXT2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("hello"),
+                defaultValue: "hello",
               },
             },
           },
@@ -277,13 +275,11 @@
           {
             opcode: "changecase",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("convert [TEXT] to case [FORMAT]"),
+            text: "convert [TEXT] to case [FORMAT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate(
-                  "Where is the apple? It is here!"
-                ),
+                defaultValue: "Where is the apple? It is here!",
               },
               FORMAT: {
                 type: Scratch.ArgumentType.STRING,
@@ -294,22 +290,22 @@
           {
             opcode: "getcase",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("case from [TEXT]"),
+            text: "get case from [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("hello world"),
+                defaultValue: "hello world",
               },
             },
           },
           {
             opcode: "iscase",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is [TEXT] [FORMAT]"),
+            text: "is [TEXT] [FORMAT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("hello world"),
+                defaultValue: "hello world",
               },
               FORMAT: {
                 type: Scratch.ArgumentType.STRING,
@@ -321,11 +317,11 @@
           {
             opcode: "glitch",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("glitch [TEXT] level [PROBA]%"),
+            text: "glitch [TEXT] level [PROBA]%",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Hello"),
+                defaultValue: "Hello",
               },
               PROBA: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -338,36 +334,21 @@
           FORMAT_MENU: {
             acceptReporters: true,
             items: [
-              { text: Scratch.translate("uppercase"), value: "uppercase" },
-              { text: Scratch.translate("lowercase"), value: "lowercase" },
-              { text: Scratch.translate("invert"), value: "invert" },
-              { text: Scratch.translate("begin"), value: "begin" },
-              { text: Scratch.translate("begin words"), value: "begin words" },
-              {
-                text: Scratch.translate("begin sentences"),
-                value: "begin sentences",
-              },
-              { text: Scratch.translate("begin only"), value: "begin only" },
-              {
-                text: Scratch.translate("begin words only"),
-                value: "begin words only",
-              },
-              {
-                text: Scratch.translate("begin sentences only"),
-                value: "begin sentences only",
-              },
-              { text: Scratch.translate("1/2 up"), value: "1/2 up" },
-              { text: Scratch.translate("1/2 low"), value: "1/2 low" },
-              {
-                text: Scratch.translate("1/2 up letters only"),
-                value: "1/2 up letters only",
-              },
-              {
-                text: Scratch.translate("1/2 low letters only"),
-                value: "1/2 low letters only",
-              },
-              { text: Scratch.translate("random"), value: "random" },
-              { text: Scratch.translate("identity"), value: "identity" },
+              "uppercase",
+              "lowercase",
+              "invert",
+              "begin",
+              "begin words",
+              "begin sentences",
+              "begin only",
+              "begin words only",
+              "begin sentences only",
+              "1/2 up",
+              "1/2 low",
+              "1/2 up letters only",
+              "1/2 low letters only",
+              "random",
+              "identity",
             ],
           },
         },

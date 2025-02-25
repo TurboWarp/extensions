@@ -18,14 +18,14 @@
           {
             opcode: "startRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("start recording"),
+            text: Scratch.translate("Start recording"),
             blockIconURI: icon,
             arguments: {},
           },
           {
             opcode: "stopRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stop recording"),
+            text: Scratch.translate("Stop recording"),
             blockIconURI: icon,
             arguments: {},
           },
@@ -33,7 +33,7 @@
             opcode: "stopRecordingAndDownload",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "stop recording and download with [name] as filename"
+              "Stop recording and download with [name] as filename"
             ),
             blockIconURI: icon,
             arguments: {
@@ -50,7 +50,7 @@
           {
             opcode: "isRecording",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("recording?"),
+            text: Scratch.translate("Recording?"),
             blockIconURI: icon,
             arguments: {},
           },
@@ -96,17 +96,17 @@
         return;
       }
       console.log("Stop recording");
-      mediaRecorder.addEventListener("stop", async function () {
+      mediaRecorder.addEventListener("stop", function () {
         const blob = new Blob(recordedChunks, { type: "audio/wav" });
-        recordedChunks = [];
-
         const url = URL.createObjectURL(blob);
-        try {
-          await Scratch.download(url, name);
-        } catch (e) {
-          console.error(e);
-        }
+        const downloadLink = document.createElement("a");
+        downloadLink.href = url;
+        downloadLink.download = name;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
         URL.revokeObjectURL(url);
+        recordedChunks = [];
       });
       mediaRecorder.stop();
       mediaRecorder = null;

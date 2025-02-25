@@ -1,8 +1,7 @@
-// Name: Camera V1
+// Name: Camera Controls (Very Buggy)
 // ID: DTcameracontrols
 // Description: Move the visible part of the stage.
 // By: DT
-// License: MIT
 
 ((Scratch) => {
   "use strict";
@@ -235,7 +234,7 @@
     getInfo() {
       return {
         id: "DTcameracontrols",
-        name: Scratch.translate("Camera V1"),
+        name: Scratch.translate("Camera (Very Buggy)"),
 
         color1: "#ff4da7",
         color2: "#de4391",
@@ -411,29 +410,6 @@
           */
           "---",
           {
-            opcode: "blocktx",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("stage to world x: [x]"),
-            arguments: {
-              x: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
-              },
-            },
-          },
-          {
-            opcode: "blockty",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("stage to world y: [y]"),
-            arguments: {
-              y: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
-              },
-            },
-          },
-          "---",
-          {
             opcode: "changeZoom",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("change camera zoom by [val]"),
@@ -566,12 +542,6 @@
     }
     getDirection() {
       return cameraDirection;
-    }
-    blocktx(args) {
-      return _translateX(Scratch.Cast.toNumber(args.x));
-    }
-    blockty(args) {
-      return _translateY(Scratch.Cast.toNumber(args.y));
     }
     setCol(args, util) {
       cameraBG = args.val;

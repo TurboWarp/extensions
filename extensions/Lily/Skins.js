@@ -2,7 +2,6 @@
 // ID: lmsSkins
 // Description: Have your sprites render as other images or costumes.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -40,7 +39,7 @@
   const renderer = runtime.renderer;
   const Cast = Scratch.Cast;
 
-  var createdSkins = {};
+  var createdSkins = [];
 
   class Skins {
     constructor() {
@@ -56,7 +55,7 @@
     getInfo() {
       return {
         id: "lmsSkins",
-        name: Scratch.translate("Skins"),
+        name: "Skins",
         color1: "#6b56ff",
         color2: "#604de6",
         color3: "#5645cc",
@@ -65,7 +64,7 @@
           {
             opcode: "registerSVGSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("create SVG skin [SVG] as [NAME]"),
+            text: "create SVG skin [SVG] as [NAME]",
             arguments: {
               SVG: {
                 type: Scratch.ArgumentType.STRING,
@@ -83,7 +82,7 @@
           {
             opcode: "registerCostumeSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("load skin from [COSTUME] as [NAME]"),
+            text: "load skin from [COSTUME] as [NAME]",
             arguments: {
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
@@ -97,7 +96,7 @@
           {
             opcode: "registerURLSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("load skin from URL [URL] as [NAME]"),
+            text: "load skin from URL [URL] as [NAME]",
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -112,7 +111,7 @@
           {
             opcode: "getSkinLoaded",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("skin [NAME] is loaded?"),
+            text: "skin [NAME] is loaded?",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -126,7 +125,7 @@
           {
             opcode: "setSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set skin of [TARGET] to [NAME]"),
+            text: "set skin of [TARGET] to [NAME]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -141,7 +140,7 @@
           {
             opcode: "restoreSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("restore skin of [TARGET]"),
+            text: "restore skin of [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -152,7 +151,7 @@
           {
             opcode: "restoreTargets",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("restore targets with skin [NAME]"),
+            text: "restore targets with skin [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -166,7 +165,7 @@
           {
             opcode: "getCurrentSkin",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("current skin of [TARGET]"),
+            text: "current skin of [TARGET]",
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -177,7 +176,7 @@
           {
             opcode: "getSkinAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[ATTRIBUTE] of skin [NAME]"),
+            text: "[ATTRIBUTE] of skin [NAME]",
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -195,7 +194,7 @@
           {
             opcode: "deleteSkin",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete skin [NAME]"),
+            text: "delete skin [NAME]",
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -206,7 +205,7 @@
           {
             opcode: "deleteAllSkins",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete all skins"),
+            text: "delete all skins",
           },
         ],
         menus: {
@@ -216,23 +215,14 @@
           },
           skinAttributes: {
             acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("width"),
-                value: "width",
-              },
-              {
-                text: Scratch.translate("height"),
-                value: "height",
-              },
-            ],
+            items: ["width", "height"],
           },
         },
       };
     }
 
     async registerSVGSkin(args) {
-      const skinName = `lms-${Cast.toString(args.NAME)}`;
+      const skinName = Cast.toString(args.NAME);
       const svgData = Cast.toString(args.SVG);
 
       let oldSkinId = null;
@@ -257,7 +247,7 @@
         return;
       }
 
-      const skinName = `lms-${Cast.toString(args.NAME)}`;
+      const skinName = Cast.toString(args.NAME);
       const costumeIndex = util.target.getCostumeIndexByName(args.COSTUME);
       if (costumeIndex === -1) return;
       const costume = util.target.sprite.costumes[costumeIndex];
@@ -284,7 +274,7 @@
     }
 
     async registerURLSkin(args) {
-      const skinName = `lms-${Cast.toString(args.NAME)}`;
+      const skinName = Cast.toString(args.NAME);
       const url = Cast.toString(args.URL);
 
       let oldSkinId = null;
@@ -303,12 +293,12 @@
     }
 
     getSkinLoaded(args) {
-      const skinName = `lms-${Cast.toString(args.NAME)}`;
+      const skinName = Cast.toString(args.NAME);
       return !!createdSkins[skinName];
     }
 
     setSkin(args, util) {
-      const skinName = `lms-${Cast.toString(args.NAME)}`;
+      const skinName = Cast.toString(args.NAME);
       if (!createdSkins[skinName]) return;
 
       const targetName = Cast.toString(args.TARGET);
@@ -335,12 +325,12 @@
 
       const skinId = renderer._allDrawables[drawableID].skin._id;
       const skinName = this._getSkinNameFromID(skinId);
-      return skinName ? skinName.replace("lms-", "") : "";
+      return skinName ? skinName : "";
     }
 
     getSkinAttribute(args) {
       const skins = renderer._allSkins;
-      const skinName = `lms-${Cast.toString(args.NAME)}`;
+      const skinName = Cast.toString(args.NAME);
 
       if (!createdSkins[skinName]) return 0;
       const skinId = createdSkins[skinName];
@@ -360,7 +350,7 @@
     }
 
     deleteSkin(args) {
-      const skinName = `lms-${Cast.toString(args.NAME)}`;
+      const skinName = Cast.toString(args.NAME);
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
 
@@ -371,13 +361,13 @@
 
     deleteAllSkins() {
       this._refreshTargets();
-      for (const skinName in createdSkins)
-        renderer.destroySkin(createdSkins[skinName]);
-      createdSkins = {};
+      for (let i = 0; i < createdSkins.length; i++)
+        renderer.destroySkin(createdSkins[i]);
+      createdSkins = [];
     }
 
     restoreTargets(args) {
-      const skinName = `lms-${Cast.toString(args.NAME)}`;
+      const skinName = Cast.toString(args.NAME);
       if (!createdSkins[skinName]) return;
       const skinId = createdSkins[skinName];
 
@@ -437,7 +427,7 @@
         contentType === "image/jpeg" ||
         contentType === "image/bmp"
       ) {
-        // eslint-disable-next-line extension/check-can-fetch
+        // eslint-disable-next-line no-restricted-syntax
         const output = new Image();
         output.src = URL;
         output.crossOrigin = "anonymous";

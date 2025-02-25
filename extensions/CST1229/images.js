@@ -1,9 +1,3 @@
-// Name: Images
-// ID: images
-// Description: Some blocks for working with images.
-// Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
-// License: MIT
-
 (function (Scratch) {
   "use strict";
   const QueryImage = {
@@ -34,7 +28,7 @@
     getInfo() {
       return {
         id: "images",
-        name: Scratch.translate("Images"),
+        name: "Images",
         blocks: [
           {
             opcode: "getImage",
@@ -234,7 +228,7 @@
           case "image/jpeg":
             {
               if (!(await Scratch.canFetch(IMAGEURL))) return;
-              // eslint-disable-next-line extension/check-can-fetch
+              // eslint-disable-next-line no-restricted-syntax
               const image = new Image();
               image.crossOrigin = "anonymous";
               image.src = IMAGEURL;

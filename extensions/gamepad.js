@@ -1,7 +1,6 @@
 // Name: Gamepad
 // ID: Gamepad
 // Description: Directly access gamepads instead of just mapping buttons to keys.
-// License: MIT AND MPL-2.0
 
 // Some parts of this scripts are based on or designed to be compatible-ish with:
 // https://arpruss.github.io/gamepad.js (MIT Licensed)
@@ -9,108 +8,18 @@
 (function (Scratch) {
   "use strict";
 
-  // For joysticks
-  const DEFAULT_AXIS_DEADZONE = 0.1;
-  let axisDeadzone = DEFAULT_AXIS_DEADZONE;
-
-  // For triggers. Drift isn't so big of an issue with these.
+  const AXIS_DEADZONE = 0.1;
   const BUTTON_DEADZONE = 0.05;
 
   /**
-   * @typedef InternalGamepadState
-   * @property {string} id
-   * @property {Gamepad} realGamepad
-   * @property {number} timestamp
-   * @property {number[]} axisDirections
-   * @property {number[]} axisMagnitudes
-   * @property {number[]} axisValues
-   * @property {number[]} buttonValues
-   * @property {boolean[]} buttonPressed
-   */
-
-  /** @type {Array<InternalGamepadState|null>} */
-  let gamepadState = [];
-
-  const updateState = () => {
-    // In Firefox, the objects returned by getGamepads() change in the background, but in Chrome
-    // we have to call getGamepads() each frame. Easiest for us to just always call it.
-    // But because Firefox changes the objects in the background, we need to track old values
-    // ourselves.
-    const gamepads = navigator.getGamepads();
-
-    const oldState = gamepadState;
-
-    gamepadState = gamepads.map((gamepad) => {
-      if (!gamepad) {
-        return null;
-      }
-
-      /** @type {InternalGamepadState} */
-      const result = {
-        id: gamepad.id,
-        realGamepad: gamepad,
-        timestamp: gamepad.timestamp,
-        axisDirections: [],
-        axisMagnitudes: [],
-        axisValues: [],
-        buttonValues: [],
-        buttonPressed: [],
-      };
-
-      const oldResult = oldState.find((i) => i !== null && i.id === gamepad.id);
-
-      // Each pair of axes is given a circular deadzone.
-      for (let i = 0; i < gamepad.axes.length; i += 2) {
-        const x = gamepad.axes[i];
-        const y = i + 1 >= gamepad.axes.length ? 0 : gamepad.axes[i + 1];
-        const magnitude = Math.sqrt(x ** 2 + y ** 2);
-
-        if (magnitude > axisDeadzone) {
-          let direction = (Math.atan2(y, x) * 180) / Math.PI + 90;
-          if (direction < 0) {
-            direction += 360;
-          }
-
-          result.axisDirections.push(direction, direction);
-          result.axisMagnitudes.push(magnitude, magnitude);
-          result.axisValues.push(x, y);
-        } else {
-          // Set both axes to 0. Use the old direction state, if it exists, so that using the direction
-          // inside of something like "point in direction" won't reset when no inputs.
-          // If we have no information at all, default to 90 degrees, like new sprites.
-          const oldDirection = oldResult ? oldResult.axisDirections[i] : 90;
-          result.axisDirections.push(oldDirection, oldDirection);
-          result.axisMagnitudes.push(0, 0);
-          result.axisValues.push(0, 0);
-        }
-      }
-
-      for (let i = 0; i < gamepad.buttons.length; i++) {
-        let value = gamepad.buttons[i].value;
-        if (value < BUTTON_DEADZONE) {
-          value = 0;
-        }
-        result.buttonValues.push(value);
-        result.buttonPressed.push(gamepad.buttons[i].pressed);
-      }
-
-      return result;
-    });
-  };
-
-  Scratch.vm.runtime.on("BEFORE_EXECUTE", () => {
-    updateState();
-  });
-
-  /**
-   * @param {unknown} index 1-indexed index or 'any'
-   * @returns {InternalGamepadState[]}
+   * @param {number|'any'} index 1-indexed index
+   * @returns {Gamepad[]}
    */
   const getGamepads = (index) => {
     if (index === "any") {
-      return gamepadState.filter((i) => i);
+      return navigator.getGamepads().filter((i) => i);
     }
-    const gamepad = gamepadState[Scratch.Cast.toNumber(index) - 1];
+    const gamepad = navigator.getGamepads()[index - 1];
     if (gamepad) {
       return [gamepad];
     }
@@ -118,55 +27,52 @@
   };
 
   /**
-   * @param {InternalGamepadState} gamepad
-   * @param {unknown} buttonIndex 1-indexed index or 'any'
+   * @param {Gamepad} gamepad
+   * @param {number|'any'} buttonIndex 1-indexed index
    * @returns {boolean} false if button does not exist
    */
   const isButtonPressed = (gamepad, buttonIndex) => {
     if (buttonIndex === "any") {
-      return gamepad.buttonPressed.some((i) => i);
+      return gamepad.buttons.some((i) => i.pressed);
     }
-    return !!gamepad.buttonPressed[Scratch.Cast.toNumber(buttonIndex) - 1];
+    const button = gamepad.buttons[buttonIndex - 1];
+    if (!button) {
+      return false;
+    }
+    return button.pressed;
   };
 
   /**
-   * @param {InternalGamepadState} gamepad
-   * @param {unknown} buttonIndex 1-indexed index
+   * @param {Gamepad} gamepad
+   * @param {number} buttonIndex 1-indexed index
    * @returns {number} 0 if button does not exist
    */
   const getButtonValue = (gamepad, buttonIndex) => {
-    const value = gamepad.buttonValues[Scratch.Cast.toNumber(buttonIndex) - 1];
-    return value || 0;
+    const button = gamepad.buttons[buttonIndex - 1];
+    if (!button) {
+      return 0;
+    }
+    const value = button.value;
+    if (value < BUTTON_DEADZONE) {
+      return 0;
+    }
+    return value;
   };
 
   /**
-   * @param {InternalGamepadState} gamepad
-   * @param {unknown} axisIndex 1-indexed index
+   * @param {Gamepad} gamepad
+   * @param {number} axisIndex 1-indexed index
    * @returns {number} 0 if axis does not exist
    */
   const getAxisValue = (gamepad, axisIndex) => {
-    const axisValue = gamepad.axisValues[Scratch.Cast.toNumber(axisIndex) - 1];
-    return axisValue || 0;
-  };
-
-  /**
-   * @param {InternalGamepadState} gamepad
-   * @param {unknown} startIndex
-   */
-  const getAxisPairMagnitude = (gamepad, startIndex) => {
-    const magnitude =
-      gamepad.axisMagnitudes[Scratch.Cast.toNumber(startIndex) - 1];
-    return magnitude || 0;
-  };
-
-  /**
-   * @param {InternalGamepadState} gamepad
-   * @param {unknown} startIndex
-   */
-  const getAxisPairDirection = (gamepad, startIndex) => {
-    const direction =
-      gamepad.axisDirections[Scratch.Cast.toNumber(startIndex) - 1];
-    return direction || 0;
+    const axisValue = gamepad.axes[axisIndex - 1];
+    if (typeof axisValue !== "number") {
+      return 0;
+    }
+    if (Math.abs(axisValue) < AXIS_DEADZONE) {
+      return 0;
+    }
+    return axisValue;
   };
 
   class GamepadExtension {
@@ -342,20 +248,6 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "1",
                 menu: "padMenu",
-              },
-            },
-          },
-
-          "---",
-
-          {
-            opcode: "setAxisDeadzone",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set axis deadzone to [DEADZONE]"),
-            arguments: {
-              DEADZONE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: DEFAULT_AXIS_DEADZONE.toString(),
               },
             },
           },
@@ -549,24 +441,20 @@
 
     axisDirection({ axis, pad }) {
       let greatestMagnitude = 0;
-      // by default sprites have direction 90 degrees, so that's a reasonable default
       let direction = 90;
-
-      const gamepads = getGamepads(pad);
-      for (const gamepad of gamepads) {
-        const magnitude = getAxisPairMagnitude(gamepad, axis);
+      for (const gamepad of getGamepads(pad)) {
+        const horizontalAxis = getAxisValue(gamepad, axis);
+        const verticalAxis = getAxisValue(gamepad, +axis + 1);
+        const magnitude = Math.sqrt(horizontalAxis ** 2 + verticalAxis ** 2);
         if (magnitude > greatestMagnitude) {
-          direction = getAxisPairDirection(gamepad, axis);
+          greatestMagnitude = magnitude;
+          direction =
+            (Math.atan2(verticalAxis, horizontalAxis) * 180) / Math.PI + 90;
+          if (direction < 0) {
+            direction += 360;
+          }
         }
       }
-
-      // if no sticks are far enough out, instead we'll return the last direction
-      // of the most recently modified gamepad
-      if (greatestMagnitude === 0 && gamepads.length > 0) {
-        gamepads.sort((a, b) => b.timestamp - a.timestamp);
-        direction = getAxisPairDirection(gamepads[0], axis);
-      }
-
       return direction;
     }
 
@@ -585,11 +473,11 @@
 
     rumble({ s, w, t, i }) {
       const gamepads = getGamepads(i);
-      for (const { realGamepad } of gamepads) {
+      for (const gamepad of gamepads) {
         // @ts-ignore
-        if (realGamepad.vibrationActuator) {
+        if (gamepad.vibrationActuator) {
           // @ts-ignore
-          realGamepad.vibrationActuator.playEffect("dual-rumble", {
+          gamepad.vibrationActuator.playEffect("dual-rumble", {
             startDelay: 0,
             duration: t * 1000,
             weakMagnitude: w,
@@ -597,11 +485,6 @@
           });
         }
       }
-    }
-
-    setAxisDeadzone({ DEADZONE }) {
-      axisDeadzone = Scratch.Cast.toNumber(DEADZONE);
-      updateState();
     }
   }
 

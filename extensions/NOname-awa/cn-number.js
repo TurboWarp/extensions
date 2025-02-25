@@ -1,13 +1,27 @@
 (function (Scratch) {
   "use strict";
 
-  let i, N_Z, o, j, After_decimal_point, unit, k, C_Number, m, n;
+  let Number2,
+    null2,
+    units,
+    Number_in,
+    uppercase,
+    i,
+    N_Z,
+    o,
+    j,
+    After_decimal_point,
+    unit,
+    k,
+    C_Number,
+    m,
+    n;
 
   class CNNUMBER {
     getInfo() {
       return {
         id: "nonameawacnnumber",
-        name: Scratch.translate("Chinese Numbers"),
+        name: "中文数字",
         color1: "#cb0000",
         color2: "#a20000",
         color3: "#a20000",
@@ -16,9 +30,7 @@
             opcode: "CN_number",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: Scratch.translate(
-              "convert [a] to chinese number using [u] numerals"
-            ),
+            text: "中文数字 [a] 大写 [u]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -36,11 +48,11 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("standard"),
+                text: "关闭",
                 value: "0",
               },
               {
-                text: Scratch.translate("financial"),
+                text: "打开",
                 value: "1",
               },
             ],

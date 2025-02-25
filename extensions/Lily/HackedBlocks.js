@@ -3,8 +3,6 @@
 // Description: Various "hacked blocks" that work in Scratch but are not visible in the palette.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // By: pumpkinhasapatch
-// License: MIT AND LGPL-3.0
-// Scratch-compatible: true
 
 (function (Scratch) {
   "use strict";
@@ -13,7 +11,7 @@
     getInfo() {
       return {
         id: "lmsHackedBlocks",
-        name: Scratch.translate("Hidden Blocks"),
+        name: "Hidden Blocks",
         docsURI: "https://en.scratch-wiki.info/wiki/Hidden_Blocks#Events",
         blocks: [
           // Use the sensing_touchingobjectmenu instead of event_ to also list sprites, since the block supports it

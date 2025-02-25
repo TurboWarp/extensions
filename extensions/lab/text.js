@@ -1,8 +1,6 @@
 // Name: Animated Text
 // ID: text
 // Description: An easy way to display and animate text. Compatible with Scratch Lab's Animated Text experiment.
-// By: LilyMakesThings
-// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -36,15 +34,13 @@
     "Marker",
     "Curly",
     "Pixel",
-    "Scratch",
   ];
 
   const DEFAULT_COLOR = "#575e75";
   const DEFAULT_FONT = "Handwriting";
+  const DEFAULT_WIDTH = vm.runtime.stageWidth;
   const DEFAULT_ALIGN = ALIGN_CENTER;
   const DEFAULT_FONT_SIZE = 24;
-  const DEFAULT_OUTLINE_WIDTH = 0; // 0 = no outline
-  const DEFAULT_OUTLINE_COLOR = "#000000";
 
   const DEFAULT_TYPE_DELAY = 1000 / 15;
 
@@ -52,9 +48,6 @@
   const DEFAULT_RAINBOW_DURATION = 2000;
 
   const DEFAULT_ZOOM_DURATION = 500;
-
-  const DEFAULT_SHAKE_INTENSITY = 100;
-  const DEFAULT_SHAKE_DURATION = 500;
 
   let globalFrameTime = 0;
 
@@ -159,12 +152,10 @@
 
       this.text = "";
       this.color = DEFAULT_COLOR;
-      this.textWidth = vm.runtime.stageWidth;
+      this.textWidth = DEFAULT_WIDTH;
       this.fontFamily = DEFAULT_FONT;
       this.baseFontSize = DEFAULT_FONT_SIZE;
       this.align = DEFAULT_ALIGN;
-      this.outlineWidth = DEFAULT_OUTLINE_WIDTH;
-      this.outlineColor = DEFAULT_OUTLINE_COLOR;
 
       /** @type {Array<{text: string; width: number;}>} */
       this.lines = [];
@@ -199,12 +190,6 @@
       this.zoomTimeout = null;
       this.zoomDuration = DEFAULT_ZOOM_DURATION;
 
-      this.isShaking = false;
-      this.shakeStartTime = 0;
-      this.shakeTimeout = null;
-      this.shakeDuration = DEFAULT_SHAKE_DURATION;
-      this.shakeIntensity = DEFAULT_SHAKE_INTENSITY;
-
       /** @type {(() => void)|null} */
       this.resolveOngoingAnimation = null;
     }
@@ -237,7 +222,6 @@
       return (
         this._textDirty ||
         (this.isZooming && this._reflowTime !== globalFrameTime) ||
-        (this.isShaking && this._reflowTime !== globalFrameTime) ||
         this._previousDrawableXScale !== Math.abs(this.drawable.scale[0])
       );
     }
@@ -285,26 +269,15 @@
         };
       });
 
-      this._size[0] = this.wrapWidth + 2 * this.outlineWidth;
+      this._size[0] = this.wrapWidth;
       this._size[1] =
-        this.lines.length * this.lineHeight +
-        2 * this.verticalPadding +
-        2 * this.outlineWidth;
+        this.lines.length * this.lineHeight + 2 * this.verticalPadding;
 
       // Centered horizontally
       this._rotationCenter[0] = this._size[0] / 2;
       // Vertical center is roughly below the first line of text
       this._rotationCenter[1] =
-        this.calculatedFontSize * 0.9 +
-        this.verticalPadding +
-        this.outlineWidth;
-
-      if (this.isShaking) {
-        const padding = Math.max(0, this.shakeIntensity / 20);
-        // offsets should be in range [-padding, +padding]
-        this._rotationCenter[0] += 2 * Math.random() * padding - padding;
-        this._rotationCenter[1] += 2 * Math.random() * padding - padding;
-      }
+        this.calculatedFontSize * 0.9 + this.verticalPadding;
     }
 
     _renderAtScale(requestedScale) {
@@ -321,8 +294,6 @@
       this.canvas.height = Math.ceil(scratchHeight * requestedScale);
       this.ctx.scale(requestedScale, requestedScale);
 
-      this.ctx.translate(this.outlineWidth, this.outlineWidth);
-
       const rainbowOffset = this.isRainbow
         ? (globalFrameTime - this.rainbowStartTime) / RAINBOW_TIME_PER
         : 0;
@@ -333,11 +304,9 @@
         const text = line.text;
         const lineWidth = line.width;
 
-        let xOffset;
-        const yOffset =
-          this.verticalPadding + i * this.lineHeight + this.baseFontSize;
+        let xOffset = 0;
         if (this.align === ALIGN_LEFT) {
-          xOffset = 0;
+          // already correct
         } else if (this.align === ALIGN_CENTER) {
           xOffset = (this.wrapWidth - lineWidth) / 2;
         } else {
@@ -355,16 +324,12 @@
           this.ctx.fillStyle = gradient;
         }
 
-        if (this.outlineWidth > 0) {
-          this.ctx.lineWidth = this.outlineWidth;
-          this.ctx.strokeStyle = this.outlineColor;
-          this.ctx.lineCap = "round";
-          this.ctx.lineJoin = "round";
-          this.ctx.strokeText(text, xOffset, yOffset);
-        }
-
-        // TODO: we're still a few pixels off of Scratch Lab
-        this.ctx.fillText(text, xOffset, yOffset);
+        // TODO: something here is wrong
+        this.ctx.fillText(
+          text,
+          xOffset,
+          this.verticalPadding + i * this.lineHeight + this.baseFontSize
+        );
       }
 
       if (!this._texture) {
@@ -404,18 +369,6 @@
       }
     }
 
-    setOutlineColor(color) {
-      if (color !== this.color) {
-        this.outlineColor = color;
-        this._invalidateTexture();
-      }
-    }
-
-    setOutlineWidth(width) {
-      this.outlineWidth = width;
-      this._invalidateText();
-    }
-
     setAlign(align) {
       if (align !== this.align) {
         this.align = align;
@@ -447,14 +400,6 @@
 
     getWidth() {
       return this.textWidth;
-    }
-
-    getOutlineColor() {
-      return this.outlineColor;
-    }
-
-    getOutlineWidth() {
-      return this.outlineWidth;
     }
 
     getAlign() {
@@ -532,29 +477,6 @@
       this.zoomDuration = duration;
     }
 
-    startShakeAnimation() {
-      return this._oneAnimationAtATime((resolve) => {
-        this.isShaking = true;
-        this.shakeStartTime = Date.now();
-        // TODO: _invalidateText() is not smart enough to realize that we don't need to actually
-        // do a full reflow, just update rotation center...
-        this._invalidateText();
-        this.shakeTimeout = setTimeout(() => {
-          this.isShaking = false;
-          resolve();
-          this._invalidateText();
-        }, this.shakeDuration);
-      });
-    }
-
-    setShakeDuration(duration) {
-      this.shakeDuration = duration;
-    }
-
-    setShakeIntensity(intensity) {
-      this.shakeIntensity = intensity;
-    }
-
     cancelAnimation() {
       if (this.resolveOngoingAnimation) {
         this.resolveOngoingAnimation();
@@ -568,9 +490,6 @@
 
         this.isZooming = false;
         clearTimeout(this.zoomTimeout);
-
-        this.isShaking = false;
-        clearTimeout(this.shakeTimeout);
 
         // TODO: sometimes we only need to invalidate the texture at this point
         this._invalidateText();
@@ -627,7 +546,7 @@
       const skin = renderer._allSkins[i];
       if (
         skin instanceof TextCostumeSkin &&
-        (skin.isRainbow || skin.isZooming || skin.isShaking)
+        (skin.isRainbow || skin.isZooming)
       ) {
         skin.emitWasAltered();
       }
@@ -696,7 +615,6 @@
                 defaultValue: Scratch.translate("Welcome to my project!"),
               },
             },
-            extensions: ["colours_looks"],
           },
           {
             opcode: "animateText",
@@ -713,33 +631,11 @@
                 defaultValue: Scratch.translate("Here we go!"),
               },
             },
-            extensions: ["colours_looks"],
-            hideFromPalette: !compatibilityMode,
-          },
-          {
-            opcode: "animateTextInput",
-            func: "animateText",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("[ANIMATE] text [TEXT]"),
-            arguments: {
-              ANIMATE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "twAnimate",
-                defaultValue: "rainbow",
-              },
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Here we go!"),
-              },
-            },
-            extensions: ["colours_looks"],
-            hideFromPalette: compatibilityMode,
           },
           {
             opcode: "clearText",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("show sprite"),
-            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -752,22 +648,6 @@
                 menu: "font",
               },
             },
-            extensions: ["colours_looks"],
-            hideFromPalette: !compatibilityMode,
-          },
-          {
-            opcode: "setFontInput",
-            func: "setFont",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set font to [FONT]"),
-            arguments: {
-              FONT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "twFont",
-              },
-            },
-            extensions: ["colours_looks"],
-            hideFromPalette: compatibilityMode,
           },
           {
             opcode: "setColor",
@@ -778,7 +658,6 @@
                 type: Scratch.ArgumentType.COLOR,
               },
             },
-            extensions: ["colours_looks"],
           },
           {
             opcode: "setWidth",
@@ -794,26 +673,6 @@
                 menu: "align",
               },
             },
-            extensions: ["colours_looks"],
-            hideFromPalette: !compatibilityMode,
-          },
-          {
-            opcode: "setWidthInput",
-            func: "setWidth",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set width to [WIDTH] aligned [ALIGN]"),
-            arguments: {
-              WIDTH: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "200",
-              },
-              ALIGN: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "twAlign",
-              },
-            },
-            extensions: ["colours_looks"],
-            hideFromPalette: compatibilityMode,
           },
           "---",
 
@@ -834,72 +693,6 @@
             hideFromPalette: compatibilityMode,
           },
           {
-            opcode: "setOutlineWidth",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set outline width to [WIDTH]"),
-            hideFromPalette: compatibilityMode,
-            arguments: {
-              WIDTH: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "3",
-              },
-            },
-            extensions: ["colours_looks"],
-          },
-          {
-            opcode: "setOutlineColor",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set outline color to [COLOR]"),
-            hideFromPalette: compatibilityMode,
-            arguments: {
-              COLOR: {
-                type: Scratch.ArgumentType.COLOR,
-              },
-            },
-            extensions: ["colours_looks"],
-          },
-          "---",
-          {
-            opcode: "addLine",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("add line [TEXT]"),
-            hideFromPalette: compatibilityMode,
-            arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("Hello!"),
-              },
-            },
-            extensions: ["colours_looks"],
-          },
-          {
-            opcode: "getLines",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("# of lines"),
-            hideFromPalette: true,
-            disableMonitor: true,
-            extensions: ["colours_looks"],
-          },
-          {
-            opcode: "getLinesV2",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "# of lines [WITH_WORD_WRAP]",
-              description:
-                "[WITH_WORD_WRAP] is a menu with choices 'with word wrap' and 'without word wrap'",
-            }),
-            hideFromPalette: compatibilityMode,
-            arguments: {
-              WITH_WORD_WRAP: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "twWordWrap",
-              },
-            },
-            disableMonitor: true,
-            extensions: ["colours_looks"],
-          },
-          "---",
-          {
             opcode: "setAlignment",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("align text to [ALIGN]"),
@@ -910,7 +703,6 @@
                 menu: "twAlign",
               },
             },
-            extensions: ["colours_looks"],
           },
           {
             // why is the other block called "setWidth" :(
@@ -924,14 +716,32 @@
                 defaultValue: 200,
               },
             },
-            extensions: ["colours_looks"],
           },
           {
             opcode: "resetWidth",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("reset text width"),
             hideFromPalette: compatibilityMode,
-            extensions: ["colours_looks"],
+          },
+          "---",
+          {
+            opcode: "addLine",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("add line [TEXT]"),
+            hideFromPalette: compatibilityMode,
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("Hello!"),
+              },
+            },
+          },
+          {
+            opcode: "getLines",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("# of lines"),
+            hideFromPalette: compatibilityMode,
+            disableMonitor: true,
           },
           "---",
           {
@@ -946,7 +756,6 @@
                 defaultValue: "rainbow",
               },
             },
-            extensions: ["colours_looks"],
           },
           {
             opcode: "animateUntilDone",
@@ -960,7 +769,6 @@
                 defaultValue: "rainbow",
               },
             },
-            extensions: ["colours_looks"],
           },
           {
             opcode: "isAnimating",
@@ -968,7 +776,6 @@
             text: Scratch.translate("is animating?"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
-            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -987,7 +794,6 @@
                 defaultValue: 3,
               },
             },
-            extensions: ["colours_looks"],
           },
           {
             opcode: "resetAnimateDuration",
@@ -1001,7 +807,6 @@
                 defaultValue: "rainbow",
               },
             },
-            extensions: ["colours_looks"],
           },
           {
             opcode: "getAnimateDuration",
@@ -1015,21 +820,6 @@
                 defaultValue: "rainbow",
               },
             },
-            extensions: ["colours_looks"],
-          },
-          "---",
-          {
-            opcode: "setShakeIntensity",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set shake intensity to [NUM]%"),
-            hideFromPalette: compatibilityMode,
-            arguments: {
-              NUM: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100,
-              },
-            },
-            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -1043,14 +833,12 @@
                 defaultValue: 0.1,
               },
             },
-            extensions: ["colours_looks"],
           },
           {
             opcode: "resetTypeDelay",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("reset typing delay"),
             hideFromPalette: compatibilityMode,
-            extensions: ["colours_looks"],
           },
           {
             opcode: "getTypeDelay",
@@ -1058,7 +846,6 @@
             text: Scratch.translate("typing delay"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
-            extensions: ["colours_looks"],
           },
           "---",
           {
@@ -1067,7 +854,6 @@
             text: Scratch.translate("is showing text?"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
-            extensions: ["colours_looks"],
           },
           {
             opcode: "getDisplayedText",
@@ -1075,7 +861,6 @@
             text: Scratch.translate("displayed text"),
             hideFromPalette: compatibilityMode,
             disableMonitor: true,
-            extensions: ["colours_looks"],
           },
           {
             opcode: "getTextAttribute",
@@ -1089,7 +874,6 @@
             },
             disableMonitor: true,
             hideFromPalette: compatibilityMode,
-            extensions: ["colours_looks"],
           },
         ],
         menus: {
@@ -1134,14 +918,7 @@
           },
           attribute: {
             acceptReporters: false,
-            items: [
-              "font",
-              "color",
-              "width",
-              "outline color",
-              "outline width",
-              "alignment",
-            ],
+            items: ["font", "color", "width", "alignment"],
           },
           // TurboWarp menus (acceptReporters: true)
           twAnimate: {
@@ -1159,7 +936,6 @@
                 text: Scratch.translate("zoom"),
                 value: "zoom",
               },
-              "shake",
             ],
           },
           twAnimateDuration: {
@@ -1173,7 +949,6 @@
                 text: Scratch.translate("zoom"),
                 value: "zoom",
               },
-              "shake",
             ],
           },
           twAlign: {
@@ -1193,29 +968,18 @@
               },
             ],
           },
-          twFont: {
-            acceptReporters: true,
-            items: "getFonts",
-          },
-          twWordWrap: {
-            acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("with word wrap"),
-                value: "with word wrap",
-              },
-              {
-                text: Scratch.translate("without word wrap"),
-                value: "without word wrap",
-              },
-            ],
-          },
         },
       };
     }
 
     getFonts() {
-      const customFonts = this._getFontsMap();
+      const customFonts = Scratch.vm.runtime.fontManager
+        ? Scratch.vm.runtime.fontManager.getFonts().map((i) => ({
+            text: i.name,
+            value: i.family,
+          }))
+        : [];
+
       return [
         ...FONTS,
         ...customFonts,
@@ -1224,15 +988,6 @@
           value: "Random",
         },
       ];
-    }
-
-    _getFontsMap() {
-      return Scratch.vm.runtime.fontManager
-        ? Scratch.vm.runtime.fontManager.getFonts().map((i) => ({
-            text: i.name,
-            value: i.family,
-          }))
-        : [];
     }
 
     /**
@@ -1307,8 +1062,6 @@
         return state.skin.startRainbowAnimation();
       } else if (ANIMATE === "zoom") {
         return state.skin.startZoomAnimation();
-      } else if (ANIMATE === "shake") {
-        return state.skin.startShakeAnimation();
       } else {
         // Scratch does nothing here
       }
@@ -1324,20 +1077,15 @@
     }
 
     setFont({ FONT }, util) {
-      const font = Scratch.Cast.toString(FONT);
       const state = this._getState(util.target);
-
-      if (font === "Random") {
+      if (FONT === "Random") {
         // Random font always switches to a new font, never the same one
-        const possibleFonts = [
-          ...FONTS,
-          ...this._getFontsMap().map((i) => i.value),
-        ].filter((i) => i !== state.skin.fontFamily);
+        const possibleFonts = FONTS.filter((i) => i !== state.skin.fontFamily);
         state.skin.setFontFamily(
           possibleFonts[Math.floor(Math.random() * possibleFonts.length)]
         );
       } else {
-        state.skin.setFontFamily(font);
+        state.skin.setFontFamily(Scratch.Cast.toString(FONT));
       }
     }
 
@@ -1369,7 +1117,7 @@
       const popup = Scratch.translate({
         id: "disableCompatibilityMode",
         default:
-          "This will enable new blocks and features that WILL NOT WORK in the official Scratch Lab.\n\nDo you wish to continue?",
+          "This will enable new blocks and features that WILL NOT WORK in the offical Scratch Lab.\n\nDo you wish to continue?",
       });
       if (confirm(popup)) {
         compatibilityMode = false;
@@ -1377,18 +1125,26 @@
       }
     }
 
-    setOutlineWidth(args, util) {
+    setAlignment(args, util) {
+      // see setWidth
       const state = this._getState(util.target);
-      const width = Scratch.Cast.toNumber(args.WIDTH);
-
-      state.skin.setOutlineWidth(width);
+      if (args.ALIGN === "center") {
+        state.skin.setAlign(ALIGN_CENTER);
+      } else if (args.ALIGN === "right") {
+        state.skin.setAlign(ALIGN_RIGHT);
+      } else {
+        state.skin.setAlign(ALIGN_LEFT);
+      }
     }
 
-    setOutlineColor(args, util) {
+    setWidthValue(args, util) {
       const state = this._getState(util.target);
-      const color = Scratch.Cast.toString(args.COLOR);
+      state.skin.setWidth(Scratch.Cast.toNumber(args.WIDTH));
+    }
 
-      state.skin.setOutlineColor(color);
+    resetWidth(args, util) {
+      const state = this._getState(util.target);
+      state.skin.setWidth(DEFAULT_WIDTH);
     }
 
     addLine(args, util) {
@@ -1413,43 +1169,6 @@
       return text.split("\n").length;
     }
 
-    getLinesV2(args, util) {
-      const drawableID = util.target.drawableID;
-      const skin = renderer._allDrawables[drawableID].skin;
-      if (!(skin instanceof TextCostumeSkin)) return 0;
-
-      const state = this._getState(util.target);
-      if (Scratch.Cast.toString(args.WITH_WORD_WRAP) === "with word wrap") {
-        if (state.skin._needsReflow()) {
-          state.skin._reflowText();
-        }
-        return state.skin.lines.length;
-      }
-      return state.skin.text.split("\n").length;
-    }
-
-    setAlignment(args, util) {
-      // see setWidth
-      const state = this._getState(util.target);
-      if (args.ALIGN === "center") {
-        state.skin.setAlign(ALIGN_CENTER);
-      } else if (args.ALIGN === "right") {
-        state.skin.setAlign(ALIGN_RIGHT);
-      } else {
-        state.skin.setAlign(ALIGN_LEFT);
-      }
-    }
-
-    setWidthValue(args, util) {
-      const state = this._getState(util.target);
-      state.skin.setWidth(Scratch.Cast.toNumber(args.WIDTH));
-    }
-
-    resetWidth(args, util) {
-      const state = this._getState(util.target);
-      state.skin.setWidth(vm.runtime.stageWidth);
-    }
-
     startAnimate(args, util) {
       const drawableID = util.target.drawableID;
       const skin = renderer._allDrawables[drawableID].skin;
@@ -1459,14 +1178,12 @@
       state.skin.cancelAnimation();
 
       // Don't return the promise
-      if (args.ANIMATE == "type") {
+      if (args.ANIMATE === "type") {
         state.skin.startTypeAnimation();
-      } else if (args.ANIMATE == "rainbow") {
+      } else if (args.ANIMATE === "rainbow") {
         state.skin.startRainbowAnimation();
-      } else if (args.ANIMATE == "zoom") {
+      } else if (args.ANIMATE === "zoom") {
         state.skin.startZoomAnimation();
-      } else if (args.ANIMATE == "shake") {
-        state.skin.startShakeAnimation();
       } else {
         // Scratch does nothing here
       }
@@ -1480,14 +1197,12 @@
       const state = this._getState(util.target);
       state.skin.cancelAnimation();
 
-      if (args.ANIMATE == "type") {
+      if (args.ANIMATE === "type") {
         return state.skin.startTypeAnimation();
-      } else if (args.ANIMATE == "rainbow") {
+      } else if (args.ANIMATE === "rainbow") {
         return state.skin.startRainbowAnimation();
-      } else if (args.ANIMATE == "zoom") {
+      } else if (args.ANIMATE === "zoom") {
         return state.skin.startZoomAnimation();
-      } else if (args.ANIMATE == "shake") {
-        return state.skin.startShakeAnimation();
       } else {
         // Scratch does nothing here
       }
@@ -1495,9 +1210,7 @@
 
     isAnimating(args, util) {
       const skin = this._getState(util.target).skin;
-      return (
-        skin.isTyping || skin.isRainbow || skin.isZooming || skin.isShaking
-      );
+      return skin.isTyping || skin.isRainbow || skin.isZooming;
     }
 
     setAnimateDuration(args, util) {
@@ -1508,8 +1221,6 @@
         state.skin.setRainbowDuration(milliseconds);
       } else if (animation === "zoom") {
         state.skin.setZoomDuration(milliseconds);
-      } else if (animation === "shake") {
-        state.skin.setShakeDuration(milliseconds);
       }
     }
 
@@ -1520,8 +1231,6 @@
         state.skin.setRainbowDuration(DEFAULT_RAINBOW_DURATION);
       } else if (animation === "zoom") {
         state.skin.setZoomDuration(DEFAULT_ZOOM_DURATION);
-      } else if (animation === "shake") {
-        state.skin.setShakeDuration(DEFAULT_SHAKE_DURATION);
       }
     }
 
@@ -1532,17 +1241,10 @@
         return state.skin.rainbowDuration / 1000;
       } else if (animation === "zoom") {
         return state.skin.zoomDuration / 1000;
-      } else if (animation === "shake") {
-        return state.skin.shakeDuration / 1000;
       } else {
         // should never happen
         return "";
       }
-    }
-
-    setShakeIntensity(args, util) {
-      const state = this._getState(util.target);
-      state.skin.setShakeIntensity(Scratch.Cast.toNumber(args.NUM));
     }
 
     setTypeDelay(args, util) {
@@ -1581,10 +1283,6 @@
         return state.skin.getColor();
       } else if (attrib === "width") {
         return state.skin.getWidth();
-      } else if (attrib === "outline color") {
-        return state.skin.getOutlineColor();
-      } else if (attrib === "outline width") {
-        return state.skin.getOutlineWidth();
       } else if (attrib === "alignment") {
         switch (state.skin.getAlign()) {
           case ALIGN_LEFT:

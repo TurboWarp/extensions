@@ -2,7 +2,6 @@
 // ID: cubesterTurboHook
 // Description: Allows you to use webhooks.
 // By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
-// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -46,7 +45,6 @@
           {
             opcode: "params",
             blockType: Scratch.BlockType.REPORTER,
-            // eslint-disable-next-line extension/should-translate
             text: "[MENU] [DATA]",
             arguments: {
               MENU: {
@@ -61,7 +59,6 @@
           {
             opcode: "connector",
             blockType: Scratch.BlockType.REPORTER,
-            // eslint-disable-next-line extension/should-translate
             text: "[STRING1] , [STRING2]",
           },
         ],

@@ -2,7 +2,6 @@
 // ID: iframe
 // Description: Display webpages or HTML over the stage.
 // Context: "iframe" is an HTML element that lets websites embed other websites.
-// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -80,12 +79,8 @@
       iframe.style.height = `${(effectiveHeight / stageHeight) * 100}%`;
 
       iframe.style.transform = "";
-      iframe.style.top = `${
-        (0.5 - effectiveHeight / 2 / stageHeight - y / stageHeight) * 100
-      }%`;
-      iframe.style.left = `${
-        (0.5 - effectiveWidth / 2 / stageWidth + x / stageWidth) * 100
-      }%`;
+      iframe.style.top = `${(0.5 - effectiveHeight / 2 / stageHeight) * 100}%`;
+      iframe.style.left = `${(0.5 - effectiveWidth / 2 / stageWidth) * 100}%`;
     }
   };
 

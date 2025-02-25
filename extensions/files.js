@@ -1,7 +1,6 @@
 // Name: Files
 // ID: files
 // Description: Read and download files.
-// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -57,9 +56,7 @@
         _resolve(text);
         Scratch.vm.renderer.removeOverlay(outer);
         Scratch.vm.runtime.off("PROJECT_STOP_ALL", handleProjectStopped);
-        document.body.removeEventListener("keydown", handleKeyDown, {
-          capture: true,
-        });
+        document.body.removeEventListener("keydown", handleKeyDown);
       };
 
       let isReadingFile = false;
@@ -216,17 +213,25 @@
     });
 
   /**
+   * @param {string} url a data:, blob:, or same-origin URL
+   * @param {string} file
+   */
+  const downloadURL = (url, file) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = file;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
+
+  /**
    * @param {Blob} blob Data to download
    * @param {string} file Name of the file
-   * @returns {Promise<void>}
    */
-  const downloadBlob = async (blob, file) => {
+  const downloadBlob = (blob, file) => {
     const url = URL.createObjectURL(blob);
-    try {
-      await Scratch.download(url, file);
-    } catch (e) {
-      console.error(e);
-    }
+    downloadURL(url, file);
     URL.revokeObjectURL(url);
   };
 
@@ -247,16 +252,17 @@
    * @param {string} url
    * @param {string} file
    */
-  const downloadUntrustedURL = async (url, file) => {
+  const downloadUntrustedURL = (url, file) => {
+    // Don't want to return a Promise here when not actually needed
     if (isDataURL(url)) {
-      // TODO: Scratch.fetch's better handling of data: means this is probably not needed anymore
-      // and it the blob: probably works better with big files
-      return Scratch.download(url, file);
+      downloadURL(url, file);
+    } else {
+      return Scratch.fetch(url)
+        .then((res) => res.blob())
+        .then((blob) => {
+          downloadBlob(blob, file);
+        });
     }
-
-    const res = await Scratch.fetch(url);
-    const blob = await res.blob();
-    await downloadBlob(blob, file);
   };
 
   class Files {
@@ -415,26 +421,18 @@
       return showFilePrompt(args.extension, args.as);
     }
 
-    async download(args) {
-      try {
-        await downloadBlob(
-          new Blob([Scratch.Cast.toString(args.text)]),
-          Scratch.Cast.toString(args.file)
-        );
-      } catch (e) {
-        console.error(e);
-      }
+    download(args) {
+      downloadBlob(
+        new Blob([Scratch.Cast.toString(args.text)]),
+        Scratch.Cast.toString(args.file)
+      );
     }
 
-    async downloadURL(args) {
-      try {
-        await downloadUntrustedURL(
-          Scratch.Cast.toString(args.url),
-          Scratch.Cast.toString(args.file)
-        );
-      } catch (e) {
-        console.error(e);
-      }
+    downloadURL(args) {
+      return downloadUntrustedURL(
+        Scratch.Cast.toString(args.url),
+        Scratch.Cast.toString(args.file)
+      );
     }
 
     setOpenMode(args) {

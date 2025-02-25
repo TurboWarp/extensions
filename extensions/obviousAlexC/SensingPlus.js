@@ -2,20 +2,20 @@
 // ID: obviousalexsensing
 // Description: An extension to the sensing category.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
-// License: MIT
 
 (function (Scratch) {
   "use strict";
 
+  //put these back here so I don't have to define scratch.cast again.
+  let notMobile = false;
+
+  /* globals Accelerometer, Gyro */
+
   const SpeechRecognition =
-    // @ts-expect-error
     typeof webkitSpeechRecognition !== "undefined"
-      ? // @ts-expect-error
-        window.webkitSpeechRecognition
-      : // @ts-expect-error
-        typeof window.SpeechRecognition !== "undefined"
-        ? // @ts-expect-error
-          window.SpeechRecognition
+      ? window.webkitSpeechRecognition
+      : typeof window.SpeechRecognition !== "undefined"
+        ? window.SpeechRecognition
         : null;
 
   let recognizedSpeech = "";
@@ -63,278 +63,137 @@
     });
   };
 
-  const physicalDeviceState = {
-    accelerationX: 0,
-    accelerationY: 0,
-    accelerationZ: 0,
+  let initializedSensors = false;
+  const deviceVelocity = {
+    x: 0,
+    y: 0,
+    z: 0,
     rotationX: 0,
     rotationY: 0,
     rotationZ: 0,
   };
-  const sensorStatus = {
-    accelerometer: false,
+  const deviceStatus = {
     gyroscope: false,
+    accelerometer: false,
   };
 
-  /**
-   * @returns {boolean}
-   */
-  const sensorAccessRequiresPermission = () =>
-    typeof DeviceMotionEvent === "function" &&
-    // @ts-expect-error
-    typeof DeviceMotionEvent.requestPermission === "function";
+  const initializeSensors = () => {
+    if (initializedSensors) {
+      return;
+    }
+    initializedSensors = true;
 
-  /**
-   * Assumes you already checked sensorAccessRequiresPermission() === true.
-   * @returns {Promise<'granted'|'denied'|'unknown'>} Will never reject.
-   */
-  const requestSensorPermission = () => {
-    // @ts-expect-error
-    return DeviceMotionEvent.requestPermission().catch((error) => {
-      // Usually this means we weren't in a user gesture.
-      console.error(error);
-      return "unknown";
-    });
-  };
-
-  /**
-   * Assumes you already checked sensorAccessRequiresPermission() === true.
-   * @returns {Promise<void>}
-   */
-  const askUserForSensorPermission = async () => {
-    // Safari automatically denies any request not made directly in a user gesture handler,
-    // so this request will almost certainly fail. We'll still try though, just in case.
-    let status = await requestSensorPermission();
-
-    if (status === "unknown") {
-      status = await new Promise((resolve) => {
-        const outer = document.createElement("div");
-        outer.style.width = "100%";
-        outer.style.height = "100%";
-        outer.style.display = "flex";
-        outer.style.alignItems = "center";
-        outer.style.justifyContent = "center";
-        outer.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-        outer.style.backdropFilter = "blur(10px)";
-        outer.style.pointerEvents = "auto";
-        outer.tabIndex = 0;
-
-        const inner = document.createElement("div");
-        inner.textContent = Scratch.translate(
-          "Tap to allow access to accelerometer and gyroscope."
-        );
-        inner.style.maxWidth = "360px";
-        inner.style.color = "white";
-        inner.style.textAlign = "center";
-        outer.appendChild(inner);
-
-        outer.addEventListener("click", () => {
-          resolve(requestSensorPermission());
-          Scratch.renderer.removeOverlay(outer);
+    if (typeof Accelerometer !== "function") {
+      try {
+        const accelerometer = new Accelerometer({
+          referenceFrame: "device",
         });
-
-        Scratch.renderer.addOverlay(outer, "scale");
-      });
+        accelerometer.addEventListener("error", (e) => {
+          console.error("accelerometer error", e.error);
+          deviceStatus.accelerometer = false;
+        });
+        accelerometer.addEventListener("reading", () => {
+          deviceVelocity.x = accelerometer.x;
+          deviceVelocity.y = accelerometer.y;
+          deviceVelocity.z = accelerometer.z;
+          deviceStatus.accelerometer = true;
+        });
+        accelerometer.start();
+      } catch (e) {
+        console.error("error setting up accelerometer", e);
+      }
+    } else {
+      console.warn("accelerometer API is not supported in this browser");
     }
 
-    if (status === "denied") {
-      // Requesting permission again will be ignored no matter what.
-      // The flow for resetting this is awful, so let's at least tell the user how to do that.
-      alert(
-        Scratch.translate(
-          "To allow accelerometer and gyroscope access, open iOS settings > Apps > Safari > Advanced > Website Data > press Edit > Clear data for {domain}, then refresh this page.",
-          {
-            domain: location.hostname,
-          }
-        )
-      );
+    if (typeof Gyro !== "undefined") {
+      try {
+        const gyro = new Gyro({
+          frequency: 30,
+        });
+        gyro.addEventListener("error", (e) => {
+          console.error("gyro error", e.error);
+          deviceStatus.gyroscope = false;
+        });
+        gyro.addEventListener("reading", () => {
+          deviceVelocity.rotationX = gyro.x;
+          deviceVelocity.rotationY = gyro.y;
+          deviceVelocity.rotationZ = gyro.z;
+          deviceStatus.gyroscope = true;
+        });
+      } catch (e) {
+        console.error("error setting up gyro", e);
+      }
+    } else {
+      console.warn("gyro API is not supported in this browser");
     }
-
-    const granted = status === "granted";
-    sensorStatus.accelerometer = granted;
-    sensorStatus.gyroscope = granted;
   };
 
-  /** @type {null|Promise<void>} */
-  let initializingSensorsPromise = null;
-  /** @type {boolean} */
-  let askedForSensorPermission = false;
-
-  /**
-   * @template T
-   * @param {() => T} callback
-   * @returns {T|Promise<T>}
-   */
-  const whenSensorsInitialized = (callback) => {
-    if (!sensorAccessRequiresPermission() || askedForSensorPermission) {
-      return callback();
-    }
-
-    if (!initializingSensorsPromise) {
-      initializingSensorsPromise = askUserForSensorPermission().then(() => {
-        // Whether we got permission or not, asking again won't change the result.
-        askedForSensorPermission = true;
-      });
-    }
-
-    return initializingSensorsPromise.then(callback);
-  };
-
-  window.addEventListener("devicemotion", (event) => {
-    // On desktops, this event is fired with nulls.
-    if (
-      event.accelerationIncludingGravity.x !== null &&
-      event.accelerationIncludingGravity.y !== null &&
-      event.accelerationIncludingGravity.z !== null
-    ) {
-      askedForSensorPermission = true;
-      sensorStatus.accelerometer = true;
-      physicalDeviceState.accelerationX = event.accelerationIncludingGravity.x;
-      physicalDeviceState.accelerationY = event.accelerationIncludingGravity.y;
-      physicalDeviceState.accelerationZ = event.accelerationIncludingGravity.z;
-    }
-  });
-
-  window.addEventListener("deviceorientation", (event) => {
-    // On desktops, this event is fired with nulls.
-    if (event.alpha !== null && event.beta !== null && event.gamma !== null) {
-      askedForSensorPermission = true;
-      sensorStatus.gyroscope = true;
-      physicalDeviceState.rotationX = event.beta;
-      physicalDeviceState.rotationY = event.gamma;
-      physicalDeviceState.rotationZ = event.alpha;
-    }
-  });
+  const isPackaged = Scratch.vm.runtime.isPackaged;
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const canvas = runtime.renderer.canvas;
 
-  const maxTouchPoints = navigator.maxTouchPoints;
-  const supportsTouches = maxTouchPoints > 0;
-
-  /**
-   * Maps system Touch identifiers to the identifers we expose to projects.
-   * This is necessary because Safari uses incremental IDs that only ever go up,
-   * so they get very big and won't start from 0.
-   * @type {Map<number, number>}
-   */
-  const nativeTouchIdToScratchId = new Map();
-
-  /**
-   * @typedef ScratchFinger
-   * @property {number} x
-   * @property {number} y
-   * @property {number} lastX
-   * @property {number} lastY
-   */
-
-  /**
-   * Maps Scratch touch ID to internal object.
-   * @type {Map<number, ScratchFinger>}
-   */
-  const scratchFingers = new Map();
-
-  /**
-   * @returns {number} A positive integer.
-   */
-  const getUnusedScratchId = () => {
-    // This is slower than it could be but this doesn't run enough to matter.
-    // IDs start from 1, like Scratch lists.
-    let i = 1;
-    while (scratchFingers.has(i)) {
-      i++;
-    }
-    return i;
-  };
+  let fingersDown = 0;
+  const lastFingerPositions = [];
+  const fingerPositions = [];
 
   /** @param {TouchEvent} event */
-  const handleTouchStart = (event) => {
+  function handleTouchStart(event) {
     event.preventDefault();
-
+    const changedTouches = event.changedTouches;
+    const changedTouchesKeys = Object.keys(changedTouches);
     const canvasPos = canvas.getBoundingClientRect();
-    for (const touch of event.changedTouches) {
-      const nextAvailableScratchId = getUnusedScratchId();
-      nativeTouchIdToScratchId.set(touch.identifier, nextAvailableScratchId);
+    fingersDown = event.touches.length;
 
-      const x = touch.clientX - canvasPos.left;
-      const y = touch.clientY - canvasPos.top;
-      scratchFingers.set(nextAvailableScratchId, {
-        x: x,
-        y: y,
-        lastX: x,
-        lastY: y,
-      });
-    }
-  };
-
-  /** @param {TouchEvent} event */
-  const handleTouchMove = (event) => {
-    event.preventDefault();
-
-    const canvasPos = canvas.getBoundingClientRect();
-    for (const touch of event.changedTouches) {
-      const scratchId = nativeTouchIdToScratchId.get(touch.identifier);
-      const finger = scratchFingers.get(scratchId);
-      finger.lastX = finger.x;
-      finger.lastY = finger.y;
-      finger.x = touch.clientX - canvasPos.left;
-      finger.y = touch.clientY - canvasPos.top;
-    }
-  };
-
-  /** @param {TouchEvent} event */
-  const handleTouchEnd = (event) => {
-    event.preventDefault();
-
-    for (const touch of event.changedTouches) {
-      const scratchId = nativeTouchIdToScratchId.get(touch.identifier);
-      scratchFingers.delete(scratchId);
-      nativeTouchIdToScratchId.delete(touch.identifier);
-    }
-  };
-
-  /**
-   * @param {VM.Target} target
-   * @returns {number} -1 if not touching, else the Scratch ID
-   */
-  const findAnyTouchingFinger = (target) => {
-    for (const [scratchId, finger] of scratchFingers.entries()) {
-      const touching = target.isTouchingPoint(finger.x, finger.y);
-      if (touching) {
-        return scratchId;
-      }
-    }
-    return -1;
-  };
-
-  /**
-   * @param {VM.Target} target
-   * @param {number} scratchId
-   * @returns {boolean}
-   */
-  const isTouchingSpecificFinger = (target, scratchId) => {
-    const finger = scratchFingers.get(scratchId);
-    return !!finger && target.isTouchingPoint(finger.x, finger.y);
-  };
-
-  canvas.addEventListener("touchstart", handleTouchStart, {
-    passive: false,
-  });
-  canvas.addEventListener("touchmove", handleTouchMove, {
-    passive: false,
-  });
-  canvas.addEventListener("touchcancel", handleTouchEnd, {
-    passive: false,
-  });
-  canvas.addEventListener("touchend", handleTouchEnd, {
-    passive: false,
-  });
-
-  const fingersMenu = [];
-  for (let i = 0; i < Math.max(maxTouchPoints, 10); i++) {
-    fingersMenu.push((i + 1).toString());
+    changedTouchesKeys.forEach((touch) => {
+      lastFingerPositions[changedTouches[touch].identifier] = [
+        changedTouches[touch].clientX - canvasPos.left,
+        changedTouches[touch].clientY - canvasPos.top,
+      ];
+      fingerPositions[changedTouches[touch].identifier] = [
+        changedTouches[touch].clientX - canvasPos.left,
+        changedTouches[touch].clientY - canvasPos.top,
+      ];
+    });
   }
+
+  /** @param {TouchEvent} event */
+  function handleTouchMove(event) {
+    event.preventDefault();
+    const changedTouches = event.changedTouches;
+    const canvasPos = canvas.getBoundingClientRect();
+    const changedTouchesKeys = Object.keys(changedTouches);
+    fingersDown = event.touches.length;
+    changedTouchesKeys.forEach((touch) => {
+      lastFingerPositions[changedTouches[touch].identifier] = [
+        fingerPositions[changedTouches[touch].identifier][0],
+        fingerPositions[changedTouches[touch].identifier][1],
+      ];
+      fingerPositions[changedTouches[touch].identifier] = [
+        changedTouches[touch].clientX - canvasPos.left,
+        changedTouches[touch].clientY - canvasPos.top,
+      ];
+    });
+  }
+
+  /** @param {TouchEvent} event */
+  function handleTouchEnd(event) {
+    event.preventDefault();
+    const changedTouches = event.changedTouches;
+    const changedTouchesKeys = Object.keys(changedTouches);
+    fingersDown = event.touches.length;
+    changedTouchesKeys.forEach((touch) => {
+      lastFingerPositions[changedTouches[touch].identifier] = null;
+      fingerPositions[changedTouches[touch].identifier] = null;
+    });
+  }
+
+  canvas.addEventListener("touchstart", handleTouchStart, false);
+  canvas.addEventListener("touchmove", handleTouchMove, false);
+  canvas.addEventListener("touchcancel", handleTouchEnd, false);
+  canvas.addEventListener("touchend", handleTouchEnd, false);
 
   /**
    * @param {string} listData
@@ -381,6 +240,46 @@
   const layerIco =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI0NS45NzY4OCIgaGVpZ2h0PSI0Ni40NzQ2NiIgdmlld0JveD0iMCwwLDQ1Ljk3Njg4LDQ2LjQ3NDY2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjE1LjAzOTI5LC0xNTguOTgzODMpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxnIGZpbGwtcnVsZT0iZXZlbm9kZCI+PHBhdGggZD0iTTIzOS4xODkyOSwxNjUuNDc3MjNjMC4xNSwtMC4xIDAuNCwtMC4wNSAwLjQ1LDAuMTVsMS4zLDUuMzVjMCwwIDMuMiwyLjM1IDQuMTUsNGMxLjYsMi43NSAxLjY1LDUgMS42NSw1YzAsMCAzLjU1LDEuMDUgNC4xNSwzLjljMC42LDIuODUgLTEuNiw4LjI1IC0xMSwxMC4xYy05LjQsMS44NSAtMTYuOTUsLTAuNyAtMjAuNSwtNi40Yy0zLjU1LC01LjcgMi4wNSwtMTIuNSAxLjc1LC0xMi4xbC0xLjA1LC04Ljk1Yy0wLjA1LC0wLjIgMC4yLC0wLjM1IDAuNCwtMC4yNWw2LjA1LDMuOTVjMCwwIDIuMjUsLTAuODUgNC42LC0wLjk1YzEuNCwtMC4xIDIuNiwwIDMuNzUsMC4yeiIgZmlsbD0iIzNiYTJjZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjQ2LjU4OTI5LDE4MC4xNzcyM2MwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjU1Ljc4OTI5LDE4MC43MjcyM2MtMi4zNSwxLjkgLTUuOTUsMS45NSAtNS45NSwxLjk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjU1LjEzOTI5LDE4Ni4zMjcyM2MtMy4xNSwwLjI1IC01LjEsLTAuNyAtNS4xLC0wLjciIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzguMTM5MjksMTgxLjMyNzIzYzEuMDUsMCAyLjE1LDAuMSAyLjIsMC40NWMwLjA1LDAuNyAtMC43LDIuMSAtMS41LDIuMTVjLTAuOSwwLjEgLTMsLTEuMTUgLTMsLTEuOTVjLTAuMDUsLTAuNiAxLjMsLTAuNjUgMi4zLC0wLjY1eiIgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxNS42MzkyOSwxODAuNTc3MjNjMCwwIDQuMywxLjQgNi4wNSwyLjk1IiBmaWxsPSJub25lIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz48cGF0aCBkPSJNMjIxLjgzOTI5LDE4NS4yNzcyM2MtMi4xNSwwLjg1IC01Ljg1LDAuMyAtNS44NSwwLjMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzFiNTU2ZSIgc3Ryb2tlLXdpZHRoPSIxLjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjxnIGZpbGw9IiMxYjU1NmUiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciI+PHBhdGggZD0iTTI0My44MzkyOSwxNzguMzI3MjNjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAgMC45LDAuNDUgMC45LDEiLz48L2c+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjMxLjMzOTI5LDE3OS43NzcyM2MwLDAuNTUgLTAuNCwxIC0wLjksMWMtMC41LDAgLTAuOSwtMC40NSAtMC45LC0xYzAsLTAuNTUgMC40LC0xIDAuOSwtMWMwLjUsMC4wNSAwLjksMC40NSAwLjksMSIvPjwvZz48L2c+PHBhdGggZD0iTTIxOC45ODM4MywyMDEuMDE2MTl2LTQyLjAzMjM1aDQyLjAzMjM1djQyLjAzMjM1eiIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48ZyBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yNDMuNDc1LDE3NS43NjI5NWMwLjE1LC0wLjEgMC40LC0wLjA1IDAuNDUsMC4xNWwxLjMsNS4zNWMwLDAgMy4yLDIuMzUgNC4xNSw0YzEuNiwyLjc1IDEuNjUsNSAxLjY1LDVjMCwwIDMuNTUsMS4wNSA0LjE1LDMuOWMwLjYsMi44NSAtMS42LDguMjUgLTExLDEwLjFjLTkuNCwxLjg1IC0xNi45NSwtMC43IC0yMC41LC02LjRjLTMuNTUsLTUuNyAyLjA1LC0xMi41IDEuNzUsLTEyLjFsLTEuMDUsLTguOTVjLTAuMDUsLTAuMiAwLjIsLTAuMzUgMC40LC0wLjI1bDYuMDUsMy45NWMwLDAgMi4yNSwtMC44NSA0LjYsLTAuOTVjMS40LC0wLjEgMi42LDAgMy43NSwwLjJ6IiBmaWxsPSIjM2JhMmNlIiBzdHJva2U9IiMxYjU1NmUiIHN0cm9rZS13aWR0aD0iMS4yIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIvPjxwYXRoIGQ9Ik0yNTAuODc1LDE5MC40NjI5NWMwLDAgMy40NSwwLjkgNC4wNSwzLjc1YzAuNiwyLjg1IC0xLjgsOCAtMTEuMSw5LjhjLTEyLjEsMi41IC0xNy44NSwtNC43IC0xNC41LC0xMGMzLjM1LC01LjM1IDkuMSwtMC44IDEzLjMsLTEuMWMzLjYsLTAuMjUgNCwtMy40IDguMjUsLTIuNDV6IiBmaWxsPSIjYTdlMmZiIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48cGF0aCBkPSJNMjYwLjA3NSwxOTEuMDEyOTVjLTIuMzUsMS45IC01Ljk1LDEuOTUgLTUuOTUsMS45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI1OS40MjUsMTk2LjYxMjk1Yy0zLjE1LDAuMjUgLTUuMSwtMC43IC01LjEsLTAuNyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTI0Mi40MjUsMTkxLjYxMjk1YzEuMDUsMCAyLjE1LDAuMSAyLjIsMC40NWMwLjA1LDAuNyAtMC43LDIuMSAtMS41LDIuMTVjLTAuOSwwLjEgLTMsLTEuMTUgLTMsLTEuOTVjLTAuMDUsLTAuNiAxLjMsLTAuNjUgMi4zLC0wLjY1eiIgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIxOS45MjUsMTkwLjg2Mjk1YzAsMCA0LjMsMS40IDYuMDUsMi45NSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PHBhdGggZD0iTTIyNi4xMjUsMTk1LjU2Mjk1Yy0yLjE1LDAuODUgLTUuODUsMC4zIC01Ljg1LDAuMyIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWI1NTZlIiBzdHJva2Utd2lkdGg9IjEuMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjQ4LjEyNSwxODguNjEyOTVjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAgMC45LDAuNDUgMC45LDEiLz48L2c+PGcgZmlsbD0iIzFiNTU2ZSIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIj48cGF0aCBkPSJNMjM1LjYyNSwxOTAuMDYyOTVjMCwwLjU1IC0wLjQsMSAtMC45LDFjLTAuNSwwIC0wLjksLTAuNDUgLTAuOSwtMWMwLC0wLjU1IDAuNCwtMSAwLjksLTFjMC41LDAuMDUgMC45LDAuNDUgMC45LDEiLz48L2c+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjI0Ljk2MDcwOTI4NTcxNDMzOjIxLjAxNjE2NS0tPg==";
 
+  const userAgent = navigator.userAgent;
+  let supportsTouches = true;
+  if (
+    userAgent.includes("Safari") &&
+    /^((?!chrome|android).)*safari/i.test(userAgent)
+  ) {
+    //* Its a problem with all safari browsers from what I see now which is odd since apple says its supported?
+    supportsTouches = false;
+  } else if (
+    userAgent.includes("Windows") ||
+    userAgent.includes("Mac OS") ||
+    userAgent.includes("Linux") ||
+    userAgent.includes("CrOS")
+  ) {
+    //* <-- Most chrome OS devices support touch events with up to 10 fingers but include a check to make it better anyways.
+    notMobile = true;
+    supportsTouches = navigator.maxTouchPoints > 0;
+  }
+
+  const maxTouchPoints = navigator.maxTouchPoints;
+
+  function makeArrayOfTouches() {
+    let TPArray = [];
+    if (maxTouchPoints == 0 || notMobile) {
+      //*For non touch compatible devices
+      for (let TP = 0; TP < 10; TP++) {
+        TPArray.push(Scratch.Cast.toString(TP + 1));
+      }
+    } else {
+      for (let TP = 0; TP < maxTouchPoints; TP++) {
+        TPArray.push(Scratch.Cast.toString(TP + 1));
+      }
+    }
+    return TPArray;
+  }
+
+  const touchPointsArray = makeArrayOfTouches(); //* <-- Do this for devices that really can't support that many touches.
+
+  const alreadyTapped = {};
+
   class SensingPlus {
     getInfo() {
       return {
@@ -389,36 +288,41 @@
         color2: "#3ba2ce",
         color3: "#2e8eb8",
         id: "obviousalexsensing",
-        name: Scratch.translate("Sensing+"),
+        name: "Sensing+",
         blocks: [
+          {
+            blockType: "label",
+            text: "Touch blocks are broken in Safari.",
+          },
+          {
+            blockType: "label",
+            text: "We will try to fix them soon.",
+          },
           {
             opcode: "supportsTouches",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("supports touches?"),
+            text: "Supports touches?",
             blockIconURI: touchIco,
             arguments: {},
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "getMaxTouches",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("# of simultaneous possible"),
+            text: "# of simultaneous possible",
             blockIconURI: touchIco,
             arguments: {},
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "getFingersTouching",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("# of fingers down"),
+            text: "# of fingers down",
             blockIconURI: touchIco,
             arguments: {},
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "isFingerDown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is finger [ID] down?"),
+            text: "Is Finger [ID] down?",
             blockIconURI: touchIco,
             arguments: {
               ID: {
@@ -426,22 +330,20 @@
                 menu: "fingerIDMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "touchingFinger",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("touching a finger?"),
+            text: "Touching a finger?",
             blockIconURI: touchIco,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {},
             disableMonitor: true,
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "touchingSpecificFinger",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("touching finger [ID]?"),
+            text: "Touching finger [ID]?",
             blockIconURI: touchIco,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
@@ -450,22 +352,20 @@
                 menu: "fingerIDMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "getTouchingFingerID",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: Scratch.translate("current finger touching"),
+            text: "Current finger touching",
             filter: [Scratch.TargetType.SPRITE],
             blockIconURI: touchIco,
             arguments: {},
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "fingerPosition",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("finger [ID] [PositionType]"),
+            text: "Finger [ID] [PositionType]",
             blockIconURI: touchIco,
             arguments: {
               ID: {
@@ -477,12 +377,11 @@
                 menu: "coordmenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "getFingerSpeed",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("finger [ID] speed"),
+            text: "Finger [ID] speed",
             blockIconURI: touchIco,
             arguments: {
               ID: {
@@ -490,13 +389,12 @@
                 menu: "fingerIDMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           "---",
           {
             opcode: "listInSprite",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get index [index] of [List]"),
+            text: "Get index [index] of [List]",
             blockIconURI: listIco,
             arguments: {
               index: {
@@ -508,12 +406,11 @@
                 menu: "listMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "lengthOfListInSprite",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("length of [List]"),
+            text: "Length of [List]",
             blockIconURI: listIco,
             disableMonitor: true,
             arguments: {
@@ -522,12 +419,11 @@
                 menu: "listMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "listContains",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("does [List] contain [term]"),
+            text: "Does [List] contain [term]",
             blockIconURI: listIco,
             arguments: {
               term: {
@@ -539,12 +435,11 @@
                 menu: "listMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "itemNumberInList",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("item # of [term] in [List]"),
+            text: "Item # of [term] in [List]",
             blockIconURI: listIco,
             arguments: {
               term: {
@@ -556,13 +451,12 @@
                 menu: "listMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           "---",
           {
             opcode: "touchingOriginal",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("touching the original [Sprite]?"),
+            text: "Touching the original [Sprite]?",
             blockIconURI: catIco,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
@@ -571,12 +465,11 @@
                 menu: "spriteMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "touchingClone",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("touching a clone of [Sprite]?"),
+            text: "Touching a clone of [Sprite]?",
             blockIconURI: catIco,
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
@@ -585,12 +478,11 @@
                 menu: "spriteMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "clonesOfSprite",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("# of clones of [Sprite]"),
+            text: "# of clones of [Sprite]",
             blockIconURI: catIco,
             disableMonitor: true,
             arguments: {
@@ -599,13 +491,12 @@
                 menu: "spriteMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           "---",
           {
             opcode: "getEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("this sprite's [effect] effect"),
+            text: "Get this sprite's [effect] effect",
             blockIconURI: effectIco,
             disableMonitor: true,
             arguments: {
@@ -614,48 +505,43 @@
                 menu: "effectMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "isHidden",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("hidden?"),
+            text: "Hidden?",
             blockIconURI: effectIco,
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "getRotationStyle",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("rotation style"),
+            text: "Rotation Style",
             blockIconURI: rotationIco,
             disableMonitor: true,
             filter: [Scratch.TargetType.SPRITE],
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "getSpriteLayer",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("sprite layer"),
+            text: "Sprite Layer",
             blockIconURI: layerIco,
             disableMonitor: true,
             filter: [Scratch.TargetType.SPRITE],
-            extensions: ["colours_sensing"],
           },
           "---",
           {
             opcode: "getClipBoard",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("copied contents"),
+            text: "Copied Contents",
             blockIconURI: clipboardIco,
             disableMonitor: true,
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "setClipBoard",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set clipboard to [TEXT]"),
+            text: "Set clipboard to [TEXT]",
             blockIconURI: clipboardIco,
             arguments: {
               TEXT: {
@@ -663,25 +549,23 @@
                 defaultValue: "",
               },
             },
-            extensions: ["colours_sensing"],
           },
           "---",
           {
             opcode: "isPackaged",
             blockIconURI: packagedIco,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is packaged?"),
-            extensions: ["colours_sensing"],
+            text: "Is Packaged?",
           },
           "---",
           {
             blockType: "label",
-            text: Scratch.translate("Speech recording is unreliable"),
+            text: "Speech recording is unreliable",
           },
           {
             opcode: "recording",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("turn speech recording [toggle]"),
+            text: "Turn speech recording [toggle]",
             blockIconURI: speechIco,
             arguments: {
               toggle: {
@@ -689,76 +573,62 @@
                 menu: "toggleMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "returnWords",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("recognized Words"),
+            text: "Recognized Words",
             blockIconURI: speechIco,
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "isrecording",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("recording?"),
+            text: "Recording?",
             blockIconURI: speechIco,
-            extensions: ["colours_sensing"],
           },
           "---",
           {
             blockType: "label",
-            text: Scratch.translate("Needs a gyroscope or accelerometer"),
+            text: "Needs a gyroscope or accelerometer",
           },
           {
             opcode: "hasDevice",
             blockIconURI: deviceVelIco,
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("has a [device]?"),
+            text: "Has a [device]?",
             arguments: {
               device: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "deviceMenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
           {
             opcode: "getDeviceSpeed",
             blockIconURI: deviceVelIco,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[type] on the [axis] axis"),
+            text: "Get the [type] speed on the [axis] axis",
             disableMonitor: true,
             arguments: {
               type: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "velocitymenu", // velocitymenu is poorly named
+                menu: "velocitymenu",
               },
               axis: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "axismenu",
               },
             },
-            extensions: ["colours_sensing"],
           },
         ],
         menus: {
           fingerIDMenu: {
             acceptReporters: true,
-            items: fingersMenu,
+            items: touchPointsArray,
           },
           deviceMenu: {
             acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("gyroscope"),
-                value: "gyroscope",
-              },
-              {
-                text: Scratch.translate("accelerometer"),
-                value: "accelerometer",
-              },
-            ],
+            items: ["gyroscope", "accelerometer"],
           },
           coordmenu: {
             acceptReporters: true,
@@ -768,27 +638,9 @@
             acceptReporters: true,
             items: ["x", "y", "z"],
           },
-          // velocitymenu is poorly named.
           velocitymenu: {
             acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate({
-                  default: "acceleration",
-                  description:
-                    "Part of a block that tells you how fast the device is accelerating",
-                }),
-                value: "positional",
-              },
-              {
-                text: Scratch.translate({
-                  default: "rotation",
-                  description:
-                    "Part of a block that tells you what angle the device is being held at",
-                }),
-                value: "rotational",
-              },
-            ],
+            items: ["positional", "rotational"],
           },
           spriteMenu: {
             acceptReporters: true,
@@ -799,53 +651,78 @@
           },
           toggleMenu: {
             acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("on"),
-                value: "on",
-              },
-              {
-                text: Scratch.translate("off"),
-                value: "off",
-              },
-            ],
+            items: ["on", "off"],
           },
           effectMenu: {
             acceptReporters: true,
             items: [
-              {
-                text: Scratch.translate("color"),
-                value: "color",
-              },
-              {
-                text: Scratch.translate("fisheye"),
-                value: "fisheye",
-              },
-              {
-                text: Scratch.translate("whirl"),
-                value: "whirl",
-              },
-              {
-                text: Scratch.translate("pixelate"),
-                value: "pixelate",
-              },
-              {
-                text: Scratch.translate("mosaic"),
-                value: "mosaic",
-              },
-              {
-                text: Scratch.translate("brightness"),
-                value: "brightness",
-              },
-              {
-                text: Scratch.translate("ghost"),
-                value: "ghost",
-              },
+              "color",
+              "fisheye",
+              "whirl",
+              "pixelate",
+              "mosaic",
+              "brightness",
+              "ghost",
             ],
           },
         },
       };
     }
+
+    _touchUtil = {
+      blankExpression: () => {},
+      isTouchingAnyFinger(util, success, fail) {
+        success = success || this.blankExpression;
+        if (success == null) {
+          success = this.blankExpression;
+        }
+        fail = fail || this.blankExpression;
+        if (fail == null) {
+          fail = this.blankExpression;
+        }
+
+        for (let index = 0; index < fingerPositions.length; index++) {
+          const fingerPos = fingerPositions[index];
+          if (fingerPos != null) {
+            const touching = util.target.isTouchingPoint(
+              fingerPos[0],
+              fingerPos[1]
+            );
+            if (touching) {
+              success(index);
+              return true;
+            }
+          }
+        }
+        fail(-1);
+        return false;
+      },
+
+      isTouchingSpecificFinger(id, util, success, fail) {
+        success = success || this.blankExpression;
+        if (success == null) {
+          success = this.blankExpression;
+        }
+        fail = fail || this.blankExpression;
+        if (fail == null) {
+          fail = this.blankExpression;
+        }
+
+        const fingerPos = fingerPositions[Scratch.Cast.toNumber(id) - 1];
+        if (fingerPos != null) {
+          const touching = util.target.isTouchingPoint(
+            fingerPos[0],
+            fingerPos[1]
+          );
+          if (touching) {
+            success(id);
+            return true;
+          }
+        }
+        fail(id);
+        return false;
+      },
+    };
 
     supportsTouches() {
       return supportsTouches;
@@ -856,16 +733,16 @@
     }
 
     getFingerSpeed({ ID }) {
-      const finger = scratchFingers.get(Scratch.Cast.toNumber(ID));
-      if (!finger) {
+      const fingerPos = fingerPositions[ID - 1];
+      const fingerLastPos = lastFingerPositions[ID - 1];
+      if (!fingerPos || !fingerLastPos) {
         return 0;
       }
       const speed = Math.sqrt(
-        Math.pow(finger.x - finger.lastX, 2) +
-          Math.pow(finger.y - finger.lastY, 2)
+        Math.pow(fingerPos[0] - fingerLastPos[0], 2) +
+          Math.pow(fingerPos[1] - fingerLastPos[1], 2)
       );
-      finger.lastX = finger.x;
-      finger.lastY = finger.y;
+      lastFingerPositions[ID - 1] = [fingerPos[0], fingerPos[1]];
       return speed;
     }
 
@@ -889,7 +766,7 @@
     }
 
     isPackaged() {
-      return typeof scaffolding !== "undefined";
+      return isPackaged;
     }
 
     clonesOfSprite({ Sprite }) {
@@ -928,36 +805,33 @@
     }
 
     hasDevice({ device }) {
-      return whenSensorsInitialized(() => {
-        if (Object.prototype.hasOwnProperty.call(sensorStatus, device)) {
-          return sensorStatus[device];
-        }
-        return false;
-      });
+      if (deviceStatus[device]) {
+        return deviceStatus[device];
+      }
+      return false;
     }
 
     getDeviceSpeed({ type, axis }) {
-      return whenSensorsInitialized(() => {
-        if (type === "positional") {
-          if (axis === "x") {
-            return physicalDeviceState.accelerationX;
-          } else if (axis === "y") {
-            return physicalDeviceState.accelerationY;
-          } else if (axis === "z") {
-            return physicalDeviceState.accelerationZ;
-          }
-        } else if (type === "rotational") {
-          if (axis === "x") {
-            return physicalDeviceState.rotationX;
-          } else if (axis === "y") {
-            return physicalDeviceState.rotationY;
-          } else if (axis === "z") {
-            return physicalDeviceState.rotationZ;
-          }
+      initializeSensors();
+      if (type === "positional") {
+        if (axis === "x") {
+          return deviceVelocity.x;
+        } else if (axis === "y") {
+          return deviceVelocity.y;
+        } else if (axis === "z") {
+          return deviceVelocity.z;
         }
-        // should never happen
-        return 0;
-      });
+      } else if (type === "rotational") {
+        if (axis === "x") {
+          return deviceVelocity.rotationX;
+        } else if (axis === "y") {
+          return deviceVelocity.rotationY;
+        } else if (axis === "z") {
+          return deviceVelocity.rotationZ;
+        }
+      }
+      // should never happen
+      return 0;
     }
 
     getClipBoard() {
@@ -979,7 +853,7 @@
     }
 
     getFingersTouching() {
-      return scratchFingers.size;
+      return fingersDown;
     }
 
     getSprites() {
@@ -992,7 +866,7 @@
       if (sprites.length === 0) {
         return [
           {
-            text: Scratch.translate("No sprites exist"),
+            text: "No sprites exist",
             value: " ",
           },
         ];
@@ -1023,7 +897,7 @@
       if (lists.length === 0) {
         return [
           {
-            text: Scratch.translate("No local lists in other sprites"),
+            text: "No local lists in other sprites",
             value: "null",
           },
         ];
@@ -1032,40 +906,49 @@
     }
 
     touchingFinger(args, util) {
-      return findAnyTouchingFinger(util.target) !== -1;
+      return this._touchUtil.isTouchingAnyFinger(util);
     }
 
     touchingSpecificFinger({ ID }, util) {
-      return isTouchingSpecificFinger(util.target, Scratch.Cast.toNumber(ID));
+      return this._touchUtil.isTouchingSpecificFinger(ID, util);
     }
 
     getTouchingFingerID(args, util) {
-      const touching = findAnyTouchingFinger(util.target);
-      if (touching === -1) {
-        return 0;
-      }
-      return touching;
+      let TouchingFingerID = 0;
+      this._touchUtil.isTouchingAnyFinger(util, (FID) => {
+        TouchingFingerID = FID + 1;
+      });
+      return TouchingFingerID;
     }
 
     fingerPosition({ ID, PositionType }) {
-      const finger = scratchFingers.get(Scratch.Cast.toNumber(ID));
-      if (finger) {
+      const index = Scratch.Cast.toNumber(ID) - 1;
+      const fingerPos = fingerPositions[index];
+      if (fingerPos) {
+        const positionIndex = PositionType === "x" ? 0 : 1;
+        const finger = [fingerPos[0], fingerPos[1]];
+        let scratchCoords = finger;
+        const runtime = Scratch.vm.runtime;
+
         const canvasRect = canvas.getBoundingClientRect();
-        if (Scratch.Cast.toString(PositionType) === "x") {
+        if (PositionType === "x") {
           const clientWidth = canvasRect.right - canvasRect.left;
           const toScratch = runtime.stageWidth / clientWidth;
-          return finger.x * toScratch - runtime.stageWidth / 2;
+          scratchCoords[0] *= toScratch;
+          scratchCoords[0] -= runtime.stageWidth / 2;
         } else {
           const clientheight = canvasRect.bottom - canvasRect.top;
           const toScratch = runtime.stageHeight / clientheight;
-          return runtime.stageHeight / 2 - finger.y * toScratch;
+          scratchCoords[1] *= toScratch;
+          scratchCoords[1] = runtime.stageHeight / 2 - scratchCoords[1];
         }
+        return scratchCoords[positionIndex];
       }
       return 0;
     }
 
     isFingerDown({ ID }) {
-      return scratchFingers.has(Scratch.Cast.toNumber(ID));
+      return !!fingerPositions[Scratch.Cast.toNumber(ID) - 1];
     }
 
     listInSprite({ index, List }) {

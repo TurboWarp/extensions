@@ -42,21 +42,17 @@
         font-weight: bold;
         font-size: 1.1em;
       }
-      nav > div {
+      nav > * {
         display: flex;
+        align-items: center;
         max-width: 600px;
         margin: 0 auto;
-        justify-content: space-between;
-      }
-      nav a {
-        display: flex;
+        padding: 0.5rem 0.25rem;
         gap: 0.5rem;
-        padding: 0.5rem 0.25rem 0.5rem 0;
-        align-items: center;
         text-decoration: none;
         color: inherit !important;
       }
-      nav a:hover {
+      nav > *:hover {
         text-decoration: underline;
       }
       nav img {
@@ -96,18 +92,6 @@
         }
       }
 
-      .view-in-browser {
-        display: none;
-      }
-      .is-desktop .view-in-browser {
-        display: flex;
-      }
-      .is-desktop nav > div, .is-desktop .container {
-        /* Desktop app shows this page in a window, not a browser tab, so don't need to */
-        /* restrict the width of the content for readability. */
-        max-width: 100%;
-      }
-
       code {
         background-color: #eee;
         border-radius: 4px;
@@ -131,7 +115,6 @@
         width: 100%;
         overflow-x: auto;
         white-space: pre;
-        line-height: 42px; /* reasonable estimation to reduce layout shift */
       }
       .render-scratchblocks svg {
         display: block;
@@ -145,17 +128,10 @@
   </head>
   <body>
     <nav role="navigation">
-      <div>
-        <a href="https://extensions.turbowarp.org/">
-          <img src="/turbowarp.svg" alt="">
-          <span>TurboWarp Extension Gallery</span>
-        </a>
-
-        <!-- Only used by desktop app -->
-        <a class="view-in-browser" href="https://extensions.turbowarp.org/<%= slug %>">
-          Read in browser
-        </a>
-      </div>
+      <a href="/">
+        <img src="/turbowarp.svg" alt="">
+        <span>TurboWarp Extension Gallery</span>
+      </a>
     </nav>
 
     <main class="container">

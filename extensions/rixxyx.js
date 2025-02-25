@@ -2,25 +2,18 @@
 // ID: RixxyX
 // Description: Various utility blocks.
 // By: RixTheTyrunt <https://scratch.mit.edu/users/RixTheTyrunt/>
-// License: MIT
 
 /*!
  * Originally created by https://scratch.mit.edu/users/RixTheTyrunt/
  * This file is available under an informal "use with credit" license.
  */
 
-(function (Scratch) {
+(function () {
   "use strict";
 
   var count = 0;
   var isMeasure = false;
   var time = 0;
-
-  Scratch.vm.runtime.on("AFTER_EXECUTE", () => {
-    if (isMeasure) {
-      time += 1;
-    }
-  });
 
   class RixxyX {
     getInfo() {
@@ -28,13 +21,11 @@
         color1: "#773c00",
         color2: "#5f3000",
         id: "RixxyX",
-        // eslint-disable-next-line extension/should-translate
         name: "RixxyX",
         blocks: [
           {
             opcode: "notEquals",
             blockType: Scratch.BlockType.BOOLEAN,
-            // eslint-disable-next-line extension/should-translate
             text: "[TEXT_1] != [TEXT_2]",
             arguments: {
               TEXT_1: {
@@ -50,7 +41,7 @@
           {
             opcode: "color",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("color [COLOR] in hex"),
+            text: "color [COLOR] in hex",
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -61,21 +52,21 @@
           {
             opcode: "returnTrue",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("true"),
+            text: "true",
             arguments: {},
             disableMonitor: true,
           },
           {
             opcode: "returnFalse",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("false"),
+            text: "false",
             arguments: {},
             disableMonitor: true,
           },
           {
             opcode: "ifElseString",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("if [BOOL] then [TEXT_1] else [TEXT_2]"),
+            text: "if [BOOL] then [TEXT_1] else [TEXT_2]",
             arguments: {
               BOOL: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -94,7 +85,7 @@
           {
             opcode: "ifString",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("if [BOOL] then [TEXT]"),
+            text: "if [BOOL] then [TEXT]",
             arguments: {
               BOOL: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -109,13 +100,11 @@
           {
             opcode: "extractTextBetweenToCharacters",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "extract text [TEXT] between [NUM_1] to [NUM_2] characters"
-            ),
+            text: "extract text [TEXT] between [NUM_1] to [NUM_2] characters",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("RixxyX is cool, right?"),
+                defaultValue: "RixxyX is cool, right?",
               },
               NUM_1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -130,33 +119,33 @@
           {
             opcode: "returnString",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[TEXT] as text"),
+            text: "[TEXT] as text",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("RixxyX is cool, right?"),
+                defaultValue: "RixxyX is cool, right?",
               },
             },
           },
           {
             opcode: "isTheSameTypeAs",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("[TEXT_1] is the same type as [TEXT_2]?"),
+            text: "[TEXT_1] is the same type as [TEXT_2]?",
             arguments: {
               TEXT_1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("RixxyX is cool, right?"),
+                defaultValue: "RixxyX is cool, right?",
               },
               TEXT_2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("RixxyX is cool, right?"),
+                defaultValue: "RixxyX is cool, right?",
               },
             },
           },
           {
             opcode: "reverseTxt",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("reverse text [TEXT]"),
+            text: "reverse text [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -167,13 +156,13 @@
           {
             opcode: "returnCount",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("counter"),
+            text: "counter",
             arguments: {},
           },
           {
             opcode: "incrementCountByNum",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("increment counter by [NUM]"),
+            text: "increment counter by [NUM]",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -184,7 +173,7 @@
           {
             opcode: "decrementCountByNum",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("decrement counter by [NUM]"),
+            text: "decrement counter by [NUM]",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -195,7 +184,7 @@
           {
             opcode: "setCount",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set counter to [NUM]"),
+            text: "set counter to [NUM]",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -206,7 +195,7 @@
           {
             opcode: "toUppercase",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[TEXT] to uppercase"),
+            text: "[TEXT] to uppercase",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -217,7 +206,7 @@
           {
             opcode: "toLowercase",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[TEXT] to lowercase"),
+            text: "[TEXT] to lowercase",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -228,18 +217,18 @@
           {
             opcode: "toCapitalize",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("capitalize [TEXT]"),
+            text: "capitalize [TEXT]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("rixxyX is cool, right?"),
+                defaultValue: "rixxyX is cool, right?",
               },
             },
           },
           {
             opcode: "isJsNan",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is javascript NaN [OBJ]"),
+            text: "is JavaScript NaN [OBJ]",
             arguments: {
               OBJ: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -250,7 +239,7 @@
           {
             opcode: "returnNum",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[NUM] as number"),
+            text: "[NUM] as number",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -261,7 +250,7 @@
           {
             opcode: "returnBool",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("[BOOL] as boolean"),
+            text: "[BOOL] as boolean",
             arguments: {
               BOOL: {
                 type: Scratch.ArgumentType.STRING,
@@ -272,7 +261,7 @@
           {
             opcode: "binToTxt",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("binary [BIN] to text"),
+            text: "binary [BIN] to text",
             arguments: {
               BIN: {
                 type: Scratch.ArgumentType.STRING,
@@ -284,7 +273,7 @@
           {
             opcode: "txtToBin",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("text [TEXT] to binary"),
+            text: "text [TEXT] to binary",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -295,7 +284,7 @@
           {
             opcode: "repeatTxtTimes",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("repeat text [TEXT] [NUM] times"),
+            text: "repeat text [TEXT] [NUM] times",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -310,7 +299,7 @@
           {
             opcode: "jsonParse",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("parse JSON [TEXT]"),
+            text: "JSON.parse([TEXT])",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -321,26 +310,25 @@
           {
             opcode: "returnENum",
             blockType: Scratch.BlockType.REPORTER,
-            // eslint-disable-next-line extension/should-translate
-            text: "e",
+            text: "e", // e
             arguments: {},
           },
           {
             opcode: "startTime",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("start measuring time"),
+            text: "start measuring time",
             arguments: {},
           },
           {
             opcode: "endTime",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("end measuring time"),
+            text: "end measuring time",
             arguments: {},
           },
           {
             opcode: "returnTime",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("time"),
+            text: "time",
             arguments: {},
           },
         ],
@@ -489,8 +477,11 @@
       isMeasure = false;
     }
     returnTime(args) {
+      if (isMeasure == true) {
+        time += 1;
+      }
       return time;
     }
   }
   Scratch.extensions.register(new RixxyX());
-})(Scratch);
+})();

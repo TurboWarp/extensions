@@ -1,7 +1,6 @@
 // Name: LZ Compress
 // ID: shovellzcompress
 // Description: Compress and decompress text using lz-string.
-// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -349,14 +348,12 @@
     getInfo() {
       return {
         id: "shovellzcompress",
-        name: Scratch.translate("LZ Compress"),
-        color1: "#2f3463",
-        color2: "#2b2f59",
+        name: "LZ Compress",
         blocks: [
           {
             opcode: "compress",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("compress [TEXT] to [TYPE]"),
+            text: "compress [TEXT] to [TYPE]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -371,7 +368,7 @@
           {
             opcode: "decompress",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("decompress [TEXT] from [TYPE]"),
+            text: "decompress [TEXT] from [TYPE]",
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -388,31 +385,11 @@
           COMPRESSIONTYPES: {
             acceptReporters: true,
             items: [
-              { text: Scratch.translate("Raw"), value: "Raw" },
-              { text: Scratch.translate("Base64"), value: "Base64" },
-              {
-                text: Scratch.translate({
-                  default: "EncodedURIComponent",
-                  description:
-                    "A type of encoding that happens to also be used in URLs.",
-                }),
-                value: "EncodedURIComponent",
-              },
-              {
-                text: Scratch.translate({
-                  default: "Uint8Array",
-                  description: "An array of bytes.",
-                }),
-                value: "Unit8Array",
-              },
-              {
-                text: Scratch.translate({
-                  default: "UTF16",
-                  description:
-                    "A type of unicode encoding. For almost all languages this translates to just 'UTF16'",
-                }),
-                value: "UTF16",
-              },
+              "Raw",
+              "Base64",
+              "EncodedURIComponent",
+              "Uint8Array",
+              "UTF16",
             ],
           },
         },

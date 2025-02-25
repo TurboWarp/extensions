@@ -1,10 +1,7 @@
 // Name: Text
 // ID: strings
 // Description: Manipulate characters and text.
-// By: CST1229 <https://scratch.mit.edu/users/CST1229/>
-// By: BludIsAnLemon <https://scratch.mit.edu/users/BludIsAnLemon/>
-// By: Man-o-Valor <https://scratch.mit.edu/users/man-o-valor/>
-// License: MIT AND MPL-2.0
+// Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
 
 (function (Scratch) {
   "use strict";
@@ -15,9 +12,6 @@
     MIXEDCASE: "mixedcase",
     TITLECASE: "titlecase",
     EXACTTITLECASE: "exacttitlecase",
-    RANDOMCASE: "randomcase",
-    SENTENCECASE: "sentencecase",
-    CAMELCASE: "camelcase",
   };
 
   let splitCache;
@@ -29,82 +23,39 @@
     _initCaseMenu() {
       return [
         {
-          text: Scratch.translate({
-            default: "lowercase",
-            description: "If your language has lowercase, style it accordingly",
-          }),
+          text: "lowercase",
           value: CaseParam.LOWERCASE,
         },
         {
-          text: Scratch.translate({
-            default: "UPPERCASE",
-            description: "If your language has uppercase, style it accordingly",
-          }),
+          text: "UPPERCASE",
           value: CaseParam.UPPERCASE,
         },
         {
-          text: Scratch.translate({
-            default: "Sentence case",
-            description:
-              "Starts words after ., !, and ? with captialized letters",
-          }),
-          value: CaseParam.SENTENCECASE,
-        },
-        {
-          text: Scratch.translate({
-            default: "Title Case",
-            description:
-              "If your language has Title Case, style it accordingly. 'Abc' is title case and exactly title case but 'ABC' is only title case.",
-          }),
+          text: "Title Case",
           value: CaseParam.TITLECASE,
         },
         {
-          text: Scratch.translate({
-            default: "Exactly Title Case",
-            description:
-              "If your language has Title Case, style it accordingly. 'Abc' is title case and exactly title case but 'ABC' is only title case.",
-          }),
+          text: "Exactly Title Case",
           value: CaseParam.EXACTTITLECASE,
         },
         {
-          text: Scratch.translate({
-            default: "MiXeD CaSe",
-            description:
-              "If your language has mixed case, style it accordingly",
-          }),
+          text: "MiXeD CaSe",
           value: CaseParam.MIXEDCASE,
-        },
-        {
-          text: Scratch.translate({
-            default: "RAndoMCaSe",
-            description:
-              "If your language has randomcase, style it accordingly",
-          }),
-          value: CaseParam.RANDOMCASE,
-        },
-        {
-          text: Scratch.translate({
-            default: "camelCase",
-            description:
-              "Removes all spaces and capitalizes all words after the first",
-          }),
-          value: CaseParam.CAMELCASE,
         },
       ];
     }
 
     getInfo() {
       return {
-        // id "text" would conflict with Scratch Lab's Animated Text (lab/text.js)
+        // id "text" could conflict with Scratch Lab's Animated Text
+        // for mods which implement it or if it ever comes out
         id: "strings",
-        name: Scratch.translate("Text"),
+        name: "Text",
         blocks: [
           {
             opcode: "letters_of",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "letters [LETTER1] to [LETTER2] of [STRING]"
-            ),
+            text: "letters [LETTER1] to [LETTER2] of [STRING]",
             arguments: {
               LETTER1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -123,7 +74,7 @@
           {
             opcode: "split",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("item [ITEM] of [STRING] split by [SPLIT]"),
+            text: "item [ITEM] of [STRING] split by [SPLIT]",
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -142,11 +93,7 @@
           {
             opcode: "count",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "count [SUBSTRING] in [STRING]",
-              description:
-                "Counts how many time [SUBSTRING] appears in [STRING]",
-            }),
+            text: "count [SUBSTRING] in [STRING]",
             arguments: {
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -161,10 +108,7 @@
           {
             opcode: "indexof",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "index of [SUBSTRING] in [STRING]",
-              description: "Reports where [SUBSTRING] appears in [STRING]",
-            }),
+            text: "index of [SUBSTRING] in [STRING]",
             arguments: {
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -182,9 +126,7 @@
           {
             opcode: "replace",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "replace [SUBSTRING] in [STRING] with [REPLACE]"
-            ),
+            text: "replace [SUBSTRING] in [STRING] with [REPLACE]",
             arguments: {
               SUBSTRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -203,7 +145,7 @@
           {
             opcode: "repeat",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("repeat [STRING] [REPEAT] times"),
+            text: "repeat [STRING] [REPEAT] times",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -221,7 +163,7 @@
           {
             opcode: "unicodeof",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("unicode of [STRING]"),
+            text: "unicode of [STRING]",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -232,7 +174,7 @@
           {
             opcode: "unicodefrom",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("unicode [NUM] as letter"),
+            text: "unicode [NUM] as letter",
             arguments: {
               NUM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -245,9 +187,7 @@
           {
             opcode: "replaceRegex",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "replace regex /[REGEX]/[FLAGS] in [STRING] with [REPLACE]"
-            ),
+            text: "replace regex /[REGEX]/[FLAGS] in [STRING] with [REPLACE]",
             arguments: {
               REGEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -270,12 +210,7 @@
           {
             opcode: "matchRegex",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default:
-                "item [ITEM] of [STRING] matched by regex /[REGEX]/[FLAGS]",
-              description:
-                "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
-            }),
+            text: "item [ITEM] of [STRING] matched by regex /[REGEX]/[FLAGS]",
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -298,11 +233,7 @@
           {
             opcode: "countRegex",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "count regex /[REGEX]/[FLAGS] in [STRING]",
-              description:
-                "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
-            }),
+            text: "count regex /[REGEX]/[FLAGS] in [STRING]",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -321,11 +252,7 @@
           {
             opcode: "testRegex",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate({
-              default: "[STRING] matches regex /[REGEX]/[FLAGS]?",
-              description:
-                "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
-            }),
+            text: "[STRING] matches regex /[REGEX]/[FLAGS]?",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -347,7 +274,7 @@
           {
             opcode: "identical",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is [OPERAND1] identical to [OPERAND2]?"),
+            text: "is [OPERAND1] identical to [OPERAND2]?",
             arguments: {
               OPERAND1: {
                 type: Scratch.ArgumentType.STRING,
@@ -365,10 +292,7 @@
           {
             opcode: "isCase",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate({
-              default: "is [STRING] [TEXTCASE]?",
-              description: "Example block context: <is [hello] [lowercase] ?>",
-            }),
+            text: "is [STRING] [TEXTCASE]?",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -384,11 +308,7 @@
           {
             opcode: "toCase",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "convert [STRING] to [TEXTCASE]",
-              description:
-                "Example block context: (convert [HELLO] to [lowercase])",
-            }),
+            text: "convert [STRING] to [TEXTCASE]",
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -401,94 +321,11 @@
               },
             },
           },
-
-          "---",
-          {
-            opcode: "posWith",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("[STRING] [POSITION]s with [SUBSTRING]?"),
-            arguments: {
-              STRING: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "turbowarp",
-              },
-              POSITION: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "positions",
-              },
-              SUBSTRING: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "turbo",
-              },
-            },
-          },
-
-          "---",
-
-          {
-            opcode: "reverse",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("reverse text [STRING]"),
-            arguments: {
-              STRING: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("apple"),
-              },
-            },
-          },
-
-          "---",
-
-          {
-            opcode: "trim",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("trim whitespace [STRING] from [METHOD]"),
-            arguments: {
-              STRING: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: `    ${Scratch.translate("apple")}    `,
-              },
-              METHOD: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "trimMethod",
-              },
-            },
-          },
         ],
         menus: {
           textCase: {
             acceptReporters: true,
             items: this._initCaseMenu(),
-          },
-          positions: {
-            acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("start"),
-                value: "starts",
-              },
-              {
-                text: Scratch.translate("end"),
-                value: "ends",
-              },
-            ],
-          },
-          trimMethod: {
-            acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("both sides"),
-                value: "both",
-              },
-              {
-                text: Scratch.translate("the end"),
-                value: "end",
-              },
-              {
-                text: Scratch.translate("the start"),
-                value: "start",
-              },
-            ],
           },
         },
       };
@@ -686,12 +523,6 @@
               word[0].toUpperCase() + word.substring(1).toLowerCase();
             return word === titleCased;
           });
-        case CaseParam.CAMELCASE:
-          return /^[^A-Z\s][^\s]*$/.test(string);
-        case CaseParam.RANDOMCASE:
-          return true;
-        case CaseParam.SENTENCECASE:
-          return /^[A-Z][^?.!]*(?:[?.!]\s+[A-Z][^?.!]*)*$/.test(string);
         default:
           return false;
       }
@@ -700,8 +531,6 @@
     toCase(args, util) {
       const string = args.STRING.toString();
       const textCase = args.TEXTCASE.toString();
-      let workingText = "";
-      let sentenceCapitalFlag = false;
       switch (textCase) {
         case CaseParam.LOWERCASE:
           return string.toLowerCase();
@@ -729,66 +558,8 @@
               return word[0].toUpperCase() + word.substring(1).toLowerCase();
             })
             .join("");
-        case CaseParam.SENTENCECASE:
-          for (let i = 0; i < string.length; i++) {
-            if (
-              /^\s*$/.test(string[i - 1] ?? " ") &&
-              !sentenceCapitalFlag &&
-              string[i].toUpperCase() != string[i].toLowerCase()
-            ) {
-              workingText += string[i].toUpperCase();
-              sentenceCapitalFlag = true;
-            } else {
-              if (string[i] == "." || string[i] == "!" || string[i] == "?") {
-                sentenceCapitalFlag = false;
-              }
-              workingText += string[i].toLowerCase();
-            }
-          }
-          return workingText;
-        case CaseParam.RANDOMCASE:
-          for (let i = 0; i < string.length; i++) {
-            if (Math.random() > 0.5) {
-              workingText += string[i].toUpperCase();
-            } else {
-              workingText += string[i].toLowerCase();
-            }
-          }
-          return workingText;
-        case CaseParam.CAMELCASE:
-          for (let i = 0; i < string.length; i++) {
-            if (/^\s*$/.test(string[i - 1] ?? "x")) {
-              workingText += string[i].toUpperCase();
-            } else {
-              workingText += string[i].toLowerCase();
-            }
-          }
-          return workingText.replace(/\s/g, "");
         default:
           return string;
-      }
-    }
-    posWith(args) {
-      const STRING = args.STRING.toString();
-      const SUBSTRING = args.SUBSTRING.toString();
-      if (args.POSITION.toString() === "starts") {
-        return STRING.startsWith(SUBSTRING);
-      }
-      return STRING.endsWith(SUBSTRING);
-    }
-    reverse(args) {
-      return Array.from(args.STRING.toString()).reverse().join("");
-    }
-    trim(args) {
-      const STRING = args.STRING.toString();
-      switch (args.METHOD.toString()) {
-        case "start":
-          return STRING.trimStart();
-        case "end":
-          return STRING.trimEnd();
-        case "both":
-        default:
-          return STRING.trim();
       }
     }
   }
