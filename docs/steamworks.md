@@ -6,6 +6,8 @@ The Steamworks extension lets you use these Steam APIs:
  - Achievements
  - DLC
  - Opening URLs in the Steam Overlay
+ - Control the Steam Client
+ - Use the Steam API
 
 This extension was not created by and is not supported by Valve.
 
@@ -47,13 +49,13 @@ Spacewar has achievements with the following API Names, which can used for testi
 Remember that Steamworks is only properly enabled when your project is packaged in a few specific environments. You can detect if this is the case using:
 
 ```scratch
-<has steamworks? :: #136C9F>
+<has steamworks? :: #1a2736>
 ```
 
 Then you can get basic information about the user using:
 
 ```scratch
-(get user (name v) :: #136C9F)
+(get user (name v) :: #1a2736)
 ```
 
 ## Achievements
@@ -64,7 +66,7 @@ This would unlock the `ACH_WIN_ONE_GAME` achievement from Spacewar:
 
 ```scratch
 when this sprite clicked
-set achievement [ACH_WIN_ONE_GAME] unlocked to (true v) :: #136C9F
+set achievement [ACH_WIN_ONE_GAME] unlocked to (true v) :: #1a2736
 ```
 
 You can also detect if an achievement has already been unlocked:
@@ -72,7 +74,7 @@ You can also detect if an achievement has already been unlocked:
 ```scratch
 when flag clicked
 forever
-    if <achievement [ACH_WIN_ONE_GAME] unlocked? :: #136C9F> then
+    if <achievement [ACH_WIN_ONE_GAME] unlocked? :: #1a2736> then
         say [Unlocked!]
     else
         say [Not unlocked :(]
@@ -85,7 +87,7 @@ end
 Each DLC has its own App ID which you can find on the Steamworks website. You can detect if it is installed using:
 
 ```scratch
-if <(DLC v) [1234] installed? :: #136C9F> then
+if <(DLC v) [1234] installed? :: #1a2736> then
 
 end
 ```
@@ -95,5 +97,5 @@ end
 The Steamworks extension has a block to open URLs in the Steam Overlay's web browser. If the overlay is not working, it might open in the Steam app instead. If that also doesn't work, it will open in the default web browser. Regardless, packaged projects never display security prompts like "The project wants to open a new window or tab".
 
 ```scratch
-open (URL v) [https://example.com/] in overlay :: #136C9F
+open (URL v) [https://example.com/] in overlay :: #1a2736
 ```
