@@ -106,7 +106,8 @@
             if (!this._hasScopeVar) this._hasScopeVar = true;
             const varName = this.descendInputOfBlock(block, "VAR");
             const iName = this.descendInputOfBlock(block, "I");
-            const isStaticName = varName.kind === "constant" && iName.kind === "constant";
+            const isStaticName =
+              varName.kind === "constant" && iName.kind === "constant";
             if (isStaticName && !this._dynamicScopeVar) {
               if (!this._scopeVarPool) {
                 this._scopeVarPool = new Set();
@@ -340,7 +341,6 @@
 
               let itemExists = this.isScopeVarExist(scopedItemName);
               let indexExists = this.isScopeVarExist(scopedIndexName);
-              
 
               this.source += `for (${indexExists ? "" : "let "}${scopedIndexName} = 0; ${scopedIndexName} < target.lookupOrCreateList(${this.descendInput(node.list).asString()}).value.length; ${scopedIndexName}++) {\n`;
               if (!indexExists) {
@@ -368,7 +368,6 @@
               const idxGetter = `runtime.ext_shikiScopeVar._get(${this.descendInput(
                 node.idx
               ).asString()}, thread)`;
-
 
               this.source += `runtime.ext_shikiScopeVar._create(${this.descendInput(
                 node.idx
@@ -630,7 +629,10 @@
           });
         }
       });
-      if (Scratch.vm.editingTarget && Scratch.vm.editingTarget !== Scratch.vm.runtime.getTargetForStage()) {
+      if (
+        Scratch.vm.editingTarget &&
+        Scratch.vm.editingTarget !== Scratch.vm.runtime.getTargetForStage()
+      ) {
         variables = Scratch.vm.editingTarget.variables;
         Object.keys(variables).forEach((variable) => {
           if (variables[variable].type) {
@@ -778,7 +780,7 @@
 
     forEachWithList(args, util) {
       const listId = args.LIST;
-      const {value: list} = util.target.lookupOrCreateList(listId);
+      const { value: list } = util.target.lookupOrCreateList(listId);
       const varName = Cast.toString(args.VAR);
       const index = Cast.toString(args.I);
 
