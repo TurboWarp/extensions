@@ -82,7 +82,7 @@
     getInfo() {
       return {
         id: 'ngllink',
-        name: 'NGL Link',
+        name: Scratch.translate('NGL Link'),
         color1: '#ff69b4', // Hot pink
         color2: '#ff1493', // Deep pink
         color3: '#c71585', // Medium violet red
@@ -90,7 +90,7 @@
           {
             opcode: 'sendMessage',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'send message [MESSAGE] to [USERNAME] with game [GAME]',
+            text: Scratch.translate('send message [MESSAGE] to [USERNAME] with game [GAME]'),
             arguments: {
               MESSAGE: {
                 type: Scratch.ArgumentType.STRING,
@@ -109,13 +109,13 @@
           {
             opcode: 'getRandomQuestion',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'get random question',
+            text: Scratch.translate('get random question'),
             arguments: {}
           },
           {
             opcode: 'setLanguage',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'set questions language to [LANG]',
+            text: Scratch.translate('set questions language to [LANG]'),
             arguments: {
               LANG: {
                 type: Scratch.ArgumentType.STRING,
@@ -166,7 +166,7 @@
       try {
         const properOrigin = 'https://ngl.link';
         
-        const response = await Scratch.fetch('https://ngl.link/api/fingerprint/web', {
+        const _response = await Scratch.fetch('https://ngl.link/api/fingerprint/web', {
           method: 'POST',
           headers: {
             'Accept': '*/*',
@@ -175,12 +175,10 @@
             'Origin': properOrigin,
             'Referer': properOrigin,
             'User-Agent': this.userAgent,
-            // Remove X-Requested-With header as it's triggering CORS issues
             'Sec-Fetch-Dest': 'empty',
             'Sec-Fetch-Mode': 'cors',
             'Sec-Fetch-Site': 'same-origin'
           },
-          // mode: 'cors' is causing preflight checks, use default instead
           body: data.toString()
         });
         
