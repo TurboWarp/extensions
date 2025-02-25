@@ -90,28 +90,22 @@
 
     getInfo() {
       return {
-<<<<<<< HEAD
         id: 'ngllink',
         name: Scratch.translate('NGL Link'),
         color1: '#ff69b4', // Hot pink
         color2: '#ff1493', // Deep pink
         color3: '#c71585', // Medium violet red
-=======
         id: "ngllink",
         name: "NGL Link",
         color1: "#ff69b4", // Hot pink
         color2: "#ff1493", // Deep pink
         color3: "#c71585", // Medium violet red
->>>>>>> f10d651a79db3137836b80cbc95f8f5d7f6ee98d
         blocks: [
           {
             opcode: "sendMessage",
             blockType: Scratch.BlockType.REPORTER,
-<<<<<<< HEAD
             text: Scratch.translate('send message [MESSAGE] to [USERNAME] with game [GAME]'),
-=======
             text: "send message [MESSAGE] to [USERNAME] with game [GAME]",
->>>>>>> f10d651a79db3137836b80cbc95f8f5d7f6ee98d
             arguments: {
               MESSAGE: {
                 type: Scratch.ArgumentType.STRING,
@@ -130,22 +124,16 @@
           {
             opcode: "getRandomQuestion",
             blockType: Scratch.BlockType.REPORTER,
-<<<<<<< HEAD
             text: Scratch.translate('get random question'),
             arguments: {}
-=======
             text: "get random question",
             arguments: {},
->>>>>>> f10d651a79db3137836b80cbc95f8f5d7f6ee98d
           },
           {
             opcode: "setLanguage",
             blockType: Scratch.BlockType.COMMAND,
-<<<<<<< HEAD
             text: Scratch.translate('set questions language to [LANG]'),
-=======
             text: "set questions language to [LANG]",
->>>>>>> f10d651a79db3137836b80cbc95f8f5d7f6ee98d
             arguments: {
               LANG: {
                 type: Scratch.ArgumentType.STRING,
@@ -194,7 +182,6 @@
       data.append("deviceId", this.deviceId);
 
       try {
-<<<<<<< HEAD
         const properOrigin = 'https://ngl.link';
         
         const _response = await Scratch.fetch('https://ngl.link/api/fingerprint/web', {
@@ -213,7 +200,6 @@
           body: data.toString()
         });
         
-=======
         const properOrigin = "https://ngl.link";
 
         const response = await Scratch.fetch(
@@ -238,7 +224,6 @@
           }
         );
 
->>>>>>> f10d651a79db3137836b80cbc95f8f5d7f6ee98d
         return true;
       } catch (err) {
         console.error("Failed to verify device ID:", err);
