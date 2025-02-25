@@ -28,7 +28,7 @@
     getInfo() {
       return {
         id: "nonameawasortuniquewords",
-        name: Scratch.translate("Sort Unique Words"),
+        name: "Sort Unique Words",
         color1: "#5a8b9e",
         color2: "#427081",
         color3: "#427081",
@@ -37,15 +37,11 @@
             opcode: "words",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: Scratch.translate(
-              "sort unique words in [text] as [language]"
-            ),
+            text: "sort unique words in [text] as [language]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate(
-                  "movie dog restaurant book school"
-                ),
+                defaultValue: "movie dog restaurant book school",
               },
               language: {
                 type: Scratch.ArgumentType.STRING,
@@ -59,11 +55,11 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("English (en)"),
+                text: "English (en)",
                 value: "en",
               },
               {
-                text: Scratch.translate("Chinese (zh)"),
+                text: "Chinese (zh)",
                 value: "zh",
               },
             ],

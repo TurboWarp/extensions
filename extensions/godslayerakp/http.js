@@ -2,7 +2,6 @@
 // ID: gsaHTTPRequests
 // Description: Comprehensive extension for interacting with external websites.
 // By: RedMan13 <https://scratch.mit.edu/users/RedMan13/>
-// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -239,7 +238,6 @@
     getInfo() {
       return {
         id: extensionId,
-        // eslint-disable-next-line extension/should-translate
         name: "HTTP",
         color1: "#307eff",
         color2: "#2c5eb0",
@@ -247,38 +245,38 @@
           {
             opcode: "clearAll",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("clear current data"),
+            text: "clear current data",
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Response"),
+            text: "Response",
           },
           {
             opcode: "resData",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("response"),
+            text: "response",
           },
           {
             opcode: "error",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("error"),
+            text: "error",
           },
           {
             opcode: "status",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("status"),
+            text: "status",
           },
           {
             opcode: "statusText",
             blockType: BlockType.REPORTER,
-            text: Scratch.translate("status text"),
+            text: "status text",
           },
           "---",
           {
             opcode: "getHeaderJSON",
             blockType: BlockType.REPORTER,
             disableMonitor: true,
-            text: Scratch.translate("headers as json"),
+            text: "get headers as json",
           },
           {
             opcode: "getHeaderValue",
@@ -286,43 +284,42 @@
             arguments: {
               name: {
                 type: ArgumentType.STRING,
-                defaultValue: "name",
               },
             },
-            text: Scratch.translate("[name] from header"),
+            text: "get [name] from header",
           },
           "---",
           {
             opcode: "requestComplete",
             blockType: BlockType.BOOLEAN,
-            text: Scratch.translate("site responded?"),
+            text: "site responded?",
           },
           {
             opcode: "requestFail",
             blockType: BlockType.BOOLEAN,
-            text: Scratch.translate("request failed?"),
+            text: "request failed?",
           },
           {
             opcode: "requestSuccess",
             blockType: BlockType.BOOLEAN,
-            text: Scratch.translate("request succeeded?"),
+            text: "request succeeded?",
           },
           "---",
           {
             opcode: "onResponse",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
-            text: Scratch.translate("when a site responds"),
+            text: "when a site responds",
           },
           {
             opcode: "onFail",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
-            text: Scratch.translate("when a request fails"),
+            text: "when a request fails",
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Request"),
+            text: "Request",
           },
           {
             opcode: "setMimeType",
@@ -334,7 +331,7 @@
                 defaultValue: this.request.mimeType,
               },
             },
-            text: Scratch.translate("set content type to [type]"),
+            text: "set content type to [type]",
           },
           {
             opcode: "setRequestmethod",
@@ -346,7 +343,7 @@
                 defaultValue: this.request.method,
               },
             },
-            text: Scratch.translate("set request method to [method]"),
+            text: "set request method to [method]",
           },
           {
             opcode: "setHeaderData",
@@ -361,7 +358,7 @@
                 defaultValue: this.request.mimeType,
               },
             },
-            text: Scratch.translate("in header set [name] to [value]"),
+            text: "in header set [name] to [value]",
           },
           {
             opcode: "setHeaderJSON",
@@ -372,7 +369,7 @@
                 defaultValue: `{"Content-Type": "${this.request.mimeType}"}`,
               },
             },
-            text: Scratch.translate("set headers to json [json]"),
+            text: "set headers to json [json]",
           },
           {
             opcode: "setBody",
@@ -383,13 +380,13 @@
                 default: "Apple!",
               },
             },
-            text: Scratch.translate("set request body to [text]"),
+            text: "set request body to [text]",
           },
           "---",
           {
             opcode: "setBodyToForm",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("set request body to multipart form"),
+            text: "set request body to a form",
           },
           {
             opcode: "getFormProperty",
@@ -400,7 +397,7 @@
                 defaultValue: "name",
               },
             },
-            text: Scratch.translate("[name] in multipart form"),
+            text: "get [name] in request form",
           },
           {
             opcode: "setFormProperty",
@@ -415,7 +412,7 @@
                 defaultValue: "value",
               },
             },
-            text: Scratch.translate("set [name] to [value] in multipart form"),
+            text: "set [name] to [value] in request form",
           },
           {
             opcode: "deleteFormProperty",
@@ -426,7 +423,7 @@
                 defaultValue: "name",
               },
             },
-            text: Scratch.translate("delete [name] from multipart form"),
+            text: "delete [name] from request form",
           },
           "---",
           {
@@ -438,18 +435,18 @@
                 defaultValue: "https://extensions.turbowarp.org/hello.txt",
               },
             },
-            text: Scratch.translate("send request to [url]"),
+            text: "send request to [url]",
           },
           {
             func: "showExtra",
             blockType: BlockType.BUTTON,
-            text: Scratch.translate("Show Extra"),
+            text: "Show Extra",
             hideFromPalette: this.showingExtra,
           },
           {
             func: "hideExtra",
             blockType: BlockType.BUTTON,
-            text: Scratch.translate("Hide Extra"),
+            text: "Hide Extra",
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -465,7 +462,7 @@
                 defaultValue: "data",
               },
             },
-            text: Scratch.translate("set [path] to [value] in request options"),
+            text: "set [path] to [value] in request options",
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -481,9 +478,7 @@
                 menu: "jsTypes",
               },
             },
-            text: Scratch.translate(
-              "set [path] to type [type] in request options"
-            ),
+            text: "set [path] to type [type] in request options",
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -495,7 +490,7 @@
                 defaultValue: "path.to.item",
               },
             },
-            text: Scratch.translate("[path] in request options"),
+            text: "get [path] in request options",
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -507,7 +502,7 @@
                 defaultValue: "path.to.item",
               },
             },
-            text: Scratch.translate("type of [path] in request options"),
+            text: "get type of [path] in request options",
             hideFromPalette: !this.showingExtra,
           },
         ],
@@ -521,11 +516,10 @@
           },
           mimeType: {
             items: [
-              "application/json",
-              "application/x-www-form-urlencoded",
               "application/javascript",
               "application/ogg",
               "application/pdf",
+              "application/json",
               "application/ld+json",
               "application/xml",
               "application/zip",
@@ -663,6 +657,7 @@
       this.request.body.delete(name);
     }
 
+    // eslint-disable-next-line require-await
     async sendRequest(args) {
       const url = Cast.toString(args.url);
       const options = this.request.options;

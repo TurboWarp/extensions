@@ -2,25 +2,19 @@
 // ID: lmscomments
 // Description: Annotate your scripts.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
 
   class CommentBlocks {
     getInfo() {
-      const defaultValue = Scratch.translate({
-        default: "comment",
-        description: "Default comment value",
-      });
       return {
         id: "lmscomments",
-        name: Scratch.translate("Comment Blocks"),
+        name: "Comment Blocks",
         color1: "#e4db8c",
         color2: "#c6be79",
         color3: "#a8a167",
         blocks: [
-          /* eslint-disable extension/should-translate */
           {
             opcode: "commentHat",
             blockType: Scratch.BlockType.HAT,
@@ -29,7 +23,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: defaultValue,
+                defaultValue: "comment",
               },
             },
           },
@@ -40,7 +34,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: defaultValue,
+                defaultValue: "comment",
               },
             },
           },
@@ -51,7 +45,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: defaultValue,
+                defaultValue: "comment",
               },
             },
           },
@@ -59,11 +53,10 @@
             opcode: "commentReporter",
             blockType: Scratch.BlockType.REPORTER,
             text: "[INPUT] // [COMMENT]",
-            allowDropAnywhere: true,
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: defaultValue,
+                defaultValue: "comment",
               },
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -78,14 +71,13 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: defaultValue,
+                defaultValue: "comment",
               },
               INPUT: {
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
           },
-          /* eslint-enable extension/should-translate */
         ],
       };
     }

@@ -2,7 +2,6 @@
 // ID: 0832rxfs2
 // Description: Blocks for interacting with a virtual in-memory filesystem.
 // By: 0832
-// License: MIT
 
 /*!
  * Made by 0832
@@ -18,7 +17,7 @@
 
   var rxFSfi = new Array();
   var rxFSsy = new Array();
-  var Search, str, str2;
+  var Search, i, str, str2;
 
   const folder =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyOC40NjI1IiBoZWlnaHQ9IjI3LjciIHZpZXdCb3g9IjAsMCwyOC40NjI1LDI3LjciPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yMjYuMDE5NTMsLTE2NC4xMTg3NSkiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbD0iIzk5NjZmZiIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgZm9udC1mYW1pbHk9IlNhbnMgU2VyaWYiIGZvbnQtd2VpZ2h0PSJub3JtYWwiIGZvbnQtc2l6ZT0iNDAiIHRleHQtYW5jaG9yPSJzdGFydCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjx0ZXh0IHRyYW5zZm9ybT0idHJhbnNsYXRlKDIyNi4yNjk1MywxODUuNzY4NzUpIHNjYWxlKDAuNSwwLjUpIiBmb250LXNpemU9IjQwIiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjOTk2NmZmIiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBmb250LWZhbWlseT0iU2FucyBTZXJpZiIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgdGV4dC1hbmNob3I9InN0YXJ0IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PHRzcGFuIHg9IjAiIGR5PSIwIj7wn5OBPC90c3Bhbj48L3RleHQ+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTMuOTgwNDY4NzU6MTUuODgxMjQ5MjM3MDYwNTMtLT4=";
@@ -29,7 +28,6 @@
     getInfo() {
       return {
         id: "0832rxfs2",
-        // eslint-disable-next-line extension/should-translate
         name: "rxFS",
         color1: "#192d50",
         color2: "#192d50",
@@ -39,7 +37,7 @@
             blockIconURI: file,
             opcode: "start",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id: "start", default: "create [STR]" }),
+            text: Scratch.translate({ id: "start", default: "Create [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -53,7 +51,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "folder",
-              default: "set [STR] to [STR2]",
+              default: "Set [STR] to [STR2]",
             }),
             arguments: {
               STR: {
@@ -75,7 +73,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "sync",
-              default: "change the location of [STR] to [STR2]",
+              default: "Change the location of [STR] to [STR2]",
             }),
             arguments: {
               STR: {
@@ -92,7 +90,7 @@
             blockIconURI: file,
             opcode: "del",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id: "del", default: "delete [STR]" }),
+            text: Scratch.translate({ id: "del", default: "Delete [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -106,7 +104,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "webin",
-              default: "load [STR] from the web",
+              default: "Load [STR] from the web",
             }),
             arguments: {
               STR: {
@@ -119,7 +117,7 @@
             blockIconURI: file,
             opcode: "open",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id: "open", default: "open [STR]" }),
+            text: Scratch.translate({ id: "open", default: "Open [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -134,7 +132,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "clean",
-              default: "clear the file system",
+              default: "Clear the file system",
             }),
             arguments: {},
           },
@@ -144,7 +142,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "in",
-              default: "import file system from [STR]",
+              default: "Import file system from [STR]",
             }),
             arguments: {
               STR: {
@@ -159,7 +157,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "out",
-              default: "export file system",
+              default: "Export file system",
             }),
             arguments: {},
           },
@@ -169,7 +167,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "list",
-              default: "list all files under [STR]",
+              default: "List all files under [STR]",
             }),
             arguments: {
               STR: {
@@ -181,9 +179,8 @@
           {
             blockIconURI: folder,
             opcode: "search",
-            hideFromPalette: true,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id: "search", default: "search [STR]" }),
+            text: Scratch.translate({ id: "search", default: "Search [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -227,11 +224,8 @@
 
     del({ STR }) {
       str = encodeURIComponent(STR);
-      const index = rxFSsy.indexOf(str);
-      if (index !== -1) {
-        rxFSfi.splice(index, 1);
-        rxFSsy.splice(index, 1);
-      }
+      rxFSfi[rxFSsy.indexOf(str) + 1 - 1] = undefined;
+      rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = undefined;
     }
 
     folder({ STR, STR2 }) {

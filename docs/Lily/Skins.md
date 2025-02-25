@@ -97,7 +97,7 @@ Check whether a skin is actually loaded. This becomes true **after** the block h
 ---
 
 ```scratch
-((width v) of skin [my skin] :: #6b56ff)
+((width v) of [my skin] :: #6b56ff)
 ```
 Get the width/height of a skin. The values are rounded.
 

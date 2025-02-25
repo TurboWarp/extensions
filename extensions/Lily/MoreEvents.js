@@ -2,7 +2,6 @@
 // ID: lmsMoreEvents
 // Description: Start your scripts in new ways.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -210,7 +209,7 @@
     getInfo() {
       return {
         id: "lmsMoreEvents",
-        name: Scratch.translate("More Events"),
+        name: "More Events",
         color1: "#FFBF00",
         color2: "#E6AC00",
         color3: "#CC9900",
@@ -218,7 +217,7 @@
           {
             opcode: "whenStopClicked",
             blockType: Scratch.BlockType.EVENT,
-            text: Scratch.translate("when [STOP] clicked"),
+            text: "when [STOP] clicked",
             isEdgeActivated: false,
             arguments: {
               STOP: {
@@ -226,14 +225,12 @@
                 dataURI: stopIcon,
               },
             },
-            extensions: ["colours_event"],
           },
           {
             opcode: "forever",
             blockType: Scratch.BlockType.EVENT,
-            text: Scratch.translate("forever"),
+            text: "forever",
             isEdgeActivated: false,
-            extensions: ["colours_event"],
           },
 
           "---",
@@ -241,7 +238,7 @@
           {
             opcode: "whenTrueFalse",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when [CONDITION] becomes [STATE]"),
+            text: "when [CONDITION] becomes [STATE]",
             isEdgeActivated: true,
             arguments: {
               CONDITION: {
@@ -252,12 +249,11 @@
                 menu: "boolean",
               },
             },
-            extensions: ["colours_event"],
           },
           {
             opcode: "whileTrueFalse",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("while [CONDITION] is [STATE]"),
+            text: "while [CONDITION] is [STATE]",
             isEdgeActivated: false,
             arguments: {
               CONDITION: {
@@ -268,7 +264,6 @@
                 menu: "boolean",
               },
             },
-            extensions: ["colours_event"],
           },
 
           "---",
@@ -276,7 +271,7 @@
           {
             opcode: "whenValueChanged",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when [INPUT] is changed"),
+            text: "when [INPUT] is changed",
             isEdgeActivated: false,
             arguments: {
               INPUT: {
@@ -286,12 +281,11 @@
                 type: null,
               },
             },
-            extensions: ["colours_event"],
           },
           {
             opcode: "everyDuration",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("every [DURATION] frames"),
+            text: "every [DURATION] frames",
             isEdgeActivated: false,
             arguments: {
               DURATION: {
@@ -299,7 +293,6 @@
                 defaultValue: 3,
               },
             },
-            extensions: ["colours_event"],
           },
 
           "---",
@@ -307,7 +300,7 @@
           {
             opcode: "whenKeyAction",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when [KEY_OPTION] key [ACTION]"),
+            text: "when [KEY_OPTION] key [ACTION]",
             isEdgeActivated: true,
             arguments: {
               KEY_OPTION: {
@@ -320,12 +313,11 @@
                 menu: "action",
               },
             },
-            extensions: ["colours_event"],
           },
           {
             opcode: "whileKeyPressed",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("while [KEY_OPTION] key pressed"),
+            text: "while [KEY_OPTION] key pressed",
             isEdgeActivated: false,
             arguments: {
               KEY_OPTION: {
@@ -334,7 +326,6 @@
                 menu: "keyboardButtons",
               },
             },
-            extensions: ["colours_event"],
           },
 
           "---",
@@ -342,7 +333,7 @@
           {
             opcode: "broadcastToTarget",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("broadcast [BROADCAST_OPTION] to [TARGET]"),
+            text: "broadcast [BROADCAST_OPTION] to [TARGET]",
             arguments: {
               BROADCAST_OPTION: {
                 type: null,
@@ -353,14 +344,11 @@
               },
             },
             hideFromPalette: true,
-            extensions: ["colours_event"],
           },
           {
             opcode: "broadcastToTargetAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "broadcast [BROADCAST_OPTION] to [TARGET] and wait"
-            ),
+            text: "broadcast [BROADCAST_OPTION] to [TARGET] and wait",
             arguments: {
               BROADCAST_OPTION: {
                 type: null,
@@ -371,7 +359,6 @@
               },
             },
             hideFromPalette: true,
-            extensions: ["colours_event"],
           },
 
           "---",
@@ -379,9 +366,7 @@
           {
             opcode: "broadcastData",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "broadcast [BROADCAST_OPTION] with data [DATA]"
-            ),
+            text: "broadcast [BROADCAST_OPTION] with data [DATA]",
             arguments: {
               BROADCAST_OPTION: {
                 type: null,
@@ -391,14 +376,11 @@
               },
             },
             hideFromPalette: true,
-            extensions: ["colours_event"],
           },
           {
             opcode: "broadcastDataAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "broadcast [BROADCAST_OPTION] with data [DATA] and wait"
-            ),
+            text: "broadcast [BROADCAST_OPTION] with data [DATA] and wait",
             arguments: {
               BROADCAST_OPTION: {
                 type: null,
@@ -408,7 +390,6 @@
               },
             },
             hideFromPalette: true,
-            extensions: ["colours_event"],
           },
           {
             blockType: Scratch.BlockType.XML,
@@ -417,10 +398,9 @@
           {
             opcode: "receivedData",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("received data"),
+            text: "received data",
             disableMonitor: true,
             allowDropAnywhere: true,
-            extensions: ["colours_event"],
           },
 
           "---",
@@ -428,9 +408,7 @@
           {
             opcode: "broadcastDataToTarget",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]"
-            ),
+            text: "broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA]",
             func: "broadcastToTarget",
             arguments: {
               BROADCAST_OPTION: {
@@ -445,14 +423,11 @@
               },
             },
             hideFromPalette: true,
-            extensions: ["colours_event"],
           },
           {
             opcode: "broadcastDataToTargetAndWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA] and wait"
-            ),
+            text: "broadcast [BROADCAST_OPTION] to [TARGET] with data [DATA] and wait",
             func: "broadcastToTargetAndWait",
             arguments: {
               BROADCAST_OPTION: {
@@ -467,7 +442,6 @@
               },
             },
             hideFromPalette: true,
-            extensions: ["colours_event"],
           },
           {
             blockType: Scratch.BlockType.XML,
@@ -477,18 +451,16 @@
           {
             blockType: Scratch.BlockType.EVENT,
             opcode: "beforeSave",
-            text: Scratch.translate("before project saves"),
+            text: "before project saves",
             shouldRestartExistingThreads: true,
             isEdgeActivated: false,
-            extensions: ["colours_event"],
           },
           {
             blockType: Scratch.BlockType.EVENT,
             opcode: "afterSave",
-            text: Scratch.translate("after project saves"),
+            text: "after project saves",
             shouldRestartExistingThreads: true,
             isEdgeActivated: false,
-            extensions: ["colours_event"],
           },
         ],
         menus: {
@@ -504,39 +476,15 @@
           // Attributes have acceptReporters: false
           action: {
             acceptReporters: false,
-            items: [
-              {
-                text: Scratch.translate("hit"),
-                value: "hit",
-              },
-              {
-                text: Scratch.translate("released"),
-                value: "released",
-              },
-            ],
+            items: ["hit", "released"],
           },
           boolean: {
             acceptReporters: false,
-            items: [
-              {
-                text: Scratch.translate("true"),
-                value: "true",
-              },
-              {
-                text: Scratch.translate("false"),
-                value: "false",
-              },
-            ],
+            items: ["true", "false"],
           },
-          // This menu is unused, however we can't remove it as that could break projects
-          // that use the menu through the All Menus extension.
           state: {
             acceptReporters: false,
-            items: [
-              // Unused, so don't bother translating
-              "enabled",
-              "disabled",
-            ],
+            items: ["enabled", "disabled"],
           },
         },
       };

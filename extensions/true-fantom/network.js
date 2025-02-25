@@ -2,7 +2,6 @@
 // ID: truefantomnetwork
 // Description: Various blocks for interacting with the network.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
-// License: MIT
 
 ((Scratch) => {
   "use strict";
@@ -89,7 +88,7 @@
     getInfo() {
       return {
         id: "truefantomnetwork",
-        name: Scratch.translate("Network"),
+        name: "Network",
 
         color1: "#146600",
         color2: "#125C00",
@@ -101,54 +100,52 @@
           {
             opcode: "connected_to_internet_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("connected to internet?"),
+            text: "connected to internet?",
           },
           "---",
           {
             opcode: "browser_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("browser"),
+            text: "browser",
           },
           "---",
           {
             opcode: "current_url_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("current url"),
+            text: "current url",
           },
           "---",
           {
             opcode: "network_type_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("network type"),
+            text: "network type",
           },
           {
             opcode: "network_generation_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("network generation"),
+            text: "network generation",
           },
           "---",
           {
             opcode: "downlink_speed_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("downlink speed in mb/s"),
+            text: "downlink speed in mb/s",
           },
           {
             opcode: "downlink_max_speed_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("downlink max speed in mb/s"),
+            text: "downlink max speed in mb/s",
           },
           {
             opcode: "rtt_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("rtt in ms"),
+            text: "rtt in ms",
           },
           "---",
           {
             opcode: "get_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]"
-            ),
+            text: "get [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]",
             arguments: {
               USER_URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -167,9 +164,7 @@
           {
             opcode: "delete_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "delete [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]"
-            ),
+            text: "delete [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]",
             arguments: {
               USER_URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -188,9 +183,7 @@
           {
             opcode: "post_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "post [CONTENT_TYPE] [BODY] to [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]"
-            ),
+            text: "post [CONTENT_TYPE] [BODY] to [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]",
             arguments: {
               USER_URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -198,7 +191,7 @@
               },
               BODY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("apple"),
+                defaultValue: "apple",
               },
               CONTENT_TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -217,9 +210,7 @@
           {
             opcode: "put_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "put [CONTENT_TYPE] [BODY] to [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]"
-            ),
+            text: "put [CONTENT_TYPE] [BODY] to [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]",
             arguments: {
               USER_URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -227,7 +218,7 @@
               },
               BODY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("apple"),
+                defaultValue: "apple",
               },
               CONTENT_TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -246,9 +237,7 @@
           {
             opcode: "patch_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "patch [CONTENT_TYPE] [BODY] to [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]"
-            ),
+            text: "patch [CONTENT_TYPE] [BODY] to [USER_URL] respond [RESPONSES_TYPES] split by [SPLIT]",
             arguments: {
               USER_URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -256,7 +245,7 @@
               },
               BODY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("apple"),
+                defaultValue: "apple",
               },
               CONTENT_TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -276,7 +265,7 @@
           {
             opcode: "open_link_block",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("open [USER_URL] in new tab"),
+            text: "open [USER_URL] in new tab",
             arguments: {
               USER_URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -287,9 +276,7 @@
           {
             opcode: "open_window_block",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "open [USER_URL] in new window with width: [WIDTH] height: [HEIGHT] left: [LEFT] top: [TOP]"
-            ),
+            text: "open [USER_URL] in new window with width: [WIDTH] height: [HEIGHT] left: [LEFT] top: [TOP]",
             arguments: {
               USER_URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -316,7 +303,7 @@
           {
             opcode: "redirect_link_block",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("redirect this tab to [USER_URL]"),
+            text: "redirect this tab to [USER_URL]",
             arguments: {
               USER_URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -331,7 +318,7 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("(1) text"),
+                text: "(1) text",
                 value: "1",
               },
               {
@@ -344,7 +331,7 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("(1) text"),
+                text: "(1) text",
                 value: "1",
               },
               {
@@ -352,31 +339,31 @@
                 value: "2",
               },
               {
-                text: Scratch.translate("(3) status ok?"),
+                text: "(3) status ok?",
                 value: "3",
               },
               {
-                text: Scratch.translate("(4) status"),
+                text: "(4) status",
                 value: "4",
               },
               {
-                text: Scratch.translate("(5) status text"),
+                text: "(5) status text",
                 value: "5",
               },
               {
-                text: Scratch.translate("(5 1) status text and text"),
+                text: "(5 1) status text and text",
                 value: "5 1",
               },
               {
-                text: Scratch.translate("(6) type"),
+                text: "(6) type",
                 value: "6",
               },
               {
-                text: Scratch.translate("(6 4) type and status"),
+                text: "(6 4) type and status",
                 value: "6 4",
               },
               {
-                text: Scratch.translate("(7) redirected?"),
+                text: "(7) redirected?",
                 value: "7",
               },
               {
@@ -389,7 +376,7 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("(1) text"),
+                text: "(1) text",
                 value: "1",
               },
               {
@@ -397,31 +384,31 @@
                 value: "2",
               },
               {
-                text: Scratch.translate("(3) status ok?"),
+                text: "(3) status ok?",
                 value: "3",
               },
               {
-                text: Scratch.translate("(4) status"),
+                text: "(4) status",
                 value: "4",
               },
               {
-                text: Scratch.translate("(5) status text"),
+                text: "(5) status text",
                 value: "5",
               },
               {
-                text: Scratch.translate("(5 1) status text and text"),
+                text: "(5 1) status text and text",
                 value: "5 1",
               },
               {
-                text: Scratch.translate("(6) type"),
+                text: "(6) type",
                 value: "6",
               },
               {
-                text: Scratch.translate("(6 4) type and status"),
+                text: "(6 4) type and status",
                 value: "6 4",
               },
               {
-                text: Scratch.translate("(7) redirected?"),
+                text: "(7) redirected?",
                 value: "7",
               },
               {
@@ -429,7 +416,7 @@
                 value: "8",
               },
               {
-                text: Scratch.translate("(9) body used?"),
+                text: "(9) body used?",
                 value: "9",
               },
             ],
@@ -438,7 +425,7 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("default"),
+                text: "default",
                 value: "default",
               },
             ],

@@ -2,7 +2,6 @@
 // ID: xeltallivclipblend
 // Description: Clipping outside of a specified rectangular area and different color blending modes.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
-// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -152,8 +151,6 @@
       const proto = vm.runtime.targets[0].__proto__;
       const osa = proto.onStopAll;
       proto.onStopAll = function () {
-        this.clipbox = null;
-        this.blendMode = "default";
         this.renderer.updateDrawableClipBox.call(
           renderer,
           this.drawableID,
@@ -170,9 +167,7 @@
       proto.makeClone = function () {
         const newTarget = mc.call(this);
         if (this.clipbox || this.blendMode) {
-          newTarget.clipbox = this.clipbox
-            ? Object.assign({}, this.clipbox)
-            : null;
+          newTarget.clipbox = Object.assign({}, this.clipbox);
           newTarget.blendMode = this.blendMode;
           renderer.updateDrawableClipBox.call(
             renderer,
@@ -220,8 +215,7 @@
             clipbox.x_max != lastClipbox.x_max ||
             clipbox.y_max != lastClipbox.y_max))
       ) {
-        if (skin.attribute_index || skin.a_lineColorIndex) {
-          // Supporting both before and after https://github.com/TurboWarp/scratch-render/pull/11
+        if (skin.a_lineColorIndex) {
           skin._flushLines();
         }
         lastTarget = target;
@@ -285,7 +279,7 @@
     getInfo() {
       return {
         id: "xeltallivclipblend",
-        name: Scratch.translate("Clipping & Blending"),
+        name: "Clipping & Blending",
         color1: "#9966FF",
         color2: "#855CD6",
         color3: "#774DCB",
@@ -294,9 +288,7 @@
           {
             opcode: "setClipbox",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set clipping box x1:[X1] y1:[Y1] x2:[X2] y2:[Y2]"
-            ),
+            text: "set clipping box x1:[X1] y1:[Y1] x2:[X2] y2:[Y2]",
             arguments: {
               X1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -316,19 +308,17 @@
               },
             },
             filter: [Scratch.TargetType.SPRITE],
-            extensions: ["colours_looks"],
           },
           {
             opcode: "clearClipbox",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("clear clipping box"),
+            text: "clear clipping box",
             filter: [Scratch.TargetType.SPRITE],
-            extensions: ["colours_looks"],
           },
           {
             opcode: "getClipbox",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("clipping box [PROP]"),
+            text: "clipping box [PROP]",
             arguments: {
               PROP: {
                 type: Scratch.ArgumentType.STRING,
@@ -337,13 +327,12 @@
               },
             },
             filter: [Scratch.TargetType.SPRITE],
-            extensions: ["colours_looks"],
           },
           "---",
           {
             opcode: "setBlend",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("use [BLENDMODE] blending"),
+            text: "use [BLENDMODE] blending ",
             arguments: {
               BLENDMODE: {
                 type: Scratch.ArgumentType.STRING,
@@ -352,21 +341,19 @@
               },
             },
             filter: [Scratch.TargetType.SPRITE],
-            extensions: ["colours_looks"],
           },
           {
             opcode: "getBlend",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("blending"),
+            text: "blending",
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
-            extensions: ["colours_looks"],
           },
           "---",
           {
             opcode: "setAdditiveBlend",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("turn additive blending [STATE]"),
+            text: "turn additive blending [STATE]",
             arguments: {
               STATE: {
                 type: Scratch.ArgumentType.STRING,
@@ -376,46 +363,28 @@
             },
             filter: [Scratch.TargetType.SPRITE],
             hideFromPalette: true,
-            extensions: ["colours_looks"],
           },
           {
             opcode: "getAdditiveBlend",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is additive blending on?"),
+            text: "is additive blending on?",
             filter: [Scratch.TargetType.SPRITE],
             hideFromPalette: true,
             disableMonitor: true,
-            extensions: ["colours_looks"],
           },
         ],
         menus: {
           states: {
             acceptReporters: true,
-            items: [
-              { text: Scratch.translate("on"), value: "on" },
-              { text: Scratch.translate("off"), value: "off" },
-            ],
+            items: ["on", "off"],
           },
           blends: {
             acceptReporters: true,
-            items: [
-              { text: Scratch.translate("default"), value: "default" },
-              { text: Scratch.translate("additive"), value: "additive" },
-              { text: Scratch.translate("subtract"), value: "subtract" },
-              { text: Scratch.translate("multiply"), value: "multiply" },
-              { text: Scratch.translate("invert"), value: "invert" },
-            ],
+            items: ["default", "additive", "subtract", "multiply", "invert"],
           },
           props: {
             acceptReporters: true,
-            items: [
-              { text: Scratch.translate("width"), value: "width" },
-              { text: Scratch.translate("height"), value: "height" },
-              { text: Scratch.translate("min x"), value: "min x" },
-              { text: Scratch.translate("min y"), value: "min y" },
-              { text: Scratch.translate("max x"), value: "max x" },
-              { text: Scratch.translate("max y"), value: "max y" },
-            ],
+            items: ["width", "height", "min x", "min y", "max x", "max y"],
           },
         },
       };

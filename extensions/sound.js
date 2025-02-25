@@ -1,7 +1,6 @@
 // Name: Sound
 // ID: notSound
 // Description: Play sounds from URLs.
-// License: MIT AND MPL-2.0
 
 ((Scratch) => {
   "use strict";
@@ -16,7 +15,7 @@
   const fetchAsArrayBufferWithTimeout = (url) =>
     new Promise((resolve, reject) => {
       // Permission is checked in playSound()
-      // eslint-disable-next-line extension/no-xmlhttprequest
+      // eslint-disable-next-line no-restricted-syntax
       const xhr = new XMLHttpRequest();
       let timeout = setTimeout(() => {
         xhr.abort();
@@ -121,7 +120,7 @@
       // For these sounds, fall back to a primitive <audio>-based solution that will work for all
       // sounds, even those without CORS.
       // Permission is checked in playSound()
-      // eslint-disable-next-line extension/check-can-fetch
+      // eslint-disable-next-line no-restricted-syntax
       const mediaElement = new Audio(url);
 
       // Make a minimal effort to simulate Scratch's sound effects.

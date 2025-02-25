@@ -2,8 +2,6 @@
 // ID: jeremygamerTweening
 // Description: Easing methods for smooth animations.
 // By: JeremyGamer13 <https://scratch.mit.edu/users/JeremyGamer13/>
-// By: Fath11 <https://scratch.mit.edu/users/Fath11/>
-// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -251,17 +249,17 @@
     bounce,
   };
 
+  const now = () => Scratch.vm.runtime.currentMSecs;
+
   class Tween {
     getInfo() {
       return {
         id: "jeremygamerTweening",
-        name: Scratch.translate("Tweening"),
+        name: "Tweening",
         blocks: [
           {
             opcode: "tweenValue",
-            text: Scratch.translate(
-              "[MODE] ease [DIRECTION] [START] to [END] by [AMOUNT]%"
-            ),
+            text: "[MODE] ease [DIRECTION] [START] to [END] by [AMOUNT]%",
             disableMonitor: true,
             blockType: BlockType.REPORTER,
             arguments: {
@@ -289,9 +287,7 @@
           },
           {
             opcode: "tweenVariable",
-            text: Scratch.translate(
-              "tween variable [VAR] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]"
-            ),
+            text: "tween variable [VAR] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]",
             blockType: BlockType.COMMAND,
             arguments: {
               VAR: {
@@ -318,9 +314,7 @@
           },
           {
             opcode: "tweenXY",
-            text: Scratch.translate(
-              "tween to x: [X] y: [Y] over [SEC] seconds using [MODE] ease [DIRECTION]"
-            ),
+            text: "tween to x: [X] y: [Y] over [SEC] seconds using [MODE] ease [DIRECTION]",
             blockType: BlockType.COMMAND,
             arguments: {
               PROPERTY: {
@@ -351,9 +345,7 @@
           },
           {
             opcode: "tweenProperty",
-            text: Scratch.translate(
-              "tween [PROPERTY] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]"
-            ),
+            text: "tween [PROPERTY] to [VALUE] over [SEC] seconds using [MODE] ease [DIRECTION]",
             blockType: BlockType.COMMAND,
             arguments: {
               PROPERTY: {
@@ -382,69 +374,11 @@
         menus: {
           modes: {
             acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("linear"),
-                value: "linear",
-              },
-              {
-                text: Scratch.translate("sine"),
-                value: "sine",
-              },
-              {
-                text: Scratch.translate("quad"),
-                value: "quad",
-              },
-              {
-                text: Scratch.translate("cubic"),
-                value: "cubic",
-              },
-              {
-                text: Scratch.translate("quart"),
-                value: "quart",
-              },
-              {
-                text: Scratch.translate("quint"),
-                value: "quint",
-              },
-              {
-                text: Scratch.translate("expo"),
-                value: "expo",
-              },
-              {
-                text: Scratch.translate("circ"),
-                value: "circ",
-              },
-              {
-                text: Scratch.translate("back"),
-                value: "back",
-              },
-              {
-                text: Scratch.translate("elastic"),
-                value: "elastic",
-              },
-              {
-                text: Scratch.translate("bounce"),
-                value: "bounce",
-              },
-            ],
+            items: Object.keys(EasingMethods),
           },
           direction: {
             acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("in"),
-                value: "in",
-              },
-              {
-                text: Scratch.translate("out"),
-                value: "out",
-              },
-              {
-                text: Scratch.translate("in out"),
-                value: "in out",
-              },
-            ],
+            items: ["in", "out", "in out"],
           },
           vars: {
             acceptReporters: false, // for Scratch parity
@@ -452,24 +386,7 @@
           },
           properties: {
             acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("x position"),
-                value: "x position",
-              },
-              {
-                text: Scratch.translate("y position"),
-                value: "y position",
-              },
-              {
-                text: Scratch.translate("direction"),
-                value: "direction",
-              },
-              {
-                text: Scratch.translate("size"),
-                value: "size",
-              },
-            ],
+            items: ["x position", "y position", "direction", "size"],
           },
         },
       };
@@ -477,11 +394,12 @@
 
     getVariables() {
       const variables =
+        // @ts-expect-error
         typeof Blockly === "undefined"
           ? []
-          : Blockly.getMainWorkspace()
+          : // @ts-expect-error
+            Blockly.getMainWorkspace()
               .getVariableMap()
-              // @ts-expect-error
               .getVariablesOfType("")
               .map((model) => ({
                 text: model.name,
@@ -521,12 +439,7 @@
         // First run, need to start timer
         util.yield();
 
-        // If multiple values being tweened in same block, only start timer stack timer once.
-        if (util.stackTimerNeedsInit()) {
-          const durationMS = Math.max(0, 1000 * Cast.toNumber(args.SEC));
-          util.startStackTimer(durationMS);
-        }
-
+        const durationMS = Cast.toNumber(args.SEC) * 1000;
         const easeMethod = Cast.toString(args.MODE);
         const easeDirection = Cast.toString(args.DIRECTION);
         const start = currentValue;
@@ -540,6 +453,8 @@
         }
 
         util.stackFrame[id] = {
+          startTimeMS: now(),
+          durationMS,
           easingFunction,
           easeDirection,
           start,
@@ -547,15 +462,14 @@
         };
 
         return start;
-      } else if (util.stackTimerFinished()) {
+      } else if (now() - state.startTimeMS >= state.durationMS) {
         // Done
         return util.stackFrame[id].end;
       } else {
         // Still running
         util.yield();
 
-        const progress =
-          util.stackFrame.timer.timeElapsed() / util.stackFrame.duration;
+        const progress = (now() - state.startTimeMS) / state.durationMS;
         const tweened = state.easingFunction(progress, state.easeDirection);
         return interpolate(tweened, state.start, state.end);
       }

@@ -2,8 +2,6 @@
 // ID: truefantomregexp
 // Description: Full interface for working with Regular Expressions.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
-// License: MIT
-// Context: RegExp is short for "Regular Expression", a sort of programming language. This extension uses [IMAGE] to indicate that the following input should contain a regular expression.
 
 ((Scratch) => {
   "use strict";
@@ -17,6 +15,13 @@
 
   const cast = Scratch.Cast;
 
+  const toScratchData = (val) => {
+    return val === undefined || typeof val === "object" ? "" : val;
+  };
+
+  const toJsonData = (val) => {
+    return JSON.parse(val);
+  };
   const toJsonString = (val) => {
     return JSON.stringify(
       val,
@@ -25,6 +30,46 @@
       },
       0
     );
+  };
+
+  const isNotPrimitiveData = (val) => {
+    return val instanceof Object;
+  };
+  const isArray = (val) => {
+    return val instanceof Array;
+  };
+  const isObject = (val) => {
+    return val instanceof Object && !(val instanceof Array);
+  };
+
+  const toArray = (val) => {
+    return isArray(val) ? val : isObject(val) ? Object.values(val) : [val];
+  };
+  const toObject = (val) => {
+    return isObject(val)
+      ? val
+      : isArray(val)
+        ? val.reduce(
+            (array, currentValue, currentIndex) => ({
+              ...array,
+              [currentIndex + 1]: currentValue,
+            }),
+            {}
+          )
+        : { 1: val };
+  };
+
+  const dataValues = (val) => {
+    return Object.values(toObject(val));
+  };
+  const dataKeys = (val) => {
+    return Object.keys(toObject(val));
+  };
+  const dataPairs = (val) => {
+    return toObject(val);
+  };
+  const dataMap = (val) => {
+    return Object.entries(toObject(val));
   };
 
   const toRegExpData = (val) => {
@@ -47,7 +92,7 @@
     getInfo() {
       return {
         id: "truefantomregexp",
-        name: Scratch.translate("RegExp"),
+        name: "RegExp",
 
         color1: "#e6282a",
 
@@ -57,7 +102,7 @@
           {
             opcode: "is_regexp_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is [IMAGE] [A] ?"),
+            text: "is [IMAGE] [A] ?",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -73,7 +118,7 @@
           {
             opcode: "regexp_equal_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("[IMAGE] [A] = [IMAGE] [B]"),
+            text: "[IMAGE] [A] = [IMAGE] [B]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -93,7 +138,7 @@
           {
             opcode: "regexp_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[IMAGE] with pattern [A] and flags [B]"),
+            text: "[IMAGE] with pattern [A] and flags [B]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -112,7 +157,7 @@
           {
             opcode: "regexp_contains_flags_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("[IMAGE] [A] contains flags [B] ?"),
+            text: "[IMAGE] [A] contains flags [B] ?",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -131,7 +176,7 @@
           {
             opcode: "regexp_components_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[B] of [IMAGE] [A]"),
+            text: "[B] of [IMAGE] [A]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -151,7 +196,7 @@
           {
             opcode: "regexp_set_pattern_flags_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[IMAGE] set [B] of [IMAGE] [A] to [C]"),
+            text: "[IMAGE] set [B] of [IMAGE] [A] to [C]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -174,7 +219,7 @@
           {
             opcode: "regexp_add_flags_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[IMAGE] add flags [B] to [IMAGE] [A]"),
+            text: "[IMAGE] add flags [B] to [IMAGE] [A]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -193,7 +238,7 @@
           {
             opcode: "regexp_delete_flags_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[IMAGE] delete flags [B] of [IMAGE] [A]"),
+            text: "[IMAGE] delete flags [B] of [IMAGE] [A]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -213,7 +258,7 @@
           {
             opcode: "regexp_test_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("[A] matches with [IMAGE] [B] ?"),
+            text: "[A] matches with [IMAGE] [B] ?",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -232,9 +277,7 @@
           {
             opcode: "regexp_replace_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "replace matches of [A] with [IMAGE] [B] to [C]"
-            ),
+            text: "replace matches of [A] with [IMAGE] [B] to [C]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -257,9 +300,7 @@
           {
             opcode: "regexp_split_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "[IMAGE2] [A] split by matches with [IMAGE1] [B]"
-            ),
+            text: "[IMAGE2] [A] split by matches with [IMAGE1] [B]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -282,9 +323,7 @@
           {
             opcode: "regexp_match_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "[IMAGE2] match [C] of [A] with [IMAGE1] [B]"
-            ),
+            text: "[IMAGE2] match [C] of [A] with [IMAGE1] [B]",
             arguments: {
               A: {
                 type: Scratch.ArgumentType.STRING,
@@ -312,40 +351,11 @@
         menus: {
           components_menu: {
             acceptReporters: false,
-            items: [
-              {
-                text: Scratch.translate("pattern"),
-                value: "pattern",
-              },
-              {
-                text: Scratch.translate("flags"),
-                value: "flags",
-              },
-            ],
+            items: ["pattern", "flags"],
           },
           match_menu: {
             acceptReporters: false,
-            items: [
-              {
-                text: Scratch.translate("values"),
-                value: "values",
-              },
-              {
-                text: Scratch.translate("keys"),
-                value: "keys",
-              },
-              {
-                text: Scratch.translate("pairs"),
-                value: "pairs",
-              },
-              {
-                text: Scratch.translate({
-                  default: "map",
-                  description: "This is the computer science kind of map.",
-                }),
-                value: "map",
-              },
-            ],
+            items: ["values", "keys", "pairs", "map"],
           },
         },
       };
@@ -443,7 +453,7 @@
         let restr = cast.toString(A);
         let redat = toRegExpData(restr);
         if (RegExpCompare(redat, restr)) {
-          let _flagtest = new RegExp("test", cast.toString(B));
+          let flagtest = new RegExp("test", cast.toString(B));
           let flags = Array.from(redat.flags);
           Array.from(cast.toString(B)).forEach((flag) =>
             flags.includes(flag) ? void 0 : flags.push(flag)
@@ -460,7 +470,7 @@
         let restr = cast.toString(A);
         let redat = toRegExpData(restr);
         if (RegExpCompare(redat, restr)) {
-          let _flagtest = new RegExp("test", cast.toString(B));
+          let flagtest = new RegExp("test", cast.toString(B));
           let flags = Array.from(redat.flags);
           Array.from(cast.toString(B)).forEach((flag) =>
             flags.includes(flag) ? flags.splice(flags.indexOf(flag), 1) : void 0

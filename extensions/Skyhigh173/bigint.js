@@ -1,9 +1,7 @@
 // Name: BigInt
 // ID: skyhigh173BigInt
 // Description: Math blocks that work on infinitely large integers (no decimals).
-// By: Skyhigh173 <https://scratch.mit.edu/users/Skyhigh173/>
-// License: MIT
-// Context: BigInt is short for "Big Integer" which can be infinitely big. "number" refers to normal numbers that have limits.
+// By: Skyhigh173
 
 (function (Scratch) {
   "use strict";
@@ -13,9 +11,6 @@
    * @returns {bigint}
    */
   const bi = (x) => {
-    if (typeof x === "bigint") {
-      return x;
-    }
     if (typeof x === "string") {
       // Try to parse things like '8n'
       if (x.charAt(x.length - 1) === "n") {
@@ -54,14 +49,13 @@
     getInfo() {
       return {
         id: "skyhigh173BigInt",
-        name: Scratch.translate("BigInt"),
+        name: "BigInt",
         color1: "#59C093",
         blocks: [
-          /* eslint-disable extension/should-translate */
           {
             opcode: "from",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("convert number [text] to BigInt"),
+            text: "To BigInt [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -72,7 +66,7 @@
           {
             opcode: "to",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("convert BigInt [text] to number"),
+            text: "To Number [text]",
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -80,7 +74,7 @@
               },
             },
           },
-          makeLabel(Scratch.translate("Arithmetic")),
+          makeLabel("Arithmetic"),
           {
             opcode: "add",
             blockType: Scratch.BlockType.REPORTER,
@@ -159,10 +153,7 @@
           {
             opcode: "mod",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              default: "[a] mod [b]",
-              description: "mod refers to modulo",
-            }),
+            text: "[a] mod [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
@@ -194,7 +185,7 @@
               },
             },
           },
-          makeLabel(Scratch.translate("Logic")),
+          makeLabel("Logic"),
           {
             opcode: "lt",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -285,7 +276,7 @@
               },
             },
           },
-          makeLabel(Scratch.translate("Bitwise")),
+          makeLabel("Bitwise"),
           {
             opcode: "and",
             blockType: Scratch.BlockType.REPORTER,
@@ -372,7 +363,6 @@
               },
             },
           },
-          /* eslint-enable extension/should-translate */
         ],
         menus: {
           op: {
