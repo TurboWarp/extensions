@@ -2,9 +2,24 @@
 // ID: griffpatch
 // Description: Two dimensional physics.
 // Original: griffpatch <https://scratch.mit.edu/users/griffpatch/>
+// License: BSD-3-Clause AND MIT AND Zlib
 
 /*!
  * This is based on https://github.com/griffpatch/scratch-vm/tree/box2d/src/extensions/scratch3_griffpatch
+ * by griffpatch, which has this license attached:
+ *
+ * Copyright (c) 2016, Massachusetts Institute of Technology
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 /* eslint-disable */
@@ -12244,6 +12259,14 @@
     return body;
   };
 
+  const _removeBody = function (id) {
+    if (!bodies[id]) return;
+
+    world.DestroyBody(bodies[id]);
+    delete bodies[id];
+    delete prevPos[id];
+  };
+
   const _applyForce = function (id, ftype, x, y, dir, pow) {
     const body = bodies[id];
     if (!body) {
@@ -12412,28 +12435,51 @@
     fixDef.shape = new b2PolygonShape();
     bodyDef.angle = 0;
 
+    const { stageWidth, stageHeight } = Scratch.vm.runtime;
+    const stageBounds = {
+      left: -stageWidth / 2,
+      right: stageWidth / 2,
+      top: stageHeight / 2,
+      bottom: -stageHeight / 2,
+    };
+
     if (type === STAGE_TYPE_OPTIONS.BOXED) {
-      fixDef.shape.SetAsBox(250 / zoom, 10 / zoom);
-      bodyDef.position.Set(0, -190 / zoom);
+      // For the ceiling boxes...
+      // use a width equivalent to the stage width + 10, with a thickness of 10
+      fixDef.shape.SetAsBox((stageWidth + 10) / zoom, 10 / zoom);
+      // create one such box at the bottom of the stage, accounting for thickness...
+      bodyDef.position.Set(0, (stageBounds.bottom - 10) / zoom);
       createStageBody();
-      bodyDef.position.Set(0, 1000 / zoom);
+      // and one 820 units above the top of the stage.
+      bodyDef.position.Set(0, (stageBounds.top + 820) / zoom);
       createStageBody();
-      fixDef.shape.SetAsBox(10 / zoom, 800 / zoom);
-      bodyDef.position.Set(-250 / zoom, 540 / zoom);
+      // For the left & right wall boxes...
+      // use a height equivalent to the stage height + 820, with a thickness of 10
+      fixDef.shape.SetAsBox(10 / zoom, (stageHeight + 820) / zoom);
+      // create a box at the left of the stage...
+      bodyDef.position.Set((stageBounds.left - 10) / zoom, 0);
       createStageBody();
-      bodyDef.position.Set(250 / zoom, 540 / zoom);
+      // and one at the right of the stage.
+      bodyDef.position.Set((stageBounds.right + 10) / zoom, 0);
       createStageBody();
     } else if (type === STAGE_TYPE_OPTIONS.FLOOR) {
-      fixDef.shape.SetAsBox(5000 / zoom, 100 / zoom);
-      bodyDef.position.Set(0, -280 / zoom);
+      // All floor boxes are positioned at the bottom of the stage, accounting for
+      // the thickness of 100.
+      const floorY = (stageBounds.bottom - 100) / zoom;
+
+      // The floor boxes have a width of the stage width + 4520 units, and a
+      // thickness of 100 units.
+      fixDef.shape.SetAsBox((stageWidth + 4520) / zoom, 100 / zoom);
+      // Floor boxes are created at different intervals throughout the bottom of the stage.
+      bodyDef.position.Set(0, floorY);
       createStageBody();
-      bodyDef.position.Set(-10000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.left - 5000, floorY);
       createStageBody();
-      bodyDef.position.Set(10000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.right + 5000, floorY);
       createStageBody();
-      bodyDef.position.Set(-20000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.left - 15000, floorY);
       createStageBody();
-      bodyDef.position.Set(20000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.right + 15000, floorY);
       createStageBody();
     }
 
@@ -12443,6 +12489,8 @@
       bodies[bodyID].SetAwake(true);
     }
   };
+
+  let tickRate = 30;
 
   const blockIconURI =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
@@ -12487,6 +12535,7 @@
         delete bodies[body];
         delete prevPos[body];
       }
+      tickRate = 30;
       // todo: delete joins?
     }
 
@@ -12593,6 +12642,17 @@
             },
             filter: [Scratch.TargetType.SPRITE],
           },
+          {
+            opcode: "disablePhysics",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate({
+              id: "griffpatch.disablePhysics",
+              default: "disable physics for this sprite",
+              description: "Disable Physics for this Sprite",
+            }),
+            arguments: {},
+            filter: [Scratch.TargetType.SPRITE],
+          },
           // {
           //     opcode: 'setPhysics',
           //     blockType: BlockType.COMMAND,
@@ -12628,6 +12688,32 @@
               id: "griffpatch.doTick",
               default: "step simulation",
               description: "Run a single tick of the physics simulation",
+            }),
+          },
+          {
+            opcode: "setTickRate",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate({
+              id: "griffpatch.setTickRate",
+              default: "set simulation rate to [rate]/s",
+              description:
+                "Set the number of physics simulation steps to run per second",
+            }),
+            arguments: {
+              rate: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 30,
+              },
+            },
+          },
+          {
+            opcode: "getTickRate",
+            blockType: BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "griffpatch.getTickRate",
+              default: "simulation rate",
+              description:
+                "Get the number of physics simulation steps to run per second",
             }),
           },
 
@@ -13219,7 +13305,7 @@
       this._checkMoved();
 
       // world.Step(1 / 30, 10, 10);
-      world.Step(1 / 30, 10, 10);
+      world.Step(1 / tickRate, 10, 10);
       world.ClearForces();
 
       for (const targetID in bodies) {
@@ -13246,6 +13332,18 @@
 
         prevPos[targetID] = { x: target.x, y: target.y, dir: target.direction };
       }
+    }
+
+    setTickRate(args) {
+      let rate = Scratch.Cast.toNumber(args.rate);
+      if (Number.isNaN(rate) || rate === Infinity) rate = 30;
+      rate = Math.max(rate, 0.01);
+
+      tickRate = rate;
+    }
+
+    getTickRate() {
+      return tickRate;
     }
 
     _checkMoved() {
@@ -13406,6 +13504,10 @@
       }
 
       return body;
+    }
+
+    disablePhysics(args, util) {
+      _removeBody(util.target.id);
     }
 
     /**

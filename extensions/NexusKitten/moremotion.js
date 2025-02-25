@@ -2,6 +2,7 @@
 // ID: nkmoremotion
 // Description: More motion-related blocks.
 // By: NamelessCat <https://scratch.mit.edu/users/NamelessCat/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -28,7 +29,8 @@
             text:
               typeof ScratchBlocks !== "undefined"
                 ? ScratchBlocks.Msg["MOTION_STAGE_SELECTED"]
-                : "Stage selected: no motion blocks",
+                : // This is just fallback for non-editor environments, don't need to translate
+                  "Stage selected: no motion blocks",
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -45,6 +47,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -61,6 +64,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -68,6 +72,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("rotation style"),
             disableMonitor: true,
+            extensions: ["colours_motion"],
           },
           "---",
           {
@@ -79,6 +84,7 @@
               description:
                 "This blocks forces the sprite to be onscreen if it moved offscreen.",
             }),
+            extensions: ["colours_motion"],
           },
           "---",
           {
@@ -100,6 +106,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -122,6 +129,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           "---",
           {
@@ -139,6 +147,25 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
+            hideFromPalette: true,
+          },
+          {
+            filter: [Scratch.TargetType.SPRITE],
+            opcode: "directionto2",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("direction to x: [X] y: [Y]"),
+            arguments: {
+              X: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              Y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+            },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -155,6 +182,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -185,6 +213,7 @@
                 defaultValue: "0",
               },
             },
+            extensions: ["colours_motion"],
           },
           {
             filter: [Scratch.TargetType.SPRITE],
@@ -211,6 +240,7 @@
                 defaultValue: "100",
               },
             },
+            extensions: ["colours_motion"],
           },
         ],
         menus: {
@@ -245,21 +275,12 @@
       util.target.setXY(util.target.x + x, util.target.y + y);
     }
 
-    // LORAX APPROVED
     pointto(args, util) {
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
-      if (util.target.y > y) {
-        util.target.setDirection(
-          (180 / Math.PI) *
-            Math.atan((x - util.target.x) / (y - util.target.y)) +
-            180
-        );
-      } else {
-        util.target.setDirection(
-          (180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))
-        );
-      }
+      util.target.setDirection(
+        (180 / Math.PI) * Math.atan2(x - util.target.x, y - util.target.y)
+      );
     }
 
     rotationStyle(args, util) {
@@ -275,6 +296,7 @@
     }
 
     directionto(args, util) {
+      // Old version, returns values from -90 to 270
       const x = Scratch.Cast.toNumber(args.X);
       const y = Scratch.Cast.toNumber(args.Y);
       if (util.target.y > y) {
@@ -288,6 +310,13 @@
           (180 / Math.PI) * Math.atan((x - util.target.x) / (y - util.target.y))
         );
       }
+    }
+
+    directionto2(args, util) {
+      // New version, returns values from -180 to 180, like Scratch direction reporter.
+      const x = Scratch.Cast.toNumber(args.X);
+      const y = Scratch.Cast.toNumber(args.Y);
+      return (180 / Math.PI) * Math.atan2(x - util.target.x, y - util.target.y);
     }
 
     distanceto(args, util) {

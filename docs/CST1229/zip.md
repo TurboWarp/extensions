@@ -1,6 +1,8 @@
 # Zip
 
-The Zip extension allows you to read, create and edit .zip format files, including Scratch project and sprite files (.sb3, .sprite3). 
+The Zip extension allows you to read, create and edit .zip format files, including Scratch project and sprite files (.sb3, .sprite3).
+
+The extension handles archives **entirely in-memory**; to interact with the file system you'll have to use it alongside other extensions, like Files. In-memory zip files will be referred to as *archives* in this documentation (and in the blocks).
 
 ## Paths
 
@@ -13,24 +15,25 @@ Most blocks in this extension work with a path format:
  - A `/` at the very start goes to the root directory, like `/file.txt`
  - A `/` at the end denotes a directory, like `folder/`
  - Multiple slashes in a row or trying to go above the root directory will result in an error (usually the block doing nothing or returning the empty value)
+ - When working with multiple archives, each archive has its own current directory which is retained while switching between them
 
 ## Archive management blocks
 
-Blocks for creating and saving the current archive. Only one archive can be open at a time. 
+Blocks for creating and saving archives. 
 
 ---
 
 ```scratch
-create empty archive :: #a49a3a
+create empty archive named [archive] :: #a49a3a
 ```
-Creates and opens an empty archive with nothing in it. 
+Creates and opens an empty archive with nothing in it. The name is used for dealing with multiple archives at time; it can be any non-empty string and does *not* have to be the archive's filename.
 
 ---
 
 ```scratch
-open zip from (URL v) [https://extensions.turbowarp.org] :: #a49a3a
+open archive from zip from (URL v) [https://extensions.turbowarp.org] named [archive] :: #a49a3a
 ```
- Opens a .zip (or .sb3 or .sprite3...) file.
+Creates and opens an archive from a .zip (or .sb3 or .sprite3...) file.
 
 The type can be one of the following:
 
@@ -40,14 +43,16 @@ The type can be one of the following:
  - **binary**: A sequence of binary bytes (like `000000010010101001101011`), without a separator.
  - **string**: Plain text. **Not recommended!** Text encoding behavior will likely break it, as it's a binary file.
 
-If the file is not of zip format (e.g RAR or 7z) or is password-protected, it won't be opened. Make sure to check if it loaded successfully with the archive `is open?` block. 
+The name is used for dealing with multiple archives at time; it can be any non-empty string and does *not* have to be the archive's filename.
+
+If the file is not of zip format (like RAR or 7z) or is password-protected, it won't be opened. Make sure to check if it loaded successfully with the `error opening archive?` block. 
 
 ---
 
 ```scratch
 (output zip type (data: URI v) compression level (6 v) :: #a49a3a)
 ```
-Save the zip data into a string, which can be saved with e.g the Files extension.
+Saves the current archive into a zip data string, which can be saved with e.g the Files extension.
 
 The type can be one of the following:
 
@@ -65,9 +70,9 @@ A compression level of 0 (no compression) is the fastest, but will often result 
 ---
 
 ```scratch
-close archive :: #a49a3a
+remove current archive :: #a49a3a
 ```
-Closes the archive. Use after you're done working with it.
+Removes the current archive from the list of opened archives. Use this after you're done working with it.
 
 ---
 
@@ -76,16 +81,55 @@ Closes the archive. Use after you're done working with it.
 ```
 Returns true if an archive is open.
 
-## File blocks
+---
 
-Blocks for working with files (and blocks that are general to both files and folders/directories.) 
+```scratch
+<error opening archive? :: #a49a3a>
+```
+Returns true if the last "open archive" block used had an error (e.g if you provided an empty archive name or passed an invalid zip file).
+
+## Multi-archive blocks
+
+Multiple archives can be open at a time, but there is one "current archive" that most blocks operate on. These blocks handle switching between and using multiple archives.
 
 ---
 
 ```scratch
-<folder [folder/] exists? :: #a49a3a>
+(current archive name :: #a49a3a)
 ```
-Returns if a file or directory exists or not. The slash at the end matters! If a directory named `folder` exists, `[folder] exists?` will return false, but `[folder/] exists?` will return true.
+Returns the name of the currently open archive, or an empty string if there isn't one.
+
+---
+
+```scratch
+(currently open archives :: #a49a3a)
+```
+Returns the list of currently open archives as a JSON array, which you can parse with the JSON extension.
+
+---
+
+```scratch
+switch to archive named [other archive] :: #a49a3a
+```
+Switches the current archive to another one. If the given archive name does not exist. does nothing. If the given archive name is an empty string, switches to no currently open archive without removing any.
+
+---
+
+```scratch
+remove all archives :: #a49a3a
+```
+Removes all archives that are currently open.
+
+## File blocks
+
+Blocks for working with files, and blocks that are general to both files and folders/directories.
+
+---
+
+```scratch
+<[folder/] exists? :: #a49a3a>
+```
+Returns whether a file or directory exists or not. The slash at the end matters! If a directory named `folder` exists, `[folder] exists?` will return false, but `[folder/] exists?` will return true.
 
 ---
 
@@ -108,6 +152,20 @@ The type can be one of the following:
 rename [hello.txt] to [hello renamed.txt] :: #a49a3a
 ```
 Renames a file or directory to another name. If the target file already exists, it will be overwritten. The current directory will also be updated. This block can also be used to move files to a different directory. 
+
+---
+
+```scratch
+copy [hello.txt] to [Copy of hello.txt] :: #a49a3a
+```
+Copies a file or directory elsewhere. If the target file already exists, it will be overwritten.
+
+---
+
+```scratch
+copy [hello.txt] in [archive] to [Copy of hello.txt] in [other archive] :: #a49a3a
+```
+Copies a file or directory between archives. If the target file already exists, it will be overwritten.
 
 ---
 
@@ -160,9 +218,9 @@ Available options:
 
 Available options:
 
- - **name**: Just the name of this file (without the directories it's in). For example, the name of `/folder1/folder2/dango.png` would be `dango.png`.
- - **path**: The full absolute path of this file (its name and any directories it's in).
- - **folder**: Just the folders this file is in (without its filename). For example, the folder of `/folder1/folder2/dango.png` would be `/folder1/folder2/`.
+ - **name**: Just the name of this file, without the directories it's in. For example, the name of `/folder1/folder2/dango.png` would be `dango.png`.
+ - **path**: The full absolute path of this file; its name and any directories it's in.
+ - **folder**: Just the folders this file is in, without its filename. For example, the folder of `/folder1/folder2/dango.png` would be `/folder1/folder2/`.
  - **modification date**: A human-readable version of the file's modification date. The output of this depends on the browser's language and possibly other factors.
  - **long modification date**: A longer human-readable version of the file's modification date. The output of this depends on the browser's language and possibly other factors.
  - **modified days since 2000**: The modification date of the file, as days since 2000.
@@ -192,7 +250,7 @@ Moves the current directory (the default origin of most file operations) to the 
 ```scratch
 (contents of directory [.] :: #a49a3a)
 ```
-Returns a list of files in a directory, as JSON (which you can parse with the JSON extension). 
+Returns a list of files in a directory as a JSON array, which you can parse with the JSON extension.
 
 ---
 

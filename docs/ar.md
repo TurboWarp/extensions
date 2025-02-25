@@ -2,10 +2,11 @@
 
 ## Requirements
 
- - [ARCore](https://play.google.com/store/apps/details?id=com.google.ar.core)
+ - A mobile phone or tablet (augmented reality headsets are not supported yet)
+ - [ARCore](https://play.google.com/store/apps/details?id=com.google.ar.core) (if on Android)
  - browser with [WebXR API and immersive-ar](https://immersive-web.github.io/webxr-samples/report/) session type support
 
-At the moment of writing, only Chromium-based browsers support immersive-ar session type.
+At the moment of writing, only Chromium-based browsers on Android support immersive-ar session type.
 
 ## Other information
 
@@ -16,7 +17,7 @@ At the moment of writing, only Chromium-based browsers support immersive-ar sess
 ## Blocks
 
 ```scratch
-enter ar mode :: #d10000
+enter AR mode :: #d10000
 ```
 If AR is not supported and the error message haven't been shown yet, shows a popup with an error message.
 
@@ -27,7 +28,7 @@ The origin of coordinate system is placed at or close to position of the device 
 ---
 
 ```scratch
-exit ar mode :: #d10000
+exit AR mode :: #d10000
 ```
 
 If the project is in AR mode, exits it.
@@ -36,7 +37,7 @@ If the project is in AR mode, exits it.
 
 
 ```scratch
-<is in ar? :: #d10000>
+<is in AR? :: #d10000>
 ```
 Tells if the project is currently in AR mode.
 
@@ -59,7 +60,7 @@ After entering AR mode, is is not immediately available as the map of the enviro
 ---
 
 ```scratch
-<is [hit position v] available :: #d10000>
+<is [hit position v] available? :: #d10000>
 ```
 Tells if AR engine knows where the point of ray intersection is.
 
@@ -91,7 +92,7 @@ This value will not change when entering AR.
 (item [1] of [view v] matrix :: #d10000)
 ```
 
-view matrix - is a matrix that can be used to transform points from the world space (relatively to the world origin) to the view space (with origin is at the camera). It includes rotation and translation of the camera.
+view matrix - is a matrix that can be used to transform points from the view space (with origin is at the camera) to the world space (relatively to the world origin). It includes rotation and translation of the camera.
 
 Also:
 
@@ -109,7 +110,8 @@ view[15] = position[z]
 
 inverse view matrix = view matrix<sup>-1</sup>
 
-Describes the opposite transformation to the view matrix.
+Describes the opposite transformation to the view matrix: From the world space (relatively to the world origin) to the view space (with origin is at the camera).
+
 
 ---
 
@@ -185,6 +187,8 @@ screenY = y * negative_dist / z
 (item [1] of [combined v] matrix :: #d10000)
 ```
 combined matrix = projection matrix * inverse view matrix
+
+Transforms positions from world space to view space, then to projected.
 
 ---
 

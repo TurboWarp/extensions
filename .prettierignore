@@ -2,7 +2,6 @@ build
 images
 licenses
 website
-.eslintrc.js
 *.json
 *.yml
 *.md
