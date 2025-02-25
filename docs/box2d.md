@@ -7,13 +7,13 @@ This extension allows you to easily implement proper physics using a physics lib
 Adjust the physics of all sprites.
 
 ```scratch
-setup stage [boxed stage v] :: #0FBD8C
+setup stage boundaries to [boxed stage v] :: #0FBD8C
 ```
 Choose a type of containment to keep sprites within the stage.
 
- - Boxed stage: Keeps sprites from going off the bottom and sides.
- - Open (with floor): Keeps sprites from going off the bottom.
- - Open (no floor): Removes all boundaries; sprites can go wherever they want.
+ - `boxed stage`: Keeps sprites from going off the bottom and sides.
+ - `open (with floor)`: Keeps sprites from going off the bottom.
+ - `open (no floor)`: Removes all boundaries; sprites can go wherever they want.
 
 ---
 
@@ -49,9 +49,9 @@ enable for [this costume v] mode [normal v] :: #0FBD8C
 
 Make physics apply to this sprite. It can also collide with other sprites that have physics enabled.
 
- - Enable for this costume: Enable physics only for the current sprite or clone.
- - Enable for this circle: Enable physics for the current sprite or clone as if it were shaped like a circle.
- - Enable for all sprites: Enable physics for all sprites.
+ - `this costume`: Enable physics only for the current sprite or clone.
+ - `this circle`: Enable physics for the current sprite or clone as if it were shaped like a circle.
+ - `all sprites`: Enable physics for all sprites.
 
 Precision mode will make the sprite work extra hard to make sure it doesn't overlap with anything. Note that this can decrease performance and even cause the project to get stuck, so use with care.
 
@@ -71,9 +71,9 @@ go to x: [0] y: [0] [in world v] :: #0FBD8C
 
 Make the sprite go to the specified location.
 
- - In world: Relative to the center of the world.
- - On stage: Relative to the center of the screen (if you've scrolled it).
- - Relative: Relative to itself.
+ - `in world`: Relative to the center of the world.
+ - `on stage`: Relative to the center of the screen (if you've scrolled it).
+ - `relative`: Relative to itself.
 
 ---
 
@@ -112,7 +112,7 @@ Directly send the sprite spinning, adding on to its current angular (rotational)
 ---
 
 ```scratch
-set fixed [fixed in place v] :: #0FBD8C
+set fixed to [fixed in place v] :: #0FBD8C
 ```
 Choose whether the sprite is fixed in place or can move around.
 
@@ -121,7 +121,7 @@ You can tell if the sprite is currently fixed in place with the (fixed?) reporte
 ---
 
 ```scratch
-set density [normal v] :: #0FBD8C
+set density to [normal v] :: #0FBD8C
 ```
 Set the sprite's density, which affects how heavy it is.
 
@@ -130,7 +130,7 @@ You can get the sprite's current density with the (density) reporter.
 ---
 
 ```scratch
-set friction [normal v] :: #0FBD8C
+set friction to [normal v] :: #0FBD8C
 ```
 Set the sprite's roughness. Smoother settings make the sprite slipperier.
 
@@ -139,7 +139,7 @@ You can get the sprite's current friction with the (friction) reporter.
 ---
 
 ```scratch
-set bounce [normal v] :: #0FBD8C
+set bounce to [normal v] :: #0FBD8C
 ```
 Set the sprite's bounciness.
 
@@ -148,7 +148,7 @@ You can get the sprite's current bounciness with the (bounce) reporter.
 ---
 
 ```scratch
-(touching [any v] :: #0FBD8C)
+(list sprites touching [any v] :: #0FBD8C)
 ```
 Returns what other sprites the sprite is touching. Also includes the edges of the stage.
 
@@ -172,7 +172,7 @@ This will not affect the world boundaries set by the [setup stage] block.
 
 ```scratch
 when flag clicked
-setup stage [boxed stage v] :: #0FBD8C
+setup stage boundaries to [boxed stage v] :: #0FBD8C
 set gravity to x: [0] y: [-10] :: #0FBD8C
 create clone of (myself v)
 repeat [20]
@@ -187,6 +187,6 @@ when I start as a clone
 show
 enable for [this costume v] mode [normal v] :: #0FBD8C
 go to x: [-150] y: [240] [in world v] :: #0FBD8C
-set bounce [quite bouncy v] :: #0FBD8C
+set bounce to [quite bouncy v] :: #0FBD8C
 set angular velocity to [-4.1] :: #0FBD8C
 ```

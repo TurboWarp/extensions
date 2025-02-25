@@ -84,7 +84,7 @@
           {
             opcode: "pressKey",
             text: Scratch.translate(
-              "press [KEY] for [SECONDS] seconds [AND_WAIT]"
+              "press [KEY] for [SECONDS] seconds and [AND_WAIT]"
             ),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
@@ -105,7 +105,7 @@
           {
             opcode: "clickMouse",
             text: Scratch.translate(
-              "click [BUTTON] mouse button at x: [X] y: [Y] for [SECONDS] seconds [AND_WAIT]"
+              "click [BUTTON] mouse button at x: [X] y: [Y] for [SECONDS] seconds and [AND_WAIT]"
             ),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
@@ -249,11 +249,11 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("without waiting"),
+                text: Scratch.translate("continue"),
                 value: "without waiting",
               },
               {
-                text: Scratch.translate("and wait"),
+                text: Scratch.translate("wait"),
                 value: "and wait",
               },
             ],

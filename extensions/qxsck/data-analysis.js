@@ -129,18 +129,25 @@
       return sum / numbers.length;
     }
 
+    // Spread is not used due to overflow.
     maximum(args) {
       const numbers = Scratch.Cast.toString(args.NUMBERS)
         .split(" ")
         .map(Number);
-      return Math.max(...numbers);
+      let max = -Infinity;
+      for (let i = 0; i < numbers.length; i++)
+        if (numbers[i] > max) max = numbers[i];
+      return max;
     }
 
     minimum(args) {
       const numbers = Scratch.Cast.toString(args.NUMBERS)
         .split(" ")
         .map(Number);
-      return Math.min(...numbers);
+      let min = Infinity;
+      for (let i = 0; i < numbers.length; i++)
+        if (numbers[i] < min) min = numbers[i];
+      return min;
     }
 
     median(args) {
