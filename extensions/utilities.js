@@ -208,6 +208,17 @@
             },
           },
           {
+            opcode: "normalize",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("normalize [INPUT]"),
+            arguments: {
+              INPUT: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0.1,
+              },
+            },
+          },
+          {
             opcode: "currentMillisecond",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("current millisecond"),
@@ -342,6 +353,12 @@
       } else {
         return Math.min(Math.max(INPUT, MIN), MAX);
       }
+    }
+
+    normalize ({ INPUT }) {
+      let input = Scratch.Cast.toNumber(INPUT);
+      let normal = input / Math.abs(input);
+      return isNaN(normal) ? 0 : normal;
     }
 
     currentMillisecond() {
