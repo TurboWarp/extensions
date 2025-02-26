@@ -355,7 +355,7 @@
       }
     }
 
-    normalize ({ INPUT }) {
+    normalize({ INPUT }) {
       let input = Scratch.Cast.toNumber(INPUT);
       let normal = input / Math.abs(input);
       return isNaN(normal) ? 0 : normal;
