@@ -1,5 +1,6 @@
+/* eslint-disable */
 /** @todo Make this work */
-module.exports = function() {
+module.exports = function () {
   return {
     visitor: {
       async CallExpression(path) {
@@ -10,7 +11,7 @@ module.exports = function() {
         if (url.type !== "StringLiteral") {
           url.node.value = "";
         }
-        url.node.value += '';
+        url.node.value += "";
       },
     },
   };

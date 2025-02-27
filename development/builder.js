@@ -10,7 +10,7 @@ const tsCompilerOptions = typescript.parseConfigFileTextToJson(
   "tsconfig.json",
   fs.readFileSync("tsconfig.json", "utf-8")
 ).config;
-const babelOptions = require("../babel.config")(require('./@babel/fake'));
+const babelOptions = require("../babel.config")(require("./@babel/fake"));
 const babelCore = require("@babel/core");
 
 /**
@@ -153,7 +153,12 @@ class JSFile extends BuildFile {
    * @param {string} filename Path of a TS file to set the extension of
    */
   static setExtension(filename) {
-    return filename.substring(0, filename.length - (JSFile.jsExtension(filename) + 1)) + ".js";
+    return (
+      filename.substring(
+        0,
+        filename.length - (JSFile.jsExtension(filename) + 1)
+      ) + ".js"
+    );
   }
   /**
    * @param {string} absolutePath Full path to the .js file, eg. /home/.../extensions/fetch.js

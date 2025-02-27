@@ -33,15 +33,13 @@ module.exports = [
 
   // Common for all files
   {
-    overrides: [
-      {
-        files: [ "*.mjs" ],
-        languageOptions: {
-          ecmaVersion: 2022,
-          sourceType: "module",
-        },
-      }
-    ],
+    files: ["*.mjs"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: "module",
+    },
+  },
+  {
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "commonjs",
@@ -309,7 +307,7 @@ module.exports = [
             "Use Scratch.vm instead of the global vm object. You also can use const vm = Scratch.vm;",
         },
       ],
-      "extension/no-new-syntax": "warning",
+      "extension/no-new-syntax": "warn",
       "extension/no-xmlhttprequest": "error",
       "extension/iife": "error",
       "extension/use-scratch-vm": "error",
