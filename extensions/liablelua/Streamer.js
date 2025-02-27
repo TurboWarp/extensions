@@ -1,8 +1,8 @@
+// License: MPL-2.0
 // Name: Streamer
 // ID: Streamer
 // Description: OBSChat support for Scratch.
 // By: liablelua <https://scratch.mit.edu/users/scrattching/>
-// License: MPL-2.0
 
 (function (Scratch) {
   "use strict";
