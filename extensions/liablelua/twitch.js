@@ -1,6 +1,6 @@
 // Name: Twitch
 // ID: twitch
-// Description: Blocks that interact with Twitch. Unofficial.
+// Description: Blocks that interact with Twitch, using OBSChat.
 // By: liablelua <https://scratch.mit.edu/users/scrattching/>
 // License: MPL-2.0
 
