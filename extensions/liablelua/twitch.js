@@ -157,7 +157,8 @@
             arguments: {
               image: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://liablelua.github.io/liables-extensions/twitchURI.png",
+                defaultValue:
+                  "https://liablelua.github.io/liables-extensions/twitchURI.png",
               },
               width: {
                 type: Scratch.ArgumentType.STRING,
