@@ -67,7 +67,7 @@
         blockIconURI:
           "https://liablelua.github.io/liables-extensions/twitchURI.png",
         docsURI:
-          "https://github.com/liablelua/liables-extensions/blob/main/Twitch%20Extension%20Doc.md",
+          "https://github.com/TurboWarp/extensions/blob/master/docs/liablelua/twitch.md",
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
