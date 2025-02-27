@@ -33,6 +33,15 @@ module.exports = [
 
   // Common for all files
   {
+    overrides: [
+      {
+        files: [ "*.mjs" ],
+        languageOptions: {
+          ecmaVersion: 2022,
+          sourceType: "module",
+        },
+      }
+    ],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: "commonjs",
@@ -121,10 +130,6 @@ module.exports = [
       extension: {
         rules: {
           "no-new-syntax": createQueryRule([
-            {
-              selector: 'AssignmentExpression[operator="??="]',
-              message: "x ??= y syntax is too new; use x = x ?? y intead",
-            },
             {
               selector:
                 "MemberExpression[object.name=Object][property.name=hasOwn]",
