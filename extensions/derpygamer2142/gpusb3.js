@@ -33,8 +33,7 @@
   let currentBindGroupLayout = "";
 
   // GPU.sb3 blocks
-  const BINDGROUPLAYOUTCOLOR = "#edcf0c"; // orange
-  const BINDGROUPLAYOUTCOLOR2 = "#c7ae0c";
+  const BINDGROUPLAYOUTCOLOR = "#1d723e"; // orange
   const BINDGROUPCOLOR = "#e85009"; // reddish-orange
   const TEXTURECOLOR = "#0fb5d6"; // sky blue
   const BUFFERCOLOR = "#b31064"; // maroon
@@ -49,6 +48,8 @@
   const ATOMICCOLOR = "#e64e4e"; // light red
   const ARBWGSLCOLOR = "#3528bf"; // dark blue
 
+
+  
   class GPUSb3 {
     constructor() {
       this.device = null;
@@ -76,6 +77,7 @@
         );
         // throw new Error("WebGPU is not supported.");
       }
+
       // @ts-ignore
       this.adapter = await navigator.gpu.requestAdapter();
       if (!this.adapter) {
@@ -125,6 +127,7 @@
         source: errorsource ?? "Undefined. This is an error, please report it!",
         full: full ?? "Undefined. This is an error, please report it!",
       };
+
       console.error(error);
       if (util) {
         util.startHats("gpusb3_onError");
@@ -275,8 +278,6 @@
               },
             },
             color1: BINDGROUPLAYOUTCOLOR,
-            color2: BINDGROUPLAYOUTCOLOR2,
-            color3: BINDGROUPLAYOUTCOLOR2,
           },
 
           {
@@ -291,7 +292,6 @@
               },
             },
             color1: BINDGROUPLAYOUTCOLOR,
-            color2: BINDGROUPLAYOUTCOLOR2,
           },
 
           {
@@ -310,7 +310,6 @@
               },
             },
             color1: BINDGROUPLAYOUTCOLOR,
-            color2: BINDGROUPLAYOUTCOLOR2,
           },
 
           {
