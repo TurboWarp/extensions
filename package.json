@@ -42,7 +42,8 @@
     "espree": "^9.6.1",
     "esquery": "^1.6.0",
     "prettier": "^3.5.2",
-    "spdx-expression-parse": "^4.0.0"
+    "spdx-expression-parse": "^4.0.0",
+    "typescript": "^5.7.3"
   },
   "private": true
 }
