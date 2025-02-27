@@ -660,7 +660,7 @@
     }
     sign_of({ A }) {
       let sign = Math.sign(cast.toNumber(A));
-      return isNaN(A) ? 0 : sign;
+      return isNaN(sign) ? 0 : sign;
     }
     clamp_block({ A, B, C }) {
       if (cast.compare(A, B) < 0) {
