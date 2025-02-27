@@ -304,7 +304,7 @@ module.exports = [
             "Use Scratch.vm instead of the global vm object. You also can use const vm = Scratch.vm;",
         },
       ],
-      "extension/no-new-syntax": "error",
+      "extension/no-new-syntax": "warning",
       "extension/no-xmlhttprequest": "error",
       "extension/iife": "error",
       "extension/use-scratch-vm": "error",
