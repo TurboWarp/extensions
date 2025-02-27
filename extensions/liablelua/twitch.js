@@ -1,5 +1,5 @@
 // Name: Twitch
-// ID: Twitch
+// ID: twitch
 // Description: Blocks that interact with Twitch. Unofficial.
 // By: liablelua <https://github.com/liablelua/>
 // License: MPL-2.0
@@ -8,7 +8,6 @@
   "use strict";
 
   let chat = null;
-  let token = null;
   let text = null;
   let image = null;
 
@@ -60,8 +59,8 @@
   class Twitch {
     getInfo() {
       return {
-        id: "bopTwitch",
-        name: "Twitch",
+        id: "twitch",
+        name: Scratch.translate("Twitch"),
         color1: "#772CE8",
         menuIconURI:
           "https://liablelua.github.io/tekinical.github.io/twitchURI.png",
@@ -72,11 +71,11 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Twitch Chat",
+            text: Scratch.translate("Twitch Chat"),
           },
           {
             opcode: "setupchat",
-            text: "setup chat [username] chat fade enabled [fade] show bots [bots] prevent clipping [prevent] width [width] height [height] position [position]",
+            text: Scratch.translate("setup chat [username] chat fade enabled [fade] show bots [bots] prevent clipping [prevent] width [width] height [height] position [position]"),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               username: {
@@ -111,16 +110,16 @@
           },
           {
             opcode: "closechat",
-            text: "close chat",
+            text: Scratch.translate("close chat"),
             blockType: Scratch.BlockType.COMMAND,
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Overlays",
+            text: Scratch.translate("Overlays"),
           },
           {
             opcode: "text",
-            text: "create text overlay with text [text] with italic [italic] with bold [bold] with size [size] with font [font]",
+            text: Scratch.translate("create text overlay with text [text] with italic [italic] with bold [bold] with size [size] with font [font]"),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               text: {
@@ -147,7 +146,7 @@
           },
           {
             opcode: "image",
-            text: "create image with image [image] with width [width] with height [height] with position [position] is bottom [bottom] is top [top]",
+            text: Scratch.translate("create image with image [image] with width [width] with height [height] with position [position] is bottom [bottom] is top [top]"),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               image: {
@@ -178,12 +177,12 @@
           },
           {
             opcode: "closetext",
-            text: "close text",
+            text: Scratch.translate("close text"),
             blockType: Scratch.BlockType.COMMAND,
           },
           {
             opcode: "closeimage",
-            text: "close image",
+            text: Scratch.translate("close image"),
             blockType: Scratch.BlockType.COMMAND,
           },
         ],
