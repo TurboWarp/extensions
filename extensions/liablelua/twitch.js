@@ -75,7 +75,9 @@
           },
           {
             opcode: "setupchat",
-            text: Scratch.translate("setup chat [username] chat fade enabled [fade] show bots [bots] prevent clipping [prevent] width [width] height [height] position [position]"),
+            text: Scratch.translate(
+              "setup chat [username] chat fade enabled [fade] show bots [bots] prevent clipping [prevent] width [width] height [height] position [position]",
+            ),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               username: {
@@ -119,7 +121,9 @@
           },
           {
             opcode: "text",
-            text: Scratch.translate("create text overlay with text [text] with italic [italic] with bold [bold] with size [size] with font [font]"),
+            text: Scratch.translate(
+              "create text overlay with text [text] with italic [italic] with bold [bold] with size [size] with font [font]",
+            ),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               text: {
@@ -146,7 +150,9 @@
           },
           {
             opcode: "image",
-            text: Scratch.translate("create image with image [image] with width [width] with height [height] with position [position] is bottom [bottom] is top [top]"),
+            text: Scratch.translate(
+              "create image with image [image] with width [width] with height [height] with position [position] is bottom [bottom] is top [top]",
+            ),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
               image: {
