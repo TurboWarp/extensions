@@ -63,11 +63,11 @@
         name: Scratch.translate("Twitch"),
         color1: "#772CE8",
         menuIconURI:
-          "https://liablelua.github.io/tekinical.github.io/twitchURI.png",
+          "https://liablelua.github.io/liables-extensions/twitchURI.png",
         blockIconURI:
-          "https://liablelua.github.io/tekinical.github.io/twitchURI.png",
+          "https://liablelua.github.io/liables-extensions/twitchURI.png",
         docsURI:
-          "https://github.com/Tekinical/tekinical.github.io/blob/main/Twitch%20Extension%20Doc.md",
+          "https://github.com/liablelua/liables-extensions/blob/main/Twitch%20Extension%20Doc.md",
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
@@ -157,7 +157,7 @@
             arguments: {
               image: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://tekinical.github.io/twitchURI.png",
+                defaultValue: "https://liablelua.github.io/liables-extensions/twitchURI.png",
               },
               width: {
                 type: Scratch.ArgumentType.STRING,
