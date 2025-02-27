@@ -1,16 +1,16 @@
-# Twitch
+# Streamer
 
-This extension allows easy access to twitch chat and custom overlays!
+This extension allows easy access to Stream chat and custom overlays!
 
-## Twitch Chat
+## Stream Chat
 
-Show your twitch chat live!
+Show your stream chat live!
 
 ```scratch
 setup chat [streamer] chat fade enabled (int/30) show bots <t/f> prevent clipping <t/f> width (int) height (int) position [pos]
 ```
 
-Setup your twitch chat! You can customize your chat fade, you can choose if you want bots or to prevent clipping (if your channel is big DON'T TURN ON PREVENT CLIPPING!!) width and height 1 is 50% (regular 50% doesn't work for some reason) and you change which mode the position is in, based on CSS class [position](https://developer.mozilla.org/en-US/docs/Web/CSS/position).
+Setup your stream chat! You can customize your chat fade, you can choose if you want bots or to prevent clipping (if your channel is big DON'T TURN ON PREVENT CLIPPING!!) width and height 1 is 50% (regular 50% doesn't work for some reason) and you change which mode the position is in, based on CSS class [position](https://developer.mozilla.org/en-US/docs/Web/CSS/position).
 
 ```scratch
 close chat
@@ -20,7 +20,7 @@ Makes chat disappear/uncast from the screen.
 
 ## Overlays
 
-Epic overlays for your twitch stream!
+Epic overlays for your stream!
 
 ```scratch
 create text overlay with text [text] with italic <t/f> with bold <t/f> with size (int) with font [font]
