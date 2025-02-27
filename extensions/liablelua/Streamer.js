@@ -1,6 +1,6 @@
-// Name: Twitch
-// ID: twitch
-// Description: Blocks that interact with Twitch, using OBSChat.
+// Name: Streamer
+// ID: Streamer
+// Description: OBSChat support for Scratch.
 // By: liablelua <https://scratch.mit.edu/users/scrattching/>
 // License: MPL-2.0
 
@@ -56,22 +56,22 @@
     image.setAttribute("src", Scratch.Cast.toString(args.image));
   };
 
-  class Twitch {
+  class Streamer {
     getInfo() {
       return {
-        id: "twitch",
-        name: Scratch.translate("Twitch"),
+        id: "Streamer",
+        name: Scratch.translate("Streamer"),
         color1: "#772CE8",
         menuIconURI:
-          "https://liablelua.github.io/liables-extensions/twitchURI.png",
+          "https://liablelua.github.io/liables-extensions/StreamerURI.png",
         blockIconURI:
-          "https://liablelua.github.io/liables-extensions/twitchURI.png",
+          "https://liablelua.github.io/liables-extensions/StreamerURI.png",
         docsURI:
-          "https://github.com/TurboWarp/extensions/blob/master/docs/liablelua/twitch.md",
+          "https://github.com/TurboWarp/extensions/blob/master/docs/liablelua/Streamer.md",
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Twitch Chat"),
+            text: Scratch.translate("Streamer Chat"),
           },
           {
             opcode: "setupchat",
@@ -82,7 +82,7 @@
             arguments: {
               username: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Twitch Username",
+                defaultValue: "Username",
               },
               fade: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -158,7 +158,7 @@
               image: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue:
-                  "https://liablelua.github.io/liables-extensions/twitchURI.png",
+                  "https://liablelua.github.io/liables-extensions/StreamerURI.png",
               },
               width: {
                 type: Scratch.ArgumentType.STRING,
@@ -279,5 +279,5 @@
     }
   }
 
-  Scratch.extensions.register(new Twitch());
+  Scratch.extensions.register(new Streamer());
 })(Scratch);
