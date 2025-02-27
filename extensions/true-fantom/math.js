@@ -385,6 +385,18 @@
           },
           "---",
           {
+            opcode: "sign_of",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("sign of [A]"),
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0.1,
+              },
+            },
+            extensions: ["colours_operators"],
+          },
+          {
             opcode: "clamp_block",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("clamp [A] between [B] and [C]"),
@@ -507,7 +519,7 @@
                 menu: "OPERATOR",
               },
               NUM: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: Scratch.ArgumentType.NUMBER
               },
             },
             extensions: ["colours_operators"],
@@ -585,11 +597,11 @@
           },
         ],
         menus: {
-          OPERATOR: {
-            acceptReporters: true,
-            items: ["sin", "cos", "tan", "asin", "acos", "atan"],
+            OPERATOR: {
+              acceptReporters: true,
+              items: ["sin", "cos", "tan", "asin", "acos", "atan"],
+            },
           },
-        },
       };
     }
 
@@ -646,6 +658,10 @@
     exactly_cont_block({ A, B }) {
       return cast.toString(A).includes(cast.toString(B));
     }
+    sign_of({ A }) {
+      let sign = Math.sign(cast.toNumber(A));
+      return isNaN(A) ? 0 : sign;
+    }
     clamp_block({ A, B, C }) {
       if (cast.compare(A, B) < 0) {
         return B;
@@ -684,24 +700,17 @@
       return Math.log(cast.toNumber(A)) / Math.log(cast.toNumber(B));
     }
     true_math_op(args) {
-      const operator = cast.toString(args.OPERATOR).toLowerCase();
-      const n = cast.toNumber(args.NUM);
-      switch (operator) {
-        case "sin":
-          return Math.sin(n);
-        case "cos":
-          return Math.cos(n);
-        case "tan":
-          return Math.tan(n);
-        case "asin":
-          return Math.asin(n);
-        case "acos":
-          return Math.acos(n);
-        case "atan":
-          return Math.atan(n);
-        default:
-          return 0;
-      }
+        const operator = cast.toString(args.OPERATOR).toLowerCase();
+        const n = cast.toNumber(args.NUM);
+        switch (operator) {
+        case 'sin': return Math.sin(n);
+        case 'cos': return Math.cos(n);
+        case 'tan': return Math.tan(n);
+        case 'asin': return Math.asin(n);
+        case 'acos': return Math.acos(n);
+        case 'atan': return Math.atan(n);
+        }
+        return 0;
     }
     pi_block() {
       return Math.PI;
