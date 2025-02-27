@@ -659,8 +659,7 @@
       return cast.toString(A).includes(cast.toString(B));
     }
     sign_of({ A }) {
-      let sign = Math.sign(cast.toNumber(A));
-      return isNaN(sign) ? 0 : sign;
+      return Math.sign(cast.toNumber(A));
     }
     clamp_block({ A, B, C }) {
       if (cast.compare(A, B) < 0) {
