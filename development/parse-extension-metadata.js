@@ -20,10 +20,13 @@ class Extension {
     this.id = "";
     this.name = "";
     this.description = "";
+    this.license = "";
     /** @type {Person[]} */
     this.by = [];
     /** @type {Person[]} */
     this.original = [];
+    this.context = "";
+    this.scratchCompatible = false;
   }
 }
 
@@ -88,11 +91,20 @@ const parseMetadata = (extensionCode) => {
       case "description":
         metadata.description = value;
         break;
+      case "license":
+        metadata.license = value;
+        break;
       case "by":
         metadata.by.push(parsePerson(value));
         break;
       case "original":
         metadata.original.push(parsePerson(value));
+        break;
+      case "context":
+        metadata.context = value;
+        break;
+      case "scratch-compatible":
+        metadata.scratchCompatible = value === "true";
         break;
       default:
         // TODO

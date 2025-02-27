@@ -2,6 +2,7 @@
 // ID: lmsclonesplus
 // Description: Expansion of Scratch's clone features.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// License: MIT AND LGPL-3.0
 
 (function (Scratch) {
   "use strict";
@@ -47,7 +48,7 @@
     getInfo() {
       return {
         id: "lmsclonesplus",
-        name: "Clones+",
+        name: Scratch.translate("Clones+"),
         color1: "#FFAB19",
         color2: "#EC9C13",
         color3: "#CF8B17",
@@ -56,7 +57,9 @@
           {
             opcode: "whenCloneStartsWithVar",
             blockType: Scratch.BlockType.HAT,
-            text: "when I start as a clone with [INPUTA] set to [INPUTB]",
+            text: Scratch.translate(
+              "when I start as a clone with [INPUTA] set to [INPUTB]"
+            ),
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -68,11 +71,14 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "createCloneWithVar",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create clone with [INPUTA] set to [INPUTB]",
+            text: Scratch.translate(
+              "create clone with [INPUTA] set to [INPUTB]"
+            ),
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -84,6 +90,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -91,7 +98,9 @@
           {
             opcode: "touchingCloneWithVar",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "touching clone with [INPUTA] set to [INPUTB]?",
+            text: Scratch.translate(
+              "touching clone with [INPUTA] set to [INPUTB]?"
+            ),
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -103,13 +112,15 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "touchingMainSprite",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "touching main sprite?",
+            text: Scratch.translate("touching main sprite?"),
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -117,7 +128,9 @@
           {
             opcode: "setVariableOfClone",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set variable [INPUTA] to [INPUTB] for clones with [INPUTC] set to [INPUTD]",
+            text: Scratch.translate(
+              "set variable [INPUTA] to [INPUTB] for clones with [INPUTC] set to [INPUTD]"
+            ),
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -137,11 +150,14 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "getVariableOfClone",
             blockType: Scratch.BlockType.REPORTER,
-            text: "variable [INPUTA] of clone with [INPUTB] set to [INPUTC]",
+            text: Scratch.translate(
+              "variable [INPUTA] of clone with [INPUTB] set to [INPUTC]"
+            ),
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
@@ -158,11 +174,14 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "setVariableOfMainSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set variable [INPUTA] to [INPUTB] for main sprite",
+            text: Scratch.translate(
+              "set variable [INPUTA] to [INPUTB] for main sprite"
+            ),
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -174,11 +193,12 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "getVariableOfMainSprite",
             blockType: Scratch.BlockType.REPORTER,
-            text: "variable [INPUT] of main sprite",
+            text: Scratch.translate("variable [INPUT] of main sprite"),
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
@@ -187,6 +207,7 @@
                 menu: "variablesMenu",
               },
             },
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -194,7 +215,9 @@
           {
             opcode: "cloneExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "clone with [INPUTA] set to [INPUTB] exists?",
+            text: Scratch.translate(
+              "clone with [INPUTA] set to [INPUTB] exists?"
+            ),
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -206,17 +229,19 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "getThingOfClone",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[INPUTA] of clone with [INPUTB] set to [INPUTC]",
+            text: Scratch.translate(
+              "[INPUTA] of clone with [INPUTB] set to [INPUTC]"
+            ),
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
               INPUTA: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "x position",
                 menu: "thingOfMenu",
               },
               INPUTB: {
@@ -228,20 +253,21 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "getThingOfMainSprite",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[INPUT] of main sprite",
+            text: Scratch.translate("[INPUT] of main sprite"),
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "x position",
                 menu: "thingOfMenu",
               },
             },
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -249,18 +275,21 @@
           {
             opcode: "stopScriptsInSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop scripts in [INPUT]",
+            text: Scratch.translate("stop scripts in [INPUT]"),
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "stopScriptsInClone",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop scripts in clones with [INPUTA] set to [INPUTB]",
+            text: Scratch.translate(
+              "stop scripts in clones with [INPUTA] set to [INPUTB]"
+            ),
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -272,12 +301,14 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "stopScriptsInMainSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop scripts in main sprite",
+            text: Scratch.translate("stop scripts in main sprite"),
             filter: [Scratch.TargetType.SPRITE],
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -285,18 +316,21 @@
           {
             opcode: "deleteClonesInSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete clones in [INPUT]",
+            text: Scratch.translate("delete clones in [INPUT]"),
             arguments: {
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "deleteCloneWithVar",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete clones with [INPUTA] set to [INPUTB]",
+            text: Scratch.translate(
+              "delete clones with [INPUTA] set to [INPUTB]"
+            ),
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
               INPUTA: {
@@ -308,6 +342,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -315,9 +350,10 @@
           {
             opcode: "isClone",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is clone?",
+            text: Scratch.translate("is clone?"),
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
+            extensions: ["colours_control"],
           },
 
           "---",
@@ -325,12 +361,13 @@
           {
             opcode: "cloneCount",
             blockType: Scratch.BlockType.REPORTER,
-            text: "clone count",
+            text: Scratch.translate("clone count"),
+            extensions: ["colours_control"],
           },
           {
             opcode: "spriteCloneCount",
             blockType: Scratch.BlockType.REPORTER,
-            text: "clone count of [INPUT]",
+            text: Scratch.translate("clone count of [INPUT]"),
             disableMonitor: true,
             arguments: {
               INPUT: {
@@ -338,6 +375,7 @@
                 menu: "spriteMenu",
               },
             },
+            extensions: ["colours_control"],
           },
         ],
         menus: {
@@ -354,31 +392,31 @@
             acceptReporters: false,
             items: [
               {
-                text: "x position",
+                text: Scratch.translate("x position"),
                 value: "x position",
               },
               {
-                text: "y position",
+                text: Scratch.translate("y position"),
                 value: "y position",
               },
               {
-                text: "direction",
+                text: Scratch.translate("direction"),
                 value: "direction",
               },
               {
-                text: "costume #",
+                text: Scratch.translate("costume #"),
                 value: "costume num",
               },
               {
-                text: "costume name",
+                text: Scratch.translate("costume name"),
                 value: "costume name",
               },
               {
-                text: "size",
+                text: Scratch.translate("size"),
                 value: "size",
               },
               {
-                text: "volume",
+                text: Scratch.translate("volume"),
                 value: "volume",
               },
             ],
@@ -605,17 +643,20 @@
     getSprites() {
       let spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
-      const myself = Scratch.vm.runtime.getEditingTarget().sprite.name;
+      const editingTarget = Scratch.vm.runtime.getEditingTarget();
       for (let index = 1; index < targets.length; index++) {
-        const curTarget = targets[index].sprite;
-        let display = curTarget.name;
-        if (myself === curTarget.name) {
-          display = "myself";
+        const curTarget = targets[index];
+        let display = curTarget.getName();
+        if (editingTarget === curTarget) {
+          display = Scratch.translate({
+            default: "myself",
+            description: "Item in a dropdown that refers to the current sprite",
+          });
         }
         if (targets[index].isOriginal) {
           const jsonOBJ = {
             text: display,
-            value: curTarget.name,
+            value: curTarget.getName(),
           };
           spriteNames.push(jsonOBJ);
         }
@@ -635,7 +676,6 @@
 
     getVariables() {
       // @ts-expect-error - Blockly not typed yet
-      // eslint-disable-next-line no-undef
       const variables =
         typeof Blockly === "undefined"
           ? []

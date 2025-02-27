@@ -12,39 +12,45 @@
     getInfo() {
       return {
         id: "sipcrecording",
-        name: "Recording",
+        name: Scratch.translate("Recording"),
         color1: "#696969",
         blocks: [
           {
             opcode: "startRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Start recording",
+            text: Scratch.translate("start recording"),
             blockIconURI: icon,
             arguments: {},
           },
           {
             opcode: "stopRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Stop recording",
+            text: Scratch.translate("stop recording"),
             blockIconURI: icon,
             arguments: {},
           },
           {
             opcode: "stopRecordingAndDownload",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Stop recording and download with [name] as filename",
+            text: Scratch.translate(
+              "stop recording and download with [name] as filename"
+            ),
             blockIconURI: icon,
             arguments: {
               name: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "recording.wav",
+                defaultValue:
+                  Scratch.translate({
+                    default: "recording",
+                    description: "Default file name",
+                  }) + ".wav",
               },
             },
           },
           {
             opcode: "isRecording",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Recording?",
+            text: Scratch.translate("recording?"),
             blockIconURI: icon,
             arguments: {},
           },
@@ -90,17 +96,17 @@
         return;
       }
       console.log("Stop recording");
-      mediaRecorder.addEventListener("stop", function () {
+      mediaRecorder.addEventListener("stop", async function () {
         const blob = new Blob(recordedChunks, { type: "audio/wav" });
-        const url = URL.createObjectURL(blob);
-        const downloadLink = document.createElement("a");
-        downloadLink.href = url;
-        downloadLink.download = name;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        URL.revokeObjectURL(url);
         recordedChunks = [];
+
+        const url = URL.createObjectURL(blob);
+        try {
+          await Scratch.download(url, name);
+        } catch (e) {
+          console.error(e);
+        }
+        URL.revokeObjectURL(url);
       });
       mediaRecorder.stop();
       mediaRecorder = null;

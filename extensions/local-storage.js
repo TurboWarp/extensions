@@ -1,6 +1,7 @@
 // Name: Local Storage
 // ID: localstorage
 // Description: Store data persistently. Like cookies, but better.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -19,7 +20,9 @@
     const valid = !!namespace;
     if (!valid && Date.now() - lastNamespaceWarning > 3000) {
       alert(
-        'Local Storage extension: project must run the "set storage namespace ID" block before it can use other blocks'
+        Scratch.translate(
+          'Local Storage extension: project must run the "set storage namespace ID" block before it can use other blocks'
+        )
       );
       lastNamespaceWarning = Date.now();
     }
@@ -82,43 +85,47 @@
     }
   });
 
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    namespace = "";
+  });
+
   class LocalStorage {
     getInfo() {
       return {
         id: "localstorage",
-        name: "Local Storage",
+        name: Scratch.translate("Local Storage"),
         docsURI: "https://extensions.turbowarp.org/local-storage",
         blocks: [
           {
             opcode: "setProjectId",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set storage namespace ID to [ID]",
+            text: Scratch.translate("set storage namespace ID to [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "project title",
+                defaultValue: Scratch.translate("project title"),
               },
             },
           },
           {
             opcode: "get",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get key [KEY]",
+            text: Scratch.translate("get key [KEY]"),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "score",
+                defaultValue: Scratch.translate("score"),
               },
             },
           },
           {
             opcode: "set",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set key [KEY] to [VALUE]",
+            text: Scratch.translate("set key [KEY] to [VALUE]"),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "score",
+                defaultValue: Scratch.translate("score"),
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
@@ -129,23 +136,23 @@
           {
             opcode: "remove",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete key [KEY]",
+            text: Scratch.translate("delete key [KEY]"),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "score",
+                defaultValue: Scratch.translate("score"),
               },
             },
           },
           {
             opcode: "removeAll",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete all keys",
+            text: Scratch.translate("delete all keys"),
           },
           {
             opcode: "whenChanged",
             blockType: Scratch.BlockType.EVENT,
-            text: "when another window changes storage",
+            text: Scratch.translate("when another window changes storage"),
             isEdgeActivated: false,
           },
         ],

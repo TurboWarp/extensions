@@ -2,6 +2,7 @@
 // ID: nonameawacomparisons
 // Description: More comparison blocks.
 // By: NOname-awa
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -11,7 +12,7 @@
     getInfo() {
       return {
         id: "nonameawacomparisons",
-        name: "More Comparisons",
+        name: Scratch.translate("More Comparisons"),
         color1: "#00a889",
         color2: "#1e8c76",
         color3: "#1e8c76",
@@ -19,17 +20,18 @@
           {
             opcode: "true",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "true",
+            text: Scratch.translate("true"),
             arguments: {},
             disableMonitor: true,
           },
           {
             opcode: "false",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "false",
+            text: Scratch.translate("false"),
             arguments: {},
             disableMonitor: true,
           },
+          /* eslint-disable extension/should-translate */
           {
             opcode: "boolean",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -55,7 +57,7 @@
           {
             opcode: "equal",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[a] ⩵ [b]",
+            text: "[a] == [b]",
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
@@ -104,11 +106,11 @@
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "1",
               },
               b: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "\n",
+                defaultValue: "2",
               },
             },
           },
@@ -167,7 +169,7 @@
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -182,7 +184,7 @@
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "",
               },
               b: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -197,15 +199,15 @@
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "1",
               },
               b: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "2",
               },
               c: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "3",
               },
             },
           },
@@ -216,15 +218,15 @@
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "1",
               },
               b: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "2",
               },
               c: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "\n",
+                defaultValue: "3",
               },
             },
           },
@@ -431,6 +433,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
         ],
       };
     }
@@ -473,10 +476,16 @@
       return Math.abs(args.a - args.b) <= args.c;
     }
     between(args) {
-      return args.a < args.b && args.b < args.c;
+      return (
+        Scratch.Cast.compare(args.a, args.b) < 0 &&
+        Scratch.Cast.compare(args.b, args.c) < 0
+      );
     }
     betweenEqual(args) {
-      return args.a <= args.b && args.b <= args.c;
+      return (
+        Scratch.Cast.compare(args.a, args.b) <= 0 &&
+        Scratch.Cast.compare(args.b, args.c) <= 0
+      );
     }
     notEqual(args) {
       return args.a != args.b;
@@ -485,10 +494,10 @@
       return Scratch.Cast.toBoolean(args.a) !== Scratch.Cast.toBoolean(args.b);
     }
     equalOrGreater(args) {
-      return args.a >= args.b;
+      return Scratch.Cast.compare(args.a, args.b) >= 0;
     }
     equalOrLess(args) {
-      return args.a <= args.b;
+      return Scratch.Cast.compare(args.a, args.b) <= 0;
     }
     vertical(args) {
       if (isNaN(args.a) || isNaN(args.b)) {
