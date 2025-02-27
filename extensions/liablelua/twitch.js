@@ -11,7 +11,7 @@
   let token = null;
   let text = null;
   let image = null;
-  
+
   const FONTS = [
     "Sans Serif",
     "Serif",
@@ -63,8 +63,10 @@
         id: "bopTwitch",
         name: "Twitch",
         color1: "#772CE8",
-        menuIconURI: "https://liablelua.github.io/tekinical.github.io/twitchURI.png",
-        blockIconURI: "https://liablelua.github.io/tekinical.github.io/twitchURI.png",
+        menuIconURI:
+          "https://liablelua.github.io/tekinical.github.io/twitchURI.png",
+        blockIconURI:
+          "https://liablelua.github.io/tekinical.github.io/twitchURI.png",
         docsURI:
           "https://github.com/Tekinical/tekinical.github.io/blob/main/Twitch%20Extension%20Doc.md",
         blocks: [
@@ -183,7 +185,7 @@
             opcode: "closeimage",
             text: "close image",
             blockType: Scratch.BlockType.COMMAND,
-          }
+          },
         ],
         menus: {
           font: {
