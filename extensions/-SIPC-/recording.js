@@ -91,6 +91,7 @@
       recordedChunks = [];
     }
     stopRecordingAndDownload({ name }) {
+      name = Scratch.Cast.toString(name);
       if (!mediaRecorder) {
         console.error("Recording not started");
         return;
