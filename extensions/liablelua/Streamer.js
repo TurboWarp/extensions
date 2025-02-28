@@ -103,12 +103,12 @@
                 defaultValue: 30,
               },
               bots: {
-                type: Scratch.ArgumentType.BOOLEAN,
-                defaultValue: true,
+                type: Scratch.ArgumentType.STRING,
+                menu: "bools"
               },
               prevent: {
-                type: Scratch.ArgumentType.BOOLEAN,
-                defaultValue: false,
+                type: Scratch.ArgumentType.STRING,
+                menu: "bools"
               },
               width: {
                 type: Scratch.ArgumentType.STRING,
