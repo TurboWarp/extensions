@@ -4,107 +4,111 @@
 // By: RIHART <https://scratch.mit.edu/users/RIHART/>
 // Version: 1.0.0
 
-
 (function (Scratch) {
-  "use strict";  
+  "use strict";
 
-  Scratch.translate.setup({    
+  Scratch.translate.setup({
     ru /*_РусскийЯзык_*/: {
       ExtensionName: "Настройки Окна",
       LabelA: "Window Settings:",
       MoveWHXY: " | | | |  окно [SC] [WHXY]: [WHXYA], [WHXYB]  | | | | ",
-        // [SC]:
-          SCA: "задать",
-          SCB: "изменить",
-        // [WHXY]:
-          WHXYA: "ширину, высоту",
-          WHXYB: "позицию x, позицию y",
+      // [SC]:
+      SCA: "задать",
+      SCB: "изменить",
+      // [WHXY]:
+      WHXYA: "ширину, высоту",
+      WHXYB: "позицию x, позицию y",
       WindowSCWH: " | | | |  окно [MenuSC] [MenuWH]: [WH]  | | | | ",
-        // [MenuSC]:
-          MenuSCA: "задать",
-          MenuSCB: "изменить",
-        // [MenuWH]:
-          MenuWHA: "ширину",
-          MenuWHB: "высоту",
-          MenuWHC: "позицию x",
-          MenuWHD: "позицию y",
+      // [MenuSC]:
+      MenuSCA: "задать",
+      MenuSCB: "изменить",
+      // [MenuWH]:
+      MenuWHA: "ширину",
+      MenuWHB: "высоту",
+      MenuWHC: "позицию x",
+      MenuWHD: "позицию y",
       moveToPresets: " | | | |  переместить окно [PRESETS]  | | | | ",
-        // [PRESETS]:
-          PRESETSA: "по центру",
-          PRESETSB: "справа",
-          PRESETSC: "слева",
-          PRESETSD: "сверху",
-          PRESETSE: "снизу",
-          PRESETSF: "в верхнем правом углу",
-          PRESETSG: "в верхнем левом углу",
-          PRESETSH: "в нижнем правом углу",
-          PRESETSI: "в нижнем левом углу",
+      // [PRESETS]:
+      PRESETSA: "по центру",
+      PRESETSB: "справа",
+      PRESETSC: "слева",
+      PRESETSD: "сверху",
+      PRESETSE: "снизу",
+      PRESETSF: "в верхнем правом углу",
+      PRESETSG: "в верхнем левом углу",
+      PRESETSH: "в нижнем правом углу",
+      PRESETSI: "в нижнем левом углу",
       changeTitleTo: " | | | |  задать окну имя [TITLE]  | | | | ",
       WindowWHXY: " | | | |  окно [MenuWindowWHXY]  | | | | ",
-      innerStageSize: " | | | |  размер внутренней сцены [innerMenuSetChange] ширину: [innerWidth] высоту: [innerHeight]  | | | | ",
-        // [innerMenuSetChange]:
-          innerMenuSetChangeA: "задать",
-          innerMenuSetChangeB: "изменить",
-      innerStageSizeWidthHeight: " | | | |  размер внутренней сцены [innerMenuSetChangeWH] [innerMenuWidthHeight]: [innerWidthHeight]  | | | | ",
-        // [innerMenuSetChangeWH]:
-          innerMenuSetChangeWHA: "задать",
-          innerMenuSetChangeWHB: "изменить",
-        // [innerMenuWidthHeight]:
-          innerMenuWidthHeightA: "ширину",
-          innerMenuWidthHeightB: "высоту",
-      setDimensions: " | | | |  задать сцену по ширине: [width] по высоте: [height]  | | | | ",
+      innerStageSize:
+        " | | | |  размер внутренней сцены [innerMenuSetChange] ширину: [innerWidth] высоту: [innerHeight]  | | | | ",
+      // [innerMenuSetChange]:
+      innerMenuSetChangeA: "задать",
+      innerMenuSetChangeB: "изменить",
+      innerStageSizeWidthHeight:
+        " | | | |  размер внутренней сцены [innerMenuSetChangeWH] [innerMenuWidthHeight]: [innerWidthHeight]  | | | | ",
+      // [innerMenuSetChangeWH]:
+      innerMenuSetChangeWHA: "задать",
+      innerMenuSetChangeWHB: "изменить",
+      // [innerMenuWidthHeight]:
+      innerMenuWidthHeightA: "ширину",
+      innerMenuWidthHeightB: "высоту",
+      setDimensions:
+        " | | | |  задать сцену по ширине: [width] по высоте: [height]  | | | | ",
       getDimension: " | | | |  сцена [dimension] | | | | ",
       greenFlag: " | | | |  нажать на флаг [flag] | | | | ",
       FullscreenEnterExit: " | | | |  полноэкранный режим [MenuFEE] | | | | ",
-        // [MenuFEE]:
-          FullscreenEnter: "включить",
-          FullscreenExit: "выключить",
+      // [MenuFEE]:
+      FullscreenEnter: "включить",
+      FullscreenExit: "выключить",
       closeWindow: " | | | |  закрыть окно  | | | | ",
       QuestionsWS: " | | | | [MenuQuestions] | | | | ",
-        // [MenuQuestions]:
-          MenuQuestionsA: "касается ли окно края экрана?",
-          MenuQuestionsB: "сфокусировано ли окно?",
-          MenuQuestionsC: "является ли окно полноэкранным?",
+      // [MenuQuestions]:
+      MenuQuestionsA: "касается ли окно края экрана?",
+      MenuQuestionsB: "сфокусировано ли окно?",
+      MenuQuestionsC: "является ли окно полноэкранным?",
       ScreenWHXY: " | | | |  экран [MenuScreenWHXY] | | | | ",
       setEnabled: " | | | |  задать [thing] [enabled] | | | | ",
-        // [thing]:
-          thingA: "🗲 турбо режим",
-          thingB: "интерполяция",
-          thingC: "убрать рамку сцены",
-          thingD: "убрать разные ограничения",
-          thingE: "перо в высоком качестве",
-        // [enabled]:
-      setFramerate: " | | | |  задать ограничение частоты кадров на: [fps] | | | | ",
+      // [thing]:
+      thingA: "🗲 турбо режим",
+      thingB: "интерполяция",
+      thingC: "убрать рамку сцены",
+      thingD: "убрать разные ограничения",
+      thingE: "перо в высоком качестве",
+      // [enabled]:
+      setFramerate:
+        " | | | |  задать ограничение частоты кадров на: [fps] | | | | ",
       showHideOption: " | | | | [SHOWHIDE] [OPTIONSH] | | | | ",
-        // [SHOWHIDE]:
-          show: "показать",
-          hide: "скрыть",
-        // [OPTIONSH]:
-          flag: "иконка флага",
-          pause: "иконка паузы",
-          stop: "иконка остановки",
-          fullscreen: "иконка полноэкранного режима",
+      // [SHOWHIDE]:
+      show: "показать",
+      hide: "скрыть",
+      // [OPTIONSH]:
+      flag: "иконка флага",
+      pause: "иконка паузы",
+      stop: "иконка остановки",
+      fullscreen: "иконка полноэкранного режима",
       optionShown: " | | | |  [OPTION] показан?  | | | | ",
     },
-  }); 
-  
-  if (!Scratch.extensions.unsandboxed) {throw new Error("Error");}  
-  
+  });
+
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error("Error");
+  }
 
   // иконка меню:
-  const menuIconURI = "data:image/svg+xml,%3Csvg%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%2294%22%20height%3D%2294%22%20rx%3D%2217%22%20fill%3D%22%234B6095%22%20stroke%3D%22%232D3548%22%20stroke-width%3D%226%22%2F%3E%3Crect%20x%3D%2226%22%20y%3D%2226%22%20width%3D%2248%22%20height%3D%2248%22%20rx%3D%225%22%20stroke%3D%22white%22%20stroke-width%3D%226%22%2F%3E%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M23%2031C23%2026.5817%2026.5817%2023%2031%2023H69C73.4183%2023%2077%2026.5817%2077%2031V35C77%2039.4183%2073.4183%2043%2069%2043H31C26.5817%2043%2023%2039.4183%2023%2035V31ZM43%2037C45.2091%2037%2047%2035.2091%2047%2033C47%2030.7909%2045.2091%2029%2043%2029C40.7909%2029%2039%2030.7909%2039%2033C39%2035.2091%2040.7909%2037%2043%2037ZM57%2033C57%2035.2091%2055.2091%2037%2053%2037C50.7909%2037%2049%2035.2091%2049%2033C49%2030.7909%2050.7909%2029%2053%2029C55.2091%2029%2057%2030.7909%2057%2033ZM33%2037C35.2091%2037%2037%2035.2091%2037%2033C37%2030.7909%2035.2091%2029%2033%2029C30.7909%2029%2029%2030.7909%2029%2033C29%2035.2091%2030.7909%2037%2033%2037Z%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E";
- 
+  const menuIconURI =
+    "data:image/svg+xml,%3Csvg%20width%3D%22100%22%20height%3D%22100%22%20viewBox%3D%220%200%20100%20100%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%2294%22%20height%3D%2294%22%20rx%3D%2217%22%20fill%3D%22%234B6095%22%20stroke%3D%22%232D3548%22%20stroke-width%3D%226%22%2F%3E%3Crect%20x%3D%2226%22%20y%3D%2226%22%20width%3D%2248%22%20height%3D%2248%22%20rx%3D%225%22%20stroke%3D%22white%22%20stroke-width%3D%226%22%2F%3E%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M23%2031C23%2026.5817%2026.5817%2023%2031%2023H69C73.4183%2023%2077%2026.5817%2077%2031V35C77%2039.4183%2073.4183%2043%2069%2043H31C26.5817%2043%2023%2039.4183%2023%2035V31ZM43%2037C45.2091%2037%2047%2035.2091%2047%2033C47%2030.7909%2045.2091%2029%2043%2029C40.7909%2029%2039%2030.7909%2039%2033C39%2035.2091%2040.7909%2037%2043%2037ZM57%2033C57%2035.2091%2055.2091%2037%2053%2037C50.7909%2037%2049%2035.2091%2049%2033C49%2030.7909%2050.7909%2029%2053%2029C55.2091%2029%2057%2030.7909%2057%2033ZM33%2037C35.2091%2037%2037%2035.2091%2037%2033C37%2030.7909%2035.2091%2029%2033%2029C30.7909%2029%2029%2030.7909%2029%2033C29%2035.2091%2030.7909%2037%2033%2037Z%22%20fill%3D%22white%22%2F%3E%3C%2Fsvg%3E";
+
   // иконки блоков:
   const MoveWHXY = "data:image/gif;base64,";
-  const greenFlagURI="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAxNiAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zIDAuNUMzIDAuMjIzODU4IDIuNzc2MTQgMCAyLjUgMEgxLjVDMC42NzE1NzMgMCAwIDAuNjcxNTczIDAgMS41VjE4LjVDMCAxOS4zMjg0IDAuNjcxNTczIDIwIDEuNSAyMFYyMEMyLjMyODQzIDIwIDMgMTkuMzI4NCAzIDE4LjVWMTVDMyAxMy44OTU0IDMuODk1NDMgMTMgNSAxM0gxNEMxNS4xMDQ2IDEzIDE2IDEyLjEwNDYgMTYgMTFWM0MxNiAxLjg5NTQzIDE1LjEwNDYgMSAxNCAxSDMuNUMzLjIyMzg2IDEgMyAwLjc3NjE0MiAzIDAuNVYwLjVaIiBmaWxsPSIjMTgxRDBEIi8+Cjwvc3ZnPgo=";
+  const greenFlagURI =
+    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAxNiAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0zIDAuNUMzIDAuMjIzODU4IDIuNzc2MTQgMCAyLjUgMEgxLjVDMC42NzE1NzMgMCAwIDAuNjcxNTczIDAgMS41VjE4LjVDMCAxOS4zMjg0IDAuNjcxNTczIDIwIDEuNSAyMFYyMEMyLjMyODQzIDIwIDMgMTkuMzI4NCAzIDE4LjVWMTVDMyAxMy44OTU0IDMuODk1NDMgMTMgNSAxM0gxNEMxNS4xMDQ2IDEzIDE2IDEyLjEwNDYgMTYgMTFWM0MxNiAxLjg5NTQzIDE1LjEwNDYgMSAxNCAxSDMuNUMzLjIyMzg2IDEgMyAwLjc3NjE0MiAzIDAuNVYwLjVaIiBmaWxsPSIjMTgxRDBEIi8+Cjwvc3ZnPgo=";
 
-  
   const TURBO_MODE = "turbo mode";
   const INTERPOLATION = "interpolation";
   const REMOVE_FENCING = "remove fencing";
   const REMOVE_MISC_LIMITS = "remove misc limits";
   const HIGH_QUALITY_PEN = "high quality pen";
-
 
   var fullScreen;
   var greenFlag;
@@ -149,25 +153,28 @@
         }
       });
     }
-  }  
+  }
   class lmsmcutils {
     getInfo() {
-      return {              
+      return {
         id: "WindowSettings",
-        name: Scratch.translate({ id: "ExtensionName", default: "Window Settings" }),
+        name: Scratch.translate({
+          id: "ExtensionName",
+          default: "Window Settings",
+        }),
         color1: "#5671B7",
         color2: "#4B6095",
         color3: "#2D3548",
         menuIconURI: menuIconURI,
-        
-        blocks: [
 
+        blocks: [
           {
             opcode: "MoveWHXY",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "MoveWHXY", 
-              default: " | | | |  window [SC] [WHXY]: [WHXYA], [WHXYB]  | | | | " 
+            text: Scratch.translate({
+              id: "MoveWHXY",
+              default:
+                " | | | |  window [SC] [WHXY]: [WHXYA], [WHXYB]  | | | | ",
             }),
             arguments: {
               SC: {
@@ -188,13 +195,13 @@
               },
             },
           },
-          
+
           {
             opcode: "WindowSCWH",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "WindowSCWH", 
-              default: " | | | |  window [MenuSC] [MenuWH]: [WH] | | | | " 
+            text: Scratch.translate({
+              id: "WindowSCWH",
+              default: " | | | |  window [MenuSC] [MenuWH]: [WH] | | | | ",
             }),
             arguments: {
               MenuSC: {
@@ -211,13 +218,13 @@
               },
             },
           },
-                    
+
           {
             opcode: "moveToPresets",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "moveToPresets", 
-              default: " | | | |  move window to the [PRESETS] | | | | " 
+            text: Scratch.translate({
+              id: "moveToPresets",
+              default: " | | | |  move window to the [PRESETS] | | | | ",
             }),
             arguments: {
               PRESETS: {
@@ -226,13 +233,13 @@
               },
             },
           },
-          
+
           {
             opcode: "changeTitleTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "changeTitleTo", 
-              default: " | | | |  set window title to [TITLE] | | | | " 
+            text: Scratch.translate({
+              id: "changeTitleTo",
+              default: " | | | |  set window title to [TITLE] | | | | ",
             }),
             arguments: {
               TITLE: {
@@ -240,14 +247,14 @@
                 defaultValue: "WAYLIVES",
               },
             },
-          },  
-          
+          },
+
           {
             opcode: "WindowWHXY",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ 
-              id: "WindowWHXY", 
-              default: " | | | |  window [MenuWindowWHXY]  | | | | " 
+            text: Scratch.translate({
+              id: "WindowWHXY",
+              default: " | | | |  window [MenuWindowWHXY]  | | | | ",
             }),
             arguments: {
               MenuWindowWHXY: {
@@ -255,16 +262,17 @@
                 menu: "MenuWindowWHXY",
               },
             },
-          },          
+          },
 
-          "---",          
+          "---",
 
           {
             opcode: "innerStageSize",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "innerStageSize", 
-              default: " | | | |  inner stage size [innerMenuSetChange] width: [innerWidth] height: [innerHeight] | | | | " 
+            text: Scratch.translate({
+              id: "innerStageSize",
+              default:
+                " | | | |  inner stage size [innerMenuSetChange] width: [innerWidth] height: [innerHeight] | | | | ",
             }),
             arguments: {
               innerMenuSetChange: {
@@ -281,13 +289,14 @@
               },
             },
           },
-          
+
           {
             opcode: "innerStageSizeWidthHeight",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "innerStageSizeWidthHeight", 
-              default: " | | | |  inner stage size [innerMenuSetChangeWH] [innerMenuWidthHeight]: [innerWidthHeight] | | | | " 
+            text: Scratch.translate({
+              id: "innerStageSizeWidthHeight",
+              default:
+                " | | | |  inner stage size [innerMenuSetChangeWH] [innerMenuWidthHeight]: [innerWidthHeight] | | | | ",
             }),
             arguments: {
               innerMenuSetChangeWH: {
@@ -308,9 +317,10 @@
           {
             opcode: "setDimensions",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "setDimensions", 
-              default: " | | | |  set stage size width: [width] height: [height]  | | | | " 
+            text: Scratch.translate({
+              id: "setDimensions",
+              default:
+                " | | | |  set stage size width: [width] height: [height]  | | | | ",
             }),
             arguments: {
               width: {
@@ -323,13 +333,13 @@
               },
             },
           },
-          
+
           {
             opcode: "getDimension",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ 
-              id: "getDimension", 
-              default: " | | | |  stage [dimension] | | | | " 
+            text: Scratch.translate({
+              id: "getDimension",
+              default: " | | | |  stage [dimension] | | | | ",
             }),
             arguments: {
               dimension: {
@@ -338,16 +348,16 @@
                 menu: "dimension",
               },
             },
-          },            
+          },
 
           "---",
-          
+
           {
             opcode: "greenFlag",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "greenFlag", 
-              default: " | | | |  run flag [flag] | | | | " 
+            text: Scratch.translate({
+              id: "greenFlag",
+              default: " | | | |  run flag [flag] | | | | ",
             }),
             arguments: {
               flag: {
@@ -360,9 +370,9 @@
           {
             opcode: "FullscreenEnterExit",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "FullscreenEnterExit", 
-              default: " | | | |  fullscreen [MenuFEE] | | | | " 
+            text: Scratch.translate({
+              id: "FullscreenEnterExit",
+              default: " | | | |  fullscreen [MenuFEE] | | | | ",
             }),
             arguments: {
               MenuFEE: {
@@ -371,23 +381,23 @@
               },
             },
           },
-          
+
           {
             opcode: "closeWindow",
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
-            text: Scratch.translate({ 
-              id: "closeWindow", 
-              default: " | | | |  close window  | | | | " 
+            text: Scratch.translate({
+              id: "closeWindow",
+              default: " | | | |  close window  | | | | ",
             }),
-          },  
-          
+          },
+
           {
             opcode: "QuestionsWS",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate({ 
-              id: "QuestionsWS", 
-              default: " | | | | [MenuQuestions] | | | | " 
+            text: Scratch.translate({
+              id: "QuestionsWS",
+              default: " | | | | [MenuQuestions] | | | | ",
             }),
             disableMonitor: true,
             arguments: {
@@ -397,13 +407,13 @@
               },
             },
           },
-          
+
           {
             opcode: "ScreenWHXY",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ 
-              id: "ScreenWHXY", 
-              default: " | | | |  screen [MenuScreenWHXY] | | | | " 
+            text: Scratch.translate({
+              id: "ScreenWHXY",
+              default: " | | | |  screen [MenuScreenWHXY] | | | | ",
             }),
             arguments: {
               MenuScreenWHXY: {
@@ -414,7 +424,7 @@
           },
 
           "---",
-/*
+          /*
           {
             opcode: "setEnabled",
             blockType: Scratch.BlockType.COMMAND,
@@ -439,9 +449,9 @@
           {
             opcode: "setFramerate",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "setFramerate", 
-              default: " | | | |  set framerate limit to [fps] | | | | " 
+            text: Scratch.translate({
+              id: "setFramerate",
+              default: " | | | |  set framerate limit to [fps] | | | | ",
             }),
             arguments: {
               fps: {
@@ -450,17 +460,15 @@
               },
             },
           },
-          
 
-          "---",  
+          "---",
 
-          
           {
             opcode: "showHideOption",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "showHideOption", 
-              default: " | | | |  [SHOWHIDE] [OPTIONSH]  | | | | " 
+            text: Scratch.translate({
+              id: "showHideOption",
+              default: " | | | |  [SHOWHIDE] [OPTIONSH]  | | | | ",
             }),
             arguments: {
               SHOWHIDE: {
@@ -476,9 +484,9 @@
           {
             opcode: "optionShown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate({ 
-              id: "optionShown", 
-              default: " | | | |  [OPTION] shown?  | | | | " 
+            text: Scratch.translate({
+              id: "optionShown",
+              default: " | | | |  [OPTION] shown?  | | | | ",
             }),
             arguments: {
               OPTION: {
@@ -487,57 +495,135 @@
               },
             },
           },
-          "---",          
-          
+          "---",
         ],
 
-        
         menus: {
-          
           SC: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "SCA", default: "set" }), value: "Set" },
-              { text: Scratch.translate({ id: "SCB", default: "change" }), value: "Change" },
+              {
+                text: Scratch.translate({ id: "SCA", default: "set" }),
+                value: "Set",
+              },
+              {
+                text: Scratch.translate({ id: "SCB", default: "change" }),
+                value: "Change",
+              },
             ],
           },
           WHXY: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "WHXYA", default: "width, height" }), value: "WidthHeight" },
-              { text: Scratch.translate({ id: "WHXYB", default: "x position, y position" }), value: "PositionXY" },
+              {
+                text: Scratch.translate({
+                  id: "WHXYA",
+                  default: "width, height",
+                }),
+                value: "WidthHeight",
+              },
+              {
+                text: Scratch.translate({
+                  id: "WHXYB",
+                  default: "x position, y position",
+                }),
+                value: "PositionXY",
+              },
             ],
-          },      
+          },
           MenuSC: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "MenuSCA", default: "set" }), value: "Set" },
-              { text: Scratch.translate({ id: "MenuSCB", default: "change" }), value: "Change" },
+              {
+                text: Scratch.translate({ id: "MenuSCA", default: "set" }),
+                value: "Set",
+              },
+              {
+                text: Scratch.translate({ id: "MenuSCB", default: "change" }),
+                value: "Change",
+              },
             ],
           },
           MenuWH: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "MenuWHA", default: "width" }), value: "Width" },
-              { text: Scratch.translate({ id: "MenuWHB", default: "height" }), value: "Height" },
-              { text: Scratch.translate({ id: "MenuWHC", default: "x position" }), value: "PositionX" },
-              { text: Scratch.translate({ id: "MenuWHD", default: "y position" }), value: "PositionY" },
+              {
+                text: Scratch.translate({ id: "MenuWHA", default: "width" }),
+                value: "Width",
+              },
+              {
+                text: Scratch.translate({ id: "MenuWHB", default: "height" }),
+                value: "Height",
+              },
+              {
+                text: Scratch.translate({
+                  id: "MenuWHC",
+                  default: "x position",
+                }),
+                value: "PositionX",
+              },
+              {
+                text: Scratch.translate({
+                  id: "MenuWHD",
+                  default: "y position",
+                }),
+                value: "PositionY",
+              },
             ],
           },
           MOVE: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "PRESETSA", default: "center" }), value: "center" },
-              { text: Scratch.translate({ id: "PRESETSB", default: "right" }), value: "right" },
-              { text: Scratch.translate({ id: "PRESETSC", default: "left" }), value: "left" },
-              { text: Scratch.translate({ id: "PRESETSD", default: "top" }), value: "top" },
-              { text: Scratch.translate({ id: "PRESETSE", default: "bottom" }), value: "bottom" },
-              { text: Scratch.translate({ id: "PRESETSF", default: "top right" }), value: "top right" },
-              { text: Scratch.translate({ id: "PRESETSG", default: "top left" }), value: "top left" },
-              { text: Scratch.translate({ id: "PRESETSH", default: "bottom right" }), value: "bottom right" },
-              { text: Scratch.translate({ id: "PRESETSI", default: "bottom left" }), value: "bottom left" },
+              {
+                text: Scratch.translate({ id: "PRESETSA", default: "center" }),
+                value: "center",
+              },
+              {
+                text: Scratch.translate({ id: "PRESETSB", default: "right" }),
+                value: "right",
+              },
+              {
+                text: Scratch.translate({ id: "PRESETSC", default: "left" }),
+                value: "left",
+              },
+              {
+                text: Scratch.translate({ id: "PRESETSD", default: "top" }),
+                value: "top",
+              },
+              {
+                text: Scratch.translate({ id: "PRESETSE", default: "bottom" }),
+                value: "bottom",
+              },
+              {
+                text: Scratch.translate({
+                  id: "PRESETSF",
+                  default: "top right",
+                }),
+                value: "top right",
+              },
+              {
+                text: Scratch.translate({
+                  id: "PRESETSG",
+                  default: "top left",
+                }),
+                value: "top left",
+              },
+              {
+                text: Scratch.translate({
+                  id: "PRESETSH",
+                  default: "bottom right",
+                }),
+                value: "bottom right",
+              },
+              {
+                text: Scratch.translate({
+                  id: "PRESETSI",
+                  default: "bottom left",
+                }),
+                value: "bottom left",
+              },
             ],
-          },         
+          },
           MenuWindowWHXY: {
             acceptReporters: true,
             items: [
@@ -551,22 +637,58 @@
           innerMenuSetChange: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "innerMenuSetChangeA", default: "set" }), value: "set" },
-              { text: Scratch.translate({ id: "innerMenuSetChangeB", default: "change" }), value: "change" },
+              {
+                text: Scratch.translate({
+                  id: "innerMenuSetChangeA",
+                  default: "set",
+                }),
+                value: "set",
+              },
+              {
+                text: Scratch.translate({
+                  id: "innerMenuSetChangeB",
+                  default: "change",
+                }),
+                value: "change",
+              },
             ],
           },
           innerMenuSetChangeWH: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "innerMenuSetChangeWHA", default: "set" }), value: "set" },
-              { text: Scratch.translate({ id: "innerMenuSetChangeWHB", default: "change" }), value: "change" },
+              {
+                text: Scratch.translate({
+                  id: "innerMenuSetChangeWHA",
+                  default: "set",
+                }),
+                value: "set",
+              },
+              {
+                text: Scratch.translate({
+                  id: "innerMenuSetChangeWHB",
+                  default: "change",
+                }),
+                value: "change",
+              },
             ],
           },
           innerMenuWidthHeight: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "innerMenuWidthHeightA", default: "width" }), value: "width" },
-              { text: Scratch.translate({ id: "innerMenuWidthHeightB", default: "height" }), value: "height" },
+              {
+                text: Scratch.translate({
+                  id: "innerMenuWidthHeightA",
+                  default: "width",
+                }),
+                value: "width",
+              },
+              {
+                text: Scratch.translate({
+                  id: "innerMenuWidthHeightB",
+                  default: "height",
+                }),
+                value: "height",
+              },
             ],
           },
           dimension: {
@@ -585,16 +707,46 @@
           MenuFEE: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "FullscreenEnter", default: "width" }), value: "Enter" },
-              { text: Scratch.translate({ id: "FullscreenExit", default: "height" }), value: "Exit" },
+              {
+                text: Scratch.translate({
+                  id: "FullscreenEnter",
+                  default: "width",
+                }),
+                value: "Enter",
+              },
+              {
+                text: Scratch.translate({
+                  id: "FullscreenExit",
+                  default: "height",
+                }),
+                value: "Exit",
+              },
             ],
           },
           MenuQuestions: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "MenuQuestionsA", default: "is window touching screen edge" }), value: "A" },
-              { text: Scratch.translate({ id: "MenuQuestionsB", default: "is window focused?" }), value: "B" },
-              { text: Scratch.translate({ id: "MenuQuestionsC", default: "is window fullscreen?" }), value: "C" },
+              {
+                text: Scratch.translate({
+                  id: "MenuQuestionsA",
+                  default: "is window touching screen edge",
+                }),
+                value: "A",
+              },
+              {
+                text: Scratch.translate({
+                  id: "MenuQuestionsB",
+                  default: "is window focused?",
+                }),
+                value: "B",
+              },
+              {
+                text: Scratch.translate({
+                  id: "MenuQuestionsC",
+                  default: "is window fullscreen?",
+                }),
+                value: "C",
+              },
             ],
           },
           MenuScreenWHXY: {
@@ -608,11 +760,41 @@
           thing: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "thingA", default: "🗲 turbo mode" }), value: "TURBO_MODE" },
-              { text: Scratch.translate({ id: "thingB", default: "interpolation" }), value: "INTERPOLATION" },
-              { text: Scratch.translate({ id: "thingC", default: "remove fencing" }), value: "REMOVE_FENCING" },
-              { text: Scratch.translate({ id: "thingD", default: "remove misc limits" }), value: "REMOVE_MISC_LIMITS" },
-              { text: Scratch.translate({ id: "thingE", default: "high quality pen" }), value: "HIGH_QUALITY_PEN" },
+              {
+                text: Scratch.translate({
+                  id: "thingA",
+                  default: "🗲 turbo mode",
+                }),
+                value: "TURBO_MODE",
+              },
+              {
+                text: Scratch.translate({
+                  id: "thingB",
+                  default: "interpolation",
+                }),
+                value: "INTERPOLATION",
+              },
+              {
+                text: Scratch.translate({
+                  id: "thingC",
+                  default: "remove fencing",
+                }),
+                value: "REMOVE_FENCING",
+              },
+              {
+                text: Scratch.translate({
+                  id: "thingD",
+                  default: "remove misc limits",
+                }),
+                value: "REMOVE_MISC_LIMITS",
+              },
+              {
+                text: Scratch.translate({
+                  id: "thingE",
+                  default: "high quality pen",
+                }),
+                value: "HIGH_QUALITY_PEN",
+              },
             ],
           },
 
@@ -654,24 +836,44 @@
           SHOWHIDE: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "show", default: "show" }), value: "show" },
-              { text: Scratch.translate({ id: "hide", default: "hide" }), value: "hide" },
+              {
+                text: Scratch.translate({ id: "show", default: "show" }),
+                value: "show",
+              },
+              {
+                text: Scratch.translate({ id: "hide", default: "hide" }),
+                value: "hide",
+              },
             ],
           },
           OPTIONSH: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({ id: "flag", default: "flag" }), value: "flag" },
-              { text: Scratch.translate({ id: "pause", default: "pause" }), value: "pause" },
-              { text: Scratch.translate({ id: "stop", default: "stop" }), value: "stop" },
-              { text: Scratch.translate({ id: "fullscreen", default: "fullscreen" }), value: "fullscreen" },
+              {
+                text: Scratch.translate({ id: "flag", default: "flag" }),
+                value: "flag",
+              },
+              {
+                text: Scratch.translate({ id: "pause", default: "pause" }),
+                value: "pause",
+              },
+              {
+                text: Scratch.translate({ id: "stop", default: "stop" }),
+                value: "stop",
+              },
+              {
+                text: Scratch.translate({
+                  id: "fullscreen",
+                  default: "fullscreen",
+                }),
+                value: "fullscreen",
+              },
             ],
           },
-                    
         },
       };
     }
-    
+
     getDimension({ dimension }) {
       if (dimension === "width") {
         return Scratch.vm.runtime.stageWidth;
@@ -686,8 +888,6 @@
       height = Scratch.Cast.toNumber(height);
       Scratch.vm.setStageSize(width, height);
     }
-
-    
 
     MoveWHXY(args) {
       if (args.SC == "Set") {
@@ -708,23 +908,32 @@
 
     innerStageSize(args) {
       if (args.innerMenuSetChange == "set") {
-        window.resizeTo(args.innerWidth + (window.outerWidth - window.innerWidth), args.innerHeight + (window.outerHeight - window.innerHeight));
+        window.resizeTo(
+          args.innerWidth + (window.outerWidth - window.innerWidth),
+          args.innerHeight + (window.outerHeight - window.innerHeight)
+        );
       } else if (args.innerMenuSetChange == "change") {
         window.resizeBy(args.innerWidth, args.innerHeight);
       }
       Scratch.vm.runtime.requestRedraw();
     }
-    
+
     innerStageSizeWidthHeight(args) {
       if (args.innerMenuSetChangeWH == "set") {
         if (args.innerMenuWidthHeight == "width") {
           const innerHeight = window.outerHeight;
-          window.resizeTo(args.innerWidthHeight + (window.outerWidth - window.innerWidth), innerHeight);
+          window.resizeTo(
+            args.innerWidthHeight + (window.outerWidth - window.innerWidth),
+            innerHeight
+          );
         } else if (args.innerMenuWidthHeight == "height") {
           const innerWidth = window.outerWidth;
-          window.resizeTo(innerWidth, args.innerWidthHeight + (window.outerHeight - window.innerHeight));
+          window.resizeTo(
+            innerWidth,
+            args.innerWidthHeight + (window.outerHeight - window.innerHeight)
+          );
         }
-      } else if (args.innerMenuSetChangeWH == "change") {       
+      } else if (args.innerMenuSetChangeWH == "change") {
         if (args.innerMenuWidthHeight == "width") {
           window.resizeBy(args.innerWidthHeight, 0);
         } else if (args.innerMenuWidthHeight == "height") {
@@ -733,7 +942,7 @@
       }
       Scratch.vm.runtime.requestRedraw();
     }
-        
+
     moveToPresets(args) {
       if (args.PRESETS == "center") {
         const left = (screen.width - window.outerWidth) / 2;
@@ -882,14 +1091,14 @@
         });
       } else if (thing === HIGH_QUALITY_PEN) {
         Scratch.renderer.setUseHighQualityRender(enabled);
-      }      
+      }
     }
 
     setFramerate({ fps }) {
       fps = Scratch.Cast.toNumber(fps);
       Scratch.vm.setFramerate(fps);
-    }    
-    
+    }
+
     showHideOption(args) {
       getButtons();
       if (args.SHOWHIDE === "show") {
@@ -913,7 +1122,7 @@
           fullScreen.style.display = "none";
         }
       }
-    }  
+    }
 
     optionShown(args) {
       getButtons();
@@ -927,7 +1136,7 @@
         return fullScreen.style.display !== "none";
       }
       return false;
-    }    
+    }
   }
   Scratch.extensions.register(new lmsmcutils());
 })(Scratch);
