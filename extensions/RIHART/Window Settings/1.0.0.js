@@ -2,6 +2,8 @@
 // ID: RIHART
 // Description: Thanks to this extension, you can customize the project window (this works if you package the project in the ".exe" format).
 // By: RIHART <https://scratch.mit.edu/users/RIHART/>
+// License: MIT
+
 // Version: 1.0.0
 
 (function (Scratch) {
