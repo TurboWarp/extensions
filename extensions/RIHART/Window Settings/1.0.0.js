@@ -13,14 +13,14 @@
     ru /*_РусскийЯзык_*/: {
       ExtensionName: "Настройки Окна",
       LabelA: "Window Settings:",
-      MoveWHXY: " | | | |  окно [SC] [WHXY]: [WHXYA], [WHXYB]  | | | | ",
+      MoveWHXY: "окно [SC] [WHXY]: [WHXYA], [WHXYB]",
       // [SC]:
       SCA: "задать",
       SCB: "изменить",
       // [WHXY]:
       WHXYA: "ширину, высоту",
       WHXYB: "позицию x, позицию y",
-      WindowSCWH: " | | | |  окно [MenuSC] [MenuWH]: [WH]  | | | | ",
+      WindowSCWH: "окно [MenuSC] [MenuWH]: [WH]",
       // [MenuSC]:
       MenuSCA: "задать",
       MenuSCB: "изменить",
@@ -29,7 +29,7 @@
       MenuWHB: "высоту",
       MenuWHC: "позицию x",
       MenuWHD: "позицию y",
-      moveToPresets: " | | | |  переместить окно [PRESETS]  | | | | ",
+      moveToPresets: "переместить окно [PRESETS]",
       // [PRESETS]:
       PRESETSA: "по центру",
       PRESETSB: "справа",
@@ -40,15 +40,15 @@
       PRESETSG: "в верхнем левом углу",
       PRESETSH: "в нижнем правом углу",
       PRESETSI: "в нижнем левом углу",
-      changeTitleTo: " | | | |  задать окну имя [TITLE]  | | | | ",
-      WindowWHXY: " | | | |  окно [MenuWindowWHXY]  | | | | ",
+      changeTitleTo: "задать окну имя [TITLE]",
+      WindowWHXY: "окно [MenuWindowWHXY]",
       innerStageSize:
-        " | | | |  размер внутренней сцены [innerMenuSetChange] ширину: [innerWidth] высоту: [innerHeight]  | | | | ",
+        "размер внутренней сцены [innerMenuSetChange] ширину: [innerWidth] высоту: [innerHeight]",
       // [innerMenuSetChange]:
       innerMenuSetChangeA: "задать",
       innerMenuSetChangeB: "изменить",
       innerStageSizeWidthHeight:
-        " | | | |  размер внутренней сцены [innerMenuSetChangeWH] [innerMenuWidthHeight]: [innerWidthHeight]  | | | | ",
+        "размер внутренней сцены [innerMenuSetChangeWH] [innerMenuWidthHeight]: [innerWidthHeight]",
       // [innerMenuSetChangeWH]:
       innerMenuSetChangeWHA: "задать",
       innerMenuSetChangeWHB: "изменить",
@@ -56,21 +56,21 @@
       innerMenuWidthHeightA: "ширину",
       innerMenuWidthHeightB: "высоту",
       setDimensions:
-        " | | | |  задать сцену по ширине: [width] по высоте: [height]  | | | | ",
-      getDimension: " | | | |  сцена [dimension] | | | | ",
-      greenFlag: " | | | |  нажать на флаг [flag] | | | | ",
-      FullscreenEnterExit: " | | | |  полноэкранный режим [MenuFEE] | | | | ",
+        "задать сцену по ширине: [width] по высоте: [height]",
+      getDimension: "сцена [dimension]",
+      greenFlag: "нажать на флаг [flag]",
+      FullscreenEnterExit: "полноэкранный режим [MenuFEE]",
       // [MenuFEE]:
       FullscreenEnter: "включить",
       FullscreenExit: "выключить",
-      closeWindow: " | | | |  закрыть окно  | | | | ",
-      QuestionsWS: " | | | | [MenuQuestions] | | | | ",
+      closeWindow: "закрыть окно",
+      QuestionsWS: "[MenuQuestions]",
       // [MenuQuestions]:
       MenuQuestionsA: "касается ли окно края экрана?",
       MenuQuestionsB: "сфокусировано ли окно?",
       MenuQuestionsC: "является ли окно полноэкранным?",
-      ScreenWHXY: " | | | |  экран [MenuScreenWHXY] | | | | ",
-      setEnabled: " | | | |  задать [thing] [enabled] | | | | ",
+      ScreenWHXY: "экран [MenuScreenWHXY]",
+      setEnabled: "задать [thing] [enabled]",
       // [thing]:
       thingA: "🗲 турбо режим",
       thingB: "интерполяция",
@@ -79,8 +79,8 @@
       thingE: "перо в высоком качестве",
       // [enabled]:
       setFramerate:
-        " | | | |  задать ограничение частоты кадров на: [fps] | | | | ",
-      showHideOption: " | | | | [SHOWHIDE] [OPTIONSH] | | | | ",
+        "задать ограничение частоты кадров на: [fps]",
+      showHideOption: "[SHOWHIDE] [OPTIONSH]",
       // [SHOWHIDE]:
       show: "показать",
       hide: "скрыть",
@@ -89,7 +89,7 @@
       pause: "иконка паузы",
       stop: "иконка остановки",
       fullscreen: "иконка полноэкранного режима",
-      optionShown: " | | | |  [OPTION] показан?  | | | | ",
+      optionShown: "[OPTION] показан?",
     },
   });
 
@@ -176,7 +176,7 @@
             text: Scratch.translate({
               id: "MoveWHXY",
               default:
-                " | | | |  window [SC] [WHXY]: [WHXYA], [WHXYB]  | | | | ",
+                "window [SC] [WHXY]: [WHXYA], [WHXYB]",
             }),
             arguments: {
               SC: {
@@ -203,7 +203,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "WindowSCWH",
-              default: " | | | |  window [MenuSC] [MenuWH]: [WH] | | | | ",
+              default: "window [MenuSC] [MenuWH]: [WH]",
             }),
             arguments: {
               MenuSC: {
@@ -226,7 +226,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "moveToPresets",
-              default: " | | | |  move window to the [PRESETS] | | | | ",
+              default: "move window to the [PRESETS]",
             }),
             arguments: {
               PRESETS: {
@@ -241,7 +241,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "changeTitleTo",
-              default: " | | | |  set window title to [TITLE] | | | | ",
+              default: "set window title to [TITLE]",
             }),
             arguments: {
               TITLE: {
@@ -256,7 +256,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "WindowWHXY",
-              default: " | | | |  window [MenuWindowWHXY]  | | | | ",
+              default: "window [MenuWindowWHXY]",
             }),
             arguments: {
               MenuWindowWHXY: {
@@ -274,7 +274,7 @@
             text: Scratch.translate({
               id: "innerStageSize",
               default:
-                " | | | |  inner stage size [innerMenuSetChange] width: [innerWidth] height: [innerHeight] | | | | ",
+                "inner stage size [innerMenuSetChange] width: [innerWidth] height: [innerHeight]",
             }),
             arguments: {
               innerMenuSetChange: {
@@ -298,7 +298,7 @@
             text: Scratch.translate({
               id: "innerStageSizeWidthHeight",
               default:
-                " | | | |  inner stage size [innerMenuSetChangeWH] [innerMenuWidthHeight]: [innerWidthHeight] | | | | ",
+                "inner stage size [innerMenuSetChangeWH] [innerMenuWidthHeight]: [innerWidthHeight]",
             }),
             arguments: {
               innerMenuSetChangeWH: {
@@ -322,7 +322,7 @@
             text: Scratch.translate({
               id: "setDimensions",
               default:
-                " | | | |  set stage size width: [width] height: [height]  | | | | ",
+                "set stage size width: [width] height: [height]",
             }),
             arguments: {
               width: {
@@ -341,7 +341,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "getDimension",
-              default: " | | | |  stage [dimension] | | | | ",
+              default: "stage [dimension]",
             }),
             arguments: {
               dimension: {
@@ -359,7 +359,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "greenFlag",
-              default: " | | | |  run flag [flag] | | | | ",
+              default: "run flag [flag]",
             }),
             arguments: {
               flag: {
@@ -374,7 +374,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "FullscreenEnterExit",
-              default: " | | | |  fullscreen [MenuFEE] | | | | ",
+              default: "fullscreen [MenuFEE]",
             }),
             arguments: {
               MenuFEE: {
@@ -390,7 +390,7 @@
             isTerminal: true,
             text: Scratch.translate({
               id: "closeWindow",
-              default: " | | | |  close window  | | | | ",
+              default: "close window",
             }),
           },
 
@@ -399,7 +399,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate({
               id: "QuestionsWS",
-              default: " | | | | [MenuQuestions] | | | | ",
+              default: "[MenuQuestions]",
             }),
             disableMonitor: true,
             arguments: {
@@ -415,7 +415,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "ScreenWHXY",
-              default: " | | | |  screen [MenuScreenWHXY] | | | | ",
+              default: "screen [MenuScreenWHXY]",
             }),
             arguments: {
               MenuScreenWHXY: {
@@ -426,34 +426,13 @@
           },
 
           "---",
-          /*
-          {
-            opcode: "setEnabled",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ 
-              id: "setEnabled", 
-              default: " | | | |  set [thing] to [enabled] | | | | "
-            }),
-            arguments: {
-              thing: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "thing",
-                defaultValue: "TURBO_MODE",
-              },
-              enabled: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "enabled",
-                defaultValue: "true",
-              },
-            },
-          },
-*/
+          
           {
             opcode: "setFramerate",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "setFramerate",
-              default: " | | | |  set framerate limit to [fps] | | | | ",
+              default: "set framerate limit to [fps]",
             }),
             arguments: {
               fps: {
@@ -470,7 +449,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "showHideOption",
-              default: " | | | |  [SHOWHIDE] [OPTIONSH]  | | | | ",
+              default: "[SHOWHIDE] [OPTIONSH]",
             }),
             arguments: {
               SHOWHIDE: {
@@ -488,7 +467,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate({
               id: "optionShown",
-              default: " | | | |  [OPTION] shown?  | | | | ",
+              default: "[OPTION] shown?",
             }),
             arguments: {
               OPTION: {
