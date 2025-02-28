@@ -104,11 +104,11 @@
               },
               bots: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "bools"
+                menu: "bools",
               },
               prevent: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "bools"
+                menu: "bools",
               },
               width: {
                 type: Scratch.ArgumentType.STRING,
@@ -230,7 +230,9 @@
     setupchat(args) {
       if (chat == null) {
         const Link =
-          "https://nightdev.com/hosted/obschat/?theme=bttv_dark&channel=" +
+          "https://nightdev.com/hosted/obschat/?theme=" +
+          Scratch.Cast.toString(args.theme) +
+          "k&channel=" +
           Scratch.Cast.toString(args.username) +
           "&fade=" +
           Scratch.Cast.toNumber(args.fade) +
