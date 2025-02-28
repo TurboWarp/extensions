@@ -505,53 +505,53 @@
     }
 
     setBoth(args, util) {
-      cameraX = +args.x;
-      cameraY = +args.y;
+      cameraX = Scratch.Cast.toNumber(args.x) || 0;
+      cameraY = Scratch.Cast.toNumber(args.y) || 0;
       updateCamera();
       vm.runtime.requestRedraw();
     }
     changeZoom(args, util) {
-      cameraZoom += +args.val;
+      cameraZoom += Scratch.Cast.toNumber(args.val) || 0;
       updateCamera();
       vm.runtime.requestRedraw();
     }
     setZoom(args, util) {
-      cameraZoom = +args.val;
+      cameraZoom = Scratch.Cast.toNumber(args.val) || 0;
       updateCamera();
       vm.runtime.requestRedraw();
     }
     changeX(args, util) {
-      cameraX += +args.val;
+      cameraX += Scratch.Cast.toNumber(args.val) || 0;
       updateCamera();
       vm.runtime.requestRedraw();
     }
     setX(args, util) {
-      cameraX = +args.val;
+      cameraX = Scratch.Cast.toNumber(args.val) || 0;
       updateCamera();
       vm.runtime.requestRedraw();
     }
     changeY(args, util) {
-      cameraY += +args.val;
+      cameraY += Scratch.Cast.toNumber(args.val) || 0;
       updateCamera();
       vm.runtime.requestRedraw();
     }
     setY(args, util) {
-      cameraY = +args.val;
+      cameraY = Scratch.Cast.toNumber(args.val) || 0;
       updateCamera();
       vm.runtime.requestRedraw();
     }
     setDirection(args, util) {
-      cameraDirection = +args.val;
+      cameraDirection = Scratch.Cast.toNumber(args.val) || 0;
       updateCamera();
       vm.runtime.requestRedraw();
     }
     rotateCW(args, util) {
-      cameraDirection = cameraDirection + +args.val;
+      cameraDirection = cameraDirection + (Scratch.Cast.toNumber(args.val) || 0);
       updateCamera();
       vm.runtime.requestRedraw();
     }
     rotateCCW(args, util) {
-      cameraDirection = cameraDirection - +args.val;
+      cameraDirection = cameraDirection - (Scratch.Cast.toNumber(args.val) || 0);
       updateCamera();
       vm.runtime.requestRedraw();
     }
