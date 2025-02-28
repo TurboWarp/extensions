@@ -55,8 +55,7 @@
       // [innerMenuWidthHeight]:
       innerMenuWidthHeightA: "ширину",
       innerMenuWidthHeightB: "высоту",
-      setDimensions:
-        "задать сцену по ширине: [width] по высоте: [height]",
+      setDimensions: "задать сцену по ширине: [width] по высоте: [height]",
       getDimension: "сцена [dimension]",
       greenFlag: "нажать на флаг [flag]",
       FullscreenEnterExit: "полноэкранный режим [MenuFEE]",
@@ -78,8 +77,7 @@
       thingD: "убрать разные ограничения",
       thingE: "перо в высоком качестве",
       // [enabled]:
-      setFramerate:
-        "задать ограничение частоты кадров на: [fps]",
+      setFramerate: "задать ограничение частоты кадров на: [fps]",
       showHideOption: "[SHOWHIDE] [OPTIONSH]",
       // [SHOWHIDE]:
       show: "показать",
@@ -175,8 +173,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "MoveWHXY",
-              default:
-                "window [SC] [WHXY]: [WHXYA], [WHXYB]",
+              default: "window [SC] [WHXY]: [WHXYA], [WHXYB]",
             }),
             arguments: {
               SC: {
@@ -321,8 +318,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "setDimensions",
-              default:
-                "set stage size width: [width] height: [height]",
+              default: "set stage size width: [width] height: [height]",
             }),
             arguments: {
               width: {
@@ -426,7 +422,7 @@
           },
 
           "---",
-          
+
           {
             opcode: "setFramerate",
             blockType: Scratch.BlockType.COMMAND,
