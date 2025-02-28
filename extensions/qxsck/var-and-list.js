@@ -327,7 +327,7 @@
         Scratch.Cast.toString(args.LIST),
         "list"
       );
-      return variable ? variable.value.toString() : "";
+      return variable ? Scratch.Cast.toString(variable.value) : "";
     }
     getValueOfList(args, util) {
       const variable = util.target.lookupVariableByNameAndType(
@@ -447,7 +447,7 @@
           if (Scratch.Cast.compare(variable.value[i], value) === 0)
             indexes.push(i + 1);
         }
-        if (indexes.length > 0) return indexes.toString();
+        if (indexes.length > 0) return Scratch.Cast.toString(indexes);
       }
       return "0";
     }

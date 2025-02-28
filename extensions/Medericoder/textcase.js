@@ -18,16 +18,19 @@
   "use strict";
   function funchangecase(text, format) {
     if (format === "uppercase") {
-      return text.toString().toUpperCase();
+      return Scratch.Cast.toString(text).toUpperCase();
     } else if (format === "lowercase") {
-      return text.toString().toLowerCase();
+      return Scratch.Cast.toString(text).toLowerCase();
     } else if (format === "invert") {
       let x = "";
       for (let i = 0; i < text.length; i++) {
-        if (text.toString()[i] === text.toString()[i].toUpperCase()) {
-          x += text.toString()[i].toLowerCase();
+        if (
+          Scratch.Cast.toString(text)[i] ===
+          Scratch.Cast.toString(text)[i].toUpperCase()
+        ) {
+          x += Scratch.Cast.toString(text)[i].toLowerCase();
         } else {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         }
       }
       return x;
@@ -35,9 +38,9 @@
       let x = "";
       for (let i = 0; i < text.length; i++) {
         if (i == 0) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else {
-          x += text.toString()[i];
+          x += Scratch.Cast.toString(text)[i];
         }
       }
       return x;
@@ -45,14 +48,14 @@
       let x = "";
       for (let i = 0; i < text.length; i++) {
         if (i == 0) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else if (
-          text.toString()[i - 1].toLowerCase() ===
-          text.toString()[i - 1].toUpperCase()
+          Scratch.Cast.toString(text)[i - 1].toLowerCase() ===
+          Scratch.Cast.toString(text)[i - 1].toUpperCase()
         ) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else {
-          x += text.toString()[i];
+          x += Scratch.Cast.toString(text)[i];
         }
       }
       return x;
@@ -61,24 +64,24 @@
       let mybool = true;
       for (let i = 0; i < text.length; i++) {
         if (mybool) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
           if (
             !(
-              text.toString()[i].toLowerCase() ===
-              text.toString()[i].toUpperCase()
+              Scratch.Cast.toString(text)[i].toLowerCase() ===
+              Scratch.Cast.toString(text)[i].toUpperCase()
             )
           ) {
             mybool = false;
           }
         } else if (
-          text.toString()[i] == "." ||
-          text.toString()[i] == "!" ||
-          text.toString()[i] == "?"
+          Scratch.Cast.toString(text)[i] == "." ||
+          Scratch.Cast.toString(text)[i] == "!" ||
+          Scratch.Cast.toString(text)[i] == "?"
         ) {
-          x += text.toString()[i];
+          x += Scratch.Cast.toString(text)[i];
           mybool = true;
         } else {
-          x += text.toString()[i];
+          x += Scratch.Cast.toString(text)[i];
         }
       }
       return x;
@@ -86,9 +89,9 @@
       let x = "";
       for (let i = 0; i < text.length; i++) {
         if (i == 0) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else {
-          x += text.toString()[i].toLowerCase();
+          x += Scratch.Cast.toString(text)[i].toLowerCase();
         }
       }
       return x;
@@ -96,14 +99,14 @@
       let x = "";
       for (let i = 0; i < text.length; i++) {
         if (i == 0) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else if (
-          text.toString()[i - 1].toLowerCase() ===
-          text.toString()[i - 1].toUpperCase()
+          Scratch.Cast.toString(text)[i - 1].toLowerCase() ===
+          Scratch.Cast.toString(text)[i - 1].toUpperCase()
         ) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else {
-          x += text.toString()[i].toLowerCase();
+          x += Scratch.Cast.toString(text)[i].toLowerCase();
         }
       }
       return x;
@@ -112,24 +115,24 @@
       let mybool = true;
       for (let i = 0; i < text.length; i++) {
         if (mybool) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
           if (
             !(
-              text.toString()[i].toLowerCase() ===
-              text.toString()[i].toUpperCase()
+              Scratch.Cast.toString(text)[i].toLowerCase() ===
+              Scratch.Cast.toString(text)[i].toUpperCase()
             )
           ) {
             mybool = false;
           }
         } else if (
-          text.toString()[i] == "." ||
-          text.toString()[i] == "!" ||
-          text.toString()[i] == "?"
+          Scratch.Cast.toString(text)[i] == "." ||
+          Scratch.Cast.toString(text)[i] == "!" ||
+          Scratch.Cast.toString(text)[i] == "?"
         ) {
-          x += text.toString()[i];
+          x += Scratch.Cast.toString(text)[i];
           mybool = true;
         } else {
-          x += text.toString()[i].toLowerCase();
+          x += Scratch.Cast.toString(text)[i].toLowerCase();
         }
       }
       return x;
@@ -137,9 +140,9 @@
       let x = "";
       for (let i = 0; i < text.length; i++) {
         if (i % 2 == 0) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else {
-          x += text.toString()[i].toLowerCase();
+          x += Scratch.Cast.toString(text)[i].toLowerCase();
         }
       }
       return x;
@@ -147,9 +150,9 @@
       let x = "";
       for (let i = 0; i < text.length; i++) {
         if (i % 2 == 1) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else {
-          x += text.toString()[i].toLowerCase();
+          x += Scratch.Cast.toString(text)[i].toLowerCase();
         }
       }
       return x;
@@ -158,14 +161,15 @@
       let noletters = 0;
       for (let i = 0; i < text.length; i++) {
         if (
-          text.toString()[i].toUpperCase() === text.toString()[i].toLowerCase()
+          Scratch.Cast.toString(text)[i].toUpperCase() ===
+          Scratch.Cast.toString(text)[i].toLowerCase()
         ) {
           noletters += 1;
-          x += text.toString()[i];
+          x += Scratch.Cast.toString(text)[i];
         } else if ((i - noletters) % 2 == 0) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else {
-          x += text.toString()[i].toLowerCase();
+          x += Scratch.Cast.toString(text)[i].toLowerCase();
         }
       }
       return x;
@@ -174,14 +178,15 @@
       let noletters = 0;
       for (let i = 0; i < text.length; i++) {
         if (
-          text.toString()[i].toUpperCase() === text.toString()[i].toLowerCase()
+          Scratch.Cast.toString(text)[i].toUpperCase() ===
+          Scratch.Cast.toString(text)[i].toLowerCase()
         ) {
           noletters += 1;
-          x += text.toString()[i];
+          x += Scratch.Cast.toString(text)[i];
         } else if ((i - noletters) % 2 == 1) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else {
-          x += text.toString()[i].toLowerCase();
+          x += Scratch.Cast.toString(text)[i].toLowerCase();
         }
       }
       return x;
@@ -189,14 +194,14 @@
       let x = "";
       for (let i = 0; i < text.length; i++) {
         if (Math.random() < 0.5) {
-          x += text.toString()[i].toUpperCase();
+          x += Scratch.Cast.toString(text)[i].toUpperCase();
         } else {
-          x += text.toString()[i].toLowerCase();
+          x += Scratch.Cast.toString(text)[i].toLowerCase();
         }
       }
       return x;
     } else {
-      return text.toString();
+      return Scratch.Cast.toString(text);
     }
   }
 
@@ -205,13 +210,14 @@
     var up = 0;
     for (let i = 0; i < args.TEXT.length; i++) {
       if (
-        args.TEXT.toString()[i].toLowerCase() ===
-        args.TEXT.toString()[i].toUpperCase()
+        Scratch.Cast.toString(args.TEXT)[i].toLowerCase() ===
+        Scratch.Cast.toString(args.TEXT)[i].toUpperCase()
       ) {
         low += 0;
         up += 0;
       } else if (
-        args.TEXT.toString()[i].toLowerCase() === args.TEXT.toString()[i]
+        Scratch.Cast.toString(args.TEXT)[i].toLowerCase() ===
+        Scratch.Cast.toString(args.TEXT)[i]
       ) {
         low += 1;
       } else {
@@ -386,7 +392,10 @@
       if (args.FORMAT == "random") {
         return fungetcase(args).includes("mixed");
       } else {
-        return args.TEXT.toString() === funchangecase(args.TEXT, args.FORMAT);
+        return (
+          Scratch.Cast.toString(args.TEXT) ===
+          funchangecase(args.TEXT, args.FORMAT)
+        );
       }
     }
 
@@ -396,18 +405,18 @@
 
     quasiequal(args) {
       return (
-        args.TEXT1.toString().toLowerCase() ===
-        args.TEXT2.toString().toLowerCase()
+        Scratch.Cast.toString(args.TEXT1).toLowerCase() ===
+        Scratch.Cast.toString(args.TEXT2).toLowerCase()
       );
     }
 
     glitch(args) {
       var x = "";
-      for (let i = 0; i < args.TEXT.toString().length; i++) {
+      for (let i = 0; i < Scratch.Cast.toString(args.TEXT).length; i++) {
         if (Math.random() * 100 < args.PROBA) {
-          x += funchangecase(args.TEXT.toString()[i], "invert");
+          x += funchangecase(Scratch.Cast.toString(args.TEXT)[i], "invert");
         } else {
-          x += args.TEXT.toString()[i];
+          x += Scratch.Cast.toString(args.TEXT)[i];
         }
       }
       return x;

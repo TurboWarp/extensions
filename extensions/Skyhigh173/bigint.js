@@ -389,64 +389,64 @@
       return Number(bi(text));
     }
     add({ a, b }) {
-      return (bi(a) + bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) + bi(b));
     }
     sub({ a, b }) {
-      return (bi(a) - bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) - bi(b));
     }
     mul({ a, b }) {
-      return (bi(a) * bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) * bi(b));
     }
     div({ a, b }) {
       if (Number(b) == 0) return "NaN";
-      return (bi(a) / bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) / bi(b));
     }
     pow({ a, b }) {
-      return (bi(a) ** bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) ** bi(b));
     }
     mod({ a, b }) {
       if (Number(b) == 0) return "NaN";
-      return (bi(a) % bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) % bi(b));
     }
 
     and({ a, b }) {
-      return (bi(a) & bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) & bi(b));
     }
     or({ a, b }) {
-      return (bi(a) | bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) | bi(b));
     }
     xor({ a, b }) {
-      return (bi(a) ^ bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) ^ bi(b));
     }
     ls({ a, b }) {
-      return (bi(a) << bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) << bi(b));
     }
     rs({ a, b }) {
-      return (bi(a) >> bi(b)).toString();
+      return Scratch.Cast.toString(bi(a) >> bi(b));
     }
     not({ a }) {
-      return (~bi(a)).toString();
+      return Scratch.Cast.toString(~bi(a));
     }
 
     select({ a, sel, b }) {
       switch (sel) {
         case "+":
-          return (bi(a) + bi(b)).toString();
+          return Scratch.Cast.toString(bi(a) + bi(b));
         case "-":
-          return (bi(a) - bi(b)).toString();
+          return Scratch.Cast.toString(bi(a) - bi(b));
         case "*":
-          return (bi(a) * bi(b)).toString();
+          return Scratch.Cast.toString(bi(a) * bi(b));
         case "/": {
           if (Number(b) == 0) return "NaN";
-          return (bi(a) / bi(b)).toString();
+          return Scratch.Cast.toString(bi(a) / bi(b));
         }
         case "%": {
           if (Number(b) == 0) return "NaN";
-          return (bi(a) % bi(b)).toString();
+          return Scratch.Cast.toString(bi(a) % bi(b));
         }
         case "^":
         case "**":
-          return (bi(a) ** bi(b)).toString();
+          return Scratch.Cast.toString(bi(a) ** bi(b));
         default:
           return "0";
       }

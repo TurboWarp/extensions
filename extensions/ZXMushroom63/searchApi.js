@@ -144,18 +144,22 @@
     }
 
     searchparam({ ID }) {
-      return new URLSearchParams(location.search).get(ID.toString()) || "";
+      return (
+        new URLSearchParams(location.search).get(Scratch.Cast.toString(ID)) ||
+        ""
+      );
     }
 
     occurencesofsearchparam({ ID }) {
       return (
-        new URLSearchParams(location.search).getAll(ID.toString()).length || 0
+        new URLSearchParams(location.search).getAll(Scratch.Cast.toString(ID))
+          .length || 0
       );
     }
 
     indexedsearchparam({ ID, I }) {
       return (
-        new URLSearchParams(location.search).getAll(ID.toString())[
+        new URLSearchParams(location.search).getAll(Scratch.Cast.toString(ID))[
           parseInt(I) - 1
         ] || ""
       );
@@ -163,8 +167,8 @@
 
     setsearchparam({ ID, VAL }) {
       var s = new URLSearchParams(location.search);
-      s.set(ID.toString(), VAL.toString());
-      history.replaceState("", "", "?" + s.toString());
+      s.set(Scratch.Cast.toString(ID), Scratch.Cast.toString(VAL));
+      history.replaceState("", "", "?" + Scratch.Cast.toString(s));
     }
 
     searchparamslength() {
@@ -175,26 +179,27 @@
 
     deletesearchparam({ ID }) {
       var s = new URLSearchParams(location.search);
-      s.delete(ID.toString());
-      history.replaceState("", "", "?" + s.toString());
+      s.delete(Scratch.Cast.toString(ID));
+      history.replaceState("", "", "?" + Scratch.Cast.toString(s));
     }
 
     appendsearchparam({ ID, VAL }) {
       var s = new URLSearchParams(location.search);
-      s.append(ID.toString(), VAL.toString());
-      history.replaceState("", "", "?" + s.toString());
+      s.append(Scratch.Cast.toString(ID), Scratch.Cast.toString(VAL));
+      history.replaceState("", "", "?" + Scratch.Cast.toString(s));
     }
 
     hassearchparam({ ID }) {
       var s = new URLSearchParams(location.search);
-      return s.has(ID.toString()) || false;
+      return s.has(Scratch.Cast.toString(ID)) || false;
     }
 
     searchparamatindex({ PARAM, I }) {
       var index = parseInt(I) - 1 || 0;
       index = Math.max(0, index);
       var s = new URLSearchParams(location.search);
-      var values = PARAM.toString() === "value" ? s.values() : s.keys();
+      var values =
+        Scratch.Cast.toString(PARAM) === "value" ? s.values() : s.keys();
       var i = 0;
       for (const value of values) {
         if (i === index) {

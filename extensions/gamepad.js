@@ -355,7 +355,7 @@
             arguments: {
               DEADZONE: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: DEFAULT_AXIS_DEADZONE.toString(),
+                defaultValue: Scratch.Cast.toString(DEFAULT_AXIS_DEADZONE),
               },
             },
           },

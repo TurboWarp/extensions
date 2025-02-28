@@ -215,10 +215,15 @@
       return regex.test(args[1]);
     }
     searchText() {
-      return args[1].toString().search(args[2].toString());
+      return Scratch.Cast.toString(args[1]).search(
+        Scratch.Cast.toString(args[2])
+      );
     }
     replaceText() {
-      return args[1].toString().replace(args[2].toString(), args[3].toString());
+      return Scratch.Cast.toString(args[1]).replace(
+        Scratch.Cast.toString(args[2]),
+        Scratch.Cast.toString(args[3])
+      );
     }
 
     matchTextWithPattern({ text, pattern, flags }) {
@@ -226,12 +231,13 @@
       return regex.test(text);
     }
     searchTextWithPattern({ text, pattern }) {
-      return text.toString().search(pattern.toString());
+      return Scratch.Cast.toString(text).search(Scratch.Cast.toString(pattern));
     }
     replaceTextWithPattern({ text, pattern, replacement }) {
-      return text
-        .toString()
-        .replace(pattern.toString(), replacement.toString());
+      return Scratch.Cast.toString(text).replace(
+        Scratch.Cast.toString(pattern),
+        Scratch.Cast.toString(replacement)
+      );
     }
 
     constant({ constant }) {

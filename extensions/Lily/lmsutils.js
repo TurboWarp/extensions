@@ -1166,7 +1166,7 @@
     }
 
     lettersToOf(args) {
-      var string = args.STRING.toString();
+      var string = Scratch.Cast.toString(args.STRING);
       var input1 = args.INPUTA - 1;
       var input2 = args.INPUTB;
       return string.slice(input1, input2);
@@ -1294,7 +1294,7 @@
       if (args.STRING === "") return "";
       if (args.DROPDOWN === "base64") return atob(args.STRING);
       if (args.DROPDOWN === "binary") {
-        var output = args.STRING.toString();
+        var output = Scratch.Cast.toString(args.STRING);
         return output
           .split(" ")
           .map((x) => (x = String.fromCharCode(parseInt(x, 2))))

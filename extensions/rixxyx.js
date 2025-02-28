@@ -374,20 +374,20 @@
       }
     }
     extractTextBetweenToCharacters(args) {
-      var txt = args.TEXT.toString();
+      var txt = Scratch.Cast.toString(args.TEXT);
       var char1 = args.NUM_1 - 1;
       var char2 = args.NUM_2;
       return txt.slice(char1, char2);
     }
     returnString(args) {
-      return args.TEXT.toString();
+      return Scratch.Cast.toString(args.TEXT);
     }
     isTheSameTypeAs(args) {
       return typeof args.TEXT_1 == typeof args.TEXT_2;
     }
     reverseTxt(args) {
       var emptyStr = "";
-      var txt = args.TEXT.toString();
+      var txt = Scratch.Cast.toString(args.TEXT);
       var localCount = txt.length - 1;
       while (localCount != -1) {
         emptyStr = emptyStr + txt.charAt(localCount);
@@ -400,8 +400,8 @@
     }
     incrementCountByNum(args) {
       if (
-        count.toString().indexOf("-") == -1 ||
-        args.NUM.toString().indexOf("-") == -1
+        Scratch.Cast.toString(count).indexOf("-") == -1 ||
+        Scratch.Cast.toString(args.NUM).indexOf("-") == -1
       ) {
         count += Math.floor(args.NUM);
       } else {
@@ -409,7 +409,9 @@
       }
     }
     decrementCountByNum(args) {
-      if ((count - Math.floor(args.NUM)).toString().indexOf("-") == -1) {
+      if (
+        Scratch.Cast.toString(count - Math.floor(args.NUM)).indexOf("-") == -1
+      ) {
         count -= Math.floor(args.NUM);
       } else {
         count = 0;
@@ -417,8 +419,8 @@
     }
     setCount(args) {
       if (
-        count.toString().indexOf("-") == -1 &&
-        args.NUM.toString().indexOf("-") == -1
+        Scratch.Cast.toString(count).indexOf("-") == -1 &&
+        Scratch.Cast.toString(args.NUM).indexOf("-") == -1
       ) {
         count = Math.floor(args.NUM);
       } else {
@@ -447,14 +449,14 @@
       return Scratch.Cast.toBoolean(args.BOOL);
     }
     binToTxt(args) {
-      var binary = args.BIN.toString();
+      var binary = Scratch.Cast.toString(args.BIN);
       return binary
         .split(" ")
         .map((x) => (x = String.fromCharCode(parseInt(x, 2))))
         .join("");
     }
     txtToBin(args) {
-      var text = args.TEXT.toString();
+      var text = Scratch.Cast.toString(args.TEXT);
       return Array.from(text)
         .map((each) => each.charCodeAt(0).toString(2))
         .join(" ");

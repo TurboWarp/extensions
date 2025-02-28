@@ -333,7 +333,7 @@
 
   const fingersMenu = [];
   for (let i = 0; i < Math.max(maxTouchPoints, 10); i++) {
-    fingersMenu.push((i + 1).toString());
+    fingersMenu.push(Scratch.Cast.toString(i + 1));
   }
 
   /**

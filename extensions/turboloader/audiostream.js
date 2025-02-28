@@ -513,7 +513,7 @@
     }
 
     am_playnew({ SRC }) {
-      let id = btoa((Math.random() * 1e17).toString());
+      let id = btoa(Scratch.Cast.toString(Math.random() * 1e17));
       let ctx = this.newContext(id, { simple: true });
       this.am_loadasset({ SRC: SRC }, ctx);
       ctx.source.currentTime = 0;
