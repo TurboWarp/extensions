@@ -6,7 +6,6 @@
 
 (function (Scratch) {
   "use strict";
-
   const vm = Scratch.vm;
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("This extension must run unsandboxed.");
@@ -38,7 +37,6 @@
   const TEXTURECOLOR = "#0fb5d6"; // sky blue
   const BUFFERCOLOR = "#b31064"; // maroon
   const ARRAYBUFFERCOLOR = "#b31010"; // red similar to list blocks
-
   // WGSL blocks
   const VARIABLECOLOR = "#bfbf1b"; // yellow
   const OBJECTCOLOR = "#0c8a1d"; // dark green
@@ -48,14 +46,11 @@
   const ATOMICCOLOR = "#e64e4e"; // light red
   const ARBWGSLCOLOR = "#3528bf"; // dark blue
 
-
-  
   class GPUSb3 {
     constructor() {
       this.device = null;
       this.adapter = null;
     }
-
     /**
      * Reconnect to WebGPU and clear resources
      * @param {*} args Unused
@@ -140,7 +135,7 @@
       // this.init(null, null);
       return {
         id: "gpusb3",
-        name: "GPU.sb3",
+        name: Scratch.translate("GPU.sb3"),
 
         color1: "#27c90e",
         // color2: "#166af2",
@@ -150,18 +145,20 @@
           {
             opcode: "webgpuAvailable",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "WebGPU available?",
+            text: Scratch.translate("WebGPU available?"),
           },
           {
             opcode: "adapterConnected",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "Connected to GPU?",
+            text: Scratch.translate("connected to GPU?"),
           },
 
           {
             opcode: "compileHat", // all the shader code goes under these hats
             blockType: Scratch.BlockType.EVENT,
-            text: "Define shader [NAME] using bind group layout [BGL]",
+            text: Scratch.translate(
+              "define shader [NAME] using bind group layout [BGL]"
+            ),
             isEdgeActivated: false,
             arguments: {
               // all arguments here are grabbed using some workspace tomfoolery, hence why they don't support anything other than text
@@ -169,11 +166,11 @@
               // and thought that was a good idea despite it being horrible and the least efficient way to do it
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myShader",
+                defaultValue: Scratch.translate("myShader"),
               },
               BGL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBindGroupLayout",
+                defaultValue: Scratch.translate("myBindGroupLayout"),
               },
             },
           },
@@ -181,47 +178,49 @@
           {
             opcode: "compileStart", // this is what converts the hats into the juicy code
             blockType: Scratch.BlockType.COMMAND,
-            text: "compile shaders ",
+            text: Scratch.translate("compile shaders"),
           },
 
           {
             opcode: "onError", // error handling system to prevent everything from exploding
             blockType: Scratch.BlockType.EVENT,
-            text: "when error thrown",
+            text: Scratch.translate("when error thrown"),
             isEdgeActivated: false,
           },
 
           {
             opcode: "clearError",
             blockType: Scratch.BlockType.COMMAND,
-            text: "clear current error",
+            text: Scratch.translate("clear current error"),
           },
 
           {
             opcode: "error",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Error",
+            text: Scratch.translate("error"),
           },
 
           {
             opcode: "init", // this is run when the extension is loaded and is used to reconnect to the gpu
             blockType: Scratch.BlockType.COMMAND,
-            text: "Connect to GPU",
+            text: Scratch.translate("connect to GPU"),
           },
 
           {
             opcode: "runGPU",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Run shader [GPUFUNC] using bind group [BINDGROUP] dimensions x: [X] y: [Y] z: [Z]",
+            text: Scratch.translate(
+              "run shader [GPUFUNC] using bind group [BINDGROUP] dimensions x: [X] y: [Y] z: [Z]"
+            ),
             arguments: {
               GPUFUNC: {
                 // GPUFUNC is an old name that i am to scared to change
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myShader",
+                defaultValue: Scratch.translate("myShader"),
               },
               BINDGROUP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBindGroup",
+                defaultValue: Scratch.translate("myBindGroup"),
               },
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -240,7 +239,7 @@
 
           {
             blockType: "label",
-            text: "Data input blocks",
+            text: Scratch.translate("Data input blocks"),
           },
 
           {
@@ -248,11 +247,11 @@
             // https://extensions.derpygamer2142.com/docs/gpusb3/blocks#bindGroupLayout
             opcode: "createBindGroupLayout",
             blockType: Scratch.BlockType.CONDITIONAL,
-            text: "Create bind group layout called [NAME]",
+            text: Scratch.translate("create bind group layout called [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBindGroupLayout",
+                defaultValue: Scratch.translate("myBindGroupLayout"),
               },
             },
             color1: BINDGROUPLAYOUTCOLOR,
@@ -261,7 +260,9 @@
           {
             opcode: "bindGroupLayoutEntry",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Add bind group layout entry with binding [BINDING] for type [TYPE] and descriptor [DESC]",
+            text: Scratch.translate(
+              "add bind group layout entry with binding [BINDING] for type [TYPE] and descriptor [DESC]"
+            ),
             arguments: {
               BINDING: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -270,7 +271,7 @@
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "BGLENTRYTYPES",
-                defaultValue: "buffer",
+                defaultValue: Scratch.translate("buffer"),
               },
               DESC: {
                 type: Scratch.ArgumentType.STRING,
@@ -284,7 +285,9 @@
             opcode: "bufferEntryDescriptor",
             blockType: Scratch.BlockType.REPORTER,
             // note to self: this text is correct, there's a different descriptor for each type
-            text: "Buffer layout entry descriptor with usage type [TYPE]",
+            text: Scratch.translate(
+              "buffer layout entry descriptor with usage type [TYPE]"
+            ),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -298,7 +301,9 @@
             opcode: "textureEntryDescriptor",
             blockType: Scratch.BlockType.REPORTER,
             // note to self: this text is correct, there's a different descriptor for each type
-            text: "Texture layout entry descriptor with usage type [TYPE] and format [FORMAT]",
+            text: Scratch.translate(
+              "texture layout entry descriptor with usage type [TYPE] and format [FORMAT]"
+            ),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -317,7 +322,9 @@
             opcode: "samplerEntryDescriptor",
             blockType: Scratch.BlockType.REPORTER,
             // note to self: this text is correct, there's a different descriptor for each type
-            text: "Sampler layout entry descriptor with sample type [TYPE]",
+            text: Scratch.translate(
+              "sampler layout entry descriptor with sample type [TYPE]"
+            ),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -329,15 +336,17 @@
           {
             opcode: "createBindGroup",
             blockType: Scratch.BlockType.CONDITIONAL,
-            text: "Create bind group called [NAME] using layout [LAYOUT]",
+            text: Scratch.translate(
+              "create bind group called [NAME] using layout [LAYOUT]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBindGroup",
+                defaultValue: Scratch.translate("myBindGroup"),
               },
               LAYOUT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBindGroupLayout",
+                defaultValue: Scratch.translate("myBindGroupLayout"),
               },
             },
             color1: BINDGROUPCOLOR,
@@ -346,7 +355,9 @@
           {
             opcode: "bindGroupEntry",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Add bind group entry with binding [BINDING] of type [TYPE] using resource named [RESOURCE]",
+            text: Scratch.translate(
+              "add bind group entry with binding [BINDING] of type [TYPE] using resource named [RESOURCE]"
+            ),
             arguments: {
               BINDING: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -355,11 +366,11 @@
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "BGLENTRYTYPES", // this is named badly ig?
-                defaultValue: "buffer",
+                defaultValue: Scratch.translate("buffer"),
               },
               RESOURCE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
+                defaultValue: Scratch.translate("myBuffer"),
               },
             },
             color1: BINDGROUPCOLOR,
@@ -369,7 +380,7 @@
             // this is technically just a binary or operator but it's what's used to join usage operators
             blockType: Scratch.BlockType.REPORTER,
             opcode: "binaryOr",
-            text: "Usage [A] | [B]",
+            text: Scratch.translate("usage [A] | [B]"),
             arguments: {
               A: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -387,11 +398,13 @@
             // this is a GPUBuffer, not an ArrayBuffer
             blockType: Scratch.BlockType.COMMAND,
             opcode: "createBuffer",
-            text: "Create buffer called [NAME] with size(in bytes) [SIZE] and usage flags [USAGE]",
+            text: Scratch.translate(
+              "create buffer called [NAME] with size(in bytes) [SIZE] and usage flags [USAGE]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
+                defaultValue: Scratch.translate("myBuffer"),
               },
               SIZE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -409,7 +422,7 @@
             // https://www.w3.org/TR/webgpu/#buffer-usage
             opcode: "bufferUsage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Buffer usage [USAGE]",
+            text: Scratch.translate("buffer usage [USAGE]"),
             arguments: {
               USAGE: {
                 type: Scratch.ArgumentType.STRING,
@@ -424,15 +437,17 @@
             // this should be self explanatory
             opcode: "copyTextureToBuffer",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Copy texture [TEXTURE] to buffer [BUFFER] with dimensions [WIDTH] [HEIGHT]",
+            text: Scratch.translate(
+              "copy texture [TEXTURE] to buffer [BUFFER] with dimensions [WIDTH] [HEIGHT]"
+            ),
             arguments: {
               TEXTURE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myTexture",
+                defaultValue: Scratch.translate("myTexture"),
               },
               BUFFER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
+                defaultValue: Scratch.translate("myBuffer"),
               },
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -452,7 +467,9 @@
 
             opcode: "writeBuffer",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Write [SIZE] elements of data from arraybuffer [ARRAY] to buffer [BUFFER] from offset [OFF1] to offset [OFF2]",
+            text: Scratch.translate(
+              "write [SIZE] elements of data from arraybuffer [ARRAY] to buffer [BUFFER] from offset [OFF1] to offset [OFF2]"
+            ),
             arguments: {
               SIZE: {
                 // https://www.w3.org/TR/webgpu/#dom-gpuqueue-writebuffer
@@ -465,7 +482,7 @@
               },
               BUFFER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
+                defaultValue: Scratch.translate("myBuffer"),
               },
               OFF1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -483,7 +500,9 @@
             // this is primarily used for transferring stuff to MAP_WRITE | COPY_DST buffers
             opcode: "copyBufferToBuffer",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Copy [NUMBYTES] bytes of data from buffer [BUF1] from  position [BUF1OFF] to buffer [BUF2] at position [BUF2OFF]",
+            text: Scratch.translate(
+              "copy [NUMBYTES] bytes of data from buffer [BUF1] from  position [BUF1OFF] to buffer [BUF2] at position [BUF2OFF]"
+            ),
             arguments: {
               NUMBYTES: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -491,7 +510,7 @@
               },
               BUF1: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer1",
+                defaultValue: Scratch.translate("myBuffer1"),
               },
               BUF1OFF: {
                 // IMPORTANT: THIS IS IN BYTES!!!!!!!!!
@@ -500,7 +519,7 @@
               },
               BUF2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer2",
+                defaultValue: Scratch.translate("myBuffer2"),
               },
               BUF2OFF: {
                 // IMPORTANT: THIS IS IN BYTES!!!!!!!!!
@@ -516,7 +535,9 @@
             hideFromPalette: true,
             opcode: "clearBuffer",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Clear [NUMBYTES] bytes(-1 for all) of buffer [BUFFER] from offset [OFFSET]",
+            text: Scratch.translate(
+              "clear [NUMBYTES] bytes(-1 for all) of buffer [BUFFER] from offset [OFFSET]"
+            ),
             arguments: {
               NUMBYTES: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -524,7 +545,7 @@
               },
               BUFFER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
+                defaultValue: Scratch.translate("myBuffer"),
               },
               OFFSET: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -538,15 +559,17 @@
             // gotta have the MAP_READ thing here
             opcode: "readBuffer",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Read buffer [BUFFER] to arraybuffer [ARRAYBUFFER]",
+            text: Scratch.translate(
+              "read buffer [BUFFER] to arraybuffer [ARRAYBUFFER]"
+            ),
             arguments: {
               BUFFER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
+                defaultValue: Scratch.translate("myBuffer"),
               },
               ARRAYBUFFER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myArrayBuffer",
+                defaultValue: Scratch.translate("myArrayBuffer"),
               },
             },
             color1: BUFFERCOLOR,
@@ -557,11 +580,13 @@
             // and would have a bunch of overhead from running like 2 shaders and a gpu write
             opcode: "createTexture",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Create texture called [NAME] width dimensions [WIDTH] [HEIGHT], color format [FORMAT] and usage [USAGE]",
+            text: Scratch.translate(
+              "create texture called [NAME] width dimensions [WIDTH] [HEIGHT], color format [FORMAT] and usage [USAGE]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myTexture",
+                defaultValue: Scratch.translate("myTexture"),
               },
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -587,7 +612,7 @@
             // https://www.w3.org/TR/webgpu/#texture-usage
             opcode: "textureUsage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Texture usage [USAGE]",
+            text: Scratch.translate("texture usage [USAGE]"),
             arguments: {
               USAGE: {
                 type: Scratch.ArgumentType.STRING,
@@ -604,11 +629,13 @@
             hideFromPalette: true,
             opcode: "createSampler",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Create texture sampler called [NAME] with U address mode [UMODE] and v address mode [VMODE] and mag filter [MAGFILTER]",
+            text: Scratch.translate(
+              "create texture sampler called [NAME] with U address mode [UMODE] and v address mode [VMODE] and mag filter [MAGFILTER]"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "mySampler",
+                defaultValue: Scratch.translate("mySampler"),
               },
               UMODE: {
                 menu: "ADDRESSMODES",
@@ -628,7 +655,7 @@
             opcode: "genF32",
             blockType: Scratch.BlockType.REPORTER,
             hideFromPalette: true,
-            text: "F32 array from array [ARRAY]",
+            text: Scratch.translate("F32 array from array [ARRAY]"),
             arguments: {
               ARRAY: {
                 type: Scratch.ArgumentType.STRING,
@@ -642,7 +669,9 @@
             // https://developer.mozilla.org/en-US/docs/Web/API/GPUCommandEncoder/copyBufferToTexture
             opcode: "copyBufferToTexture",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Copy elements with dimensions [WIDTH], [HEIGHT] from offset [OFFSET] in buffer [BUFFER] to texture [TEXTURE]",
+            text: Scratch.translate(
+              "copy elements with dimensions [WIDTH], [HEIGHT] from offset [OFFSET] in buffer [BUFFER] to texture [TEXTURE]"
+            ),
             arguments: {
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -659,11 +688,11 @@
               },
               BUFFER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myBuffer",
+                defaultValue: Scratch.translate("myBuffer"),
               },
               TEXTURE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myTexture",
+                defaultValue: Scratch.translate("myTexture"),
               },
             },
             color1: TEXTURECOLOR,
@@ -673,7 +702,9 @@
             // costume -> GPUTexture
             opcode: "writeTexture",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Write texture data from [IMAGE] to texture [TEXTURE]",
+            text: Scratch.translate(
+              "write texture data from [IMAGE] to texture [TEXTURE]"
+            ),
             arguments: {
               IMAGE: {
                 type: Scratch.ArgumentType.STRING,
@@ -681,7 +712,7 @@
               },
               TEXTURE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myTexture",
+                defaultValue: Scratch.translate("myTexture"),
               },
             },
             color1: TEXTURECOLOR,
@@ -689,7 +720,7 @@
 
           {
             blockType: "label",
-            text: "ArrayBuffer blocks",
+            text: Scratch.translate("ArrayBuffer blocks"),
           },
 
           // this is just arraybuffer stuff
@@ -697,18 +728,20 @@
           {
             opcode: "listABs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "List arraybuffers",
+            text: Scratch.translate("list arraybuffers"),
             color1: ARRAYBUFFERCOLOR,
           },
 
           {
             opcode: "createAB",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Create arraybuffer called [ARRAYBUFFER] with length [LENGTH]",
+            text: Scratch.translate(
+              "create arraybuffer called [ARRAYBUFFER] with length [LENGTH]"
+            ),
             arguments: {
               ARRAYBUFFER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myArrayBuffer",
+                defaultValue: Scratch.translate("myArrayBuffer"),
               },
 
               LENGTH: {
@@ -722,11 +755,13 @@
           {
             opcode: "createABFromArray",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Create arraybuffer and view called [ARRAYBUFFER] from array [ARRAY] of type [TYPE] ",
+            text: Scratch.translate(
+              "create arraybuffer and view called [ARRAYBUFFER] from array [ARRAY] of type [TYPE]"
+            ),
             arguments: {
               ARRAYBUFFER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myArrayBuffer",
+                defaultValue: Scratch.translate("myArrayBuffer"),
               },
               ARRAY: {
                 type: Scratch.ArgumentType.STRING,
@@ -743,11 +778,11 @@
           {
             opcode: "deleteAB",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Delete arraybuffer [ARRAYBUFFER]",
+            text: Scratch.translate("delete arraybuffer [ARRAYBUFFER]"),
             arguments: {
               ARRAYBUFFER: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myArrayBuffer",
+                defaultValue: Scratch.translate("myArrayBuffer"),
               },
             },
             color1: ARRAYBUFFERCOLOR,
@@ -756,7 +791,9 @@
           {
             opcode: "resizeAB",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Resize arraybuffer [ARRAYBUFFER] to [SIZE] bytes",
+            text: Scratch.translate(
+              "resize arraybuffer [ARRAYBUFFER] to [SIZE] bytes"
+            ),
             arguments: {
               ARRAYBUFFER: {
                 type: Scratch.ArgumentType.STRING,
@@ -773,14 +810,16 @@
           {
             opcode: "listViews",
             blockType: Scratch.BlockType.REPORTER,
-            text: "List views",
+            text: Scratch.translate("list views"),
             color1: ARRAYBUFFERCOLOR,
           },
 
           {
             opcode: "createABView",
             blockType: Scratch.BlockType.COMMAND,
-            text: "View arraybuffer [ARRAYBUFFER] as [TYPE] called [NAME]",
+            text: Scratch.translate(
+              "view arraybuffer [ARRAYBUFFER] as [TYPE] called [NAME]"
+            ),
             arguments: {
               ARRAYBUFFER: {
                 type: Scratch.ArgumentType.STRING,
@@ -792,7 +831,7 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myView",
+                defaultValue: Scratch.translate("myView"),
               },
             },
             color1: ARRAYBUFFERCOLOR,
@@ -801,11 +840,11 @@
           {
             opcode: "deleteView",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Delete view [NAME]",
+            text: Scratch.translate("delete view [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myView",
+                defaultValue: Scratch.translate("myView"),
               },
             },
             color1: ARRAYBUFFERCOLOR,
@@ -814,7 +853,9 @@
           {
             opcode: "setItemInView",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set item [INDEX] of view [VIEW] to [VALUE]",
+            text: Scratch.translate(
+              "set item [INDEX] of view [VIEW] to [VALUE]"
+            ),
             arguments: {
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -822,7 +863,7 @@
               },
               VIEW: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myView",
+                defaultValue: Scratch.translate("myView"),
               },
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -835,7 +876,9 @@
           {
             opcode: "setView",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Copy data from array [ARRAY] to view [VIEW] from index [INDEX]",
+            text: Scratch.translate(
+              "copy data from array [ARRAY] to view [VIEW] from index [INDEX]"
+            ),
             arguments: {
               ARRAY: {
                 type: Scratch.ArgumentType.STRING,
@@ -843,7 +886,7 @@
               },
               VIEW: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myView",
+                defaultValue: Scratch.translate("myView"),
               },
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -856,7 +899,9 @@
           {
             opcode: "fillView",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Fill items [START] to [END] of view [VIEW] with [VALUE]",
+            text: Scratch.translate(
+              "fill items [START] to [END] of view [VIEW] with [VALUE]"
+            ),
             arguments: {
               START: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -868,7 +913,7 @@
               },
               VIEW: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myView",
+                defaultValue: Scratch.translate("myView"),
               },
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -881,7 +926,7 @@
           {
             opcode: "itemOfView",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Item [INDEX] of arraybuffer view [VIEW]",
+            text: Scratch.translate("item [INDEX] of arraybuffer view [VIEW]"),
             arguments: {
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -889,7 +934,7 @@
               },
               VIEW: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myView",
+                defaultValue: Scratch.translate("myView"),
               },
             },
             color1: ARRAYBUFFERCOLOR,
@@ -898,7 +943,7 @@
           {
             opcode: "sliceView",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Items [START] to [END] of view [VIEW]",
+            text: Scratch.translate("items [START] to [END] of view [VIEW]"),
             arguments: {
               START: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -910,7 +955,7 @@
               },
               VIEW: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myView",
+                defaultValue: Scratch.translate("myView"),
               },
             },
             color1: ARRAYBUFFERCOLOR,
@@ -919,11 +964,11 @@
           {
             opcode: "viewToArray",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get view [VIEW] as array",
+            text: Scratch.translate("get view [VIEW] as array"),
             arguments: {
               VIEW: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myView",
+                defaultValue: Scratch.translate("myView"),
               },
             },
             color1: ARRAYBUFFERCOLOR,
@@ -932,7 +977,7 @@
           {
             opcode: "propFromView",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[PROP] of view [VIEW]",
+            text: Scratch.translate("[PROP] of view [VIEW]"),
             arguments: {
               PROP: {
                 type: Scratch.ArgumentType.STRING,
@@ -940,7 +985,7 @@
               },
               VIEW: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myView",
+                defaultValue: Scratch.translate("myView"),
               },
             },
             color1: ARRAYBUFFERCOLOR,
@@ -948,7 +993,7 @@
 
           {
             blockType: "label",
-            text: "WGSL Blocks",
+            text: Scratch.translate("WGSL Blocks"),
           },
 
           // it would be unnecessarily time consuming to explain the ins and outs of wgsl/webgpu syntax
@@ -964,7 +1009,9 @@
           {
             opcode: "declareVar",
             blockType: Scratch.BlockType.COMMAND,
-            text: "declare [VARTYPE] variable as [NAME] with value [VALUE]: [TYPE]",
+            text: Scratch.translate(
+              "declare [VARTYPE] variable as [NAME] with value [VALUE]: [TYPE]"
+            ),
             arguments: {
               VARTYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -973,7 +1020,7 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "someVariable",
+                defaultValue: Scratch.translate("someVariable"),
               },
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
@@ -992,7 +1039,9 @@
           {
             opcode: "bindInput",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Bind shader resource # [BINDNUM] to variable [VARNAME] with settings [SETTINGS] type [INPUTTYPE]",
+            text: Scratch.translate(
+              "bind shader resource # [BINDNUM] to variable [VARNAME] with settings [SETTINGS] type [INPUTTYPE]"
+            ),
             arguments: {
               BINDNUM: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1017,7 +1066,7 @@
           {
             opcode: "variableUsage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Variable usage [USAGE] next [NEXT]",
+            text: Scratch.translate("variable usage [USAGE] next [NEXT]"),
             arguments: {
               USAGE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1035,11 +1084,11 @@
           {
             opcode: "varOp",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Variable [VARNAME] [VAROP]  [INPUT]",
+            text: Scratch.translate("variable [VARNAME] [VAROP]  [INPUT]"), // this will look like "Variable (something) (+=) (12)"
             arguments: {
               VARNAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "someVariable",
+                defaultValue: Scratch.translate("someVariable"),
               },
               VAROP: {
                 type: Scratch.ArgumentType.STRING,
@@ -1057,11 +1106,11 @@
           {
             opcode: "getVar",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get variable [NAME]",
+            text: Scratch.translate("get variable [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "someVariable",
+                defaultValue: Scratch.translate("someVariable"),
               },
             },
             color1: VARIABLECOLOR,
@@ -1070,11 +1119,11 @@
           {
             opcode: "variablePointer",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Pointer to variable [VAR]",
+            text: Scratch.translate("pointer to variable [VAR]"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myVariable",
+                defaultValue: Scratch.translate("myVariable"),
               },
             },
             color1: VARIABLECOLOR,
@@ -1085,7 +1134,9 @@
           {
             opcode: "typeConstructor",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Create type [TYPE] of [SUBTYPE], length(array only!) [LENGTH]",
+            text: Scratch.translate(
+              "create type [TYPE] of [SUBTYPE], length(array only!) [LENGTH]"
+            ),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1107,7 +1158,9 @@
           {
             opcode: "matrixType",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Matrix type with [COLUMNS] columns and [ROWS] rows",
+            text: Scratch.translate(
+              "matrix type with [COLUMNS] columns and [ROWS] rows"
+            ),
             arguments: {
               COLUMNS: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1124,7 +1177,9 @@
           {
             opcode: "textureType",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Texture type of [TYPE] with access [ACCESS]",
+            text: Scratch.translate(
+              "texture type of [TYPE] with access [ACCESS]"
+            ),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1141,11 +1196,11 @@
           {
             opcode: "structType",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Type of struct [STRUCT]",
+            text: Scratch.translate("type of struct [STRUCT]"),
             arguments: {
               STRUCT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MyStruct",
+                defaultValue: Scratch.translate("MyStruct"),
               },
             },
             color1: TYPECOLOR,
@@ -1155,13 +1210,13 @@
             hideFromPalette: true, // this doesn't work with compute shaders, but if i decide to get freaky and somehow add other shader types(i probably won't) why redo code
             opcode: "samplerType",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Sampler type",
+            text: Scratch.translate("Sampler type"),
           },
 
           {
             opcode: "rootType",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Base type [TYPE]",
+            text: Scratch.translate("base type [TYPE]"),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1177,7 +1232,9 @@
           {
             opcode: "constructFromType",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Construct type [TYPE] with values [VALUES]",
+            text: Scratch.translate(
+              "construct type [TYPE] with values [VALUES]"
+            ),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1195,11 +1252,11 @@
           {
             opcode: "declareStruct",
             blockType: Scratch.BlockType.CONDITIONAL,
-            text: "Declare struct called [NAME]",
+            text: Scratch.translate("declare struct called [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "MyStruct",
+                defaultValue: Scratch.translate("MyStruct"),
               },
             },
             color1: OBJECTCOLOR,
@@ -1208,11 +1265,13 @@
           {
             opcode: "structProperty",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Add property called [PROPERTY] with type [TYPE] to struct",
+            text: Scratch.translate(
+              "add property called [PROPERTY] with type [TYPE] to struct"
+            ),
             arguments: {
               PROPERTY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "someProperty",
+                defaultValue: Scratch.translate("someProperty"),
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1226,11 +1285,11 @@
           {
             opcode: "indexObject",
             blockType: Scratch.BlockType.REPORTER,
-            text: "In object [ARRAY] get index [INDEX]",
+            text: Scratch.translate("in object [ARRAY] get index [INDEX]"),
             arguments: {
               ARRAY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "someArray",
+                defaultValue: Scratch.translate("someArray"),
               },
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1243,11 +1302,11 @@
           {
             opcode: "getProp",
             blockType: Scratch.BlockType.REPORTER,
-            text: "In object [OBJECT] get property [PROP]",
+            text: Scratch.translate("in object [OBJECT] get property [PROP]"),
             arguments: {
               OBJECT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "someObject",
+                defaultValue: Scratch.translate("someObject"),
               },
               PROP: {
                 type: Scratch.ArgumentType.STRING,
@@ -1262,7 +1321,9 @@
           {
             opcode: "computeFunc",
             blockType: Scratch.BlockType.CONDITIONAL,
-            text: "Computer shader with workgroup size [WGSIZE]",
+            text: Scratch.translate(
+              "computer shader with workgroup size [WGSIZE]"
+            ),
             arguments: {
               WGSIZE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1276,7 +1337,7 @@
           {
             opcode: "wgslForLoop",
             blockType: Scratch.BlockType.CONDITIONAL, // this isn't a conditional :trol:
-            text: "For [VARNAME] in range [START], [END]",
+            text: Scratch.translate("for [VARNAME] in range [START], [END]"),
             arguments: {
               VARNAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -1298,7 +1359,7 @@
           {
             opcode: "wgslWhileLoop",
             blockType: Scratch.BlockType.CONDITIONAL, // this isn't a conditional :trol:
-            text: "While [COND]",
+            text: Scratch.translate("while [COND]"),
             arguments: {
               COND: {
                 type: Scratch.ArgumentType.STRING,
@@ -1313,7 +1374,7 @@
             opcode: "break",
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
-            text: "break",
+            text: Scratch.translate("break"),
             color1: CONTROLCOLOR,
           },
 
@@ -1321,14 +1382,16 @@
             opcode: "continue",
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
-            text: "continue",
+            text: Scratch.translate("continue"),
             color1: CONTROLCOLOR,
           },
 
           {
             opcode: "wgslFunc",
             blockType: Scratch.BlockType.REPORTER,
-            text: "WGSL builtin [OPERATION] with args [VALUE]",
+            text: Scratch.translate(
+              "WGSL builtin [OPERATION] with args [VALUE]"
+            ),
             arguments: {
               OPERATION: {
                 type: Scratch.ArgumentType.STRING,
@@ -1346,7 +1409,7 @@
           {
             opcode: "funcArgs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Func arg input [ARG], next [NEXT]",
+            text: Scratch.translate("func arg input [ARG], next [NEXT]"),
             arguments: {
               ARG: {
                 // yee haw i'm a pirate
@@ -1364,11 +1427,13 @@
           {
             opcode: "defFunc",
             blockType: Scratch.BlockType.CONDITIONAL,
-            text: "Def function [FUNCNAME] that returns type [TYPE] with args [ARGS]",
+            text: Scratch.translate(
+              "def function [FUNCNAME] that returns type [TYPE] with args [ARGS]"
+            ),
             arguments: {
               FUNCNAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myFunc",
+                defaultValue: Scratch.translate("myFunc"),
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1386,11 +1451,13 @@
           {
             opcode: "defFuncArgs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Def arg [ARGNAME]: [ARGTYPE], next [NEXTARG]",
+            text: Scratch.translate(
+              "def arg [ARGNAME]: [ARGTYPE], next [NEXTARG]"
+            ),
             arguments: {
               ARGNAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "someArg",
+                defaultValue: Scratch.translate("someArg"),
               },
               ARGTYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1408,11 +1475,11 @@
           {
             opcode: "getFuncArg",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Get function arg [ARGNAME]",
+            text: Scratch.translate("get function arg [ARGNAME]"),
             arguments: {
               ARGNAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "someArg",
+                defaultValue: Scratch.translate("someArg"),
               },
             },
             color1: FUNCTIONCOLOR,
@@ -1422,7 +1489,7 @@
             opcode: "funcReturn",
             blockType: Scratch.BlockType.COMMAND,
             isTerminal: true,
-            text: "Return [TORETURN]",
+            text: Scratch.translate("return [TORETURN]"),
             arguments: {
               TORETURN: {
                 type: Scratch.ArgumentType.STRING,
@@ -1435,11 +1502,11 @@
           {
             opcode: "c_runFunc",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Run function [FUNCNAME] with args [ARGS]",
+            text: Scratch.translate("run function [FUNCNAME] with args [ARGS]"),
             arguments: {
               FUNCNAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myFunc",
+                defaultValue: Scratch.translate("myFunc"),
               },
               ARGS: {
                 type: Scratch.ArgumentType.STRING,
@@ -1452,11 +1519,11 @@
           {
             opcode: "r_runFunc",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Run function [FUNCNAME] with args [ARGS]",
+            text: Scratch.translate("run function [FUNCNAME] with args [ARGS]"),
             arguments: {
               FUNCNAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myFunc",
+                defaultValue: Scratch.translate("myFunc"),
               },
               ARGS: {
                 type: Scratch.ArgumentType.STRING,
@@ -1468,13 +1535,13 @@
 
           {
             blockType: "label",
-            text: "Thread safety",
+            text: Scratch.translate("thread safety"),
           },
 
           {
             opcode: "atomicType",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Create atomic of type [BASE]",
+            text: Scratch.translate("create atomic of type [BASE]"),
             arguments: {
               BASE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1488,11 +1555,11 @@
           {
             opcode: "atomicLoad",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Load atomic [ATOMIC]",
+            text: Scratch.translate("load atomic [ATOMIC]"),
             arguments: {
               ATOMIC: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myAtomic",
+                defaultValue: Scratch.translate("myAtomic"),
               },
             },
             color1: ATOMICCOLOR,
@@ -1501,7 +1568,9 @@
           {
             opcode: "c_atomicFunc",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Perform operation [OP] on atomic [ATOMIC] with value [VALUE]",
+            text: Scratch.translate(
+              "perform operation [OP] on atomic [ATOMIC] with value [VALUE]"
+            ),
             arguments: {
               OP: {
                 type: Scratch.ArgumentType.STRING,
@@ -1510,7 +1579,7 @@
               },
               ATOMIC: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myAtomic",
+                defaultValue: Scratch.translate("myAtomic"),
               },
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1523,7 +1592,9 @@
           {
             opcode: "r_atomicFunc",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Perform operation [OP] on atomic [ATOMIC] with value [VALUE]",
+            text: Scratch.translate(
+              "perform operation [OP] on atomic [ATOMIC] with value [VALUE]"
+            ),
             arguments: {
               OP: {
                 type: Scratch.ArgumentType.STRING,
@@ -1532,7 +1603,7 @@
               },
               ATOMIC: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "myAtomic",
+                defaultValue: Scratch.translate("myAtomic"),
               },
               VALUE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -1545,7 +1616,7 @@
           {
             opcode: "barrier",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Barrier [TYPE]",
+            text: Scratch.translate("barrier [TYPE]"),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -1560,7 +1631,7 @@
           {
             opcode: "c_arbitraryWGSL",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Arbitrary WGSL [TEXT]",
+            text: Scratch.translate("arbitrary WGSL [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -1572,7 +1643,7 @@
           {
             opcode: "r_arbitraryWGSL",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Arbitrary WGSL [TEXT]",
+            text: Scratch.translate("arbitrary WGSL [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -1583,6 +1654,9 @@
         ],
 
         menus: {
+          // webgpu/wgsl stuff intentionally not translated
+          // https://discord.com/channels/837024174865776680/1132437506655268926/1345066146625491095
+
           // all menus have acceptReporters set to true as otherwise they are located in other places in the block data
           // and it causes all sorts of issues
           TYPES: {
@@ -1716,7 +1790,7 @@
             ],
           },
           CONSTRUCTABLETYPES: {
-            // so you can do freaky stuff like array<array<array<vec4<i32>>>> in your horribly optimized """voxel game"""(minecraft clonea)
+            // so you can do freaky stuff like array<array<array<vec4<i32>>>> in your horribly optimized """voxel game"""(minecraft clone)
             acceptReporters: true,
             items: ["vec2", "vec3", "vec4", "array"],
           },
@@ -1921,7 +1995,11 @@
 
           VARIABLEACCESSTYPES: {
             acceptReporters: true,
-            items: ["read", "write", "read_write"],
+            items: [
+              { text: Scratch.translate("read"), value: "read" },
+              { text: Scratch.translate("write"), value: "write" },
+              { text: Scratch.translate("read_write"), value: "read_write" },
+            ],
           },
         },
       };
