@@ -87,7 +87,7 @@
       stop: "иконка остановки",
       fullscreen: "иконка полноэкранного режима",
       optionShown: "[OPTION] показан?",
-    },);
+    },
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("Error");
