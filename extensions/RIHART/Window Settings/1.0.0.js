@@ -9,7 +9,6 @@
 (function (Scratch) {
   "use strict";
 
-  Scratch.translate.setup({
     ru /*_РусскийЯзык_*/: {
       ExtensionName: "Настройки Окна",
       LabelA: "Window Settings:",
@@ -88,8 +87,7 @@
       stop: "иконка остановки",
       fullscreen: "иконка полноэкранного режима",
       optionShown: "[OPTION] показан?",
-    },
-  });
+    },);
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("Error");
