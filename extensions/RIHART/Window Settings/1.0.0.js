@@ -674,14 +674,14 @@
               {
                 text: Scratch.translate({
                   id: "FullscreenEnter",
-                  default: "width",
+                  default: "on",
                 }),
                 value: "Enter",
               },
               {
                 text: Scratch.translate({
                   id: "FullscreenExit",
-                  default: "height",
+                  default: "off",
                 }),
                 value: "Exit",
               },
