@@ -9,7 +9,7 @@
 (function (Scratch) {
   "use strict";
 
-  Scratch.translate.setup({
+  Scratch.translate({
     ru /*_РусскийЯзык_*/: {
       ExtensionName: "Настройки Окна",
       LabelA: "Window Settings:",
