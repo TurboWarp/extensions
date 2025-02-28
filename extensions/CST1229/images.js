@@ -273,8 +273,8 @@
         img.updateVisible(false);
         img.skin = this.render._allSkins[IMG];
 
-        img.updatePosition([Number(X) || 0, Number(Y) || 0]);
-        img.updateScale([Number(XSCALE) || 0, Number(YSCALE) || 0]);
+        img.updatePosition([Scratch.Cast.toNumber(X) || 0, Scratch.Cast.toNumber(Y) || 0]);
+        img.updateScale([Scratch.Cast.toNumber(XSCALE) || 0, Scratch.Cast.toNumber(YSCALE) || 0]);
         this.render.penStamp(this.render._penSkinId, drawableID);
       } catch (e) {
         console.error("Error drawing image:", e);
