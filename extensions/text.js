@@ -521,8 +521,8 @@
     }
 
     split(args, util) {
-      args.STRING = Scratch.Cast.toString((args.STRING ?? ""));
-      args.SPLIT = Scratch.Cast.toString((args.SPLIT ?? ""));
+      args.STRING = Scratch.Cast.toString(args.STRING ?? "");
+      args.SPLIT = Scratch.Cast.toString(args.SPLIT ?? "");
       args.ITEM = Number(args.ITEM) || 0;
 
       // Cache the last split
@@ -570,8 +570,10 @@
 
     indexof(args, util) {
       // .toLowerCase() for case insensitivity
-      args.STRING = Scratch.Cast.toString((args.STRING ?? "")).toLowerCase();
-      args.SUBSTRING = Scratch.Cast.toString((args.SUBSTRING ?? "")).toLowerCase();
+      args.STRING = Scratch.Cast.toString(args.STRING ?? "").toLowerCase();
+      args.SUBSTRING = Scratch.Cast.toString(
+        args.SUBSTRING ?? ""
+      ).toLowerCase();
 
       // Since both arguments are casted to strings beforehand,
       // we don't have to worry about type differences
@@ -607,9 +609,9 @@
 
     matchRegex(args, util) {
       try {
-        args.STRING = Scratch.Cast.toString((args.STRING ?? ""));
-        args.REGEX = Scratch.Cast.toString((args.REGEX ?? ""));
-        args.FLAGS = Scratch.Cast.toString((args.FLAGS ?? ""));
+        args.STRING = Scratch.Cast.toString(args.STRING ?? "");
+        args.REGEX = Scratch.Cast.toString(args.REGEX ?? "");
+        args.FLAGS = Scratch.Cast.toString(args.FLAGS ?? "");
         args.ITEM = Number(args.ITEM) || 0;
 
         // Cache the last matched string
