@@ -762,7 +762,7 @@
             } else {
               workingText += string[i].toLowerCase();
             }
-          }v
+          }
           return workingText.replace(/\s/g, "");
         default:
           return string;
