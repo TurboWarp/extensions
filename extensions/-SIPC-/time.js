@@ -387,15 +387,12 @@
       const totalSeconds = Scratch.Cast.toNumber(args.VALUE);
       const seconds =
         args.ROUND === "rounded"
-          ? Math.round(totalSeconds % 60)
-              .toString()
+          ? Scratch.Cast.toString(Math.round(totalSeconds % 60))
               .padStart(2, "0")
           : (totalSeconds % 60).toFixed(3).padStart(6, "0");
-      const minutes = Math.floor((totalSeconds / 60) % 60)
-        .toString()
+      const minutes = Scratch.Cast.toString(Math.floor((totalSeconds / 60) % 60))
         .padStart(2, "0");
-      const hours = Math.floor(totalSeconds / 3600)
-        .toString()
+      const hours = Scratch.Cast.toString(Math.floor(totalSeconds / 3600))
         .padStart(2, "0");
       return `${hours}:${minutes}:${seconds}`;
     }
