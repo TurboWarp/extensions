@@ -1,5 +1,5 @@
 // Name: Window Settings V2
-// ID: RIHART
+// ID: WRWindowSettings
 // Description: Thanks to this extension, you can customize the project window (this works if you package the project in the ".exe" format).
 // By: RIHART <https://scratch.mit.edu/users/RIHART/>
 // License: MIT
