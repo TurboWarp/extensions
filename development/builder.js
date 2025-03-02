@@ -5,6 +5,13 @@ const ExtendedJSON = require("@turbowarp/json");
 const compatibilityAliases = require("./compatibility-aliases");
 const parseMetadata = require("./parse-extension-metadata");
 const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
+const typescript = require("typescript");
+const tsCompilerOptions = typescript.parseConfigFileTextToJson(
+  "tsconfig.json",
+  fs.readFileSync("tsconfig.json", "utf-8")
+).config;
+const babelOptions = require("../babel.config")(require("./@babel/fake"));
+const babelCore = require("@babel/core");
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -103,6 +110,7 @@ const insertAfterCommentsBeforeCode = (oldCode, insertCode) => {
 
 class BuildFile {
   constructor(source) {
+    this.realSourcePath = source;
     this.sourcePath = source;
   }
 
@@ -111,11 +119,11 @@ class BuildFile {
   }
 
   getLastModified() {
-    return fs.statSync(this.sourcePath).mtimeMs;
+    return fs.statSync(this.realSourcePath).mtimeMs;
   }
 
   read() {
-    return fs.readFileSync(this.sourcePath);
+    return fs.readFileSync(this.realSourcePath);
   }
 
   validate() {
@@ -131,7 +139,55 @@ class BuildFile {
   }
 }
 
-class ExtensionFile extends BuildFile {
+class JSFile extends BuildFile {
+  /**
+   * @param {string} filename Path of a TS file to set the extension of
+   * @returns {2 | 3 | false} 0 if its not a JS file extension, otherwise the length of the extension
+   */
+  static jsExtension(filename) {
+    if (filename.endsWith(".js") || filename.endsWith(".ts")) return 2;
+    if (filename.endsWith(".mjs")) return 3;
+    return false;
+  }
+  /**
+   * @param {string} filename Path of a TS file to set the extension of
+   */
+  static setExtension(filename) {
+    return (
+      filename.substring(
+        0,
+        filename.length - (JSFile.jsExtension(filename) + 1)
+      ) + ".js"
+    );
+  }
+  /**
+   * @param {string} absolutePath Full path to the .js file, eg. /home/.../extensions/fetch.js
+   */
+  constructor(absolutePath) {
+    super(absolutePath);
+    /** @type {boolean} */
+    this.isTS = this.sourcePath.endsWith(".ts");
+    this.isModule = !this.isTS && this.sourcePath.endsWith(".mjs");
+    this.sourcePath = JSFile.setExtension(this.sourcePath);
+    this.babelOptions = Object.assign(babelOptions, {
+      sourceType: this.isModule ? "module" : "unambiguous",
+      filename: this.realSourcePath,
+    });
+  }
+  read() {
+    return this.doCompile();
+  }
+  doCompile() {
+    let data = fs.readFileSync(this.realSourcePath, "utf-8");
+    if (this.isTS) {
+      data = typescript.transpileModule(data, tsCompilerOptions).outputText;
+    }
+    data = babelCore.transformSync(data, this.babelOptions).code;
+    return data;
+  }
+}
+
+class ExtensionFile extends JSFile {
   /**
    * @param {string} absolutePath Full path to the .js file, eg. /home/.../extensions/fetch.js
    * @param {string} slug Just the extension ID from the path, eg. fetch
@@ -152,7 +208,7 @@ class ExtensionFile extends BuildFile {
   }
 
   read() {
-    const data = fs.readFileSync(this.sourcePath, "utf-8");
+    const data = super.read();
 
     if (this.mode !== "development") {
       const translations = filterTranslationsByPrefix(
@@ -173,7 +229,7 @@ class ExtensionFile extends BuildFile {
   }
 
   getMetadata() {
-    const data = fs.readFileSync(this.sourcePath, "utf-8");
+    const data = fs.readFileSync(this.realSourcePath, "utf-8");
     return parseMetadata(data);
   }
 
@@ -265,7 +321,7 @@ class ExtensionFile extends BuildFile {
     };
 
     const parseTranslations = require("./parse-extension-translations");
-    const jsCode = fs.readFileSync(this.sourcePath, "utf-8");
+    const jsCode = fs.readFileSync(this.realSourcePath, "utf-8");
     const unprefixedRuntimeStrings = parseTranslations(jsCode);
     const runtimeStrings = Object.fromEntries(
       Object.entries(unprefixedRuntimeStrings).map(([key, value]) => [
@@ -727,7 +783,7 @@ class Builder {
     for (const [filename, absolutePath] of recursiveReadDirectory(
       this.extensionsRoot
     )) {
-      if (!filename.endsWith(".js")) {
+      if (!JSFile.jsExtension(filename)) {
         continue;
       }
       const extensionSlug = filename.split(".")[0];
@@ -740,7 +796,11 @@ class Builder {
         this.mode
       );
       extensionFiles[extensionSlug] = file;
-      build.files[`/${filename}`] = file;
+      if (file.isTS || file.isModule) {
+        build.files[`/${JSFile.setExtension(filename)}`] = file;
+      } else {
+        build.files[`/${filename}`] = file;
+      }
     }
 
     /** @type {Record<string, ImageFile>} */
@@ -787,6 +847,12 @@ class Builder {
     for (const [filename, absolutePath] of recursiveReadDirectory(
       this.websiteRoot
     )) {
+      if (JSFile.jsExtension(filename)) {
+        build.files[`/${JSFile.setExtension(filename)}`] = new JSFile(
+          absolutePath
+        );
+        continue;
+      }
       build.files[`/${filename}`] = new BuildFile(absolutePath);
     }
 
