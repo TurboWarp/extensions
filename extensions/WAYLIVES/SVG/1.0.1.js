@@ -17,7 +17,7 @@
     getInfo() {
       return {
         id: "svg",
-        name: "SVG",
+        name: Scratch.translate("SVG"),
         color1: "#9823FF",
         color2: "#7C2DC1",
         color3: "#2D3548",
