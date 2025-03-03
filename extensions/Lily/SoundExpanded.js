@@ -595,7 +595,7 @@
       if (len === 0) {
         return -1;
       }
-      const index = this._getSoundIndexByName(soundName, util);
+      const index = this._getSoundIndexByName(Scratch.Cast.oString(soundName), util);
       if (index !== -1) {
         return index;
       }

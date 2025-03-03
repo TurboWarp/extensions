@@ -576,6 +576,7 @@
     }
 
     tweenProperty(args, util) {
+      args.PROPERTY = Cast.toString(args.PROPERTY);
       let currentValue = 0;
       if (args.PROPERTY === "x position") {
         currentValue = util.target.x;

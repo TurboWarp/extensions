@@ -207,6 +207,8 @@
     }
 
     whenTimerOp(args) {
+      args.TIMER = Scratch.Cast.toString(args.TIMER);
+      args.NUM = Scratch.Cast.toNumber(args.NUM);
       if (!timers[args.TIMER]) return false;
       const value = timerValue(timers[args.TIMER]);
       if (args.OP === ">") return value > args.NUM;
@@ -215,6 +217,7 @@
     }
 
     startResetTimer(args) {
+      args.TIMER = Scratch.Cast.toString(args.TIMER);
       timers[args.TIMER] = {
         startTime: Math.floor(performance.now()),
         pauseTime: 0,
@@ -223,6 +226,7 @@
     }
 
     pauseTimer(args) {
+      args.TIMER = Scratch.Cast.toString(args.TIMER);
       const timer = timers[args.TIMER];
       if (!timer) return;
       timer.pauseTime = timerValue(timer) * 1000;
@@ -230,6 +234,7 @@
     }
 
     resumeTimer(args) {
+      args.TIMER = Scratch.Cast.toString(args.TIMER);
       const timer = timers[args.TIMER];
       if (!timer) return;
       if (timer.paused === false) return;
@@ -238,11 +243,13 @@
     }
 
     valueOfTimer(args) {
+      args.TIMER = Scratch.Cast.toString(args.TIMER);
       if (!timers[args.TIMER]) return "";
       return timerValue(timers[args.TIMER]);
     }
 
     setTimer(args) {
+      args.TIMER = Scratch.Cast.toString(args.TIMER);
       timers[args.TIMER] = {
         paused: false,
         startTime: Math.floor(performance.now()),
@@ -251,6 +258,7 @@
     }
 
     changeTimer(args) {
+      args.TIMER = Scratch.Cast.toString(args.TIMER);
       if (!timers[args.TIMER]) this.startResetTimer(args);
       timers[args.TIMER].pauseTime += Scratch.Cast.toNumber(args.NUM) * 1000;
     }
@@ -264,6 +272,7 @@
     }
 
     timerExists(args) {
+      args.TIMER = Scratch.Cast.toString(args.TIMER);
       return !!timers[args.TIMER];
     }
 

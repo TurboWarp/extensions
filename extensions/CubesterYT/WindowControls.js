@@ -5,7 +5,7 @@
 // Original: BlueDome77
 // License: MIT
 
-// Version V.1.0.0
+// Version V.1.0.1
 
 (function (Scratch) {
   "use strict";
@@ -370,10 +370,13 @@
     }
 
     moveTo(args) {
+      args.X = Scratch.Cast.toNumber(args.X);
+      args.Y = Scratch.Cast.toNumber(args.Y);
       window.moveTo(args.X, args.Y);
       Scratch.vm.runtime.requestRedraw();
     }
     moveToPresets(args) {
+      args.PRESETS = Scratch.Cast.toString(args.PRESETS);
       if (args.PRESETS == "center") {
         const left = (screen.width - window.outerWidth) / 2;
         const top = (screen.height - window.outerHeight) / 2;
@@ -412,19 +415,23 @@
       Scratch.vm.runtime.requestRedraw();
     }
     changeX(args) {
+      args.X = Scratch.Cast.toNumber(args.X);
       window.moveBy(args.X, 0);
       Scratch.vm.runtime.requestRedraw();
     }
     setX(args) {
+      args.X = Scratch.Cast.toNumber(args.X);
       const currentY = window.screenY;
       window.moveTo(args.X, currentY);
       Scratch.vm.runtime.requestRedraw();
     }
     changeY(args) {
+      args.X = Scratch.Cast.toNumber(args.Y);
       window.moveBy(0, args.Y);
       Scratch.vm.runtime.requestRedraw();
     }
     setY(args) {
+      args.Y = Scratch.Cast.toNumber(args.Y);
       const currentX = window.screenX;
       window.moveTo(currentX, args.Y);
       Scratch.vm.runtime.requestRedraw();
@@ -436,10 +443,13 @@
       return window.screenTop;
     }
     resizeTo(args) {
+      args.W = Scratch.Cast.toNumber(args.W);
+      args.H = Scratch.Cast.toNumber(args.H);
       window.resizeTo(args.W, args.H);
       Scratch.vm.runtime.requestRedraw();
     }
     resizeToPresets(args) {
+      args.PRESETS = Scratch.Cast.toString(args.PRESETS);
       if (args.PRESETS == "480x360") {
         window.resizeTo(
           480 + (window.outerWidth - window.innerWidth),
@@ -484,19 +494,23 @@
       Scratch.vm.runtime.requestRedraw();
     }
     changeW(args) {
+      args.W = Scratch.Cast.toNumber(args.W);
       window.resizeBy(args.W, 0);
       Scratch.vm.runtime.requestRedraw();
     }
     setW(args) {
+      args.W = Scratch.Cast.toNumber(args.W);
       const currentH = window.outerHeight;
       window.resizeTo(args.W, currentH);
       Scratch.vm.runtime.requestRedraw();
     }
     changeH(args) {
+      args.H = Scratch.Cast.toNumber(args.H);
       window.resizeBy(0, args.H);
       Scratch.vm.runtime.requestRedraw();
     }
     setH(args) {
+      args.H = Scratch.Cast.toNumber(args.H);
       const currentW = window.outerWidth;
       window.resizeTo(currentW, args.H);
       Scratch.vm.runtime.requestRedraw();
@@ -535,7 +549,7 @@
       return document.hasFocus();
     }
     changeTitleTo(args) {
-      document.title = args.TITLE;
+      document.title = Scratch.Cast.toString(args.TITLE);
     }
     windowTitle() {
       return document.title;

@@ -381,7 +381,7 @@
       }
       const drawableID = target.drawableID;
       const layerOrder = target.getLayerOrder();
-      const newLayer = args.LAYER - layerOrder;
+      const newLayer = Scratch.Cast.toNumber(args.LAYER) - layerOrder;
       renderer.setDrawableOrder(drawableID, newLayer, "sprite", true);
     }
 
@@ -466,7 +466,7 @@
         return;
       }
 
-      const contentType = args.TYPE;
+      const contentType = Scratch.Cast.toString(args.TYPE);
       const content = args.CONTENT;
       if (contentType === "SVG") {
         try {
@@ -532,13 +532,13 @@
         return "";
       }
 
-      const costume = target.sprite.costumes[args.COSTUME - 1];
+      const costume = target.sprite.costumes[Scratch.Cast.toNumber(args.COSTUME) - 1];
       if (!costume) {
         console.error("Target costume does not exist");
         return "";
       }
 
-      const format = args.CONTENT;
+      const format = Scratch.Cast.toString(args.CONTENT);
       if (format === "content") {
         return costume.asset.decodeText();
       } else {

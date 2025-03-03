@@ -625,8 +625,8 @@
     /// Utilities
 
     normalize(origin, path) {
-      path = path.toString().replaceAll(/\\/g, "/");
-      origin = origin.toString().replaceAll(/\\/g, "/");
+      path = Scratch.Cast.toString(path).replaceAll(/\\/g, "/");
+      origin = Scratch.Cast.toString(origin).replaceAll(/\\/g, "/");
 
       if (path.startsWith("/")) origin = "";
       else if (!origin.endsWith("/")) origin += "/";

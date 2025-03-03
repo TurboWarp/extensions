@@ -170,6 +170,8 @@
     }
 
     sync({ STR, STR2 }) {
+      STR = Scratch.Cast.toString(STR);
+      STR2 = Scratch.Cast.toString(STR2);
       str = btoa(unescape(encodeURIComponent(STR)));
       str2 = btoa(unescape(encodeURIComponent(STR2)));
       if (rxFSsy.indexOf(str) + 1 == 0) {
@@ -178,6 +180,7 @@
     }
 
     start({ STR }) {
+      STR = Scratch.Cast.toString(STR);
       str = btoa(unescape(encodeURIComponent(STR)));
       if (
         !(str.charAt(str.length - 1) == "/") &&
@@ -189,6 +192,7 @@
     }
 
     open({ STR }) {
+      STR = Scratch.Cast.toString(STR);
       return decodeURIComponent(
         escape(
           atob(
@@ -201,6 +205,7 @@
     }
 
     del({ STR }) {
+      STR = Scratch.Cast.toString(STR);
       str = btoa(unescape(encodeURIComponent(STR)));
       const index = rxFSsy.indexOf(str);
       if (index !== -1) {
@@ -210,11 +215,14 @@
     }
 
     file({ STR, STR2 }) {
+      STR = Scratch.Cast.toString(STR);
+      STR2 = Scratch.Cast.toString(STR2);
       rxFSfi[rxFSsy.indexOf(btoa(unescape(encodeURIComponent(STR)))) + 1 - 1] =
         btoa(unescape(encodeURIComponent(STR2)));
     }
 
     search({ STR }) {
+      STR = Scratch.Cast.toString(STR);
       Search = "";
       i = 0;
       str = btoa(unescape(encodeURIComponent(STR)));
@@ -239,6 +247,7 @@
     }
 
     webin({ STR }) {
+      STR = Scratch.Cast.toString(STR);
       return Scratch.fetch(STR)
         .then((response) => {
           return response.text();
@@ -250,6 +259,7 @@
     }
 
     in({ STR }) {
+      STR = Scratch.Cast.toString(STR);
       rxFSfi = STR.slice(0, STR.indexOf("|")).split(",");
       rxFSsy = STR.slice(STR.indexOf("|") + 1, STR.length).split(",");
     }
