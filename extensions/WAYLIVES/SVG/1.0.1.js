@@ -240,65 +240,16 @@
 
     rect(args) {
       return (
-        '<rect x=\"' +
-        (args["X"] +
-          ('\" y=\"' +
-            (args["Y"] +
-              ('\" width=\"' +
-                (args["WIDTH"] +
-                  ('\" height=\"' +
-                    (args["HEIGHT"] +
-                      ('\" rx=\"' +
-                        (args["RADIUS"] +
-                          ('\" fill=\"' +
-                            (args["FILLCOLOR"] +
-                              ('\" fill-opacity=\"' +
-                                (args["FILLOPACITY"] / 100 +
-                                  ('\" stroke-width=\"' +
-                                    (args["STROKEWIDTH"] +
-                                      ('\" stroke=\"' +
-                                        (args["STROKECOLOR"] +
-                                          ('\" stroke-opacity=\"' +
-                                            (args["STROKEOPACITY"] / 100 +
-                                              ('\" stroke-dasharray=\"' +
-                                                (args["DASH"] +
-                                                  (" " + args["GAP"]) +
-                                                  ('\" stroke-linecap=\"' +
-                                                    (args["LINECAP"] +
-                                                      '\"'))))))))))))))))))))))) +
-        "/>"
+        '<rect x="' + (args["X"] + ('" y="' + (args["Y"] + ('" width="' + (args["WIDTH"] + ('" height="' + (args["HEIGHT"] + ('" rx="' + (args["RADIUS"] + ('" fill="' + (args["FILLCOLOR"] + ('" fill-opacity="' + (args["FILLOPACITY"] / 100 + ('" stroke-width="' + (args["STROKEWIDTH"] + ('" stroke="' + (args["STROKECOLOR"] + ('" stroke-opacity="' + (args["STROKEOPACITY"] / 100 + ('" stroke-dasharray="' + (args["DASH"] + (" " + args["GAP"]) + ('" stroke-linecap="' + (args["LINECAP"] + '"'))))))))))))))))))))))) + "/>"
       );
     }
 
     ellipse(args) {
       return (
-        '<ellipse cx=\"' +
-        (args["CX"] +
-          ('\" cy=\"' +
-            (args["CY"] +
-              ('\" rx=\"' +
-                (args["WIDTH"] / 2 +
-                  ('\" ry=\"' +
-                    (args["HEIGHT"] / 2 +
-                      ('\" fill=\"' +
-                        (args["FILLCOLOR"] +
-                          ('\" fill-opacity=\"' +
-                            (args["FILLOPACITY"] / 100 +
-                              ('\" stroke-width=\"' +
-                                (args["STROKEWIDTH"] +
-                                  ('\" stroke=\"' +
-                                    (args["STROKECOLOR"] +
-                                      ('\" stroke-opacity=\"' +
-                                        (args["STROKEOPACITY"] / 100 +
-                                          ('\" stroke-dasharray=\"' +
-                                            (args["DASH"] +
-                                              (" " + args["GAP"]) +
-                                              ('\" stroke-linecap=\"' +
-                                                (args["LINECAP"] +
-                                                  '\"'))))))))))))))))))))) +
-        "/>"
+        '<ellipse cx="' + (args["CX"] + ('" cy="' + (args["CY"] + ('" rx="' + (args["WIDTH"] / 2 + ('" ry="' + (args["HEIGHT"] / 2 + ('" fill="' + (args["FILLCOLOR"] + ('" fill-opacity="' + (args["FILLOPACITY"] / 100 + ('" stroke-width="' + (args["STROKEWIDTH"] + ('" stroke="' + (args["STROKECOLOR"] + ('" stroke-opacity="' + (args["STROKEOPACITY"] / 100 + ('" stroke-dasharray="' + (args["DASH"] + (" " + args["GAP"]) + ('" stroke-linecap="' + (args["LINECAP"] + '"'))))))))))))))))))))) + "/>"
       );
     }
+    
   }
 
   Scratch.extensions.register(new svg());
