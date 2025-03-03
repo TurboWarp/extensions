@@ -215,20 +215,7 @@
               },
             },
           },
-
-          "---",
-
-          /*{
-            opcode: "svgWidth",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("svg width"),
-          },
-  
-          {
-            opcode: "svgHeight",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("svg height"),
-          },*/
+          
         ],
         menus: {
           LINECAPmenu: {
@@ -346,14 +333,6 @@
                                                   '\"'))))))))))))))))))))) +
         "/>"
       );
-    }
-
-    svgWidth(args) {
-      return variables["svgWidth"];
-    }
-
-    svgHeight(args) {
-      return variables["svgHeight"];
     }
   }
 
