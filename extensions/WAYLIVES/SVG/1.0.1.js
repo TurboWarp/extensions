@@ -228,27 +228,27 @@
 
     svg(args) {
       return (
-        '<svg width=\"' +
+        '<svg width="' +
         (args["WIDTH"] +
-          ('\" height=\"' +
+          ('" height="' +
             (args["HEIGHT"] +
-              ('\" viewBox=\"' +
+              ('" viewBox="' +
                 ("0 0 " +
                   (args["WIDTH"] +
                     (" " +
                       (args["HEIGHT"] +
-                        ('\" fill=\"' +
+                        ('" fill="' +
                           ("none" +
-                            ('\" xmlns=\"' +
+                            ('" xmlns="' +
                               ("http://www.w3.org/2000/svg" +
-                                ('\">' + args["ELEMENTS"]))))))))))))) +
+                                ('">' + args["ELEMENTS"]))))))))))))) +
         "</svg>"
       );
     }
 
     line(args) {
       return (
-        '<line x1=\"' +
+        '<line x1="' +
         (args["XA"] +
           ('\" y1=\"' +
             (args["YA"] +
