@@ -228,48 +228,13 @@
 
     svg(args) {
       return (
-        '<svg width="' +
-        (args["WIDTH"] +
-          ('" height="' +
-            (args["HEIGHT"] +
-              ('" viewBox="' +
-                ("0 0 " +
-                  (args["WIDTH"] +
-                    (" " +
-                      (args["HEIGHT"] +
-                        ('" fill="' +
-                          ("none" +
-                            ('" xmlns="' +
-                              ("http://www.w3.org/2000/svg" +
-                                ('">' + args["ELEMENTS"]))))))))))))) +
-        "</svg>"
+        '<svg width="' + (args["WIDTH"] + ('" height="' + (args["HEIGHT"] + ('" viewBox="' + ("0 0 " + (args["WIDTH"] + (" " + (args["HEIGHT"] + ('" fill="' + ("none" + ('" xmlns="' + ("http://www.w3.org/2000/svg" + ('">' + args["ELEMENTS"]))))))))))))) + "</svg>"
       );
     }
 
     line(args) {
       return (
-        '<line x1="' +
-        (args["XA"] +
-          ('\" y1=\"' +
-            (args["YA"] +
-              ('\" x2=\"' +
-                (args["XB"] +
-                  ('\" y2=\"' +
-                    (args["YB"] +
-                      ('\" stroke-width=\"' +
-                        (args["WIDTH"] +
-                          ('\" stroke=\"' +
-                            (args["COLOR"] +
-                              ('\" stroke-dasharray=\"' +
-                                (args["DASH"] +
-                                  (" " +
-                                    (args["GAP"] +
-                                      ('\" stroke-linecap=\"' +
-                                        (args["LINECAP"] +
-                                          ('\" stroke-opacity=\"' +
-                                            (args["OPACITY"] / 100 +
-                                              '\"'))))))))))))))))))) +
-        "/>"
+        '<line x1="' + (args["XA"] + ('" y1="' + (args["YA"] + ('" x2="' + (args["XB"] + ('" y2="' + (args["YB"] + ('" stroke-width="' + (args["WIDTH"] + ('" stroke="' + (args["COLOR"] + ('" stroke-dasharray="' + (args["DASH"] + (" " + (args["GAP"] + ('" stroke-linecap="' + (args["LINECAP"] + ('" stroke-opacity="' + (args["OPACITY"] / 100 + '"'))))))))))))))))))) + "/>"
       );
     }
 
