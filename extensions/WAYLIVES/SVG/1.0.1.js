@@ -215,7 +215,6 @@
               },
             },
           },
-          
         ],
         menus: {
           LINECAPmenu: {
@@ -228,28 +227,112 @@
 
     svg(args) {
       return (
-        '<svg width="' + (args["WIDTH"] + ('" height="' + (args["HEIGHT"] + ('" viewBox="' + ("0 0 " + (args["WIDTH"] + (" " + (args["HEIGHT"] + ('" fill="' + ("none" + ('" xmlns="' + ("http://www.w3.org/2000/svg" + ('">' + args["ELEMENTS"]))))))))))))) + "</svg>"
+        '<svg width="' +
+        (args["WIDTH"] +
+          ('" height="' +
+            (args["HEIGHT"] +
+              ('" viewBox="' +
+                ("0 0 " +
+                  (args["WIDTH"] +
+                    (" " +
+                      (args["HEIGHT"] +
+                        ('" fill="' +
+                          ("none" +
+                            ('" xmlns="' +
+                              ("http://www.w3.org/2000/svg" +
+                                ('">' + args["ELEMENTS"]))))))))))))) +
+        "</svg>"
       );
     }
 
     line(args) {
       return (
-        '<line x1="' + (args["XA"] + ('" y1="' + (args["YA"] + ('" x2="' + (args["XB"] + ('" y2="' + (args["YB"] + ('" stroke-width="' + (args["WIDTH"] + ('" stroke="' + (args["COLOR"] + ('" stroke-dasharray="' + (args["DASH"] + (" " + (args["GAP"] + ('" stroke-linecap="' + (args["LINECAP"] + ('" stroke-opacity="' + (args["OPACITY"] / 100 + '"'))))))))))))))))))) + "/>"
+        '<line x1="' +
+        (args["XA"] +
+          ('" y1="' +
+            (args["YA"] +
+              ('" x2="' +
+                (args["XB"] +
+                  ('" y2="' +
+                    (args["YB"] +
+                      ('" stroke-width="' +
+                        (args["WIDTH"] +
+                          ('" stroke="' +
+                            (args["COLOR"] +
+                              ('" stroke-dasharray="' +
+                                (args["DASH"] +
+                                  (" " +
+                                    (args["GAP"] +
+                                      ('" stroke-linecap="' +
+                                        (args["LINECAP"] +
+                                          ('" stroke-opacity="' +
+                                            (args["OPACITY"] / 100 +
+                                              '"'))))))))))))))))))) +
+        "/>"
       );
     }
 
     rect(args) {
       return (
-        '<rect x="' + (args["X"] + ('" y="' + (args["Y"] + ('" width="' + (args["WIDTH"] + ('" height="' + (args["HEIGHT"] + ('" rx="' + (args["RADIUS"] + ('" fill="' + (args["FILLCOLOR"] + ('" fill-opacity="' + (args["FILLOPACITY"] / 100 + ('" stroke-width="' + (args["STROKEWIDTH"] + ('" stroke="' + (args["STROKECOLOR"] + ('" stroke-opacity="' + (args["STROKEOPACITY"] / 100 + ('" stroke-dasharray="' + (args["DASH"] + (" " + args["GAP"]) + ('" stroke-linecap="' + (args["LINECAP"] + '"'))))))))))))))))))))))) + "/>"
+        '<rect x="' +
+        (args["X"] +
+          ('" y="' +
+            (args["Y"] +
+              ('" width="' +
+                (args["WIDTH"] +
+                  ('" height="' +
+                    (args["HEIGHT"] +
+                      ('" rx="' +
+                        (args["RADIUS"] +
+                          ('" fill="' +
+                            (args["FILLCOLOR"] +
+                              ('" fill-opacity="' +
+                                (args["FILLOPACITY"] / 100 +
+                                  ('" stroke-width="' +
+                                    (args["STROKEWIDTH"] +
+                                      ('" stroke="' +
+                                        (args["STROKECOLOR"] +
+                                          ('" stroke-opacity="' +
+                                            (args["STROKEOPACITY"] / 100 +
+                                              ('" stroke-dasharray="' +
+                                                (args["DASH"] +
+                                                  (" " + args["GAP"]) +
+                                                  ('" stroke-linecap="' +
+                                                    (args["LINECAP"] +
+                                                      '"'))))))))))))))))))))))) +
+        "/>"
       );
     }
 
     ellipse(args) {
       return (
-        '<ellipse cx="' + (args["CX"] + ('" cy="' + (args["CY"] + ('" rx="' + (args["WIDTH"] / 2 + ('" ry="' + (args["HEIGHT"] / 2 + ('" fill="' + (args["FILLCOLOR"] + ('" fill-opacity="' + (args["FILLOPACITY"] / 100 + ('" stroke-width="' + (args["STROKEWIDTH"] + ('" stroke="' + (args["STROKECOLOR"] + ('" stroke-opacity="' + (args["STROKEOPACITY"] / 100 + ('" stroke-dasharray="' + (args["DASH"] + (" " + args["GAP"]) + ('" stroke-linecap="' + (args["LINECAP"] + '"'))))))))))))))))))))) + "/>"
+        '<ellipse cx="' +
+        (args["CX"] +
+          ('" cy="' +
+            (args["CY"] +
+              ('" rx="' +
+                (args["WIDTH"] / 2 +
+                  ('" ry="' +
+                    (args["HEIGHT"] / 2 +
+                      ('" fill="' +
+                        (args["FILLCOLOR"] +
+                          ('" fill-opacity="' +
+                            (args["FILLOPACITY"] / 100 +
+                              ('" stroke-width="' +
+                                (args["STROKEWIDTH"] +
+                                  ('" stroke="' +
+                                    (args["STROKECOLOR"] +
+                                      ('" stroke-opacity="' +
+                                        (args["STROKEOPACITY"] / 100 +
+                                          ('" stroke-dasharray="' +
+                                            (args["DASH"] +
+                                              (" " + args["GAP"]) +
+                                              ('" stroke-linecap="' +
+                                                (args["LINECAP"] +
+                                                  '"'))))))))))))))))))))) +
+        "/>"
       );
     }
-    
   }
 
   Scratch.extensions.register(new svg());
