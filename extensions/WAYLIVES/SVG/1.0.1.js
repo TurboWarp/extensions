@@ -232,6 +232,7 @@
                 text: Scratch.translate('square'), 
                 value: 'square' 
               },
+            ]
           },
         },
       };
