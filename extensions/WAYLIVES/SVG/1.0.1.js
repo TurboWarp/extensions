@@ -1,7 +1,7 @@
 // Name: SVG
 // ID: WRsvg
 // Description: Create SVG elements.
-// By: WAYLIVES <https://github.com/WAYLIVES>
+// By: WAYLIVES <https://scratch.mit.edu/users/WAYLIVES/>
 // License: MIT
 
 // Version: 1.0.1
