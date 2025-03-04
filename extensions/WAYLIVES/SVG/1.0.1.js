@@ -225,7 +225,8 @@
       };
     }
 
-    svg(args) { // prettier-ignore
+    svg(args) {
+      // prettier-ignore
       return (
         '<svg width="' +
         (args["WIDTH"] +
@@ -245,7 +246,8 @@
       );
     }
 
-    line(args) { // prettier-ignore
+    line(args) {
+      // prettier-ignore
       return (
         '<line x1="' +
         (args["XA"] +
@@ -272,7 +274,8 @@
       );
     }
 
-    rect(args) { // prettier-ignore
+    rect(args) {
+      // prettier-ignore
       return (
         '<rect x="' +
         (args["X"] +
@@ -304,7 +307,8 @@
       );
     }
 
-    ellipse(args) { // prettier-ignore
+    ellipse(args) {
+      // prettier-ignore
       return (
         '<ellipse cx="' +
         (args["CX"] +
