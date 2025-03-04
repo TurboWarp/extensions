@@ -221,18 +221,18 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate('round'), 
-                value: 'round' 
+                text: Scratch.translate("round"),
+                value: "round",
               },
               {
-                text: Scratch.translate('butt'), 
-                value: 'butt' 
+                text: Scratch.translate("butt"),
+                value: "butt",
               },
               {
-                text: Scratch.translate('square'), 
-                value: 'square' 
+                text: Scratch.translate("square"),
+                value: "square",
               },
-            ]
+            ],
           },
         },
       };
