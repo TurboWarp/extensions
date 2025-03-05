@@ -36,6 +36,22 @@ SVG - это XML язык, который преднозначен для рис
 ```
 <img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/s2.svg">
 
+С помощью этого блока можно рисовать линии.
+
+(x1), (y2) - это положение первой точки линии по каардинату X, Y (координаты SVG: https://developer.mozilla.org/ru/docs/Web/SVG/Tutorial/Positions).
+
+(x2), (y2) - это положение конечной (второй) точки линии по координату X, Y.
+
+(width) - здесь вы можете задать толщину линии.
+
+(color) - здесь вы задаёте цвет линии.
+
+(opacity) - здесь вы задаёте прозрачность линии.
+
+(dash), (gap) - с помощью этих параметров вы можете задать тип линии. Dash - это длина пунктирных линий. Gap - это отступ, т.е. расстояние между пунктирными линиями. 
+
+(linecap) - здесь вы можете задать форму концов линии (подробнее здесь: https://developer.mozilla.org/ru/docs/Web/SVG/Attribute/stroke-linecap).
+
 ### Rect:
 
 ```scratch
@@ -43,12 +59,16 @@ SVG - это XML язык, который преднозначен для рис
 ```
 <img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/s3.svg">
 
+С помощью этого блока можно рисовать прямоугольники, квадраты.
+
 ### Ellipse:
 
 ```scratch
 (ELLIPSE  //  cx, cy:[50][50] width:[92] height:[92] fill color:[#FF0000] fill opacity:[100]% stroke width:[8] stroke color[#000000] stroke opacity:[100]% dash, gap:[0][0] stroke linecap:[round v] :: #9823FF)
 ```
 <img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/s4.svg">
+
+С помощью этого блока можно рисовать круги и овалы.
 
 ## Пример-проект
 
