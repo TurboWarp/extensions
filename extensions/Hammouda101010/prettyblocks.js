@@ -58,16 +58,16 @@
   const errorModal = (titleName = "Alert", error = []) => {
     //@ts-ignore
     // run prompt to get a GUI to modify
-    ScratchBlocks.prompt();
+    ScratchBlocks.prompt(
+      "test",
+      "",
+      () => {},
+      Cast.toString(titleName),
+      "broadcast_msg"
+    );
 
     // get the portal/modal and its header
     const portal = document.querySelector("div.ReactModalPortal");
-    const header = portal.querySelector(
-      'div[class*="modal_header-item-title_"]'
-    );
-
-    // add our own custom title
-    header.textContent = Cast.toString(titleName);
     // get the portal/modal body
     const portalBody = portal.querySelector('div[class^="prompt_body_"]');
     const portalHolder = portalBody.parentElement.parentElement;
@@ -77,20 +77,45 @@
 
     const errorString = formatError(error, true);
 
-    const errorHTML = `<!-- Text area for the errors -->
-    <textarea class="data-url_code_1o8oS"style="display:inline-block;width:100%;height:12rem;border:1px solid var(--ui-black-transparent);border-radius:0.25rem;margin:0.5rem;" readonly="" spellcheck="false" autocomplete="off">
-    ${errorString}
-    </textarea>`;
-    const contentHTML = `<!-- Wrapper div for the content --><div style="display:inline-block;width:-webkit-fill-available;height:calc(100% - 2.75rem);"><p>${Scratch.translate("Errors found in project:")} </p>${errorHTML}<p>${Scratch.translate('Make sure to fix these manually or with the "Format project" button.')}</p></div>`;
-    const promptButtonPos = `<!-- Wrapper div for the prompt buttom positioning --><div style="display:inline;box-sizing:content-box;">${portalBody.querySelector("div[class^=prompt_button-row_]").outerHTML}</div>`;
-
-    portalBody.innerHTML = `${contentHTML}${promptButtonPos}`;
-    const textarea = portalBody.querySelector(
-      'textarea[class^="data-url_code_1o8oS"]'
+    // Create the custom modal elements
+    const labelA = document.createElement("p");
+    labelA.textContent = Scratch.translate(
+      "The extension has found errors in your project:"
     );
 
-    //@ts-expect-error
-    textarea.value = textarea.value.trim();
+    // The error text area
+    const errorTextArea = document.createElement("textarea");
+
+    errorTextArea.setAttribute("class", "data-url_code_1o8oS");
+    errorTextArea.setAttribute("readonly", "true");
+    errorTextArea.setAttribute("spellcheck", "false");
+    errorTextArea.setAttribute("autocomplete", "false");
+
+    errorTextArea.style.display = "inline-block";
+    errorTextArea.style.width = "100%";
+    errorTextArea.style.height = "12rem";
+    errorTextArea.value = errorString;
+
+    const labelB = document.createElement("p");
+    labelB.textContent = Scratch.translate(
+      'Make sure to fix them manualy or with the "Format Project" button.'
+    );
+
+    // Wrap them inside a div
+    const div = document.createElement("div");
+    div.setAttribute(
+      "style",
+      "display:inline-block;width:-webkit-fill-available;height:calc(100% - 2.75rem);"
+    );
+    div.setAttribute("class", "error_list_1o85");
+    div.append(labelA, errorTextArea, labelB);
+
+    const input = document.querySelector(`div[class="ReactModalPortal"] input`);
+    input.parentNode.append(div);
+    input.parentNode.previousSibling.remove();
+    input.remove();
+
+    errorTextArea.value = errorTextArea.value.trim();
 
     // creating our OK button
     const okButton = portalBody.querySelector(
