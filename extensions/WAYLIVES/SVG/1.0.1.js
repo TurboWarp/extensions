@@ -26,7 +26,7 @@
             opcode: "svg",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "SVG-frame  //  width: [WIDTH] height: [HEIGHT] elements in svg: [ELEMENTS]"
+              "SVG-frame  /  width: [WIDTH] height: [HEIGHT] elements in svg: [ELEMENTS]"
             ),
             arguments: {
               WIDTH: {
@@ -50,7 +50,7 @@
             opcode: "line",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "LINE  //  x1, y1: [XA][YA] x2, y2: [XB][YB] width: [WIDTH] color: [COLOR] opacity: [OPACITY]% dash, gap: [DASH][GAP] linecap: [LINECAP]"
+              "LINE  /  x1, y1: [XA][YA] x2, y2: [XB][YB] width: [WIDTH] color: [COLOR] opacity: [OPACITY]% dash, gap: [DASH][GAP] linecap: [LINECAP]"
             ),
             arguments: {
               XA: {
@@ -100,7 +100,7 @@
             opcode: "rect",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "RECT  //  x, y: [X][Y] width: [WIDTH] height: [HEIGHT] radius: [RADIUS] fill color: [FILLCOLOR] fill opacity: [FILLOPACITY]% stroke width: [STROKEWIDTH] stroke color: [STROKECOLOR] stroke opacity: [STROKEOPACITY]% dash, gap: [DASH][GAP] stroke linecap: [LINECAP]"
+              "RECT  /  x, y: [X][Y] width: [WIDTH] height: [HEIGHT] radius: [RADIUS] fill color: [FILLCOLOR] fill opacity: [FILLOPACITY]% stroke width: [STROKEWIDTH] stroke color: [STROKECOLOR] stroke opacity: [STROKEOPACITY]% dash, gap: [DASH][GAP] stroke linecap: [LINECAP]"
             ),
             arguments: {
               X: {
@@ -162,7 +162,7 @@
             opcode: "ellipse",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "ELLIPSE  //  cx, cy: [CX][CY] width: [WIDTH] height: [HEIGHT] fill color: [FILLCOLOR] fill opacity: [FILLOPACITY]% stroke width: [STROKEWIDTH] stroke color: [STROKECOLOR] stroke opacity: [STROKEOPACITY]% dash, gap: [DASH][GAP] stroke linecap: [LINECAP]"
+              "ELLIPSE  /  cx, cy: [CX][CY] width: [WIDTH] height: [HEIGHT] fill color: [FILLCOLOR] fill opacity: [FILLOPACITY]% stroke width: [STROKEWIDTH] stroke color: [STROKECOLOR] stroke opacity: [STROKEOPACITY]% dash, gap: [DASH][GAP] stroke linecap: [LINECAP]"
             ),
             arguments: {
               CX: {
