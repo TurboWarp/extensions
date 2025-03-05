@@ -10,7 +10,7 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("This example must run unsandboxed");
+    throw new Error("svg");
   }
 
   class svg {
