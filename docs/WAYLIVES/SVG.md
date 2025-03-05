@@ -114,9 +114,5 @@ You can use this block to draw circles and ovals.
 
 ## Пример-проект
 
-```scratch
-(SVG-frame  //  width:(100) height:(100) elements in svg:(...))
-```
-
 <img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/12.png">
 <img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/13.png">
