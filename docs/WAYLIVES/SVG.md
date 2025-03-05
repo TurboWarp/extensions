@@ -1,18 +1,18 @@
 # SVG
 
-SVG - это XML язык, который преднозначен для рисования векторых изображений. Изображения бывают двух видов: растровыми и векторными, так вот с помощью SVG можно рисовать именно векторную графику.
+SVG is an XML language that is designed for drawing vector images. There are two types of images: raster and vector, so using SVG you can draw vector graphics.
 
-Пример векторного и растрового изображения:
+Example:
 
 <img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/11.png">
-&emsp;<i>- Данное изображение принадлежит @WAYLIVES</i>
+&emsp;<i>- This image belongs to @WAYLIVES</i>
 
 ##  
 
-С помощью расширения "SVG" Вы сможете создавать код простых SVG изображений, где будут доступны такие элементы:
-- линия
-- прямоугольник
-- круг
+Using the "SVG" extension, you can create code for simple SVG images, where the following elements will be available:
+- line
+- rectangle
+- circle
 
 ## Блоки
 ### SVG-frame:
@@ -21,13 +21,13 @@ SVG - это XML язык, который преднозначен для рис
 ```
 <img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/s1.svg">
 
-Без этого блока ничего не будет работать, он задаёт начало и конец векторным изображениям.
+Nothing will work without this block, it sets the beginning and end of vector images.
 
-(width) - здесь вы задаёте ширину формата SVG
+(width) - here you set the width of the SVG format
 
-(height) - здесь вы задаёте высоту формата SVG
+(height) - here you set the height of the SVG format
 
-(elements in svg) - сюда вы можете вставлять SVG элементы, с помощью которых будете рисовать изображения
+(elements in svg) - here you can insert SVG elements with which you will draw images.
 
 ### Line:
 
@@ -36,21 +36,21 @@ SVG - это XML язык, который преднозначен для рис
 ```
 <img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/s2.svg">
 
-С помощью этого блока можно рисовать линии.
+You can use this block to draw lines.
 
-(x1), (y2) - это положение первой точки линии по каардинату X, Y (координаты SVG: https://developer.mozilla.org/ru/docs/Web/SVG/Tutorial/Positions).
+(x1), (y2) - is the position of the first point of the line along the X, Y coordinate (SVG coordinates: https://developer.mozilla.org/en/docs/Web/SVG/Tutorial/Positions ).
 
-(x2), (y2) - это положение конечной (второй) точки линии по координату X, Y.
+(x2), (y2) - is the position of the end (second) point of the line along the X, Y coordinate.
 
-(width) - здесь вы можете задать толщину линии.
+(width) - here you can set the line thickness.
 
-(color) - здесь вы задаёте цвет линии.
+(color) - here you set the color of the line.
 
-(opacity) - здесь вы задаёте прозрачность линии в процентах (%).
+(opacity) - here you set the transparency of the line as a percentage (%).
 
-(dash), (gap) - с помощью этих параметров вы можете задать тип линии. Dash - это длина пунктирных линий. Gap - это отступ, т.е. расстояние между пунктирными линиями. 
+(dash), (gap) - you can use these parameters to set the line type. Dash is the length of the dotted lines. Gap is the indentation, i.e. the distance between the dotted lines. 
 
-(linecap) - здесь вы можете задать форму концов линии (подробнее здесь: https://developer.mozilla.org/ru/docs/Web/SVG/Attribute/stroke-linecap).
+(linecap) - here you can set the shape of the line ends (more details here: https://developer.mozilla.org/en/docs/Web/SVG/Attribute/stroke-linecap ).
 
 Linecap:
 
@@ -63,27 +63,27 @@ Linecap:
 ```
 <img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/s3.svg">
 
-С помощью этого блока можно рисовать прямоугольники, квадраты.
+You can use this block to draw rectangles and squares.
 
-(x), (y) - это положение начальной точки прямоугольника по каардинату X, Y.
+(x), (y) - is the position of the rectangle's starting point along the X, Y coordinate.
 
-(width), (height) - это ширина и высота прямоугольника.
+(width), (height) - are the width and height of the rectangle.
 
-(radius) - здесь вы задаёте скругление углов прямоугольника.
+(radius) - here you set the rounded corners of the rectangle.
 
-(fill color) - здесь вы задаёте цвет заливки прямоугольника.
+(fill color) - here you set the fill color of the rectangle.
 
-(fill opacity) - здесь вы задаёте прозрачность заливки прямоугольника в процентах (%).
+(fill opacity) - here you set the transparency of the rectangle fill as a percentage (%).
 
-(stroke width) - здесь вы задаёте толщина обводки прямоугольника.
+(stroke width) - here you set the stroke thickness of the rectangle.
 
-(stroke color) - здесь вы задаёте цвет обводки.
+(stroke color) - here you set the stroke color.
 
-(stroke opacity) - здесь вы задаёте прозрачность обводки.
+(stroke opacity) - here you set the transparency of the stroke.
 
-(dash), (gap) - с помощью этих параметров вы можете задать тип линии. Dash - это длина пунктирных линий. Gap - это отступ, т.е. расстояние между пунктирными линиями. 
+(dash), (gap) - you can use these parameters to set the line type. Dash is the length of the dotted lines. Gap is the indentation, i.e. the distance between the dotted lines. 
 
-(linecap) - здесь вы можете задать форму концов линии.
+(linecap) - here you can set the shape of the line ends.
 
 ### Ellipse:
 
@@ -92,25 +92,25 @@ Linecap:
 ```
 <img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/s4.svg">
 
-С помощью этого блока можно рисовать круги и овалы.
+You can use this block to draw circles and ovals.
 
-(cx), (cy) - это положение центральной точки окружности по каардинату X, Y.
+(cx), (cy) - is the position of the center point of the circle along the X, Y coordinate.
 
-(width), (height) - это ширина и высота окружности.
+(width), (height) - are the width and height of the circle.
 
-(fill color) - здесь вы задаёте цвет заливки.
+(fill color) - here you set the fill color.
 
-(fill opacity) - здесь вы задаёте прозрачность заливки в процентах (%).
+(fill opacity) - here you set the transparency of the fill as a percentage (%).
 
-(stroke width) - здесь вы задаёте толщина обводки окружности.
+(stroke width) - here you set the thickness of the circle outline.
 
-(stroke color) - здесь вы задаёте цвет обводки.
+(stroke color) - here you set the stroke color.
 
-(stroke opacity) - здесь вы задаёте прозрачность обводки.
+(stroke opacity) - here you set the transparency of the stroke.
 
-(dash), (gap) - с помощью этих параметров вы можете задать тип линии. Dash - это длина пунктирных линий. Gap - это отступ, т.е. расстояние между пунктирными линиями. 
+(dash), (gap) - you can use these parameters to set the line type. Dash is the length of the dotted lines. Gap is the indentation, i.e. the distance between the dotted lines. 
 
-(linecap) - здесь вы можете задать форму концов линии.
+(linecap) - here you can set the shape of the line ends.
 
 ## Пример-проект
 
