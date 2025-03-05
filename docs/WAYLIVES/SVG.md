@@ -4,7 +4,7 @@ SVG - это XML язык, который преднозначен для рис
 
 Пример векторного и растрового изображения:
 
-<img src="https://raw.githubusercontent.com/WAYLIVES/my-extensions/d3acfe37a023ce1160657b37905f7f8b3da28a29/extensions/SVG/doc/1.svg" alt="Italian Trulli">
+<img src="https://github.com/WAYLIVES/my-extensions/blob/main/extensions/SVG/doc/11.png" alt="Italian Trulli">
 &emsp;<i>- Данное изображение принадлежит @WAYLIVES</i>
 
 ##  
@@ -32,3 +32,4 @@ SVG - это XML язык, который преднозначен для рис
 ```scratch
 (SVG-frame  //  width:(100) height:(100) elements in svg:(...))
 ```
+## П
