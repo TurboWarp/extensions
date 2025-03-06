@@ -8,7 +8,7 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Pretty Blocks extension must run unsandboxed");
+    throw new Error("Pretty Blocks must run unsandboxed");
   }
 
   const vm = Scratch.vm;
@@ -156,7 +156,7 @@
       !deleteRule ? titleName : "test",
       "",
       !deleteRule ? () => func(name, regex, funcType, scope) : () => func(name),
-      "Format Rules Manager",
+      Scratch.translate("Format Rules Manager"),
       "broadcast_msg"
     );
 
@@ -211,7 +211,7 @@
       });
 
       const regexLabel = input.parentNode.previousSibling.cloneNode(true);
-      regexLabel.textContent = "Regular Expression:";
+      regexLabel.textContent = Scratch.translate("Regular Expression:");
 
       const regexInput = document.createElement("input");
       regexInput.setAttribute("class", input.getAttribute("class"));
@@ -222,7 +222,7 @@
 
       // Format Function (The funtction to use when formatting the project.)
       const funcTypeLabel = input.parentNode.previousSibling.cloneNode(true);
-      funcTypeLabel.textContent = "Format Function:";
+      funcTypeLabel.textContent = Scratch.translate("Format Function:");
       const selector = document.createElement("select");
       selector.setAttribute("class", input.getAttribute("class"));
       selector.addEventListener("input", (e) => {
@@ -275,14 +275,74 @@
     }
   }
 
-  let ignoreList;
+  const squareInputBlocks = ["HamPrettyBlocks_fancyFormatErrors"];
+
+  // Custom Square Block Shapes
+  const ogConverter = runtime._convertBlockForScratchBlocks.bind(runtime);
+  runtime._convertBlockForScratchBlocks = function (blockInfo, categoryInfo) {
+    const res = ogConverter(blockInfo, categoryInfo);
+    if (blockInfo.outputShape) res.json.outputShape = blockInfo.outputShape;
+    return res;
+  };
+
+  if (Scratch.gui)
+    Scratch.gui.getBlockly().then((SB) => {
+      // Custom Square Input Shape
+      const makeShape = (width, height) => {
+        width -= 10;
+        // prettier-ignore
+        height -= 8
+        return `
+        m 0 4 
+        A 4 4 0 0 1 4 0 H ${width} 
+        a 4 4 0 0 1 4 4 
+        v ${height} 
+        a 4 4 0 0 1 -4 4 
+        H 4 
+        a 4 4 0 0 1 -4 -4 
+        z`
+          .replaceAll("\n", "")
+          .trim();
+      };
+
+      const ogRender = SB.BlockSvg.prototype.render;
+      SB.BlockSvg.prototype.render = function (...args) {
+        const data = ogRender.call(this, ...args);
+        if (this.svgPath_ && squareInputBlocks.includes(this.type)) {
+          this.inputList.forEach((input) => {
+            if (input.name.startsWith("ARRAY")) {
+              const block = input.connection.targetBlock();
+              if (
+                block &&
+                block.type === "text" &&
+                block.svgPath_ &&
+                block.type.startsWith("HamPrettyBlocks_menu_")
+              ) {
+                block.svgPath_.setAttribute(
+                  "transform",
+                  `scale(1, ${block.height / 33})`
+                );
+                block.svgPath_.setAttribute(
+                  "d",
+                  makeShape(block.width, block.height)
+                );
+              } else if (input.outlinePath) {
+                input.outlinePath.setAttribute("d", makeShape(46, 32));
+              }
+            }
+          });
+        }
+        return data;
+      };
+    });
+
+  let ignoreList = [];
 
   // Function Types for Custom Rules.
   const funcTypes = [
     { text: Scratch.translate("to uppercase"), value: "uppercase" },
     { text: Scratch.translate("to lowercase"), value: "lowercase" },
     { text: Scratch.translate("regex validation"), value: "regex_validation" },
-    { text: Scratch.translate("to lowercase"), value: "lowercase" },
     { text: Scratch.translate("to camelCase"), value: "camelcase" },
     { text: Scratch.translate("to snake_case"), value: "snakecase" },
     { text: Scratch.translate("to PascalCase"), value: "pascal_case" },
@@ -342,6 +402,8 @@
         id: "HamPrettyBlocks",
         name: Scratch.translate("Pretty Blocks"),
         docsURI: "http://localhost:8000/Hammouda101010/prettyblocks", // https://extensions.turbowarp.org/Hammouda101010/prettyblocks
+        color1: "#0071b0",
+        color2: "#006095",
         blocks: [
           {
             func: "checkFormatting",
@@ -381,17 +443,22 @@
               },
             },
           },
+          "---",
           {
             opcode: "formatErrorsReporter",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("format errors"),
+            text: Scratch.translate("format errors"), // format errors
+            disableMonitor: true,
+            outputShape: 3,
           },
           {
             opcode: "fancyFormatErrors",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("fancify format errors [FORMAT_ERROR]"),
+            text: Scratch.translate(
+              "fancify format errors [ARRAY_FORMAT_ERROR]"
+            ),
             arguments: {
-              FORMAT_ERROR: {},
+              ARRAY_FORMAT_ERROR: {},
             },
           },
         ],
@@ -416,14 +483,14 @@
 
       // Check for each spaces
       for (const line of logicCodeLineArray) {
-        // if it's a boolean
-        if (/<.*>/.test(line)) {
-          // is it a primitive value?
+        // Check if it's a boolean
+        if (/\<([^>]+)\>/g.test(line)) {
+          // Is it a primitive boolean value?
           if (line === "<true>") {
             boolResult = true;
           } else if (line === "<false>") {
             boolResult = false;
-            // otherwise, it's an argument
+            // Otherwise, it's an argument
           } else {
             const optsArray = Object.values(opts).map((value) =>
               Cast.toBoolean(value)
@@ -441,6 +508,7 @@
             }
           }
         } else {
+          // Tenary operator logic
           if (line === "if") {
             continue;
           } else if (line === "else") {
@@ -494,9 +562,8 @@
       const localVars = allVars
         .map((v) => Object.values(v))
         .map((v) =>
-          v
-            .filter((v) => v.type !== "list" && !globalVars.includes(v.name))
-            .map((v) => v.name)
+          // prettier-ignore
+          v.filter((v) => v.type !== "list" && !globalVars.includes(v.name)).map((v) => v.name)
         )
         .flat(1);
 
@@ -516,9 +583,6 @@
         }
 
         const regex = new RegExp(str.split("/")[1], str.split("/")[2]);
-        console.log(regex);
-        console.log(regex.test(val));
-        console.log(regex.test(val));
 
         switch (rule) {
           case "griffpatchStyle":
@@ -549,7 +613,9 @@
                 type: type,
                 level: rules[rule].level,
                 subject: val,
-                msg: Scratch.translate(rules[rule].msg),
+                msg: Scratch.translate(
+                  Cast.toString(rules[rule].msg).replace(/\{([^}]+)\}/g, val)
+                ),
               });
             }
             break;
@@ -564,12 +630,17 @@
             customRules[rule].scopes.includes(type)) ||
           customRules[rule].scopes.includes("all")
         ) {
-          if (!customRules[rule].check(val)) {
+          let str = Cast.toString(rules[rule].regex);
+
+          const regex = new RegExp(str.split("/")[1], str.split("/")[2]);
+          if (!regex.test(val)) {
             this.formatErrors.push({
               type: type,
               level: customRules[rule].level,
               subject: val,
-              msg: Scratch.translate(customRules[rule].msg(val)),
+              msg: Scratch.translate(
+                Cast.toString(rules[rule].msg).replace(/\{([^}]+)\}/g, val)
+              ),
             });
           }
         }
@@ -578,6 +649,7 @@
 
     _checkSpriteFormatting() {
       const targets = runtime.targets;
+      console.log("checking sprites");
       for (const target of targets) {
         if (target.isSprite()) {
           // Format check
@@ -608,6 +680,7 @@
         ? []
         : this.getCustomBlocks();
 
+      console.log("checking custom blocks");
       for (const block of blocks) {
         this.checkFormatRule("customNoCapitalized", block, "custom_block");
         this.checkFormatRule("camelCaseOnly", block, "custom_block");
@@ -618,7 +691,7 @@
     _checkVariableFormatting() {
       const variables = this.getVariables();
 
-      // Local variable check
+      // Local variable format check
       console.log("checking local variables");
       for (const variable of variables.local) {
         this.checkFormatRule("griffpatchStyle", variable, "variable", {
@@ -628,7 +701,7 @@
         this.checkCustomFormatRules(variable, "variable");
       }
 
-      // Global variable check
+      // Global variable format check
       console.log("checking global variables");
       for (const variable of variables.global) {
         this.checkFormatRule("griffpatchStyle", variable, "variable", {
@@ -708,7 +781,7 @@
     }
     fancyFormatErrors(args) {
       try {
-        return formatError(JSON.parse(args.FORMAT_ERROR));
+        return formatError(JSON.parse(args.ARRAY_FORMAT_ERROR));
       } catch {
         return "";
       }
