@@ -336,7 +336,7 @@
       };
     });
 
-  let ignoreList = [];
+  let ignoreList = new Set();
 
   // Function Types for Custom Rules.
   const funcTypes = [
@@ -374,21 +374,13 @@
 
   // Turbowarp's extension storage
   runtime.on("PROJECT_LOADED", () => {
-    vm.extensionManager.refreshBlocks();
-    try {
-      // @ts-ignore
-      const storage = JSON.parse(runtime.extensionStorage["HamPrettyBlocks"]);
+    // @ts-ignore
+    const storage = runtime.extensionStorage["HamPrettyBlocks"];
 
-      if (storage) {
-        ignoreList = storage.ignoreList ? JSON.parse(storage.ignoreList) : [];
-
-        rules = storage.rules ? JSON.parse(storage.rules) : rules;
-        customRules = storage.customRules
-          ? JSON.parse(storage.customRules)
-          : customRules;
-      }
-    } catch (e) {
-      console.error(e);
+    if (storage) {
+      // ignoreList = new Set(JSON.parse(storage.ignoreList))
+      rules = JSON.parse(storage.rules);
+      customRules = JSON.parse(storage.customRules);
     }
   });
 
@@ -425,6 +417,7 @@
             opcode: "ignoreVariable",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("ignore variable named [VAR_MENU]"),
+            color1: "#848484",
             arguments: {
               VAR_MENU: {
                 type: Scratch.ArgumentType.STRING,
@@ -436,12 +429,19 @@
             opcode: "ignoreCustomBlock",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("ignore custom block named [BLOCK_MENU]"),
+            color1: "#848484",
             arguments: {
               BLOCK_MENU: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "PRETTYBLOCKS_CUSTOM_BLOCKS",
               },
             },
+          },
+          "---",
+          {
+            opcode: "checkFormatttingBlock",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("check project formatting"),
           },
           "---",
           {
@@ -464,17 +464,25 @@
         ],
         menus: {
           PRETTYBLOCKS_CUSTOM_BLOCKS: {
-            acceptReporters: true,
+            acceptReporters: false,
             items: "_getCustomBlocksMenu",
           },
           PRETTYBLOCKS_VARIABLES: {
-            acceptReporters: true,
+            acceptReporters: false,
             items: "_getVariablesMenu",
           },
         },
       };
     }
     // Class Utilities
+    refreshBlocks() {
+      vm.extensionManager.refreshBlocks();
+      runtime.extensionStorage["HamPrettyBlocks"] = {
+        rules: JSON.stringify(rules),
+        customRules: JSON.stringify(customRules),
+        ignore: ignoreList ? JSON.stringify([...ignoreList]) : "[]",
+      };
+    }
     getLogic(str, opts) {
       let codeLine = Cast.toString(str);
       const logicCodeLineArray = codeLine.split(" ");
@@ -484,7 +492,7 @@
       // Check for each spaces
       for (const line of logicCodeLineArray) {
         // Check if it's a boolean
-        if (/\<([^>]+)\>/g.test(line)) {
+        if (/<([^>]+)>/g.test(line)) {
           // Is it a primitive boolean value?
           if (line === "<true>") {
             boolResult = true;
@@ -540,7 +548,10 @@
         for (const blockId in blocks) {
           const block = blocks[blockId];
           if (block.opcode === "procedures_prototype") {
-            customBlocks.push(this.formatCustomBlock(block));
+            customBlocks.push({
+              text: this.formatCustomBlock(block),
+              value: block.id,
+            });
           }
         }
       }
@@ -662,8 +673,6 @@
       const mutation = block.mutation;
       const args = JSON.parse(mutation.argumentnames);
 
-      console.log(args);
-
       let i = 0;
       const name = mutation.proccode.replace(/%[snb]/g, (match) => {
         let value = args[i++];
@@ -681,10 +690,14 @@
         : this.getCustomBlocks();
 
       console.log("checking custom blocks");
-      for (const block of blocks) {
-        this.checkFormatRule("customNoCapitalized", block, "custom_block");
-        this.checkFormatRule("camelCaseOnly", block, "custom_block");
-        this.checkCustomFormatRules(block, "custom_block");
+      for (const block in blocks) {
+        if (!ignoreList.has(blocks[block].value)) {
+          // prettier-ignore
+          this.checkFormatRule("customNoCapitalized", blocks[block].text, "custom_block");
+          // prettier-ignore
+          this.checkFormatRule("camelCaseOnly", blocks[block].text, "custom_block");
+          this.checkCustomFormatRules(blocks[block].text, "custom_block");
+        }
       }
     }
 
@@ -753,6 +766,7 @@
             regex: regex,
           };
 
+          this.refreshBlocks();
           console.log(customRules);
         }
       );
@@ -770,10 +784,35 @@
         (name) => {
           console.log(name);
           delete customRules[name];
+          this.refreshBlocks();
 
           console.log(customRules);
         }
       );
+    }
+
+    ignoreVariable(args) {
+      if (Cast.toBoolean(args.VAR_MENU)) {
+        ignoreList.add(args.VAR_MENU);
+        this.refreshBlocks();
+      }
+      console.log(ignoreList);
+    }
+    ignoreCustomBlock(args) {
+      if (Cast.toBoolean(args.BLOCK_MENU)) {
+        ignoreList.add(args.BLOCK_MENU);
+        this.refreshBlocks();
+      }
+      console.log(ignoreList);
+    }
+
+    checkFormatttingBlock() {
+      if (!isEditor) return;
+      this.formatErrors = [];
+
+      this._checkSpriteFormatting();
+      this._checkVariableFormatting();
+      this._checkCustomBlockFormatting();
     }
 
     formatErrorsReporter() {
@@ -808,7 +847,9 @@
         )
         .flat(1);
 
-      return localVars.concat(globalVars);
+      return localVars.concat(globalVars)
+        ? localVars.concat(globalVars)
+        : [{ text: Scratch.translate("no variables found"), value: [] }];
     }
 
     _getCustomBlocksMenu() {
@@ -820,32 +861,18 @@
         for (const blockId in blocks) {
           const block = blocks[blockId];
           if (block.opcode === "procedures_prototype") {
-            customBlocks.push(this.formatCustomBlock(block));
+            customBlocks.push({
+              text: this.formatCustomBlock(block),
+              value: block.id,
+            });
           }
         }
       }
 
       return customBlocks.length > 0
         ? customBlocks
-        : ["no custom blocks found"];
+        : [{ text: Scratch.translate("no custom blocks found"), value: false }];
     }
-  }
-
-  if (isEditor) {
-    vm.on("EXTENSION_ADDED", () => {
-      runtime.extensionStorage["HamPrettyBlocks"] = JSON.stringify({
-        rules: JSON.stringify(rules),
-        customRules: JSON.stringify(customRules),
-        ignore: JSON.stringify(ignoreList),
-      });
-    });
-    vm.on("BLOCKSINFO_UPDATE", () => {
-      runtime.extensionStorage["HamPrettyBlocks"] = JSON.stringify({
-        rules: JSON.stringify(rules),
-        customRules: JSON.stringify(customRules),
-        ignore: JSON.stringify(ignoreList),
-      });
-    });
   }
 
   // @ts-ignore
