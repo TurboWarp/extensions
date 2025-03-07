@@ -21,7 +21,15 @@
         color1: "#9823FF",
         color2: "#7C2DC1",
         color3: "#2D3548",
+        docsURI: "https://extensions.turbowarp.org/WAYLIVES/SVG",
         blocks: [
+
+          "---",
+          
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("The basis of SVG:"),
+          },
           {
             opcode: "svg",
             blockType: Scratch.BlockType.REPORTER,
@@ -46,6 +54,10 @@
 
           "---",
 
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("SVG elements:"),
+          },
           {
             opcode: "line",
             blockType: Scratch.BlockType.REPORTER,
