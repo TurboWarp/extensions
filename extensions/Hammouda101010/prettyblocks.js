@@ -16,10 +16,9 @@
   const Cast = Scratch.Cast;
   /**Checks if the extension is in "penguinmod.com".*/
   // @ts-ignore
-  const _isPM = Scratch.extensions.isPenguinMod;
+  const _isPM = runtime.platform.url === "https://penguinmod.com/";
   /**Checks if the extension is in "unsandboxed.org".*/
-  const isUnSandBoxed =
-    JSON.parse(vm.toJSON()).meta.platform.url === "https://unsandboxed.org/";
+  const isUnSandBoxed = runtime.platform.url === "https://unsandboxed.org/";
   /**Checks if the extension is inside the editor.*/
   const isEditor = typeof scaffolding === "undefined";
 
@@ -498,7 +497,7 @@
             boolResult = true;
           } else if (line === "<false>") {
             boolResult = false;
-            // Otherwise, it's an argument
+            // Otherwise, it's an argument/option
           } else {
             const optsArray = Object.values(opts).map((value) =>
               Cast.toBoolean(value)
