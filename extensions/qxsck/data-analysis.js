@@ -1,7 +1,7 @@
 // Name: Data Analysis
 // ID: qxsckdataanalysis
 // Description: Blocks to compute means, medians, maximums, minimums, variances, and modes.
-// By: qxsck
+// By: qxsck <https://scratch.mit.edu/users/qxsck/>
 // License: MIT
 
 (function (Scratch) {
@@ -12,6 +12,20 @@
         id: "qxsckdataanalysis",
         name: Scratch.translate({ id: "name", default: "Data Analysis" }),
         blocks: [
+          {
+            opcode: "sum",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "sum",
+              default: "sum of [NUMBERS]",
+            }),
+            arguments: {
+              NUMBERS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1 2 3 4 5",
+              },
+            },
+          },
           {
             opcode: "average",
             blockType: Scratch.BlockType.REPORTER,
@@ -100,6 +114,13 @@
       };
     }
 
+    sum(args) {
+      const numbers = Scratch.Cast.toString(args.NUMBERS)
+        .split(" ")
+        .map(Number);
+      return numbers.reduce((a, b) => a + b, 0);
+    }
+
     average(args) {
       const numbers = Scratch.Cast.toString(args.NUMBERS)
         .split(" ")
@@ -108,18 +129,25 @@
       return sum / numbers.length;
     }
 
+    // Spread is not used due to overflow.
     maximum(args) {
       const numbers = Scratch.Cast.toString(args.NUMBERS)
         .split(" ")
         .map(Number);
-      return Math.max(...numbers);
+      let max = -Infinity;
+      for (let i = 0; i < numbers.length; i++)
+        if (numbers[i] > max) max = numbers[i];
+      return max;
     }
 
     minimum(args) {
       const numbers = Scratch.Cast.toString(args.NUMBERS)
         .split(" ")
         .map(Number);
-      return Math.min(...numbers);
+      let min = Infinity;
+      for (let i = 0; i < numbers.length; i++)
+        if (numbers[i] < min) min = numbers[i];
+      return min;
     }
 
     median(args) {

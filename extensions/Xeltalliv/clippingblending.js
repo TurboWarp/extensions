@@ -152,6 +152,8 @@
       const proto = vm.runtime.targets[0].__proto__;
       const osa = proto.onStopAll;
       proto.onStopAll = function () {
+        this.clipbox = null;
+        this.blendMode = "default";
         this.renderer.updateDrawableClipBox.call(
           renderer,
           this.drawableID,
@@ -168,7 +170,9 @@
       proto.makeClone = function () {
         const newTarget = mc.call(this);
         if (this.clipbox || this.blendMode) {
-          newTarget.clipbox = Object.assign({}, this.clipbox);
+          newTarget.clipbox = this.clipbox
+            ? Object.assign({}, this.clipbox)
+            : null;
           newTarget.blendMode = this.blendMode;
           renderer.updateDrawableClipBox.call(
             renderer,
@@ -216,7 +220,8 @@
             clipbox.x_max != lastClipbox.x_max ||
             clipbox.y_max != lastClipbox.y_max))
       ) {
-        if (skin.a_lineColorIndex) {
+        if (skin.attribute_index || skin.a_lineColorIndex) {
+          // Supporting both before and after https://github.com/TurboWarp/scratch-render/pull/11
           skin._flushLines();
         }
         lastTarget = target;
@@ -280,7 +285,7 @@
     getInfo() {
       return {
         id: "xeltallivclipblend",
-        name: "Clipping & Blending",
+        name: Scratch.translate("Clipping & Blending"),
         color1: "#9966FF",
         color2: "#855CD6",
         color3: "#774DCB",
@@ -289,7 +294,9 @@
           {
             opcode: "setClipbox",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set clipping box x1:[X1] y1:[Y1] x2:[X2] y2:[Y2]",
+            text: Scratch.translate(
+              "set clipping box x1:[X1] y1:[Y1] x2:[X2] y2:[Y2]"
+            ),
             arguments: {
               X1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -314,14 +321,14 @@
           {
             opcode: "clearClipbox",
             blockType: Scratch.BlockType.COMMAND,
-            text: "clear clipping box",
+            text: Scratch.translate("clear clipping box"),
             filter: [Scratch.TargetType.SPRITE],
             extensions: ["colours_looks"],
           },
           {
             opcode: "getClipbox",
             blockType: Scratch.BlockType.REPORTER,
-            text: "clipping box [PROP]",
+            text: Scratch.translate("clipping box [PROP]"),
             arguments: {
               PROP: {
                 type: Scratch.ArgumentType.STRING,
@@ -336,7 +343,7 @@
           {
             opcode: "setBlend",
             blockType: Scratch.BlockType.COMMAND,
-            text: "use [BLENDMODE] blending ",
+            text: Scratch.translate("use [BLENDMODE] blending"),
             arguments: {
               BLENDMODE: {
                 type: Scratch.ArgumentType.STRING,
@@ -350,7 +357,7 @@
           {
             opcode: "getBlend",
             blockType: Scratch.BlockType.REPORTER,
-            text: "blending",
+            text: Scratch.translate("blending"),
             filter: [Scratch.TargetType.SPRITE],
             disableMonitor: true,
             extensions: ["colours_looks"],
@@ -359,7 +366,7 @@
           {
             opcode: "setAdditiveBlend",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn additive blending [STATE]",
+            text: Scratch.translate("turn additive blending [STATE]"),
             arguments: {
               STATE: {
                 type: Scratch.ArgumentType.STRING,
@@ -374,7 +381,7 @@
           {
             opcode: "getAdditiveBlend",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is additive blending on?",
+            text: Scratch.translate("is additive blending on?"),
             filter: [Scratch.TargetType.SPRITE],
             hideFromPalette: true,
             disableMonitor: true,
@@ -384,15 +391,31 @@
         menus: {
           states: {
             acceptReporters: true,
-            items: ["on", "off"],
+            items: [
+              { text: Scratch.translate("on"), value: "on" },
+              { text: Scratch.translate("off"), value: "off" },
+            ],
           },
           blends: {
             acceptReporters: true,
-            items: ["default", "additive", "subtract", "multiply", "invert"],
+            items: [
+              { text: Scratch.translate("default"), value: "default" },
+              { text: Scratch.translate("additive"), value: "additive" },
+              { text: Scratch.translate("subtract"), value: "subtract" },
+              { text: Scratch.translate("multiply"), value: "multiply" },
+              { text: Scratch.translate("invert"), value: "invert" },
+            ],
           },
           props: {
             acceptReporters: true,
-            items: ["width", "height", "min x", "min y", "max x", "max y"],
+            items: [
+              { text: Scratch.translate("width"), value: "width" },
+              { text: Scratch.translate("height"), value: "height" },
+              { text: Scratch.translate("min x"), value: "min x" },
+              { text: Scratch.translate("min y"), value: "min y" },
+              { text: Scratch.translate("max x"), value: "max x" },
+              { text: Scratch.translate("max y"), value: "max y" },
+            ],
           },
         },
       };

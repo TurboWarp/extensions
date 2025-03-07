@@ -28,7 +28,7 @@
     getInfo() {
       return {
         id: "lmsData",
-        name: "List Tools",
+        name: Scratch.translate("List Tools"),
         color1: "#ff661a",
         color2: "#f2590d",
         color3: "#e64d00",
@@ -36,7 +36,7 @@
           {
             opcode: "deleteItems",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete items [NUM1] to [NUM2] of [LIST]",
+            text: Scratch.translate("delete items [NUM1] to [NUM2] of [LIST]"),
             arguments: {
               NUM1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -55,7 +55,7 @@
           {
             opcode: "deleteAllOfItem",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete all [ITEM] in [LIST]",
+            text: Scratch.translate("delete all [ITEM] in [LIST]"),
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.STRING,
@@ -70,7 +70,9 @@
           {
             opcode: "replaceAllOfItem",
             blockType: Scratch.BlockType.COMMAND,
-            text: "replace all [ITEM1] with [ITEM2] in [LIST]",
+            text: Scratch.translate(
+              "replace all [ITEM1] with [ITEM2] in [LIST]"
+            ),
             arguments: {
               ITEM1: {
                 type: Scratch.ArgumentType.STRING,
@@ -89,7 +91,7 @@
           {
             opcode: "repeatList",
             blockType: Scratch.BlockType.COMMAND,
-            text: "repeat [LIST1] [NUM] times in [LIST2]",
+            text: Scratch.translate("repeat [LIST1] [NUM] times in [LIST2]"),
             arguments: {
               LIST1: {
                 type: Scratch.ArgumentType.STRING,
@@ -111,7 +113,7 @@
           {
             opcode: "getListJoin",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get list [LIST] joined by [STRING]",
+            text: Scratch.translate("list [LIST] joined by [STRING]"),
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -127,7 +129,7 @@
           {
             opcode: "timesItemAppears",
             blockType: Scratch.BlockType.REPORTER,
-            text: "# of times [ITEM] appears in [LIST]",
+            text: Scratch.translate("# of times [ITEM] appears in [LIST]"),
             disableMonitor: true,
             arguments: {
               ITEM: {
@@ -143,7 +145,7 @@
           {
             opcode: "itemIndex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "index # [INDEX] of item [ITEM] in [LIST]",
+            text: Scratch.translate("index # [INDEX] of item [ITEM] in [LIST]"),
             disableMonitor: true,
             arguments: {
               INDEX: {
@@ -166,7 +168,7 @@
           {
             opcode: "listIsEmpty",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[LIST] is empty?",
+            text: Scratch.translate("[LIST] is empty?"),
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -178,7 +180,7 @@
           {
             opcode: "itemNumExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "item [NUM] exists in [LIST]?",
+            text: Scratch.translate("item [NUM] exists in [LIST]?"),
             disableMonitor: true,
             arguments: {
               NUM: {
@@ -194,7 +196,7 @@
           {
             opcode: "orderIs",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "order of [LIST] is [ORDER]?",
+            text: Scratch.translate("order of [LIST] is [ORDER]?"),
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -213,7 +215,7 @@
           {
             opcode: "orderList",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set order of [LIST] to [ORDER]",
+            text: Scratch.translate("set order of [LIST] to [ORDER]"),
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -230,7 +232,7 @@
           {
             opcode: "setListToList",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set items of [LIST1] to [LIST2]",
+            text: Scratch.translate("set items of [LIST1] to [LIST2]"),
             arguments: {
               LIST1: {
                 type: Scratch.ArgumentType.STRING,
@@ -245,7 +247,7 @@
           {
             opcode: "joinLists",
             blockType: Scratch.BlockType.COMMAND,
-            text: "concatenate [LIST1] onto [LIST2]",
+            text: Scratch.translate("concatenate [LIST1] onto [LIST2]"),
             arguments: {
               LIST1: {
                 type: Scratch.ArgumentType.STRING,
@@ -263,7 +265,7 @@
           {
             opcode: "forEachListItem",
             blockType: Scratch.BlockType.LOOP,
-            text: "for each item value [VAR] in [LIST]",
+            text: Scratch.translate("for each item value [VAR] in [LIST]"),
             hideFromPalette:
               !runtime.extensionManager.isExtensionLoaded("lmsTempVars2"),
             arguments: {
@@ -280,7 +282,7 @@
           {
             opcode: "forEachListItemNum",
             blockType: Scratch.BlockType.LOOP,
-            text: "for each item # [VAR] in [LIST]",
+            text: Scratch.translate("for each item # [VAR] in [LIST]"),
             hideFromPalette:
               !runtime.extensionManager.isExtensionLoaded("lmsTempVars2"),
             arguments: {
@@ -300,7 +302,7 @@
           {
             opcode: "setListArray",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [LIST] to array [ARRAY]",
+            text: Scratch.translate("set [LIST] to array [ARRAY]"),
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -316,7 +318,7 @@
           {
             opcode: "getListArray",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[LIST] as array",
+            text: Scratch.translate("[LIST] as array"),
             disableMonitor: true,
             arguments: {
               LIST: {
@@ -348,19 +350,19 @@
             acceptReporters: false,
             items: [
               {
-                text: "reversed",
+                text: Scratch.translate("reversed"),
                 value: "reversed",
               },
               {
-                text: "ascending",
+                text: Scratch.translate("ascending"),
                 value: "ascending",
               },
               {
-                text: "descending",
+                text: Scratch.translate("descending"),
                 value: "descending",
               },
               {
-                text: "randomised",
+                text: Scratch.translate("randomized"),
                 value: "randomised",
               },
             ],
@@ -369,11 +371,11 @@
             acceptReporters: false,
             items: [
               {
-                text: "ascending",
+                text: Scratch.translate("ascending"),
                 value: "ascending",
               },
               {
-                text: "descending",
+                text: Scratch.translate("descending"),
                 value: "descending",
               },
             ],
@@ -382,15 +384,15 @@
             acceptReporters: false,
             items: [
               {
-                text: "first",
+                text: Scratch.translate("first"),
                 value: "first",
               },
               {
-                text: "last",
+                text: Scratch.translate("last"),
                 value: "last",
               },
               {
-                text: "random",
+                text: Scratch.translate("random"),
                 value: "random",
               },
             ],
@@ -404,7 +406,11 @@
     }
 
     deleteItems(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return false;
       const listLength = list.value.length;
       let num1 = 0;
@@ -423,7 +429,11 @@
     }
 
     deleteAllOfItem(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return;
       const newList = list.value.filter(function (model) {
         return model !== args.ITEM;
@@ -432,7 +442,11 @@
     }
 
     replaceAllOfItem(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return;
       const listLength = list.value.length;
       const item1 = args.ITEM1;
@@ -449,9 +463,17 @@
     }
 
     repeatList(args, util) {
-      const list1 = getVarObjectFromName(args.LIST1, util, "list");
+      const list1 = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST1),
+        util,
+        "list"
+      );
       if (!list1) return;
-      const list2 = getVarObjectFromName(args.LIST2, util, "list");
+      const list2 = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST2),
+        util,
+        "list"
+      );
       if (!list2) return;
       const currentVal = list1.value;
       for (let i = 0; i < args.NUM; i++) {
@@ -460,19 +482,31 @@
     }
 
     getListJoin(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return "";
       return list.value.join(args.STRING);
     }
 
     timesItemAppears(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return 0;
       return list.value.filter((model) => model == args.ITEM).length;
     }
 
     itemIndex(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return 0;
       let indexes = [];
       for (let index = 0; index < list.value.length; index++) {
@@ -496,14 +530,22 @@
     }
 
     listIsEmpty(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return true;
       if (list.value.length > 0) return false;
       return true;
     }
 
     itemNumExists(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return false;
       const listIndex = Scratch.Cast.toListIndex(
         args.NUM,
@@ -515,7 +557,11 @@
     }
 
     orderIs(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return false;
 
       for (let i = 0; i < list.value.length - 1; i++) {
@@ -527,7 +573,11 @@
     }
 
     orderList(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return;
       if (args.ORDER === "reversed") {
         list.value.reverse();
@@ -546,23 +596,43 @@
     }
 
     setListToList(args, util) {
-      const list1 = getVarObjectFromName(args.LIST1, util, "list");
+      const list1 = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST1),
+        util,
+        "list"
+      );
       if (!list1) return;
-      const list2 = getVarObjectFromName(args.LIST2, util, "list");
+      const list2 = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST2),
+        util,
+        "list"
+      );
       if (!list2) return;
       list1.value = list2.value;
     }
 
     joinLists(args, util) {
-      const list1 = getVarObjectFromName(args.LIST1, util, "list");
+      const list1 = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST1),
+        util,
+        "list"
+      );
       if (!list1) return;
-      const list2 = getVarObjectFromName(args.LIST2, util, "list");
+      const list2 = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST2),
+        util,
+        "list"
+      );
       if (!list2) return;
       list2.value = list2.value.concat(list1.value);
     }
 
     forEachListItem(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return false;
       const listLength = list.value.length;
 
@@ -583,7 +653,11 @@
     }
 
     forEachListItemNum(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return false;
       const listLength = list.value.length;
 
@@ -603,7 +677,11 @@
     }
 
     setListArray(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return;
 
       let array;
@@ -620,14 +698,17 @@
     }
 
     getListArray(args, util) {
-      const list = getVarObjectFromName(args.LIST, util, "list");
+      const list = getVarObjectFromName(
+        Scratch.Cast.toString(args.LIST),
+        util,
+        "list"
+      );
       if (!list) return "";
       return JSON.stringify(list.value);
     }
 
     _getLists() {
       // @ts-expect-error - Blockly not typed yet
-      // eslint-disable-next-line no-undef
       const lists =
         typeof Blockly === "undefined"
           ? []

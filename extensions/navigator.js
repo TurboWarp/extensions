@@ -2,7 +2,7 @@
 // ID: navigatorinfo
 // Description: Details about the user's browser and operating system.
 // Context: "Navigator" refers to someone's browser
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";

@@ -2,7 +2,7 @@
 // ID: clouddataping
 // Description: Determine whether a cloud variable server is probably up.
 // Original: TheShovel
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -34,7 +34,7 @@
     let ws;
     try {
       // Permission is checked earlier.
-      // eslint-disable-next-line no-restricted-syntax
+      // eslint-disable-next-line extension/check-can-fetch
       ws = new WebSocket(uri);
     } catch (e) {
       return {

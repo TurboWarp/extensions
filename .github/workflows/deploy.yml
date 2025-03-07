@@ -5,11 +5,6 @@ on:
   push:
     branches: [master]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 concurrency:
   group: "deploy"
   cancel-in-progress: true
@@ -17,19 +12,26 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    # If you are forking and want to set up your own website, adjust the repository and branch
+    # below to match your repository or remove the condition entirely.
+    if: ${{ github.repository == 'TurboWarp/extensions' && github.ref == 'refs/heads/master' }}
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          node-version: 20.x
+          persist-credentials: false
+      - name: Install Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        with:
+          node-version: 22
       - name: Install dependencies
         run: npm ci
       - name: Build for production
         run: npm run build
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa
         with:
           path: ./build/
 
@@ -37,9 +39,12 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
     needs: build
     steps:
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v1
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e

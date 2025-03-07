@@ -1,7 +1,7 @@
 // Name: Battery
 // ID: battery
 // Description: Access information about the battery of phones or laptops. May not work on all devices and browsers.
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
