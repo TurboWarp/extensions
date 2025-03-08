@@ -585,6 +585,7 @@
     }
 
     checkFormatRule(rule, val, type, opts = {}) {
+      if (ignoreList.has(val.value)) return;
       if (rules[rule].enabled) {
         let str = Cast.toString(rules[rule].regex);
         if (str.startsWith("if")) {
@@ -595,11 +596,11 @@
 
         switch (rule) {
           case "griffpatchStyle":
-            if (!regex.test(val)) {
+            if (!regex.test(val.text)) {
               this.formatErrors.push({
                 type: type,
                 level: rules[rule].level,
-                subject: val,
+                subject: val.text,
                 msg: Scratch.translate(
                   Cast.toString(rules[rule].msg).replace(
                     /\{([^}]+)\}/g,
@@ -608,7 +609,7 @@
                       if (e === "{isGlobal}") {
                         return opts.isGlobal ? "UPPERCASE" : "lowercase";
                       } else {
-                        return val;
+                        return val.text;
                       }
                     }
                   )
@@ -621,7 +622,7 @@
               this.formatErrors.push({
                 type: type,
                 level: rules[rule].level,
-                subject: val,
+                subject: val.text,
                 msg: Scratch.translate(
                   Cast.toString(rules[rule].msg).replace(/\{([^}]+)\}/g, val)
                 ),
@@ -633,6 +634,7 @@
     }
 
     checkCustomFormatRules(val, type) {
+      if (ignoreList.has(val.value)) return;
       for (const rule in customRules) {
         if (
           (customRules[rule].enabled &&
@@ -642,11 +644,11 @@
           let str = Cast.toString(rules[rule].regex);
 
           const regex = new RegExp(str.split("/")[1], str.split("/")[2]);
-          if (!regex.test(val)) {
+          if (!regex.test(val.text)) {
             this.formatErrors.push({
               type: type,
               level: customRules[rule].level,
-              subject: val,
+              subject: val.text,
               msg: Scratch.translate(
                 Cast.toString(rules[rule].msg).replace(/\{([^}]+)\}/g, val)
               ),
@@ -657,14 +659,14 @@
     }
 
     _checkSpriteFormatting() {
-      const targets = runtime.targets;
+      const targets = runtime.targets
+        .filter((t) => t.isSprite())
+        .map((t) => ({ text: t.sprite.name, value: t.id }));
       console.log("checking sprites");
       for (const target of targets) {
-        if (target.isSprite()) {
-          // Format check
-          this.checkFormatRule("camelCaseOnly", target.sprite.name, "sprite");
-          this.checkCustomFormatRules(target.sprite.name, "sprite");
-        }
+        // Format check
+        this.checkFormatRule("camelCaseOnly", target, "sprite");
+        this.checkCustomFormatRules(target, "sprite");
       }
     }
     formatCustomBlock(block) {
@@ -732,12 +734,11 @@
       this._checkCustomBlockFormatting();
 
       if (this.formatErrors.length !== 0) {
+        console.log(formatError(this.formatErrors));
         openModal("error", "Format Error", this.formatErrors);
       } else {
         alert("No format errors found!");
       }
-
-      console.log(formatError(this.formatErrors));
     }
     newFormatRule() {
       if (!isEditor) return; // return if we aren't in the editor
@@ -835,15 +836,24 @@
 
       const allVars = targets
         .filter((t) => t.isOriginal)
-        .map((t) => t.variables);
+        .map((t) => ({ spriteName: t.sprite.name, variables: t.variables }));
+
       const localVars = allVars
-        .map((v) => Object.values(v))
+        .map((t) => ({
+          spriteName: t.spriteName,
+          vars: Object.values(t.variables),
+        }))
         .map((v) =>
-          // prettier-ignore
-          v.filter(
-              (v) =>
-                v.type !== "list" && !globalVars.map((obj) => obj.text).includes(v.name)
-            ).map((v) => ({ text: v.name, value: v.id }))
+          v.vars
+            .filter(
+              (variable) =>
+                variable.type !== "list" &&
+                !globalVars.map((obj) => obj.text).includes(variable.name)
+            )
+            .map((variable) => ({
+              text: `${v.spriteName}: ${variable.name}`,
+              value: variable.id,
+            }))
         )
         .flat(1);
 
@@ -862,7 +872,7 @@
           const block = blocks[blockId];
           if (block.opcode === "procedures_prototype") {
             customBlocks.push({
-              text: this.formatCustomBlock(block),
+              text: `${target.sprite.name}: ${this.formatCustomBlock(block)}`,
               value: block.id,
             });
           }
