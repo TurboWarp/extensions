@@ -1,6 +1,6 @@
 // Name:163music
 // ID: chcat1320Music163
-// Description: 有关网易云音乐的操作
+// Description: 有关网易云音乐的播放和下载操作
 // By: Unknown
 // By: CHCAT1320
 // License: MIT
