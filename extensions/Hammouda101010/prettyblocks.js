@@ -16,9 +16,6 @@
   const Cast = Scratch.Cast;
   /**Checks if the extension is in "penguinmod.com".*/
   // @ts-ignore
-  const _isPM = runtime.platform.url === "https://penguinmod.com/";
-  /**Checks if the extension is in "unsandboxed.org".*/
-  const isUnSandBoxed = runtime.platform.url === "https://unsandboxed.org/";
   /**Checks if the extension is inside the editor.*/
   const isEditor = typeof scaffolding === "undefined";
 
@@ -561,10 +558,9 @@
       const stage = runtime.getTargetForStage();
       const targets = runtime.targets;
 
-      // Sort the variables
       const globalVars = Object.values(stage.variables)
         .filter((v) => v.type !== "list")
-        .map((v) => v.name);
+        .map((v) => ({ text: v.name, value: v.id }));
 
       const allVars = targets
         .filter((t) => t.isOriginal)
@@ -573,7 +569,10 @@
         .map((v) => Object.values(v))
         .map((v) =>
           // prettier-ignore
-          v.filter((v) => v.type !== "list" && !globalVars.includes(v.name)).map((v) => v.name)
+          v.filter(
+              (v) =>
+                v.type !== "list" && !globalVars.map((obj) => obj.text).includes(v.name)
+            ).map((v) => ({ text: v.name, value: v.id }))
         )
         .flat(1);
 
@@ -675,8 +674,8 @@
       let i = 0;
       const name = mutation.proccode.replace(/%[snb]/g, (match) => {
         let value = args[i++];
-        if (match === "%s") return isUnSandBoxed ? `[${value}]` : `(${value})`;
-        if (match === "%n" && isUnSandBoxed) return `(${value})`;
+        if (match === "%s") return `[${value}]`;
+        if (match === "%n") return `(${value})`;
         if (match === "%b") return `<${value}>`;
         return match;
       });
@@ -832,7 +831,7 @@
 
       const globalVars = Object.values(stage.variables)
         .filter((v) => v.type !== "list")
-        .map((v) => v.name);
+        .map((v) => ({ text: v.name, value: v.id }));
 
       const allVars = targets
         .filter((t) => t.isOriginal)
@@ -840,15 +839,17 @@
       const localVars = allVars
         .map((v) => Object.values(v))
         .map((v) =>
-          v
-            .filter((v) => v.type !== "list" && !globalVars.includes(v.name))
-            .map((v) => v.name)
+          // prettier-ignore
+          v.filter(
+              (v) =>
+                v.type !== "list" && !globalVars.map((obj) => obj.text).includes(v.name)
+            ).map((v) => ({ text: v.name, value: v.id }))
         )
         .flat(1);
 
       return localVars.concat(globalVars)
         ? localVars.concat(globalVars)
-        : [{ text: Scratch.translate("no variables found"), value: [] }];
+        : [{ text: Scratch.translate("no variables found"), value: false }];
     }
 
     _getCustomBlocksMenu() {
