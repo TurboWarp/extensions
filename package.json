@@ -33,7 +33,7 @@
     "chokidar": "^4.0.3",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
-    "image-size": "^1.2.0",
+    "image-size": "^2.0.0",
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
@@ -41,7 +41,7 @@
     "eslint": "^9.21.0",
     "espree": "^9.6.1",
     "esquery": "^1.6.0",
-    "prettier": "^3.5.2",
+    "prettier": "^3.5.3",
     "spdx-expression-parse": "^4.0.0"
   },
   "private": true
