@@ -355,7 +355,7 @@
       enabled: true,
       level: "error",
       msg: `"{val}" should be entirely in {isGlobal}. just as griffpatch intened it.`,
-      regex: "if <isGlobal> /^[^a-z]+/ else /^[^A-Z]+/",
+      regex: "/special/",
     },
     customNoCapitalized: {
       enabled: false,
@@ -487,10 +487,11 @@
       };
     }
     // Class Utilities
-    refreshBlocks() {
-      vm.refreshWorkspace();
-      vm.extensionManager.refreshBlocks();
+    refreshProject() {
+      setTimeout(() => vm.refreshWorkspace(), 100); // Refresh workspace after a delay
+      vm.extensionManager.refreshBlocks(); // Refresh block list
       runtime.extensionStorage["HamPrettyBlocks"] = {
+        // refresh extension storage
         rules: JSON.stringify(rules),
         customRules: JSON.stringify(customRules),
         ignore: ignoreList ? JSON.stringify([...ignoreList]) : "[]",
@@ -610,10 +611,13 @@
         }
 
         const regex = new RegExp(str.split("/")[1], str.split("/")[2]);
+        regex.lastIndex = 0;
 
         switch (rule) {
-          case "griffpatchStyle":
-            if (!regex.test(val.text)) {
+          case "griffpatchStyle": {
+            // prettier-ignore
+            const isValidName = Cast.toBoolean(opts.isGlobal) ? val.text === val.text.toUpperCase() : val.text === val.text.toLowerCase()
+            if (!isValidName) {
               this.formatErrors.push({
                 type: type,
                 level: rules[rule].level,
@@ -634,8 +638,9 @@
               });
             }
             break;
+          }
           default:
-            if (!rules[rule].check(val)) {
+            if (!regex.test(val)) {
               this.formatErrors.push({
                 type: type,
                 level: rules[rule].level,
@@ -664,7 +669,7 @@
           if (variable.id === targetVariable.id)
             workspace.renameVariableById(
               variable.id,
-              this.formatRule(rule, variable.name, opts)
+              this.formatRule(rule, variable.name, variable.id, opts)
             );
         }
       } else {
@@ -708,12 +713,13 @@
     }
 
     formatRule(rule, val, valID, opts = {}) {
-      if (ignoreList.has(valID)) return;
+      if (ignoreList.has(valID)) return val;
       if (rules[rule].enabled) {
         switch (rule) {
-          case "griffpatchStyle":
+          case "griffpatchStyle": {
             const { isGlobal } = opts;
             return isGlobal ? val.toUpperCase() : val.toLowerCase();
+          }
           case "camelCaseOnly":
             // prettier-ignore
             return val.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
@@ -869,7 +875,7 @@
             regex: regex,
           };
 
-          this.refreshBlocks();
+          this.refreshProject();
           console.log(customRules);
         }
       );
@@ -888,7 +894,7 @@
         (name) => {
           console.log(name);
           delete customRules[name];
-          this.refreshBlocks();
+          this.refreshProject();
 
           console.log(customRules);
         }
@@ -901,21 +907,21 @@
     ignoreVariable(args) {
       if (Cast.toBoolean(args.VAR_MENU)) {
         ignoreList.add(args.VAR_MENU);
-        this.refreshBlocks();
+        this.refreshProject();
       }
       console.log(ignoreList);
     }
     ignoreCustomBlock(args) {
       if (Cast.toBoolean(args.BLOCK_MENU)) {
         ignoreList.add(args.BLOCK_MENU);
-        this.refreshBlocks();
+        this.refreshProject();
       }
       console.log(ignoreList);
     }
 
     resetIgnoreList() {
       ignoreList = new Set();
-      this.refreshBlocks;
+      this.refreshProject;
     }
 
     checkFormatttingBlock() {
