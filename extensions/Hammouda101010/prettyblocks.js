@@ -14,9 +14,7 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const Cast = Scratch.Cast;
-  /**Checks if the extension is in "penguinmod.com".*/
-  // @ts-ignore
-  /**Checks if the extension is inside the editor.*/
+  const workspace = ScratchBlocks.getMainWorkspace();
   const isEditor = typeof scaffolding === "undefined";
 
   function formatError(errors, logToConsole = false) {
@@ -398,6 +396,11 @@
             blockType: Scratch.BlockType.BUTTON,
             text: Scratch.translate("Check Project Formatting"),
           },
+          {
+            func: "formatProject",
+            blockType: Scratch.BlockType.BUTTON,
+            text: Scratch.translate("Format Project"),
+          },
           "---",
           {
             func: "newFormatRule",
@@ -408,6 +411,12 @@
             func: "delFormatRule",
             blockType: Scratch.BlockType.BUTTON,
             text: Scratch.translate("Delete Format Rule"),
+          },
+          {
+            opcode: "ignoreList",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("ignore list"),
+            color1: "#848484",
           },
           {
             opcode: "ignoreVariable",
@@ -432,6 +441,13 @@
                 menu: "PRETTYBLOCKS_CUSTOM_BLOCKS",
               },
             },
+          },
+          "---",
+          {
+            opcode: "resetIgnoreList",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("reset ignore list"),
+            color1: "#848484",
           },
           "---",
           {
@@ -472,6 +488,7 @@
     }
     // Class Utilities
     refreshBlocks() {
+      vm.refreshWorkspace();
       vm.extensionManager.refreshBlocks();
       runtime.extensionStorage["HamPrettyBlocks"] = {
         rules: JSON.stringify(rules),
@@ -633,6 +650,82 @@
       }
     }
 
+    /**
+     * Formats a variable using a rule.
+     * @param {string} rule The rule used to format the variable name.
+     * @param { {name: string, id: string}} targetVariable The target variable to format the name of.
+     * @param {object} opts Optional options.
+     */
+    _formatVariable(rule, targetVariable, opts) {
+      const targets = runtime.targets;
+      const stage = runtime.getTargetForStage();
+      if (opts.isGlobal) {
+        for (const variable of Object.values(stage.variables)) {
+          if (variable.id === targetVariable.id)
+            workspace.renameVariableById(
+              variable.id,
+              this.formatRule(rule, variable.name, opts)
+            );
+        }
+      } else {
+        for (const target of targets) {
+          if (target.isSprite()) {
+            const variable = target.lookupOrCreateVariable(
+              targetVariable.id,
+              targetVariable.name
+            );
+            if (variable.id in stage.variables) return;
+            // @ts-ignore
+            if (variable.type !== "list")
+              workspace.renameVariableById(
+                variable.id,
+                this.formatRule(
+                  rule,
+                  targetVariable.name,
+                  targetVariable.id,
+                  opts
+                )
+              );
+          }
+        }
+      }
+    }
+
+    _formatVariables() {
+      const variables = this.getVariables();
+      for (const variable of variables.local) {
+        const variableData = { name: variable.text, id: variable.value };
+        this._formatVariable("griffpatchStyle", variableData, {
+          isGlobal: false,
+        });
+      }
+      for (const variable of variables.global) {
+        const variableData = { name: variable.text, id: variable.value };
+        this._formatVariable("griffpatchStyle", variableData, {
+          isGlobal: true,
+        });
+      }
+    }
+
+    formatRule(rule, val, valID, opts = {}) {
+      if (ignoreList.has(valID)) return;
+      if (rules[rule].enabled) {
+        switch (rule) {
+          case "griffpatchStyle":
+            const { isGlobal } = opts;
+            return isGlobal ? val.toUpperCase() : val.toLowerCase();
+          case "camelCaseOnly":
+            // prettier-ignore
+            return val.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (match, chr) => chr.toUpperCase());
+          case "customNoCapitalized":
+            // prettier-ignore
+            return val.charAt(0).toLowerCase() + val.slice(1);
+        }
+      } else {
+        return val;
+      }
+    }
+
     checkCustomFormatRules(val, type) {
       if (ignoreList.has(val.value)) return;
       for (const rule in customRules) {
@@ -740,6 +833,17 @@
         alert("No format errors found!");
       }
     }
+
+    formatProject() {
+      if (!isEditor) return;
+      // prettier-ignore
+      if (confirm("!~~~WARNING~~~! \n\n This will format the entire project according to the enabled rules. \n\n This process is irreversible and might break the entire project. \n Do you want to proceed?")){
+        console.log("formatting project...")
+        this._formatVariables()
+        console.info("formatting completed")
+      }
+    }
+
     newFormatRule() {
       if (!isEditor) return; // return if we aren't in the editor
       newRuleModal(
@@ -774,7 +878,8 @@
     delFormatRule() {
       if (!isEditor) return; // return if we aren't in the editor
       const customRulesList = Object.keys(customRules);
-      if (customRulesList.length < 1) return alert("There are no Custom Rules");
+      if (customRulesList.length < 1)
+        return alert("There Are No Custom Rules Left.");
 
       newRuleModal(
         Scratch.translate("Delete Rule:"),
@@ -788,6 +893,9 @@
           console.log(customRules);
         }
       );
+    }
+    ignoreList() {
+      return JSON.stringify([...ignoreList]);
     }
 
     ignoreVariable(args) {
@@ -803,6 +911,11 @@
         this.refreshBlocks();
       }
       console.log(ignoreList);
+    }
+
+    resetIgnoreList() {
+      ignoreList = new Set();
+      this.refreshBlocks;
     }
 
     checkFormatttingBlock() {

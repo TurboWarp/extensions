@@ -6,6 +6,12 @@ An extension to add strict formatting rules to your project.
   - [Creating Custom Rules](#creating-custom-rules)
     - [RegBool](#regbool)
     - [Format Functions](#format-functions)
+  - [Blocks](#blocks)
+    - [Ignore List](#ignore-list)
+    - [Ignore Variable Named \[\]](#ignore-variable-named-)
+    - [Ignore Custom Block Named \[\]](#ignore-custom-block-named-)
+    - [Reset Ignore List](#reset-ignore-list)
+    - [Check Project Formatting](#check-project-formatting)
 
 ## Rules
 - Camel Case Only:
@@ -38,3 +44,31 @@ There are a limited amount of functions available for custom rules. more rules m
 - To snake_case: formats the subject's text to [snake_case](https://en.wikipedia.org/wiki/Snake_case)
 - To PascalCase: much like "To camelCase", but capitalize the first letter too.
 - Space trimming: trims the subject's text
+## Blocks
+Here are a list of blocks to interact with the formatter.
+### Ignore List
+```scratch
+ignore list :: #848484 reporter
+```
+Shows the list of all sprites, variables, etc. that are ignored by the formatter as a set.
+Keep in mind that it stores values by ID, not by name.
+### Ignore Variable Named []
+```scratch
+ignore variable named [my variable v] :: #848484 
+```
+Adds a variable to the ignore list. It can also acces all local variables.
+### Ignore Custom Block Named []
+```scratch
+ignore custom block named [block name \(number\) \[text\] \<boolean\> v] :: #848484 
+```
+Adds a custom block to the ignore list.
+### Reset Ignore List
+```scratch
+reset ignore list :: #848484 
+```
+Resets the ignore list.
+### Check Project Formatting
+```scratch
+check project formatting :: #0071b0
+```
+Does the same thing as the "Check Project Formatting" button.
