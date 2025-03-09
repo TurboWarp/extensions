@@ -269,67 +269,6 @@
     }
   }
 
-  const squareInputBlocks = ["HamPrettyBlocks_fancyFormatErrors"];
-
-  // Custom Square Block Shapes
-  const ogConverter = runtime._convertBlockForScratchBlocks.bind(runtime);
-  runtime._convertBlockForScratchBlocks = function (blockInfo, categoryInfo) {
-    const res = ogConverter(blockInfo, categoryInfo);
-    if (blockInfo.outputShape) res.json.outputShape = blockInfo.outputShape;
-    return res;
-  };
-
-  if (Scratch.gui)
-    Scratch.gui.getBlockly().then((SB) => {
-      // Custom Square Input Shape
-      const makeShape = (width, height) => {
-        width -= 10;
-        // prettier-ignore
-        height -= 8
-        return `
-        m 0 4 
-        A 4 4 0 0 1 4 0 H ${width} 
-        a 4 4 0 0 1 4 4 
-        v ${height} 
-        a 4 4 0 0 1 -4 4 
-        H 4 
-        a 4 4 0 0 1 -4 -4 
-        z`
-          .replaceAll("\n", "")
-          .trim();
-      };
-
-      const ogRender = SB.BlockSvg.prototype.render;
-      SB.BlockSvg.prototype.render = function (...args) {
-        const data = ogRender.call(this, ...args);
-        if (this.svgPath_ && squareInputBlocks.includes(this.type)) {
-          this.inputList.forEach((input) => {
-            if (input.name.startsWith("ARRAY")) {
-              const block = input.connection.targetBlock();
-              if (
-                block &&
-                block.type === "text" &&
-                block.svgPath_ &&
-                block.type.startsWith("HamPrettyBlocks_menu_")
-              ) {
-                block.svgPath_.setAttribute(
-                  "transform",
-                  `scale(1, ${block.height / 33})`
-                );
-                block.svgPath_.setAttribute(
-                  "d",
-                  makeShape(block.width, block.height)
-                );
-              } else if (input.outlinePath) {
-                input.outlinePath.setAttribute("d", makeShape(46, 32));
-              }
-            }
-          });
-        }
-        return data;
-      };
-    });
-
   let ignoreList = new Set();
 
   // Function Types for Custom Rules.
