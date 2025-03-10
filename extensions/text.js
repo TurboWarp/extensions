@@ -536,7 +536,8 @@
         const regex = this._caseInsensitiveRegex(split);
 
         splitCache = {
-          string, split,
+          string,
+          split,
           arr: string.split(regex),
         };
       }
@@ -593,10 +594,7 @@
         const regex = Scratch.Cast.toString(args.REGEX);
         const flags = Scratch.Cast.toString(args.FLAGS);
 
-        return string.replace(
-          new RegExp(regex, flags),
-          replacer
-        );
+        return string.replace(new RegExp(regex, flags), replacer);
       } catch (e) {
         console.error(e);
         return "";
@@ -619,9 +617,7 @@
             matchCache.flags === flags
           )
         ) {
-          const newFlags = flags.includes("g")
-            ? flags
-            : flags + "g";
+          const newFlags = flags.includes("g") ? flags : flags + "g";
           const regex = new RegExp(uncleanRegex, newFlags);
 
           matchCache = {
