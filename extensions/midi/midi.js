@@ -356,7 +356,6 @@
    */
   function midiToString(event, opts = {}) {
     const { noMinify } = opts;
-    let type = shorthands[event.type];
     const spec = eventMapping[event.type] ?? {};
     // ensure these are set properly
     const {
@@ -395,17 +394,17 @@
    * @returns {MidiEvent}
    */
   function stringToMidi(text, opts = {}) {
-    if (typeof text !== "string") text = `${String(text) ?? ""}`;
+    if (typeof text !== "string") text = Cast.toString(text);
     const fullRe =
       /^\s*(?<type>[a-zA-Z]{2,})?\s*((?<pitch>[A-G][#b♯♭_]*-?\d?)|(?<data1>\b-?[0-9a-f]{1,5}\b))?\s*(?<data2>\b[0-9a-f]{1,3}\b)?\s*(?<keyvals>.+)\s*$/;
     const match = fullRe.exec(text);
     if (!match?.groups) return null;
     // turn key=val other=32.43 @14.23 into {key: 'val', other: 32.43, time=14.23}
     // ch/dev/@ (channel, device, time) are special keys that don't need =
-    const keyvalRe = /\s*(?<key>\w+(?=\=)|ch|dev|@)=?(?<val>\S+)\s*/g;
+    const keyvalRe = /\s*(?<key>\w+(?==)|ch|dev|@)=?(?<val>\S+)\s*/g;
     /** @type {{[K in keyof MidiEvent]?: string}} */
     const extras = Object.fromEntries(
-      [...match.groups.keyvals?.matchAll(keyvalRe)]
+      Array.from(match.groups.keyvals?.matchAll(keyvalRe) || [])
         // paramLookup converts "t=2" into "time=2"
         .map(({ groups: { key, val } }) => [paramLookup[key] || key, val])
     );
@@ -444,6 +443,7 @@
       return null;
     }
     const spec = eventMapping[event.type];
+    let parsedHighRes = undefined;
     switch (event.type) {
       case "noteOn":
       case "noteOff":
@@ -478,12 +478,15 @@
       case "pitchBend":
         if (value1 == undefined) return null;
         // these two types have a higher precision value
-        const { value: highResValue, ...normedValues } = parseHighResValue(
+        parsedHighRes = parseHighResValue(
           value1,
           value2
         );
-        Object.assign(event, normedValues);
-        event[spec.highResParam ?? "value"] = highResValue;
+        Object.assign(event, {
+          [spec.highResParam ?? "value"]: parsedHighRes.value,
+          value1: parsedHighRes.value1,
+          value2: parsedHighRes.value2
+        });
         break;
       case "clock":
       case "start":
@@ -599,7 +602,7 @@
   }
   function parseHighResValue(value1, value2) {
     const value =
-      typeof value2 == undefined ? value1 : msbLsbToValue(value1, value2);
+      (value2 == undefined) ? value1 : msbLsbToValue(value1, value2);
     return {
       value,
       ...valueToMsbLsb(value),
@@ -692,12 +695,12 @@
       }),
     };
   }
-  function isPitchedEvent(type) {
-    return (
-      !!type &&
-      (type === "noteOn" || type === "noteOff" || type === "polyTouch")
-    );
-  }
+  // function isPitchedEvent(type) {
+  //   return (
+  //     !!type &&
+  //     (type === "noteOn" || type === "noteOff" || type === "polyTouch")
+  //   );
+  // }
 
   // Make a full array of notes in full midi range from 0 (C-1) to 127 (G-9)
   const MIDI_NOTES = "_"
@@ -826,7 +829,7 @@
     get defaultOutput() {
       return this.outputs.find((d) => d.state === "connected");
     }
-    async initialize({
+    initialize({
       sysex = false,
       force = false,
       timeoutMS = 1e3 * 30,
@@ -1175,7 +1178,8 @@
       return this.getLast("polyTouch", pitch, channel);
     }
     getLast(type, value1, channel) {
-      if (((type === value1) === channel) === undefined) {
+      // shortcut - just get last event if no filter
+      if (type == undefined && value1 == undefined && channel == undefined) {
         return this.buffer[this.buffer.length - 1];
       }
       if (type === "cc" && value1) {
@@ -1207,7 +1211,6 @@
     _prune(when = this._now()) {
       this.recordStart || (this.recordStart = when);
       const threshold = when - this.bufferSeconds;
-      const n = this.buffer.length;
       if (this.buffer.length > this.maxEntries) {
         this.buffer = this.buffer.slice(-1 * this.maxEntries);
       }
@@ -1270,9 +1273,9 @@
   function beatsToSeconds(beats = 1, tempo = getTempo()) {
     return (beats * 60) / tempo;
   }
-  function secondsToBeats(seconds = 1, tempo = getTempo()) {
-    return (seconds * tempo) / 60;
-  }
+  // function secondsToBeats(seconds = 1, tempo = getTempo()) {
+  //   return (seconds * tempo) / 60;
+  // }
 
   //#endregion wrapper
 
@@ -1401,7 +1404,7 @@
               },
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+                defaultValue: 1,
               },
             },
           },
@@ -1862,12 +1865,15 @@
       const force = Cast.toBoolean(FORCE);
       await this.midi.initialize({ sysex, force });
     }
+    /**
+     * Checks if input value is whitespace or '*' or 'any'.
+     * @param {unknown} val 
+     * @returns {val is typeof ANY_TYPE}
+     */
     _isAnyArg(val) {
       return (
-        val == undefined ||
-        val == "" ||
-        val == ANY_TYPE ||
-        (typeof val === "string" && /^\*|any$/i.test(val))
+        val === ANY_TYPE ||
+        /^(\*|any|\s*)$/i.test(Cast.toString(val))
       );
     }
     numDevices({ DEVICE_TYPE }) {
@@ -1883,13 +1889,14 @@
       return this.midi.outputs.length;
     }
     getDeviceInfo({ DEVICE_TYPE, INDEX, DEVICE_PROP }, util) {
-      const index = Cast.toNumber(INDEX);
       const deviceType = Cast.toString(DEVICE_TYPE).toLowerCase();
       const deviceList =
         deviceType === "input" ? this.midi.inputs : this.midi.outputs;
-      const device = deviceList[index];
+      const index = Cast.toListIndex(INDEX, deviceList.length, false);
+      const device = typeof index === 'number' ? deviceList[index - 1] : undefined;
       if (!device) return "";
-      return device[DEVICE_PROP];
+      const prop = Cast.toString(DEVICE_PROP);
+      return device[DEVICE_PROP] ?? "";
     }
     inputDevicesMenu() {
       const inputList = this.midi.inputs.map((d) => ({
@@ -1913,7 +1920,7 @@
       const isAny = this._isAnyArg(PRESS);
       let type = isAny
         ? ["noteOn", "noteOff"]
-        : [normalizeType(Scratch.Cast.toString(PRESS))];
+        : [normalizeType(Cast.toString(PRESS))];
 
       const pitch = this._isAnyArg(NOTE) ? undefined : Cast.toNumber(NOTE);
       const last = this.recorder.getLast();
@@ -1934,7 +1941,7 @@
       const isAny = this._isAnyArg(PRESS);
       let type = isAny
         ? ["noteOn", "noteOff"]
-        : [normalizeType(Scratch.Cast.toString(PRESS))];
+        : [normalizeType(Cast.toString(PRESS))];
 
       const last = this.recorder.getLast();
       // filter if only note on or note off
@@ -1949,7 +1956,7 @@
       const isAny = this._isAnyArg(TYPE);
       const type = isAny
         ? undefined
-        : normalizeType(Scratch.Cast.toString(TYPE));
+        : normalizeType(Cast.toString(TYPE));
       const last = this.recorder.getLast();
       if (last && (isAny || last.type === type)) {
         setThreadMidiValue(util.thread, last);
@@ -2007,7 +2014,7 @@
     }
     getEventProp({ EVENT, PROP }, util) {
       const propName = Cast.toString(PROP);
-      const { key = "value", type } = eventProps[propName] ?? {};
+      const { key = "value" } = eventProps[propName] ?? {};
       if (!EVENT) return "";
       const last = getThreadMidiValue(util.thread);
       // use cached thread value if available instead of re-parsing
@@ -2015,7 +2022,7 @@
 
       return evt?.[key] ?? "";
     }
-    lastEvent(args, util) {
+    lastEvent(_args, util) {
       let last = getThreadMidiValue(util.thread);
       last || (last = this.recorder.getLast());
       return last ? midiToString(last) : "";
@@ -2037,7 +2044,7 @@
       return !!note;
     }
     isEventOfType({ TYPE }, util) {
-      const type = TYPE === ANY_TYPE ? undefined : TYPE;
+      const type = this._isAnyArg(TYPE) ? undefined : Cast.toString(TYPE);
       let last = getThreadMidiValue(util.thread);
       last || (last = this.recorder.getLast());
       return last?.type === type;
@@ -2050,7 +2057,7 @@
       return noteNameToMidiPitch(name) || 0;
     }
     nameForNote({ NOTE, ACCIDENTAL }, util) {
-      const useFlats = Cast.toString(ACCIDENTAL) === "flats";
+      const useFlats = Cast.toString(ACCIDENTAL).toLowerCase() === "flats";
       let val = Cast.toNumber(NOTE);
       if (!val && /^[a-g]/i.test(`${NOTE}`)) {
         val = noteNameToMidiPitch(Cast.toString(NOTE)) || 0;
@@ -2088,13 +2095,12 @@
       /** @type {EventType} */
       // @ts-ignore
       let type = Cast.toString(TYPE);
-      // TODO make menu for EVENT_TYPE that doesn't include "any"
       // default is CC - is that right?
       // @ts-ignore
-      if (type === ANY_TYPE) type = "cc";
+      if (this._isAnyArg(type)) type = "cc";
+      let spec = eventMapping[type];
       // UNDOCUMENTED - allow raw number for command.
       // note that the command lookup restricts command types, so will exclude sysex messages (which are possible security risk but already blocked by browsers anyways)
-      let spec = eventMapping[type];
       if (!spec && /(0x)?[a-f0-9]+/i.test(type)) {
         const rawType = /[a-f]/.test(type)
           ? parseInt(type, 16)
@@ -2149,7 +2155,7 @@
       const events = this.recorder.getRange(start);
       if (LIST) {
         this._upsertList(
-          LIST,
+          Cast.toString(LIST),
           events.map((evt) => evt._str),
           util.target
         );
@@ -2161,13 +2167,19 @@
       return notes.map((note) => note._str ?? midiToString(note)).join("\n");
     }
     getActiveNoteByIndex({ INDEX }, util) {
-      const index = Cast.toNumber(INDEX) || 0;
       let active = getThreadActiveNotes(util.thread);
       if (!active) {
         active = { notes: this.recorder.getActiveNotes() };
         setThreadActiveNotes(util.thread, active);
       }
-      const note = (active.notes || [])[index];
+      let index = Cast.toListIndex(INDEX, active.length, true);
+      if (!active.notes || index === 'INVALID') {
+        return "";
+      }
+      if (index === 'ALL') {
+        index = 1;
+      }
+      const note = active.notes[index - 1];
       if (note) {
         setThreadMidiValue(util.thread, note);
         return note._str;
@@ -2179,7 +2191,7 @@
       setThreadActiveNotes(util.thread, { notes });
       if (LIST) {
         this._upsertList(
-          LIST,
+          Cast.toString(LIST),
           notes.map((note) => note._str),
           util.target
         );
