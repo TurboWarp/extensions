@@ -478,14 +478,11 @@
       case "pitchBend":
         if (value1 == undefined) return null;
         // these two types have a higher precision value
-        parsedHighRes = parseHighResValue(
-          value1,
-          value2
-        );
+        parsedHighRes = parseHighResValue(value1, value2);
         Object.assign(event, {
           [spec.highResParam ?? "value"]: parsedHighRes.value,
           value1: parsedHighRes.value1,
-          value2: parsedHighRes.value2
+          value2: parsedHighRes.value2,
         });
         break;
       case "clock":
@@ -601,8 +598,7 @@
     return (msb << 7) + lsb;
   }
   function parseHighResValue(value1, value2) {
-    const value =
-      (value2 == undefined) ? value1 : msbLsbToValue(value1, value2);
+    const value = value2 == undefined ? value1 : msbLsbToValue(value1, value2);
     return {
       value,
       ...valueToMsbLsb(value),
@@ -829,11 +825,7 @@
     get defaultOutput() {
       return this.outputs.find((d) => d.state === "connected");
     }
-    initialize({
-      sysex = false,
-      force = false,
-      timeoutMS = 1e3 * 30,
-    } = {}) {
+    initialize({ sysex = false, force = false, timeoutMS = 1e3 * 30 } = {}) {
       if (this._init && !force) {
         return this._init;
       }
@@ -1867,14 +1859,11 @@
     }
     /**
      * Checks if input value is whitespace or '*' or 'any'.
-     * @param {unknown} val 
+     * @param {unknown} val
      * @returns {val is typeof ANY_TYPE}
      */
     _isAnyArg(val) {
-      return (
-        val === ANY_TYPE ||
-        /^(\*|any|\s*)$/i.test(Cast.toString(val))
-      );
+      return val === ANY_TYPE || /^(\*|any|\s*)$/i.test(Cast.toString(val));
     }
     numDevices({ DEVICE_TYPE }) {
       this._ensureInitialize();
@@ -1893,10 +1882,11 @@
       const deviceList =
         deviceType === "input" ? this.midi.inputs : this.midi.outputs;
       const index = Cast.toListIndex(INDEX, deviceList.length, false);
-      const device = typeof index === 'number' ? deviceList[index - 1] : undefined;
+      const device =
+        typeof index === "number" ? deviceList[index - 1] : undefined;
       if (!device) return "";
       const prop = Cast.toString(DEVICE_PROP);
-      return device[DEVICE_PROP] ?? "";
+      return device[prop] ?? "";
     }
     inputDevicesMenu() {
       const inputList = this.midi.inputs.map((d) => ({
@@ -1954,9 +1944,7 @@
     }
     whenMidiEvent({ TYPE }, util) {
       const isAny = this._isAnyArg(TYPE);
-      const type = isAny
-        ? undefined
-        : normalizeType(Cast.toString(TYPE));
+      const type = isAny ? undefined : normalizeType(Cast.toString(TYPE));
       const last = this.recorder.getLast();
       if (last && (isAny || last.type === type)) {
         setThreadMidiValue(util.thread, last);
@@ -2173,10 +2161,10 @@
         setThreadActiveNotes(util.thread, active);
       }
       let index = Cast.toListIndex(INDEX, active.length, true);
-      if (!active.notes || index === 'INVALID') {
+      if (!active.notes || index === "INVALID") {
         return "";
       }
-      if (index === 'ALL') {
+      if (index === "ALL") {
         index = 1;
       }
       const note = active.notes[index - 1];
