@@ -510,10 +510,10 @@
     }
 
     letters_of(args, util) {
-      args.STRING = Scratch.Cast.toString(args.STRING);
-      args.LETTER1 = Number(args.LETTER1) || 0;
-      args.LETTER2 = Number(args.LETTER2) || 0;
-      return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);
+      const string = Scratch.Cast.toString(args.STRING);
+      const letter1 = Scratch.Cast.toNumber(args.LETTER1);
+      const letter2 = Scratch.Cast.toNumber(args.LETTER2);
+      return string.substring(letter1 - 1, letter2);
     }
 
     _caseInsensitiveRegex(str) {
@@ -521,27 +521,26 @@
     }
 
     split(args, util) {
-      args.STRING = Scratch.Cast.toString(args.STRING ?? "");
-      args.SPLIT = Scratch.Cast.toString(args.SPLIT ?? "");
-      args.ITEM = Number(args.ITEM) || 0;
+      const string = Scratch.Cast.toString(args.STRING);
+      const split = Scratch.Cast.toString(args.SPLIT);
+      const item = Scratch.Cast.toNumber(args.ITEM);
 
       // Cache the last split
       if (
         !(
           splitCache &&
-          splitCache.string === args.STRING &&
-          splitCache.split === args.SPLIT
+          splitCache.string === string &&
+          splitCache.split === split
         )
       ) {
-        const regex = this._caseInsensitiveRegex(args.SPLIT);
+        const regex = this._caseInsensitiveRegex(split);
 
         splitCache = {
-          string: args.STRING,
-          split: args.SPLIT,
-          arr: args.STRING.split(regex),
+          string, split,
+          arr: string.split(regex),
         };
       }
-      return splitCache.arr[args.ITEM - 1] || "";
+      return splitCache.arr[item - 1] || "";
     }
 
     count(args, util) {
@@ -558,48 +557,45 @@
     }
 
     replace(args, util) {
-      args.STRING = Scratch.Cast.toString(args.STRING);
-      args.SUBSTRING = Scratch.Cast.toString(args.SUBSTRING);
+      const string = Scratch.Cast.toString(args.STRING);
+      const substring = Scratch.Cast.toString(args.SUBSTRING);
+      const replace = Scratch.Cast.toString(args.REPLACE);
 
-      args.REPLACE = Scratch.Cast.toString(args.REPLACE);
+      const regex = this._caseInsensitiveRegex(substring);
 
-      const regex = this._caseInsensitiveRegex(args.SUBSTRING);
-
-      return args.STRING.replace(regex, args.REPLACE);
+      return string.replace(regex, replace);
     }
 
     indexof(args, util) {
       // .toLowerCase() for case insensitivity
-      args.STRING = Scratch.Cast.toString(args.STRING ?? "").toLowerCase();
-      args.SUBSTRING = Scratch.Cast.toString(
-        args.SUBSTRING ?? ""
-      ).toLowerCase();
+      const string = Scratch.Cast.toString(args.STRING).toLowerCase();
+      const substring = Scratch.Cast.toString(args.SUBSTRING).toLowerCase();
 
       // Since both arguments are casted to strings beforehand,
       // we don't have to worry about type differences
       // like in the item number of in list block
-      const found = args.STRING.indexOf(args.SUBSTRING);
+      const found = string.indexOf(substring);
 
       // indexOf returns -1 when no matches are found, we can just +1
       return found + 1;
     }
 
     repeat(args, util) {
-      args.STRING = Scratch.Cast.toString(args.STRING);
-      args.REPEAT = Number(args.REPEAT) || 0;
-      return args.STRING.repeat(args.REPEAT);
+      const string = Scratch.Cast.toString(args.STRING);
+      const repeat = Scratch.Cast.toNumber(args.REPEAT);
+      return string.repeat(repeat);
     }
 
     replaceRegex(args, util) {
       try {
-        args.STRING = Scratch.Cast.toString(args.STRING);
-        args.REPLACE = Scratch.Cast.toString(args.REPLACE);
-        args.REGEX = Scratch.Cast.toString(args.REGEX);
-        args.FLAGS = Scratch.Cast.toString(args.FLAGS);
+        const string = Scratch.Cast.toString(args.STRING);
+        const replacer = Scratch.Cast.toString(args.REPLACE);
+        const regex = Scratch.Cast.toString(args.REGEX);
+        const flags = Scratch.Cast.toString(args.FLAGS);
 
-        return args.STRING.replace(
-          new RegExp(args.REGEX, args.FLAGS),
-          args.REPLACE
+        return string.replace(
+          new RegExp(regex, flags),
+          replacer
         );
       } catch (e) {
         console.error(e);
@@ -609,33 +605,33 @@
 
     matchRegex(args, util) {
       try {
-        args.STRING = Scratch.Cast.toString(args.STRING ?? "");
-        args.REGEX = Scratch.Cast.toString(args.REGEX ?? "");
-        args.FLAGS = Scratch.Cast.toString(args.FLAGS ?? "");
-        args.ITEM = Number(args.ITEM) || 0;
+        const string = Scratch.Cast.toString(args.STRING);
+        const uncleanRegex = Scratch.Cast.toString(args.REGEX);
+        const flags = Scratch.Cast.toString(args.FLAGS);
+        const item = Scratch.Cast.toNumber(args.ITEM);
 
         // Cache the last matched string
         if (
           !(
             matchCache &&
-            matchCache.string === args.STRING &&
-            matchCache.regex === args.REGEX &&
-            matchCache.flags === args.FLAGS
+            matchCache.string === string &&
+            matchCache.regex === uncleanRegex &&
+            matchCache.flags === flags
           )
         ) {
-          const newFlags = args.FLAGS.includes("g")
-            ? args.FLAGS
-            : args.FLAGS + "g";
-          const regex = new RegExp(args.REGEX, newFlags);
+          const newFlags = flags.includes("g")
+            ? flags
+            : flags + "g";
+          const regex = new RegExp(uncleanRegex, newFlags);
 
           matchCache = {
-            string: args.STRING,
-            regex: args.REGEX,
-            flags: args.FLAGS,
-            arr: args.STRING.match(regex) || [],
+            string,
+            regex: uncleanRegex,
+            flags,
+            arr: string.match(regex) || [],
           };
         }
-        return matchCache.arr[args.ITEM - 1] || "";
+        return matchCache.arr[item - 1] || "";
       } catch (e) {
         console.error(e);
         return "";
@@ -652,11 +648,11 @@
 
     testRegex(args, util) {
       try {
-        args.STRING = Scratch.Cast.toString(args.STRING);
-        args.REGEX = Scratch.Cast.toString(args.REGEX);
-        args.FLAGS = Scratch.Cast.toString(args.FLAGS);
+        const string = Scratch.Cast.toString(args.STRING);
+        const regex = Scratch.Cast.toString(args.REGEX);
+        const flags = Scratch.Cast.toString(args.FLAGS);
 
-        return new RegExp(args.REGEX, args.FLAGS).test(args.STRING);
+        return new RegExp(regex, flags).test(string);
       } catch (e) {
         console.error(e);
         return false;
