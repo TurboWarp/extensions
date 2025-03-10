@@ -12,13 +12,15 @@
 
   const EXT_ID = "extmidi";
 
+//#region utils
+
   /** 
    * This section includes logic to map raw data coming from the 'midimessage'
    * event into a friendly object representation of the event
    * 
    * 
    * // definition for the parsed midi event
-   * @typedef {keyof typeof eventMapping} EventType
+   * @typedef {'noteOn' | 'noteOff' | 'cc' | 'polyTouch' | 'programChange' | 'pitchBend' | 'channelPressure' | 'songPosition' | 'songSelect' | 'clock' | 'start' | 'continue' | 'stop' | 'activeSensing' | 'reset'} EventType
    * @typedef {object} MidiEvent
    * @property {EventType | 'rest'} type
    * @property {number} [value1]
@@ -32,7 +34,7 @@
    * @property {number} [value]
    * @property {number} [pos]
    * @property {number} [dur]
-   * @property {string} [_str]
+   * @property {string} [_str] cached string representation of this event
    * 
    * 
    * @typedef {object} FormatOptions
@@ -44,6 +46,7 @@
    * @property {boolean} [fixedWidth]
    * @property {boolean} [useHex]
    * @property {number} [defaultOctave]
+   * 
    */
 
   /**
@@ -95,33 +98,52 @@
     return Math.round(value).toString(16).padStart(pad, "0");
   }
 
+  /**
+   * IMPORTANT! This mapping is key in translating raw midi messages to/from their object/string representation.
+   * @typedef {object} EventSpec Definition of midi event type and how to convert to/from raw midi
+   * @property {string} shorthand Short name used in string representation
+   * @property {number} command   Actual midi command bytes (1st byte along with channel)
+   * @property {string} description English description of type TODO - translate if ever exposed in UI
+   * @property {'pitch' | 'cc' | 'value'} [param1] - corresponding key for 2nd byte of raw message
+   * @property {'velocity' | 'value'} [param2] - corresponding key for 3rd byte of raw message
+   * @property {'value'} [highResParam] - corresponding key for "high res" param that goes from 0-16384 instead of 127
+   * @property {[data1: number, data2: number]} [defaults] - default values if not otherwise specified
+   */
+
+  /**
+   * @type {Record<EventType, EventSpec>}
+   */
   const eventMapping = {
-    ["noteOn"]: { shorthand: "note", command: 144, description: "Note-on", param1: "pitch", param2: "velocity", defaults: [60, 96] },
-    ["noteOff"]: { shorthand: "off", command: 128, description: "Note-off", param1: "pitch", param2: "velocity", defaults: [60, 0] },
-    ["cc" /* CC */]: { shorthand: "cc", command: 176, description: "Continuous controller", param1: "cc", param2: "value", defaults: [0, 0] },
-    ["polyTouch"]: { shorthand: "touch", command: 160, description: "Aftertouch", param1: "pitch", param2: "value", defaults: [60, 64] },
-    ["programChange" /* ProgramChange */]: { shorthand: "program", command: 192, description: "Patch change", param1: "value" },
-    ["pitchBend" /* PitchBend */]: { shorthand: "bend", command: 224, description: "Pitch bend", highResParam: "value" },
-    ["channelPressure" /* ChannelPressure */]: { shorthand: "pressure", command: 208, description: "Channel Pressure", param1: "value" },
-    ["songPosition" /* SongPosition */]: { shorthand: "songpos", command: 242, description: "Song Position Pointer (Sys Common)", highResParam: "value" },
-    ["songSelect" /* SongSelect */]: { shorthand: "songsel", command: 243, description: "Song Select (Sys Common)", param1: "value" },
-    ["clock" /* Clock */]: { shorthand: "clock", command: 248, description: "Timing Clock (Sys Realtime)" },
-    ["start" /* Start */]: { shorthand: "start", command: 250, description: "Start (Sys Realtime)" },
-    ["continue" /* Continue */]: { shorthand: "continue", command: 251, description: "Continue (Sys Realtime)" },
-    ["stop" /* Stop */]: { shorthand: "stop", command: 252, description: "Stop (Sys Realtime)" },
-    ["activeSensing" /* ActiveSensing */]: { shorthand: "ping", command: 254, description: "Active Sensing (Sys Realtime)" },
-    ["reset" /* Reset */]: { shorthand: "reset", command: 255, description: "System Reset (Sys Realtime)" }
+    noteOn: { shorthand: "note", command: 144, description: "Note-on", param1: "pitch", param2: "velocity", defaults: [60, 96] },
+    noteOff: { shorthand: "off", command: 128, description: "Note-off", param1: "pitch", param2: "velocity", defaults: [60, 0] },
+    cc: { shorthand: "cc", command: 176, description: "Continuous controller", param1: "cc", param2: "value", defaults: [0, 0] },
+    polyTouch: { shorthand: "touch", command: 160, description: "Aftertouch", param1: "pitch", param2: "value", defaults: [60, 64] },
+    programChange: { shorthand: "program", command: 192, description: "Patch change", param1: "value" },
+    pitchBend: { shorthand: "bend", command: 224, description: "Pitch bend", highResParam: "value" },
+    channelPressure: { shorthand: "pressure", command: 208, description: "Channel Pressure", param1: "value" },
+    songPosition: { shorthand: "songpos", command: 242, description: "Song Position Pointer (Sys Common)", highResParam: "value" },
+    songSelect: { shorthand: "songsel", command: 243, description: "Song Select (Sys Common)", param1: "value" },
+    clock: { shorthand: "clock", command: 248, description: "Timing Clock (Sys Realtime)" },
+    start: { shorthand: "start", command: 250, description: "Start (Sys Realtime)" },
+    continue: { shorthand: "continue", command: 251, description: "Continue (Sys Realtime)" },
+    stop: { shorthand: "stop", command: 252, description: "Stop (Sys Realtime)" },
+    activeSensing: { shorthand: "ping", command: 254, description: "Active Sensing (Sys Realtime)" },
+    reset: { shorthand: "reset", command: 255, description: "System Reset (Sys Realtime)" }
   };
   /** @type {Map<number, EventType>} */
   // @ts-ignore
   const commandLookup = new Map(Object.entries(eventMapping).map(([key, { command }]) => [command, key]));
   /** @type {Map<string, EventType>} */
-  // @ts-ignore
-  const shorthandLookup = Object.fromEntries([
+    const shorthandLookup = Object.fromEntries([
     ...Object.entries(eventMapping).map(([key, { shorthand }]) => [shorthand, key]),
     ...Object.keys(eventMapping).map(key => [key.toLowerCase(), key])
   ]);
   const shorthands = Object.fromEntries(Object.entries(eventMapping).map(([key, { shorthand }]) => [key, shorthand]));
+
+
+  /** aliases for MidiEvent keys
+   * the allows for more permissive translation of input strings, i.e. ch10 === channel=10
+   * @type {Record<string, keyof MidiEvent>} */
   const paramLookup = {
     type: 'type', note: 'pitch', pitch: 'pitch',
     ch: 'channel', channel: 'channel',
@@ -130,6 +152,16 @@
     dur: 'dur', duration: 'dur',
     pos: 'pos', value: 'value2'
   };
+  
+  // These are how different midi event keys are split. ch and dev are special cases that don't include =, since they're common. Other params use = to allow arbitrary additional properties if needed
+  const PREFIX_CHANNEL = "ch";
+  const PREFIX_DEVICE = "dev";
+  const PREFIX_WHEN = 't=';
+  const PREFIX_POS = 'pos=';
+  const PREFIX_DURATION = 'dur=';
+  /** Used when creating lists - treat ~ as empty no value */
+  const REST_LITERAL = '~';
+
   /**
    * @param {string} value 
    * @returns {EventType | undefined}
@@ -154,7 +186,10 @@
   function formatNoteType(type, note, value, opts = {}) {
     return `${type ? type + " " : ""}${midiPitchToNoteName(note, opts)} ${formatNumValue(value, opts)}`;
   }
-  /** @type {Record<EventType, (event: MidiEvent, opts: FormatOptions) => string>} */
+  /** 
+   * This is a mapping of midi events and their string representation
+   * @type {Record<EventType, (event: MidiEvent, opts: FormatOptions) => string>}
+   */
   const formatters = {
     noteOn({ value1: note, value2: velocity = eventMapping.noteOn.defaults[1] }, opts = {}) {
       return formatNoteType(opts?.noMinify ? shorthands.noteOn : undefined, note, velocity, opts);
@@ -191,21 +226,10 @@
     reset: () => shorthands.reset
   };
 
-  const PREFIX_CHANNEL = "ch";
-  const PREFIX_DEVICE = "dev";
-  // const PREFIX_WHEN = "@";
-  const PREFIX_WHEN = 't=';
-  const PREFIX_POS = 'pos=';
-  const PREFIX_DURATION = 'beats=';
-  /** Used when creating lists - treat ~ as empty no value */
-  const REST_LITERAL = '~';
-
-  // FUTURE - convert everything after data1/data2 to an iterator to parse tokens so they don't need to be in specific order
-  // FUTURE - support unicode note durations https://en.wikipedia.org/wiki/Musical_Symbols_(Unicode_block)
-  const midiStringRegex = /^\s*(?<type>[a-zA-Z]{2,})?\s*(?<pitch>[A-G][#b♯♭_]*-?\d?)?\s*(?<data1>\b-?[0-9a-f]{1,5}\b)?\s*(?<data2>\b[0-9a-f]{1,3}\b)?\s*(ch=?(?<channel>[0-9a-f]{1,2}))?\s*(dev=?(?<device>[0-9a-f]))?\s*((@|time=)\s*(?<time>[\d:.]+))?\s*((pos|offset)=(?<pos>[\d./]+))?\s*((beats|dur)=(?<dur>[\d:./]+))?\s*$/;
 
   /**
-   * 
+   * convert midi event to string.
+   * The opts includes more formatting options than available through the current scratch blocks available.
    * @param {MidiEvent} event 
    * @param {FormatOptions} opts 
    * @returns 
@@ -245,18 +269,20 @@
 
   /**
    * convert a string representation of a note to a midievent
+   * FUTURE - support unicode note durations? https://en.wikipedia.org/wiki/Musical_Symbols_(Unicode_block)
    * @param {string} text 
    * @param {FormatOptions} opts 
    * @returns {MidiEvent}
    */
   function stringToMidi(text, opts = {}) {
+    if (typeof text !== 'string') text = `${String(text) ?? ''}`;
     const fullRe = /^\s*(?<type>[a-zA-Z]{2,})?\s*((?<pitch>[A-G][#b♯♭_]*-?\d?)|(?<data1>\b-?[0-9a-f]{1,5}\b))?\s*(?<data2>\b[0-9a-f]{1,3}\b)?\s*(?<keyvals>.+)\s*$/;
     const match = fullRe.exec(text);
     if (!match?.groups) return null;
     // turn key=val other=32.43 @14.23 into {key: 'val', other: 32.43, time=14.23}
     // ch/dev/@ (channel, device, time) are special keys that don't need =
     const keyvalRe = /\s*(?<key>\w+(?=\=)|ch|dev|@)=?(?<val>\S+)\s*/g;
-    /** @type {{[K in keyof typeof paramLookup]?: keyof MidiEvent}} */
+    /** @type {{[K in keyof MidiEvent]?: string}} */
     const extras = Object.fromEntries(
       [...match.groups.keyvals?.matchAll(keyvalRe)]
         // paramLookup converts "t=2" into "time=2"
@@ -281,9 +307,9 @@
         : normalizeType(shorthand),
       ...(value1 != undefined) && {value1},
       ...(value2 != undefined) && {value2},
-      channel: parseNumValue(extras.ch ?? extras.channel, opts),
-      device: parseNumValue(extras.dev ?? extras.device, opts),
-      ...extras.time && { time: parseTimespan(extras.t ?? extras.time)},
+      channel: parseNumValue(extras.channel, opts),
+      device: parseNumValue(extras.device, opts),
+      ...extras.time && { time: parseTimespan(extras.time)},
       // REVIEW is pos even needed? it's for setting output in beats, but setting time would make more sense instead
       ...extras.pos && { pos: parseFraction(extras.pos)},
       ...extras.dur && { dur: parseFraction(extras.dur)},
@@ -320,26 +346,26 @@
         }
         if (value1 == undefined || value2 == undefined) return null;
         break;
-      case "programChange" /* ProgramChange */:
-      case "channelPressure" /* ChannelPressure */:
-      case "songSelect" /* SongSelect */:
+      case "programChange":
+      case "channelPressure":
+      case "songSelect":
         // default to 0 for these types
         event.value1 ||= event.value ?? 0;
         break;
-      case "songPosition" /* SongPosition */:
-      case "pitchBend" /* PitchBend */:
+      case "songPosition":
+      case "pitchBend":
         if (value1 == undefined) return null;
         // these two types have a higher precision value
         const { value: highResValue, ...normedValues } = parseHighResValue(value1, value2);
         Object.assign(event, normedValues);
         event[spec.highResParam ?? "value"] = highResValue;
         break;
-      case "clock" /* Clock */:
-      case "start" /* Start */:
-      case "continue" /* Continue */:
-      case "stop" /* Stop */:
-      case "activeSensing" /* ActiveSensing */:
-      case "reset" /* Reset */:
+      case "clock":
+      case "start":
+      case "continue":
+      case "stop":
+      case "activeSensing":
+      case "reset":
         break;
       case "rest":
       // do nothing
@@ -459,7 +485,7 @@
   }
 
   /**
-   * 
+   * parse raw input midi bytes
    * @param {Uint8Array} data 
    * @returns {MidiEvent | null}
    */
@@ -493,7 +519,7 @@
     return event;
   }
   /**
-   * 
+   * convert midi event into bytes expected by MidiOut.send
    * @param {MidiEvent} event
    * @returns {Uint8Array}
    */
@@ -521,7 +547,7 @@
     return new Uint8Array([commandAndChannel, value1, ...(value2 !== undefined ? [value2] : [])]);
   }
   /**
-   * 
+   * read the "pos" / "dur" values of an event as relative time vs. a fixed wall-clock time
    * @param {Pick<MidiEvent, 'time' | 'pos' | 'dur'>} event 
    * @param {number} [offsetMs] time to return relative to. Default is now
    */
@@ -543,21 +569,38 @@
     .flatMap((_, i) => SHARPS.map(c => `${c}${i - 1}`))
     .slice(0, 128);
 
+  /**
+   * represents "any note" or "any device" etc. in menus
+   */
   const ANY_TYPE = "*";
+  /**
+   * Scratch menu items of @see {MidiEvent} properties
+   */
   const eventProps = {
     type: { key: "type", text: Scratch.translate("Event Type") },
     pitch: { key: "pitch", text: Scratch.translate("Note Pitch") },
     velocity: { key: "velocity", type: "noteOn", text: Scratch.translate("Velocity") },
     ccNumber: { key: "cc", text: Scratch.translate("Continuous Controller #") },
-    ccValue: { key: "value", type: "cc" /* CC */, text: Scratch.translate("CC Value") },
+    ccValue: { key: "value", type: "cc", text: Scratch.translate("CC Value") },
     channel: { key: "channel", text: Scratch.translate("Channel") },
     device: { key: "device", text: Scratch.translate("Device") },
-    pitchbend: { key: "value", type: "pitchBend" /* PitchBend */, text: Scratch.translate("Pitch Bend") },
+    pitchbend: { key: "value", type: "pitchBend", text: Scratch.translate("Pitch Bend") },
     aftertouch: { key: "value", type: "polyTouch", text: Scratch.translate("Aftertouch") },
     time: { key: "time", text: Scratch.translate("Timestamp") }
   };
 
-  // src/midi/midi-backend.ts
+//#endregion utils
+
+//#region wrapper
+  /**
+   * This is a singleton wrapper class around the WebMIDI API. It:
+   * 1) Handles requesting API permission and reporting Input/Output devices
+   * 2) Translate raw midi input events into friendlier @see {MidiEvent} objects
+   * 3) Sends out midi events, translating MidiEvents into the raw midi payload
+   * 4) Keeps track of "note on"/"note off" messages to support "panic" stopping midi output
+   * 
+   * It extends the native EventTarget class to dispatch events
+   */
   class MidiBackend extends EventTarget {
     constructor() {
       super();
@@ -576,7 +619,7 @@
         dur: 0.5,
         velocity: 196
       }
-      // TIP! If you use arrow functions on class methos then 'this' is automatically bound correctly, even if using as event listener
+      // TIP! If you use arrow functions on class methods then 'this' is automatically bound correctly, even if using as event listener
       this.refreshDevices = () => {
         for (const input of this.access.inputs.values()) {
           if (!this.inputs.some((d) => d.id === input.id)) {
@@ -799,7 +842,15 @@
     }
   };
 
-  // src/midi/midi-recorder.ts
+  /**
+   * this singleton keeps track of events in order to:
+   * 1) Report the "last" value for a given CC/note
+   * 2) Track "active" notes
+   * 3) Keep short term memory of events to avoid missing events because of scratch's slower event sample rate
+   * 4) Allow recording events for playback/storage
+   * 
+   * It keeps track of midi events, automatically pruning them after a certain time period or # of max entries have been reached (lazy, it doesn't actively poll)
+   */
   class MidiRecorder extends EventTarget {
     constructor() {
       super();
@@ -858,7 +909,7 @@
         case "polyTouch":
           this._onNoteTouch(doc);
           break;
-        case "cc" /* CC */:
+        case "cc":
           Object.assign(this.ccs, {
             [`${evt.cc}_${evt.channel}`]: evt,
             [`${evt.cc}`]: evt
@@ -942,7 +993,7 @@
       return this.getLast("noteOn", pitch, channel);
     }
     getLastCC(cc, channel) {
-      return this.getLast("cc" /* CC */, cc, channel);
+      return this.getLast("cc", cc, channel);
     }
     getLastAftertouch(pitch, channel) {
       return this.getLast("polyTouch", pitch, channel);
@@ -951,7 +1002,7 @@
       if (type === value1 === channel === undefined) {
         return this.buffer[this.buffer.length - 1];
       }
-      if (type === "cc" /* CC */ && value1) {
+      if (type === "cc" && value1) {
         const key = channel != undefined ? `${value1}_${channel}` : `${value1}`;
         const foundCC = this.ccs[key];
         if (foundCC) return foundCC;
@@ -1043,22 +1094,32 @@
     return seconds * tempo / 60;
   }
 
-  //#endregion
+  //#endregion wrapper
 
-  //#region Scratch Extension
+//#region Scratch Extension
 
+  // hardcoded mapping of hats events, b/c I'll never remember the convention otherwise
   const HATS = {
     NOTE: `${EXT_ID}_whenNoteOnOff`,
     NOTEANY: `${EXT_ID}_whenAnyNoteOnOff`,
     MIDI: `${EXT_ID}_whenMidiEvent`
+    // not currently implemented
+    // CC: `${EXT_ID}_whenCC`
   };
-  /** @type {'---'} */
+  /**
+   * Block separator constant
+   * @type {'---'}
+   */
   const SEPARATOR = '---';
   const { Cast } = Scratch;
+
   class MidiExtension {
     constructor() {
       this.midi = new MidiBackend();
       this.recorder = new MidiRecorder();
+      /**
+       * Lazy initialize midi - only upon first executing, and used in other calls to make sure it gets triggered
+       */
       this._ensureInitialize = (evt) => {
         if (this.midi.status === "pending" /* Initial */) {
           this.initialize().catch(() => {
@@ -1089,7 +1150,8 @@
             vm.runtime.startHats(HATS.NOTE);
             vm.runtime.startHats(HATS.NOTEANY);
             break;
-          // case "cc" /* CC */:
+          // FUTURE - support a "whenCC" block if needed
+          // case "cc":
           //   vm.runtime.startHats(HATS.CC);
           //   break;
         }
@@ -1099,11 +1161,11 @@
       const EVENT_TYPES_ITEMS = [
         { value: "noteOn", text: Scratch.translate("Note On") },
         { value: "noteOff", text: Scratch.translate("Note Off") },
-        { value: "cc" /* CC */, text: Scratch.translate("CC") },
+        { value: "cc", text: Scratch.translate("CC") },
         { value: "polyTouch", text: Scratch.translate("AfterTouch") },
-        { value: "pitchBend" /* PitchBend */, text: Scratch.translate("Pitch Bend") },
-        { value: "programChange" /* ProgramChange */, text: Scratch.translate("Program Change") },
-        { value: "channelPressure" /* ChannelPressure */, text: Scratch.translate("Channel Pressure") }
+        { value: "pitchBend", text: Scratch.translate("Pitch Bend") },
+        { value: "programChange", text: Scratch.translate("Program Change") },
+        { value: "channelPressure", text: Scratch.translate("Channel Pressure") }
       ];
 
       return {
@@ -1112,6 +1174,7 @@
         menuIconURI: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjEuNzc1IDcuNTE3SDI0djguOTY2aC0yLjIyNXptLTguNTYyIDBoNi41MDZjLjY2IDAgMS4wNDUuNTcgMS4wNDUgMS4yNDd2Ni42MDdjMCAuODQtLjM1IDEuMTEyLTEuMTEyIDEuMTEyaC02LjQzOXYtNS42OTZoMi4yMjV2My41MDVoMy4xMzVWOS41NGgtNS4zNnptLTMuMjM1IDBoMi4xOXY4Ljk2NmgtMi4xOXpNMCA3LjUxN2g3Ljg1NGMuNjYgMCAxLjA0NS41NyAxLjA0NSAxLjI0N3Y3LjcySDYuNzA4VjkuNzc0SDUuNDI3djYuNzA4SDMuNDM4VjkuNzc1SDIuMTkxdjYuNzA4SDBaIiBmaWxsPSIjMDAwIj48L3BhdGg+PC9zdmc+",
         blockIconURI: "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjEuNzc1IDcuNTE3SDI0djguOTY2aC0yLjIyNXptLTguNTYyIDBoNi41MDZjLjY2IDAgMS4wNDUuNTcgMS4wNDUgMS4yNDd2Ni42MDdjMCAuODQtLjM1IDEuMTEyLTEuMTEyIDEuMTEyaC02LjQzOXYtNS42OTZoMi4yMjV2My41MDVoMy4xMzVWOS41NGgtNS4zNnptLTMuMjM1IDBoMi4xOXY4Ljk2NmgtMi4xOXpNMCA3LjUxN2g3Ljg1NGMuNjYgMCAxLjA0NS41NyAxLjA0NSAxLjI0N3Y3LjcySDYuNzA4VjkuNzc0SDUuNDI3djYuNzA4SDMuNDM4VjkuNzc1SDIuMTkxdjYuNzA4SDBaIiBmaWxsPSIjRkZGIj48L3BhdGg+PC9zdmc+",
         blocks: [
+          // FUTURE - could force requesting permissions and checking midi device status. Usually refreshing is safer option
           // {
           //   opcode: "initialize",
           //   text: Scratch.translate("Initialize force? [FORCE]"),
@@ -1321,7 +1384,6 @@
           {
             opcode: "makeOutputNote",
             blockType: Scratch.BlockType.REPORTER,
-            // FUTURE - event_types has "any" type...should rename to EVENT_TYPES_OPTIONAL and make EVENT_TYPES that doesn't have "any"
             text: Scratch.translate("Note [NOTE] Duration [BEATS] Volume [VELOCITY]% [CHANNEL] [DEVICE]"),
             arguments: {
               NOTE: {
@@ -1350,7 +1412,6 @@
           {
             opcode: "makeOutputEvent",
             blockType: Scratch.BlockType.REPORTER,
-            // FUTURE - event_types has "any" type...should rename to EVENT_TYPES_OPTIONAL and make EVENT_TYPES that doesn't have "any"
             text: Scratch.translate("Event [TYPE] [VALUE1] [VALUE2] [CHANNEL] [DEVICE]"),
             arguments: {
               TYPE: {
@@ -1920,5 +1981,7 @@
       return event ? midiToString(event) : ""
     }
   };
+
+//#endregion
   Scratch.extensions.register(new MidiExtension());
 })(Scratch);
