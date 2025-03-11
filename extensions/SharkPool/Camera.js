@@ -200,7 +200,10 @@
     camSystem.ogXY = [...thisCam.xy];
     position = translatePosition(position, false, thisCam);
     if (camSystem.needsRefresh) {
-      if (this._position[0] !== position[0] || this._position[1] !== position[1]) {
+      if (
+        this._position[0] !== position[0] ||
+        this._position[1] !== position[1]
+      ) {
         this._position[0] = position[0];
         this._position[1] = position[1];
       }
