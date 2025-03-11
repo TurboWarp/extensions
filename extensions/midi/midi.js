@@ -22,30 +22,31 @@
    * // definition for the parsed midi event
    * @typedef {'noteOn' | 'noteOff' | 'cc' | 'polyTouch' | 'programChange' | 'pitchBend' | 'channelPressure' | 'songPosition' | 'songSelect' | 'clock' | 'start' | 'continue' | 'stop' | 'activeSensing' | 'reset'} EventType
    * @typedef {object} MidiEvent
-   * @property {EventType | 'rest'} type
-   * @property {number} [value1]
-   * @property {number} [value2]
-   * @property {number} [channel]
-   * @property {number} [device]
-   * @property {number} [time]
-   * @property {number} [pitch]
-   * @property {number} [velocity]
-   * @property {number} [cc]
-   * @property {number} [value]
-   * @property {number} [pos]
-   * @property {number} [dur]
+   * @property {EventType | 'rest'} type type of midi command (note on, program change, tc). Default is 'noteOn'
+   * @property {number} [value1] (0-127) raw data1 byte value
+   * @property {number} [value2] (0-127) raw data2 byte value
+   * @property {number} [channel] (1-16) channel of event. default is 1
+   * @property {number} [device] (1-N) index of midi input/output device
+   * @property {number} [time] time of event in seconds
+   * @property {number} [pitch] note pitch (0-127). C4=60
+   * @property {number} [velocity] note velocity (0-127). If this is 0 then treated as a note off event
+   * @property {number} [cc] continuous controller number (0-127)
+   * @property {number} [value] cc / pitchBend/programChange value (0-127 except for songPosition / pitchbend)
+   * @property {number} [pos] time in beats - gets converted to time using current tempo
+   * @property {number} [dur] (note type only) duration in seconds- send corresponding note off event automatically
+   * @property {number} [beats] gets converted to dur using current tempo
    * @property {string} [_str] cached string representation of this event
    *
    *
    * @typedef {object} FormatOptions
-   * @property {number} [tempo]
-   * @property {boolean} [useFlats]
-   * @property {boolean} [noMinify]
-   * @property {'omit' | 'timestamp' | 'absolute'} [timestampFormat]
-   * @property {number} [startTimestamp]
-   * @property {boolean} [fixedWidth]
-   * @property {boolean} [useHex]
-   * @property {number} [defaultOctave]
+   * @property {number} [tempo] override tempo used in converting beats/pos. default is stage tempo
+   * @property {boolean} [useFlats] show notes as flats instead of sharps
+   * @property {boolean} [noMinify] include all data even if defaults
+   * @property {'omit' | 'timestamp' | 'absolute'} [timestampFormat] for future use
+   * @property {number} [startTimestamp] for future use
+   * @property {boolean} [fixedWidth] include padding to make values line up
+   * @property {boolean} [useHex] use hex for number values instead of base 10
+   * @property {number} [defaultOctave] default octave if not otherwise specfied. default 4
    *
    */
 
@@ -396,7 +397,7 @@
   function stringToMidi(text, opts = {}) {
     if (typeof text !== "string") text = Cast.toString(text);
     const fullRe =
-      /^\s*(?<type>[a-zA-Z]{2,})?\s*((?<pitch>[A-G][#b♯♭_]*-?\d?)|(?<data1>\b-?[0-9a-f]{1,5}\b))?\s*(?<data2>\b[0-9a-f]{1,3}\b)?\s*(?<keyvals>.+)\s*$/;
+      /^\s*(?<type>[a-zA-Z]{2,}|~)?\s*((?<pitch>[A-G][#b♯♭_]*-?\d?)|(?<data1>\b-?[0-9a-f]{1,5}\b))?\s*(?<data2>\b[0-9a-f]{1,3}\b)?\s*(?<keyvals>.*)\s*$/;
     const match = fullRe.exec(text);
     if (!match?.groups) return null;
     // turn key=val other=32.43 @14.23 into {key: 'val', other: 32.43, time=14.23}
@@ -517,7 +518,7 @@
   }
   function formatTime(
     { time = undefined },
-    { noMinify = false, timestampFormat = "absolute", startTimestamp = 0 }
+    { timestampFormat = "absolute", startTimestamp = 0 }
   ) {
     if (timestampFormat === "omit" || time == undefined) {
       return "";
@@ -531,12 +532,12 @@
   }
 
   // TODO FUTURE add in opts flag to use fractions or not
-  function formatPosition(value, opts) {
+  function formatPosition(value, _opts) {
     return `${PREFIX_POS}${formatFraction(value)}`;
   }
 
   // TODO FUTURE add in opts flag to use fractions or not
-  function formatDuration(value, opts) {
+  function formatDuration(value, _opts) {
     return `${PREFIX_DURATION}${formatFraction(value)}`;
   }
 
@@ -1566,7 +1567,7 @@
           {
             opcode: "playNoteForBeats",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("play midi note [NOTE] for [BEATS] beats"),
+            text: Scratch.translate("play note [NOTE] for [BEATS] beats"),
             arguments: {
               NOTE: {
                 type: Scratch.ArgumentType.NOTE,
