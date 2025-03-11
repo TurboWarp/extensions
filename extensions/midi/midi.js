@@ -2006,12 +2006,15 @@
       return false;
     }
     playNoteForBeats({ NOTE, BEATS }, util) {
-      const pitch = noteNameToMidiPitch(Cast.toString(NOTE)) || undefined;
-      const beats =
-        typeof BEATS === "string" && BEATS.includes("/")
-          ? parseFraction(BEATS)
-          : Cast.toNumber(BEATS);
+      let text = Cast.toString(NOTE);
+      const beats = Cast.toString(BEATS);
 
+      // just append to text and let stringToMidi handle
+      if (beats) {
+        text += ` beats=${beats}`;
+      }
+
+      // default event type is note, so any valid input will be treated as note by default
       const event = stringToMidi(`${text}`);
       this.midi.sendOutputEvent(event);
     }
