@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.06
+// Version V.1.0.07
 
 (function (Scratch) {
   "use strict";
@@ -127,6 +127,7 @@
         camSystem.needsRefresh = false;
       }
     }
+    runtime.requestRedraw();
   }
 
   // camera system patches
