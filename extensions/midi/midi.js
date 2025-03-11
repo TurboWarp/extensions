@@ -252,6 +252,7 @@
     dur: "dur",
     duration: "dur",
     pos: "pos",
+    beats: "beats",
     value: "value2",
   };
 
@@ -403,7 +404,7 @@
     // turn key=val other=32.43 @14.23 into {key: 'val', other: 32.43, time=14.23}
     // ch/dev/@ (channel, device, time) are special keys that don't need =
     const keyvalRe = /\s*(?<key>\w+(?==)|ch|dev|@)=?(?<val>\S+)\s*/g;
-    /** @type {{[K in keyof MidiEvent]?: string}} */
+    /** @type {{[K in keyof MidiEvent | 'beats']?: string}} */
     const extras = Object.fromEntries(
       Array.from(match.groups.keyvals?.matchAll(keyvalRe) || [])
         // paramLookup converts "t=2" into "time=2"
@@ -431,10 +432,19 @@
       channel: parseNumValue(extras.channel, opts),
       device: parseNumValue(extras.device, opts),
       ...(extras.time && { time: parseTimespan(extras.time) }),
-      // REVIEW is pos even needed? it's for setting output in beats, but setting time would make more sense instead
-      ...(extras.pos && { pos: parseFraction(extras.pos) }),
       ...(extras.dur && { dur: parseFraction(extras.dur) }),
+      ...(extras.pos && { pos: parseFraction(extras.pos) }),
+      ...(extras.beats && { beats: parseFraction(extras.beats) }),
     };
+
+    if (event.beats && event.dur == undefined) {
+      // NOTE - looks up tempo in vm stage
+      event.dur = beatsToSeconds(event.beats, opts.tempo);
+    }
+    if (event.pos && event.time == undefined) {
+      // NOTE - looks up tempo in vm stage
+      event.time = beatsToSeconds(event.pos, opts.tempo);
+    }
 
     // default to note event if has pitch (off if velocity = 0)
     if (!event.type && value1 >= 0) {
@@ -684,11 +694,11 @@
    * @param {number} [offsetMs] time to return relative to. Default is now
    */
   function getMidiOffsetTime(event, offsetMs = window.performance.now()) {
-    const { pos = 0, dur } = event;
+    const { time = 0, dur } = event;
     return {
-      start: offsetMs + pos * 1000,
+      start: offsetMs + time * 1000,
       ...(dur > 0 && {
-        end: offsetMs + (pos + dur) * 1000,
+        end: offsetMs + (time + dur) * 1000,
       }),
     };
   }
@@ -1995,23 +2005,6 @@
       }
       return false;
     }
-    /**
-     *
-     * @param {MidiEvent} event
-     * @returns {MidiEvent}
-     */
-    _eventBeatsToSeconds(event) {
-      const tempo = getTempo();
-      const { dur, pos } = event;
-      const out = { ...event };
-      if (dur != undefined) {
-        out.dur = beatsToSeconds(parseFraction(dur), tempo);
-      }
-      if (pos != undefined) {
-        out.pos = beatsToSeconds(parseFraction(pos), tempo);
-      }
-      return out;
-    }
     playNoteForBeats({ NOTE, BEATS }, util) {
       const pitch = noteNameToMidiPitch(Cast.toString(NOTE)) || undefined;
       const beats =
@@ -2019,11 +2012,7 @@
           ? parseFraction(BEATS)
           : Cast.toNumber(BEATS);
 
-      const event = this._eventBeatsToSeconds({
-        type: "noteOn",
-        ...(pitch != undefined && { pitch }),
-        dur: beats,
-      });
+      const event = stringToMidi(`${text}`);
       this.midi.sendOutputEvent(event);
     }
     sendOutputEvent({ EVENT, DEVICE }, util) {
