@@ -199,7 +199,15 @@
 
     camSystem.ogXY = [...thisCam.xy];
     position = translatePosition(position, false, thisCam);
-    ogUpdatePosition.call(this, position);
+    if (camSystem.needsRefresh) {
+      if (this._position[0] !== position[0] || this._position[1] !== position[1]) {
+        this._position[0] = position[0];
+        this._position[1] = position[1];
+      }
+      this.setTransformDirty();
+    } else {
+      ogUpdatePosition.call(this, position);
+    }
   };
 
   const ogUpdateDirection = render.exports.Drawable.prototype.updateDirection;
