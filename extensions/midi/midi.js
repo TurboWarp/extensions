@@ -1582,17 +1582,15 @@
           {
             opcode: "sendOutputEvent",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "schedule [EVENT] for [POS] beats from now"
-            ),
+            text: Scratch.translate("Send [EVENT] to [DEVICE]"),
             arguments: {
               EVENT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Eb4 beats=1/4",
               },
-              POS: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0,
+              DEVICE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "OUTPUT_DEVICES",
               },
             },
           },
@@ -2028,17 +2026,16 @@
       });
       this.midi.sendOutputEvent(event);
     }
-    sendOutputEvent({ EVENT, POS }, util) {
+    sendOutputEvent({ EVENT, DEVICE }, util) {
       const text = Cast.toString(EVENT);
-      const pos =
-        typeof POS === "string" && POS.includes("/")
-          ? parseFraction(POS)
-          : Cast.toNumber(POS);
-      const event = this._eventBeatsToSeconds({
-        // default value is 0, so if event has something set (like "C#3 pos=1/4 beats=1") then let it take precedence, otherwise override
-        ...(pos > 0 && { pos }),
-        ...stringToMidi(text),
-      });
+      const event = stringToMidi(text);
+
+      const deviceId = Cast.toString(DEVICE);
+      if (deviceId && event.device == undefined) {
+        const device =
+          deviceId && this.midi.outputs.findIndex((d) => d.id === deviceId);
+        event.device = device === -1 ? undefined : device;
+      }
 
       this.midi.sendOutputEvent(event);
     }
