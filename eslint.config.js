@@ -164,6 +164,16 @@ module.exports = [
               message: "Use Scratch.fetch() instead of window.fetch()",
             },
           ]),
+          "use-scratch-cast": createQueryRule([
+            {
+              selector: "MemberExpression[object.name=Cast]",
+              message: "Use Scratch.Cast instead of Cast",
+            },
+            {
+              selector: "MemberExpression[object.name=window][property.name=Cast]",
+              message: "Use Scratch.Cast instead of window.Cast",
+            },
+          ]),
           "use-scratch-open-window": createQueryRule([
             {
               selector: "CallExpression[callee.name=open]",
@@ -309,6 +319,7 @@ module.exports = [
       "extension/iife": "error",
       "extension/use-scratch-vm": "error",
       "extension/use-scratch-fetch": "error",
+      "extension/use-scratch-cast": "error",
       "extension/use-scratch-open-window": "error",
       "extension/use-scratch-redirect": "error",
       "extension/check-can-fetch": "error",
