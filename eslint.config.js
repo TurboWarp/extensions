@@ -170,7 +170,8 @@ module.exports = [
               message: "Use Scratch.Cast instead of Cast",
             },
             {
-              selector: "MemberExpression[object.name=window][property.name=Cast]",
+              selector:
+                "MemberExpression[object.name=window][property.name=Cast]",
               message: "Use Scratch.Cast instead of window.Cast",
             },
           ]),
