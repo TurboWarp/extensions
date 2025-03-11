@@ -782,6 +782,10 @@
           }
         }
       };
+      /**
+       *
+       * @param {MIDIPortEventMap['statechange']} event
+       */
       this._onDeviceStateChange = (event) => {
         const { port } = event;
         if (!port) return;
@@ -1275,6 +1279,7 @@
 
   // hardcoded mapping of hats events, b/c I'll never remember the convention otherwise
   const HATS = {
+    DEVICE: `${EXT_ID}_whenDeviceEvent`,
     NOTE: `${EXT_ID}_whenNoteOnOff`,
     NOTEANY: `${EXT_ID}_whenAnyNoteOnOff`,
     MIDI: `${EXT_ID}_whenMidiEvent`,
@@ -1310,6 +1315,13 @@
      */
     _addListeners() {
       const vm = globalThis.Scratch.vm;
+      this.midi.on("device:status", (domEvent) => {
+        const changeEvent = domEvent.detail;
+        vm.runtime.startHats(HATS.DEVICE, {
+          DEVICE_TYPE: changeEvent.type,
+          STATE: changeEvent.state,
+        });
+      });
       this.midi.on("midi", (domEvent) => {
         const midiEvent = domEvent.detail;
         this.recorder.add(midiEvent);
@@ -1365,6 +1377,25 @@
           //     }
           //   }
           // },
+          {
+            opcode: "whenDeviceEvent",
+            text: Scratch.translate("when [DEVICE_TYPE] device [STATE]"),
+            blockType: Scratch.BlockType.EVENT,
+            isEdgeActivated: false,
+            shouldRestartExistingThreads: true,
+            arguments: {
+              DEVICE_TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "DEVICE_TYPES",
+                defaultValue: "input",
+              },
+              STATE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "DEVICE_STATES",
+                defaultValue: "connected",
+              },
+            },
+          },
           {
             opcode: "numDevices",
             text: Scratch.translate("number of [DEVICE_TYPE] devices"),
@@ -1755,7 +1786,7 @@
             items: "outputDevicesMenu",
           },
           DEVICE_TYPES: {
-            acceptReporters: true,
+            acceptReporters: false,
             items: [
               { value: "input", text: Scratch.translate("input") },
               { value: "output", text: Scratch.translate("output") },
@@ -1771,6 +1802,16 @@
               },
               { value: "name", text: Scratch.translate("Device Name") },
               { value: "state", text: Scratch.translate("State") },
+            ],
+          },
+          DEVICE_STATES: {
+            acceptReporters: false,
+            items: [
+              { value: "connected", text: Scratch.translate("connected") },
+              {
+                value: "disconnected",
+                text: Scratch.translate("disconnected"),
+              },
             ],
           },
           NOTE_EVENT_TYPE: {
@@ -1906,6 +1947,9 @@
         outputList
       );
     }
+    // handled automatically b/c blockType = EVENT instead of HAT
+    // whenDeviceEvent({ DEVICE_TYPE, STATE }, util) {
+    // }
     whenNoteOnOff({ NOTE, PRESS }, util) {
       const isAny = this._isAnyArg(PRESS);
       let type = isAny
