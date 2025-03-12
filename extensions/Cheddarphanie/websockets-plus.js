@@ -368,6 +368,7 @@
         console.log(`[WebSockets+] Attempting to connect to '${url}'..`);
 
       if (!this.fetchables[url])
+        // eslint-disable-next-line extension/check-can-fetch
         this.fetchables[url] = await Scratch.canFetch(url);
 
       if (!this.fetchables[url]) {
