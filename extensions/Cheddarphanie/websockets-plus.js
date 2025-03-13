@@ -1,4 +1,4 @@
-// Name: WebSockets+
+// Name: WebSocket V2
 // ID: lemonWebSocketsPlus
 // Description: Connect to more than one WebSockets.
 // By: Cheddarphanie <https://scratch.mit.edu/users/Cheddarphanie/>
@@ -10,7 +10,7 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("The WebSockets+ Extension must run unsandboxed.");
+    throw new Error("The WebSocket V2 Extension must run unsandboxed.");
   }
 
   const vm = Scratch.vm;
@@ -37,7 +37,7 @@
     };
   };
 
-  class WebsocketsPlusExt {
+  class WebsocketV2Ext {
     constructor() {
       this.debugging = false;
 
@@ -79,7 +79,7 @@
     getInfo() {
       return {
         id: "lemonWebSocketsPlus",
-        name: Scratch.translate("WebSockets+"),
+        name: Scratch.translate("WebSocket V2"),
         color1: "#307eff",
         color2: "#2c5eb0",
         blocks: [
@@ -364,10 +364,10 @@
         }
       }
 
-      if (this.debugging) console.groupCollapsed("WebSockets+ Connecting");
+      if (this.debugging) console.groupCollapsed("WebSocket V2 Connecting");
 
       if (this.debugging)
-        console.log(`[WebSockets+] Attempting to connect to '${url}'..`);
+        console.log(`[WebSockets V2] Attempting to connect to '${url}'..`);
 
       if (!this.fetchables[url])
         this.fetchables[url] = await Scratch.canFetch(url);
@@ -375,7 +375,7 @@
       if (!this.fetchables[url]) {
         this.socketStatuses[id] = "failed to connect";
         if (this.debugging) {
-          console.log(`[Websockets+] Connection to '${url}' denied!`);
+          console.log(`[Websocket V2] Connection to '${url}' denied!`);
           console.groupEnd();
         }
         return;
@@ -418,7 +418,7 @@
         vm.refreshWorkspace();
 
         if (this.debugging)
-          console.log(`[WebSockets+] Successfully connected to '${url}'.`);
+          console.log(`[WebSocket V2] Successfully connected to '${url}'.`);
       } catch (err) {
         console.error(err);
         this.socketStatuses[id] = "failed to connect";
@@ -433,11 +433,11 @@
       const Reason = Cast.toString(R);
 
       if (this.debugging)
-        console.groupCollapsed("WebSockets+ Closing Connection");
+        console.groupCollapsed("WebSocket V2 Closing Connection");
 
       if (this.debugging)
         console.log(
-          `[WebSockets+] Attemping to close connection with '${id}'..`
+          `[WebSocket V2] Attemping to close connection with '${id}'..`
         );
 
       const socket = this.sockets[id];
@@ -477,11 +477,11 @@
 
         if (this.debugging)
           console.log(
-            `[WebSockets+] Successfully closed connection with '${id}'!`
+            `[WebSocket V2] Successfully closed connection with '${id}'!`
           );
       } else {
         if (this.debugging)
-          console.warn(`[WebSockets+] WebSocket '${id}' is not a WebSocket!`);
+          console.warn(`[WebSocket V2] WebSocket '${id}' is not a WebSocket!`);
       }
 
       if (this.debugging) console.groupEnd();
@@ -491,10 +491,10 @@
 
     sendMessage({ MESSAGE, SOCKET }) {
       if (this.debugging) {
-        console.groupCollapsed("WebSockets+ Message Sending");
+        console.groupCollapsed("WebSocket V2 Message Sending");
 
         console.log(
-          `[WebSockets+] Attempting to send a message to '${SOCKET}'..`
+          `[WebSocket V2] Attempting to send a message to '${SOCKET}'..`
         );
       }
       SOCKET = Cast.toString(SOCKET);
@@ -513,7 +513,7 @@
           socket.send(MESSAGE);
           if (this.debugging)
             console.log(
-              `[WebSockets+] Successfully sent a message to '${SOCKET}'!`
+              `[WebSocket V2] Successfully sent a message to '${SOCKET}'!`
             );
         } catch (err) {
           console.error(err);
@@ -521,7 +521,7 @@
         }
       } else {
         if (this.debugging)
-          console.warn(`[WebSockets+] '${SOCKET}' isn't a WebSocket!`);
+          console.warn(`[WebSocket V2] '${SOCKET}' isn't a WebSocket!`);
       }
       if (this.debugging) console.groupEnd();
     }
@@ -617,5 +617,5 @@
     }
   }
 
-  Scratch.extensions.register(new WebsocketsPlusExt());
+  Scratch.extensions.register(new WebsocketV2Ext());
 })(Scratch);
