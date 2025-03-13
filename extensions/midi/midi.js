@@ -800,13 +800,13 @@
         if (!port) return;
         const { type, id, name } = port;
         const deviceList = type === "input" ? this.inputs : this.outputs;
-        const index = deviceList.findIndex((dev) => dev.id === id);
-        if (index === -1) {
+        const rawIndex = deviceList.findIndex((dev) => dev.id === id);
+        if (rawIndex === -1) {
           this.refreshDevices();
           return;
         }
         this._emit("device:status", {
-          index,
+          index: rawIndex + 1,
           id,
           name,
           type,
@@ -816,7 +816,7 @@
       this._onInputEvent = (event) => {
         const { target: device, data, timeStamp } = event;
         if (!data) return;
-        const deviceIndex = this.inputs.indexOf(device);
+        const rawIndex = this.inputs.indexOf(device);
         const midiEvent = rawMessageToMidi(data);
         if (!midiEvent) {
           console.warn("Unable to parse message", data);
@@ -824,8 +824,8 @@
           return;
         } else {
           midiEvent.time = timeStamp / 1000;
-          if (deviceIndex !== -1) {
-            midiEvent.device = deviceIndex;
+          if (rawIndex !== -1) {
+            midiEvent.device = rawIndex + 1;
           }
           midiEvent._str = midiToString(midiEvent, { noMinify: true });
           this._emit("midi", midiEvent);
@@ -915,11 +915,14 @@
         return false;
       }
 
-      const device =
-        (data.device != undefined && this.outputs[data.device]) ||
-        this.defaultOutput;
+      let device;
+      // passed in index starts at 1
+      if (data.device != undefined && data.device > 0) {
+        device = this.outputs[data.device - 1];
+      }
+      device ||= this.defaultOutput;
       if (!device) {
-        // no output. Should this throw error?
+        // no output device so do nothing
         return false;
       }
       // ensure 0 velocity is interpreted as noteOff
@@ -1980,6 +1983,22 @@
         val === "ANY" || /^(\*|any|\s*)$/i.test(Scratch.Cast.toString(val))
       );
     }
+    _getDeviceIndex(DEVICE, deviceType) {
+      const deviceId = Scratch.Cast.toString(DEVICE);
+      const deviceList =
+        deviceType === "output" ? this.midi.outputs : this.midi.inputs;
+
+      const rawIndex = this.midi.outputs.findIndex((d) => d.id === deviceId);
+      if (rawIndex !== -1) {
+        // arrays start at 1
+        return rawIndex + 1;
+      }
+      // check if index passed in and use directly
+      const index = Scratch.Cast.toNumber(deviceId);
+      if (index >= 1 && index <= deviceList.length) {
+        return index;
+      }
+      return undefined;
     }
     numDevices({ DEVICE_TYPE }) {
       this._ensureInitialize();
@@ -2092,11 +2111,8 @@
       const text = Scratch.Cast.toString(EVENT);
       const event = stringToMidi(text);
 
-      const deviceId = Cast.toString(DEVICE);
-      if (deviceId && event.device == undefined) {
-        const device =
-          deviceId && this.midi.outputs.findIndex((d) => d.id === deviceId);
-        event.device = device === -1 ? undefined : device;
+      if (DEVICE) {
+        event.device = this._getDeviceIndex(DEVICE, "output");
       }
 
       this.midi.sendOutputEvent(event);
@@ -2214,16 +2230,15 @@
       value2 = Math.max(0, Math.min(value2, 127));
 
       // REVIEW - should OUTPUT_DEVICES be changed to output device index instead of id?
-      const deviceId = Cast.toString(DEVICE);
-      const device = this.midi.outputs.findIndex((d) => d.id === deviceId);
+      const device = this._getDeviceIndex(DEVICE, "output");
       // FUTURE this may make sense to get moved out to helper alongside rawMessageToMidi
       /** @type {MidiEvent} */
       const event = {
         type,
         value1,
         value2,
-        device: device === -1 ? undefined : device,
         channel: Scratch.Cast.toNumber(CHANNEL) || undefined,
+        device,
         ...(spec?.param1 && { [spec.param1]: value1 }),
         ...(spec?.param2 && { [spec.param2]: value2 }),
         ...(spec?.highResParam && parseHighResValue(value1, value2)),
