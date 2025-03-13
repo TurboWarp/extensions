@@ -42,6 +42,8 @@
       /** @type {string} */
       this.videoSrc = videoSrc;
 
+      this.videoVolume = 1;
+
       this.videoError = false;
 
       this.readyPromise = new Promise((resolve) => {
@@ -142,6 +144,17 @@
         for (const skin of renderer._allSkins) {
           if (skin instanceof VideoSkin && !skin.videoElement.paused) {
             skin.markVideoDirty();
+          }
+        }
+      });
+
+      // Updated code to apply the project's volume to that of the video.
+      // This allows the volume to interact with Scratch Addons and Sound Expanded.
+      runtime.on("AFTER_EXECUTE", () => {
+        for (const skin of renderer._allSkins) {
+          if (skin instanceof VideoSkin) {
+            let projectVolume = runtime.audioEngine.inputNode.gain.value;
+            skin.videoElement.volume = skin.videoVolume * projectVolume;
           }
         }
       });
@@ -598,7 +611,7 @@
         case "duration":
           return videoSkin.videoElement.duration;
         case "volume":
-          return videoSkin.videoElement.volume * 100;
+          return videoSkin.videoVolume * 100;
         case "width":
           return videoSkin.size[0];
         case "height":
@@ -682,7 +695,7 @@
       if (!videoSkin) return;
 
       const value = Cast.toNumber(args.VALUE);
-      videoSkin.videoElement.volume = Math.min(1, Math.max(0, value / 100));
+      videoSkin.videoVolume = Math.min(1, Math.max(0, value / 100));
     }
 
     setPlaybackRate(args) {
