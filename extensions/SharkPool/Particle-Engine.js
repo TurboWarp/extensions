@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.3
+// Version V.1.0.31
 
 (function (Scratch) {
   "use strict";
@@ -845,22 +845,32 @@
 
   function add2Body() {
     var svg = document.createElement("div");
-    svg.innerHTML = `<svg><defs>
-      <linearGradient x1="100" y1="0" x2="100" y2="200" id="SPpartEngine-GRAD1" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#0090ff"></stop><stop offset="50%" stop-color="#0000ff"></stop></linearGradient>
+    svg.innerHTML = `
+      <svg><defs>
+        <linearGradient x1="100" y1="0" x2="100" y2="200" id="SPpartEngine-GRAD1" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#0090ff"></stop><stop offset="50%" stop-color="#0000ff"></stop></linearGradient>
       </defs></svg>`;
     document.body.appendChild(svg);
   }
   if (Scratch.gui) Scratch.gui.getBlockly().then((SB) => {
     add2Body();
-    if (!SB?.SPgradients?.patched) { // Gradient Patch by 0znzw & SharkPool
-      SB.SPgradients = {gradientUrls: {}, patched: false};
+    if (!SB?.SPgradients?.patched) {
+      // Gradient Patch by 0znzw & SharkPool
+      SB.SPgradients = { gradientUrls: {}, patched: false };
       const BSP = SB.BlockSvg.prototype, BSPR = BSP.render;
       BSP.render = function(...args) {
+        const blockTheme = ReduxStore.getState().scratchGui.theme.theme.blocks;
         const res = BSPR.apply(this, args);
         let category;
         if (this?.svgPath_ && this?.category_ && (category = this.type.slice(0, this.type.indexOf("_"))) && SB.SPgradients.gradientUrls[category]) {
           const urls = SB.SPgradients.gradientUrls[category];
-          if (urls) this.svgPath_.setAttribute("fill", urls[0]);
+          if (urls) {
+            this.svgPath_.setAttribute("fill", urls[0]);
+            if (blockTheme === "dark") {
+              this.svgPath_.setAttribute("fill-opacity", ".5");
+              this.svgPath_.setAttribute("stroke", "#0daaff");
+            }
+          }
         }
         return res;
       }
