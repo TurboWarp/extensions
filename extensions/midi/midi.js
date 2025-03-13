@@ -74,6 +74,8 @@
   }
   /**
    * convert a note string name (or raw midi number) to midi number value
+   * Examples of valid inputs: C4 C_4 C#7 Db6 F# F♯♯ B♭0 60 32
+   * Returns null if not a valid pitch string or midi note number
    * @param {string} note
    * @param {number} [defaultOctave]
    * @returns {number | null}
@@ -396,7 +398,7 @@
    * @returns {MidiEvent}
    */
   function stringToMidi(text, opts = {}) {
-    if (typeof text !== "string") text = Cast.toString(text);
+    if (typeof text !== "string") text = Scratch.Cast.toString(text);
     const fullRe =
       /^\s*(?<type>[a-zA-Z]{2,}|~)?\s*((?<pitch>[A-G][#b♯♭_]*-?\d?)|(?<data1>\b-?[0-9a-f]{1,5}\b))?\s*(?<data2>\b[0-9a-f]{1,3}\b)?\s*(?<keyvals>.*)\s*$/;
     const match = fullRe.exec(text);
@@ -716,10 +718,6 @@
     .flatMap((_, i) => SHARPS.map((c) => `${c}${i - 1}`))
     .slice(0, 128);
 
-  /**
-   * represents "any note" or "any device" etc. in menus
-   */
-  const ANY_TYPE = "*";
   /**
    * Scratch menu items of @see {MidiEvent} properties
    */
@@ -1302,7 +1300,6 @@
    * @type {'---'}
    */
   const SEPARATOR = "---";
-  const { Cast } = Scratch;
 
   class MidiExtension {
     constructor() {
@@ -1356,12 +1353,30 @@
     }
     getInfo() {
       const EVENT_TYPES_ITEMS = [
-        { value: "noteOn", text: Scratch.translate("Note On") },
-        { value: "noteOff", text: Scratch.translate("Note Off") },
-        { value: "cc", text: Scratch.translate("CC") },
-        { value: "polyTouch", text: Scratch.translate("AfterTouch") },
-        { value: "pitchBend", text: Scratch.translate("Pitch Bend") },
-        { value: "programChange", text: Scratch.translate("Program Change") },
+        {
+          value: "noteOn",
+          text: Scratch.translate("Note On"),
+        },
+        {
+          value: "noteOff",
+          text: Scratch.translate("Note Off"),
+        },
+        {
+          value: "cc",
+          text: Scratch.translate("CC"),
+        },
+        {
+          value: "polyTouch",
+          text: Scratch.translate("AfterTouch"),
+        },
+        {
+          value: "pitchBend",
+          text: Scratch.translate("Pitch Bend"),
+        },
+        {
+          value: "programChange",
+          text: Scratch.translate("Program Change"),
+        },
         {
           value: "channelPressure",
           text: Scratch.translate("Channel Pressure"),
@@ -1457,7 +1472,7 @@
               PRESS: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "NOTE_EVENT_TYPE",
-                defaultValue: ANY_TYPE,
+                defaultValue: "ANY",
               },
             },
           },
@@ -1471,7 +1486,7 @@
               PRESS: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "NOTE_EVENT_TYPE",
-                defaultValue: ANY_TYPE,
+                defaultValue: "ANY",
               },
             },
           },
@@ -1485,7 +1500,7 @@
               TYPE: {
                 menu: "EVENT_TYPES_OPTIONAL",
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: ANY_TYPE,
+                defaultValue: "ANY",
               },
             },
           },
@@ -1783,7 +1798,10 @@
             acceptReporters: true,
             items: [
               ...EVENT_TYPES_ITEMS,
-              { value: ANY_TYPE, text: Scratch.translate("Any") },
+              {
+                value: "ANY",
+                text: Scratch.translate("Any"),
+              },
             ],
           },
           INPUT_DEVICES: {
@@ -1797,26 +1815,44 @@
           DEVICE_TYPES: {
             acceptReporters: false,
             items: [
-              { value: "input", text: Scratch.translate("input") },
-              { value: "output", text: Scratch.translate("output") },
+              {
+                value: "input",
+                text: Scratch.translate("input"),
+              },
+              {
+                value: "output",
+                text: Scratch.translate("output"),
+              },
             ],
           },
           DEVICE_PROP: {
             acceptReporters: true,
             items: [
-              { value: "id", text: Scratch.translate("Device ID") },
+              {
+                value: "id",
+                text: Scratch.translate("Device ID"),
+              },
               {
                 value: "manufacturer",
                 text: Scratch.translate("Manufacturer"),
               },
-              { value: "name", text: Scratch.translate("Device Name") },
-              { value: "state", text: Scratch.translate("State") },
+              {
+                value: "name",
+                text: Scratch.translate("Device Name"),
+              },
+              {
+                value: "state",
+                text: Scratch.translate("State"),
+              },
             ],
           },
           DEVICE_STATES: {
             acceptReporters: false,
             items: [
-              { value: "connected", text: Scratch.translate("connected") },
+              {
+                value: "connected",
+                text: Scratch.translate("connected"),
+              },
               {
                 value: "disconnected",
                 text: Scratch.translate("disconnected"),
@@ -1826,16 +1862,31 @@
           NOTE_EVENT_TYPE: {
             acceptReporters: true,
             items: [
-              { value: ANY_TYPE, text: Scratch.translate("Note On/Off") },
-              { value: "noteOn", text: Scratch.translate("Note On") },
-              { value: "noteOff", text: Scratch.translate("Note Off") },
+              {
+                value: "ANY",
+                text: Scratch.translate("Note On/Off"),
+              },
+              {
+                value: "noteOn",
+                text: Scratch.translate("Note On"),
+              },
+              {
+                value: "noteOff",
+                text: Scratch.translate("Note Off"),
+              },
             ],
           },
           ACCIDENTALS: {
             acceptReporters: true,
             items: [
-              { value: "sharps", text: `♯ ${Scratch.translate("Sharps")}` },
-              { value: "flats", text: `♭ ${Scratch.translate("Flats")}` },
+              {
+                value: "sharps",
+                text: `♯ ${Scratch.translate("Sharps")}`,
+              },
+              {
+                value: "flats",
+                text: `♭ ${Scratch.translate("Flats")}`,
+              },
             ],
           },
           NOTE_NAMES: {
@@ -1849,7 +1900,10 @@
           CHANNELS: {
             acceptReporters: true,
             items: [
-              { value: "0", text: Scratch.translate("any channel") },
+              {
+                value: "0",
+                text: Scratch.translate("any channel"),
+              },
               ..."0"
                 .repeat(15)
                 .split("")
@@ -1869,9 +1923,18 @@
           DEVICE_PROPS: {
             acceptReporters: true,
             items: [
-              { value: "id", text: Scratch.translate("Id") },
-              { value: "name", text: Scratch.translate("Name") },
-              { value: "state", text: Scratch.translate("State") },
+              {
+                value: "id",
+                text: Scratch.translate("Id"),
+              },
+              {
+                value: "name",
+                text: Scratch.translate("Name"),
+              },
+              {
+                value: "state",
+                text: Scratch.translate("State"),
+              },
               {
                 value: "manufacturer",
                 text: Scratch.translate("Manufacturer"),
@@ -1904,20 +1967,23 @@
       }
     }
     async initialize({ sysex = false, FORCE = false } = {}, util) {
-      const force = Cast.toBoolean(FORCE);
+      const force = Scratch.Cast.toBoolean(FORCE);
       await this.midi.initialize({ sysex, force });
     }
     /**
      * Checks if input value is whitespace or '*' or 'any'.
      * @param {unknown} val
-     * @returns {val is typeof ANY_TYPE}
+     * @returns {val is "ANY"}
      */
     _isAnyArg(val) {
-      return val === ANY_TYPE || /^(\*|any|\s*)$/i.test(Cast.toString(val));
+      return (
+        val === "ANY" || /^(\*|any|\s*)$/i.test(Scratch.Cast.toString(val))
+      );
+    }
     }
     numDevices({ DEVICE_TYPE }) {
       this._ensureInitialize();
-      const deviceType = Cast.toString(DEVICE_TYPE).toLowerCase();
+      const deviceType = Scratch.Cast.toString(DEVICE_TYPE).toLowerCase();
       const deviceList =
         deviceType === "output" ? this.midi.outputs : this.midi.inputs;
 
@@ -1928,14 +1994,14 @@
       return this.midi.outputs.length;
     }
     getDeviceInfo({ DEVICE_TYPE, INDEX, DEVICE_PROP }, util) {
-      const deviceType = Cast.toString(DEVICE_TYPE).toLowerCase();
+      const deviceType = Scratch.Cast.toString(DEVICE_TYPE).toLowerCase();
       const deviceList =
         deviceType === "input" ? this.midi.inputs : this.midi.outputs;
-      const index = Cast.toListIndex(INDEX, deviceList.length, false);
+      const index = Scratch.Cast.toListIndex(INDEX, deviceList.length, false);
       const device =
         typeof index === "number" ? deviceList[index - 1] : undefined;
       if (!device) return "";
-      const prop = Cast.toString(DEVICE_PROP);
+      const prop = Scratch.Cast.toString(DEVICE_PROP);
       return device[prop] ?? "";
     }
     inputDevicesMenu() {
@@ -1943,7 +2009,7 @@
         text: d.name || d.id,
         value: d.id,
       }));
-      return [{ text: Scratch.translate("any"), value: ANY_TYPE }].concat(
+      return [{ text: Scratch.translate("any"), value: "ANY" }].concat(
         inputList
       );
     }
@@ -1952,7 +2018,7 @@
         text: d.name || d.id,
         value: d.id,
       }));
-      return [{ text: Scratch.translate("any"), value: ANY_TYPE }].concat(
+      return [{ text: Scratch.translate("any"), value: "ANY" }].concat(
         outputList
       );
     }
@@ -1963,9 +2029,11 @@
       const isAny = this._isAnyArg(PRESS);
       let type = isAny
         ? ["noteOn", "noteOff"]
-        : [normalizeType(Cast.toString(PRESS))];
+        : [normalizeType(Scratch.Cast.toString(PRESS))];
 
-      const pitch = this._isAnyArg(NOTE) ? undefined : Cast.toNumber(NOTE);
+      const pitch = this._isAnyArg(NOTE)
+        ? undefined
+        : Scratch.Cast.toNumber(NOTE);
       const last = this.recorder.getLast();
 
       // filter if only note on or note off
@@ -1984,7 +2052,7 @@
       const isAny = this._isAnyArg(PRESS);
       let type = isAny
         ? ["noteOn", "noteOff"]
-        : [normalizeType(Cast.toString(PRESS))];
+        : [normalizeType(Scratch.Cast.toString(PRESS))];
 
       const last = this.recorder.getLast();
       // filter if only note on or note off
@@ -1997,7 +2065,9 @@
     }
     whenMidiEvent({ TYPE }, util) {
       const isAny = this._isAnyArg(TYPE);
-      const type = isAny ? undefined : normalizeType(Cast.toString(TYPE));
+      const type = isAny
+        ? undefined
+        : normalizeType(Scratch.Cast.toString(TYPE));
       const last = this.recorder.getLast();
       if (last && (isAny || last.type === type)) {
         setThreadMidiValue(util.thread, last);
@@ -2006,8 +2076,8 @@
       return false;
     }
     playNoteForBeats({ NOTE, BEATS }, util) {
-      let text = Cast.toString(NOTE);
-      const beats = Cast.toString(BEATS);
+      let text = Scratch.Cast.toString(NOTE);
+      const beats = Scratch.Cast.toString(BEATS);
 
       // just append to text and let stringToMidi handle
       if (beats) {
@@ -2019,7 +2089,7 @@
       this.midi.sendOutputEvent(event);
     }
     sendOutputEvent({ EVENT, DEVICE }, util) {
-      const text = Cast.toString(EVENT);
+      const text = Scratch.Cast.toString(EVENT);
       const event = stringToMidi(text);
 
       const deviceId = Cast.toString(DEVICE);
@@ -2035,7 +2105,7 @@
       this.midi.panic();
     }
     getEventProp({ EVENT, PROP }, util) {
-      const propName = Cast.toString(PROP);
+      const propName = Scratch.Cast.toString(PROP);
       const { key = "value" } = eventProps[propName] ?? {};
       if (!EVENT) return "";
       const last = getThreadMidiValue(util.thread);
@@ -2050,8 +2120,10 @@
       return last ? midiToString(last) : "";
     }
     isNoteActive({ NOTE, CHANNEL }, util) {
-      const pitch = this._isAnyArg(NOTE) ? undefined : Cast.toNumber(NOTE);
-      const channel = Cast.toNumber(CHANNEL) || undefined;
+      const pitch = this._isAnyArg(NOTE)
+        ? undefined
+        : Scratch.Cast.toNumber(NOTE);
+      const channel = Scratch.Cast.toNumber(CHANNEL) || undefined;
       if (pitch == undefined) {
         const notes = this.recorder.getActiveNotes(channel);
         setThreadActiveNotes(util.thread, { channel, notes });
@@ -2066,57 +2138,59 @@
       return !!note;
     }
     isEventOfType({ TYPE }, util) {
-      const type = this._isAnyArg(TYPE) ? undefined : Cast.toString(TYPE);
+      const type = this._isAnyArg(TYPE)
+        ? undefined
+        : Scratch.Cast.toString(TYPE);
       let last = getThreadMidiValue(util.thread);
       last || (last = this.recorder.getLast());
       return last?.type === type;
     }
     noteForName({ NOTE }) {
       if (typeof NOTE === "number" || /^\d+$/.test(NOTE)) {
-        return Cast.toNumber(NOTE);
+        return Scratch.Cast.toNumber(NOTE);
       }
-      const name = Cast.toString(NOTE);
+      const name = Scratch.Cast.toString(NOTE);
       return noteNameToMidiPitch(name) || 0;
     }
     nameForNote({ NOTE, ACCIDENTAL }, util) {
-      const useFlats = Cast.toString(ACCIDENTAL).toLowerCase() === "flats";
-      let val = Cast.toNumber(NOTE);
+      const useFlats =
+        Scratch.Cast.toString(ACCIDENTAL).toLowerCase() === "flats";
+      let val = Scratch.Cast.toNumber(NOTE);
       if (!val && /^[a-g]/i.test(`${NOTE}`)) {
-        val = noteNameToMidiPitch(Cast.toString(NOTE)) || 0;
+        val = noteNameToMidiPitch(Scratch.Cast.toString(NOTE)) || 0;
       }
       return midiPitchToNoteName(val, { useFlats });
     }
     makeOutputNote({ NOTE, BEATS, VELOCITY, CHANNEL, DEVICE }) {
-      let dur =
+      let beats =
         typeof BEATS === "string" && BEATS.includes("/")
           ? parseFraction(BEATS)
-          : Cast.toNumber(BEATS);
-      // sanity check - don't let a note be more than 1 minute
-      // if anyone ever needs a longer note then they should manually write event string
-      dur = Math.max(0, Math.min(dur, 60));
+          : Scratch.Cast.toNumber(BEATS);
+      /** sanity check - clamp beats as per scratch music extension limits
+       * @see {@link https://github.com/TurboWarp/scratch-vm/blob/develop/src/extensions/scratch3_music/index.js#L706}
+       */
+      beats = Math.max(0, Math.min(beats, 100));
       // convert from percent to midi value
-      let velocity = (Cast.toNumber(VELOCITY) / 100) * 127;
+      let velocity = (Scratch.Cast.toNumber(VELOCITY) / 100) * 127;
       // clamp value
       // NOTE - if 0 velocity then nothing will happen because treated as note off
       velocity = Math.max(0, Math.min(velocity, 127));
-      // REVIEW - should OUTPUT_DEVICES be changed to output device index instead of id?
-      const deviceId = Cast.toString(DEVICE);
-      const device = this.midi.outputs.findIndex((d) => d.id === deviceId);
+      const device = this._getDeviceIndex(DEVICE, "output");
       /** @type {MidiEvent} */
       const event = {
         type: "noteOn",
         pitch: this.noteForName({ NOTE }),
         velocity,
-        channel: Cast.toNumber(CHANNEL) || undefined,
-        device: device === -1 ? undefined : device,
-        dur,
+        channel: Scratch.Cast.toNumber(CHANNEL) || undefined,
+        device,
+        beats,
       };
       return midiToString(event);
     }
     makeOutputEvent({ TYPE, VALUE1, VALUE2, CHANNEL, DEVICE }) {
       /** @type {EventType} */
       // @ts-ignore
-      let type = Cast.toString(TYPE);
+      let type = Scratch.Cast.toString(TYPE);
       // default is CC - is that right?
       // @ts-ignore
       if (this._isAnyArg(type)) type = "cc";
@@ -2131,12 +2205,12 @@
       }
 
       // clamp values
-      let value1 = Cast.toNumber(VALUE1);
+      let value1 = Scratch.Cast.toNumber(VALUE1);
       // pitchbend can be a bigger number
       const maxValue1 = spec?.highResParam ? 16384 : 127;
       value1 = Math.max(0, Math.min(value1, maxValue1));
 
-      let value2 = Cast.toNumber(VALUE2);
+      let value2 = Scratch.Cast.toNumber(VALUE2);
       value2 = Math.max(0, Math.min(value2, 127));
 
       // REVIEW - should OUTPUT_DEVICES be changed to output device index instead of id?
@@ -2148,8 +2222,8 @@
         type,
         value1,
         value2,
-        channel: Cast.toNumber(CHANNEL) || undefined,
         device: device === -1 ? undefined : device,
+        channel: Scratch.Cast.toNumber(CHANNEL) || undefined,
         ...(spec?.param1 && { [spec.param1]: value1 }),
         ...(spec?.param2 && { [spec.param2]: value2 }),
         ...(spec?.highResParam && parseHighResValue(value1, value2)),
@@ -2157,9 +2231,9 @@
       return midiToString(event);
     }
     normalizeMidiVal({ VALUE, MIN, MAX }) {
-      const min = Cast.toNumber(MIN);
-      const max = Cast.toNumber(MAX);
-      const val = Cast.toNumber(VALUE) / 127;
+      const min = Scratch.Cast.toNumber(MIN);
+      const max = Scratch.Cast.toNumber(MAX);
+      const val = Scratch.Cast.toNumber(VALUE) / 127;
       return val * (max - min) + min;
     }
     getMidiStartTime() {
@@ -2172,12 +2246,12 @@
       this.recorder.clear();
     }
     setMidiEventList({ LIST, TIME }, util) {
-      const duration = Cast.toNumber(TIME) || 5;
+      const duration = Scratch.Cast.toNumber(TIME) || 5;
       const start = this.recorder._now() - duration;
       const events = this.recorder.getRange(start);
       if (LIST) {
         this._upsertList(
-          Cast.toString(LIST),
+          Scratch.Cast.toString(LIST),
           events.map((evt) => evt._str),
           util.target
         );
@@ -2194,7 +2268,7 @@
         active = { notes: this.recorder.getActiveNotes() };
         setThreadActiveNotes(util.thread, active);
       }
-      let index = Cast.toListIndex(INDEX, active.length, true);
+      let index = Scratch.Cast.toListIndex(INDEX, active.length, true);
       if (!active.notes || index === "INVALID") {
         return "";
       }
@@ -2213,7 +2287,7 @@
       setThreadActiveNotes(util.thread, { notes });
       if (LIST) {
         this._upsertList(
-          Cast.toString(LIST),
+          Scratch.Cast.toString(LIST),
           notes.map((note) => note._str),
           util.target
         );
@@ -2237,7 +2311,7 @@
       return active.notes.length;
     }
     eventToJSON({ EVENT }, util) {
-      const raw = Cast.toString(EVENT);
+      const raw = Scratch.Cast.toString(EVENT);
       // NOTE will be null if could not parse
       const event = stringToMidi(raw);
 
@@ -2250,7 +2324,7 @@
       return JSON.stringify(event);
     }
     jsonToEvent({ TEXT }, util) {
-      const raw = Cast.toString(TEXT);
+      const raw = Scratch.Cast.toString(TEXT);
       let event = null;
       try {
         event = {
