@@ -2,8 +2,9 @@
 // ID: SPscripts
 // Description: Control Scripts
 // By: SharkPool
+// License: MIT
 
-// Version V.1.5.0
+// Version V.1.5.01
 
 (function (Scratch) {
   "use strict";
@@ -402,31 +403,41 @@
     }
   }
 
-  function addLinearGradientToBody() {
-    var grad1 = document.createElement("div");
-    grad1.innerHTML = `<svg><defs>
-      <linearGradient x1="200" y1="0" x2="240" y2="100" gradientUnits="userSpaceOnUse" id="SPscripts-GRAD1">
-      <stop offset="0" stop-color="#1e8370"/><stop offset="0.5" stop-color="#3a6062"/></linearGradient>
+  function add2Body() {
+    var grad = document.createElement("div");
+    grad.innerHTML = `
+      <svg><defs>
+        <linearGradient x1="200" y1="0" x2="240" y2="100" gradientUnits="userSpaceOnUse" id="SPscripts-GRAD1">
+        <stop offset="0" stop-color="#1e8370"/><stop offset="0.5" stop-color="#3a6062"/></linearGradient>
       </defs></svg>`;
-    document.body.append(grad1);
+    document.body.append(grad);
   }
-  if (Scratch.gui) Scratch.gui.getBlockly().then((ScratchBlocks) => {
-    addLinearGradientToBody();
-    if (!ScratchBlocks?.SPgradients?.patched) { // Gradient Patch by 0znzw & SharkPool
-      ScratchBlocks.SPgradients = {gradientUrls: {}, patched: false};
-      const BSP = ScratchBlocks.BlockSvg.prototype, BSPR = BSP.render;
+  if (Scratch.gui) Scratch.gui.getBlockly().then((SB) => {
+    add2Body();
+    if (!SB?.SPgradients?.patched) {
+      // Gradient Patch by 0znzw & SharkPool
+      SB.SPgradients = { gradientUrls: {}, patched: false };
+      const BSP = SB.BlockSvg.prototype, BSPR = BSP.render;
       BSP.render = function(...args) {
+        const blockTheme = ReduxStore.getState().scratchGui.theme.theme.blocks;
         const res = BSPR.apply(this, args);
         let category;
-        if (this?.svgPath_ && this?.category_ && (category = this.type.slice(0, this.type.indexOf("_"))) && ScratchBlocks.SPgradients.gradientUrls[category]) {
-          const urls = ScratchBlocks.SPgradients.gradientUrls[category];
-          if (urls) this.svgPath_.setAttribute("fill", urls[0]);
+        if (this?.svgPath_ && this?.category_ && (category = this.type.slice(0, this.type.indexOf("_"))) && SB.SPgradients.gradientUrls[category]) {
+          const urls = SB.SPgradients.gradientUrls[category];
+          if (urls) {
+            this.svgPath_.setAttribute("fill", urls[0]);
+            if (blockTheme === "dark") {
+              this.svgPath_.setAttribute("fill-opacity", ".5");
+              this.svgPath_.setAttribute("stroke", "#31d6b7");
+            }
+          }
         }
         return res;
       }
-      ScratchBlocks.SPgradients.patched = true;
+      SB.SPgradients.patched = true;
     }
     ScratchBlocks.SPgradients.gradientUrls["SPscripts"] = ["url(#SPscripts-GRAD1)"];
   });
+
   Scratch.extensions.register(new SPscripts());
 })(Scratch);
