@@ -4,7 +4,7 @@
 // By: DogeisCut <https://scratch.mit.edu/users/DogeisCut/>
 // License: MPL-2.0
 
-// Version 1.2.1
+// Version 1.2.2
 
 //TODO: Song validation blocks.
 //TODO: Wait for samples loaded blocks
@@ -496,6 +496,10 @@
         Math.min(Scratch.Cast.toNumber(args.SYNTH) - 1, synths.length - 1)
       );
       const currentSynth = synths[synthIndex];
+
+      if (currentSynth == null) {
+        return false;
+      }
 
       switch (args.WHAT) {
         case "song":
