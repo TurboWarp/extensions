@@ -159,7 +159,6 @@
           if (skin instanceof VideoSkin) {
             let projectVolume = runtime.audioEngine.inputNode.gain.value;
             skin.videoElement.volume = skin.videoVolume * projectVolume;
-            console.log(skin.videoElement.volume);
           }
         }
       };
