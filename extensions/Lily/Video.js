@@ -162,7 +162,7 @@
             console.log(skin.videoElement.volume);
           }
         }
-      }
+      };
 
       runtime.on("RUNTIME_PAUSED", () => {
         for (const skin of renderer._allSkins) {
