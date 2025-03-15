@@ -2,6 +2,7 @@
 // ID: samtts
 // Description: Use the classic SAM text-to-speech voice via SamJs.
 // By: MagentaDude <https://scratch.mit.edu/users/MagentaDude1359/>
+// By: lselden
 // License: MIT
 
 (function (Scratch) {
@@ -354,7 +355,7 @@
           {
             opcode: "addSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("add [SPEECH] as sound named [NAME]"),
+            text: Scratch.translate("add speech [SPEECH] as sound [NAME]"),
             arguments: {
               SPEECH: {
                 type: Scratch.ArgumentType.STRING,
@@ -362,7 +363,7 @@
               },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "sound1",
+                defaultValue: "speech",
               },
             },
           },
@@ -395,7 +396,7 @@
           {
             opcode: "getPhoneme",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[PHONEME]"),
+            text: Scratch.translate("phoneme [PHONEME]"),
             arguments: {
               PHONEME: {
                 type: Scratch.ArgumentType.STRING,
@@ -446,6 +447,7 @@
     }
     speak(args, util) {
       this.checkProps(util);
+
       new SamJs(util.target.extensionStorage.samtts).speak(args.SPEECH);
     }
     loadPreset(args, util) {
@@ -513,7 +515,6 @@
       return util.target.extensionStorage.samtts[args.PROP] / 2.55; // 0-255 -> 0-100
     }
     getPhoneme(args, util) {
-      // value is the correct string
       return args.PHONEME;
     }
   }
