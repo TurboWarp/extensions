@@ -322,4 +322,4 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@SharkPool-SP](https://github.com/SharkPool-SP/)
 
 ## DogeisCut/FormatNumbers.png
- - Created by @Dillon
+ - Created by [@Dillon](https://github.com/DillonRGaming)
