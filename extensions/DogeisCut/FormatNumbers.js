@@ -16,6 +16,13 @@
 
   const Cast = Scratch.Cast;
 
+  const Formats = {
+    AD_STANDARD: "AD standard",
+    FIXED_DECIMAL: "fixed decimal",
+    COMMA_SEPERATED: "comma separated",
+    SCIENTIFIC_NOTATION: "scientific notation",
+  };
+
   class FormatNumbers {
     constructor() {
       this.notation = "AD standard";
@@ -148,14 +155,14 @@
     formatNumber(args) {
       const decimals = Math.max(0, Math.min(100, Cast.toNumber(args.DECIMALS)));
       switch (args.NOTATION) {
-        case "AD standard":
+        case Formats.AD_STANDARD:
           return this.convertToADStandard(Cast.toNumber(args.NUM), decimals);
-        case "comma separated":
+        case Formats.COMMA_SEPERATED:
           return this.convertToCommaSeparated(
             Cast.toNumber(args.NUM),
             decimals
           );
-        case "scientific notation":
+        case Formats.SCIENTIFIC_NOTATION:
           return this.convertToScientificNotation(
             Cast.toNumber(args.NUM),
             decimals
@@ -199,10 +206,22 @@
           notationOptions: {
             acceptReporters: false,
             items: [
-              "AD standard",
-              "fixed decimal",
-              "comma separated",
-              "scientific notation",
+              {
+                text: Scratch.translate("AD standard"),
+                value: Formats.AD_STANDARD,
+              },
+              {
+                text: Scratch.translate("fixed decimal"),
+                value: Formats.FIXED_DECIMAL,
+              },
+              {
+                text: Scratch.translate("comma separated"),
+                value: Formats.COMMA_SEPERATED,
+              },
+              {
+                text: Scratch.translate("scientific notation"),
+                value: Formats.SCIENTIFIC_NOTATION,
+              },
             ],
           },
         },
