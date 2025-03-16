@@ -176,7 +176,8 @@
         blocks: [
           {
             opcode: "formatNumber",
-            text: Scratch.translate("format number [NUM] to notation [NOTATION] with [DECIMALS] decimal places"
+            text: Scratch.translate(
+              "format number [NUM] to notation [NOTATION] with [DECIMALS] decimal places"
             ),
             blockType: Scratch.BlockType.REPORTER,
             arguments: {
