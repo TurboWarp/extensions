@@ -1093,7 +1093,7 @@
     }
     isMouseHit(args) {
       const time = this.timeMouseDown(args);
-      return time !== 0 && time <= 0.075;
+      return time !== 0 && time <= 0.028;
     }
 
     timeMouseDown(args) {
@@ -1137,11 +1137,11 @@
 
     isKeysHit(args) {
       const time = this.timeKeysPressed(args);
-      return time !== 0 && time <= 0.075;
+      return time !== 0 && time <= 0.028;
     }
     isKeyHit(args) {
       const time = this.timeKeyPressed(args);
-      return time !== 0 && time <= 0.075;
+      return time !== 0 && time <= 0.028;
     }
 
     lastKeyPressed() {
@@ -1202,7 +1202,7 @@
     }
     whenKeybindTriggered(args) {
       const time = this.timeKeybindTriggered(args);
-      return time !== 0 && time <= 0.075;
+      return time !== 0 && time <= 0.028;
     }
 
     timeKeybindTriggered(args) {
