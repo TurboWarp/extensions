@@ -51,6 +51,7 @@
     getInfo() {
       return {
         id: "mbwxml",
+        // eslint-disable-next-line extension/should-translate
         name: "XML",
         color1: "#6c2b5f",
         blocks: [

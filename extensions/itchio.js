@@ -71,6 +71,7 @@
     getInfo() {
       return {
         id: "itch",
+        // eslint-disable-next-line extension/should-translate
         name: "itch.io",
         menuIconURI: icon,
         blockIconURI: icon,

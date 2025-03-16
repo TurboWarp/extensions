@@ -16,6 +16,7 @@
     getInfo() {
       return {
         id: "lmsmcutils",
+        // eslint-disable-next-line extension/should-translate
         name: "McUtils",
         color1: "#ec2020",
         color3: "#ffe427",
@@ -86,6 +87,7 @@
           {
             opcode: "grimaceBlock",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "🎂",
             extensions: ["colours_looks"],
             hideFromPalette: new Date().getMonth() !== 5,
