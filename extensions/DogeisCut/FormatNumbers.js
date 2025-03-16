@@ -146,24 +146,22 @@
     }
 
     formatNumber(args) {
+      const decimals = Math.max(0, Math.min(100, Cast.toNumber(args.DECIMALS)));
       switch (args.NOTATION) {
         case "AD standard":
-          return this.convertToADStandard(
-            Cast.toNumber(args.NUM),
-            Cast.toNumber(args.DECIMALS)
-          );
+          return this.convertToADStandard(Cast.toNumber(args.NUM), decimals);
         case "comma separated":
           return this.convertToCommaSeparated(
             Cast.toNumber(args.NUM),
-            Cast.toNumber(args.DECIMALS)
+            decimals
           );
         case "scientific notation":
           return this.convertToScientificNotation(
             Cast.toNumber(args.NUM),
-            Cast.toNumber(args.DECIMALS)
+            decimals
           );
         default:
-          return Cast.toNumber(args.NUM).toFixed(Cast.toNumber(args.DECIMALS));
+          return Cast.toNumber(args.NUM).toFixed(decimals);
       }
     }
 
