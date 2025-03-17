@@ -2,6 +2,7 @@
 // ID: ShovelUtils
 // Description: A bunch of miscellaneous blocks.
 // By: TheShovel
+// By: Mio <https://scratch.mit.edu/users/0znzw/>
 // License: MIT
 
 (function (Scratch) {
@@ -30,7 +31,7 @@
     getInfo() {
       return {
         id: "ShovelUtils",
-        name: "ShovelUtils",
+        name: Scratch.translate("ShovelUtils"),
         color1: "#f54242",
         color2: "#f54242",
         color3: "#f54242",

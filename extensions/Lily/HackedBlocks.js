@@ -4,6 +4,7 @@
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // By: pumpkinhasapatch
 // License: MIT AND LGPL-3.0
+// Scratch-compatible: true
 
 (function (Scratch) {
   "use strict";

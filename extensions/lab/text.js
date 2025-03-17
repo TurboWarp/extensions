@@ -836,7 +836,7 @@
           {
             opcode: "setOutlineWidth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set outline width to [WIDTH]",
+            text: Scratch.translate("set outline width to [WIDTH]"),
             hideFromPalette: compatibilityMode,
             arguments: {
               WIDTH: {
@@ -849,7 +849,7 @@
           {
             opcode: "setOutlineColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set outline color to [COLOR]",
+            text: Scratch.translate("set outline color to [COLOR]"),
             hideFromPalette: compatibilityMode,
             arguments: {
               COLOR: {
@@ -1021,7 +1021,7 @@
           {
             opcode: "setShakeIntensity",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set shake intensity to [NUM]%",
+            text: Scratch.translate("set shake intensity to [NUM]%"),
             hideFromPalette: compatibilityMode,
             arguments: {
               NUM: {

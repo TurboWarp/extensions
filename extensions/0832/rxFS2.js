@@ -29,6 +29,7 @@
     getInfo() {
       return {
         id: "0832rxfs2",
+        // eslint-disable-next-line extension/should-translate
         name: "rxFS",
         color1: "#192d50",
         color2: "#192d50",
@@ -180,6 +181,7 @@
           {
             blockIconURI: folder,
             opcode: "search",
+            hideFromPalette: true,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({ id: "search", default: "search [STR]" }),
             arguments: {
@@ -225,8 +227,11 @@
 
     del({ STR }) {
       str = encodeURIComponent(STR);
-      rxFSfi[rxFSsy.indexOf(str) + 1 - 1] = undefined;
-      rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = undefined;
+      const index = rxFSsy.indexOf(str);
+      if (index !== -1) {
+        rxFSfi.splice(index, 1);
+        rxFSsy.splice(index, 1);
+      }
     }
 
     folder({ STR, STR2 }) {

@@ -437,7 +437,7 @@
         contentType === "image/jpeg" ||
         contentType === "image/bmp"
       ) {
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line extension/check-can-fetch
         const output = new Image();
         output.src = URL;
         output.crossOrigin = "anonymous";

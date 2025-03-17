@@ -457,6 +457,9 @@ class JSONMetadataFile extends BuildFile {
       if (samples) {
         extension.samples = samples.map((i) => i.getTitle());
       }
+      if (metadata.scratchCompatible) {
+        extension.scratchCompatible = true;
+      }
 
       extensions.push(extension);
     }
@@ -470,9 +473,9 @@ class JSONMetadataFile extends BuildFile {
 
 class ImageFile extends BuildFile {
   validate() {
-    const sizeOfImage = require("image-size");
+    const { imageSize } = require("image-size");
     const contents = this.read();
-    const { width, height } = sizeOfImage(contents);
+    const { width, height } = imageSize(contents);
     const aspectRatio = width / height;
     if (aspectRatio !== 2) {
       throw new Error(
