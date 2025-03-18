@@ -63,10 +63,10 @@
             type: "noteOn",
             channel: trackIndex + 1,
             pitch: note.name,
-            time: note.time,
-            dur: note.duration,
+            time: roundToMillisecond(note.time),
+            dur: roundToMillisecond(note.duration),
             // REVIEW should scale be MIDI (0-127), (0-1) or (0-100)?
-            velocity: note.velocity * 127,
+            velocity: Math.round(note.velocity * 127)
           };
         });
       });
@@ -76,6 +76,10 @@
     } catch (error) {
       return "Error parsing MIDI file: " + error.message;
     }
+  }
+
+  function roundToMillisecond(value) {
+    return Math.round(value * 1000) / 1000;
   }
 
   //#endregion
