@@ -31,13 +31,7 @@
     return module.exports.Midi;
   })();
 
-  function parseMidiDataUrl(args) {
-    // this.errorMessage = "";
-    if (!Midi) {
-      return "MIDI library failed to load";
-    }
-
-    const dataUrl = args.DATA_URL.trim();
+  function parseMidiDataUrl(dataUrl) {
     if (!dataUrl) {
       return "MIDI Data URL is empty";
     }
@@ -62,22 +56,23 @@
       const midi = new Midi(buffer);
 
       // Store note information
-      const notesData = [];
-      midi.tracks.forEach((track, trackIndex) => {
-        track.notes.forEach((note) => {
-          notesData.push({
-            track: trackIndex,
-            midiNumber: note.midi,
-            noteName: note.name,
-            startTime: note.time,
-            duration: note.duration,
-            velocity: note.velocity,
-          });
+      /** @type {MidiEvent[]} */
+      const notesData = midi.tracks.flatMap((track, trackIndex) => {
+        return track.notes.map((note) => {
+          return {
+            type: "noteOn",
+            channel: trackIndex + 1,
+            pitch: note.name,
+            time: note.time,
+            dur: note.duration,
+            // REVIEW should scale be MIDI (0-127), (0-1) or (0-100)?
+            velocity: note.velocity * 127,
+          };
         });
       });
 
-      notesData.sort((a, b) => a.startTime - b.startTime);
-      return JSON.stringify(notesData, null, 2);
+      notesData.sort((a, b) => a.time - b.time);
+      return notesData;
     } catch (error) {
       return "Error parsing MIDI file: " + error.message;
     }
@@ -2433,8 +2428,11 @@
       return event ? midiToString(event) : "";
     }
     /** MIDI FILE FUNCTIONS **/
-    parseMidiDataUrl(args) {
-      return parseMidiDataUrl(args);
+    parseMidiDataUrl({ DATA_URL }, util) {
+      const dataUrl = Scratch.Cast.toString(DATA_URL).trim();
+      if (!dataUrl) return "";
+      const notesData = parseMidiDataUrl(dataUrl);
+      return JSON.stringify(notesData, null, 2);
     }
   }
 
