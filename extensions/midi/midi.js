@@ -118,6 +118,7 @@
    * @property {number} [startTimestamp] for future use
    * @property {boolean} [fixedWidth] include padding to make values line up
    * @property {boolean} [useHex] use hex for number values instead of base 10
+   * @property {boolean} [useFractions] output as fractions if possible
    * @property {number} [defaultOctave] default octave if not otherwise specfied. default 4
    *
    */
@@ -138,7 +139,7 @@
     midi,
     { useFlats = false, fixedWidth = false } = {}
   ) {
-    if (!isFinite(midi)) return "";
+    if (!isFinite(midi)) return Scratch.Cast.toString(midi) || "";
     let chroma = (useFlats ? FLATS : SHARPS)[midi % 12];
     if (fixedWidth) chroma = chroma.padEnd(2, "_");
     const octave = Math.floor(midi / 12) - 1;
@@ -615,14 +616,18 @@
     return ` ${PREFIX_WHEN}${formatTimespan(val)}`;
   }
 
-  // TODO FUTURE add in opts flag to use fractions or not
-  function formatPosition(value, _opts) {
-    return `${PREFIX_POS}${formatFraction(value)}`;
+  function formatPosition(value, opts) {
+    return ` ${PREFIX_POS}${formatSeconds(value, opts)}`;
   }
 
-  // TODO FUTURE add in opts flag to use fractions or not
-  function formatDuration(value, _opts) {
-    return `${PREFIX_DURATION}${formatFraction(value)}`;
+  function formatDuration(value, opts) {
+    return ` ${PREFIX_DURATION}${formatSeconds(value, opts)}`;
+  }
+
+  function formatSeconds(value, opts) {
+    // truncate to 1 millisecond accuracy
+    value = Math.round(value * 1000) / 1000;
+    return opts?.useFractions ? formatFraction(value) : `${value}`;
   }
 
   function formatTimespan(seconds, hoursOptional = true) {
@@ -2417,18 +2422,26 @@
       const raw = Scratch.Cast.toString(TEXT);
       let event = null;
       try {
-        event = {
-          ...JSON.parse(raw),
-        };
-        // rename aliases just in case
-        [
-          ["beats", "dur"],
-          ["offset", "pos"],
-          ["@", "time"],
-        ]
-          .filter(([alias, key]) => alias in event && event[key] == undefined)
-          .forEach(([alias, key]) => (event[key] = event[alias]));
+        event = JSON.parse(raw);
       } catch (error) {}
+
+      if (Array.isArray(event)) {
+        return event.map((e) => midiToString(e)).join("\n");
+      }
+      if (event === null) {
+        return "";
+      }
+      if (typeof event !== "object") {
+        return midiToString(stringToMidi(event));
+      }
+      // rename aliases just in case
+      [
+        ["beats", "dur"],
+        ["offset", "pos"],
+        ["@", "time"],
+      ]
+        .filter(([alias, key]) => alias in event && event[key] == undefined)
+        .forEach(([alias, key]) => (event[key] = event[alias]));
       return event ? midiToString(event) : "";
     }
     /** MIDI FILE FUNCTIONS **/
