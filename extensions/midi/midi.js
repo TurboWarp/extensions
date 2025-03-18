@@ -1377,88 +1377,40 @@
    */
   const SEPARATOR = "---";
 
-  class MidiExtension {
-    constructor() {
-      this.midi = new MidiBackend();
-      this.recorder = new MidiRecorder();
-      /**
-       * Lazy initialize midi - only upon first executing, and used in other calls to make sure it gets triggered
-       */
-      this._ensureInitialize = (evt) => {
-        if (this.midi.status === "pending" /* Initial */) {
-          this.initialize().catch(() => {});
-        }
-      };
-      this._addListeners();
-      // globalThis.midiExt = this;
-      const vm = Scratch.vm;
-      vm.runtime.once("BEFORE_EXECUTE", this._ensureInitialize);
-    }
-    /**
-     * This helper actually glues together the extension with the MidiBackend / recorder. In particular it triggers HATS when incoming midi events occur
-     */
-    _addListeners() {
-      const vm = globalThis.Scratch.vm;
-      this.midi.on("device:status", (domEvent) => {
-        const changeEvent = domEvent.detail;
-        vm.runtime.startHats(HATS.DEVICE, {
-          DEVICE_TYPE: changeEvent.type,
-          STATE: changeEvent.state,
-        });
-      });
-      this.midi.on("midi", (domEvent) => {
-        const midiEvent = domEvent.detail;
-        this.recorder.add(midiEvent);
-        const threads = vm.runtime.startHats(HATS.MIDI);
-        // set the thread local variable to the passed in midi event for use with the "input event" reporter
-        for (let thread of threads) {
-          setThreadMidiValue(thread, midiEvent);
-        }
-        switch (midiEvent.type) {
-          case "noteOn":
-          case "noteOff":
-            vm.runtime.startHats(HATS.NOTE);
-            vm.runtime.startHats(HATS.NOTEANY);
-            break;
-          // FUTURE - support a "whenCC" block if needed
-          // case "cc":
-          //   vm.runtime.startHats(HATS.CC);
-          //   break;
-        }
-      });
-    }
-    getInfo() {
-      const EVENT_TYPES_ITEMS = [
-        {
-          value: "noteOn",
-          text: Scratch.translate("Note On"),
-        },
-        {
-          value: "noteOff",
-          text: Scratch.translate("Note Off"),
-        },
-        {
-          value: "cc",
-          text: Scratch.translate("CC"),
-        },
-        {
-          value: "polyTouch",
-          text: Scratch.translate("AfterTouch"),
-        },
-        {
-          value: "pitchBend",
-          text: Scratch.translate("Pitch Bend"),
-        },
-        {
-          value: "programChange",
-          text: Scratch.translate("Program Change"),
-        },
-        {
-          value: "channelPressure",
-          text: Scratch.translate("Channel Pressure"),
-        },
-      ];
+  /** Menu list. Reused in two menus, so defined here rather than below */
+  const EVENT_TYPES_ITEMS = [
+    {
+      value: "noteOn",
+      text: Scratch.translate("Note On"),
+    },
+    {
+      value: "noteOff",
+      text: Scratch.translate("Note Off"),
+    },
+    {
+      value: "cc",
+      text: Scratch.translate("CC"),
+    },
+    {
+      value: "polyTouch",
+      text: Scratch.translate("AfterTouch"),
+    },
+    {
+      value: "pitchBend",
+      text: Scratch.translate("Pitch Bend"),
+    },
+    {
+      value: "programChange",
+      text: Scratch.translate("Program Change"),
+    },
+    {
+      value: "channelPressure",
+      text: Scratch.translate("Channel Pressure"),
+    },
+  ];
 
+  class MidiExtension {
+    getInfo() {
       return {
         id: EXT_ID,
         name: Scratch.translate("Midi"),
@@ -1466,22 +1418,10 @@
           "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjEuNzc1IDcuNTE3SDI0djguOTY2aC0yLjIyNXptLTguNTYyIDBoNi41MDZjLjY2IDAgMS4wNDUuNTcgMS4wNDUgMS4yNDd2Ni42MDdjMCAuODQtLjM1IDEuMTEyLTEuMTEyIDEuMTEyaC02LjQzOXYtNS42OTZoMi4yMjV2My41MDVoMy4xMzVWOS41NGgtNS4zNnptLTMuMjM1IDBoMi4xOXY4Ljk2NmgtMi4xOXpNMCA3LjUxN2g3Ljg1NGMuNjYgMCAxLjA0NS41NyAxLjA0NSAxLjI0N3Y3LjcySDYuNzA4VjkuNzc0SDUuNDI3djYuNzA4SDMuNDM4VjkuNzc1SDIuMTkxdjYuNzA4SDBaIiBmaWxsPSIjMDAwIj48L3BhdGg+PC9zdmc+",
         blockIconURI:
           "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMjEuNzc1IDcuNTE3SDI0djguOTY2aC0yLjIyNXptLTguNTYyIDBoNi41MDZjLjY2IDAgMS4wNDUuNTcgMS4wNDUgMS4yNDd2Ni42MDdjMCAuODQtLjM1IDEuMTEyLTEuMTEyIDEuMTEyaC02LjQzOXYtNS42OTZoMi4yMjV2My41MDVoMy4xMzVWOS41NGgtNS4zNnptLTMuMjM1IDBoMi4xOXY4Ljk2NmgtMi4xOXpNMCA3LjUxN2g3Ljg1NGMuNjYgMCAxLjA0NS41NyAxLjA0NSAxLjI0N3Y3LjcySDYuNzA4VjkuNzc0SDUuNDI3djYuNzA4SDMuNDM4VjkuNzc1SDIuMTkxdjYuNzA4SDBaIiBmaWxsPSIjRkZGIj48L3BhdGg+PC9zdmc+",
-          color1: "#4C97FF",
-          color2: "#337BCC",
-          color3: "#2C6CA3",  
+        color1: "#4C97FF",
+        color2: "#337BCC",
+        color3: "#2C6CA3",
         blocks: [
-          // FUTURE - could force requesting permissions and checking midi device status. Usually refreshing is safer option
-          // {
-          //   opcode: "initialize",
-          //   text: Scratch.translate("Initialize force? [FORCE]"),
-          //   blockType: Scratch.BlockType.COMMAND,
-          //   arguments: {
-          //     FORCE: {
-          //       type: Scratch.ArgumentType.NUMBER,
-          //       defaultValue: 1
-          //     }
-          //   }
-          // },
           {
             opcode: "whenDeviceEvent",
             text: Scratch.translate("when [DEVICE_TYPE] device [STATE]"),
@@ -2038,6 +1978,55 @@
           },
         },
       };
+    }
+    constructor() {
+      this.midi = new MidiBackend();
+      this.recorder = new MidiRecorder();
+      /**
+       * Lazy initialize midi - only upon first executing, and used in other calls to make sure it gets triggered
+       */
+      this._ensureInitialize = (evt) => {
+        if (this.midi.status === "pending" /* Initial */) {
+          this.initialize().catch(() => {});
+        }
+      };
+      this._addListeners();
+      // globalThis.midiExt = this;
+      const vm = Scratch.vm;
+      vm.runtime.once("BEFORE_EXECUTE", this._ensureInitialize);
+    }
+    /**
+     * This helper actually glues together the extension with the MidiBackend / recorder. In particular it triggers HATS when incoming midi events occur
+     */
+    _addListeners() {
+      const vm = globalThis.Scratch.vm;
+      this.midi.on("device:status", (domEvent) => {
+        const changeEvent = domEvent.detail;
+        vm.runtime.startHats(HATS.DEVICE, {
+          DEVICE_TYPE: changeEvent.type,
+          STATE: changeEvent.state,
+        });
+      });
+      this.midi.on("midi", (domEvent) => {
+        const midiEvent = domEvent.detail;
+        this.recorder.add(midiEvent);
+        const threads = vm.runtime.startHats(HATS.MIDI);
+        // set the thread local variable to the passed in midi event for use with the "input event" reporter
+        for (let thread of threads) {
+          setThreadMidiValue(thread, midiEvent);
+        }
+        switch (midiEvent.type) {
+          case "noteOn":
+          case "noteOff":
+            vm.runtime.startHats(HATS.NOTE);
+            vm.runtime.startHats(HATS.NOTEANY);
+            break;
+          // FUTURE - support a "whenCC" block if needed
+          // case "cc":
+          //   vm.runtime.startHats(HATS.CC);
+          //   break;
+        }
+      });
     }
     // taken from /Lily/ListTools.js
     _getLists() {
