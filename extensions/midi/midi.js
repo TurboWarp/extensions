@@ -66,7 +66,7 @@
             time: roundToMillisecond(note.time),
             dur: roundToMillisecond(note.duration),
             // REVIEW should scale be MIDI (0-127), (0-1) or (0-100)?
-            velocity: Math.round(note.velocity * 127)
+            velocity: Math.round(note.velocity * 127),
           };
         });
       });
@@ -1712,7 +1712,7 @@
           {
             opcode: "parseMidiDataUrl",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Parse MIDI Data URL [DATA_URL]",
+            text: Scratch.translate("Parse MIDI Data URL [DATA_URL]"),
             arguments: {
               DATA_URL: {
                 type: Scratch.ArgumentType.STRING,
