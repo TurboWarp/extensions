@@ -1,5 +1,5 @@
 // Name: Format Numbers
-// ID: formatNumbers
+// ID: dogeiscutformatnumbers
 // Description: Format large numbers into AD standard, fixed decimal, comma separated, or scientific notation.
 // By: DogeisCut <https://scratch.mit.edu/users/dogeiscut/>
 // License: MIT
@@ -192,7 +192,7 @@
 
     getInfo() {
       return {
-        id: "formatNumbers",
+        id: "dogeiscutformatnumbers",
         name: Scratch.translate("Format Numbers"),
         color1: "#419873",
         color2: "#4CA981",
