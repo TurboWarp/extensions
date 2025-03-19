@@ -56,17 +56,7 @@
         "No",
         "Dc",
       ];
-      const unitPrefixes = [
-        "U",
-        "D",
-        "T",
-        "Qa",
-        "Qt",
-        "Sx",
-        "Sp",
-        "O",
-        "N"
-      ];
+      const unitPrefixes = ["U", "D", "T", "Qa", "Qt", "Sx", "Sp", "O", "N"];
       const tensPrefixes = [
         "Dc",
         "Vg",
@@ -89,15 +79,7 @@
         "Oe",
         "Ne",
       ];
-      const tier2Illions = [
-        "MI",
-        "MC",
-        "NA",
-        "PC",
-        "FM",
-        "AT",
-        "ZP"
-      ];
+      const tier2Illions = ["MI", "MC", "NA", "PC", "FM", "AT", "ZP"];
       const tier2Cutoff = 3003 * tier2Illions.length;
       if (Math.log10(Math.abs(number)) > tier2Cutoff) {
         return `Il(${number})`;
