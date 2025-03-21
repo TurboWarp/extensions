@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.8.0
+// Version V.1.8.01
 
 (function (Scratch) {
   "use strict";
@@ -266,8 +266,8 @@
           },
         ],
         menus: {
-          TARGETS: { acceptReporters: true, items: this._getTargets(false) },
-          TARGETS2: { acceptReporters: true, items: this._getTargets(true) },
+          TARGETS: { acceptReporters: true, items: this._getTargets(true) },
+          TARGETS2: { acceptReporters: true, items: this._getTargets(false) },
         },
       };
     }
@@ -283,9 +283,9 @@
           value: "_stage_",
         });
       const targets = runtime.targets;
-      for (let i = 1; i < targets.length; i++) {
+      for (let i = 0; i < targets.length; i++) {
         const target = targets[i];
-        if (target.isOriginal) spriteNames.push(target.getName());
+        if (target.isOriginal && !target.isStage) spriteNames.push(target.getName());
       }
       return spriteNames.length > 0 ? spriteNames : [""];
     }
