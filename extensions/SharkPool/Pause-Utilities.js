@@ -285,7 +285,8 @@
       const targets = runtime.targets;
       for (let i = 0; i < targets.length; i++) {
         const target = targets[i];
-        if (target.isOriginal && !target.isStage) spriteNames.push(target.getName());
+        if (target.isOriginal && !target.isStage)
+          spriteNames.push(target.getName());
       }
       return spriteNames.length > 0 ? spriteNames : [""];
     }
