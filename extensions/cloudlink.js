@@ -1,4 +1,4 @@
-// Name: Cloudlink
+// Name: CloudLink V4
 // ID: cloudlink
 // Description: A powerful WebSocket extension for Scratch.
 // By: MikeDEV
@@ -235,7 +235,16 @@
     handshakeAttempted: false,
 
     // Storage for the publically available CloudLink instances.
-    serverList: {},
+    serverList: {
+      "0": {
+        id: "Localhost",
+        url: "ws://127.0.0.1:3000/"
+      },
+      "7": {
+        id: "MikeDEV's Spare CL 0.2.0 Server",
+        url: "wss://cl.mikedev101.cc/"
+      }
+    }
   }
 
   function generateVersionString() {
@@ -791,32 +800,12 @@
     }
   }
 
-  // GET the serverList
-  try {
-    Scratch.fetch(
-      "https://raw.githubusercontent.com/MikeDev101/cloudlink/master/serverlist.json"
-    )
-      .then((response) => {
-        return response.text();
-      })
-      .then((data) => {
-        clVars.serverList = JSON.parse(data);
-      })
-      .catch((err) => {
-        console.log("[CloudLink] An error has occurred while parsing the public server list:", err);
-        clVars.serverList = {};
-      });
-  } catch (err) {
-    console.log("[CloudLink] An error has occurred while fetching the public server list:", err);
-    clVars.serverList = {};
-  }
-
   // Declare the CloudLink library.
   class CloudLink {
     getInfo() {
       return {
         id: 'cloudlink',
-        name: 'CloudLink',
+        name: 'CloudLink V4',
         blockIconURI: cl_block,
         menuIconURI: cl_icon,
         docsURI: "https://github.com/MikeDev101/cloudlink/wiki/Scratch-Client",
