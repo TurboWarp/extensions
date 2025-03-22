@@ -1,4 +1,4 @@
-// Name: Cloudlink
+// Name: CloudLink V4
 // ID: cloudlink
 // Description: A powerful WebSocket extension for Scratch.
 // By: MikeDEV
@@ -805,7 +805,7 @@
     getInfo() {
       return {
         id: 'cloudlink',
-        name: 'CloudLink',
+        name: 'CloudLink V4',
         blockIconURI: cl_block,
         menuIconURI: cl_icon,
         docsURI: "https://github.com/MikeDev101/cloudlink/wiki/Scratch-Client",
