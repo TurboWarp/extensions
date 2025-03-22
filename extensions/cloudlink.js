@@ -248,6 +248,7 @@
   }
 
   // Makes values safe for Scratch to represent.
+  // eslint-disable-next-line require-await
   async function makeValueScratchSafe(data) {
     if (typeof data == "object") {
       try {
@@ -414,6 +415,7 @@
   }
 
   // Compare the version string of the server to known compatible variants to configure clVars.linkState.identifiedProtocol.
+  // eslint-disable-next-line require-await
   async function setServerVersion(version) {
     console.log(`[CloudLink] Server version: ${String(version)}`);
     clVars.server_version = version;
@@ -779,6 +781,7 @@
     // Establish a connection to the server
     console.log("[CloudLink] Connecting to server:", url);
     try {
+      // eslint-disable-next-line extension/check-can-fetch
       clVars.socket = new WebSocket(url);
     } catch (e) {
       console.warn("[CloudLink] An exception has occurred:", e);
@@ -856,6 +859,7 @@
     getInfo() {
       return {
         id: "cloudlink",
+        // eslint-disable-next-line extension/should-translate
         name: "CloudLink V4",
         blockIconURI: cl_block,
         menuIconURI: cl_icon,
