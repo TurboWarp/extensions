@@ -468,7 +468,7 @@
     if (
       clVars.linkState.identifiedProtocol < 4 &&
       !confirm(
-        `You have connected to an old CloudLink server, running version ${clVars.server_version}.\n\nFor your security and privacy, we recommend you disconnect from this server and connect to an up-to-date server.\n\nClick/tap \"OK\" to stay connected.`
+        `You have connected to an old CloudLink server, running version ${clVars.server_version}.\n\nFor your security and privacy, we recommend you disconnect from this server and connect to an up-to-date server.\n\nClick/tap "OK" to stay connected.`
       )
     ) {
       // Close the connection if they choose "Cancel"
@@ -555,7 +555,7 @@
             // Server 0.1.7 (at least)
             case "motd":
               console.log(
-                `[CloudLink] Message of the day: \"${packet.val.val}\"`
+                `[CloudLink] Message of the day: "${packet.val.val}"`
               );
               clVars.motd = packet.val.val;
               return;
@@ -602,7 +602,7 @@
                   clVars.username.value = packet.val.username;
                   clVars.username.accepted = true;
                   console.log(
-                    `[CloudLink] Username has been set to \"${clVars.username.value}\" successfully!`
+                    `[CloudLink] Username has been set to "${clVars.username.value}" successfully!`
                   );
 
                   // Username rejected / error
@@ -682,7 +682,7 @@
             clVars.username.value = clVars.username.temp;
             clVars.username.accepted = true;
             console.log(
-              `[CloudLink] Username has been set to \"${clVars.username.value}\" successfully!`
+              `[CloudLink] Username has been set to "${clVars.username.value}" successfully!`
             );
           }
         }
@@ -714,7 +714,7 @@
               break;
             default:
               console.warn(
-                `[CloudLink] Unrecognised userlist mode: \"${packet.mode}\".`
+                `[CloudLink] Unrecognised userlist mode: "${packet.mode}".`
               );
               break;
           }
@@ -737,12 +737,12 @@
         break;
 
       case "motd":
-        console.log(`[CloudLink] Message of the day: \"${packet.val}\"`);
+        console.log(`[CloudLink] Message of the day: "${packet.val}"`);
         clVars.motd = packet.val;
         break;
 
       default:
-        console.warn(`[CloudLink] Unrecognised command: \"${packet.cmd}\".`);
+        console.warn(`[CloudLink] Unrecognised command: "${packet.cmd}".`);
         return;
     }
 
