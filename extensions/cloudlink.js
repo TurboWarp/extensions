@@ -1287,7 +1287,7 @@
             arguments: {
               IP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "ws://127.0.0.1:3000/",
+                defaultValue: "wss://cl.mikedev101.cc/",
               },
             },
           },
@@ -1299,7 +1299,7 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
+                defaultValue: "7",
               },
             },
           },
