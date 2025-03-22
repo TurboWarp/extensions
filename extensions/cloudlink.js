@@ -354,7 +354,7 @@
         message.listener = clVars.listeners.enablerValue;
 
         // Create listener
-        clVars.listeners.varStates[String(args.ID)] = {
+        clVars.listeners.varStates[message.listener] = {
           hasNew: false,
           varState: {},
           eventHatTick: false,
