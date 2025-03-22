@@ -1715,7 +1715,12 @@
     // Reporter - Returns data for a specific listener ID.
     // ID - String (listener ID)
     returnListenerData(args) {
-      if (!Object.prototype.hasOwnProperty.call(clVars.listeners.varStates, String(args.ID))) {
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          clVars.listeners.varStates,
+          String(args.ID)
+        )
+      ) {
         console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
         return "";
       }
@@ -1783,7 +1788,12 @@
     returnVarData(args) {
       switch (args.TYPE) {
         case "Global variables":
-          if (!Object.prototype.hasOwnProperty.call(clVars.gvar.varStates, String(args.VAR))) {
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              clVars.gvar.varStates,
+              String(args.VAR)
+            )
+          ) {
             console.warn(
               `[CloudLink] Global variable ${args.VAR} does not exist!`
             );
@@ -1791,7 +1801,12 @@
           }
           return clVars.gvar.varStates[String(args.VAR)].varState;
         case "Private variables":
-          if (!Object.prototype.hasOwnProperty.call(clVars.pvar.varStates, String(args.VAR))) {
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              clVars.pvar.varStates,
+              String(args.VAR)
+            )
+          ) {
             console.warn(
               `[CloudLink] Private variable ${args.VAR} does not exist!`
             );
@@ -1886,7 +1901,13 @@
       if (clVars.linkState.status != 2) return false;
 
       // Listener must exist
-      if (!Object.prototype.hasOwnProperty.call(clVars.listeners.varStates, args.ID)) return false;
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          clVars.listeners.varStates,
+          args.ID
+        )
+      )
+        return false;
 
       // Run event
       if (clVars.listeners.varStates[args.ID].eventHatTick) {
@@ -1961,7 +1982,13 @@
       switch (args.TYPE) {
         case "Global variables":
           // Variable must exist
-          if (!Object.prototype.hasOwnProperty.call(clVars.gvar.varStates, String(args.VAR))) break;
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              clVars.gvar.varStates,
+              String(args.VAR)
+            )
+          )
+            break;
           if (clVars.gvar.varStates[String(args.VAR)].eventHatTick) {
             clVars.gvar.varStates[String(args.VAR)].eventHatTick = false;
             return true;
@@ -1971,7 +1998,13 @@
 
         case "Private variables":
           // Variable must exist
-          if (!Object.prototype.hasOwnProperty.call(clVars.pvar.varStates, String(args.VAR))) break;
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              clVars.pvar.varStates,
+              String(args.VAR)
+            )
+          )
+            break;
           if (clVars.pvar.varStates[String(args.VAR)].eventHatTick) {
             clVars.pvar.varStates[String(args.VAR)].eventHatTick = false;
             return true;
@@ -2052,7 +2085,12 @@
     returnIsNewVarData(args) {
       switch (args.TYPE) {
         case "Global variables":
-          if (!Object.prototype.hasOwnProperty.call(clVars.gvar.varStates, String(args.VAR))) {
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              clVars.gvar.varStates,
+              String(args.VAR)
+            )
+          ) {
             console.warn(
               `[CloudLink] Global variable ${args.VAR} does not exist!`
             );
@@ -2060,7 +2098,12 @@
           }
           return clVars.gvar.varStates[String(args.ID)].hasNew;
         case "Private variables":
-          if (!Object.prototype.hasOwnProperty.call(clVars.pvar.varStates, String(args.VAR))) {
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              clVars.pvar.varStates,
+              String(args.VAR)
+            )
+          ) {
             console.warn(
               `[CloudLink] Private variable ${args.VAR} does not exist!`
             );
@@ -2073,7 +2116,12 @@
     // Boolean - Returns true if a listener has a new value.
     // ID - String (listener ID)
     returnIsNewListener(args) {
-      if (!Object.prototype.hasOwnProperty.call(clVars.listeners.varStates, String(args.ID))) {
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          clVars.listeners.varStates,
+          String(args.ID)
+        )
+      ) {
         console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
         return false;
       }
@@ -2130,7 +2178,12 @@
         console.warn("[CloudLink] Already connected to a server.");
         return;
       }
-      if (!Object.prototype.hasOwnProperty.call(clVars.serverList, String(args.ID))) {
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          clVars.serverList,
+          String(args.ID)
+        )
+      ) {
         console.warn("[CloudLink] Not a valid server ID!");
         return;
       }
@@ -2428,7 +2481,12 @@
     resetNewVarData(args) {
       switch (args.TYPE) {
         case "Global variables":
-          if (!Object.prototype.hasOwnProperty.call(clVars.gvar.varStates, String(args.VAR))) {
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              clVars.gvar.varStates,
+              String(args.VAR)
+            )
+          ) {
             console.warn(
               `[CloudLink] Global variable ${args.VAR} does not exist!`
             );
@@ -2437,7 +2495,12 @@
           clVars.gvar.varStates[String(args.ID)].hasNew = false;
           break;
         case "Private variables":
-          if (!Object.prototype.hasOwnProperty.call(clVars.pvar.varStates, String(args.VAR))) {
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              clVars.pvar.varStates,
+              String(args.VAR)
+            )
+          ) {
             console.warn(
               `[CloudLink] Private variable ${args.VAR} does not exist!`
             );
@@ -2451,7 +2514,12 @@
     // Command - Resets the "returnIsNewListener" boolean state.
     // ID - Listener ID
     resetNewListener(args) {
-      if (!Object.prototype.hasOwnProperty.call(clVars.listeners.varStates, String(args.ID))) {
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          clVars.listeners.varStates,
+          String(args.ID)
+        )
+      ) {
         console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
         return;
       }
