@@ -672,7 +672,7 @@
           clVars.ulist = String(packet.val).split(";");
 
           // Get rid of blank entry at the end of the list
-          clVars.ulist.pop(clVars.ulist.length);
+          clVars.ulist.pop();
 
           // Check if username has been set (since older servers don't implement statuscodes or listeners)
           if (
