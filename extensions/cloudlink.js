@@ -2435,6 +2435,7 @@
             return;
           }
           clVars.gvar.varStates[String(args.ID)].hasNew = false;
+          break;
         case "Private variables":
           if (!Object.prototype.hasOwnProperty.call(clVars.pvar.varStates, String(args.VAR))) {
             console.warn(
@@ -2443,6 +2444,7 @@
             return false;
           }
           clVars.pvar.varStates[String(args.ID)].hasNew = false;
+          break;
       }
     }
 
