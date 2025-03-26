@@ -25,13 +25,6 @@ Alternatively, you can import "Tune Shark" sounds from pre-existing sounds from 
 This block allows you to bind or unbind the first inputted sound to the second. This means when you play "MySound2", "MySound" will play as well.
 This **does not** go the same way in reverse.
 
-```scratch
-⚙️ [save v] all sounds to project ::#666666
-```
-
-This block saves all currently loaded Tune Shark sounds into the project so that they may be automatically loaded when the project opens.
-You can stop this by using the "dont save" option in the block menu.
-
 ## Audio Playback
 
 ```scratch
