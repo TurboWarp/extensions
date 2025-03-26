@@ -5,9 +5,9 @@
 2. [Requirements](#Requirements)
 3. [Best Practices](#Best-practices)
 4. [Blocks](#blocks)
-   4.1 [Utilities](#Utilities)
-   4.2 [Transformations](#Transformations)
-   4.3 [Controllers](#Controllers)
+4.1 [Utilities](#Utilities)
+4.2 [Transformations](#Transformations)
+4.3 [Controllers](#Controllers)
 5. [Wrapping Up](#Wrapping-up)
 6. [Other Resoruces](#Other-resources)
 ## Introduction <a name="Introduction"></a>
@@ -19,3 +19,10 @@ This extension requires a compatible virtual reality headset to function. It's a
 This extension is designed to be able to run with any 3D renderer or engine, but it works best with a 3D renderer or engine that uses compatible SI units. This means meters for length and degrees for rotation. However, if your 3D systems don't have this, don't worry, we'll fix it when we get to [Transformations](#Transformations). Because of this, this extension requires that all scenes used for VR experiences be designed on the meter scale to make sure everything looks just right.
 
 # Best Practices <a name="Best-practices"></a>
+- 90 FPS or higher (anything below 60 is generally not standard)
+   - More notes here
+   - and here
+   - about how to optimize
+- Reduce Motion Sickness
+   - Notes here about how to do that
+   - etc. etc.
