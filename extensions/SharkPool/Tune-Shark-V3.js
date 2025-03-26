@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.4.25
+// Version V.3.4.26
 
 (function (Scratch) {
   "use strict";
@@ -90,87 +90,10 @@
   let deltaTime = 0,
     prevFrameTime = 0;
   let soundBank = Object.create(null);
-  let settings = { flagCtrl: false, canSave: false };
+  let settings = { flagCtrl: false };
 
   class SPtuneShark3 {
     constructor() {
-      this.loadStorage = function (storage) {
-        if (storage === undefined) return;
-        settings = storage.settings;
-        const tempBank = structuredClone(storage.bank);
-        const sounds = Object.values(tempBank);
-
-        const getTargetName = (name) => {
-          return runtime.targets.find((t) => {
-            return t.getName().replaceAll("/", "") === name;
-          });
-        };
-        const loadEndHandler = (index) => {
-          if (index >= sounds.length - 1) soundBank = tempBank;
-        };
-
-        for (let i = 0; i < sounds.length; i++) {
-          const sound = sounds[i];
-          sound.loaded = false;
-          if (sound.isVanilla) {
-            const info = sound.src
-              .substring(1, sound.src.lastIndexOf("."))
-              .split("/");
-            let target =
-              info[0] === "Stage"
-                ? runtime.getTargetForStage()
-                : getTargetName(info[0]);
-            if (target === undefined) {
-              alert(
-                Scratch.translate(
-                  `Tune Shark 3 -- Failed to load ${info[1]} from ${info[0]}`
-                )
-              );
-              continue;
-            }
-
-            const scratchSound = target.sprite.sounds.find((i) => {
-              return i.name.replaceAll("/", "") === info[1];
-            });
-            if (scratchSound === undefined) {
-              alert(
-                Scratch.translate(
-                  `Tune Shark 3 -- Failed to load ${info[1]} from ${info[0]}`
-                )
-              );
-              continue;
-            }
-            const buffer =
-              target.sprite.soundBank.soundPlayers[scratchSound.soundId].buffer;
-            const engine = new Pizzicato.Sound({
-              source: "buffer",
-              options: { buffer, attack: 0 },
-            });
-
-            engine.sourceNode = engine.getSourceNode();
-            sound.context = engine;
-            sound.loaded = true;
-            loadEndHandler(i);
-          } else {
-            const engine = new Pizzicato.Sound(
-              {
-                source: "file",
-                options: { path: sound.src, attack: 0 },
-              },
-              () => {
-                engine.sourceNode = engine.getSourceNode();
-                sound.context = engine;
-                sound.loaded = true;
-                loadEndHandler(i);
-              }
-            );
-          }
-        }
-      };
-      runtime.on("PROJECT_LOADED", () =>
-        this.loadStorage(runtime.extensionStorage["SPtuneShark3"])
-      );
-
       runtime.on("PROJECT_START", () => {
         if (settings.flagCtrl) this.ctrlSounds({ CONTROL: "stop" });
       });
@@ -275,15 +198,6 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate("MySound2"),
               },
-            },
-          },
-          {
-            opcode: "save2Project",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("[SAVE] all sounds to project"),
-            blockIconURI: extraIcons.set,
-            arguments: {
-              SAVE: { type: Scratch.ArgumentType.STRING, menu: "saveMenu" },
             },
           },
           {
@@ -744,10 +658,6 @@
           },
         ],
         menus: {
-          saveMenu: [
-            { text: Scratch.translate("save"), value: "save" },
-            { text: Scratch.translate("dont save"), value: "dont save" },
-          ],
           un_pauseMenu: [
             { text: Scratch.translate("pause"), value: "pause" },
             { text: Scratch.translate("unpause"), value: "unpause" },
@@ -1589,26 +1499,6 @@
         high_band_gain: Cast.toNumber(args.HIGH) / 10,
       });
       this.updateEffect(equalizer, sound, "EQUALIZER", args);
-    }
-
-    save2Project(args) {
-      settings.canSave = args.SAVE === "save";
-      if (settings.canSave) {
-        const convertedBank = {};
-        Object.entries(soundBank).forEach((item) => {
-          const soundData = {};
-          Object.entries(item[1]).forEach((data) => {
-            if (data[0] !== "context") soundData[data[0]] = data[1];
-          });
-          convertedBank[item[0]] = soundData;
-        });
-        runtime.extensionStorage["SPtuneShark3"] = {
-          bank: convertedBank,
-          settings,
-        };
-      } else {
-        runtime.extensionStorage["SPtuneShark3"] = undefined;
-      }
     }
   }
 
