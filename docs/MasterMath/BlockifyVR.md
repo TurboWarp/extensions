@@ -5,9 +5,9 @@
 2. [Requirements](#Requirements)
 3. [Best Practices](#Best-practices)
 4. [Blocks](#blocks)
-4.1 [Utilities](#Utilities)
-4.2 [Transformations](#Transformations)
-4.3 [Controllers](#Controllers)
+4.1. [Utilities](#Utilities)
+4.2. [Transformations](#Transformations)
+4.3. [Controllers](#Controllers)
 5. [Wrapping Up](#Wrapping-up)
 6. [Other Resoruces](#Other-resources)
 ## Introduction <a name="Introduction"></a>
