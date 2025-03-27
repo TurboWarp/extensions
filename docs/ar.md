@@ -6,7 +6,8 @@
  - [ARCore](https://play.google.com/store/apps/details?id=com.google.ar.core) (if on Android)
  - browser with [WebXR API and immersive-ar](https://immersive-web.github.io/webxr-samples/report/) session type support
 
-At the moment of writing, only Chromium-based browsers on Android support immersive-ar session type.
+> [!WARNING]
+> At the moment of writing, only Chromium-based browsers on Android support immersive-ar session type.
 
 ## Other information
 
