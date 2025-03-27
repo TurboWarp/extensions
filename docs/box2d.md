@@ -53,7 +53,10 @@ Make physics apply to this sprite. It can also collide with other sprites that h
  - `this circle`: Enable physics for the current sprite or clone as if it were shaped like a circle.
  - `all sprites`: Enable physics for all sprites.
 
-Precision mode will make the sprite work extra hard to make sure it doesn't overlap with anything. Note that this can decrease performance and even cause the project to get stuck, so use with care.
+Precision mode will make the sprite work extra hard to make sure it doesn't overlap with anything.
+
+> [!WARNING]
+> Precision mode should be used with care as it can decrease performance and even cause the project to get stuck.
 
 ---
 
