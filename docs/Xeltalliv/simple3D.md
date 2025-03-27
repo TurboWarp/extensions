@@ -42,7 +42,9 @@ So in short, **this extension does not have any kind of scenes, objects, cameras
 3D models consist of vertices which together form primitives (points, lines, triangles). Each vertex has either 2D (XY) or 3D (XYZ) location described with 2 or 3 numbers respectively. Before drawing the mesh, you would usually set up transformation, which tells how to take those initial locations and transform them to correct location on your 2D screen. The typical way to do it, is to chain multiple simple transformations together. Simple transformations can be translation (offsetting), rotation, scaling, mirroring, skewing, etc.
 
 ## Drawing things <a name="simple-drawing"></a>
-**Note:** For a more complete tutorial, see [here](https://xeltalliv.github.io/simple3d-extension/examples/) (external link).
+
+> [!TIP]
+> For a more complete tutorial, see [here](https://xeltalliv.github.io/simple3d-extension/examples/) (external link).
 
 For now let's not worry about transformations and just draw something as is.
 First step would be to clear the screen:
