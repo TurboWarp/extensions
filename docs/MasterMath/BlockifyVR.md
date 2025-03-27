@@ -4,31 +4,41 @@
 1. [Introduction](#Introduction)
 2. [Requirements](#Requirements)
 3. [Best Practices](#Best-practices)
-4. [Technical Details](#Technical-details)
-5. [Blocks](#blocks)
-5a. [Utilities](#Utilities)
-5b. [Transformations](#Transformations)
-5c. [Controllers](#Controllers)
-6. [Wrapping Up](#Wrapping-up)
-7. [Other Resoruces](#Other-resources)
+4. [Blocks](#blocks)
+4a. [Utilities](#Utilities)
+4b. [Transformations](#Transformations)
+4c. [Controllers](#Controllers)
+5. [Wrapping Up](#Wrapping-up)
+6. [Other Resoruces](#Other-resources)
 
 ## Introduction <a name="Introduction"></a>
-This is a cross-platform Virtual Reality extension. It is designed to target experiences supporting modern 6DOF (six degrees of freedom, position and rotation in all three axes) headsets with two 6DOF controllers. 
+This is a cross-platform Virtual Reality extension. It is designed to target experiences supporting modern 6DOF (Six Degrees Of Freedom; position and rotation in all three axes) headsets with two 6DOF controllers. 
 This extension is simply a framework for adding virtual reality interaction to your projects. It does not provide any systems for 3D computations or rendering. It is not a 3D engine, but it keeps track of the states of the headset and controllers for you so you don't have to.
 
+<details>
+  <summary><b>Technical Details</b></summary>
+
+  Throughout this documentation you may find collapsible "Technical Details" sections (like this one). These provide more detailed insight into the backend internal workings of BlockifyVR that may prove to be useful, but **these sections are not required**.
+</details>
+
 ## Requirements <a name="Requirements"></a>
-This extension requires a compatible virtual reality headset to function. It's also _highly_ recommended that you have one available frequently during development for testing to ensure proper functionality and scene scale. However, it is designed to allow editing and programming on computers without a required headset.
-This extension is designed to be able to function with any 3D renderer or engine, but it works best with a 3D renderer or engine that uses compatible SI units. This means meters for length and degrees for rotation. However, if your 3D systems don't have this, don't worry, we'll fix it when we get to [Transformations](#Transformations). Because of this, this extension requires that all scenes used for VR experiences be designed on the meter scale to make sure everything looks just right. This extension is considered cross-platform compatible, but as of right now it only supports:
+This extension requires a compatible virtual reality headset for testing and functionality, but it allows editing and programming on computers without a headset.
+This extension is cross-platform compatible, but as of right now it only supports:
 
 - Oculus Quest 1, 2, 3, and Quest Pro
 - Most HTC Vive headsets
 - Most Windows Mixed Reality headsets.
 
-This extension does not yet support hand tracking. This extension technically _can_ support 3DOF headsets, but both of these features are not planned unless there is enough user demand.
+This extension does not yet support hand tracking. This feature is not planned unless there is enough user demand. This extension _can_ run on some 3DOF headsets, but 3DOF of controllers are not supported.
 
 If you have suggestions for more features or headsets to support, please let me know. The best way to do this is on my [Scratch Profile comments](http://scratch.mit.edu/users/-MasterMath-/#comments).
 
 ## Best Practices <a name="Best-practices"></a>
+
+**This section may seem intimidating at first, but it is crucial to ensure quality experiences.**
+
+---
+
 Developing Virtual Reality experiences requires use of strict best practices to ensure the ideal experience for the user. As a general rule, the following list is a good set of guidelines **for optimization**:
 - **Aim for 90 FPS** or higher to reduce motion sickness. BlockifyVR supports 120Hz refresh rate on supporting browsers like the Oculus Browser. 
 - **Reduce draw count**:
@@ -57,6 +67,7 @@ Developing Virtual Reality experiences requires use of strict best practices to 
 - DO NOT **EVER** take unexpected control of the camera against the user's will. This can cause motion sickness in some individuals. Things like cutscenes in which the user moves with the camera shouldn't happen.
 - Avoid flashing lights that may cause epileptic seizures or migraine headaches in a small percentage of individuals. Provide a warning at the start of the experience if these things are present (e.g., a flashing light show in Beatsaber).
 
+- Ensure enviroments are designed with meter scale to ensure physical accuracy
 - Avoid motion-sickness inducing gameplay. This includes things like:
   - Vehicular activity
     - Flying
@@ -66,11 +77,7 @@ Developing Virtual Reality experiences requires use of strict best practices to 
     - If you must use locomotion controls, avoid smooth rotation and snap turning left or right to a fixed interval, like 30º. This technique is found in many VR experiences.
     - Try to avoid strafe controls
 
-This doesn't mean you can't do these things at all, but if they are a central part of the experience, they should be designed with the user's best interest in mind.
-
-## Techncial Details
-TODO: some nerdy details about the specifics of the internals of the extension
-
+- **Cross platform compatibility**: Design your experiences to have control configurations / keymaps for all platforms that BlockifyVR supports. Alternatively, you _can_ target only one platform, but this isn't recommended.
 
 # Blocks <a name="Blocks"></a>
 ## Utilities <a name="Utilities"></a>
@@ -79,6 +86,11 @@ TODO: some nerdy details about the specifics of the internals of the extension
 [enter v] VR mode :: #00a616
 ```
 This block can enter or exit VR mode, also known as an Immersive Web Experience. On desktop devices, this may simply open the window in fullscreen when no WebXR compatible headset is present. Generally, VR experiences should be designed to support both desktops and VR headsets, or only support VR headsets and provide a warning if the project was attempted to be run with no headset present.
+
+<details>
+  <summary><b>Technical Details</b></summary>
+  <!-- TODO: add technical details about VR mode here -->
+</details>
 
 ---
 
