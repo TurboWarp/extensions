@@ -236,6 +236,32 @@
       footer p {
         margin: 0 0 8px 0;
       }
+
+      .search-bar {
+        display: flex;
+        width: calc(100% - 20px);
+        max-width: 928px;
+        padding: 8px;
+        margin: 24px auto;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        background-color: transparent;
+        background-clip: padding-box;
+        border: 2px solid #ff4c4c;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-radius: 8px;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        transition: box-shadow .15s ease-in-out, box-shadow .15s ease-in-out;
+      }
+      .search-bar:focus {
+        outline: none;
+        box-shadow: 0 0 0 .25rem rgba(236, 90, 84, .25);
+        transition: box-shadow .15s ease-in-out, box-shadow .15s ease-in-out;
+      }
+
     </style>
   </head>
 
@@ -319,9 +345,25 @@
           extension.dataset.samplesOpen = extension.dataset.samplesOpen !== 'true';
         }
       });
+
+      function searchExtension() {
+        const searchQuery = document.getElementById("search-bar").value.toLowerCase();
+        const extensionElements = document.querySelectorAll(".extension");
+
+        extensionElements.forEach(extension => {
+          const h2 = extension.querySelector("h2").innerText.toLowerCase();
+          const p = extension.querySelector("p").innerText.toLowerCase();
+          if (h2.includes(searchQuery) || p.includes(searchQuery)) {
+            extension.style.display = "block";
+          } else {
+            extension.style.display = "none";
+          }
+        });
+      }
     </script>
 
     <div class="section extensions-outer">
+      <input type="text" id="search-bar" class="search-bar" placeholder="Search for extensions..." onkeyup="searchExtension();"></input>
       <div class="extensions">
         <%
         const peopleToHTML = (people) => {
