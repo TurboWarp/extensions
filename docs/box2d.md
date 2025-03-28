@@ -55,7 +55,7 @@ Make physics apply to this sprite. It can also collide with other sprites that h
 
 Precision mode will make the sprite work extra hard to make sure it doesn't overlap with anything.
 
-> [!WARNING]
+> [!CAUTION]
 > Precision mode should be used with care as it can decrease performance and even cause the project to get stuck.
 
 ---
