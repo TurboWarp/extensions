@@ -349,7 +349,8 @@
       window.addEventListener("load", () => {
         extensionElements = document.querySelectorAll(".extension");
 
-        document.getElementById("search-bar").addEventListener("keyup", function (evt) {
+        document.getElementById("search-bar").addEventListener("input", function (evt) {
+          console.log("changed");
           const searchQuery = evt.srcElement.value.toLowerCase();
 
           extensionElements.forEach(extension => {
