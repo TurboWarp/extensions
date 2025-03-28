@@ -346,24 +346,28 @@
         }
       });
 
-      function searchExtension() {
-        const searchQuery = document.getElementById("search-bar").value.toLowerCase();
-        const extensionElements = document.querySelectorAll(".extension");
+      window.addEventListener("load", () => {
+        extensionElements = document.querySelectorAll(".extension");
 
-        extensionElements.forEach(extension => {
-          const h2 = extension.querySelector("h2").innerText.toLowerCase();
-          const p = extension.querySelector("p").innerText.toLowerCase();
-          if (h2.includes(searchQuery) || p.includes(searchQuery)) {
-            extension.style.display = "block";
-          } else {
-            extension.style.display = "none";
-          }
+        document.getElementById("search-bar").addEventListener("keyup", function (evt) {
+          const searchQuery = evt.srcElement.value.toLowerCase();
+
+          extensionElements.forEach(extension => {
+            const h2 = extension.querySelector("h2").textContent.toLowerCase();
+            const p = extension.querySelector("p").textContent.toLowerCase();
+            if (h2.includes(searchQuery) || p.includes(searchQuery)) {
+              extension.style.removeProperty("display");
+            } else {
+              extension.style.display = "none";
+            }
+          });
         });
-      }
+      });
+
     </script>
 
     <div class="section extensions-outer">
-      <input type="text" id="search-bar" class="search-bar" placeholder="Search for extensions..." onkeyup="searchExtension();"></input>
+      <input type="text" id="search-bar" class="search-bar" placeholder="Search for extensions..."></input>
       <div class="extensions">
         <%
         const peopleToHTML = (people) => {
