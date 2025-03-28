@@ -15,11 +15,8 @@
 This is a cross-platform Virtual Reality extension. It is designed to target experiences supporting modern 6DOF (Six Degrees Of Freedom; position and rotation in all three axes) headsets with two 6DOF controllers. 
 This extension is simply a framework for adding virtual reality interaction to your projects. It does not provide any systems for 3D computations or rendering. It is not a 3D engine, but it keeps track of the states of the headset and controllers for you so you don't have to.
 
-<details>
-  <summary><b>Technical Details</b></summary>
-
-  Throughout this documentation you may find collapsible "Technical Details" sections (like this one). These provide more detailed insight into the backend internal workings of BlockifyVR that may prove to be useful, but **these sections are not required**.
-</details>
+> [!TIP]
+> <details><summary><b>Technical Details</b></summary>Throughout this documentation you may find collapsible "Technical Details" sections (like this one). These provide more detailed insight into the backend internal workings of BlockifyVR that may prove to be useful, but <b>these sections are not required.</b></details>
 
 ## Requirements <a name="Requirements"></a>
 This extension requires a compatible virtual reality headset for testing and functionality, but it allows editing and programming on computers without a headset.
@@ -31,11 +28,12 @@ This extension is cross-platform compatible, but as of right now it only support
 
 This extension does not yet support hand tracking. This feature is not planned unless there is enough user demand. This extension _can_ run on some 3DOF headsets, but 3DOF of controllers are not supported.
 
-If you have suggestions for more features or headsets to support, please let me know. The best way to do this is on my [Scratch Profile comments](http://scratch.mit.edu/users/-MasterMath-/#comments).
+**If you have suggestions for more features or headsets to support, please let me know. The best way to do this is on my [Scratch Profile comments](http://scratch.mit.edu/users/-MasterMath-/#comments).**
 
 ## Best Practices <a name="Best-practices"></a>
 
-**This section may seem intimidating at first, but it is crucial to ensure quality experiences.**
+> [!Note]
+> **This section may seem intimidating at first, but it is crucial to ensure quality experiences.**
 
 ---
 
