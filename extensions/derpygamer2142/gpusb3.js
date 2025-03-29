@@ -3427,7 +3427,7 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
       util.startHats("gpusb3_compileHat"); // NOTE TO SELF: THIS DOESN'T START THE HATS THEMSELVES(why is it named that then. this is stupid and i don't like it, i am going to complain on my twitter dot com), thanks sharkpool for providing this code
       let threads = vm.runtime.threads.filter(
         (i) =>
-          util.thread.blockContainer._blocks[i.topBlock].opcode ===
+          util.thread.blockContainer._blocks[i.topBlock]?.opcode ===
           "gpusb3_compileHat"
       );
 
@@ -3466,7 +3466,8 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
             !Object.prototype.hasOwnProperty.call(
               resources.bindGroupLayouts,
               bglInput.fields.TEXT.value
-            )
+            ) &&
+            bglInput.fields.TEXT.value !== ""
           ) {
             return this.throwError(
               "BindGroupLayoutNotFound",
@@ -3535,9 +3536,10 @@ ${blocks[i + 2]?.length > 0 ? this.genWGSL(util, blocks[i + 2], recursionDepth +
             this.device.pushErrorScope("internal");
             shader.computePipeline = this.device.createComputePipeline({
               layout: this.device.createPipelineLayout({
-                bindGroupLayouts: [
-                  resources.bindGroupLayouts[bglInput.fields.TEXT.value],
-                ],
+                bindGroupLayouts:
+                  bglInput.fields.TEXT.value === ""
+                    ? []
+                    : [resources.bindGroupLayouts[bglInput.fields.TEXT.value]],
               }),
               compute: {
                 module: shaderModule,
