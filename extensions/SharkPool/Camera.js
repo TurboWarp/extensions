@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.07
+// Version V.1.0.08
 
 (function (Scratch) {
   "use strict";
@@ -251,6 +251,19 @@
     ogUpdateScale.call(this, scale);
     this.skin?.emitWasAltered();
   };
+
+  // Clones should inherit the parents camera
+  const ogInitDrawable = vm.exports.RenderedTarget.prototype.initDrawable;
+  vm.exports.RenderedTarget.prototype.initDrawable = function (layerGroup) {
+    ogInitDrawable.call(this, layerGroup);
+
+    const parentSprite = this.sprite.clones[0]; // clone[0] is always the original
+    const parentDrawable = render._allDrawables[parentSprite.drawableID];
+    const name = parentDrawable[cameraSymbol]?.name ?? "default";
+
+    const drawable = render._allDrawables[this.drawableID];
+    bindDrawable(drawable, name);
+  }
 
   // Turbowarp Extension Storage
   runtime.on("PROJECT_LOADED", () => {
