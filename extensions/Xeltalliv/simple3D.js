@@ -1092,6 +1092,7 @@
         canvas
       );
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      this._silhouette.update(canvas);
       this.emitWasAltered();
     }
     resizeCanvas() {
