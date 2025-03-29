@@ -3659,13 +3659,15 @@ void main() {
             resolve(null);
             return;
           }
-          const values = list.value
-            .slice(pos, pos + lengthRequired)
-            .map(Cast.toNumber);
+          const data = new Uint8Array(lengthRequired);
+          const values = list.value;
+          for(let i=0; i<lengthRequired; i++) {
+            data[i] = values[pos+i];
+          }
           imageSourceSync = {
             width: width,
             height: height,
-            data: new Uint8Array(values),
+            data: data,
           };
           resolve(imageSourceSync);
         });
