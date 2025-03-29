@@ -263,7 +263,7 @@
 
     const drawable = render._allDrawables[this.drawableID];
     bindDrawable(drawable, name);
-  }
+  };
 
   // Turbowarp Extension Storage
   runtime.on("PROJECT_LOADED", () => {
