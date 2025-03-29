@@ -4208,7 +4208,7 @@ void main() {
         let from = lookup[FROM];
         let to = lookup[TO];
         if (!from || !to) return;
-        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 1];
+        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 0];
         if (from == to) {
           transformed = vec;
           return;
@@ -4222,10 +4222,6 @@ void main() {
         for (let i = from + 1; i < to; i++) {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
-        if (from + 1 == to) {
-          totalMat = totalMat.slice();
-        }
-        totalMat[12] = totalMat[13] = totalMat[14] = 0;
         if (swapped) totalMat = m4.inverse(totalMat);
         transformed = m4.multiplyVec(totalMat, vec);
       },
