@@ -770,7 +770,9 @@
           case "keys":
             return JSON.stringify(Object.keys(json).map((key) => key ?? ""));
           case "values":
-            return JSON.stringify(Object.keys(json).map((key) => json[key] ?? ""));
+            return JSON.stringify(
+              Object.keys(json).map((key) => json[key] ?? "")
+            );
           case "datas":
             return JSON.stringify(
               Object.keys(json).map((key) => [key, json[key] ?? ""])
