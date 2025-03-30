@@ -707,7 +707,7 @@
     json_length({ json }) {
       try {
         json = JSON.parse(json);
-        return +Object.keys(json).length || 0;
+        return Object.keys(json).length;
       } catch {
         return " ";
       }
