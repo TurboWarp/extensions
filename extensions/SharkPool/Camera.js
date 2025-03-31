@@ -256,6 +256,7 @@
   const ogInitDrawable = vm.exports.RenderedTarget.prototype.initDrawable;
   vm.exports.RenderedTarget.prototype.initDrawable = function (layerGroup) {
     ogInitDrawable.call(this, layerGroup);
+    if (this.isOriginal) return;
 
     const parentSprite = this.sprite.clones[0]; // clone[0] is always the original
     const parentDrawable = render._allDrawables[parentSprite.drawableID];
