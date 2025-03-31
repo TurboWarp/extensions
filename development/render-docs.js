@@ -43,7 +43,7 @@ md.block.ruler.before(
       state.eMarks[startLine]
     );
 
-    const match = marker.match(/^\s*>\s*\[!([A-Z]+)]\s*(.*)/);
+    const match = marker.match(/^\s*>\s*\[!([A-Z]+)]\s*(.*)/i);
     if (!match) return false;
 
     const type = match[1].toLowerCase();
