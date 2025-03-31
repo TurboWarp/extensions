@@ -78,7 +78,7 @@ md.block.ruler.before(
 
         if (lineContent === "") {
           const token = state.push("html_block", "", 0);
-          token.content = (nextLine - 1 == startLine) ? "<br/>" : "<br/><br/>";
+          token.content = nextLine - 1 == startLine ? "<br/>" : "<br/><br/>";
           token.children = [];
         } else {
           const token = state.push("inline", "", 0);
