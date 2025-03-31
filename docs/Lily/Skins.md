@@ -26,9 +26,10 @@ load skin from (costume 1 v) as [my skin] :: #6b56ff
 ```
 The second way is by loading a skin from a costume.
 
-It's important to note that this block will require the Advanced Option "Remove raw asset data after loading to save RAM" to be disabled in the packager in order for this block to work correctly in a packaged environment. **You do not need to do this within the editor.**
-
-If you intend to package your project, we don't encourage using this block for that reason. **None of the other blocks in this extension require this option to be disabled.**
+> [!IMPORTANT]
+> It's important to note that this block will require the Advanced Option "Remove raw asset data after loading to save RAM" to be disabled in the packager in order for this block to work correctly in a packaged environment. **You do not need to do this within the editor.**
+>
+> If you intend to package your project, we don't encourage using this block for that reason. **None of the other blocks in this extension require this option to be disabled.**
 
 ---
 

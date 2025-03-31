@@ -680,7 +680,7 @@
         return json;
       } else {
         try {
-          return JSON.parse(json);
+          return JSON.parse(json) ?? "";
         } catch {
           return json;
         }
@@ -768,12 +768,14 @@
         json = JSON.parse(json);
         switch (Stype) {
           case "keys":
-            return JSON.stringify(Object.keys(json).map((key) => key));
+            return JSON.stringify(Object.keys(json).map((key) => key ?? ""));
           case "values":
-            return JSON.stringify(Object.keys(json).map((key) => json[key]));
+            return JSON.stringify(
+              Object.keys(json).map((key) => json[key] ?? "")
+            );
           case "datas":
             return JSON.stringify(
-              Object.keys(json).map((key) => [key, json[key]])
+              Object.keys(json).map((key) => [key, json[key] ?? ""])
             );
           default:
             return "";
@@ -787,7 +789,7 @@
       try {
         json = JSON.parse(json);
         if (hasOwn(json, item)) {
-          const result = json[item];
+          const result = json[item] ?? "";
           if (typeof result === "object") {
             return JSON.stringify(result);
           } else {
@@ -805,7 +807,8 @@
       if (Number.isNaN(value)) return "NaN";
       if (value === Infinity) return "Infinity";
       if (value === -Infinity) return "-Infinity";
-      return value;
+      // null and undefined -> empty
+      return value ?? "";
     }
 
     json_set({ item, value, json }) {
@@ -850,6 +853,7 @@
         } else {
           result = json[json.length + item];
         }
+        result = result ?? "";
         if (typeof result == "object") {
           return JSON.stringify(result);
         } else {
@@ -1032,7 +1036,7 @@
           if (Array.isArray(array)) {
             const safeArray = array.map((i) => {
               if (typeof i === "object") return JSON.stringify(i);
-              return i;
+              return i ?? "";
             });
             listVariable.value = safeArray;
           }
