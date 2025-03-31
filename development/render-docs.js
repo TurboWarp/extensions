@@ -43,12 +43,13 @@ md.block.ruler.before(
       state.eMarks[startLine]
     );
 
-    const match =
-      /^\s*>\s*\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION)]\s*(.*)/.exec(marker);
-    if (!match) throw new TypeError(`"${marker}" is not a valid block note.`);
+    const match = marker.match(/^\s*>\s*\[!([A-Z]+)]\s*(.*)/);
+    if (!match) return false;
+
     const type = match[1].toLowerCase();
-    if (!blockIcons[type])
-      throw new TypeError(`"${type.toUpperCase()}" is not a valid block note.`);
+    if (!blockIcons[type]) {
+      throw new TypeError(`Invalid alert type: ${match[1]}`);
+    }
     const icon = blockIcons[type];
 
     if (silent) return true;
