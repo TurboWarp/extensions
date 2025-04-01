@@ -55,7 +55,7 @@
   // camera utils
   const radianConstant = Math.PI / 180;
   const epsilon = 1e-12;
-  const applyEpsilon = (value) => Math.abs(value) < epsilon ? 0 : value;
+  const applyEpsilon = (value) => (Math.abs(value) < epsilon ? 0 : value);
 
   function setupState(drawable) {
     drawable[cameraSymbol] = {
@@ -78,7 +78,7 @@
       const invOffY = -scaledX * invSin + scaledY * invCos;
       return [
         applyEpsilon(invOffX - camData.ogXY[0]),
-        applyEpsilon(invOffY - camData.ogXY[1])
+        applyEpsilon(invOffY - camData.ogXY[1]),
       ];
     } else {
       const rads = camData.dir * radianConstant;
