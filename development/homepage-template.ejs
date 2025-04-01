@@ -396,11 +396,11 @@
               originalOrder.forEach(div => container.appendChild(div));
               break;
             case "abc":
-              divs.sort((a, b) => a.innerText.localeCompare(b.innerText));
+              divs.sort((a, b) => a.textContent.localeCompare(b.textContent));
               divs.forEach(div => container.appendChild(div));
               break;
             case "zxy":
-              divs.sort((a, b) => b.innerText.localeCompare(a.innerText));
+              divs.sort((a, b) => b.textContent.localeCompare(a.textContent));
               divs.forEach(div => container.appendChild(div));
               break;
           }
