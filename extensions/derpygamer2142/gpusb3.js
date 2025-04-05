@@ -4855,7 +4855,6 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       console.log(util.thread);
       console.log(util.thread.blockContainer._blocks);
 
-      
       const AST = this.compile(
         util,
         util.thread,
