@@ -146,7 +146,7 @@
             hideFromPalette: true,
             opcode: "debug",
             blockType: Scratch.BlockType.COMMAND,
-            text: "DEBUG",
+            text: Scratch.translate("DEBUG"),
           },
 
           {
