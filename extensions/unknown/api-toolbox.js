@@ -1,5 +1,5 @@
 // Name: API Toolbox
-// ID: U07apitoolbox
+// ID: unkapiToolbox
 // Description: API for Frogs
 // By: Unknown07724 https://scratch.mit.edu/users/Unknown07724/
 (function(Scratch) {
@@ -9,7 +9,7 @@
 class API_Toolbox {
 getInfo() {
 return {
-id: 'apiToolbox',
+id: 'unkapiToolbox',
 name: 'API Toolbox',
 color1: '#99C68E',
 blocks: [
