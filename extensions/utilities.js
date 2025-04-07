@@ -73,6 +73,7 @@
 
             blockType: Scratch.BlockType.BOOLEAN,
 
+            // eslint-disable-next-line extension/should-translate
             text: "[A] <= [B]",
             arguments: {
               A: {
@@ -89,6 +90,7 @@
 
             blockType: Scratch.BlockType.BOOLEAN,
 
+            // eslint-disable-next-line extension/should-translate
             text: "[A] >= [B]",
             arguments: {
               A: {
@@ -123,6 +125,7 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
+            // eslint-disable-next-line extension/should-translate
             text: "[A] ^ [B]",
             arguments: {
               A: {
@@ -247,7 +250,7 @@
           {
             opcode: "newline",
             blockType: Scratch.BlockType.REPORTER,
-            text: "newline character",
+            text: Scratch.translate("newline character"),
             disableMonitor: true,
             arguments: {},
           },
@@ -256,6 +259,7 @@
 
             blockType: Scratch.BlockType.BOOLEAN,
 
+            // eslint-disable-next-line extension/should-translate
             text: "[STRING]",
             arguments: {
               STRING: {

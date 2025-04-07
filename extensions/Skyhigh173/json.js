@@ -2,12 +2,13 @@
 // ID: skyhigh173JSON
 // Description: Handle JSON strings and arrays.
 // By: Skyhigh173 <https://scratch.mit.edu/users/Skyhigh173/>
+// By: Mio <https://scratch.mit.edu/users/0znzw/>
 // License: MIT
 
 (function (Scratch) {
   "use strict";
   /*
-   * JSON extension v2.5 by skyhigh173 (English Version)
+   * JSON extension v2.6 by skyhigh173 (English Version)
    * Do not remove this comment
    */
 
@@ -24,6 +25,7 @@
     getInfo() {
       return {
         id: "skyhigh173JSON",
+        // eslint-disable-next-line extension/should-translate
         name: "JSON",
         color1: "#3271D0",
         blocks: [
@@ -479,6 +481,22 @@
               },
             },
           },
+          {
+            opcode: "json_array_analysis",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("[analysis] of array [list]"),
+            disableMonitor: true,
+            arguments: {
+              list: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "[17, 1, 2017, 0, 120, 14]",
+              },
+              analysis: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "analysis",
+              },
+            },
+          },
           makeLabel(Scratch.translate("Lists")),
           {
             opcode: "json_vm_getlist",
@@ -558,6 +576,39 @@
               },
             ],
           },
+          analysis: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("minimum value"),
+                value: "minimum",
+              },
+              {
+                text: Scratch.translate("maximum value"),
+                value: "maximum",
+              },
+              {
+                text: Scratch.translate("sum"),
+                value: "sum",
+              },
+              {
+                text: Scratch.translate("average"),
+                value: "average",
+              },
+              {
+                text: Scratch.translate("median"),
+                value: "median",
+              },
+              {
+                text: Scratch.translate("mode"),
+                value: "mode",
+              },
+              {
+                text: Scratch.translate("variance"),
+                value: "variance",
+              },
+            ],
+          },
         },
       };
     }
@@ -629,7 +680,7 @@
         return json;
       } else {
         try {
-          return JSON.parse(json);
+          return JSON.parse(json) ?? "";
         } catch {
           return json;
         }
@@ -717,12 +768,14 @@
         json = JSON.parse(json);
         switch (Stype) {
           case "keys":
-            return JSON.stringify(Object.keys(json).map((key) => key));
+            return JSON.stringify(Object.keys(json).map((key) => key ?? ""));
           case "values":
-            return JSON.stringify(Object.keys(json).map((key) => json[key]));
+            return JSON.stringify(
+              Object.keys(json).map((key) => json[key] ?? "")
+            );
           case "datas":
             return JSON.stringify(
-              Object.keys(json).map((key) => [key, json[key]])
+              Object.keys(json).map((key) => [key, json[key] ?? ""])
             );
           default:
             return "";
@@ -736,7 +789,7 @@
       try {
         json = JSON.parse(json);
         if (hasOwn(json, item)) {
-          const result = json[item];
+          const result = json[item] ?? "";
           if (typeof result === "object") {
             return JSON.stringify(result);
           } else {
@@ -754,7 +807,8 @@
       if (Number.isNaN(value)) return "NaN";
       if (value === Infinity) return "Infinity";
       if (value === -Infinity) return "-Infinity";
-      return value;
+      // null and undefined -> empty
+      return value ?? "";
     }
 
     json_set({ item, value, json }) {
@@ -799,6 +853,7 @@
         } else {
           result = json[json.length + item];
         }
+        result = result ?? "";
         if (typeof result == "object") {
           return JSON.stringify(result);
         } else {
@@ -981,7 +1036,7 @@
           if (Array.isArray(array)) {
             const safeArray = array.map((i) => {
               if (typeof i === "object") return JSON.stringify(i);
-              return i;
+              return i ?? "";
             });
             listVariable.value = safeArray;
           }
@@ -1005,6 +1060,66 @@
       list.sort(Scratch.Cast.compare);
       if (args.order === "descending") list.reverse();
       return JSON.stringify(list);
+    }
+    json_array_analysis(args) {
+      let list;
+      try {
+        list = JSON.parse(args.list);
+      } catch {
+        return 0;
+      }
+      if (!Array.isArray(list)) {
+        return 0;
+      }
+      list = list.map(Scratch.Cast.toNumber);
+      const listLength = list.length;
+      switch (Scratch.Cast.toString(args.analysis)) {
+        case "maximum": {
+          let max = -Infinity;
+          for (let i = 0; i < list.length; i++)
+            if (list[i] > max) max = list[i];
+          return max;
+        }
+        case "minimum": {
+          let min = Infinity;
+          for (let i = 0; i < list.length; i++)
+            if (list[i] < min) min = list[i];
+          return min;
+        }
+        case "sum":
+          return list.reduce((a, b) => a + b, 0);
+        case "average":
+          return list.reduce((a, b) => a + b, 0) / listLength;
+        case "median": {
+          const list2 = list.sort(Scratch.Cast.compare);
+          const list2Length = list2.length;
+          const c = Math.floor(list2Length / 2);
+          const e = list2Length % 2 === 0;
+          if (e) return (list2[c - 1] + list2[c]) / 2;
+          return list2[c];
+        }
+        case "mode": {
+          const freqMap = new Map(),
+            mode = [0, 0]; // current mode, max
+          for (
+            let i = 0, num = list[0], count = null;
+            i < listLength;
+            i++, num = list[i], count = freqMap.get(num)
+          ) {
+            count ||= 1;
+            if (freqMap.has(num)) ++count;
+            if (count > mode[1]) (mode[0] = num), (mode[1] = count);
+            freqMap.set(num, count);
+          }
+          return mode[0];
+        }
+        case "variance": {
+          const average = list.reduce((a, b) => a + b, 0) / listLength;
+          const list2 = list.map((a) => (a - average) ** 2);
+          return list2.reduce((a, b) => a + b, 0) / listLength;
+        }
+      }
+      return 0;
     }
   }
   Scratch.extensions.register(new JSONS());

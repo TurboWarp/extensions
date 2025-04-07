@@ -9,12 +9,18 @@
  * This file is available under an informal "use with credit" license.
  */
 
-(function () {
+(function (Scratch) {
   "use strict";
 
   var count = 0;
   var isMeasure = false;
   var time = 0;
+
+  Scratch.vm.runtime.on("AFTER_EXECUTE", () => {
+    if (isMeasure) {
+      time += 1;
+    }
+  });
 
   class RixxyX {
     getInfo() {
@@ -22,11 +28,13 @@
         color1: "#773c00",
         color2: "#5f3000",
         id: "RixxyX",
+        // eslint-disable-next-line extension/should-translate
         name: "RixxyX",
         blocks: [
           {
             opcode: "notEquals",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate
             text: "[TEXT_1] != [TEXT_2]",
             arguments: {
               TEXT_1: {
@@ -302,7 +310,7 @@
           {
             opcode: "jsonParse",
             blockType: Scratch.BlockType.REPORTER,
-            text: "JSON.parse([TEXT])",
+            text: Scratch.translate("parse JSON [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -313,7 +321,8 @@
           {
             opcode: "returnENum",
             blockType: Scratch.BlockType.REPORTER,
-            text: "e", // e
+            // eslint-disable-next-line extension/should-translate
+            text: "e",
             arguments: {},
           },
           {
@@ -480,11 +489,8 @@
       isMeasure = false;
     }
     returnTime(args) {
-      if (isMeasure == true) {
-        time += 1;
-      }
       return time;
     }
   }
   Scratch.extensions.register(new RixxyX());
-})();
+})(Scratch);

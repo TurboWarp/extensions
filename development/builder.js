@@ -457,6 +457,9 @@ class JSONMetadataFile extends BuildFile {
       if (samples) {
         extension.samples = samples.map((i) => i.getTitle());
       }
+      if (metadata.scratchCompatible) {
+        extension.scratchCompatible = true;
+      }
 
       extensions.push(extension);
     }
@@ -470,9 +473,9 @@ class JSONMetadataFile extends BuildFile {
 
 class ImageFile extends BuildFile {
   validate() {
-    const sizeOfImage = require("image-size");
+    const { imageSize } = require("image-size");
     const contents = this.read();
-    const { width, height } = sizeOfImage(contents);
+    const { width, height } = imageSize(contents);
     const aspectRatio = width / height;
     if (aspectRatio !== 2) {
       throw new Error(
@@ -787,37 +790,34 @@ class Builder {
       build.files[`/${filename}`] = new BuildFile(absolutePath);
     }
 
-    if (this.mode !== "desktop") {
-      for (const [filename, absolutePath] of recursiveReadDirectory(
-        this.docsRoot
-      )) {
-        if (!filename.endsWith(".md")) {
-          continue;
-        }
-        const extensionSlug = filename.split(".")[0];
-        const file = new DocsFile(absolutePath, extensionSlug);
-        extensionsWithDocs.add(extensionSlug);
-        build.files[`/${extensionSlug}.html`] = file;
+    for (const [filename, absolutePath] of recursiveReadDirectory(
+      this.docsRoot
+    )) {
+      if (!filename.endsWith(".md")) {
+        continue;
       }
-
-      const scratchblocksPath = pathUtil.join(
-        __dirname,
-        "../node_modules/@turbowarp/scratchblocks/build/scratchblocks.min.js"
-      );
-      build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
-        scratchblocksPath
-      );
-
-      build.files["/index.html"] = new HomepageFile(
-        extensionFiles,
-        extensionImages,
-        featuredExtensionSlugs,
-        extensionsWithDocs,
-        samples,
-        this.mode
-      );
-      build.files["/sitemap.xml"] = new SitemapFile(build);
+      const extensionSlug = filename.split(".")[0];
+      const file = new DocsFile(absolutePath, extensionSlug);
+      extensionsWithDocs.add(extensionSlug);
+      build.files[`/${extensionSlug}.html`] = file;
     }
+
+    // Don't rely on node_modules being stored in a specific location or having a specific structure
+    // so that this works when we are a dependency in a bigger npm tree.
+    const scratchblocksPath = require.resolve("@turbowarp/scratchblocks");
+    build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
+      scratchblocksPath
+    );
+
+    build.files["/index.html"] = new HomepageFile(
+      extensionFiles,
+      extensionImages,
+      featuredExtensionSlugs,
+      extensionsWithDocs,
+      samples,
+      this.mode
+    );
+    build.files["/sitemap.xml"] = new SitemapFile(build);
 
     build.files["/generated-metadata/extensions-v0.json"] =
       new JSONMetadataFile(
