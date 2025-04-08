@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version 3.0.22 (TW Ver)
+// Version 3.0.3 (TW Ver)
 
 (function (Scratch) {
   "use strict";
@@ -204,6 +204,16 @@
             }
           },
           {
+            opcode: "spriteTouchingSpriteType",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is [SPRITE1] touching [TYPE] of [SPRITE2]?",
+            arguments: {
+              SPRITE1: { type: Scratch.ArgumentType.STRING, menu: "TARGETS3" },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "TARGET_TYPE" },
+              SPRITE2: { type: Scratch.ArgumentType.STRING, menu: "TARGETS4" }
+            }
+          },
+          {
             opcode: "spriteTouchingClone",
             blockType: Scratch.BlockType.BOOLEAN,
             text: "is [SPRITE1] touching clone of [SPRITE2] with [VAR] set to [VAL]?",
@@ -381,6 +391,7 @@
           TARGETS2: { acceptReporters: true, items: this._getTargets(true, true) },
           TARGETS3: { acceptReporters: true, items: this._getTargets(false, true) },
           TARGETS4: { acceptReporters: true, items: this._getTargets(false, false) },
+          TARGET_TYPE: ["parent", "clone"],
           SCREENS: ["fullscreen", "smallscreen"],
           INPUTS: ["text", "password", "number", "color"],
           Asking: ["stage", "sprite"],
@@ -534,6 +545,19 @@
       const target = sprite2 === "_myself_" ? util.target : runtime.getSpriteTargetByName(sprite2);
       if (!target) return false;
       return target.sprite.clones.some((t) => { return t.isTouchingObject(args.SPRITE1) })
+    }
+
+    spriteTouchingSpriteType(args, util) {
+      const target1 = args.SPRITE1 === "_myself_" ? util.target : runtime.getSpriteTargetByName(args.SPRITE1);
+      const target2 = runtime.getSpriteTargetByName(args.SPRITE2);
+      if (!target1 || !target2) return false;
+      if (args.TYPE === "parent") return render.isTouchingDrawables(target1.drawableID, [target2.drawableID]);
+      else {
+        const clones = target2.sprite.clones;
+        const cloneIds = [];
+        for (var i = 1; i < clones.length; i++) cloneIds.push(clones[i].drawableID);
+        return render.isTouchingDrawables(target1.drawableID, cloneIds);
+      }
     }
 
     spriteTouchingClone(args, util) {
