@@ -33,7 +33,7 @@
     "chokidar": "^4.0.3",
     "ejs": "^3.1.10",
     "express": "^4.21.2",
-    "image-size": "^2.0.1",
+    "image-size": "^2.0.2",
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
