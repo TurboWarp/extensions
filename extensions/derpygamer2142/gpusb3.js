@@ -66,6 +66,10 @@
       // @ts-ignore
       if (!navigator.gpu) {
         // why angry red lines >: (
+        if (typeof scaffolding === "undefined")
+          alert(
+            "WebGPU is unavailable in the current context. Check https://webgpu.io for more information."
+          );
         return this.throwError(
           "WebGPUUnavailable",
           "WebGPU is not supported",
@@ -78,6 +82,8 @@
       // @ts-ignore
       this.adapter = await navigator.gpu.requestAdapter();
       if (!this.adapter) {
+        if (typeof scaffolding === "undefined")
+          alert("Failed to get WebGPU adapter!");
         return this.throwError(
           "AdapterGetFail",
           "Failed to get adapter",
@@ -90,6 +96,7 @@
       this.device = await this.adapter.requestDevice();
 
       this.device.lost.then((info) => {
+        if (typeof scaffolding === "undefined") alert("WebGPU device lost!");
         this.throwError("DeviceLost", info.message, "WebGPU", info);
         this.device = null; // requestDevice will never return null so we need to account for that ourselves
       });
