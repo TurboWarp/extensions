@@ -21,6 +21,23 @@
   };
 
   /**
+   * @param {RenderWebGL.SVGSkin} svgSkin
+   * @returns {Promise<void>}
+   */
+  const svgSkinFinishedLoading = (svgSkin) => new Promise((resolve) => {
+    if (svgSkin._svgImageLoaded) {
+      resolve();
+    } else {
+      svgSkin._svgImage.addEventListener("load", () => {
+        resolve();
+      });
+      svgSkin._svgImage.addEventListener("error", () => {
+        resolve();
+      });
+    }
+  });
+
+  /**
    * @param {VM.BlockUtility} util
    * @param {unknown} targetName
    */
@@ -176,12 +193,28 @@
             opcode: "replaceCostumeContent",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set [TYPE] for [COSTUME] to [CONTENT]"),
+            hideFromPalette: true, // needed for compatibility, also superceeded by skins
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "SVGPNG",
                 defaultValue: "SVG",
               },
+              COSTUME: {
+                type: Scratch.ArgumentType.COSTUME,
+              },
+              CONTENT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "<svg />",
+              },
+            },
+            extensions: ["colours_looks"],
+          },
+          {
+            opcode: "replaceCostumeContentNew",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set svg for [COSTUME] to [CONTENT]"),
+            arguments: {
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
               },
@@ -480,6 +513,35 @@
         }
       } else {
         console.error("Options other than SVG are currently unavailable");
+      }
+    }
+    
+    async replaceCostumeContentNew(args, util) {
+      const costumeIndex = this.getCostumeInput(args.COSTUME, util.target);
+      const costume = util.target.sprite.costumes[costumeIndex];
+      if (!costume) {
+        console.error("Costume doesn't exist");
+        return;
+      }
+
+      //This is here to ensure no changes are made to bitmap costumes, as changes are irreversible
+      //Check will be removed when it's possible to edit bitmap skins
+      const format = costume.asset.assetType.runtimeFormat;
+      if (format !== "svg") {
+        console.error("Costume is not vector");
+        return;
+      }
+
+      const content = args.CONTENT;
+      try {
+        renderer.updateSVGSkin(
+          costume.skinId,
+          Scratch.Cast.toString(content)
+        );
+        await svgSkinFinishedLoading(renderer._allSkins[costume.skinId]);
+        renderer._allSkins[costume.skinId].differsFromAsset = true;
+      } catch (e) {
+        console.error(e);
       }
     }
 
