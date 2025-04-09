@@ -4,64 +4,48 @@
 // By: Unknown07724 <https://scratch.mit.edu/users/Unknown07724/>
 // License: MPL-2.0
 
-let ids = [];
-let directions = {};
-let magnitudes = {};
-
 (function (Scratch) {
   "use strict";
 
-  // Ensure we're running in an unsandboxed environment
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("This extension must run unsandboxed");
   }
 
-  let ids = [];
-  let directions = {};
-  let magnitudes = {};
+  const ids = [];
+  const directions = {};
+  const magnitudes = {};
 
   class UnknownVectors {
     getInfo() {
       return {
         id: "unknownvectors",
-        name: "Vectors",
+        name: Scratch.translate("Vectors"),
+        color1: "#d63384",
         blocks: [
           {
             opcode: "vectorCreate",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create vector with ID [ID], direction [DIRECTION] and magnitude [MAGNITUDE]",
+            text: Scratch.translate("create vector with ID [ID], direction [DIRECTION] and magnitude [MAGNITUDE]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              DIRECTION: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 90,
-              },
-              MAGNITUDE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10,
-              },
+              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
+              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
             },
           },
           {
             opcode: "vectorChange",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change vector [ID] to direction [DIRECTION] and magnitude [MAGNITUDE]",
+            text: Scratch.translate("change vector [ID] to direction [DIRECTION] and magnitude [MAGNITUDE]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              DIRECTION: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 90,
-              },
-              MAGNITUDE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10,
-              },
+              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
+              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
             },
           },
           {
             opcode: "vectorMag",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Mag of vector [ID]",
+            text: Scratch.translate("Magnitude of vector [ID]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
             },
@@ -69,12 +53,12 @@ let magnitudes = {};
           {
             opcode: "listofIDs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "List of IDs",
+            text: Scratch.translate("List of IDs"),
           },
           {
             opcode: "vectorDir",
             blockType: Scratch.BlockType.REPORTER,
-            text: "direction of vector [ID]",
+            text: Scratch.translate("Direction of vector [ID]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
             },
@@ -100,12 +84,12 @@ let magnitudes = {};
 
     vectorMag(args) {
       const id = args.ID;
-      return magnitudes[id] ?? "vector not found";
+      return magnitudes[id] ?? Scratch.translate("vector not found");
     }
 
     vectorDir(args) {
       const id = args.ID;
-      return directions[id] ?? "vector not found";
+      return directions[id] ?? Scratch.translate("vector not found");
     }
 
     listofIDs() {
