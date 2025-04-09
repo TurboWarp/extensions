@@ -25,21 +25,37 @@
           {
             opcode: "vectorCreate",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("create vector with ID [ID], direction [DIRECTION] and magnitude [MAGNITUDE]"),
+            text: Scratch.translate(
+              "create vector with ID [ID], direction [DIRECTION] and magnitude [MAGNITUDE]"
+            ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
-              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              DIRECTION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 90,
+              },
+              MAGNITUDE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10,
+              },
             },
           },
           {
             opcode: "vectorChange",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("change vector [ID] to direction [DIRECTION] and magnitude [MAGNITUDE]"),
+            text: Scratch.translate(
+              "change vector [ID] to direction [DIRECTION] and magnitude [MAGNITUDE]"
+            ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
-              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              DIRECTION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 90,
+              },
+              MAGNITUDE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10,
+              },
             },
           },
           {
