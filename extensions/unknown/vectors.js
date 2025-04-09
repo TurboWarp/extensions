@@ -1,3 +1,9 @@
+// Name: Vectors
+// ID: unknownvectors
+// Description: variables with a direction.
+// By: Unknown07724 <https://scratch.mit.edu/users/Unknown07724/>
+// License: MPL-2.0
+
 let ids = [];
 let directions = {};
 let magnitudes = {};
