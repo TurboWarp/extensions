@@ -20,7 +20,7 @@
       return {
         id: "unknownvectors",
         name: Scratch.translate("Vectors"),
-        color1: "#d63384",
+        color1: "#2e75d1",
         blocks: [
           {
             opcode: "vectorCreate",
