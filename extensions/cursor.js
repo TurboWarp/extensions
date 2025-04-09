@@ -155,40 +155,40 @@
     );
 
   const cursors = [
-    "default",
-    "pointer",
-    "move",
-    "grab",
-    "grabbing",
-    "text",
-    "vertical-text",
-    "wait",
-    "progress",
-    "help",
-    "context-menu",
-    "zoom-in",
-    "zoom-out",
-    "crosshair",
-    "cell",
-    "not-allowed",
-    "copy",
-    "alias",
-    "no-drop",
-    "all-scroll",
-    "col-resize",
-    "row-resize",
-    "n-resize",
-    "e-resize",
-    "s-resize",
-    "w-resize",
-    "ne-resize",
-    "nw-resize",
-    "se-resize",
-    "sw-resize",
-    "ew-resize",
-    "ns-resize",
-    "nesw-resize",
-    "nwse-resize",
+    { text: Scratch.translate("default"), value: "default" },
+    { text: Scratch.translate("pointer"), value: "pointer" },
+    { text: Scratch.translate("move"), value: "move" },
+    { text: Scratch.translate("grab"), value: "grab" },
+    { text: Scratch.translate("grabbing"), value: "grabbing" },
+    { text: Scratch.translate("text"), value: "text" },
+    { text: Scratch.translate("vertical-text"), value: "vertical-text" },
+    { text: Scratch.translate("wait"), value: "wait" },
+    { text: Scratch.translate("progress"), value: "progress" },
+    { text: Scratch.translate("help"), value: "help" },
+    { text: Scratch.translate("context-menu"), value: "context-menu" },
+    { text: Scratch.translate("zoom-in"), value: "zoom-in" },
+    { text: Scratch.translate("zoom-out"), value: "zoom-ou" },
+    { text: Scratch.translate("crosshair"), value: "crosshair" },
+    { text: Scratch.translate("cell"), value: "cell" },
+    { text: Scratch.translate("not-allowed"), value: "not-allowed" },
+    { text: Scratch.translate("copy"), value: "copy" },
+    { text: Scratch.translate("alias"), value: "alias" },
+    { text: Scratch.translate("no-drop"), value: "no-drop" },
+    { text: Scratch.translate("all-scroll"), value: "all-scroll" },
+    { text: Scratch.translate("column-resize"), value: "col-resize" },
+    { text: Scratch.translate("row-resize"), value: "row-resize" },
+    { text: Scratch.translate("n-resize"), value: "n-resize" },
+    { text: Scratch.translate("e-resize"), value: "e-resize" },
+    { text: Scratch.translate("s-resize"), value: "s-resize" },
+    { text: Scratch.translate("w-resize"), value: "w-resize" },
+    { text: Scratch.translate("ne-resize"), value: "ne-resize" },
+    { text: Scratch.translate("nw-resize"), value: "nw-resize" },
+    { text: Scratch.translate("se-resize"), value: "se-resize" },
+    { text: Scratch.translate("sw-resize"), value: "sw-resize" },
+    { text: Scratch.translate("ew-resize"), value: "ew-resize" },
+    { text: Scratch.translate("ns-resize"), value: "ns-resize" },
+    { text: Scratch.translate("nesw-resize"), value: "nesw-resize" },
+    { text: Scratch.translate("nwse-resize"), value: "nwse-resize" },
   ];
 
   class MouseCursor {
@@ -285,7 +285,7 @@
     setCur(args) {
       const newCursor = Scratch.Cast.toString(args.cur);
       // Prevent setting cursor to "url(...), default" from causing fetch.
-      if (cursors.includes(newCursor) || newCursor === "none") {
+      if (cursors.some((e) => e.value === newCursor) || newCursor === "none") {
         nativeCursor = newCursor;
         customCursorImageName = null;
         currentCanvasCursor = newCursor;
