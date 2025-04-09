@@ -8,12 +8,12 @@ let ids = [];
 let directions = {};
 let magnitudes = {};
 
-(function(Scratch) {
-  'use strict';
+(function (Scratch) {
+  "use strict";
 
   // Ensure we're running in an unsandboxed environment
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('This extension must run unsandboxed');
+    throw new Error("This extension must run unsandboxed");
   }
 
   let ids = [];
@@ -23,48 +23,60 @@ let magnitudes = {};
   class UnknownVectors {
     getInfo() {
       return {
-        id: 'unknownvectors',
-        name: 'Vectors',
+        id: "unknownvectors",
+        name: "Vectors",
         blocks: [
           {
-            opcode: 'vectorCreate',
+            opcode: "vectorCreate",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'create vector with ID [ID], direction [DIRECTION] and magnitude [MAGNITUDE]',
+            text: "create vector with ID [ID], direction [DIRECTION] and magnitude [MAGNITUDE]",
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'vec1' },
-              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
-              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
+              DIRECTION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 90,
+              },
+              MAGNITUDE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10,
+              },
             },
           },
           {
-            opcode: 'vectorChange',
+            opcode: "vectorChange",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'change vector [ID] to direction [DIRECTION] and magnitude [MAGNITUDE]',
+            text: "change vector [ID] to direction [DIRECTION] and magnitude [MAGNITUDE]",
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'vec1' },
-              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
-              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
+              DIRECTION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 90,
+              },
+              MAGNITUDE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10,
+              },
             },
           },
           {
-            opcode: 'vectorMag',
+            opcode: "vectorMag",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Mag of vector [ID]',
+            text: "Mag of vector [ID]",
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'vec1' },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
             },
           },
           {
-            opcode: 'listofIDs',
+            opcode: "listofIDs",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'List of IDs',
+            text: "List of IDs",
           },
           {
-            opcode: 'vectorDir',
+            opcode: "vectorDir",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'direction of vector [ID]',
+            text: "direction of vector [ID]",
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'vec1' },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
             },
           },
         ],
@@ -88,19 +100,18 @@ let magnitudes = {};
 
     vectorMag(args) {
       const id = args.ID;
-      return magnitudes[id] ?? 'vector not found';
+      return magnitudes[id] ?? "vector not found";
     }
 
     vectorDir(args) {
       const id = args.ID;
-      return directions[id] ?? 'vector not found';
+      return directions[id] ?? "vector not found";
     }
 
     listofIDs() {
-      return ids.join(', ');
+      return ids.join(", ");
     }
   }
 
   Scratch.extensions.register(new UnknownVectors());
-
 })(Scratch);
