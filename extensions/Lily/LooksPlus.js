@@ -24,18 +24,19 @@
    * @param {RenderWebGL.SVGSkin} svgSkin
    * @returns {Promise<void>}
    */
-  const svgSkinFinishedLoading = (svgSkin) => new Promise((resolve) => {
-    if (svgSkin._svgImageLoaded) {
-      resolve();
-    } else {
-      svgSkin._svgImage.addEventListener("load", () => {
+  const svgSkinFinishedLoading = (svgSkin) =>
+    new Promise((resolve) => {
+      if (svgSkin._svgImageLoaded) {
         resolve();
-      });
-      svgSkin._svgImage.addEventListener("error", () => {
-        resolve();
-      });
-    }
-  });
+      } else {
+        svgSkin._svgImage.addEventListener("load", () => {
+          resolve();
+        });
+        svgSkin._svgImage.addEventListener("error", () => {
+          resolve();
+        });
+      }
+    });
 
   /**
    * @param {VM.BlockUtility} util
@@ -515,7 +516,7 @@
         console.error("Options other than SVG are currently unavailable");
       }
     }
-    
+
     async replaceCostumeContentNew(args, util) {
       const costumeIndex = this.getCostumeInput(args.COSTUME, util.target);
       const costume = util.target.sprite.costumes[costumeIndex];
@@ -534,10 +535,7 @@
 
       const content = args.CONTENT;
       try {
-        renderer.updateSVGSkin(
-          costume.skinId,
-          Scratch.Cast.toString(content)
-        );
+        renderer.updateSVGSkin(costume.skinId, Scratch.Cast.toString(content));
         await svgSkinFinishedLoading(renderer._allSkins[costume.skinId]);
         renderer._allSkins[costume.skinId].differsFromAsset = true;
       } catch (e) {
