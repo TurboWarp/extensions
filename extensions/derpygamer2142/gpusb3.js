@@ -21,16 +21,15 @@
 
   let shaders = {};
   let error = {};
-  let resources = {
-    buffers: {},
-    bindGroups: {},
-    bindGroupLayouts: {},
-    bufferRefs: {}, // deprecated, not used anywhere anymore
-    arrayBuffers: {},
-    views: {},
-    textures: {}, // webgpu texture objects, actual images will be yoinked from ~~the pen+ costume library(if available)~~(scrapped idea, too complicated. i go into more detail elsewhere) and costume list
-    samplers: {}, // this doesn't work with compute shaders but i kept it in case i lock in and add other stuff(extremely unlikely but deleting code causes me pain)
-  };
+  let buffers = {},
+    bindGroups = {},
+    bindGroupLayouts = {},
+    bufferRefs = {}, // deprecated, not used anywhere anymore
+    arrayBuffers = {},
+    views = {},
+    textures = {}, // webgpu texture objects, actual images will be yoinked from ~~the pen+ costume library(if available)~~(scrapped idea, too complicated. i go into more detail elsewhere) and costume list
+    samplers = {}; // this doesn't work with compute shaders but i kept it in case i lock in and add other stuff(extremely unlikely but deleting code causes me pain)
+
   let currentBindGroup = "";
   let currentBindGroupLayout = "";
 
@@ -60,9 +59,15 @@
      * @param {import("scratch-vm").BlockUtility} util util
      */
     async init(args, util) {
-      Object.keys(resources).forEach((k) => {
-        resources[k] = {};
-      });
+      buffers = {};
+      bindGroups = {};
+      bindGroupLayouts = {};
+      bufferRefs = {}; // unused but we clear this just in case
+      arrayBuffers = {};
+      views = {};
+      textures = {};
+      samplers = {}; // also unused, clear just in case
+
       // @ts-ignore
       if (!navigator.gpu) {
         // why angry red lines >: (
@@ -132,6 +137,31 @@
       console.error(error);
 
       Scratch.vm.runtime.startHats("gpusb3_onError");
+    }
+
+    /**
+     *
+     * @param {"buffers" | "bindGroups" | "bindGroupLayouts" | "arrayBuffers" | "views" | "textures" | "samplers"} type
+     */
+    resourceFromType(type) {
+      switch (type) {
+        case "buffers":
+          return buffers;
+        case "bindGroups":
+          return bindGroups;
+        case "bindGroupLayouts":
+          return bindGroupLayouts;
+        case "arrayBuffers":
+          return arrayBuffers;
+        case "views":
+          return views;
+        case "textures":
+          return textures;
+        case "samplers":
+          return samplers; // unused, returned anyways
+        default:
+          return null;
+      }
     }
 
     getInfo() {
@@ -3212,7 +3242,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
             );
           } else if (
             !Object.prototype.hasOwnProperty.call(
-              resources.bindGroupLayouts,
+              bindGroupLayouts,
               bglInput.fields.TEXT.value
             ) &&
             bglInput.fields.TEXT.value !== ""
@@ -3283,7 +3313,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
                 bindGroupLayouts:
                   bglInput.fields.TEXT.value === ""
                     ? []
-                    : [resources.bindGroupLayouts[bglInput.fields.TEXT.value]],
+                    : [bindGroupLayouts[bglInput.fields.TEXT.value]],
               }),
               compute: {
                 module: shaderModule,
@@ -3344,7 +3374,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       }
       if (
         !Object.prototype.hasOwnProperty.call(
-          resources.bindGroups,
+          bindGroups,
           Scratch.Cast.toString(args.BINDGROUP)
         )
       ) {
@@ -3368,7 +3398,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       passEncoder.setPipeline(shader.computePipeline);
       passEncoder.setBindGroup(
         0,
-        resources.bindGroups[Scratch.Cast.toString(args.BINDGROUP)]
+        bindGroups[Scratch.Cast.toString(args.BINDGROUP)]
       );
       passEncoder.dispatchWorkgroups(
         Scratch.Cast.toNumber(args.X),
@@ -3502,12 +3532,11 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       this.device.pushErrorScope("internal");
       this.device.pushErrorScope("out-of-memory");
       // currentBindGroupLayout =
-      resources.buffers[Scratch.Cast.toString(args.NAME)] =
-        this.device.createBuffer({
-          label: Scratch.Cast.toString(args.NAME),
-          size: Scratch.Cast.toNumber(args.SIZE),
-          usage: Scratch.Cast.toNumber(args.USAGE),
-        });
+      buffers[Scratch.Cast.toString(args.NAME)] = this.device.createBuffer({
+        label: Scratch.Cast.toString(args.NAME),
+        size: Scratch.Cast.toNumber(args.SIZE),
+        usage: Scratch.Cast.toNumber(args.USAGE),
+      });
       this.device.popErrorScope().then((error) => {
         if (error)
           this.throwError(
@@ -3550,10 +3579,9 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
         this.device.pushErrorScope("validation");
         this.device.pushErrorScope("internal");
         this.device.pushErrorScope("out-of-memory");
-        resources.bindGroupLayouts[Scratch.Cast.toString(args.NAME)] =
+        bindGroupLayouts[Scratch.Cast.toString(args.NAME)] =
           this.device.createBindGroupLayout({
-            entries:
-              resources.bindGroupLayouts[Scratch.Cast.toString(args.NAME)],
+            entries: bindGroupLayouts[Scratch.Cast.toString(args.NAME)],
             label: Scratch.Cast.toString(args.NAME),
           });
         this.device.popErrorScope().then((error) => {
@@ -3587,7 +3615,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       }
 
       currentBindGroupLayout = Scratch.Cast.toString(args.NAME);
-      resources.bindGroupLayouts[Scratch.Cast.toString(args.NAME)] = []; // temporarily store a list of entries here, things will be added to it via the bindGroupLayoutEntry block
+      bindGroupLayouts[Scratch.Cast.toString(args.NAME)] = []; // temporarily store a list of entries here, things will be added to it via the bindGroupLayoutEntry block
       util.startBranch(1, true);
       util.stackFrame.blockRanOnce = true;
     }
@@ -3621,7 +3649,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
         visibility: GPUShaderStage.COMPUTE,
       };
       o[args.TYPE] = parsed;
-      resources.bindGroupLayouts[currentBindGroupLayout].push(o);
+      bindGroupLayouts[currentBindGroupLayout].push(o);
     }
 
     createBindGroup(args, util) {
@@ -3638,11 +3666,10 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
         this.device.pushErrorScope("validation");
         this.device.pushErrorScope("internal");
         this.device.pushErrorScope("out-of-memory");
-        resources.bindGroups[Scratch.Cast.toString(args.NAME)] =
+        bindGroups[Scratch.Cast.toString(args.NAME)] =
           this.device.createBindGroup({
-            layout:
-              resources.bindGroupLayouts[Scratch.Cast.toString(args.LAYOUT)],
-            entries: resources.bindGroups[Scratch.Cast.toString(args.NAME)],
+            layout: bindGroupLayouts[Scratch.Cast.toString(args.LAYOUT)],
+            entries: bindGroups[Scratch.Cast.toString(args.NAME)],
             label: Scratch.Cast.toString(args.NAME),
           });
         this.device.popErrorScope().then((error) => {
@@ -3676,7 +3703,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       }
 
       currentBindGroup = Scratch.Cast.toString(args.NAME);
-      resources.bindGroups[Scratch.Cast.toString(args.NAME)] = []; // temporarily store a list of entries here, things will be added to it via the bindGroupLayoutEntry block
+      bindGroups[Scratch.Cast.toString(args.NAME)] = []; // temporarily store a list of entries here, things will be added to it via the bindGroupLayoutEntry block
       util.startBranch(1, true);
       util.stackFrame.blockRanOnce = true;
     }
@@ -3698,9 +3725,10 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       // the object to bind to that slot. buffers are freaky and need a special object
       let o;
       const type = kv[args.TYPE] ?? "buffers";
+      // console.log(this.device, !!this.device, args.TYPE)
       if (
         !Object.prototype.hasOwnProperty.call(
-          resources[type],
+          this.resourceFromType(type),
           Scratch.Cast.toString(args.RESOURCE)
         )
       ) {
@@ -3713,15 +3741,15 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       }
       if (type == "buffers") {
         o = {
-          buffer: resources.buffers[args.RESOURCE],
+          buffer: buffers[args.RESOURCE],
         };
         //console.log(o)
       } else {
-        o = resources[type][args.RESOURCE];
+        o = this.resourceFromType(type)[args.RESOURCE];
         if (type == "textures") o = o.createView();
       }
 
-      resources.bindGroups[currentBindGroup].push({
+      bindGroups[currentBindGroup].push({
         binding: Scratch.Cast.toNumber(args.BINDING),
         resource: o,
       });
@@ -3745,7 +3773,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       } catch {
         array = [];
       }
-      resources.bufferRefs[this.getBlockId(util)] = new Float32Array(array);
+      bufferRefs[this.getBlockId(util)] = new Float32Array(array);
       return this.getBlockId(util);
     }
 
@@ -3765,7 +3793,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
         );
       if (
         !Object.prototype.hasOwnProperty.call(
-          resources.buffers,
+          buffers,
           Scratch.Cast.toString(args.BUFFER)
         )
       ) {
@@ -3778,7 +3806,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       }
       if (
         !Object.prototype.hasOwnProperty.call(
-          resources.arrayBuffers,
+          arrayBuffers,
           Scratch.Cast.toString(args.ARRAY)
         )
       ) {
@@ -3794,9 +3822,9 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       this.device.pushErrorScope("out-of-memory");
       this.device.pushErrorScope("validation");
       this.device.queue.writeBuffer(
-        resources.buffers[Scratch.Cast.toString(args.BUFFER)],
+        buffers[Scratch.Cast.toString(args.BUFFER)],
         Scratch.Cast.toNumber(args.OFF2),
-        resources.arrayBuffers[Scratch.Cast.toString(args.ARRAY)],
+        arrayBuffers[Scratch.Cast.toString(args.ARRAY)],
         Scratch.Cast.toNumber(args.OFF1),
         Scratch.Cast.toNumber(args.SIZE)
       );
@@ -3840,8 +3868,8 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       if (
         Scratch.Cast.toNumber(args.NUMBYTES) <= 0 ||
         args.BUF1 === args.BUF2 ||
-        !Object.prototype.hasOwnProperty.call(resources.buffers, args.BUF1) ||
-        !Object.prototype.hasOwnProperty.call(resources.buffers, args.BUF1)
+        !Object.prototype.hasOwnProperty.call(buffers, args.BUF1) ||
+        !Object.prototype.hasOwnProperty.call(buffers, args.BUF1)
       ) {
         return this.throwError(
           "InvalidInput",
@@ -3857,9 +3885,9 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       this.device.pushErrorScope("validation");
       this.device.pushErrorScope("internal");
       commandEncoder.copyBufferToBuffer(
-        resources.buffers[args.BUF1],
+        buffers[args.BUF1],
         Scratch.Cast.toNumber(args.BUF1OFF),
-        resources.buffers[args.BUF2],
+        buffers[args.BUF2],
         Scratch.Cast.toNumber(args.BUF2OFF),
         Scratch.Cast.toNumber(args.NUMBYTES)
       );
@@ -3905,7 +3933,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       }
       if (
         !Object.prototype.hasOwnProperty.call(
-          resources.buffers,
+          buffers,
           Scratch.Cast.toString(args.BUFFER)
         )
       ) {
@@ -3920,12 +3948,10 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
         label: "clearBuffer encoder",
       });
       if (Scratch.Cast.toNumber(args.NUMBYTES) === -1) {
-        commandEncoder.clearBuffer(
-          resources.buffers[Scratch.Cast.toString(args.BUFFER)]
-        );
+        commandEncoder.clearBuffer(buffers[Scratch.Cast.toString(args.BUFFER)]);
       } else {
         commandEncoder.clearBuffer(
-          resources.buffers[Scratch.Cast.toString(args.BUFFER)],
+          buffers[Scratch.Cast.toString(args.BUFFER)],
           Scratch.Cast.toNumber(args.OFFSET),
           Scratch.Cast.toNumber(args.NUMBYTES)
         );
@@ -3945,9 +3971,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       // GPUMapMode.READ assumes no writing will be done
       // aka if you want to write to your mapped buffer you need to transfer it to the cpu, mess with it, then transfer it to a different buffer
       // and send it back to the gpu
-      if (
-        !Object.prototype.hasOwnProperty.call(resources.buffers, args.BUFFER)
-      ) {
+      if (!Object.prototype.hasOwnProperty.call(buffers, args.BUFFER)) {
         return this.throwError(
           "BufferNotFound",
           "The buffer provided doesn't exist",
@@ -3959,7 +3983,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       // let data = ["you done messed up"]
       this.device.pushErrorScope("validation");
       this.device.pushErrorScope("internal");
-      await resources.buffers[args.BUFFER].mapAsync(
+      await buffers[args.BUFFER].mapAsync(
         /* eslint-disable-next-line --
          * Eslint doesn't like WebGPU, there's a type module for this.
          */
@@ -3968,12 +3992,12 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
         // shaders[args.SHADER].inputs[Scratch.Cast.toNumber(args.BINDING)].input.size,
       );
 
-      const copyArrayBuffer = resources.buffers[args.BUFFER]
+      const copyArrayBuffer = buffers[args.BUFFER]
         .getMappedRange(/*0, shaders[args.SHADER].inputs[Scratch.Cast.toNumber(args.BINDING)].input.size*/)
         .slice();
       console.log(copyArrayBuffer);
-      resources.views.testview = new Float32Array(copyArrayBuffer);
-      resources.buffers[args.BUFFER].unmap();
+      views.testview = new Float32Array(copyArrayBuffer);
+      buffers[args.BUFFER].unmap();
       this.device.popErrorScope().then((error) => {
         if (error)
           this.throwError(
@@ -3992,8 +4016,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
             error
           );
       });
-      resources.arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)] =
-        copyArrayBuffer;
+      arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)] = copyArrayBuffer;
       // @ts-ignore
       //return JSON.stringify(Array.from(new Float32Array(data)));
     }
@@ -4033,15 +4056,16 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     }
 
     createAB(args, util) {
-      resources.arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)] =
-        new ArrayBuffer(Scratch.Cast.toNumber(args.LENGTH));
+      arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)] = new ArrayBuffer(
+        Scratch.Cast.toNumber(args.LENGTH)
+      );
     }
 
     getArrayBuffers() {
       // note to self: the buffer object on view is views[key]
       // this code is bad and i hate it
       return Array.from((buffersExt?.views ?? new Map()).keys()).concat(
-        Object.keys(resources.arrayBuffers)
+        Object.keys(arrayBuffers)
       );
     }
 
@@ -4049,21 +4073,20 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       // note to self: the buffer object on view is views[key]
       // this code is bad and i hate it
       const a = Array.from((buffersExt?.views ?? new Map()).keys()).concat(
-        Object.keys(resources.arrayBuffers)
+        Object.keys(arrayBuffers)
       );
       return a.length < 1 ? a.concat("Choose a buffer") : a;
     }
 
     createABView(args, util) {
-      /*if (!Object.prototype.hasOwnProperty.call(resources.arrayBuffers,Scratch.Cast.toString(args.ARRAYBUFFER))) {
+      /*if (!Object.prototype.hasOwnProperty.call(arrayBuffers,Scratch.Cast.toString(args.ARRAYBUFFER))) {
                 this.throwError("ArrayBufferNotFound", "Couldn't find array buffer", "CreateArrayBufferView", "The specified array buffer to view doesn't exist")
             }*/
       if (Scratch.Cast.toString(args.NAME) == "") return; // this looks weird in the list
-      resources.views[Scratch.Cast.toString(args.NAME)] =
-        this.typedArrayFromType(
-          Scratch.Cast.toString(args.TYPE),
-          resources.arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)]
-        );
+      views[Scratch.Cast.toString(args.NAME)] = this.typedArrayFromType(
+        Scratch.Cast.toString(args.TYPE),
+        arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)]
+      );
     }
 
     typedArrayFromType(type, data) {
@@ -4092,7 +4115,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     listViews() {
       return JSON.stringify(
         Array.from((buffersExt?.views ?? new Map()).keys()).concat(
-          Object.keys(resources.views)
+          Object.keys(views)
         )
       );
     }
@@ -4112,19 +4135,18 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
         );
       }
       const ta = this.typedArrayFromType(Scratch.Cast.toString(args.TYPE), j);
-      resources.arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)] =
-        ta.buffer;
-      resources.views[Scratch.Cast.toString(args.ARRAYBUFFER)] = ta;
+      arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)] = ta.buffer;
+      views[Scratch.Cast.toString(args.ARRAYBUFFER)] = ta;
     }
 
     deleteAB(args, util) {
       if (
         Object.prototype.hasOwnProperty.call(
-          resources.arrayBuffers,
+          arrayBuffers,
           Scratch.Cast.toString(args.ARRAYBUFFER)
         )
       ) {
-        delete resources.arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)];
+        delete arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)];
       } else {
         return this.throwError(
           "ArrayBufferNotFound",
@@ -4138,11 +4160,11 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     resizeAB(args, util) {
       if (
         Object.prototype.hasOwnProperty.call(
-          resources.arrayBuffers,
+          arrayBuffers,
           Scratch.Cast.toString(args.ARRAYBUFFER)
         )
       ) {
-        resources.arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)].resize(
+        arrayBuffers[Scratch.Cast.toString(args.ARRAYBUFFER)].resize(
           Scratch.Cast.toNumber(args.SIZE)
         );
       } else {
@@ -4158,11 +4180,11 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     deleteView(args, util) {
       if (
         Object.prototype.hasOwnProperty.call(
-          resources.views,
+          views,
           Scratch.Cast.toString(args.VIEW)
         )
       ) {
-        delete resources.views[Scratch.Cast.toString(args.VIEW)];
+        delete views[Scratch.Cast.toString(args.VIEW)];
       } else {
         return this.throwError(
           "ViewNotFound",
@@ -4176,11 +4198,11 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     setItemInView(args, util) {
       if (
         Object.prototype.hasOwnProperty.call(
-          resources.views,
+          views,
           Scratch.Cast.toString(args.VIEW)
         )
       ) {
-        resources.views[Scratch.Cast.toString(args.VIEW)][
+        views[Scratch.Cast.toString(args.VIEW)][
           Scratch.Cast.toNumber(args.INDEX)
         ] = Scratch.Cast.toNumber(args.VALUE);
       } else {
@@ -4211,11 +4233,11 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
 
       if (
         Object.prototype.hasOwnProperty.call(
-          resources.views,
+          views,
           Scratch.Cast.toString(args.VIEW)
         )
       ) {
-        resources.views[Scratch.Cast.toString(args.VIEW)].set(
+        views[Scratch.Cast.toString(args.VIEW)].set(
           j,
           Scratch.Cast.toNumber(args.INDEX)
         );
@@ -4232,11 +4254,11 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     fillView(args, util) {
       if (
         Object.prototype.hasOwnProperty.call(
-          resources.views,
+          views,
           Scratch.Cast.toString(args.VIEW)
         )
       ) {
-        resources.views[Scratch.Cast.toString(args.VIEW)].fill(
+        views[Scratch.Cast.toString(args.VIEW)].fill(
           Scratch.Cast.toNumber(args.VALUE),
           Scratch.Cast.toNumber(args.START),
           Scratch.Cast.toNumber(args.END)
@@ -4254,11 +4276,11 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     itemOfView(args, util) {
       if (
         Object.prototype.hasOwnProperty.call(
-          resources.views,
+          views,
           Scratch.Cast.toString(args.VIEW)
         )
       ) {
-        return resources.views[Scratch.Cast.toString(args.VIEW)][
+        return views[Scratch.Cast.toString(args.VIEW)][
           Scratch.Cast.toNumber(args.INDEX)
         ];
       } else {
@@ -4269,12 +4291,12 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     sliceView(args, util) {
       if (
         Object.prototype.hasOwnProperty.call(
-          resources.views,
+          views,
           Scratch.Cast.toString(args.VIEW)
         )
       ) {
         const a = Array.from(
-          resources.views[Scratch.Cast.toString(args.VIEW)].slice(
+          views[Scratch.Cast.toString(args.VIEW)].slice(
             Scratch.Cast.toNumber(args.START),
             Scratch.Cast.toNumber(args.END)
           )
@@ -4289,12 +4311,12 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     viewToArray(args, util) {
       if (
         Object.prototype.hasOwnProperty.call(
-          resources.views,
+          views,
           Scratch.Cast.toString(args.VIEW)
         )
       ) {
         return JSON.stringify(
-          Array.from(resources.views[Scratch.Cast.toString(args.VIEW)])
+          Array.from(views[Scratch.Cast.toString(args.VIEW)])
         );
       } else {
         return "";
@@ -4304,11 +4326,11 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     propFromView(args, util) {
       if (
         Object.prototype.hasOwnProperty.call(
-          resources.views,
+          views,
           Scratch.Cast.toString(args.VIEW)
         )
       ) {
-        return resources.views[Scratch.Cast.toString(args.VIEW)][
+        return views[Scratch.Cast.toString(args.VIEW)][
           Scratch.Cast.toString(args.PROP)
         ];
       } else {
@@ -4336,17 +4358,16 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
         );
       this.device.pushErrorScope("validation");
       this.device.pushErrorScope("out-of-memory");
-      resources.textures[Scratch.Cast.toString(args.NAME)] =
-        this.device.createTexture({
-          size: [
-            Scratch.Cast.toNumber(args.WIDTH),
-            Scratch.Cast.toNumber(args.HEIGHT),
-          ],
-          // @ts-expect-error
-          format: Scratch.Cast.toString(args.FORMAT),
-          usage: Scratch.Cast.toNumber(args.USAGE),
-          label: Scratch.Cast.toString(args.NAME),
-        });
+      textures[Scratch.Cast.toString(args.NAME)] = this.device.createTexture({
+        size: [
+          Scratch.Cast.toNumber(args.WIDTH),
+          Scratch.Cast.toNumber(args.HEIGHT),
+        ],
+        // @ts-expect-error
+        format: Scratch.Cast.toString(args.FORMAT),
+        usage: Scratch.Cast.toNumber(args.USAGE),
+        label: Scratch.Cast.toString(args.NAME),
+      });
       // todo: forgetting a lot of error handling
       this.device.popErrorScope().then((error) => {
         if (error)
@@ -4417,7 +4438,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       } else {
         throw new Error("Texture missing - " + args.IMAGE);
       }
-      const t = resources.textures[Scratch.Cast.toString(args.TEXTURE)];
+      const t = textures[Scratch.Cast.toString(args.TEXTURE)];
       this.device.pushErrorScope("internal");
       this.device.pushErrorScope("out-of-memory");
       this.device.pushErrorScope("validation");
@@ -4463,15 +4484,14 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
     }
 
     createSampler(args, util) {
-      resources.samplers[Scratch.Cast.toString(args.NAME)] =
-        this.device.createSampler({
-          // @ts-expect-error
-          addressModeU: Scratch.Cast.toString(args.UMODE),
-          // @ts-expect-error
-          addressModeV: Scratch.Cast.toString(args.VMODE),
-          // @ts-expect-error
-          magFilter: Scratch.Cast.toString(args.MAGFILTER),
-        });
+      samplers[Scratch.Cast.toString(args.NAME)] = this.device.createSampler({
+        // @ts-expect-error
+        addressModeU: Scratch.Cast.toString(args.UMODE),
+        // @ts-expect-error
+        addressModeV: Scratch.Cast.toString(args.VMODE),
+        // @ts-expect-error
+        magFilter: Scratch.Cast.toString(args.MAGFILTER),
+      });
     }
 
     bytesFromFormat(format) {
@@ -4546,7 +4566,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
         );
       if (
         !Object.prototype.hasOwnProperty.call(
-          resources.buffers,
+          buffers,
           Scratch.Cast.toString(args.BUFFER)
         )
       ) {
@@ -4559,7 +4579,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       }
       if (
         !Object.prototype.hasOwnProperty.call(
-          resources.textures,
+          textures,
           Scratch.Cast.toString(args.TEXTURE)
         )
       ) {
@@ -4592,10 +4612,10 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
 
       commandEncoder.copyTextureToBuffer(
         {
-          texture: resources.textures[Scratch.Cast.toString(args.TEXTURE)],
+          texture: textures[Scratch.Cast.toString(args.TEXTURE)],
         },
         {
-          buffer: resources.buffers[Scratch.Cast.toString(args.BUFFER)],
+          buffer: buffers[Scratch.Cast.toString(args.BUFFER)],
         },
         {
           width: Scratch.Cast.toNumber(args.WIDTH),
@@ -4669,7 +4689,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
 
       if (
         !Object.prototype.hasOwnProperty.call(
-          resources.buffers,
+          buffers,
           Scratch.Cast.toString(args.BUFFER)
         )
       )
@@ -4681,7 +4701,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
         );
       if (
         !Object.prototype.hasOwnProperty.call(
-          resources.textures,
+          textures,
           Scratch.Cast.toString(args.TEXTURE)
         )
       )
@@ -4713,11 +4733,11 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
 
       commandEncoder.copyBufferToTexture(
         {
-          buffer: resources.buffers[args.BUFFER],
+          buffer: buffers[args.BUFFER],
           offset: args.OFFSET,
         },
         {
-          texture: resources.textures[args.TEXTURE],
+          texture: textures[args.TEXTURE],
         },
         [args.WIDTH, args.HEIGHT]
       );
