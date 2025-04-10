@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.31
+// Version V.1.0.32
 
 (function (Scratch) {
   "use strict";
@@ -46,7 +46,7 @@
   let defaultTexture, tabBlured = false;
   let deltaTime = 0, prevTime = 0;
 
-  const allEngines = {};
+  const allEngines = Object.create(null);
 
   // Util Funcs
   const rng = (val, inf) => val + (Math.random() * 2 - 1) * inf;
@@ -707,6 +707,7 @@
     getLayer(args) {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) return render.getDrawableOrder(target[engineTag].drawableId);
+      return "";
     }
 
     setEngineOpt(args) {
