@@ -2,20 +2,23 @@
 // ID: SPsoundWaves
 // Description: Make sounds with oscillators!
 // By: SharkPool
+// License: MIT
 
-// Version V.2.1.1
+// Version V.2.1.2
 
 (function (Scratch) {
   "use strict";
-
   if (!Scratch.extensions.unsandboxed) throw new Error("Sound Waves must run unsandboxed");
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMTAuODgxNzkiIGhlaWdodD0iMTEwLjg4MTc5IiB2aWV3Qm94PSIwLDAsMTEwLjg4MTc5LDExMC44ODE3OSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4NC44OTc1NCwtMTI0Ljg5ODUzKSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0xODQuODk3NTQsMTgwLjMzOTQzYzAsLTMwLjYxOTE2IDI0LjgyMTc0LC01NS40NDA4OSA1NS40NDA5LC01NS40NDA4OWMzMC42MTkxNiwwIDU1LjQ0MDksMjQuODIxNzQgNTUuNDQwOSw1NS40NDA5YzAsMzAuNjE5MTYgLTI0LjgyMTczLDU1LjQ0MDkgLTU1LjQ0MDksNTUuNDQwOWMtMzAuNjE5MTYsMCAtNTUuNDQwOSwtMjQuODIxNzQgLTU1LjQ0MDksLTU1LjQ0MDl6IiBmaWxsPSIjMmJiMzlhIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiLz48cGF0aCBkPSJNMTk3Ljc1OTMyLDE4Ny40Mjg1NGw5LjAzMDc3LC0xNC41NjU3NWwxNS43MzEwMSwyNy45NjYyNGwxNy40Nzg5LC00MS42NTgwNWwxNy43NzAyMiw0MS4wNzU0MmwxMy42OTE4LC0yNy4wOTIzbDEwLjc3ODY2LDE0LjI3NDQ0IiBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpbmRleCZxdW90OzpudWxsfSIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjcuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9nPjwvZz48L3N2Zz4=";
-
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTAuODgyIiBoZWlnaHQ9IjExMC44ODIiIHZpZXdCb3g9IjAgMCAxMTAuODgyIDExMC44ODIiPjxwYXRoIGQ9Ik0wIDU1LjQ0MUMwIDI0LjgyMSAyNC44MjEgMCA1NS40NCAwYzMwLjYyIDAgNTUuNDQxIDI0LjgyMSA1NS40NDEgNTUuNDQgMCAzMC42Mi0yNC44MjEgNTUuNDQxLTU1LjQ0IDU1LjQ0MUMyNC44MjEgMTEwLjg4MSAwIDg2LjA2IDAgNTUuNDQxIiBmaWxsPSIjMmJiMzlhIi8+PHBhdGggZD0ibTEyLjg2MiA2Mi41MyA5LjAzLTE0LjU2NkwzNy42MjMgNzUuOTNsMTcuNDc5LTQxLjY1OCAxNy43NyA0MS4wNzUgMTMuNjkyLTI3LjA5Mkw5Ny4zNDMgNjIuNTMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI3LjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==";
   const blockIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMTEuNDI4NTYiIGhlaWdodD0iNzgiIHZpZXdCb3g9IjAsMCwxMTEuNDI4NTYsNzgiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xODQuMjg1NzIsLTE0MSkiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbD0iI2ZmZmZmZiIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgc3Ryb2tlLWxpbmVjYXA9ImJ1dHQiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWRhc2hhcnJheT0iIiBzdHJva2UtZGFzaG9mZnNldD0iMCIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0yNjcuMTYwNzIsMjE5aC0yNi40NjQyOGMtMy40NjE2NCwwIC02LjI2Nzg1LC0yLjgwNjIxIC02LjI2Nzg1LC02LjI2Nzg1di02MC41ODkyOGgtMTYuNzE0Mjh2MjcuMTYwNzJjMCwzLjQ2MTY0IC0yLjgwNjIxLDYuMjY3ODUgLTYuMjY3ODUsNi4yNjc4NWgtMjQuMzc1Yy0xLjUzODUxLDAgLTIuNzg1NzIsLTEuMjQ3MjEgLTIuNzg1NzIsLTIuNzg1NzJ2LTUuNTcxNDNjMCwtMS41Mzg1MSAxLjI0NzIxLC0yLjc4NTcyIDIuNzg1NzIsLTIuNzg1NzJoMTkuNXYtMjcuMTYwNzJjMCwtMy40NjE2NCAyLjgwNjIxLC02LjI2Nzg1IDYuMjY3ODUsLTYuMjY3ODVoMjYuNDY0MjhjMy40NjE2NCwwIDYuMjY3ODUsMi44MDYyMSA2LjI2Nzg1LDYuMjY3ODV2NjAuNTg5MjhoMTYuNzE0Mjh2LTI3LjE2MDcyYzAsLTMuNDYxNjQgMi44MDYyMSwtNi4yNjc4NSA2LjI2Nzg1LC02LjI2Nzg1aDI0LjM3NWMxLjUzODUxLDAgMi43ODU3MiwxLjI0NzIxIDIuNzg1NzIsMi43ODU3MnY1LjU3MTQzYzAsMS41Mzg1MSAtMS4yNDcyMSwyLjc4NTcyIC0yLjc4NTcyLDIuNzg1NzJoLTE5LjV2MjcuMTYwNzJjMCwzLjQ2MTY0IC0yLjgwNjIxLDYuMjY3ODUgLTYuMjY3ODUsNi4yNjc4NXoiLz48L2c+PC9nPjwvc3ZnPg==";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTEuNDI5IiBoZWlnaHQ9Ijc4IiB2aWV3Qm94PSIwIDAgMTExLjQyOSA3OCI+PHBhdGggZD0iTTI2Ny4xNiAyMTloLTI2LjQ2NGE2LjI3IDYuMjcgMCAwIDEtNi4yNjctNi4yNjh2LTYwLjU5aC0xNi43MTV2MjcuMTYyYTYuMjcgNi4yNyAwIDAgMS02LjI2OCA2LjI2N2gtMjQuMzc1YTIuNzg2IDIuNzg2IDAgMCAxLTIuNzg1LTIuNzg1di01LjU3MmEyLjc4NiAyLjc4NiAwIDAgMSAyLjc4NS0yLjc4NWgxOS41di0yNy4xNjFBNi4yNyA2LjI3IDAgMCAxIDIxMi44NCAxNDFoMjYuNDY1YTYuMjcgNi4yNyAwIDAgMSA2LjI2NyA2LjI2OHY2MC41OWgxNi43MTV2LTI3LjE2MmE2LjI3IDYuMjcgMCAwIDEgNi4yNjgtNi4yNjdoMjQuMzc1YTIuNzg2IDIuNzg2IDAgMCAxIDIuNzg1IDIuNzg1djUuNTcyYTIuNzg2IDIuNzg2IDAgMCAxLTIuNzg1IDIuNzg1aC0xOS41djI3LjE2MWE2LjI3IDYuMjcgMCAwIDEtNi4yNyA2LjI2OCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4NC4yODYgLTE0MSkiIGZpbGw9IiNmZmYiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTpub3JtYWwiLz48L3N2Zz4=";
 
+  const vm = Scratch.vm;
+  const runtime = vm.runtime;
+
+  const waves = ["triangle", "sine", "square", "sawtooth"];
   const notes = [
     "C", "C#", "D", "D#", "E", "F",
     "F#", "G", "G#", "A", "A#", "B"
@@ -23,8 +26,8 @@
 
   class SPsoundWaves {
     constructor() {
-      this.audioContext = Scratch.vm.runtime.audioEngine.audioContext;
-      this.audioNode = Scratch.vm.runtime.audioEngine.inputNode;
+      this.audioContext = runtime.audioEngine.audioContext;
+      this.audioNode = runtime.audioEngine.inputNode;
       this.gainNode = this.audioContext.createGain();
       this.gainNode.gain.value = 1;
       this.gainNode.connect(this.audioNode);
@@ -37,9 +40,7 @@
       this.gainNodes = new Map();
       this.playingStatus = new Map();
       this.registerKeyEvents();
-      Scratch.vm.runtime.on("PROJECT_STOP_ALL", () => {
-        this.stopNote();
-      });
+      runtime.on("PROJECT_STOP_ALL", () => this.stopNote());
     }
     getInfo() {
       return {
@@ -89,30 +90,6 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: 1
               },
-            },
-          },
-          // These 2 are Legacy Blocks for Support
-          {
-            opcode: "playNote",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "play [WAVE] note [NOTE] for [DURATION] seconds with ID [ID]",
-            hideFromPalette: true,
-            arguments: {
-              WAVE: { type: Scratch.ArgumentType.STRING, menu: "WAVES2" },
-              NOTE: { type: Scratch.ArgumentType.NOTE, defaultValue: 60 },
-              DURATION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0.5 },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: 1 }
-            },
-          },
-          {
-            opcode: "playNoteContinuously",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "play [WAVE] note [NOTE] continuously with ID [ID]",
-            hideFromPalette: true,
-            arguments: {
-              WAVE: { type: Scratch.ArgumentType.STRING, menu: "WAVES2" },
-              NOTE: { type: Scratch.ArgumentType.NOTE, defaultValue: 60 },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: 1 }
             },
           },
           {
@@ -228,66 +205,19 @@
             opcode: "getKeyPressedDuration",
             blockType: Scratch.BlockType.REPORTER,
             text: "pressed key duration"
-          }
+          },
         ],
         menus: {
-          WAVES2: ["triangle", "sine", "square", "sawtooth"],
-          WAVES: {
-            acceptReporters: true,
-            items: ["triangle", "sine", "square", "sawtooth"]
-          }
+          WAVES: { acceptReporters: true, items: waves }
         },
       };
     }
 
-    getVol({ ID }) {
-      const gainNode = this.gainNodes.get(ID);
-      if (gainNode) return gainNode.gain.value * 100;
-      return 100;
-    }
-
-    isPlaying({ ID }) { return this.playingStatus.get(ID) !== undefined && this.playingStatus.get(ID) }
-
+    // Helper Funcs
     convertScratchNoteToRealNote(scratchNote) {
       const octave = Math.floor(scratchNote / 12) - 1;
       const noteName = notes[scratchNote % 12];
       return `${noteName}${octave}`;
-    }
-
-    playNoteV2(args) { this.playNote(args) }
-    playNote({ WAVE, NOTE, DURATION, ID }) {
-      this.stopID({ ID });
-      const realNote = this.convertScratchNoteToRealNote(Math.round(NOTE));
-      const frequency = this.noteToFrequency(realNote);
-      this.playSound(frequency, DURATION, WAVE, ID);
-    }
-
-    playNoteContinuouslyV2(args) { this.playNoteContinuously(args) }
-    playNoteContinuously({ WAVE, NOTE, ID }) {
-      this.stopID({ ID });
-      const realNote = this.convertScratchNoteToRealNote(Math.round(NOTE));
-      const frequency = this.noteToFrequency(realNote);
-      this.playingNote = true;
-      this.noteStopTime = Infinity;
-      this.playSound(frequency, this.noteStopTime, WAVE, ID);
-    }
-
-    stopNote() {
-      this.oscillators.forEach((oscillator) => { oscillator.stop() });
-      this.oscillators.clear();
-      this.playingNote = false;
-      this.playingStatus.forEach((value, key) => {
-        this.playingStatus.set(key, false);
-      });
-    }
-
-    stopID({ ID }) {
-      const oscillator = this.oscillators.get(ID);
-      if (oscillator) {
-        oscillator.stop();
-        this.oscillators.delete(ID);
-        this.playingStatus.set(ID, false);
-      }
     }
 
     noteToFrequency(note) {
@@ -300,58 +230,10 @@
       return notes.indexOf(noteName) + (octave + 1) * 12;
     }
 
-    setVolume({ ID, VOLUME }) {
-      const gainNode = this.gainNodes.get(ID);
-      if (gainNode) {
-        gainNode.gain.setValueAtTime(
-          VOLUME / 100, this.audioContext.currentTime
-        );
-      }
-    }
-
-    setAllVolume({ VOLUME }) {
-      let gainNode = "";
-      this.gainNodes.forEach((value, key) => {
-        gainNode = this.gainNodes.get(key);
-        if (gainNode) {
-          gainNode.gain.setValueAtTime(
-            VOLUME / 100, this.audioContext.currentTime
-          );
-        }
-      });
-    }
-
-    setPitch({ ID, PITCH }) {
-      const oscillator = this.oscillators.get(ID);
-      if (oscillator) {
-        const pitchFactor = Math.pow(2, PITCH / 12);
-        const newFrequency = 440 * pitchFactor;
-        oscillator.frequency.setValueAtTime(newFrequency, this.audioContext.currentTime);
-      }
-    }
-
-    setAllPitch({ PITCH }) {
-      const pitchFactor = Math.pow(2, PITCH / 12);
-      this.oscillators.forEach((oscillator, ID) => {
-        const newFrequency = 440 * pitchFactor;
-        oscillator.frequency.setValueAtTime(newFrequency, this.audioContext.currentTime);
-      });
-    }
-
-    getPitch({ ID }) {
-      const oscillator = this.oscillators.get(ID);
-      if (oscillator) {
-        const currentFrequency = oscillator.frequency.value;
-        const pitchFactor = currentFrequency / 440;
-        return Math.round(12 * Math.log2(pitchFactor));
-      }
-      return 0;
-    }
-
     playSound(frequency, duration, waveform, ID) {
       const oscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
-      oscillator.type = waveform;
+      oscillator.type = waves.includes(waveform) ? waveform : "square";
       oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
       gainNode.gain.setValueAtTime(1.0, this.audioContext.currentTime);
 
@@ -406,7 +288,98 @@
       return note;
     }
 
-    convertPressedKeyToNote() { return this.keyPressed ? this.currentNote : 0; }
+    // Block Funcs
+    playNoteV2({ WAVE, NOTE, DURATION, ID }) {
+      this.stopID({ ID });
+      const realNote = this.convertScratchNoteToRealNote(Math.round(NOTE));
+      const frequency = this.noteToFrequency(realNote);
+      this.playSound(frequency, DURATION, WAVE, ID);
+    }
+
+    playNoteContinuouslyV2({ WAVE, NOTE, ID }) {
+      this.stopID({ ID });
+      const realNote = this.convertScratchNoteToRealNote(Math.round(NOTE));
+      const frequency = this.noteToFrequency(realNote);
+      this.playingNote = true;
+      this.noteStopTime = Infinity;
+      this.playSound(frequency, this.noteStopTime, WAVE, ID);
+    }
+
+    stopID({ ID }) {
+      const oscillator = this.oscillators.get(ID);
+      if (oscillator) {
+        oscillator.stop();
+        this.oscillators.delete(ID);
+        this.playingStatus.set(ID, false);
+      }
+    }
+
+    stopNote() {
+      this.oscillators.forEach((oscillator) => { oscillator.stop() });
+      this.oscillators.clear();
+      this.playingNote = false;
+      this.playingStatus.forEach((value, key) => {
+        this.playingStatus.set(key, false);
+      });
+    }
+
+    getVol({ ID }) {
+      const gainNode = this.gainNodes.get(ID);
+      if (gainNode) return gainNode.gain.value * 100;
+      return 100;
+    }
+
+    setVolume({ ID, VOLUME }) {
+      const gainNode = this.gainNodes.get(ID);
+      if (gainNode) {
+        gainNode.gain.setValueAtTime(
+          VOLUME / 100, this.audioContext.currentTime
+        );
+      }
+    }
+
+    setAllVolume({ VOLUME }) {
+      let gainNode = "";
+      this.gainNodes.forEach((value, key) => {
+        gainNode = this.gainNodes.get(key);
+        if (gainNode) {
+          gainNode.gain.setValueAtTime(
+            VOLUME / 100, this.audioContext.currentTime
+          );
+        }
+      });
+    }
+
+    setPitch({ ID, PITCH }) {
+      const oscillator = this.oscillators.get(ID);
+      if (oscillator) {
+        const pitchFactor = Math.pow(2, PITCH / 12);
+        const newFrequency = 440 * pitchFactor;
+        oscillator.frequency.setValueAtTime(newFrequency, this.audioContext.currentTime);
+      }
+    }
+
+    setAllPitch({ PITCH }) {
+      const pitchFactor = Math.pow(2, PITCH / 12);
+      this.oscillators.forEach((oscillator, ID) => {
+        const newFrequency = 440 * pitchFactor;
+        oscillator.frequency.setValueAtTime(newFrequency, this.audioContext.currentTime);
+      });
+    }
+
+    getPitch({ ID }) {
+      const oscillator = this.oscillators.get(ID);
+      if (oscillator) {
+        const currentFrequency = oscillator.frequency.value;
+        const pitchFactor = currentFrequency / 440;
+        return Math.round(12 * Math.log2(pitchFactor));
+      }
+      return 0;
+    }
+
+    isPlaying({ ID }) { return this.playingStatus.get(ID) !== undefined && this.playingStatus.get(ID) }
+
+    convertPressedKeyToNote() { return this.keyPressed ? this.currentNote : 0 }
 
     getKeyPressedDuration() {
       return this.keyPressed ? this.audioContext.currentTime - this.keyPressedTime : 0;
