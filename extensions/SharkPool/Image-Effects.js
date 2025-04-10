@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.2.5.1
+// Version V.2.5.11
 
 (function (Scratch) {
   "use strict";
@@ -15,6 +15,7 @@
 
   const cast = Scratch.Cast;
   const hexToRgb = (hex) => {
+    if (!/^#[0-9A-F]{6}[0-9a-f]{0,2}$/i.test(hex)) hex = "#000000";
     return [
       parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16),
       hex.length === 9 ? parseInt(hex.slice(7, 9), 16) : 255
@@ -405,7 +406,7 @@
             arguments: {
               SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "<svg>" }
             }
-          }
+          },
         ],
         menus: {
           POSITIONS: ["X", "Y"],
@@ -414,7 +415,7 @@
           REMOVAL: ["under", "over", "equal to"],
           DOMINANT: ["most", "least"],
           fileType: ["content", "dataURI"],
-          EFFECTS: { acceptReporters: true, items: imageEffectMenu }
+          EFFECTS: { acceptReporters: true, items: imageEffectMenu },
         },
       };
     }
@@ -515,6 +516,7 @@
     replaceColorPattern(args) {
       const colRem = hexToRgb(args.COLOR);
       const tileSize = cast.toNumber(args.SCALE);
+      if (tileSize < 1) return args.DATA_URI;
       return new Promise((resolve) => {
         const img = new Image();
         img.crossOrigin = "Anonymous";
