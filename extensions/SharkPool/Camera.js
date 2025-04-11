@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.07
+// Version V.1.0.08
 
 (function (Scratch) {
   "use strict";
@@ -53,6 +53,10 @@
   }
 
   // camera utils
+  const radianConstant = Math.PI / 180;
+  const epsilon = 1e-12;
+  const applyEpsilon = (value) => (Math.abs(value) < epsilon ? 0 : value);
+
   function setupState(drawable) {
     drawable[cameraSymbol] = {
       name: "default",
@@ -65,23 +69,26 @@
 
   function translatePosition(xy, invert, camData) {
     if (invert) {
-      const invRads = (camData.ogDir / 180) * Math.PI;
+      const invRads = camData.ogDir * radianConstant;
       const invSin = Math.sin(invRads),
         invCos = Math.cos(invRads);
       const scaledX = xy[0] / camData.ogSZ;
       const scaledY = xy[1] / camData.ogSZ;
       const invOffX = scaledX * invCos + scaledY * invSin;
       const invOffY = -scaledX * invSin + scaledY * invCos;
-      return [invOffX - camData.ogXY[0], invOffY - camData.ogXY[1]];
+      return [
+        applyEpsilon(invOffX - camData.ogXY[0]),
+        applyEpsilon(invOffY - camData.ogXY[1]),
+      ];
     } else {
-      const rads = (camData.dir / 180) * Math.PI;
+      const rads = camData.dir * radianConstant;
       const sin = Math.sin(rads),
         cos = Math.cos(rads);
       const offX = xy[0] + camData.xy[0];
       const offY = xy[1] + camData.xy[1];
       return [
-        camData.zoom * (offX * cos - offY * sin),
-        camData.zoom * (offX * sin + offY * cos),
+        applyEpsilon(camData.zoom * (offX * cos - offY * sin)),
+        applyEpsilon(camData.zoom * (offX * sin + offY * cos)),
       ];
     }
   }
@@ -250,6 +257,20 @@
 
     ogUpdateScale.call(this, scale);
     this.skin?.emitWasAltered();
+  };
+
+  // Clones should inherit the parents camera
+  const ogInitDrawable = vm.exports.RenderedTarget.prototype.initDrawable;
+  vm.exports.RenderedTarget.prototype.initDrawable = function (layerGroup) {
+    ogInitDrawable.call(this, layerGroup);
+    if (this.isOriginal) return;
+
+    const parentSprite = this.sprite.clones[0]; // clone[0] is always the original
+    const parentDrawable = render._allDrawables[parentSprite.drawableID];
+    const name = parentDrawable[cameraSymbol]?.name ?? "default";
+
+    const drawable = render._allDrawables[this.drawableID];
+    bindDrawable(drawable, name);
   };
 
   // Turbowarp Extension Storage
@@ -700,10 +721,10 @@
     }
 
     translateAngledMovement(xy, steps, direction) {
-      const radians = direction * (Math.PI / 180);
+      const radians = direction * radianConstant;
       return [
-        xy[0] + steps * Math.cos(radians),
-        xy[1] + steps * Math.sin(radians),
+        applyEpsilon(xy[0] + steps * Math.cos(radians)),
+        applyEpsilon(xy[1] + steps * Math.sin(radians)),
       ];
     }
 
