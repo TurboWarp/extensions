@@ -5,39 +5,29 @@
 // By: CST1229 <https://scratch.mit.edu/users/CST1229/>
 // Licence: MIT
 
-// Version V.1.0.2
+// Version V.1.0.21
 
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed)
-    throw new Error("Looks Expanded must run unsandboxed!");
+  if (!Scratch.extensions.unsandboxed) throw new Error("Looks Expanded must run unsandboxed!");
 
   const menuIconURI =
-    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5Ny43MzkiIGhlaWdodD0iOTcuNzM5IiB2aWV3Qm94PSIwIDAgOTcuNzM5IDk3LjczOSI+PGcgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIj48cGF0aCBkPSJNMCA0OC44N0MwIDIxLjg4IDIxLjg4IDAgNDguODcgMHM0OC44NyAyMS44OCA0OC44NyA0OC44Ny0yMS44OCA0OC44Ny00OC44NyA0OC44N1MwIDc1Ljg2IDAgNDguODciIGZpbGw9IiM2MzQyYTYiLz48cGF0aCBkPSJNNS43ODIgNDguODdjMC0yMy43OTcgMTkuMjkxLTQzLjA4OCA0My4wODgtNDMuMDg4UzkxLjk1OCAyNS4wNzMgOTEuOTU4IDQ4Ljg3IDcyLjY2NyA5MS45NTggNDguODcgOTEuOTU4IDUuNzgyIDcyLjY2NyA1Ljc4MiA0OC44NyIgZmlsbD0iIzk2ZiIvPjxwYXRoIGQ9Ik0xNi4xODYgNDQuOTk2YzQuNTMyLTUuMzEgMTYuMjE4LTE2Ljg3NCAzMi4xNzYtMTcuMDM0IDE3LjExNy0uMTcyIDI5LjMzNCAxMi41MzkgMzMuNTIgMTcuNjA0IDEuMDM5IDEuMjU4IDEuMSAyLjc2NC4xNjcgMy45MjctMy45MzUgNC45MDEtMTUuODk4IDE3LjY4Mi0zMy42ODcgMTcuNzY3LTE2Ljk1Ni4wOC0yOC43My0xMi41OS0zMi43MzYtMTcuNjI0LS45OTMtMS4yNDctLjc5My0zLjA1NC41Ni00LjY0IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTM1LjE0NiA0Ny42MWMwLTcuNTM2IDYuMTEtMTMuNjQ1IDEzLjY0NS0xMy42NDUgNy41MzYgMCAxMy42NDUgNi4xMSAxMy42NDUgMTMuNjQ1IDAgNy41MzYtNi4xMSAxMy42NDUtMTMuNjQ1IDEzLjY0NS03LjUzNiAwLTEzLjY0NS02LjExLTEzLjY0NS0xMy42NDUiIGZpbGw9IiM5NmYiLz48cGF0aCBkPSJNNDEuMzQyIDQ3LjYxYTcuNDQ5IDcuNDQ5IDAgMSAxIDE0Ljg5OCAwIDcuNDQ5IDcuNDQ5IDAgMCAxLTE0Ljg5OCAwIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTY1LjY1IDc4Ljc5YTIuOTIgMi45MiAwIDAgMS0yLjkxOC0yLjkydi02LjcxMmgtNi43MTNhMi45MiAyLjkyIDAgMCAxLTIuOTE5LTIuOTE5VjY0LjA1YTIuOTIgMi45MiAwIDAgMSAyLjkxOS0yLjkxOGg2LjcxM3YtNi43MTNBMi45MiAyLjkyIDAgMCAxIDY1LjY1IDUxLjVoMi4xOWEyLjkyIDIuOTIgMCAwIDEgMi45MTggMi45MTl2Ni43MTNoNi43MTNhMi45MiAyLjkyIDAgMCAxIDIuOTE5IDIuOTE4djIuMTlhMi45MiAyLjkyIDAgMCAxLTIuOTIgMi45MThoLTYuNzEydjYuNzEzYTIuOTIgMi45MiAwIDAgMS0yLjkxOSAyLjkxOXoiIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzk2ZiIgc3Ryb2tlLXdpZHRoPSI4Ii8+PHBhdGggZD0iTTY1LjY1IDc4Ljc5YTIuOTIgMi45MiAwIDAgMS0yLjkxOC0yLjkydi02LjcxMmgtNi43MTNhMi45MiAyLjkyIDAgMCAxLTIuOTE5LTIuOTE5VjY0LjA1YTIuOTIgMi45MiAwIDAgMSAyLjkxOS0yLjkxOGg2LjcxM3YtNi43MTNBMi45MiAyLjkyIDAgMCAxIDY1LjY1IDUxLjVoMi4xOWEyLjkyIDIuOTIgMCAwIDEgMi45MTggMi45MTl2Ni43MTNoNi43MTNhMi45MiAyLjkyIDAgMCAxIDIuOTE5IDIuOTE4djIuMTlhMi45MiAyLjkyIDAgMCAxLTIuOTIgMi45MThoLTYuNzEydjYuNzEzYTIuOTIgMi45MiAwIDAgMS0yLjkxOSAyLjkxOXoiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5Ny43MzkiIGhlaWdodD0iOTcuNzM5IiB2aWV3Qm94PSIwIDAgOTcuNzM5IDk3LjczOSI+PGcgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIj48cGF0aCBkPSJNMCA0OC44N0MwIDIxLjg4IDIxLjg4IDAgNDguODcgMHM0OC44NyAyMS44OCA0OC44NyA0OC44Ny0yMS44OCA0OC44Ny00OC44NyA0OC44N1MwIDc1Ljg2IDAgNDguODciIGZpbGw9IiM2MzQyYTYiLz48cGF0aCBkPSJNNS43ODIgNDguODdjMC0yMy43OTcgMTkuMjkxLTQzLjA4OCA0My4wODgtNDMuMDg4UzkxLjk1OCAyNS4wNzMgOTEuOTU4IDQ4Ljg3IDcyLjY2NyA5MS45NTggNDguODcgOTEuOTU4IDUuNzgyIDcyLjY2NyA1Ljc4MiA0OC44NyIgZmlsbD0iIzk2ZiIvPjxwYXRoIGQ9Ik0xNi4xODYgNDQuOTk2YzQuNTMyLTUuMzEgMTYuMjE4LTE2Ljg3NCAzMi4xNzYtMTcuMDM0IDE3LjExNy0uMTcyIDI5LjMzNCAxMi41MzkgMzMuNTIgMTcuNjA0IDEuMDM5IDEuMjU4IDEuMSAyLjc2NC4xNjcgMy45MjctMy45MzUgNC45MDEtMTUuODk4IDE3LjY4Mi0zMy42ODcgMTcuNzY3LTE2Ljk1Ni4wOC0yOC43My0xMi41OS0zMi43MzYtMTcuNjI0LS45OTMtMS4yNDctLjc5My0zLjA1NC41Ni00LjY0IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTM1LjE0NiA0Ny42MWMwLTcuNTM2IDYuMTEtMTMuNjQ1IDEzLjY0NS0xMy42NDUgNy41MzYgMCAxMy42NDUgNi4xMSAxMy42NDUgMTMuNjQ1IDAgNy41MzYtNi4xMSAxMy42NDUtMTMuNjQ1IDEzLjY0NS03LjUzNiAwLTEzLjY0NS02LjExLTEzLjY0NS0xMy42NDUiIGZpbGw9IiM5NmYiLz48cGF0aCBkPSJNNDEuMzQyIDQ3LjYxYTcuNDQ5IDcuNDQ5IDAgMSAxIDE0Ljg5OCAwIDcuNDQ5IDcuNDQ5IDAgMCAxLTE0Ljg5OCAwIiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTY1LjY1IDc4Ljc5YTIuOTIgMi45MiAwIDAgMS0yLjkxOC0yLjkydi02LjcxMmgtNi43MTNhMi45MiAyLjkyIDAgMCAxLTIuOTE5LTIuOTE5VjY0LjA1YTIuOTIgMi45MiAwIDAgMSAyLjkxOS0yLjkxOGg2LjcxM3YtNi43MTNBMi45MiAyLjkyIDAgMCAxIDY1LjY1IDUxLjVoMi4xOWEyLjkyIDIuOTIgMCAwIDEgMi45MTggMi45MTl2Ni43MTNoNi43MTNhMi45MiAyLjkyIDAgMCAxIDIuOTE5IDIuOTE4djIuMTlhMi45MiAyLjkyIDAgMCAxLTIuOTIgMi45MThoLTYuNzEydjYuNzEzYTIuOTIgMi45MiAwIDAgMS0yLjkxOSAyLjkxOXoiIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzk2ZiIgc3Ryb2tlLXdpZHRoPSI4Ii8+PHBhdGggZD0iTTY1LjY1IDc4Ljc5YTIuOTIgMi45MiAwIDAgMS0yLjkxOC0yLjkydi02LjcxMmgtNi43MTNhMi45MiAyLjkyIDAgMCAxLTIuOTE5LTIuOTE5VjY0LjA1YTIuOTIgMi45MiAwIDAgMSAyLjkxOS0yLjkxOGg2LjcxM3YtNi43MTNBMi45MiAyLjkyIDAgMCAxIDY1LjY1IDUxLjVoMi4xOWEyLjkyIDIuOTIgMCAwIDEgMi45MTggMi45MTl2Ni43MTNoNi43MTNhMi45MiAyLjkyIDAgMCAxIDIuOTE5IDIuOTE4djIuMTlhMi45MiAyLjkyIDAgMCAxLTIuOTIgMi45MThoLTYuNzEydjYuNzEzYTIuOTIgMi45MiAwIDAgMS0yLjkxOSAyLjkxOXoiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
 
   const vm = Scratch.vm;
   const Cast = Scratch.Cast;
   const runtime = vm.runtime;
   const looksCore = runtime.ext_scratch3_looks;
+  const isPM = Scratch.extensions.isPenguinMod;
 
   const render = vm.renderer;
   const twgl = render.exports.twgl;
   const drawableKey = Symbol("SPlooksKey");
   const newUniforms = [
-    "u_replaceColorFromSP",
-    "u_replaceColorToSP",
-    "u_replaceThresholdSP",
-    "u_numReplacersSP",
-    "u_warpSP",
-    "u_maskTextureSP",
-    "u_shouldMaskSP",
-    "u_tintColorSP",
-    "u_saturateSP",
-    "u_opaqueSP",
-    "u_contrastSP",
-    "u_posterizeSP",
-    "u_sepiaSP",
-    "u_bloomSP",
+    "u_replaceColorFromSP", "u_replaceColorToSP", "u_replaceThresholdSP", "u_numReplacersSP",
+    "u_warpSP", "u_maskTextureSP", "u_shouldMaskSP",
+    "u_tintColorSP", "u_saturateSP", "u_opaqueSP", "u_contrastSP",
+    "u_posterizeSP", "u_sepiaSP", "u_bloomSP"
   ];
   const defaultNewEffects = {
     warp: [0.5, -0.5, -0.5, -0.5, -0.5, 0.5, 0.5, 0.5],
@@ -47,19 +37,14 @@
     oldMask: "",
     shouldMask: 0,
     newEffects: {
-      saturation: 1,
-      opaque: 0,
-      contrast: 1,
-      posterize: 0,
-      sepia: 0,
-      bloom: 0,
-    },
+      saturation: 1, opaque: 0, contrast: 1,
+      posterize: 0, sepia: 0, bloom: 0
+    }
   };
 
   /* patch for new effects */
   function initDrawable(drawable) {
-    if (!drawable[drawableKey])
-      drawable[drawableKey] = structuredClone(defaultNewEffects);
+    if (!drawable[drawableKey]) drawable[drawableKey] = structuredClone(defaultNewEffects);
   }
 
   const ogGetShader = render._shaderManager.getShader;
@@ -68,7 +53,7 @@
     const gl = render._gl;
 
     // add uniforms to the existing shader
-    newUniforms.forEach((name) => {
+    newUniforms.forEach(name => {
       shader.uniformSetters[name] = gl.getUniformLocation(shader.program, name);
     });
     return shader;
@@ -91,13 +76,10 @@
         // replace attribute properties with variables we can modify
         .replaceAll("vec4(a_position", "vec4(positionSP")
         .replace("v_texCoord = a_texCoord;", "")
+        .replace("#if !(defined(DRAW_MODE_line) || defined(DRAW_MODE_background))", "#if 1")
         .replace(
-          "#if !(defined(DRAW_MODE_line) || defined(DRAW_MODE_background))",
-          "#if 1"
-        )
-        .replace(
-          `void main() {`,
-          `uniform vec2 u_warpSP[4];
+        `void main() {`,
+        `uniform vec2 u_warpSP[4];
 
 void main() {
   vec2 positionSP = a_position;
@@ -123,12 +105,11 @@ void main() {
   #else
   gl_Position = u_projectionMatrix * u_modelMatrix * vec4(positionSP, 0, 1);
   #endif`
-        );
+      );
 
-      args[1][1] = args[1][1]
-        .replace(
-          `uniform sampler2D u_skin;`,
-          `uniform sampler2D u_skin;
+      args[1][1] = args[1][1].replace(
+        `uniform sampler2D u_skin;`,
+        `uniform sampler2D u_skin;
 uniform sampler2D u_maskTextureSP;
 uniform float u_shouldMaskSP;
 
@@ -160,10 +141,9 @@ vec3 spHSV2RGB(vec3 c) {
   vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
   return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
 }`
-        )
-        .replace(
-          `gl_FragColor.rgb = clamp(gl_FragColor.rgb / (gl_FragColor.a + epsilon), 0.0, 1.0);`,
-          `gl_FragColor.rgb = clamp(gl_FragColor.rgb / (gl_FragColor.a + epsilon), 0.0, 1.0);
+      ).replace(
+        `gl_FragColor.rgb = clamp(gl_FragColor.rgb / (gl_FragColor.a + epsilon), 0.0, 1.0);`,
+        `gl_FragColor.rgb = clamp(gl_FragColor.rgb / (gl_FragColor.a + epsilon), 0.0, 1.0);
 vec3 finalColor = gl_FragColor.rgb;
 float finalAlpha = gl_FragColor.a;
 
@@ -222,15 +202,14 @@ gl_FragColor.rgb = finalColor * u_tintColorSP.rgb;
 float baseAlpha = finalAlpha;
 if (baseAlpha > 0.0 && baseAlpha < 1.0) baseAlpha = mix(baseAlpha, 1.0, u_opaqueSP);
 gl_FragColor.a = baseAlpha;`
-        )
-        .replaceAll(
-          // The unpremultiply code will now always run due to palette replacement stuff.
-          // This is a bit more inefficient, but whatever.
-          "#if defined(ENABLE_color) || defined(ENABLE_brightness)",
-          // i have no idea how webgl works, and i don"t want to have to remove the #endif somehow
-          // just do something that will always be true -CST
-          "#if defined(MAX_REPLACERS)"
-        );
+      ).replaceAll(
+        // The unpremultiply code will now always run due to palette replacement stuff.
+        // This is a bit more inefficient, but whatever.
+        "#if defined(ENABLE_color) || defined(ENABLE_brightness)",
+        // i have no idea how webgl works, and i don"t want to have to remove the #endif somehow
+        // just do something that will always be true -CST
+        "#if defined(MAX_REPLACERS)"
+      );
     }
     return ogCreateProgramInfo.apply(this, args);
   };
@@ -246,24 +225,19 @@ gl_FragColor.a = baseAlpha;`
 
   const MAX_REPLACERS = 15;
   // Clipping and Blending Support
-  let toCorrectThing = null,
-    active = false,
-    flipY = false;
+  let toCorrectThing = null, active = false, flipY = false;
   const canvas = render.canvas;
-  let width = 0,
-    height = 0;
-  let scratchUnitWidth = 480,
-    scratchUnitHeight = 360;
+  let width = 0, height = 0;
+  let scratchUnitWidth = 480, scratchUnitHeight = 360;
 
   render._drawThese = function (drawables, drawMode, projection, opts = {}) {
     const gl = render._gl;
     let currentShader = null;
 
-    const framebufferSpaceScaleDiffers =
-      "framebufferWidth" in opts &&
-      "framebufferHeight" in opts &&
-      opts.framebufferWidth !== render._nativeSize[0] &&
-      opts.framebufferHeight !== render._nativeSize[1];
+    const framebufferSpaceScaleDiffers = (
+      "framebufferWidth" in opts && "framebufferHeight" in opts &&
+      opts.framebufferWidth !== render._nativeSize[0] && opts.framebufferHeight !== render._nativeSize[1]
+    );
 
     const numDrawables = drawables.length;
     for (let drawableIndex = 0; drawableIndex < numDrawables; ++drawableIndex) {
@@ -273,13 +247,10 @@ gl_FragColor.a = baseAlpha;`
       const drawable = render._allDrawables[drawableID];
       if (!drawable.getVisible() && !opts.ignoreVisibility) continue;
 
-      const drawableScale = framebufferSpaceScaleDiffers
-        ? [
-            (drawable.scale[0] * opts.framebufferWidth) / render._nativeSize[0],
-            (drawable.scale[1] * opts.framebufferHeight) /
-              render._nativeSize[1],
-          ]
-        : drawable.scale;
+      const drawableScale = framebufferSpaceScaleDiffers ? [
+        drawable.scale[0] * opts.framebufferWidth / render._nativeSize[0],
+        drawable.scale[1] * opts.framebufferHeight / render._nativeSize[1]
+      ] : drawable.scale;
 
       if (!drawable.skin || !drawable.skin.getTexture(drawableScale)) continue;
       if (opts.skipPrivateSkins && drawable.skin.private) continue;
@@ -287,9 +258,7 @@ gl_FragColor.a = baseAlpha;`
       const uniforms = {};
 
       let effectBits = drawable.enabledEffects;
-      effectBits &= Object.prototype.hasOwnProperty.call(opts, "effectMask")
-        ? opts.effectMask
-        : effectBits;
+      effectBits &= Object.prototype.hasOwnProperty.call(opts, "effectMask") ? opts.effectMask : effectBits;
       const newShader = render._shaderManager.getShader(drawMode, effectBits);
 
       if (render._regionId !== newShader) {
@@ -306,7 +275,7 @@ gl_FragColor.a = baseAlpha;`
       initDrawable(drawable);
       const effectData = drawable[drawableKey];
       const replacers = effectData.replacers;
-
+ 
       const replaceFrom = new Float32Array(MAX_REPLACERS * 3).fill(0);
       const replaceTo = new Float32Array(MAX_REPLACERS * 4).fill(0);
       const replaceThresh = new Float32Array(MAX_REPLACERS).fill(1);
@@ -329,52 +298,28 @@ gl_FragColor.a = baseAlpha;`
         u_replaceColorFromSP: { method: "uniform3fv", value: replaceFrom },
         u_replaceColorToSP: { method: "uniform4fv", value: replaceTo },
         u_replaceThresholdSP: { method: "uniform1fv", value: replaceThresh },
-        u_numReplacersSP: {
-          method: "uniform1i",
-          value: replacers ? Math.min(replacers.length, MAX_REPLACERS) : 0,
-        },
+        u_numReplacersSP: { method: "uniform1i", value: replacers ? Math.min(replacers.length, MAX_REPLACERS) : 0 },
         u_tintColorSP: { method: "uniform4fv", value: effectData.tint },
         u_warpSP: { method: "uniform2fv", value: effectData.warp },
         u_shouldMaskSP: { method: "uniform1f", value: effectData.shouldMask },
-        u_saturateSP: {
-          method: "uniform1f",
-          value: effectData.newEffects.saturation,
-        },
-        u_opaqueSP: {
-          method: "uniform1f",
-          value: effectData.newEffects.opaque,
-        },
-        u_contrastSP: {
-          method: "uniform1f",
-          value: effectData.newEffects.contrast,
-        },
-        u_posterizeSP: {
-          method: "uniform1f",
-          value: effectData.newEffects.posterize,
-        },
+        u_saturateSP: { method: "uniform1f", value: effectData.newEffects.saturation },
+        u_opaqueSP: { method: "uniform1f", value: effectData.newEffects.opaque },
+        u_contrastSP: { method: "uniform1f", value: effectData.newEffects.contrast },
+        u_posterizeSP: { method: "uniform1f", value: effectData.newEffects.posterize },
         u_sepiaSP: { method: "uniform1f", value: effectData.newEffects.sepia },
-        u_bloomSP: { method: "uniform1f", value: effectData.newEffects.bloom },
+        u_bloomSP: { method: "uniform1f", value: effectData.newEffects.bloom }
       };
 
       Object.entries(newUniformSetters).forEach(([key, { method, value }]) => {
-        if (currentShader.uniformSetters[key])
-          gl[method](currentShader.uniformSetters[key], value);
+        if (currentShader.uniformSetters[key]) gl[method](currentShader.uniformSetters[key], value);
       });
       /* end of new effects */
 
-      Object.assign(
-        uniforms,
-        drawable.skin.getUniforms(drawableScale),
-        drawable.getUniforms()
-      );
+      Object.assign(uniforms, drawable.skin.getUniforms(drawableScale), drawable.getUniforms());
       if (opts.extraUniforms) Object.assign(uniforms, opts.extraUniforms);
 
       if (uniforms.u_skin) {
-        twgl.setTextureParameters(gl, uniforms.u_skin, {
-          minMag: drawable.skin.useNearest(drawableScale, drawable)
-            ? gl.NEAREST
-            : gl.LINEAR,
-        });
+        twgl.setTextureParameters(gl, uniforms.u_skin, { minMag: drawable.skin.useNearest(drawableScale, drawable) ? gl.NEAREST : gl.LINEAR });
       }
 
       twgl.setUniforms(currentShader, uniforms);
@@ -390,7 +335,7 @@ gl_FragColor.a = baseAlpha;`
 
   // reset on stop/start/clear
   const ogClearEffects = vm.exports.RenderedTarget.prototype.clearEffects;
-  vm.exports.RenderedTarget.prototype.clearEffects = function () {
+  vm.exports.RenderedTarget.prototype.clearEffects = function() {
     const drawable = render._allDrawables[this.drawableID];
     drawable[drawableKey] = structuredClone(defaultNewEffects);
     ogClearEffects.call(this);
@@ -399,13 +344,11 @@ gl_FragColor.a = baseAlpha;`
   // manipulate bounds for warping
   const radianConverter = Math.PI / 180;
   function rotatePoint(x, y, cx, cy, rads) {
-    const cos = Math.cos(rads),
-      sin = Math.sin(rads);
-    const dx = x - cx,
-      dy = y - cy;
+    const cos = Math.cos(rads), sin = Math.sin(rads);
+    const dx = x - cx, dy = y - cy;
     return {
       x: cx + dx * cos - dy * sin,
-      y: cy + dx * sin + dy * cos,
+      y: cy + dx * sin + dy * cos
     };
   }
   function warpBounds(drawable, bounds) {
@@ -416,24 +359,22 @@ gl_FragColor.a = baseAlpha;`
 
     // original getBounds already accounts for rotation, so we have to make our own system
     // for getting the non-rotated scale and position
-    warpVals = warpVals.map((v, i) => (i > 0 && i < 5 ? v * -1 : v));
+    warpVals = warpVals.map((v, i) => i > 0 && i < 5 ? v * -1 : v);
     const angle = (drawable._direction - 90) * radianConverter;
     const [x, y] = drawable._position;
     const width = drawable.skin.size[0] * (drawable.scale[0] / 200);
     const height = drawable.skin.size[1] * (drawable.scale[1] / 200);
 
     const points = [
-      { x: warpVals[0] * 2 * -width + x, y: warpVals[1] * -2 * height - y },
-      { x: warpVals[2] * 2 * width + x, y: warpVals[3] * -2 * height - y },
-      { x: warpVals[4] * 2 * width + x, y: warpVals[5] * -2 * -height - y },
-      { x: warpVals[6] * 2 * -width + x, y: warpVals[7] * -2 * -height - y },
+      { x: (warpVals[0] * 2) * -width + x, y: (warpVals[1] * -2) * height - y },
+      { x: (warpVals[2] * 2) * width + x, y: (warpVals[3] * -2) * height - y },
+      { x: (warpVals[4] * 2) * width + x, y: (warpVals[5] * -2) * -height - y },
+      { x: (warpVals[6] * 2) * -width + x, y: (warpVals[7] * -2) * -height - y }
     ];
 
-    const rotatedPoints = points.map((p) =>
-      rotatePoint(p.x, p.y, x, -y, angle)
-    );
-    const xs = rotatedPoints.map((p) => p.x);
-    const ys = rotatedPoints.map((p) => p.y);
+    const rotatedPoints = points.map(p => rotatePoint(p.x, p.y, x, -y, angle));
+    const xs = rotatedPoints.map(p => p.x);
+    const ys = rotatedPoints.map(p => p.y);
 
     bounds.left = Math.min(...xs);
     bounds.top = -Math.min(...ys);
@@ -443,11 +384,11 @@ gl_FragColor.a = baseAlpha;`
   }
 
   const ogGetBounds = render.exports.Drawable.prototype.getBounds;
-  render.exports.Drawable.prototype.getBounds = function () {
+  render.exports.Drawable.prototype.getBounds = function() {
     return warpBounds(this, ogGetBounds.call(this));
   };
   const ogGetAABB = render.exports.Drawable.prototype.getAABB;
-  render.exports.Drawable.prototype.getAABB = function () {
+  render.exports.Drawable.prototype.getAABB = function() {
     return warpBounds(this, ogGetAABB.call(this));
   };
 
@@ -457,22 +398,10 @@ gl_FragColor.a = baseAlpha;`
     const gl = render.gl;
     penSkin._lineShader = render._shaderManager.getShader("line", 0);
     penSkin._drawTextureShader = render._shaderManager.getShader("default", 0);
-    penSkin.a_position_loc = gl.getAttribLocation(
-      penSkin._lineShader.program,
-      "a_position"
-    );
-    penSkin.a_lineColor_loc = gl.getAttribLocation(
-      penSkin._lineShader.program,
-      "a_lineColor"
-    );
-    penSkin.a_lineThicknessAndLength_loc = gl.getAttribLocation(
-      penSkin._lineShader.program,
-      "a_lineThicknessAndLength"
-    );
-    penSkin.a_penPoints_loc = gl.getAttribLocation(
-      penSkin._lineShader.program,
-      "a_penPoints"
-    );
+    penSkin.a_position_loc = gl.getAttribLocation(penSkin._lineShader.program, "a_position");
+    penSkin.a_lineColor_loc = gl.getAttribLocation(penSkin._lineShader.program, "a_lineColor");
+    penSkin.a_lineThicknessAndLength_loc = gl.getAttribLocation(penSkin._lineShader.program, "a_lineThicknessAndLength");
+    penSkin.a_penPoints_loc = gl.getAttribLocation(penSkin._lineShader.program, "a_penPoints");
   }
 
   // Clipping and Blending Support
@@ -481,73 +410,17 @@ gl_FragColor.a = baseAlpha;`
     /* compressed code from Clipping and Blending.js */
     const bfb = gl.bindFramebuffer;
     const ogGetUniforms = render.exports.Drawable.prototype.getUniforms;
-    gl.bindFramebuffer = function (e, i) {
-      if (e == gl.FRAMEBUFFER) {
-        if (null == i)
-          (toCorrectThing = !0),
-            (flipY = !1),
-            (width = canvas.width),
-            (height = canvas.height);
-        else if (render._penSkinId) {
-          let f = render._allSkins[render._penSkinId]._framebuffer;
-          i == f.framebuffer
-            ? ((toCorrectThing = !0),
-              (flipY = !0),
-              (width = f.width),
-              (height = f.height))
-            : (toCorrectThing = !1);
-        } else toCorrectThing = !1;
-      }
-      bfb.call(this, e, i);
-    };
-    function setupModes(e, n, a) {
-      if (e) {
-        gl.enable(gl.SCISSOR_TEST);
-        let E = ((e.x_min / scratchUnitWidth + 0.5) * width) | 0,
-          S = ((e.y_min / scratchUnitHeight + 0.5) * height) | 0,
-          N = ((e.x_max / scratchUnitWidth + 0.5) * width) | 0,
-          b,
-          l = (((e.y_max / scratchUnitHeight + 0.5) * height) | 0) - S;
-        a && (S = ((-e.y_max / scratchUnitHeight + 0.5) * height) | 0),
-          gl.scissor(E, S, N - E, l);
-      } else gl.disable(gl.SCISSOR_TEST);
-      switch (n) {
-        case "additive":
-          gl.blendEquation(gl.FUNC_ADD), gl.blendFunc(gl.ONE, gl.ONE);
-          break;
-        case "subtract":
-          gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT),
-            gl.blendFunc(gl.ONE, gl.ONE);
-          break;
-        case "multiply":
-          gl.blendEquation(gl.FUNC_ADD),
-            gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
-          break;
-        case "invert":
-          gl.blendEquation(gl.FUNC_ADD),
-            gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR);
-          break;
-        default:
-          gl.blendEquation(gl.FUNC_ADD),
-            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-      }
-    }
-    render.exports.Drawable.prototype.getUniforms = function () {
-      return (
-        active &&
-          toCorrectThing &&
-          setupModes(this.clipbox, this.blendMode, flipY),
-        ogGetUniforms.call(this)
-      );
-    };
+    gl.bindFramebuffer=function(e,i){if(e==gl.FRAMEBUFFER){if(null==i)toCorrectThing=!0,flipY=!1,width=canvas.width,height=canvas.height;else if(render._penSkinId){let f=render._allSkins[render._penSkinId]._framebuffer;i==f.framebuffer?(toCorrectThing=!0,flipY=!0,width=f.width,height=f.height):toCorrectThing=!1}else toCorrectThing=!1}bfb.call(this,e,i)};
+    function setupModes(e,n,a){if(e){gl.enable(gl.SCISSOR_TEST);let E=(e.x_min/scratchUnitWidth+.5)*width|0,S=(e.y_min/scratchUnitHeight+.5)*height|0,N=(e.x_max/scratchUnitWidth+.5)*width|0,b,l=((e.y_max/scratchUnitHeight+.5)*height|0)-S;a&&(S=(-e.y_max/scratchUnitHeight+.5)*height|0),gl.scissor(E,S,N-E,l)}else gl.disable(gl.SCISSOR_TEST);switch(n){case"additive":gl.blendEquation(gl.FUNC_ADD),gl.blendFunc(gl.ONE,gl.ONE);break;case"subtract":gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT),gl.blendFunc(gl.ONE,gl.ONE);break;case"multiply":gl.blendEquation(gl.FUNC_ADD),gl.blendFunc(gl.DST_COLOR,gl.ONE_MINUS_SRC_ALPHA);break;case"invert":gl.blendEquation(gl.FUNC_ADD),gl.blendFunc(gl.ONE_MINUS_DST_COLOR,gl.ONE_MINUS_SRC_COLOR);break;default:gl.blendEquation(gl.FUNC_ADD),gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA)}}
+    render.exports.Drawable.prototype.getUniforms=function(){return active&&toCorrectThing&&setupModes(this.clipbox,this.blendMode,flipY),ogGetUniforms.call(this)};
   }
 
   // this will allow clones to inherit parent effects
   const ogInitDrawable = vm.exports.RenderedTarget.prototype.initDrawable;
-  vm.exports.RenderedTarget.prototype.initDrawable = function (layerGroup) {
+  vm.exports.RenderedTarget.prototype.initDrawable = function(layerGroup) {
     ogInitDrawable.call(this, layerGroup);
     if (this.isOriginal) return;
-
+ 
     const parentSprite = this.sprite.clones[0]; // clone[0] is always the original
     const parentDrawable = render._allDrawables[parentSprite.drawableID];
     if (!parentDrawable[drawableKey]) return;
@@ -558,29 +431,27 @@ gl_FragColor.a = baseAlpha;`
 
   /* patch for "when costume switches" event */
   const ogSetCoreCostume = looksCore.constructor.prototype._setCostume;
-  ogSetCoreCostume.constructor.prototype._setCostume = function (
-    target,
-    requestedCostume,
-    optZeroIndex
-  ) {
+  ogSetCoreCostume.constructor.prototype._setCostume = function (target, requestedCostume, optZeroIndex) {
     ogSetCostume.call(this, target, requestedCostume, optZeroIndex);
-    runtime.startHats("SPlooksExpanded_whenCostumeSwitch", {
-      COSTUME: target.getCurrentCostume()?.name || "",
-    });
+    runtime.startHats(
+      "SPlooksExpanded_whenCostumeSwitch",
+      { COSTUME: target.getCurrentCostume()?.name || "" }
+    );
   };
   const ogSetSpriteCostume = vm.exports.RenderedTarget.prototype.setCostume;
   vm.exports.RenderedTarget.prototype.setCostume = function (index) {
     ogSetSpriteCostume.call(this, index);
-    runtime.startHats("SPlooksExpanded_whenCostumeSwitch", {
-      COSTUME: this.getCurrentCostume()?.name || "",
-    });
+    runtime.startHats(
+      "SPlooksExpanded_whenCostumeSwitch",
+      { COSTUME: this.getCurrentCostume()?.name || "" }
+    );
   };
 
   class SPlooksExpanded {
     getInfo() {
       return {
         id: "SPlooksExpanded",
-        name: "Looks Expanded",
+        name: Scratch.translate("Looks Expanded"),
         color1: "#9966FF",
         color2: "#855CD6",
         color3: "#774DCB",
@@ -590,134 +461,128 @@ gl_FragColor.a = baseAlpha;`
             opcode: "getSpeech",
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_looks"],
-            text: "speech from [TARGET]",
+            text: Scratch.translate("speech from [TARGET]"),
             arguments: {
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-            },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            }
           },
           "---",
           {
             opcode: "costumeCnt",
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_looks"],
-            text: "# of costumes in [TARGET]",
+            text: Scratch.translate("# of costumes in [TARGET]"),
             arguments: {
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-            },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            }
           },
           {
             opcode: "costumeInfo",
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_looks"],
-            text: "[INFO] of costume # [NUM] in [TARGET]",
+            text: Scratch.translate("[INFO] of costume # [NUM] in [TARGET]"),
             arguments: {
               INFO: { type: Scratch.ArgumentType.STRING, menu: "COSTUME_DATA" },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-            },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            }
           },
           {
             opcode: "setTargetCostume",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_looks"],
-            text: "switch costume of [TARGET] to [VALUE]",
+            text: Scratch.translate("switch costume of [TARGET] to [VALUE]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: "..." },
-            },
+            }
           },
           {
             opcode: "whenCostumeSwitch",
             blockType: Scratch.BlockType.EVENT,
             extensions: ["colours_event"],
             isEdgeActivated: false,
-            text: "when costume switches to [COSTUME]",
+            text: Scratch.translate("when costume switches to [COSTUME]"),
             arguments: {
               COSTUME: { type: Scratch.ArgumentType.STRING, menu: "COSTUMES" },
-            },
+            }
           },
           "---",
           {
             opcode: "setSpriteEffect",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_looks"],
-            text: "set [EFFECT] of [TARGET] to [VALUE]",
+            text: Scratch.translate("set [EFFECT] of [TARGET] to [VALUE]"),
             arguments: {
-              EFFECT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "EFFECT_MENU",
-              },
+              EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECT_MENU" },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-              VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-            },
+              VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
+            }
           },
           {
             opcode: "effectValue",
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_looks"],
-            text: "[EFFECT] effect of [TARGET]",
+            text: Scratch.translate("[EFFECT] effect of [TARGET]"),
             arguments: {
-              EFFECT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "EFFECT_MENU",
-              },
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+              EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECT_MENU" },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
           {
             opcode: "tintSprite",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_looks"],
-            text: "set tint of [TARGET] to [COLOR]",
+            text: Scratch.translate("set tint of [TARGET] to [COLOR]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-              COLOR: { type: Scratch.ArgumentType.COLOR },
-            },
+              COLOR: { type: Scratch.ArgumentType.COLOR }
+            }
           },
           "---",
           {
             opcode: "replaceColor",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_looks"],
-            text: "replace [COLOR1] with [COLOR2] in [TARGET] softness [VALUE]",
+            text: Scratch.translate("replace [COLOR1] with [COLOR2] in [TARGET] softness [VALUE]"),
             arguments: {
               COLOR1: { type: Scratch.ArgumentType.COLOR },
               COLOR2: { type: Scratch.ArgumentType.COLOR },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-            },
+            }
           },
           {
             opcode: "resetColor",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_looks"],
-            text: "reset [COLOR1] replacer in [TARGET]",
+            text: Scratch.translate("reset [COLOR1] replacer in [TARGET]"),
             arguments: {
               COLOR1: { type: Scratch.ArgumentType.COLOR },
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-            },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            }
           },
           {
             opcode: "resetReplacers",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_looks"],
-            text: "reset color replacers in [TARGET]",
+            text: Scratch.translate("reset color replacers in [TARGET]"),
             arguments: {
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-            },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            }
           },
           {
             blockType: Scratch.BlockType.XML,
-            xml: '<sep gap="24"/><label text="Warping and Masking does NOT"/><sep gap="0"/>',
+            xml: `<sep gap=\"24\"/><label text=\"${Scratch.translate("Warping and Masking does NOT")}\"/><sep gap=\"0\"/>`,
           },
           {
             blockType: Scratch.BlockType.XML,
-            xml: '<sep gap="-12"/><label text=" affect Touching Blocks"/><sep gap="6"/>',
+            xml: `<sep gap=\"-12\"/><label text=\" ${Scratch.translate("affect Touching Blocks")}\"/><sep gap=\"6\"/>`,
           },
           {
             opcode: "warpSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "warp [TARGET] to x1: [x1] y1: [y1] x2: [x2] y2: [y2] x3: [x3] y3: [y3] x4: [x4] y4: [y4]",
+            text: Scratch.translate("warp [TARGET] to x1: [x1] y1: [y1] x2: [x2] y2: [y2] x3: [x3] y3: [y3] x4: [x4] y4: [y4]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
@@ -727,58 +592,52 @@ gl_FragColor.a = baseAlpha;`
               x3: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
               y3: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
               x4: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
-              y4: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
+              y4: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 }
             },
           },
           {
             opcode: "maskSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "mask [TARGET] with image [IMAGE]",
+            text: Scratch.translate("mask [TARGET] with image [IMAGE]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-              IMAGE: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://extensions.turbowarp.org/dango.png",
-              },
+              IMAGE: { type: Scratch.ArgumentType.STRING, defaultValue: "https://extensions.turbowarp.org/dango.png" }
             },
           },
           "---",
           {
             opcode: "showSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show [TARGET]",
+            text: Scratch.translate("show [TARGET]"),
             arguments: {
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
           {
             opcode: "hideSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide [TARGET]",
+            text: Scratch.translate("hide [TARGET]"),
             arguments: {
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
           {
             opcode: "spriteShowing",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[TARGET] [TYPE] ?",
+            text: Scratch.translate("[TARGET] [TYPE] ?"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-              TYPE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "DISPLAY_TYPES",
-              },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "DISPLAY_TYPES" }
             },
           },
           "---",
           {
             opcode: "spriteProperty",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[PROP] of [TARGET]",
+            text: Scratch.translate("[PROP] of [TARGET]"),
             arguments: {
               PROP: { type: Scratch.ArgumentType.STRING, menu: "SPRITE_PROPS" },
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
         ],
@@ -786,23 +645,33 @@ gl_FragColor.a = baseAlpha;`
           COSTUMES: { acceptReporters: false, items: "getCostumes" },
           TARGETS: { acceptReporters: true, items: "getTargets" },
           EFFECT_MENU: { acceptReporters: true, items: "getEffects" },
-          DISPLAY_TYPES: ["showing", "visible"],
+          DISPLAY_TYPES: {
+            acceptReporters: false,
+            items: [
+              { text: Scratch.translate("showing"), value: "showing" },
+              { text: Scratch.translate("visible"), value: "visible" }
+            ]
+          },
           COSTUME_DATA: {
             acceptReporters: true,
             items: [
-              "name",
-              "type",
-              "width",
-              "height",
-              "rotation center x",
-              "rotation center y",
-              "content",
-              "data.uri",
-            ],
+              { text: Scratch.translate("name"), value: "name" },
+              { text: Scratch.translate("type"), value: "type" },
+              { text: Scratch.translate("width"), value: "width" },
+              { text: Scratch.translate("height"), value: "height" },
+              { text: Scratch.translate("rotation center x"), value: "rotation center x" },
+              { text: Scratch.translate("rotation center y"), value: "rotation center y" },
+              { text: Scratch.translate("content"), value: "content" },
+              { text: Scratch.translate("data.uri"), value: "data.uri" }
+            ]
           },
           SPRITE_PROPS: {
             acceptReporters: true,
-            items: ["width", "height", "layer #"],
+            items: [
+              { text: Scratch.translate("width"), value: "width" },
+              { text: Scratch.translate("height"), value: "height" },
+              { text: Scratch.translate("layer #"), value: "layer #" }
+            ]
           },
         },
       };
@@ -811,37 +680,30 @@ gl_FragColor.a = baseAlpha;`
     // Helper Funcs
     getTargets() {
       const spriteNames = [
-        { text: "myself", value: "_myself_" },
-        { text: "Stage", value: "_stage_" },
+        { text: Scratch.translate("myself"), value: "_myself_" },
+        { text: Scratch.translate("Stage"), value: "_stage_" }
       ];
       const targets = runtime.targets;
       for (let i = 1; i < targets.length; i++) {
         const target = targets[i];
-        if (target.isOriginal)
-          spriteNames.push({ text: target.getName(), value: target.getName() });
+        if (target.isOriginal) spriteNames.push({ text: target.getName(), value: target.getName() });
       }
       return spriteNames.length > 0 ? spriteNames : [""];
     }
 
     getCostumes() {
       let costumeNames = [];
-      if (vm.editingTarget)
-        costumeNames = vm.editingTarget.getCostumes().map((e) => {
-          return e.name;
-        });
+      if (vm.editingTarget) costumeNames = vm.editingTarget.getCostumes().map((e) => { return e.name });
       return costumeNames.length > 0 ? costumeNames : [""];
     }
 
     getEffects() {
       const effects = Object.keys(vm.editingTarget?.effects || {});
-      effects.push(
-        "saturation",
-        "opaque",
-        "contrast",
-        "posterize",
-        "sepia",
-        "bloom"
-      );
+      if (!isPM) effects.push("saturation", "opaque");
+      effects.push("contrast", "posterize", "sepia", "bloom");
+      effects.map((effect) => {
+        return { text: Scratch.translate(effect), value: effect };
+      });
       return effects.length > 0 ? effects : [""];
     }
 
@@ -853,10 +715,7 @@ gl_FragColor.a = baseAlpha;`
 
     exportCostume(data, type, keepBase64) {
       if (type === "svg") type = "svg+xml";
-      const binary = data.reduce(
-        (str, byte) => str + String.fromCharCode(byte),
-        ""
-      );
+      const binary = data.reduce((str, byte) => str + String.fromCharCode(byte), "");
       if (keepBase64) return `data:image/${type};base64,${btoa(binary)}`;
       else return binary;
     }
@@ -869,7 +728,7 @@ gl_FragColor.a = baseAlpha;`
         parseInt(hex.slice(0, 2), 16) / 255,
         parseInt(hex.slice(2, 4), 16) / 255,
         parseInt(hex.slice(4, 6), 16) / 255,
-        a / 255,
+        a / 255
       ];
     }
 
@@ -900,40 +759,22 @@ gl_FragColor.a = baseAlpha;`
       if (!costume) return "";
 
       switch (args.INFO) {
-        case "name":
-          return costume.name;
-        case "width":
-          return costume.size[0];
-        case "height":
-          return costume.size[1];
-        case "type":
-          return costume.dataFormat;
-        case "rotation center x":
-          return costume.rotationCenterX;
-        case "rotation center y":
-          return costume.rotationCenterY;
-        case "content":
-          return this.exportCostume(
-            costume.asset.data,
-            costume.dataFormat,
-            false
-          );
-        case "data.uri":
-          return this.exportCostume(
-            costume.asset.data,
-            costume.dataFormat,
-            true
-          );
-        default:
-          return "";
+        case "name": return costume.name;
+        case "width": return costume.size[0];
+        case "height": return costume.size[1];
+        case "type": return costume.dataFormat;
+        case "rotation center x": return costume.rotationCenterX;
+        case "rotation center y": return costume.rotationCenterY;
+        case "content": return this.exportCostume(costume.asset.data, costume.dataFormat, false);
+        case "data.uri": return this.exportCostume(costume.asset.data, costume.dataFormat, true);
+        default: return "";
       }
     }
 
     setTargetCostume(args, util) {
       const target = this.getTarget(args.TARGET, util);
       if (target) {
-        if (target.isStage)
-          runtime.ext_scratch3_looks._setBackdrop(target, args.VALUE);
+        if (target.isStage) runtime.ext_scratch3_looks._setBackdrop(target, args.VALUE);
         else runtime.ext_scratch3_looks._setCostume(target, args.VALUE);
       }
     }
@@ -945,17 +786,14 @@ gl_FragColor.a = baseAlpha;`
         let value = Cast.toNumber(args.VALUE);
         if (name !== "posterize") value /= 100;
         if (
-          name === "contrast" ||
-          name === "posterize" ||
-          name === "sepia" ||
-          name === "bloom" ||
-          name === "saturation" ||
-          name === "opaque"
+          name === "contrast" || name === "posterize" ||
+          name === "sepia" || name === "bloom" ||
+          (!isPM && (name === "saturation" || name === "opaque"))
         ) {
           const drawable = render._allDrawables[target.drawableID];
           initDrawable(drawable);
           const oldValue = drawable[drawableKey].newEffects[name];
-          drawable[drawableKey].newEffects[name] = value;
+          drawable[drawableKey].newEffects[name] = value
           if (oldValue !== value) render.dirty = true;
         } else {
           target.setEffect(name, value);
@@ -970,20 +808,16 @@ gl_FragColor.a = baseAlpha;`
       const effects = target.effects;
       const name = Cast.toString(args.EFFECT);
       if (
-        name === "contrast" ||
-        name === "posterize" ||
-        name === "sepia" ||
-        name === "bloom" ||
-        name === "saturation" ||
-        name === "opaque"
+        name === "contrast" || name === "posterize" ||
+        name === "sepia" || name === "bloom" ||
+        (!isPM && (name === "saturation" || name === "opaque"))
       ) {
         const drawable = render._allDrawables[target.drawableID];
         initDrawable(drawable);
         const value = drawable[drawableKey].newEffects[name];
         return name === "posterize" ? value : value * 100;
       }
-      if (Object.prototype.hasOwnProperty.call(effects, name))
-        return effects[name];
+      if (Object.prototype.hasOwnProperty.call(effects, name)) return effects[name];
       return 0;
     }
 
@@ -995,8 +829,7 @@ gl_FragColor.a = baseAlpha;`
       initDrawable(drawable);
       const oldTint = drawable[drawableKey].tint;
       drawable[drawableKey].tint = this.hex2Vec4(args.COLOR);
-      if (!this.arrayMatches(oldTint, drawable[drawableKey].tint))
-        render.dirty = true;
+      if (!this.arrayMatches(oldTint, drawable[drawableKey].tint)) render.dirty = true;
     }
 
     replaceColor(args, util) {
@@ -1010,7 +843,7 @@ gl_FragColor.a = baseAlpha;`
         targetHex: args.COLOR1,
         targetVert: this.hex2Vec4(args.COLOR1),
         replaceVert: this.hex2Vec4(args.COLOR2),
-        soft: Math.max(Cast.toNumber(args.VALUE), 1) / 100,
+        soft: Math.max(Cast.toNumber(args.VALUE), 1) / 100
       });
       render.dirty = true;
     }
@@ -1021,9 +854,7 @@ gl_FragColor.a = baseAlpha;`
 
       const drawable = render._allDrawables[target.drawableID];
       initDrawable(drawable);
-      const index = drawable[drawableKey].replacers.findIndex((i) => {
-        return i.targetHex === args.COLOR1;
-      });
+      const index = drawable[drawableKey].replacers.findIndex((i) => { return i.targetHex === args.COLOR1 });
       if (index > -1) drawable[drawableKey].replacers.splice(index, 1);
       render.dirty = true;
     }
@@ -1048,17 +879,12 @@ gl_FragColor.a = baseAlpha;`
       initDrawable(drawable);
       const oldWarp = drawable[drawableKey].warp;
       drawable[drawableKey].warp = [
-        Cast.toNumber(args.x1) / -200,
-        Cast.toNumber(args.y1) / -200,
-        Cast.toNumber(args.x2) / -200,
-        Cast.toNumber(args.y2) / -200,
-        Cast.toNumber(args.x4) / -200,
-        Cast.toNumber(args.y4) / -200,
-        Cast.toNumber(args.x3) / -200,
-        Cast.toNumber(args.y3) / -200,
+        Cast.toNumber(args.x1) / -200, Cast.toNumber(args.y1) / -200,
+        Cast.toNumber(args.x2) / -200, Cast.toNumber(args.y2) / -200,
+        Cast.toNumber(args.x4) / -200, Cast.toNumber(args.y4) / -200,
+        Cast.toNumber(args.x3) / -200, Cast.toNumber(args.y3) / -200
       ];
-      if (!this.arrayMatches(oldWarp, drawable[drawableKey].warp))
-        render.dirty = true;
+      if (!this.arrayMatches(oldWarp, drawable[drawableKey].warp)) render.dirty = true;
     }
 
     maskSprite(args, util) {
@@ -1070,10 +896,7 @@ gl_FragColor.a = baseAlpha;`
 
       const url = Cast.toString(args.IMAGE);
       if (drawable[drawableKey].oldMask === url) return;
-      if (
-        !url ||
-        !(url.startsWith("data:image/") || url.startsWith("https://"))
-      ) {
+      if (!url || !(url.startsWith("data:image/") || url.startsWith("https://"))) {
         drawable[drawableKey].maskTexture = "";
         drawable[drawableKey].oldMask = "";
         drawable[drawableKey].shouldMask = 0;
@@ -1096,17 +919,9 @@ gl_FragColor.a = baseAlpha;`
         image.crossOrigin = "Anonymous";
         image.onload = () => {
           gl.bindTexture(gl.TEXTURE_2D, drawable[drawableKey]._maskTexture);
-          gl.texImage2D(
-            gl.TEXTURE_2D,
-            0,
-            gl.RGBA,
-            gl.RGBA,
-            gl.UNSIGNED_BYTE,
-            image
-          );
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 
-          drawable[drawableKey].maskTexture =
-            drawable[drawableKey]._maskTexture;
+          drawable[drawableKey].maskTexture = drawable[drawableKey]._maskTexture;
           drawable[drawableKey].shouldMask = 1;
           drawable[drawableKey].oldMask = url;
           render.dirty = true;
@@ -1140,23 +955,13 @@ gl_FragColor.a = baseAlpha;`
 
         // check if sprite is on-screen
         const bounds = target.getBounds();
-        if (
-          bounds.left > runtime.stageWidth / 2 ||
-          bounds.right < runtime.stageWidth / -2
-        )
-          return false;
-        if (
-          bounds.bottom > runtime.stageHeight / 2 ||
-          bounds.top < runtime.stageHeight / -2
-        )
-          return false;
+        if (bounds.left > runtime.stageWidth / 2 || bounds.right < runtime.stageWidth / -2) return false;
+        if (bounds.bottom > runtime.stageHeight / 2 || bounds.top < runtime.stageHeight / -2) return false;
 
         // check if sprite is being covered
         const layerInd = target.getLayerOrder() + 1;
         const rangeIds = new Array(render._allDrawables.length - layerInd);
-        for (let i = 0; i < rangeIds.length; i++) {
-          rangeIds[i] = layerInd + i;
-        }
+        for (let i = 0; i < rangeIds.length; i++) { rangeIds[i] = layerInd + i }
         return !render.isTouchingDrawables(target.drawableID, rangeIds);
       }
     }
@@ -1164,14 +969,10 @@ gl_FragColor.a = baseAlpha;`
     spriteProperty(args, util) {
       const target = this.getTarget(args.TARGET, util);
       switch (args.PROP) {
-        case "width":
-          return target.getBounds().width;
-        case "height":
-          return target.getBounds().height;
-        case "layer #":
-          return target.getLayerOrder();
-        default:
-          return "";
+        case "width": return target.getBounds().width;
+        case "height": return target.getBounds().height;
+        case "layer #": return target.getLayerOrder();
+        default: return "";
       }
     }
   }
