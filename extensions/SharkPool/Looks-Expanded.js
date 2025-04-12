@@ -411,6 +411,7 @@ gl_FragColor.a = baseAlpha;`
     const bfb = gl.bindFramebuffer;
     const ogGetUniforms = render.exports.Drawable.prototype.getUniforms;
     gl.bindFramebuffer=function(e,i){if(e==gl.FRAMEBUFFER){if(null==i)toCorrectThing=!0,flipY=!1,width=canvas.width,height=canvas.height;else if(render._penSkinId){let f=render._allSkins[render._penSkinId]._framebuffer;i==f.framebuffer?(toCorrectThing=!0,flipY=!0,width=f.width,height=f.height):toCorrectThing=!1}else toCorrectThing=!1}bfb.call(this,e,i)};
+    // eslint-disable-next-line
     function setupModes(e,n,a){if(e){gl.enable(gl.SCISSOR_TEST);let E=(e.x_min/scratchUnitWidth+.5)*width|0,S=(e.y_min/scratchUnitHeight+.5)*height|0,N=(e.x_max/scratchUnitWidth+.5)*width|0,b,l=((e.y_max/scratchUnitHeight+.5)*height|0)-S;a&&(S=(-e.y_max/scratchUnitHeight+.5)*height|0),gl.scissor(E,S,N-E,l)}else gl.disable(gl.SCISSOR_TEST);switch(n){case"additive":gl.blendEquation(gl.FUNC_ADD),gl.blendFunc(gl.ONE,gl.ONE);break;case"subtract":gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT),gl.blendFunc(gl.ONE,gl.ONE);break;case"multiply":gl.blendEquation(gl.FUNC_ADD),gl.blendFunc(gl.DST_COLOR,gl.ONE_MINUS_SRC_ALPHA);break;case"invert":gl.blendEquation(gl.FUNC_ADD),gl.blendFunc(gl.ONE_MINUS_DST_COLOR,gl.ONE_MINUS_SRC_COLOR);break;default:gl.blendEquation(gl.FUNC_ADD),gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA)}}
     render.exports.Drawable.prototype.getUniforms=function(){return active&&toCorrectThing&&setupModes(this.clipbox,this.blendMode,flipY),ogGetUniforms.call(this)};
   }
@@ -432,7 +433,7 @@ gl_FragColor.a = baseAlpha;`
   /* patch for "when costume switches" event */
   const ogSetCoreCostume = looksCore.constructor.prototype._setCostume;
   ogSetCoreCostume.constructor.prototype._setCostume = function (target, requestedCostume, optZeroIndex) {
-    ogSetCostume.call(this, target, requestedCostume, optZeroIndex);
+    ogSetCoreCostume.call(this, target, requestedCostume, optZeroIndex);
     runtime.startHats(
       "SPlooksExpanded_whenCostumeSwitch",
       { COSTUME: target.getCurrentCostume()?.name || "" }
@@ -573,11 +574,11 @@ gl_FragColor.a = baseAlpha;`
           },
           {
             blockType: Scratch.BlockType.XML,
-            xml: `<sep gap=\"24\"/><label text=\"${Scratch.translate("Warping and Masking does NOT")}\"/><sep gap=\"0\"/>`,
+            xml: `<sep gap="24"/><label text="${Scratch.translate("Warping and Masking does NOT")}"/><sep gap="0"/>`,
           },
           {
             blockType: Scratch.BlockType.XML,
-            xml: `<sep gap=\"-12\"/><label text=\" ${Scratch.translate("affect Touching Blocks")}\"/><sep gap=\"6\"/>`,
+            xml: `<sep gap="-12"/><label text=" ${Scratch.translate("affect Touching Blocks")}"/><sep gap="6"/>`,
           },
           {
             opcode: "warpSprite",
@@ -915,6 +916,7 @@ gl_FragColor.a = baseAlpha;`
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         }
 
+        // eslint-disable-next-line
         const image = new Image();
         image.crossOrigin = "Anonymous";
         image.onload = () => {
