@@ -3,7 +3,7 @@
 // Description: Customize and Organize Lists Monitors.
 // By: SharkPool
 
-// Version 2.1.0
+// Version 2.1.01
 
 (function (Scratch) {
   "use strict";
@@ -294,7 +294,10 @@
           POSITIONS: ["x", "y"],
           list_displays: ["header", "footer"],
           listTypes: ["globally", "for this sprite only"],
-          listUtils: ["click events", "text highlighting", "numbered items", "+ and = buttons"],
+          listUtils: [
+            "click events", "text highlighting", "disable item overflow",
+            "numbered items", "+ and = buttons"
+          ],
           ON_OFF: ["on", "off"],
           VISIBLE: { acceptReporters: true, items: ["show", "hide"] },
           ATTS: { acceptReporters: true, items: ["width", "height"] },
@@ -518,28 +521,55 @@
       const listMon = this.getMonitor(args.LIST, util);
       if (!listMon) return;
       const disable = args.ON_OFF === "off";
-      if (args.THING === "click events") listMon.style.pointerEvents = disable ? "none" : "auto";
-      else if (args.THING === "text highlighting") {
-        const items = listMon.querySelectorAll(`div[class^="${listDocs.value2}"]`);
-        items.forEach(item => {
-          item.style.userSelect = disable ? "none " : "auto";
-          item.style.webkitUserSelect = disable ? "none" : "auto";
-        });
-      } else if (args.THING === "numbered items") {
-        const numberedItems = listMon.querySelectorAll(`div[class^="${listDocs.ind}"]`);
-        numberedItems.forEach(item => { item.style.display = disable ? "none" : "block" });
-      } else if (args.THING === "+ and = buttons") {
-        let button1 = listMon.querySelector(`div[class^="${listDocs.addButton}"]`);
-        let button2 = typeof scaffolding !== "undefined" ? button1 : listMon.querySelector(`div[class^="monitor_resize-handle"]`);
-        if (button1 === null || button2 === null) {
-          const buttons = listMon.querySelectorAll(".no-drag");
-          buttons.forEach(button => { button.style.display = disable ? "none" : "block" });
-        } else {
-          button1.style.display = disable ? "none" : "block";
-          button2.style.display = disable ? "none" : "block";
+      switch (args.THING) {
+        case "click events": {
+          listMon.style.pointerEvents = disable ? "none" : "auto";
+          break;
         }
-        let text = listMon.querySelector(`div[class^="${listDocs.foot}"]`);
-        text.style.margin = "0 auto";
+        case "text highlighting": {
+          const items = listMon.querySelectorAll(`div[class^="${listDocs.value2}"]`);
+          items.forEach(item => {
+            item.style.userSelect = disable ? "none " : "auto";
+            item.style.webkitUserSelect = disable ? "none" : "auto";
+          });
+          break;
+        }
+        case "disable item overflow": {
+          const items = listMon.querySelectorAll(`div[class^="${listDocs.value2}"]`);
+          if (disable) {
+            items.forEach(item => {
+              item.style.overflow = "";
+              item.style.textOverflow = "";
+              item.scroll(0, 0);
+            });
+          } else {
+            items.forEach(item => {
+              item.style.overflow = "auto";
+              item.style.textOverflow = "clip";
+            });
+          }
+          break;
+        }
+        case "numbered items": {
+          const numberedItems = listMon.querySelectorAll(`div[class^="${listDocs.ind}"]`);
+          numberedItems.forEach(item => { item.style.display = disable ? "none" : "block" });
+          break;
+        }
+        case "+ and = buttons": {
+          let button1 = listMon.querySelector(`div[class^="${listDocs.addButton}"]`);
+          let button2 = typeof scaffolding !== "undefined" ? button1 : listMon.querySelector(`div[class^="monitor_resize-handle"]`);
+          if (button1 === null || button2 === null) {
+            const buttons = listMon.querySelectorAll(".no-drag");
+            buttons.forEach(button => { button.style.display = disable ? "none" : "block" });
+          } else {
+            button1.style.display = disable ? "none" : "block";
+            button2.style.display = disable ? "none" : "block";
+          }
+          let text = listMon.querySelector(`div[class^="${listDocs.foot}"]`);
+          text.style.margin = "0 auto";
+          break;
+        }
+        default: return;
       }
     }
 
