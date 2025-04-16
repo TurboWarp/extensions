@@ -570,7 +570,10 @@
               },
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Stored Files") },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Stored Files"),
+          },
           {
             opcode: "checkFileAPI",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -1173,7 +1176,8 @@
             thisFile = outerData.value;
             if (thisFile !== undefined) {
               const innerData = thisFile[1];
-              if (innerData.kind === "directory") await digThroughFolder(innerData);
+              if (innerData.kind === "directory")
+                await digThroughFolder(innerData);
               else await createExtFile(folderN, innerData);
             }
           }
@@ -1216,7 +1220,7 @@
         const res = await Scratch.fetch(url);
         if (!res.ok) return;
         const blob = await res.blob();
-  
+
         const writable = await storedFiles[args.NAME].file.createWritable();
         await writable.write(blob);
         await writable.close();
