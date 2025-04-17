@@ -41,6 +41,20 @@
             },
           },
           {
+            opcode: "vectorChangeMag",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "change vector [ID]'s magnitude to [MAGNITUDE]"
+            ),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
+              MAGNITUDE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10,
+              },
+            },
+          },
+          {
             opcode: "vectorChange",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
@@ -55,6 +69,20 @@
               MAGNITUDE: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 10,
+              },
+            },
+          },
+          {
+            opcode: "vectorChangedir",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "change vector [ID]'s direction to [DIRECTION]"
+            ),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
+              DIRECTION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 90,
               },
             },
           },
@@ -95,6 +123,15 @@
     vectorChange(args) {
       const id = args.ID;
       directions[id] = args.DIRECTION;
+      magnitudes[id] = args.MAGNITUDE;
+    }
+    vectorChangedir(args) {
+      const id = args.ID;
+      directions[id] = args.DIRECTION;
+    }
+
+    vectorChangeMag(args) {
+      const id = args.ID;
       magnitudes[id] = args.MAGNITUDE;
     }
 
