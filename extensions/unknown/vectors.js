@@ -73,6 +73,16 @@
             },
           },
           {
+            opcode: "vectorDelete",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "Delete vector with [ID]"
+            ),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
+            },
+          },
+          {
             opcode: "vectorChangedir",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
@@ -138,6 +148,14 @@
     vectorMag(args) {
       const id = args.ID;
       return magnitudes[id] ?? Scratch.translate("vector not found");
+    }
+    vectordelete(args) {
+      const id = args.ID;
+    const index = ids.indexOf(id);
+    if (index !== -1) {
+      ids.splice(index, 1);
+      delete directions[id];
+      delete magnitudes[id];
     }
 
     vectorDir(args) {
