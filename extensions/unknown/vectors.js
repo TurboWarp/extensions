@@ -26,8 +26,14 @@
             ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
-              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              DIRECTION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 90,
+              },
+              MAGNITUDE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10,
+              },
             },
           },
           {
@@ -38,7 +44,10 @@
             ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              MAGNITUDE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10,
+              },
             },
           },
           {
@@ -49,8 +58,14 @@
             ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
-              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+              DIRECTION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 90,
+              },
+              MAGNITUDE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 10,
+              },
             },
           },
           {
@@ -69,7 +84,10 @@
             ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
+              DIRECTION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 90,
+              },
             },
           },
           {
