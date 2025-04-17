@@ -151,13 +151,9 @@
     }
     vectordelete(args) {
       const id = args.ID;
-    const index = ids.indexOf(id);
-    if (index !== -1) {
-      ids.splice(index, 1);
-      delete directions[id];
-      delete magnitudes[id];
+      delete[directions.id]
+      delete[magnitudes.id]
     }
-
     vectorDir(args) {
       const id = args.ID;
       return directions[id] ?? Scratch.translate("vector not found");
