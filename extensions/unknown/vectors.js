@@ -1,10 +1,12 @@
 (function (Scratch) {
   "use strict";
 
+  // Ensuring the extension is unsandboxed
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("This extension must run unsandboxed");
   }
 
+  // Vectors storage
   const ids = [];
   const directions = {};
   const magnitudes = {};
@@ -24,14 +26,8 @@
             ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              DIRECTION: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 90,
-              },
-              MAGNITUDE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10,
-              },
+              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
+              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
             },
           },
           {
@@ -42,10 +38,7 @@
             ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              MAGNITUDE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10,
-              },
+              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
             },
           },
           {
@@ -56,22 +49,14 @@
             ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              DIRECTION: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 90,
-              },
-              MAGNITUDE: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10,
-              },
+              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
+              MAGNITUDE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
             },
           },
           {
             opcode: "vectorDelete",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "Delete vector with [ID]"
-            ),
+            text: Scratch.translate("Delete vector with [ID]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
             },
@@ -84,10 +69,7 @@
             ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-              DIRECTION: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 90,
-              },
+              DIRECTION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
             },
           },
           {
