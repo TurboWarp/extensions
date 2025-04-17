@@ -28,14 +28,20 @@
     new Promise((resolve) => {
       if (svgSkin._svgImageLoaded) {
         resolve();
-      } else {
-        svgSkin._svgImage.addEventListener("load", () => {
-          resolve();
-        });
-        svgSkin._svgImage.addEventListener("error", () => {
-          resolve();
-        });
+        return;
       }
+
+      const handleEvent = () => {
+        cleanup();
+        resolve();
+      };
+      const cleanup = () => {
+        svgSkin._svgImage.removeEventListener("load", handleEvent);
+        svgSkin._svgImage.removeEventListener("error", handleEvent);
+      };
+
+      svgSkin._svgImage.addEventListener("load", handleEvent);
+      svgSkin._svgImage.addEventListener("error", handleEvent);
     });
 
   /**
