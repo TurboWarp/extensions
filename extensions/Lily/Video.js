@@ -33,7 +33,7 @@
 
   // Updated code to apply the project's volume to that of the video.
   // This allows the volume to interact with Scratch Addons and Sound Expanded.
-  const updateAudio = function() {
+  const updateAudio = function () {
     for (const skin of renderer._allSkins) {
       if (skin instanceof VideoSkin) {
         let projectVolume = runtime.audioEngine.inputNode.gain.value;
