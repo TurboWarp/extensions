@@ -597,6 +597,94 @@
     return event;
   }
 
+  /**
+   * Key Values helper
+   * generic helper to convert key=value pairs to/from javascript object
+   * any values that aren't in key=value format go into unkeyed array
+   */
+  const kvHelper = {
+    _tokenizeRe: /(?<ws>\s*)((?<key>\w+)=)?(?<value>("[^"]*"|\S+)?)?/g,
+    *tokenize(str = "") {
+      const { unquote } = kvHelper;
+      let unkeyed = "";
+      for (let match of String(str).matchAll(kvHelper._tokenizeRe)) {
+        const { key, value = "", ws } = match.groups;
+        if (!key) {
+          unkeyed += `${unkeyed ? ws : ""}${value}`;
+          continue;
+        }
+        if (unkeyed) {
+          yield { value: unquote(unkeyed) };
+          unkeyed = "";
+        }
+        yield { key, value: unquote(value) };
+      }
+      if (unkeyed) yield { value: unquote(unkeyed) };
+    },
+    /**
+     *
+     * @param {*} str
+     * @returns {{ args: Record<string, string>, _: string[]}}
+     */
+    parseKeyValues(str = "") {
+      const out = { args: {}, _: [] };
+      for (let { key, value } of kvHelper.tokenize(str)) {
+        if (key) {
+          out.args[key] = value;
+        } else {
+          out._.push(value);
+        }
+      }
+      return out;
+    },
+    isQuoted(str) {
+      return str.length > 1 && str.startsWith('"') && str.endsWith('"');
+    },
+    quote(str, force = false) {
+      if (!/[\s="]/.test(str) && !force) return str;
+      if (kvHelper.isQuoted(str)) str = str.slice(1, -1);
+      return `"${str.replace(/"/g, "''")}"`;
+    },
+    unquote(str) {
+      if (kvHelper.isQuoted(str)) {
+        return str.slice(1, -1).replace(/''/g, '"');
+      }
+      return str;
+    },
+    /**
+     * Convert an object into key/value pairs (values with special characters get quoted/escaped)
+     * @param {Record<string, any>} args
+     * @param {any[]} [unkeyed]
+     * @param {boolean} [compact] remove falsy values
+     * @returns {string}
+     */
+    formatKeyValues(args, unkeyed, compact = true) {
+      let entries = Object.entries(args);
+      if (Array.isArray(unkeyed)) entries.push(...unkeyed.map((v) => ["", v]));
+      if (compact)
+        entries = entries.filter(([_, value]) => value || value === 0);
+      return entries
+        .map(([key, val]) => kvHelper.formatKeyValue(key, val))
+        .filter(Boolean)
+        .join(" ");
+    },
+    /**
+     *
+     * @param {*} [key]
+     * @param {*} [value]
+     * @returns {string}
+     */
+    formatKeyValue(key = "", value = "") {
+      const { quote } = kvHelper;
+      // REVIEW this makes sure output is compatible with parse by avoiding " or spaces etc
+      key = String(key).trim().replace(/[^\w]/, "");
+      value = String(value).trim();
+      if (key === "" && value === "") return "";
+      // surround with quotes if necessary
+      return `${key ? `${quote(key)}=` : ""}${kvHelper.quote(value)}`;
+    },
+  };
+
   function formatChannel(channel = 0, opts) {
     const str = opts?.useHex
       ? formatHex(channel, 1)
