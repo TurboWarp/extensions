@@ -148,20 +148,9 @@
         }
       });
 
-      // Updated code to apply the project's volume to that of the video.
-      // This allows the volume to interact with Scratch Addons and Sound Expanded.
       runtime.on("AFTER_EXECUTE", () => {
         this.updateAudio();
       });
-
-      this.updateAudio = function () {
-        for (const skin of renderer._allSkins) {
-          if (skin instanceof VideoSkin) {
-            let projectVolume = runtime.audioEngine.inputNode.gain.value;
-            skin.videoElement.volume = skin.videoVolume * projectVolume;
-          }
-        }
-      };
 
       runtime.on("RUNTIME_PAUSED", () => {
         for (const skin of renderer._allSkins) {
@@ -172,6 +161,8 @@
         }
       });
 
+      // Updated code to apply the project's volume to that of the video.
+      // This allows the volume to interact with Scratch Addons and Sound Expanded.
       runtime.on("RUNTIME_UNPAUSED", () => {
         for (const skin of renderer._allSkins) {
           if (skin instanceof VideoSkin) {
@@ -181,6 +172,15 @@
         }
       });
     }
+
+    updateAudio() {
+      for (const skin of renderer._allSkins) {
+        if (skin instanceof VideoSkin) {
+          let projectVolume = runtime.audioEngine.inputNode.gain.value;
+          skin.videoElement.volume = skin.videoVolume * projectVolume;
+        }
+      }
+    };
 
     getInfo() {
       return {
