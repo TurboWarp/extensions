@@ -112,7 +112,7 @@
    *
    * @typedef {object} FormatOptions
    * @property {number} [tempo] override tempo used in converting beats/pos. default is stage tempo
-   * @property {boolean} [useFlats] show notes as flats instead of sharps
+   * @property {'sharps' |'flats' | 'num'} [pitchFormat] show notes as flats instead of sharps, or number value
    * @property {boolean} [noMinify] include all data even if defaults
    * @property {'omit' | 'timestamp' | 'absolute'} [timestampFormat] for future use
    * @property {number} [startTimestamp] for future use
@@ -137,10 +137,11 @@
   const FLATS = "C Db D Eb E F Gb G Ab A Bb B".split(" ");
   function midiPitchToNoteName(
     midi,
-    { useFlats = false, fixedWidth = false } = {}
+    { pitchFormat = "sharps", fixedWidth = false } = {}
   ) {
-    if (!isFinite(midi)) return Scratch.Cast.toString(midi) || "";
-    let chroma = (useFlats ? FLATS : SHARPS)[midi % 12];
+    if (!isFinite(midi) || pitchFormat === "num")
+      return Scratch.Cast.toString(midi) || "";
+    let chroma = (pitchFormat === "flats" ? FLATS : SHARPS)[midi % 12];
     if (fixedWidth) chroma = chroma.padEnd(2, "_");
     const octave = Math.floor(midi / 12) - 1;
     return `${chroma}${octave}`;
@@ -175,6 +176,8 @@
     if (typeof text === "number") return text;
     if (!text) return undefined;
     text = text.trim();
+    // parse float value
+    if (text.includes(".")) return parseFloat(text);
     const useHex = opts?.useHex ?? /[a-f]/i.test(text);
     const radix = useHex ? 16 : 10;
     const val = parseInt(text, radix);
@@ -328,7 +331,7 @@
     duration: "dur",
     pos: "pos",
     beats: "beats",
-    value: "value2",
+    value: "value",
   };
 
   // These are how different midi event keys are split. ch and dev are special cases that don't include =, since they're common. Other params use = to allow arbitrary additional properties if needed
@@ -1921,6 +1924,10 @@
                 value: "flats",
                 text: `♭ ${Scratch.translate("Flats")}`,
               },
+              {
+                value: "num",
+                text: `${Scratch.translate("MIDI Number")}`,
+              },
             ],
           },
           NOTE_NAMES: {
@@ -2249,13 +2256,12 @@
       return noteNameToMidiPitch(name) || 0;
     }
     nameForNote({ NOTE, ACCIDENTAL }, util) {
-      const useFlats =
-        Scratch.Cast.toString(ACCIDENTAL).toLowerCase() === "flats";
+      const pitchFormat = Scratch.Cast.toString(ACCIDENTAL).toLowerCase();
       let val = Scratch.Cast.toNumber(NOTE);
       if (!val && /^[a-g]/i.test(`${NOTE}`)) {
         val = noteNameToMidiPitch(Scratch.Cast.toString(NOTE)) || 0;
       }
-      return midiPitchToNoteName(val, { useFlats });
+      return midiPitchToNoteName(val, { pitchFormat });
     }
     makeOutputNote({ NOTE, BEATS, VELOCITY, CHANNEL, DEVICE }) {
       let beats =
