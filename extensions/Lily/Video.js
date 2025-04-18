@@ -180,7 +180,7 @@
           skin.videoElement.volume = skin.videoVolume * projectVolume;
         }
       }
-    };
+    }
 
     getInfo() {
       return {
