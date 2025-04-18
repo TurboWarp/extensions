@@ -447,7 +447,9 @@
       );
       const clones = util.target.sprite.clones;
       const cloneNum = clones.length - 1;
-      const cloneVariable = clones[cloneNum].lookupVariableByNameAndType(args.INPUTA);
+      const cloneVariable = clones[cloneNum].lookupVariableByNameAndType(
+        args.INPUTA
+      );
       if (cloneVariable) {
         cloneVariable.value = args.INPUTB;
       }
@@ -493,7 +495,9 @@
           checkVar &&
           Scratch.Cast.compare(checkVar.value, expectedVarValue) === 0
         ) {
-          const editVar = clones[index].lookupVariableByNameAndType(args.INPUTA);
+          const editVar = clones[index].lookupVariableByNameAndType(
+            args.INPUTA
+          );
           if (editVar) {
             editVar.value = newVariableValue;
           }
@@ -570,7 +574,9 @@
       const clones = util.target.sprite.clones;
       let expectedValue = args.INPUTB;
       for (let index = 1; index < clones.length; index++) {
-        const cloneVariable = clones[index].lookupVariableByNameAndType(args.INPUTA);
+        const cloneVariable = clones[index].lookupVariableByNameAndType(
+          args.INPUTA
+        );
         if (
           cloneVariable &&
           Scratch.Cast.compare(cloneVariable.value, expectedValue) === 0
