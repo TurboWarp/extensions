@@ -31,6 +31,17 @@
   elementContainer.ariaHidden = "true";
   document.body.appendChild(elementContainer);
 
+  // Updated code to apply the project's volume to that of the video.
+  // This allows the volume to interact with Scratch Addons and Sound Expanded.
+  const updateAudio = function() {
+    for (const skin of renderer._allSkins) {
+      if (skin instanceof VideoSkin) {
+        let projectVolume = runtime.audioEngine.inputNode.gain.value;
+        skin.videoElement.volume = skin.videoVolume * projectVolume;
+      }
+    }
+  };
+
   const BitmapSkin = runtime.renderer.exports.BitmapSkin;
   class VideoSkin extends BitmapSkin {
     constructor(id, renderer, videoName, videoSrc) {
@@ -126,6 +137,7 @@
     }
 
     dispose() {
+      runtime.off("AFTER_EXECUTE", updateAudio);
       super.dispose();
       this.videoElement.pause();
       this.videoElement.remove();
@@ -148,9 +160,7 @@
         }
       });
 
-      runtime.on("AFTER_EXECUTE", () => {
-        this.updateAudio();
-      });
+      runtime.on("AFTER_EXECUTE", updateAudio);
 
       runtime.on("RUNTIME_PAUSED", () => {
         for (const skin of renderer._allSkins) {
@@ -161,8 +171,6 @@
         }
       });
 
-      // Updated code to apply the project's volume to that of the video.
-      // This allows the volume to interact with Scratch Addons and Sound Expanded.
       runtime.on("RUNTIME_UNPAUSED", () => {
         for (const skin of renderer._allSkins) {
           if (skin instanceof VideoSkin) {
@@ -171,15 +179,6 @@
           }
         }
       });
-    }
-
-    updateAudio() {
-      for (const skin of renderer._allSkins) {
-        if (skin instanceof VideoSkin) {
-          let projectVolume = runtime.audioEngine.inputNode.gain.value;
-          skin.videoElement.volume = skin.videoVolume * projectVolume;
-        }
-      }
     }
 
     getInfo() {
@@ -700,7 +699,7 @@
 
       const value = Cast.toNumber(args.VALUE);
       videoSkin.videoVolume = Math.min(1, Math.max(0, value / 100));
-      this.updateAudio();
+      updateAudio();
     }
 
     setPlaybackRate(args) {
