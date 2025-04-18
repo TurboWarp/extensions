@@ -431,7 +431,7 @@
       if (util.target.isOriginal) {
         return false;
       }
-      const variable = util.target.lookupVariableById(args.INPUTA);
+      const variable = util.target.lookupVariableByNameAndType(args.INPUTA);
       const expectedValue = args.INPUTB;
       if (variable) {
         return Scratch.Cast.compare(variable.value, expectedValue) === 0;
@@ -447,7 +447,7 @@
       );
       const clones = util.target.sprite.clones;
       const cloneNum = clones.length - 1;
-      const cloneVariable = clones[cloneNum].lookupVariableById(args.INPUTA);
+      const cloneVariable = clones[cloneNum].lookupVariableByNameAndType(args.INPUTA);
       if (cloneVariable) {
         cloneVariable.value = args.INPUTB;
       }
@@ -456,7 +456,7 @@
     touchingCloneWithVar(args, util) {
       const drawableCandidates = util.target.sprite.clones
         .filter((clone) => {
-          const variable = clone.lookupVariableById(args.INPUTA);
+          const variable = clone.lookupVariableByNameAndType(args.INPUTA);
           return (
             variable && Scratch.Cast.compare(variable.value, args.INPUTB) === 0
           );
@@ -488,12 +488,12 @@
       const expectedVarValue = args.INPUTD;
       const clones = util.target.sprite.clones;
       for (let index = 1; index < clones.length; index++) {
-        const checkVar = clones[index].lookupVariableById(args.INPUTC);
+        const checkVar = clones[index].lookupVariableByNameAndType(args.INPUTC);
         if (
           checkVar &&
           Scratch.Cast.compare(checkVar.value, expectedVarValue) === 0
         ) {
-          const editVar = clones[index].lookupVariableById(args.INPUTA);
+          const editVar = clones[index].lookupVariableByNameAndType(args.INPUTA);
           if (editVar) {
             editVar.value = newVariableValue;
           }
@@ -511,13 +511,13 @@
         return "";
       }
       // guaranteed to exist by getCloneFromVariable
-      const cloneVar = clone.lookupVariableById(args.INPUTA);
+      const cloneVar = clone.lookupVariableByNameAndType(args.INPUTA);
       return cloneVar.value;
     }
 
     setVariableOfMainSprite(args, util) {
       const main = util.target.sprite.clones[0];
-      const variableObj = main.lookupVariableById(args.INPUTA);
+      const variableObj = main.lookupVariableByNameAndType(args.INPUTA);
       if (variableObj) {
         variableObj.value = args.INPUTB;
       }
@@ -525,7 +525,7 @@
 
     getVariableOfMainSprite(args, util) {
       const main = util.target.sprite.clones[0];
-      const variableObj = main.lookupVariableById(args.INPUT);
+      const variableObj = main.lookupVariableByNameAndType(args.INPUT);
       if (variableObj) {
         return variableObj.value;
       }
@@ -570,7 +570,7 @@
       const clones = util.target.sprite.clones;
       let expectedValue = args.INPUTB;
       for (let index = 1; index < clones.length; index++) {
-        const cloneVariable = clones[index].lookupVariableById(args.INPUTA);
+        const cloneVariable = clones[index].lookupVariableByNameAndType(args.INPUTA);
         if (
           cloneVariable &&
           Scratch.Cast.compare(cloneVariable.value, expectedValue) === 0
@@ -595,7 +595,7 @@
       const clones = util.target.sprite.clones;
       const expectedValue = args.INPUTB;
       for (let index = clones.length - 1; index > 0; index--) {
-        const cloneVar = clones[index].lookupVariableById(args.INPUTA);
+        const cloneVar = clones[index].lookupVariableByNameAndType(args.INPUTA);
         if (
           cloneVar &&
           Scratch.Cast.compare(cloneVar.value, expectedValue) === 0
@@ -629,7 +629,7 @@
      */
     getCloneFromVariable(variableId, expectedValue, clones) {
       for (let index = 1; index < clones.length; index++) {
-        const cloneVar = clones[index].lookupVariableById(variableId);
+        const cloneVar = clones[index].lookupVariableByNameAndType(variableId);
         if (
           cloneVar &&
           Scratch.Cast.compare(cloneVar.value, expectedValue) === 0
@@ -685,7 +685,7 @@
               .filter((model) => model.isLocal)
               .map((model) => ({
                 text: model.name,
-                value: model.getId(),
+                value: model.name,
               }));
       if (variables.length > 0) {
         return variables;
