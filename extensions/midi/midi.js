@@ -31,52 +31,163 @@
     return module.exports.Midi;
   })();
 
-  function parseMidiDataUrl(dataUrl) {
-    if (!dataUrl) {
-      return "MIDI Data URL is empty";
-    }
-
-    try {
-      // Parse Data URL
-      const base64Data = dataUrl.split(",")[1];
-      if (!base64Data) {
-        throw new Error("Invalid Data URL format");
+  class MidiFileManager {
+    cache = new Map();
+    async fetchMidiUrl(url, force = false) {
+      if (this.cache.has(url) && !force) {
+        return this.cache.get(url);
       }
 
-      // Decode Base64 data to ArrayBuffer
-      const binaryString = atob(base64Data);
-      const len = binaryString.length;
-      const buffer = new ArrayBuffer(len);
-      const view = new Uint8Array(buffer);
-      for (let i = 0; i < len; i++) {
-        view[i] = binaryString.charCodeAt(i);
+      if (!(await Scratch.canFetch(url))) {
+        throw new Error(`Permission to fetch ${url} denied`);
+      }
+      const res = await Scratch.fetch(url, { mode: "cors" });
+      if (!res.ok) {
+        throw new Error(`${res.status} ${res.statusText} fetch ${url} failed`);
       }
 
       // Parse MIDI file
-      const midi = new Midi(buffer);
-
+      const midi = new Midi(await res.arrayBuffer());
+      // const parsed = this.parseMidiData(midi, "ANY");
+      this.cache.set(url, midi);
+      return midi;
+    }
+    /**
+     *
+     * @param {any} midi midi file from cache
+     * @param {EventType | "ANY"} filter
+     * @returns
+     */
+    parseMidiData(midi, filter = "ANY") {
       // Store note information
       /** @type {MidiEvent[]} */
-      const notesData = midi.tracks.flatMap((track, trackIndex) => {
-        return track.notes.map((note) => {
-          return {
+      const events = [];
+      if (filter === "ANY" || filter === "meta") {
+        events.push(...this._parseHeader(midi.header));
+      }
+      events.push(
+        ...midi.tracks.flatMap((track) => this._parseTrack(track, filter))
+      );
+
+      const sortOrder = ["meta", "programChange", "noteOn"];
+      return events.sort((a, b) => {
+        // sort by timestamp
+        let delta = a.time - b.time;
+        delta ||= (a.channel ?? 0) - (b.channel ?? 0);
+        delta ||=
+          sortOrder.indexOf(a.type) + 1 - (sortOrder.indexOf(b.type) + 1);
+        return delta;
+      });
+    }
+    /**
+     *
+     * @param {*} header
+     * @returns {MidiEvent[]}
+     */
+    _parseHeader(header) {
+      const {
+        keySignatures = [],
+        meta = [],
+        // ppq,
+        tempos = [],
+        timeSignatures = [],
+      } = header;
+      /**
+       *
+       * @param {any[]} list
+       * @param {(evt: any) => Partial<MidiEvent>} transform
+       * @returns {MidiEvent[]}
+       */
+      const toEventList = (list, transform) => {
+        return list.map((evt) => ({
+          type: "meta",
+          time: header.ticksToSeconds(evt.ticks),
+          ...transform(evt),
+        }));
+      };
+      return [
+        ...toEventList(tempos, ({ bpm }) => ({ tempo: bpm })),
+        ...toEventList(timeSignatures, ({ timeSignature }) => ({
+          timeSignature: `${timeSignature[0]}/${timeSignature[1]}`,
+        })),
+        ...toEventList(keySignatures, ({ key, scale }) => ({
+          keySignature: `${key}${scale}`,
+        })),
+        // FUTURE type could be "lyrics", "cuePoint", "marker" or "text"
+        ...toEventList(meta, ({ text, type: _ }) => ({ text })),
+      ];
+    }
+    /**
+     *
+     * @param {*} track
+     * @param {EventType | "ANY"} filter
+     */
+    _parseTrack(track, filter) {
+      const channel = track.channel + 1;
+      const { name: trackName, instrument } = track;
+      /** @type {MidiEvent[]} */
+      const events = [];
+      if (filter === "ANY" || filter.includes("meta")) {
+        if (trackName) {
+          events.push({
+            type: "meta",
+            channel,
+            trackName,
+            time: 0,
+          });
+        }
+        if (instrument?.number !== undefined) {
+          events.push({
+            type: "programChange",
+            channel,
+            value: instrument.number,
+            ...(instrument.name && { instrument: instrument.name }),
+            time: 0,
+          });
+        }
+      }
+      if (filter === "ANY" || filter === "noteOn") {
+        events.push(
+          ...track.notes.map((note) => ({
             type: "noteOn",
-            channel: trackIndex + 1,
+            channel,
             pitch: note.name,
             time: roundToMillisecond(note.time),
             dur: roundToMillisecond(note.duration),
-            // REVIEW should scale be MIDI (0-127), (0-1) or (0-100)?
             velocity: Math.round(note.velocity * 127),
-          };
-        });
-      });
-
-      notesData.sort((a, b) => a.time - b.time);
-      return notesData;
-    } catch (error) {
-      return "Error parsing MIDI file: " + error.message;
+          }))
+        );
+      }
+      if (filter === "ANY" || filter === "cc") {
+        const ccEvents = Object.values(track.controlChanges).flatMap(
+          (arr) => arr
+        );
+        // @ts-ignore
+        events.push(
+          ...ccEvents.map((evt) => ({
+            type: /** @type {EventType} */("cc"),
+            channel,
+            cc: evt.number,
+            time: roundToMillisecond(evt.time),
+            value: Math.round(evt.value * 127),
+          }))
+        );
+      }
+      if (filter === "ANY" || filter === "pitchBend") {
+        events.push(
+          ...track.pitchBends.map((evt) => ({
+            type: "pitchBend",
+            channel,
+            time: roundToMillisecond(evt.time),
+            // REVIEW - saving highResParam as 0-16384 instead of -1 -> 1
+            value: Math.round((evt.value + 1) * 8192),
+          }))
+        );
+      }
+      return events;
     }
   }
+  const fileManager = new MidiFileManager();
 
   function roundToMillisecond(value) {
     return Math.round(value * 1000) / 1000;
@@ -92,7 +203,11 @@
    *
    *
    * // definition for the parsed midi event
-   * @typedef {'noteOn' | 'noteOff' | 'cc' | 'polyTouch' | 'programChange' | 'pitchBend' | 'channelPressure' | 'songPosition' | 'songSelect' | 'clock' | 'start' | 'continue' | 'stop' | 'activeSensing' | 'reset'} EventType
+   * @typedef {'noteOn' | 'noteOff' | 'cc' | 'polyTouch' | 'programChange' | 'pitchBend' | 'channelPressure' | 'songPosition' | 'songSelect' | 'clock' | 'start' | 'continue' | 'stop' | 'activeSensing' | 'reset' | 'meta'} EventType
+   *
+   * @typedef {'timeSignature' | 'tempo' | 'keySignature' | 'text' | 'trackName' | 'instrument'} MetaKey
+   *
+   *
    * @typedef {object} MidiEvent
    * @property {EventType | 'rest'} type type of midi command (note on, program change, tc). Default is 'noteOn'
    * @property {number} [value1] (0-127) raw data1 byte value
@@ -107,6 +222,15 @@
    * @property {number} [pos] time in beats - gets converted to time using current tempo
    * @property {number} [dur] (note type only) duration in seconds- send corresponding note off event automatically
    * @property {number} [beats] gets converted to dur using current tempo
+   *
+   * // midi file meta fields
+   * @property {string} [keySignature] midi file only
+   * @property {string} [text] midi file lyric event
+   * @property {string} [trackName] midi file name of track
+   * @property {string} [timeSignature] midi file 3/8 4/4
+   * @property {number} [tempo] midi file tempo bpm
+   * @property {string} [instrument] midi file friendly instrument name
+   *
    * @property {string} [_str] cached string representation of this event
    *
    *
@@ -295,11 +419,19 @@
       command: 255,
       description: "System Reset (Sys Realtime)",
     },
+    meta: {
+      shorthand: "meta",
+      command: 0,
+      description: "MIDI File Meta Message",
+    },
   };
   /** @type {Map<number, EventType>} */
   // @ts-ignore
   const commandLookup = new Map(
-    Object.entries(eventMapping).map(([key, { command }]) => [command, key])
+    Object.entries(eventMapping)
+      // ignore midi file only entries (i.e. "meta")
+      .filter(([key, { command }]) => !!command)
+      .map(([key, { command }]) => [command, key])
   );
   /** @type {Map<string, EventType>} */
   const shorthandLookup = Object.fromEntries([
@@ -333,6 +465,15 @@
     beats: "beats",
     value: "value",
   };
+  /** @type {ReadonlyArray<MetaKey>} */
+  const metaKeys = [
+    "tempo",
+    "timeSignature",
+    "keySignature",
+    "trackName",
+    "text",
+    "instrument",
+  ];
 
   // These are how different midi event keys are split. ch and dev are special cases that don't include =, since they're common. Other params use = to allow arbitrary additional properties if needed
   const PREFIX_CHANNEL = "ch";
@@ -427,6 +568,13 @@
     start: () => shorthands.start,
     stop: () => shorthands.stop,
     reset: () => shorthands.reset,
+    meta(event, opts) {
+      const keyValues = metaKeys
+        .map((key) => key in event && kvHelper.formatKeyValue(key, event[key]))
+        .filter(Boolean)
+        .join(" ");
+      return `${shorthands.meta} ${keyValues}`;
+    },
   };
 
   /**
@@ -456,6 +604,10 @@
     if (event.device != undefined || noMinify) {
       msg += formatDevice(event.device, opts);
     }
+    // HACK just for midi file support, ideally this would be generic
+    if (event.instrument) {
+      msg += ` ${kvHelper.formatKeyValue("instrument", event.instrument)}`;
+    }
     if (event.time != undefined) {
       msg += formatTime(event, opts);
     }
@@ -477,44 +629,55 @@
    */
   function stringToMidi(text, opts = {}) {
     if (typeof text !== "string") text = Scratch.Cast.toString(text);
-    const fullRe =
-      /^\s*(?<type>[a-zA-Z]{2,}|~)?\s*((?<pitch>[A-G][#b♯♭_]*-?\d?)|(?<data1>\b-?[0-9a-f]{1,5}\b))?\s*(?<data2>\b[0-9a-f]{1,3}\b)?\s*(?<keyvals>.*)\s*$/;
-    const match = fullRe.exec(text);
-    if (!match?.groups) return null;
-    // turn key=val other=32.43 @14.23 into {key: 'val', other: 32.43, time=14.23}
-    // ch/dev/@ (channel, device, time) are special keys that don't need =
-    const keyvalRe = /\s*(?<key>\w+(?==)|ch|dev|@)=?(?<val>\S+)\s*/g;
-    /** @type {{[K in keyof MidiEvent | 'beats']?: string}} */
-    const extras = Object.fromEntries(
-      Array.from(match.groups.keyvals?.matchAll(keyvalRe) || [])
-        // paramLookup converts "t=2" into "time=2"
-        .map(({ groups: { key, val } }) => [paramLookup[key] || key, val])
-    );
-    let {
-      type: shorthand = extras.type,
-      pitch = extras.pitch,
-      data1,
-      data2,
-    } = match.groups;
+    if (text === "" || text === "0") return null;
+
+    /** @type {null | {[K in keyof MidiEvent | 'beats' | 'keyvals']?: string}} */
+    let data = null;
+
+    // handle JSON input
+    if (text.startsWith("{")) {
+      try {
+        data = JSON.parse(text);
+      } catch (_err) {}
+    } else {
+      const fullRe =
+        /^\s*(?<type>[a-zA-Z]{2,}|~)?\s*((?<pitch>[A-G][#b♯♭_]*-?\d?)|(?<value1>\b-?[0-9a-f]{1,5}\b))?\s*(?<value2>\b[0-9a-f]{1,3}\b)?\s*(?<keyvals>.*)\s*$/;
+      data = fullRe.exec(text)?.groups ?? null;
+    }
+    if (!data) return null;
+
+    // add extra meta / keyvalue pairs
+    if (typeof data.keyvals === "string") {
+      // turn key=val other=32.43 @14.23 into {key: 'val', other: 32.43, time=14.23}
+      for (let { key, value } of kvHelper.tokenize(data.keyvals)) {
+        // match values that have shorthand notation
+        if (!key && value) {
+          [key, value] = /^(ch|dev|@)?(.*)$/.exec(value).slice(1);
+        }
+        if (!key) continue;
+        key = paramLookup[key] || key;
+        data[key] = data[key] ?? value;
+      }
+    }
 
     // midi value1 can be specified as pitch or as number
-    const value1 = pitch
-      ? noteNameToMidiPitch(pitch, opts.defaultOctave)
-      : parseNumValue(data1, opts);
+    const value1 = data.pitch
+      ? noteNameToMidiPitch(data.pitch, opts.defaultOctave)
+      : parseNumValue(data.value1, opts);
 
-    let value2 = parseNumValue(data2, opts);
+    let value2 = parseNumValue(data.value2, opts);
 
     /** @type {MidiEvent} */
     const event = {
-      type: shorthand === REST_LITERAL ? "rest" : normalizeType(shorthand),
+      type: data.type === REST_LITERAL ? "rest" : normalizeType(data.type),
       ...(value1 != undefined && { value1 }),
       ...(value2 != undefined && { value2 }),
-      channel: parseNumValue(extras.channel, opts),
-      device: parseNumValue(extras.device, opts),
-      ...(extras.time && { time: parseTimespan(extras.time) }),
-      ...(extras.dur && { dur: parseFraction(extras.dur) }),
-      ...(extras.pos && { pos: parseFraction(extras.pos) }),
-      ...(extras.beats && { beats: parseFraction(extras.beats) }),
+      channel: parseNumValue(data.channel, opts),
+      device: parseNumValue(data.device, opts),
+      ...(data.time && { time: parseTimespan(data.time) }),
+      ...(data.dur && { dur: parseFraction(data.dur) }),
+      ...(data.pos && { pos: parseFraction(data.pos) }),
+      ...(data.beats && { beats: parseFraction(data.beats) }),
     };
 
     if (event.beats && event.dur == undefined) {
@@ -576,6 +739,19 @@
           value2: parsedHighRes.value2,
         });
         break;
+      case "meta":
+        Object.assign(
+          event,
+          Object.fromEntries(
+            metaKeys
+              .filter((key) => key in data)
+              .map((key) => [
+                key,
+                key === "tempo" ? parseFloat(data[key]) : data[key],
+              ])
+          )
+        );
+        break;
       case "clock":
       case "start":
       case "continue":
@@ -594,6 +770,7 @@
     if (spec?.param2 && event.value2 != undefined) {
       event[spec.param2] = event.value2;
     }
+
     return event;
   }
 
@@ -1477,39 +1654,41 @@
 
   class MidiExtension {
     getInfo() {
-  const EVENT_TYPES_ITEMS = [
-    {
-      value: "noteOn",
-      text: Scratch.translate("Note On"),
-    },
-    {
-      value: "noteOff",
-      text: Scratch.translate("Note Off"),
-    },
-    {
-      value: "cc",
-      text: Scratch.translate("CC"),
-    },
-    {
-      value: "polyTouch",
-      text: Scratch.translate("AfterTouch"),
-    },
-    {
-      value: "pitchBend",
-      text: Scratch.translate("Pitch Bend"),
-    },
-    {
-      value: "programChange",
-      text: Scratch.translate("Program Change"),
-    },
-    {
-      value: "channelPressure",
-      text: Scratch.translate("Channel Pressure"),
-    },
-  ];
+      const EVENT_TYPES_ITEMS = [
+        {
+          value: "noteOn",
+          text: Scratch.translate("Note On"),
+        },
+        {
+          value: "noteOff",
+          text: Scratch.translate("Note Off"),
+        },
+        {
+          value: "cc",
+          text: Scratch.translate("CC"),
+        },
+        {
+          value: "polyTouch",
+          text: Scratch.translate("AfterTouch"),
+        },
+        {
+          value: "pitchBend",
+          text: Scratch.translate("Pitch Bend"),
+        },
+        {
+          value: "programChange",
+          text: Scratch.translate("Program Change"),
+        },
+        {
+          value: "channelPressure",
+          text: Scratch.translate("Channel Pressure"),
+        },
+        {
+          value: "meta",
+          text: Scratch.translate("Midi File Meta"),
+        },
+      ];
 
-  class MidiExtension {
-    getInfo() {
       return {
         id: EXT_ID,
         name: Scratch.translate("Midi"),
@@ -1805,13 +1984,34 @@
           },
           SEPARATOR,
           {
-            opcode: "parseMidiDataUrl",
+            opcode: "parseMidiUrl",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Parse MIDI Data URL [DATA_URL]"),
+            text: Scratch.translate("Parse MIDI from url: [PATH]"),
             arguments: {
-              DATA_URL: {
+              PATH: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "",
+                defaultValue: ".mid",
+              },
+            },
+          },
+          {
+            opcode: "setListToMidi",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "Set list [LIST] to [FILTER] in [MIDIDATA]"
+            ),
+            arguments: {
+              LIST: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "lists",
+              },
+              FILTER: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "MIDI_FILTER",
+                defaultValue: "ANY",
+              },
+              MIDIDATA: {
+                type: Scratch.ArgumentType.STRING,
               },
             },
           },
@@ -2071,6 +2271,36 @@
               {
                 value: "manufacturer",
                 text: Scratch.translate("Manufacturer"),
+              },
+            ],
+          },
+          MIDI_FILTER: {
+            acceptReporters: true,
+            // TODO dedupe this with EVENT_TYPES?
+            items: [
+              {
+                value: "ANY",
+                text: Scratch.translate("all events"),
+              },
+              {
+                value: "noteOn",
+                text: Scratch.translate("all Notes"),
+              },
+              {
+                value: "meta",
+                text: Scratch.translate("MIDI File Meta"),
+              },
+              {
+                value: "programChange",
+                text: Scratch.translate("Program Changes"),
+              },
+              {
+                value: "cc",
+                text: Scratch.translate("CC"),
+              },
+              {
+                value: "pitchBend",
+                text: Scratch.translate("Pitch Bends"),
               },
             ],
           },
@@ -2555,11 +2785,49 @@
       return event ? midiToString(event) : "";
     }
     /** MIDI FILE FUNCTIONS **/
-    parseMidiDataUrl({ DATA_URL }, util) {
-      const dataUrl = Scratch.Cast.toString(DATA_URL).trim();
-      if (!dataUrl) return "";
-      const notesData = parseMidiDataUrl(dataUrl);
-      return JSON.stringify(notesData, null, 2);
+    async parseMidiUrl({ PATH }, util) {
+      // cribbed from sound.js
+      try {
+        const url = Scratch.Cast.toString(PATH).trim();
+        if (!url) return "";
+        const midiFile = await fileManager.fetchMidiUrl(url);
+        const eventData = fileManager.parseMidiData(midiFile, "ANY");
+
+        return JSON.stringify(eventData, null, 2);
+      } catch (e) {
+        console.warn(`Parse ${PATH} failed`, e);
+        return "";
+      }
+    }
+    async setListToMidi({ LIST, FILTER, MIDIDATA }, util) {
+      let raw = Scratch.Cast.toString(MIDIDATA).trim();
+      const filter = Scratch.Cast.toString(FILTER) || "ANY";
+      /** @type {MidiEvent[]} */
+      let events = [];
+      if (/^(data|blob|https?)/.test(raw)) {
+        const midiFile = await fileManager.fetchMidiUrl(raw);
+        events = fileManager.parseMidiData(midiFile, FILTER);
+      } else if (/^\s*[[{]/.test(raw)) {
+        // may fail
+        try {
+          events = JSON.parse(raw);
+        } catch (err) {}
+      } else {
+        // TODO COMBAK verify
+        // NOTE doesn't check for newlines in "text" type fields
+        events = raw.split(/\s*[\r\n]+\s*/).map((row) => stringToMidi(row));
+      }
+      if (filter !== "ANY") {
+        events = events.filter(({ type }) => type === filter);
+      }
+      if (LIST) {
+        this._upsertList(
+          Scratch.Cast.toString(LIST),
+          // COMBAK no formatting options set
+          events.map((evt) => midiToString(evt)),
+          util.target
+        );
+      }
     }
   }
 
