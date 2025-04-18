@@ -85,7 +85,7 @@
         ...midi.tracks.flatMap((track) => this._parseTrack(track, filter))
       );
 
-      const sortOrder = ["meta", "programChange", "noteOn"];
+      const sortOrder = ["meta", "programChange", "note"];
       return events.sort((a, b) => {
         // sort by timestamp
         let delta = a.time - b.time;
@@ -162,10 +162,10 @@
           });
         }
       }
-      if (filter === "ANY" || filter === "noteOn") {
+      if (filter === "ANY" || filter === "note") {
         events.push(
           ...track.notes.map((note) => ({
-            type: "noteOn",
+            type: "note",
             channel,
             pitch: note.name,
             time: roundToMillisecond(note.time),
@@ -181,7 +181,7 @@
         // @ts-ignore
         events.push(
           ...ccEvents.map((evt) => ({
-            type: /** @type {EventType} */("cc"),
+            type: /** @type {EventType} */ ("cc"),
             channel,
             cc: evt.number,
             time: roundToMillisecond(evt.time),
@@ -219,13 +219,13 @@
    *
    *
    * // definition for the parsed midi event
-   * @typedef {'noteOn' | 'noteOff' | 'cc' | 'polyTouch' | 'programChange' | 'pitchBend' | 'channelPressure' | 'songPosition' | 'songSelect' | 'clock' | 'start' | 'continue' | 'stop' | 'activeSensing' | 'reset' | 'meta'} EventType
+   * @typedef {'note' | 'noteOff' | 'cc' | 'polyTouch' | 'programChange' | 'pitchBend' | 'channelPressure' | 'songPosition' | 'songSelect' | 'clock' | 'start' | 'continue' | 'stop' | 'activeSensing' | 'reset' | 'meta'} EventType
    *
    * @typedef {'timeSignature' | 'tempo' | 'keySignature' | 'text' | 'trackName' | 'instrument'} MetaKey
    *
    *
    * @typedef {object} MidiEvent
-   * @property {EventType | 'rest'} type type of midi command (note on, program change, tc). Default is 'noteOn'
+   * @property {EventType | 'rest'} type type of midi command (note on, program change, tc). Default is 'note'
    * @property {number} [value1] (0-127) raw data1 byte value
    * @property {number} [value2] (0-127) raw data2 byte value
    * @property {number} [channel] (1-16) channel of event. default is 1
@@ -271,7 +271,7 @@
    * adapted from https://github.com/fheyen/musicvis-lib/blob/905edbdc8280e8ca76a329ffc83a160f3cda674a/src/fileFormats/Midi.js#L41
    *
    * each key (the "EventType" relates to a raw midi "command". The "shorthand" could
-   * be used to format midi events to string (future). param1 and param2 determine what property of the object the value1 + value2 bytes mean (i.e. noteOn gets pitch + velocity, cc gets cc# and value)
+   * be used to format midi events to string (future). param1 and param2 determine what property of the object the value1 + value2 bytes mean (i.e. note gets pitch + velocity, cc gets cc# and value)
    */
   const SHARPS = "C C# D D# E F F# G G# A A# B".split(" ");
   const FLATS = "C Db D Eb E F Gb G Ab A Bb B".split(" ");
@@ -343,7 +343,7 @@
    * @type {Record<EventType, EventSpec>}
    */
   const eventMapping = {
-    noteOn: {
+    note: {
       shorthand: "note",
       command: 144,
       description: "Note-on",
@@ -531,13 +531,13 @@
    * @type {Record<EventType, (event: MidiEvent, opts: FormatOptions) => string>}
    */
   const formatters = {
-    noteOn(
-      { value1: note, value2: velocity = eventMapping.noteOn.defaults[1] },
+    note(
+      { value1: note, value2: velocity = eventMapping.note.defaults[1] },
       opts = {}
     ) {
       return formatNoteType(
-        // opts?.noMinify ? shorthands.noteOn : undefined,
-        shorthands.noteOn,
+        // opts?.noMinify ? shorthands.note : undefined,
+        shorthands.note,
         note,
         velocity,
         opts
@@ -601,6 +601,8 @@
    * @returns
    */
   function midiToString(event, opts = {}) {
+    if (!event) return "";
+    if (typeof event === "string") event = stringToMidi(event, opts);
     const { noMinify } = opts;
     const spec = eventMapping[event.type] ?? {};
     // ensure these are set properly
@@ -690,7 +692,7 @@
       ...(value2 != undefined && { value2 }),
       channel: parseNumValue(data.channel, opts),
       device: parseNumValue(data.device, opts),
-      ...(data.time && { time: parseTimespan(data.time) }),
+      ...(data.time && { time: parseNumValue(data.time, opts) }),
       ...(data.dur && { dur: parseFraction(data.dur) }),
       ...(data.pos && { pos: parseFraction(data.pos) }),
       ...(data.beats && { beats: parseFraction(data.beats) }),
@@ -707,7 +709,7 @@
 
     // default to note event if has pitch (off if velocity = 0)
     if (!event.type && value1 >= 0) {
-      event.type = "noteOn";
+      event.type = "note";
     } else if (!event.type) {
       // no type set, invalid input
       return null;
@@ -715,13 +717,13 @@
     const spec = eventMapping[event.type];
     let parsedHighRes = undefined;
     switch (event.type) {
-      case "noteOn":
+      case "note":
       case "noteOff":
         if (value1 == undefined) return null;
         if (value2 === 0) event.type = "noteOff";
         if (value2 == undefined) {
           event.value2 =
-            event.velocity ?? event.value ?? (event.type === "noteOn" ? 96 : 0);
+            event.velocity ?? event.value ?? (event.type === "note" ? 96 : 0);
         }
         break;
       case "polyTouch":
@@ -739,6 +741,9 @@
         if (value1 == undefined || value2 == undefined) return null;
         break;
       case "programChange":
+        if (data.instrument) event.instrument = data.instrument;
+        event.value1 ||= event.value ?? 0;
+        break;
       case "channelPressure":
       case "songSelect":
         // default to 0 for these types
@@ -926,27 +931,27 @@
     const parts = hoursOptional && h === 0 ? [m, s] : [h, m, s];
     return `${parts.map((p) => p.toFixed(0).padStart(2, "0")).join(":")}.${ms.toFixed().padEnd(3, "0")}`;
   }
-  /**
-   *
-   * @param {string} text
-   * @returns
-   */
-  function parseTimespan(text) {
-    if (!text) return 0;
-    // split into [hh]:mm:ss.000 parts
-    const parts = text.split(":");
-    // somewhat unnecessarily clever method to sum [hh][mm][ss]
-    // by incrementing the scale from [1, 60, 3600].
-    // goes right to left because hours and minutes are optional
-    const [value] = parts.reduceRight(
-      ([acc, scale], part) => {
-        const val = (parseFloat(part) || 0) * scale;
-        return [acc + val, scale * 60];
-      },
-      [0, 1]
-    );
-    return value;
-  }
+  // /**
+  //  *
+  //  * @param {string} text
+  //  * @returns
+  //  */
+  // function parseTimespan(text) {
+  //   if (!text || typeof text !== 'string') return +text || 0;
+  //   // split into [hh]:mm:ss.000 parts
+  //   const parts = text.split(":");
+  //   // somewhat unnecessarily clever method to sum [hh][mm][ss]
+  //   // by incrementing the scale from [1, 60, 3600].
+  //   // goes right to left because hours and minutes are optional
+  //   const [value] = parts.reduceRight(
+  //     ([acc, scale], part) => {
+  //       const val = (parseFloat(part) || 0) * scale;
+  //       return [acc + val, scale * 60];
+  //     },
+  //     [0, 1]
+  //   );
+  //   return value;
+  // }
   function parseFraction(text) {
     if (typeof text !== "string") {
       return +text || 0;
@@ -1071,7 +1076,7 @@
   // function isPitchedEvent(type) {
   //   return (
   //     !!type &&
-  //     (type === "noteOn" || type === "noteOff" || type === "polyTouch")
+  //     (type === "note" || type === "noteOff" || type === "polyTouch")
   //   );
   // }
 
@@ -1084,30 +1089,40 @@
 
   /**
    * Scratch menu items of @see {MidiEvent} properties
+   * @type {Record<string, { key: keyof MidiEvent, text: string, type?: EventType }>}
    */
-  const eventProps = {
-    type: { key: "type", text: Scratch.translate("Event Type") },
-    pitch: { key: "pitch", text: Scratch.translate("Note Pitch") },
+  const EVENT_PROPS = {
+    type: { key: "type", text: Scratch.translate("(type) Event Type") },
+    pitch: { key: "pitch", text: Scratch.translate("(pitch) Note Pitch") },
     velocity: {
       key: "velocity",
-      type: "noteOn",
+      type: "note",
       text: Scratch.translate("Velocity"),
     },
-    ccNumber: { key: "cc", text: Scratch.translate("Continuous Controller #") },
-    ccValue: { key: "value", type: "cc", text: Scratch.translate("CC Value") },
+    ccNumber: {
+      key: "cc",
+      text: Scratch.translate("(cc) Continuous Controller #"),
+    },
+    ccValue: {
+      key: "value",
+      type: "cc",
+      text: Scratch.translate("(value) CC Value"),
+    },
     channel: { key: "channel", text: Scratch.translate("Channel") },
     device: { key: "device", text: Scratch.translate("Device") },
     pitchbend: {
       key: "value",
       type: "pitchBend",
-      text: Scratch.translate("Pitch Bend"),
+      text: Scratch.translate("(value) Pitch Bend"),
     },
     aftertouch: {
       key: "value",
       type: "polyTouch",
-      text: Scratch.translate("Aftertouch"),
+      text: Scratch.translate("(polyTouch) Aftertouch"),
     },
-    time: { key: "time", text: Scratch.translate("Timestamp") },
+    time: { key: "time", text: Scratch.translate("(time) Timestamp") },
+    duration: { key: "dur", text: Scratch.translate("(dur) Duration") },
+    instrument: { key: "instrument", text: Scratch.translate("Instrument") },
   };
 
   //#endregion utils
@@ -1133,7 +1148,7 @@
       this._init = undefined;
       /** @type {MidiEvent} */
       this._defaultOutputEvent = {
-        type: "noteOn",
+        type: "note",
         channel: 1,
         device: 0,
         pitch: 60,
@@ -1255,7 +1270,7 @@
     ) {
       /** @type {MidiEvent} */
       let data;
-      // midi pitch = noteon now for 1/2 beat
+      // midi pitch = note now for 1/2 beat
       if (typeof event === "number") {
         data = {
           ...defaults,
@@ -1290,7 +1305,7 @@
         return false;
       }
       // ensure 0 velocity is interpreted as noteOff
-      if (data.type === "noteOn" && data.velocity === 0) {
+      if (data.type === "note" && data.velocity === 0) {
         data.type = "noteOff";
       }
 
@@ -1299,7 +1314,7 @@
       let raw = midiToRawMessage(data);
       device.send(raw, start);
       // also send off event
-      if (data.type === "noteOn" && end) {
+      if (data.type === "note" && end) {
         /** @type {MidiEvent} */
         const offEvent = {
           ...data,
@@ -1343,7 +1358,7 @@
     _trackActiveNotes(event, device) {
       // NOTE - same default channel as midiToRawEvent, maybe default should be a magic value?
       const { type, pitch, channel = 1 } = event;
-      if (!(type === "noteOn" || type === "noteOff")) {
+      if (!(type === "note" || type === "noteOff")) {
         return;
       }
       const key = `${channel}_${pitch}`;
@@ -1351,7 +1366,7 @@
         this._activeNotes.set(device, new Set());
       }
       const list = this._activeNotes.get(device);
-      if (type === "noteOn") {
+      if (type === "note") {
         list.add(key);
       } else {
         list.delete(key);
@@ -1448,7 +1463,7 @@
         this._prune(when);
       }
       switch (evt.type) {
-        case "noteOn":
+        case "note":
           this._onNoteOn(evt);
           break;
         case "noteOff":
@@ -1541,7 +1556,7 @@
       return this.getLast(undefined, undefined, channel);
     }
     getLastNote(pitch, channel) {
-      return this.getLast("noteOn", pitch, channel);
+      return this.getLast("note", pitch, channel);
     }
     getLastCC(cc, channel) {
       return this.getLast("cc", cc, channel);
@@ -1672,7 +1687,7 @@
     getInfo() {
       const EVENT_TYPES_ITEMS = [
         {
-          value: "noteOn",
+          value: "note",
           text: Scratch.translate("Note On"),
         },
         {
@@ -1864,7 +1879,7 @@
               TYPE: {
                 menu: "EVENT_TYPES",
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "noteOn",
+                defaultValue: "note",
               },
             },
           },
@@ -2091,7 +2106,7 @@
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue:
-                  '{"type":"noteOn","channel":1,"device":0,"pos":0.25,"dur":0.25,"pitch":52,"velocity":96}',
+                  '{"type":"note","channel":1,"device":0,"pos":0.25,"dur":0.25,"pitch":52,"velocity":96}',
               },
             },
           },
@@ -2212,7 +2227,7 @@
                 text: Scratch.translate("Note On/Off"),
               },
               {
-                value: "noteOn",
+                value: "note",
                 text: Scratch.translate("Note On"),
               },
               {
@@ -2264,7 +2279,7 @@
           },
           PROPS: {
             acceptReporters: true,
-            items: Object.entries(eventProps).map(([value, { text }]) => ({
+            items: Object.entries(EVENT_PROPS).map(([value, { text }]) => ({
               value,
               text,
             })),
@@ -2299,7 +2314,7 @@
                 text: Scratch.translate("all events"),
               },
               {
-                value: "noteOn",
+                value: "note",
                 text: Scratch.translate("all Notes"),
               },
               {
@@ -2366,7 +2381,7 @@
           setThreadMidiValue(thread, midiEvent);
         }
         switch (midiEvent.type) {
-          case "noteOn":
+          case "note":
           case "noteOff":
             vm.runtime.startHats(HATS.NOTE);
             vm.runtime.startHats(HATS.NOTEANY);
@@ -2474,7 +2489,7 @@
     whenNoteOnOff({ NOTE, PRESS }, util) {
       const isAny = this._isAnyArg(PRESS);
       let type = isAny
-        ? ["noteOn", "noteOff"]
+        ? ["note", "noteOff"]
         : [normalizeType(Scratch.Cast.toString(PRESS))];
 
       const pitch = this._isAnyArg(NOTE)
@@ -2497,7 +2512,7 @@
     whenAnyNoteOnOff({ PRESS }, util) {
       const isAny = this._isAnyArg(PRESS);
       let type = isAny
-        ? ["noteOn", "noteOff"]
+        ? ["note", "noteOff"]
         : [normalizeType(Scratch.Cast.toString(PRESS))];
 
       const last = this.recorder.getLast();
@@ -2549,7 +2564,7 @@
     }
     getEventProp({ EVENT, PROP }, util) {
       const propName = Scratch.Cast.toString(PROP);
-      const { key = "value" } = eventProps[propName] ?? {};
+      const { key = "value" } = EVENT_PROPS[propName] ?? {};
       if (!EVENT) return "";
       const last = getThreadMidiValue(util.thread);
       // use cached thread value if available instead of re-parsing
@@ -2620,7 +2635,7 @@
       const device = this._getDeviceIndex(DEVICE, "output");
       /** @type {MidiEvent} */
       const event = {
-        type: "noteOn",
+        type: "note",
         pitch: this.noteForName({ NOTE }),
         velocity,
         channel: Scratch.Cast.toNumber(CHANNEL) || undefined,
@@ -2797,7 +2812,7 @@
       // normalize type and default to note if not otherwise specified
       let type =
         event.type === REST_LITERAL ? "rest" : normalizeType(event.type);
-      if (!type && event.pitch) type = "noteOn";
+      if (!type && event.pitch) type = "note";
       return event ? midiToString(event) : "";
     }
     /** MIDI FILE FUNCTIONS **/
@@ -2840,7 +2855,7 @@
         this._upsertList(
           Scratch.Cast.toString(LIST),
           // COMBAK no formatting options set
-          events.map((evt) => midiToString(evt)),
+          events.filter(Boolean).map((evt) => midiToString(evt)),
           util.target
         );
       }
