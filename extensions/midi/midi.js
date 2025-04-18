@@ -379,7 +379,8 @@
       opts = {}
     ) {
       return formatNoteType(
-        opts?.noMinify ? shorthands.noteOn : undefined,
+        // opts?.noMinify ? shorthands.noteOn : undefined,
+        shorthands.noteOn,
         note,
         velocity,
         opts
@@ -387,7 +388,8 @@
     },
     noteOff({ value1: note }, opts = {}) {
       return formatNoteType(
-        opts?.noMinify ? shorthands.noteOff : undefined,
+        // opts?.noMinify ? shorthands.noteOff : undefined,
+        shorthands.noteOff,
         note,
         0,
         opts
@@ -582,6 +584,7 @@
       case "reset":
         break;
       case "rest":
+        break;
       // do nothing
     }
     // look at eventMap to give 'friendly' names to value1/value2 (ex. "pitch", "velocity")
@@ -752,7 +755,7 @@
     let { type, value1, value2, channel = 1 } = event;
     const spec = eventMapping[type];
     // return empty if not valid event
-    if (!spec) return new Uint8Array();
+    if (!spec || !spec.command) return new Uint8Array();
     const commandAndChannel = spec.command + Math.max(channel - 1, 0);
     if (spec.param1 && value1 == undefined) {
       value1 = (event[spec.param1] ?? spec.defaults?.[0]) || 0;
@@ -1384,7 +1387,8 @@
    */
   const SEPARATOR = "---";
 
-  /** Menu list. Reused in two menus, so defined here rather than below */
+  class MidiExtension {
+    getInfo() {
   const EVENT_TYPES_ITEMS = [
     {
       value: "noteOn",
@@ -1997,13 +2001,14 @@
        * Lazy initialize midi - only upon first executing, and used in other calls to make sure it gets triggered
        */
       this._ensureInitialize = (evt) => {
-        if (this.midi.status === "pending" /* Initial */) {
+        if (this.midi.status === "pending") {
           this.initialize().catch(() => {});
         }
       };
       this._addListeners();
       // globalThis.midiExt = this;
       const vm = Scratch.vm;
+      // REVIEW this will end up always requesting midi permissions even if just using this extension for midi files. does this matter?
       vm.runtime.once("BEFORE_EXECUTE", this._ensureInitialize);
     }
     /**
@@ -2100,6 +2105,7 @@
       return this.midi.outputs.length;
     }
     getDeviceInfo({ DEVICE_TYPE, INDEX, DEVICE_PROP }, util) {
+      this._ensureInitialize();
       const deviceType = Scratch.Cast.toString(DEVICE_TYPE).toLowerCase();
       const deviceList =
         deviceType === "input" ? this.midi.inputs : this.midi.outputs;
@@ -2426,15 +2432,20 @@
     }
     jsonToEvent({ TEXT }, util) {
       const raw = Scratch.Cast.toString(TEXT);
+      // ignore empty inputs
+      if (raw === "" || raw === "0") return "";
+
       let event = null;
       try {
         event = JSON.parse(raw);
-      } catch (error) {}
+      } catch (error) {
+        event = stringToMidi(raw);
+      }
 
       if (Array.isArray(event)) {
         return event.map((e) => midiToString(e)).join("\n");
       }
-      if (event === null) {
+      if (event == null) {
         return "";
       }
       if (typeof event !== "object") {
@@ -2448,6 +2459,11 @@
       ]
         .filter(([alias, key]) => alias in event && event[key] == undefined)
         .forEach(([alias, key]) => (event[key] = event[alias]));
+
+      // normalize type and default to note if not otherwise specified
+      let type =
+        event.type === REST_LITERAL ? "rest" : normalizeType(event.type);
+      if (!type && event.pitch) type = "noteOn";
       return event ? midiToString(event) : "";
     }
     /** MIDI FILE FUNCTIONS **/
