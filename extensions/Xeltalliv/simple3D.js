@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.2.1
+// Version: 1.2.2
 
 (function (Scratch) {
   "use strict";
@@ -1092,6 +1092,7 @@
         canvas
       );
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      this._silhouette.update(canvas);
       this.emitWasAltered();
     }
     resizeCanvas() {
@@ -1792,6 +1793,7 @@ void main() {
   let currentCulling;
   let currentCullingProps;
   let lastTextMeasurement;
+  let transformCache;
 
   function resetEverything() {
     gl.clearColor(0, 0, 0, 0);
@@ -1821,6 +1823,11 @@ void main() {
     currentCulling = 0;
     currentCullingProps = [null, null];
     lastTextMeasurement = null;
+    transformCache = {
+      from: m4.identity(),
+      to: m4.identity(),
+      matrix: m4.identity(),
+    };
     for (const mesh of meshes.values()) {
       mesh.destroy();
     }
@@ -3659,13 +3666,15 @@ void main() {
             resolve(null);
             return;
           }
-          const values = list.value
-            .slice(pos, pos + lengthRequired)
-            .map(Cast.toNumber);
+          const data = new Uint8Array(lengthRequired);
+          const values = list.value;
+          for (let i = 0; i < lengthRequired; i++) {
+            data[i] = values[pos + i];
+          }
           imageSourceSync = {
             width: width,
             height: height,
-            data: new Uint8Array(values),
+            data: data,
           };
           resolve(imageSourceSync);
         });
@@ -4143,6 +4152,15 @@ void main() {
           transformed = vec;
           return;
         }
+        if (
+          lookup2[from] === transformCache.from &&
+          lookup2[to] === transformCache.to
+        ) {
+          transformed = m4.multiplyVec(transformCache.matrix, vec);
+          return;
+        }
+        transformCache.from = lookup2[from];
+        transformCache.to = lookup2[to];
         let swapped = false;
         if (from > to) {
           [from, to] = [to, from];
@@ -4153,6 +4171,7 @@ void main() {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
         if (swapped) totalMat = m4.inverse(totalMat);
+        transformCache.matrix = totalMat;
         transformed = m4.multiplyVec(totalMat, vec);
         if (TO == "projected (scratch units)") {
           transformed[0] =
@@ -4205,11 +4224,20 @@ void main() {
         let from = lookup[FROM];
         let to = lookup[TO];
         if (!from || !to) return;
-        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 1];
+        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 0];
         if (from == to) {
           transformed = vec;
           return;
         }
+        if (
+          lookup2[from] === transformCache.from &&
+          lookup2[to] === transformCache.to
+        ) {
+          transformed = m4.multiplyVec(transformCache.matrix, vec);
+          return;
+        }
+        transformCache.from = lookup2[from];
+        transformCache.to = lookup2[to];
         let swapped = false;
         if (from > to) {
           [from, to] = [to, from];
@@ -4219,11 +4247,8 @@ void main() {
         for (let i = from + 1; i < to; i++) {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
-        if (from + 1 == to) {
-          totalMat = totalMat.slice();
-        }
-        totalMat[12] = totalMat[13] = totalMat[14] = 0;
         if (swapped) totalMat = m4.inverse(totalMat);
+        transformCache.matrix = totalMat;
         transformed = m4.multiplyVec(totalMat, vec);
       },
     },
