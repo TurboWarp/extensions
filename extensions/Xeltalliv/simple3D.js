@@ -3668,8 +3668,8 @@ void main() {
           }
           const data = new Uint8Array(lengthRequired);
           const values = list.value;
-          for(let i=0; i<lengthRequired; i++) {
-            data[i] = values[pos+i];
+          for (let i = 0; i < lengthRequired; i++) {
+            data[i] = values[pos + i];
           }
           imageSourceSync = {
             width: width,
@@ -4152,7 +4152,10 @@ void main() {
           transformed = vec;
           return;
         }
-        if (lookup2[from] === transformCache.from && lookup2[to] === transformCache.to) {
+        if (
+          lookup2[from] === transformCache.from &&
+          lookup2[to] === transformCache.to
+        ) {
           transformed = m4.multiplyVec(transformCache.matrix, vec);
           return;
         }
@@ -4226,7 +4229,10 @@ void main() {
           transformed = vec;
           return;
         }
-        if (lookup2[from] === transformCache.from && lookup2[to] === transformCache.to) {
+        if (
+          lookup2[from] === transformCache.from &&
+          lookup2[to] === transformCache.to
+        ) {
           transformed = m4.multiplyVec(transformCache.matrix, vec);
           return;
         }
