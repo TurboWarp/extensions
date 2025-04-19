@@ -57,7 +57,7 @@
         flipY = false;
         width = canvas.width;
         height = canvas.height;
-      } else if (renderer._penSkinId) {
+      } else if (renderer._penSkinId !== null) {
         const fbInfo = renderer._allSkins[renderer._penSkinId]._framebuffer;
         if (framebuffer == fbInfo.framebuffer) {
           toCorrectThing = true;
