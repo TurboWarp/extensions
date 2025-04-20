@@ -1,3 +1,10 @@
+// Name: Vectors
+// ID: unknownvectors
+// Description: variables with a direction.
+// By: Unknown07724 <https://scratch.mit.edu/users/Unknown07724/>
+// License: MPL-2.0
+
+
 (function (Scratch) {
   "use strict";
 
@@ -71,7 +78,7 @@
           {
             opcode: "vectorDelete",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Delete vector with [ID]"),
+            text: Scratch.translate("delete vector with [ID]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
             },
@@ -93,7 +100,7 @@
           {
             opcode: "vectorMag",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Magnitude of vector [ID]"),
+            text: Scratch.translate("magnitude of vector [ID]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
             },
@@ -106,7 +113,7 @@
           {
             opcode: "vectorDir",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Direction of vector [ID]"),
+            text: Scratch.translate("direction of vector [ID]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
             },
