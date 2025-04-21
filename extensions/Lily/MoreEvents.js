@@ -229,11 +229,10 @@
             runtime._pushThread(topBlockId, target);
           }
         );
-        runtime.removeListener("BEFORE_EXECUTE", pauseHandler);
       };
 
       runtime.on("RUNTIME_PAUSED", () => {
-        runtime.on("BEFORE_EXECUTE", pauseHandler);
+        runtime.once("BEFORE_EXECUTE", pauseHandler);
       });
 
       runtime.on("RUNTIME_UNPAUSED", () => {
