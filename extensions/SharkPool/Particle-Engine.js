@@ -368,7 +368,6 @@ void main() {
   // update non-interpolated engines
   runtime.on("AFTER_EXECUTE", () => {
     if (tabBlured || runtime.ioDevices.clock._paused) return;
-    const fps = +(1 / deltaTime).toFixed(2);
     allEngines.forEach((engine) => {
       if (engine.paused || engine.interpolate) return;
       updateEngine(engine);
