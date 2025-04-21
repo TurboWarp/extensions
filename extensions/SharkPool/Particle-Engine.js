@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.32
+// Version V.2.0.0
 
 (function (Scratch) {
   "use strict";
@@ -14,24 +14,25 @@
 "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5Mi4zNjciIGhlaWdodD0iOTIuMzY3IiB2aWV3Qm94PSIwIDAgOTIuMzY3IDkyLjM2NyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSIyMTEuNDYxIiB5MT0iMTUxLjQ2MSIgeDI9IjI2OC41MzkiIHkyPSIyMDguNTM5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgaWQ9ImEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzAwOTBmZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwNzJmZiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxwYXRoIGQ9Ik0wIDQ2LjE4M0MwIDIwLjY3NyAyMC42NzcgMCA0Ni4xODMgMHM0Ni4xODMgMjAuNjc3IDQ2LjE4MyA0Ni4xODMtMjAuNjc3IDQ2LjE4My00Ni4xODMgNDYuMTgzUzAgNzEuNjg5IDAgNDYuMTgzIiBmaWxsPSIjMTk1M2ZmIi8+PHBhdGggZD0iTTIxMS40NiAyMDguNTRjLTE1Ljc2MS0xNS43NjItMTUuNzYxLTQxLjMxNyAwLTU3LjA4IDE1Ljc2My0xNS43NjEgNDEuMzE4LTE1Ljc2MSA1Ny4wOCAwIDE1Ljc2MSAxNS43NjMgMTUuNzYxIDQxLjMxOCAwIDU3LjA4LTE1Ljc2MiAxNS43NjEtNDEuMzE3IDE1Ljc2MS01Ny4wOCAwIiBmaWxsPSJ1cmwoI2EpIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTkzLjgxNyAtMTMzLjgxNykiLz48cGF0aCBkPSJNMjguODQ4IDU1LjYyOWE1Ljc3IDUuNzcgMCAwIDAgNC4xNDQtNC4wMTNsMS4yOS00LjUwNWMuNjEyLTIuMTMgMy42NDctMi4wOCA0LjE4Ny4wNjhsMS4xNDcgNC41NDRhNS43NyA1Ljc3IDAgMCAwIDQuMDEgNC4xNDVsNC41MDQgMS4yOWMyLjEzLjYxMiAyLjA4MSAzLjY0Ny0uMDY3IDQuMTlsLTQuNTQ1IDEuMTQ0YTUuNzcgNS43NyAwIDAgMC00LjE0MSA0LjAxbC0xLjI5MyA0LjUwNGMtLjYxIDIuMTMtMy42NDQgMi4wODEtNC4xODctLjA2N2wtMS4xNDQtNC41NDVhNS43NyA1Ljc3IDAgMCAwLTQuMDEzLTQuMTQxbC00LjUwNS0xLjI5Yy0yLjEzLS42MTItMi4wOC0zLjY0Ny4wNjgtNC4xOXptMjkuNjk4LTE2LjMyM2E0LjAyIDQuMDIgMCAwIDAgMi45MDMtMi43OGwuOTE2LTMuMTMzYy40MzUtMS40ODEgMi41NS0xLjQzNSAyLjkxNy4wNjNsLjc4MSAzLjE3MWE0LjAyIDQuMDIgMCAwIDAgMi43NzcgMi45MDNsMy4xMzQuOTE2YzEuNDgyLjQzNSAxLjQzNiAyLjU1LS4wNjMgMi45MmwtMy4xNy43NzhhNC4wMiA0LjAyIDAgMCAwLTIuOTAyIDIuNzc4bC0uOTE4IDMuMTMzYy0uNDMzIDEuNDgyLTIuNTQ3IDEuNDM2LTIuOTE3LS4wNjNsLS43NzktMy4xN2E0LjAyIDQuMDIgMCAwIDAtMi43OC0yLjkwMmwtMy4xMzMtLjkxNmMtMS40ODItLjQzNS0xLjQzNi0yLjU0OS4wNjMtMi45MTl6bS0yMC4xNzEtOC4xNjhhNC4xOCA0LjE4IDAgMCAwLTIuODkzLTMuMDE3bC0zLjI1OS0uOTVjLTEuNTQtLjQ1MS0xLjQ5NS0yLjY1LjA2NC0zLjAzM2wzLjI5Ni0uODE1YTQuMTggNC4xOCAwIDAgMCAzLjAxNi0yLjg5bC45NS0zLjI1OWMuNDUxLTEuNTQgMi42NS0xLjQ5NCAzLjAzNi4wNjRsLjgxMiAzLjI5NmE0LjE4IDQuMTggMCAwIDAgMi44OSAzLjAxNGwzLjI2Ljk1M2MxLjU0LjQ0OCAxLjQ5NCAyLjY0Ni0uMDY0IDMuMDMybC0zLjI5Ny44MTNhNC4xOCA0LjE4IDAgMCAwLTMuMDE0IDIuODkybC0uOTUgMy4yNmMtLjQ1IDEuNTQtMi42NDkgMS40OTQtMy4wMzUtLjA2NHoiIGZpbGw9IiNmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==";
 
   const shapes = {
-    sqr: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBkPSJNMCA1MC41VjBoNTB2NTAuNXoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
-    circ: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDQ5LjUgNDkuNSI+PHBhdGggZD0iTTAgMjQuNTVDMCAxMC45OTIgMTAuOTkyIDAgMjQuNTUgMFM0OS4xIDEwLjk5MiA0OS4xIDI0LjU1IDM4LjEwOCA0OS4xIDI0LjU1IDQ5LjEgMCAzOC4xMDggMCAyNC41NSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
-    tri: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OS4wOTgiIGhlaWdodD0iNDIuNTIiIHZpZXdCb3g9IjAgMCA0OS4wOTggNDIuNTIiPjxwYXRoIGQ9Ik0wIDQyLjUyIDI0LjU1IDAgNDkuMSA0Mi41MnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
-    star: "B4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDEuNSAxLjUiPjxwYXRoIGQ9Ik0xLjM3NS42MTNBLjA2LjA2IDAgMCAwIDEuMzIzLjU3TC45NjcuNTIxLjgwNS4yMmEuMDYzLjA2MyAwIDAgMC0uMTEgMEwuNTM2LjUyMS4xOC41N2EuMDYuMDYgMCAwIDAtLjA1MS4wNDMuMDYuMDYgMCAwIDAgLjAxOC4wNjNsLjI1Ni4yMzMtLjA2My4zMjhhLjA2My4wNjMgMCAwIDAgLjA5MS4wN2wuMzE5LS4xNTguMzIuMTU4YS4xLjEgMCAwIDAgLjAyOC4wMDYuMDYzLjA2MyAwIDAgMCAuMDYzLS4wNzRMMS4wOTguOTExbC4yNTYtLjIzM2EuMDYuMDYgMCAwIDAgLjAyMS0uMDY1IiBmaWxsPSIjZmZmIi8+PC9zdmc+"
+    sqr: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBkPSJNMCA1MC41VjBoNTB2NTAuNXoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
+    circ: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDQ5LjUgNDkuNSI+PHBhdGggZD0iTTAgMjQuNTVDMCAxMC45OTIgMTAuOTkyIDAgMjQuNTUgMFM0OS4xIDEwLjk5MiA0OS4xIDI0LjU1IDM4LjEwOCA0OS4xIDI0LjU1IDQ5LjEgMCAzOC4xMDggMCAyNC41NSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
+    tri: "0OS4wOTgiIGhlaWdodD0iNDIuNTIiIHZpZXdCb3g9IjAgMCA0OS4wOTggNDIuNTIiPjxwYXRoIGQ9Ik0wIDQyLjUyIDI0LjU1IDAgNDkuMSA0Mi41MnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
+    star: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDEuNSAxLjUiPjxwYXRoIGQ9Ik0xLjM3NS42MTNBLjA2LjA2IDAgMCAwIDEuMzIzLjU3TC45NjcuNTIxLjgwNS4yMmEuMDYzLjA2MyAwIDAgMC0uMTEgMEwuNTM2LjUyMS4xOC41N2EuMDYuMDYgMCAwIDAtLjA1MS4wNDMuMDYuMDYgMCAwIDAgLjAxOC4wNjNsLjI1Ni4yMzMtLjA2My4zMjhhLjA2My4wNjMgMCAwIDAgLjA5MS4wN2wuMzE5LS4xNTguMzIuMTU4YS4xLjEgMCAwIDAgLjAyOC4wMDYuMDYzLjA2MyAwIDAgMCAuMDYzLS4wNzRMMS4wOTguOTExbC4yNTYtLjIzM2EuMDYuMDYgMCAwIDAgLjAyMS0uMDY1IiBmaWxsPSIjZmZmIi8+PC9zdmc+"
   };
-  for (const key in shapes) shapes[key] = "data:image/svg+xml;base64,PHN2Zy" + shapes[key];
+  for (const key in shapes) shapes[key] = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI" + shapes[key];
 
   const vm = Scratch.vm;
+  const Cast = Scratch.Cast;
   const runtime = vm.runtime;
   const render = vm.renderer;
-  const { Drawable, Skin } = render.exports;
+  const { Drawable, Skin, twgl } = render.exports;
   const engineTag = Symbol("particleEngine");
 
   const optionList = {
-    maxP: { val: 30, inf: 0 }, emission: { val: 28, inf: 0 },
-    time: { val: 0.2, inf: 0.3 }, speed: { val: 15, inf: 0 },
+    maxP: { val: 50, inf: 0 }, emission: { val: 1, inf: 0 },
+    time: { val: 0.4, inf: 0.1 }, speed: { val: 15, inf: 0 },
     xPos: { val: 10, inf: 0 }, yPos: { val: 0, inf: 0 },
-    gravX: { val: 0, inf: 0 }, gravY: { val: -2, inf: 0 },
+    gravX: { val: 0, inf: 0 }, gravY: { val: -1.5, inf: 0 },
     sDir: { val: 0, inf: 25 }, eDir: { val: 0, inf: 0 },
     sSpin: { val: 0, inf: 0 }, eSpin: { val: 45, inf: 135 },
     sSize: { val: 25, inf: 10 }, eSize: { val: 15, inf: 5 },
@@ -41,108 +42,21 @@
     sinW: { val: 0, inf: 0 }, cosW: { val: 0, inf: 0 },
     sinS: { val: 1, inf: 0 }, cosS: { val: 1, inf: 0 },
     fIn: { val: 0, inf: 5 }, fOut: { val: 15, inf: 2 },
-    sCol: { val: { h: 0.83, s: 1, l: 0.5 }, inf: 0 }, eCol: { val: { h: 0.5, s: 1, l: 0.5 }, inf: 0 }
+    sCol: { val: "#ff00ff", inf: 0 }, eCol: { val: "#0000ff", inf: 0 }
   };
-  let defaultTexture, tabBlured = false;
-  let deltaTime = 0, prevTime = 0;
+  let tabBlured = false, deltaTime = 0, prevTime = 0;
 
-  const allEngines = Object.create(null);
-
-  // Util Funcs
-  const rng = (val, inf) => val + (Math.random() * 2 - 1) * inf;
-
-  const rgb2Hsl = (rgb) => {
-    const r = rgb.r / 255, g = rgb.g / 255, b = rgb.b / 255;
-    const max = Math.max(r, g, b), min = Math.min(r, g, b);
-    let h, s, l = (max + min) / 2;
-    if (max === min) h = s = 0;
-    else {
-      const d = max - min;
-      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-      switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-      }
-      h /= 6;
-    }
-    return { h, s, l };
-  }
-  const hsl2Rgb = (h, s, l) => {
-    let r, g, b;
-    h = h % 1;
-    if (s === 0) r = g = b = l;
-    else {
-      const hue2rgb = (p, q, t) => {
-        if (t < 0) t += 1;
-        if (t > 1) t -= 1;
-        if (t < 1 / 6) return p + (q - p) * 6 * t;
-        if (t < 1 / 3) return q;
-        if (t < 1 / 2) return p + (q - p) * (2 / 3 - t) * 6;
-        return p;
-      }
-      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-      const p = 2 * l - q;
-      r = hue2rgb(p, q, h + 1 / 3); g = hue2rgb(p, q, h); b = hue2rgb(p, q, h - 1 / 3);
-    }
-    return {
-      r: Math.round(Math.max(0, Math.min(r * 255, 255))), g: Math.round(Math.max(0, Math.min(g * 255, 255))), b: Math.round(Math.max(0, Math.min(b * 255, 255)))
-    };
-  }
-  const shiftHue = (sC, inf1, eC, inf2, t) => {
-    const startHue = rng(sC.h, (inf1 / 360)) % 360;
-    const endHue = rng(eC.h, (inf2 / 360)) % 360;
-    return hsl2Rgb(
-      (startHue + t * (endHue - startHue)) % 360,
-      sC.s + t * (eC.s - sC.s), sC.l + t * (eC.l - sC.l)
-    );
-  };
-
-  const newTexture = (url, callback) => {
-    // eslint-disable-next-line
-    const img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.src = url;
-    img.onload = () => { callback(img) };
-    img.onerror = (e) => { console.error("Error loading texture:", e) };
-  };
-  newTexture(shapes.sqr, (t) => { defaultTexture = t });
-
-  const tintTexture = (texture, rgb, a, emitter) => {
-    if (rgb.r === 255 && rgb.g === 255 && rgb.b === 255) return texture;
-    const cacheKey = rgb + a;
-    if (emitter.tintCache.has(cacheKey)) return emitter.tintCache.get(cacheKey);
-
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d", { alpha: true });
-    canvas.width = texture.width; canvas.height = texture.height;
-    ctx.drawImage(texture, 0, 0);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    for (let i = 0; i < data.length; i += 4) {
-      data[i] = (data[i] * rgb.r) / 255;
-      data[i + 1] = (data[i + 1] * rgb.g) / 255;
-      data[i + 2] = (data[i + 2] * rgb.b) / 255;
-      data[i + 3] *= a;
-    }
-
-    ctx.putImageData(imageData, 0, 0);
-    emitter.tintCache.set(cacheKey, canvas);
-    return canvas;
-  };
+  const allEngines = new Map();
 
   // Custom Skin
   class particleSkin extends Skin {
     constructor(id, renderer) {
       super(id, renderer);
       const gl = renderer.gl;
-      const texture = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-      this._texture = texture;
+      this._texture = twgl.createTexture(gl, {
+        min: gl.NEAREST, mag: gl.NEAREST, wrap: gl.CLAMP_TO_EDGE,
+        src: [0, 0, 0, 0] // Dummy pixel
+      });
       this._rotationCenter = [240, 180];
       this._size = [480, 360];
     }
@@ -174,7 +88,7 @@
   // Patch to allow opacity in our engine
   const DrawableProto = Drawable.__proto__;
   const gu = DrawableProto.getUniforms;
-  DrawableProto.getUniforms = function () {
+  DrawableProto.getUniforms = function() {
     if (this[engineTag]) {
       const gl = this._renderer.gl;
       gl.blendEquation(gl.FUNC_ADD);
@@ -183,10 +97,92 @@
     return gu.call(this);
   }
 
+  // Constants
+  const radianConvert = Math.PI / 180;
+  const halfPI = Math.PI / 2;
+  const vertices = [-0.5, -0.5, 0.5, -0.5, -0.5,  0.5, 0.5, -0.5, 0.5,  0.5, -0.5,  0.5];
+  const texcoords = [0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1];
+
+  /* allows sin/cos computations to be faster */
+  const TWO_PI = Math.PI * 2;
+  const INV_TWO_PI = 8192 / TWO_PI;
+  const sinTable = new Float32Array(8192), cosTable = new Float32Array(8192);
+  for (let i = 0; i < 8192; i++) {
+    const angle = (i / 8192) * TWO_PI;
+    sinTable[i] = Math.sin(angle);
+    cosTable[i] = Math.cos(angle);
+  }
+
+  // Util Funcs
+  const fastSin = (rads) => sinTable[Math.floor(rads * INV_TWO_PI) & 8191];
+  const fastCos = (rads) => cosTable[Math.floor(rads * INV_TWO_PI) & 8191];
+
+  const rng = (val, inf) => val + (Math.random() * 2 - 1) * inf;
+
+  const newTexture = (url, gl, callback) => {
+    // eslint-disable-next-line
+    const img = new Image();
+    img.crossOrigin = "Anonymous";
+    img.src = url;
+    img.onerror = (e) => console.error("Error loading texture:", e);
+    img.onload = () => callback({
+      tWidth: img.width, tHeight: img.height,
+      texture: twgl.createTexture(gl, { src: img, flipY: true })
+    });
+  };
+
+  const createParticleRGB = (color) => {
+    const rgb = Cast.toRgbColorList(color.val);
+    return [
+      rgb.map((c) => Math.max(Math.min(rng(c, color.inf), 255), 0)),
+      color.val
+    ];
+  };
+
+  const createTint = (sRGB, eRGB, time) => {
+    return eRGB.map((c, i) => ((c * time) + (sRGB[i] * (1 - time))) / 255);
+  };
+
   // Engine Parts
+  const engineVertShader = `
+attribute vec2 a_position;
+attribute vec2 a_texcoord;
+
+uniform mat4 u_matrix;
+
+varying vec2 v_texcoord;
+
+void main() {
+  gl_Position = u_matrix * vec4(a_position, 0, 1);
+  v_texcoord = a_texcoord;
+}`;
+  const engineFragShader = `
+precision mediump float;
+
+uniform sampler2D u_texture;
+uniform vec4 u_tintColor;
+
+varying vec2 v_texcoord;
+
+void main() {
+  vec4 tex = texture2D(u_texture, v_texcoord);
+  gl_FragColor = tex * u_tintColor;
+}`;
+
+  const createShader = (gl, type, source) => {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error(gl.getShaderInfoLog(shader));
+      gl.deleteShader(shader);
+    }
+    return shader;
+  };
+
   const makeEngine = (target) => {
     const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d", { alpha: true });
+    const gl = canvas.getContext("webgl");
     canvas.width = runtime.stageWidth || 480; canvas.height = runtime.stageHeight || 360;
 
     const targetName = target.getName();
@@ -195,13 +191,28 @@
     const skinId = render._nextSkinId++;
     const skin = new particleSkin(skinId, render);
     render._allSkins[skinId] = skin;
-    const engine = {
-      drawableId, drawable, skinId, skin, canvas, ctx, target,
-      emitters: {}, data: {}, interpolate: false
-    };
 
+    const projection = twgl.m4.ortho(0, canvas.width, canvas.height, 0, -1, 1);
+    const programInfo = twgl.createProgramInfo(gl, [engineVertShader, engineFragShader]);
+    const bufferInfo = twgl.createBufferInfoFromArrays(gl, {
+      a_position: { numComponents: 2, data: vertices },
+      a_texcoord: { numComponents: 2, data: texcoords }
+    });
+
+    gl.useProgram(programInfo.program);
+    twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    const engine = {
+      drawableId, drawable, skinId, skin, target,
+      canvas, gl, programInfo, bufferInfo, projection,
+      emitters: Object.create(null),
+      data: new Map(),
+      interpolate: false, paused: false
+    };
     target[engineTag] = engine;
-    allEngines[targetName] = engine;
+    allEngines.set(targetName, engine);
     render.updateDrawableSkinId(drawableId, skinId);
     drawable.customDrawableName = `${targetName} Particle Engine (SP)`;
     drawable[engineTag] = true;
@@ -221,153 +232,203 @@
     render.destroySkin(engine.skinId);
     runtime.requestRedraw();
     target[engineTag] = undefined;
-    delete allEngines[target.getName()];
+    allEngines.delete(target.getName());
   };
 
-  const updateEngine = (engine, fps) => {
-    const { canvas, ctx, emitters, data, interpolate } = engine;
+  const updateEngine = (engine) => {
+    const {
+      canvas, gl, programInfo,
+      bufferInfo, projection,
+      emitters, data, interpolate
+    } = engine;
     const { width, height } = canvas;
-    ctx.clearRect(0, 0, width, height);
+    const delta = interpolate ? 1 + deltaTime : 1;
+
+    // Clear canvas
+    twgl.bindFramebufferInfo(gl, null);
+    gl.viewport(0, 0, width, height);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+
     for (const key in emitters) {
       const emitter = emitters[key];
-      const { texture, pos, opts } = emitter;
+      if (!emitter.texture) continue;
+
+      const { pos, opts, tintCache, texture } = emitter;
+      const { tWidth, tHeight } = texture;
       emitter.frameCnt++;
-      if (!texture) continue;
-      const delta = interpolate ? deltaTime * fps: 1;
+
       const maxP = Math.round(rng(opts.maxP.val, opts.maxP.inf));
       const emit = (maxP + 1) - Math.round(rng(opts.emission.val, opts.emission.inf));
-      const rPos = [pos[0] - (texture.width / 4), pos[1] + (texture.height / 4)];
-      if (!data[key]) data[key] = [];
-      while (emitter.frameCnt % emit === 0 && data[key].length < maxP) {
-        const life = rng(opts.time.val, opts.time.inf);
-        const obj = {
-          ind: 0, conLife: life * 100, life, speed: rng(opts.speed.val, opts.speed.inf),
-          x: rPos[0] + rng(opts.xPos.val, opts.xPos.inf), y: rPos[1] + rng(opts.yPos.val * -1, opts.yPos.inf),
-          dir: rng(opts.sDir.val - 90, opts.sDir.inf), eDir: rng(opts.eDir.val - 90, opts.eDir.inf),
-          spin: rng(opts.sSpin.val - 90, opts.sSpin.inf), eSpin: rng(opts.eSpin.val - 90, opts.eSpin.inf),
-          size: rng(opts.sSize.val, opts.sSize.inf) / 100, eSize: rng(opts.eSize.val, opts.eSize.inf) / 100,
-          streX: rng(opts.sStreX.val, opts.sStreX.inf) / 100, eStreX: rng(opts.eStreX.val, opts.eStreX.inf) / 100,
-          streY: rng(opts.sStreY.val, opts.sStreY.inf) / 100, eStreY: rng(opts.eStreY.val, opts.eStreY.inf) / 100,
-          gravX: rng(opts.gravX.val, opts.gravX.inf), gravY: rng(opts.gravY.val, opts.gravY.inf),
-          accelRad: rng(opts.accelRad.val, opts.accelRad.inf), accelTan: rng(opts.accelTan.val, opts.accelTan.inf),
-          sinW: rng(opts.sinW.val, opts.sinW.inf), cosW: rng(opts.cosW.val, opts.cosW.inf),
-          sinS: rng(opts.sinS.val, opts.sinS.inf), cosS: rng(opts.cosS.val, opts.cosS.inf),
-          fIn: rng(opts.fIn.val, opts.fIn.inf), fOut: rng(opts.fOut.val, opts.fOut.inf),
-          sCol: opts.sCol, eCol: opts.eCol
-        };
-        obj.ogPos = [obj.x, obj.y];
-        data[key].push(obj);
-        emitter.frameCnt++; // force frameCnt++ to not spawn multiple in one frame
+      const rPos = [pos[0] - (tWidth * .25), pos[1] + (tHeight * .25)];
+
+      if (!data.has(key)) data.set(key, new Set());
+      const thisData = data.get(key);
+
+      // Emit new particles
+      if (emitter.frameCnt > 1 && thisData.size < maxP) {
+        const count = Math.min(maxP, Math.round(rng(opts.emission.val, opts.emission.inf)));
+        for (let i = 0; i < count; i++) {
+          const life = rng(opts.time.val, opts.time.inf);
+          const obj = {
+            ind: 0, conLife: life * 100, life,
+            speed: rng(opts.speed.val, opts.speed.inf),
+            x: rPos[0] + rng(opts.xPos.val, opts.xPos.inf),
+            y: rPos[1] + rng(opts.yPos.val * -1, opts.yPos.inf),
+            dir: rng(opts.sDir.val - 90, opts.sDir.inf), eDir: rng(opts.eDir.val - 90, opts.eDir.inf),
+            spin: rng(opts.sSpin.val - 90, opts.sSpin.inf), eSpin: rng(opts.eSpin.val - 90, opts.eSpin.inf),
+            size: rng(opts.sSize.val, opts.sSize.inf) * 0.01, eSize: rng(opts.eSize.val, opts.eSize.inf) * 0.01,
+            streX: rng(opts.sStreX.val, opts.sStreX.inf) * 0.01, eStreX: rng(opts.eStreX.val, opts.eStreX.inf) * 0.01,
+            streY: rng(opts.sStreY.val, opts.sStreY.inf) * 0.01, eStreY: rng(opts.eStreY.val, opts.eStreY.inf) * 0.01,
+            gravX: rng(opts.gravX.val, opts.gravX.inf), gravY: rng(opts.gravY.val, opts.gravY.inf),
+            accelRad: rng(opts.accelRad.val, opts.accelRad.inf), accelTan: rng(opts.accelTan.val, opts.accelTan.inf),
+            sinW: rng(opts.sinW.val, opts.sinW.inf), cosW: rng(opts.cosW.val, opts.cosW.inf),
+            sinS: rng(opts.sinS.val, opts.sinS.inf), cosS: rng(opts.cosS.val, opts.cosS.inf),
+            fIn: rng(opts.fIn.val, opts.fIn.inf), fOut: rng(opts.fOut.val, opts.fOut.inf),
+            sCol: createParticleRGB(opts.sCol), eCol: createParticleRGB(opts.eCol),
+            ogPos: []
+          };
+          obj.ogPos = [obj.x, obj.y];
+          thisData.add(obj);
+        }
       }
-      for (let i = data[key].length - 1; i >= 0; i--) {
-        const particle = data[key][i];
+
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, texture.texture);
+
+      for (const particle of thisData) {
         let {
-          ind, conLife, x, y, ogPos, dir, eDir, eSize, eSpin, 
-          eStreX, eStreY, accelRad, accelTan, sinW, sinS,
-          cosW, cosS, fIn, fOut, sCol, eCol
+          ind, conLife, life, x, y, ogPos, dir, eDir, size, eSize, spin, eSpin,
+          speed, gravX, gravY, streX, eStreX, streY, eStreY, accelRad, accelTan,
+          sinW, sinS, cosW, cosS, fIn, fOut, sCol, eCol
         } = particle;
-        const angle2Cen = Math.atan2(y - (pos[1] + height / 2), x - (pos[0] + width / 2));
-        const radAccelX = Math.cos(angle2Cen) * accelRad * ind;
-        const radAccelY = Math.sin(angle2Cen) * accelRad * ind;
-        const tanAngle = angle2Cen + Math.PI / 2;
-        const tanAccelX = Math.cos(tanAngle) * accelTan * ind;
-        const tanAccelY = Math.sin(tanAngle) * accelTan * ind;
-  
-        ogPos[0] += (Math.cos((dir * Math.PI) / 180) * particle.speed + radAccelX + tanAccelX) * delta;
-        ogPos[1] += (Math.sin((dir * Math.PI) / 180) * particle.speed + radAccelY + tanAccelY) * delta;
-        ogPos[0] -= particle.gravX * ind * delta;
-        ogPos[1] -= particle.gravY * ind * delta;
 
-        particle.x = ogPos[0] + Math.sin((conLife - particle.life) * sinS) * sinW * delta;
-        particle.y = ogPos[1] + Math.cos((conLife - particle.life) * cosS) * cosW * delta;
+        const dx = x - (pos[0] + width * 0.5);
+        const dy = y - (pos[1] + height * 0.5);
+        const mag = Math.hypot(dx, dy) || 1;
+        const normX = dx / mag;
+        const normY = dy / mag;
+        const dirRad = dir * radianConvert;
 
-        let opacity = 1;
-        if (ind < fIn) opacity = ind / fIn;
-        else if (ind > conLife - fOut) opacity = (conLife - ind) / fOut;
-        opacity = Math.max(0, Math.min(opacity, 1));
-        const t = Math.max(0, Math.min(ind / conLife, 1));
-        const shifted = shiftHue(sCol.val, sCol.inf, eCol.val, eCol.inf, t);
-        const rgb = `rgb(${shifted.r}, ${shifted.g}, ${shifted.b})`;
-        const brightness = 0.299 * shifted.r + 0.587 * shifted.g + 0.114 * shifted.b;
-  
+        ogPos[0] += (fastCos(dirRad) * speed + (normX * accelRad * ind) + (-normY * accelTan * ind)) * delta;
+        ogPos[1] += (fastSin(dirRad) * speed + (normY * accelRad * ind) + (normX * accelTan * ind)) * delta;
+        ogPos[0] -= gravX * ind * delta;
+        ogPos[1] -= gravY * ind * delta;
+
+        const waveT = conLife - life;
+        particle.x = ogPos[0] + fastSin(waveT * sinS) * sinW * delta;
+        particle.y = ogPos[1] + fastCos(waveT * cosS) * cosW * delta;
+
+        const fadeIn = ind * (1 / fIn);
+        const fadeOut = (conLife - ind) * (1 / fOut);
+        const opacity = Math.max(Math.min(fadeIn, fadeOut, 1), 0);
+
+        const tintKey = life.toFixed(4);
+        let tint = tintCache.get(tintKey);
+        if (!tint) {
+          tint = createTint(sCol[0], eCol[0], Math.max(0, Math.min(ind / conLife, 1)));
+          tintCache.set(tintKey, tint);
+        }
+
         particle.ind++;
         particle.life -= 0.01 * delta;
         if (particle.life <= 0) {
-          data[key].splice(i, 1);
+          thisData.delete(particle);
           continue;
         }
-        ctx.save();
-        ctx.globalAlpha = opacity;
-        ctx.translate(particle.x + width / 2, particle.y + height / 2);
-        ctx.rotate((particle.spin * Math.PI) / 180);
-        if (particle.streX < 0) ctx.scale(-1, 1);
-        if (particle.streY < 0) ctx.scale(1, -1);
-        ctx.drawImage(
-          tintTexture(texture, rgb, opacity * (1 - (brightness / 255)), emitter), -particle.size / 2, -particle.size / 2,
-          texture.width * particle.size * Math.abs(particle.streY),
-          texture.height * particle.size * Math.abs(particle.streX)
-        );
-        ctx.restore();
+
+        const sizeX = tWidth * size * streX;
+        const sizeY = tHeight * size * streY;
+        const posNDC = [particle.x + (width * .5), particle.y + (height * .5), 0];
+
+        let matrix = twgl.m4.translate(projection, posNDC);
+        matrix = twgl.m4.rotateZ(matrix, spin * radianConvert);
+        matrix = twgl.m4.scale(matrix, [sizeX, sizeY, 1]);
+
+        twgl.setUniforms(programInfo, {
+          u_matrix: matrix,
+          u_texture: texture.texture,
+          u_tintColor: [...tint, opacity]
+        });
+        twgl.drawBufferInfo(gl, bufferInfo);
 
         const deltaFactor = delta / conLife;
-        particle.dir += (eDir - particle.dir) * deltaFactor;
-        particle.spin += (eSpin - particle.spin) * deltaFactor;
-        particle.size += (eSize - particle.size) * deltaFactor;
-        particle.streX += (eStreX - particle.streX) * deltaFactor;
-        particle.streY += (eStreY - particle.streY) * deltaFactor;
+        particle.dir += (eDir - dir) * deltaFactor;
+        particle.spin += (eSpin - spin) * deltaFactor;
+        particle.size += (eSize - size) * deltaFactor;
+        particle.streX += (eStreX - streX) * deltaFactor;
+        particle.streY += (eStreY - streY) * deltaFactor;
       }
     }
   };
 
   const resetFrameCnts = () => {
-    const engines = Object.values(allEngines);
-    for (let i = 0; i < engines.length; i++) {
-      const emitters = engines[i].emitters;
-      for (const key in emitters) emitters[key].frameCnt = 0;
-    }
+    allEngines.forEach((engine) => {
+      const emitters = Object.values(engine.emitters);
+      for (const emitter of emitters) {
+        emitter.frameCnt = 0;
+        emitter.tintCache = new Map();
+      }
+    });
   };
   runtime.on("PROJECT_START", resetFrameCnts);
   runtime.on("PROJECT_STOP_ALL", resetFrameCnts);
-  runtime.on("PROJECT_LOADED", () => {
-    const engines = Object.values(allEngines);
-    for (let i = 0; i < engines.length; i++) disposeEngine(engines[i].target);
-  });
+  runtime.on("PROJECT_LOADED", () => allEngines.forEach((engine) => disposeEngine(engine.target)));
 
   window.addEventListener("focus", () => { tabBlured = false });
   window.addEventListener("blur", () => { tabBlured = true });
-  runtime.on("BEFORE_EXECUTE", () => {
-    const now = performance.now();
-    deltaTime = prevTime === 0 ? 0 : (now - prevTime) / 1000;
-    prevTime = now;
-  });
+
+  // update non-interpolated engines
   runtime.on("AFTER_EXECUTE", () => {
     if (tabBlured || runtime.ioDevices.clock._paused) return;
     const fps = +(1 / deltaTime).toFixed(2);
     const frameTime = 1000 / fps;
-    const engines = Object.values(allEngines);
-    for (let i = 0; i < engines.length; i++) {
-      const engine = engines[i];
-      let remainingTime = deltaTime * 1000;
-      if (engine.interpolate) {
-        const updatesNeeded = Math.floor(remainingTime / frameTime);
-        for (let j = 0; j < updatesNeeded; j++) {
-          updateEngine(engine, fps);
-          remainingTime -= frameTime;
-          if (remainingTime < frameTime) break;
-        }
-        if (remainingTime > 0) updateEngine(engine, fps);
-      } else {
-        updateEngine(engine, 1);
-      }
+    allEngines.forEach((engine) => {
+      if (engine.paused || engine.interpolate) return;
+      updateEngine(engine);
       engine.skin.setContent(engine.canvas);
-    }
+    });
   });
+
+  // update interpolated engines
+  function interpolateEngines() {
+    if (tabBlured || runtime.ioDevices.clock._paused) {
+      requestAnimationFrame(interpolateEngines);
+      return;
+    }
+
+    const now = performance.now();
+    deltaTime = prevTime === 0 ? 0 : (now - prevTime) * 0.001;
+    prevTime = now;
+
+    const fps = +(1 / deltaTime).toFixed(2);
+    const frameTime = 1000 / fps;
+    allEngines.forEach((engine) => {
+      if (!engine.interpolate || engine.paused) return;
+
+      let remainingTime = deltaTime * 1000;
+      const updatesNeeded = Math.floor(remainingTime / frameTime);
+      for (let j = 0; j < updatesNeeded; j++) {
+        updateEngine(engine);
+        engine.skin.setContent(engine.canvas);
+        remainingTime -= frameTime;
+        if (remainingTime < frameTime) break;
+      }
+
+      if (remainingTime > 0) {
+        updateEngine(engine);
+        engine.skin.setContent(engine.canvas);
+      }
+    });
+    requestAnimationFrame(interpolateEngines);
+  }
+  requestAnimationFrame(interpolateEngines);
 
   class SPpartEngine {
     getInfo() {
       return {
         id: "SPpartEngine",
-        name: "Particle Engine",
+        name: Scratch.translate("Particle Engine"),
         color1: "#2474ff",
         color2: "#005dff",
         color3: "#0043ff",
@@ -376,7 +437,7 @@
           {
             opcode: "createEngine",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create engine for [TARGET]",
+            text: Scratch.translate("create engine for [TARGET]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
@@ -384,7 +445,7 @@
           {
             opcode: "deleteEngine",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove engine from [TARGET]",
+            text: Scratch.translate("remove engine from [TARGET]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "ALL_TARG" }
             },
@@ -393,7 +454,7 @@
           {
             opcode: "engineAction",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [TARGET] engine [TYPE]?",
+            text: Scratch.translate("is [TARGET] engine [TYPE]?"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "ACTION" }
@@ -402,7 +463,7 @@
           {
             opcode: "setVisible",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[TYPE] [TARGET] engine",
+            text: Scratch.translate("[TYPE] [TARGET] engine"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "ALL_TARG" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "VISIBLE" }
@@ -411,7 +472,7 @@
           {
             opcode: "setEngineSize",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set size of [TARGET] engine to x [x] y [y]",
+            text: Scratch.translate("set size of [TARGET] engine to x [x] y [y]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
@@ -421,7 +482,7 @@
           {
             opcode: "setCanvasSize",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set stage size of [TARGET] engine to width [w] height [h]",
+            text: Scratch.translate("set stage size of [TARGET] engine to width [w] height [h]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               w: { type: Scratch.ArgumentType.NUMBER, defaultValue: 480 },
@@ -432,7 +493,7 @@
           {
             opcode: "setLayer",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set layer of [TARGET] engine to [VAL]",
+            text: Scratch.translate("set layer of [TARGET] engine to [VAL]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               VAL: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
@@ -441,7 +502,7 @@
           {
             opcode: "getLayer",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[TARGET] engine layer",
+            text: Scratch.translate("[TARGET] engine layer"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
@@ -450,37 +511,38 @@
           {
             opcode: "setEngineOpt",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set interpolation in [TARGET] engine [TYPE]",
+            text: Scratch.translate("set [OPT] in [TARGET] engine [TYPE]"),
             arguments: {
+              OPT: { type: Scratch.ArgumentType.STRING, menu: "ENGINE_OPS" },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "ALL_TARG" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLER" }
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: "Emitters" },
+          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Emitters") },
           {
             opcode: "createEmitter",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create emitter named [NAME] for [TARGET]",
+            text: Scratch.translate("create emitter named [NAME] for [TARGET]"),
             arguments: {
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
           {
             opcode: "deleteEmitter",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete emitter [NAME] from [TARGET]",
+            text: Scratch.translate("delete emitter [NAME] from [TARGET]"),
             arguments: {
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
           {
             opcode: "emitterExist",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "does emitter [NAME] in [TARGET] exist?",
+            text: Scratch.translate("does emitter [NAME] in [TARGET] exist?"),
             arguments: {
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
@@ -488,9 +550,9 @@
           {
             opcode: "setEmitPos",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set position of emitter [NAME] in [TARGET] to x [x] y [y]",
+            text: Scratch.translate("set position of emitter [NAME] in [TARGET] to x [x] y [y]"),
             arguments: {
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               x: { type: Scratch.ArgumentType.NUMBER },
               y: { type: Scratch.ArgumentType.NUMBER }
@@ -499,10 +561,10 @@
           {
             opcode: "emitterPos",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[TYPE] of emitter [NAME] in [TARGET]",
+            text: Scratch.translate("[TYPE] of emitter [NAME] in [TARGET]"),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "POS" },
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
@@ -510,9 +572,9 @@
           {
             opcode: "setEmitTexture",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set texture of emitter [NAME] in [TARGET] to [IMG]",
+            text: Scratch.translate("set texture of emitter [NAME] in [TARGET] to [IMG]"),
             arguments: {
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               IMG: { type: Scratch.ArgumentType.STRING, defaultValue: "data.URI" }
             },
@@ -521,7 +583,7 @@
             opcode: "defaultTexture",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: "[TYPE] texture",
+            text: Scratch.translate("[TYPE] texture"),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "TEXTURES" }
             },
@@ -530,10 +592,10 @@
           {
             opcode: "setEmitMotion",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [TYPE] of emitter [NAME] in [TARGET] to [VAL] ± [INT]",
+            text: Scratch.translate("set [TYPE] of emitter [NAME] in [TARGET] to [VAL] ± [INT]"),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "BEHAVIOURS" },
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               VAL: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
               INT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
@@ -542,10 +604,10 @@
           {
             opcode: "setEmitColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [TYPE] color of emitter [NAME] in [TARGET] to [VAL] ± [INT]",
+            text: Scratch.translate("set [TYPE] color of emitter [NAME] in [TARGET] to [VAL] ± [INT]"),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "COLOR_EMIT" },
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
               VAL: { type: Scratch.ArgumentType.COLOR },
               INT: { type: Scratch.ArgumentType.NUMBER }
@@ -554,31 +616,31 @@
           {
             opcode: "getBehaviour",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[BEHAVE] [TYPE] of emitter [NAME] in [TARGET]",
+            text: Scratch.translate("[BEHAVE] [TYPE] of emitter [NAME] in [TARGET]"),
             arguments: {
               BEHAVE: { type: Scratch.ArgumentType.STRING, menu: "ALL_BEHAVIOURS" },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "BEHAVE_VAL" },
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
-          { blockType: Scratch.BlockType.LABEL, text: "Advanced" },
+          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Advanced") },
           {
             opcode: "importEmit",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import data [DATA] to emitter [NAME] in [TARGET]",
+            text: Scratch.translate("import data [DATA] to emitter [NAME] in [TARGET]"),
             arguments: {
               DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "{}" },
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           },
           {
             opcode: "exportEmit",
             blockType: Scratch.BlockType.REPORTER,
-            text: "export emitter [NAME] in [TARGET]",
+            text: Scratch.translate("export emitter [NAME] in [TARGET]"),
             arguments: {
-              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "emit-1" },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("emit-1") },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
             },
           }
@@ -588,17 +650,50 @@
           ALL_TARG: { acceptReporters: true, items: this.getTargets(true) },
           BEHAVIOURS: { acceptReporters: true, items: this.getBehaviours(false) },
           ALL_BEHAVIOURS: { acceptReporters: true, items: this.getBehaviours(true) },
-          BEHAVE_VAL: ["value", "randomizer"],
-          ACTION: ["created", "visible"],
-          VISIBLE: ["show", "hide"],
           POS: ["x", "y"],
-          TOGGLER: ["on", "off"],
+          BEHAVE_VAL: {
+            acceptReporters: false,
+            items: [
+              { text: Scratch.translate("value"), value: "value" }, { text: Scratch.translate("randomizer"), value: "randomizer" }
+            ]
+          },
+          ACTION: {
+            acceptReporters: false,
+            items: [
+              { text: Scratch.translate("created"), value: "created" }, { text: Scratch.translate("visible"), value: "visible" }
+            ]
+          },
+          VISIBLE: {
+            acceptReporters: false,
+            items: [
+              { text: Scratch.translate("show"), value: "show" }, { text: Scratch.translate("hide"), value: "hide" }
+            ]
+          },
+          ENGINE_OPS: {
+            acceptReporters: false,
+            items: [
+              { text: Scratch.translate("interpolation"), value: "interpolation" }, { text: Scratch.translate("freeze"), value: "freeze" }
+            ]
+          },
+          TOGGLER: {
+            acceptReporters: true,
+            items: [
+              { text: Scratch.translate("on"), value: "on" }, { text: Scratch.translate("off"), value: "off" }
+            ]
+          },
           TEXTURES: {
-            acceptReporters: true, items: ["circle", "square", "triangle", "star"]
+            acceptReporters: true,
+            items: [
+              { text: Scratch.translate("circle"), value: "circle" }, { text: Scratch.translate("square"), value: "square" },
+              { text: Scratch.translate("triangle"), value: "triangle" }, { text: Scratch.translate("star"), value: "star" }
+            ]
           },
           COLOR_EMIT: {
             acceptReporters: true,
-            items: [{ text: "start", value: "sCol" }, { text: "end", value: "eCol" }]
+            items: [
+              { text: Scratch.translate("start"), value: "sCol" },
+              { text: Scratch.translate("end"), value: "eCol" }
+            ]
           }
         },
       };
@@ -606,11 +701,11 @@
 
     // Helper Funcs
     getTargets(optAll) {
-      const items = [{ text: "Stage", value: "_stage_" }];
-      if (optAll) items.push({ text: "all", value: "_all_" });
+      const items = [{ text: Scratch.translate("Stage"), value: "_stage_" }];
+      if (optAll) items.push({ text: Scratch.translate("all"), value: "_all_" });
       const targets = runtime.targets;
-      for (let index = 1; index < targets.length; index++) {
-        const target = targets[index];
+      for (let i = 1; i < targets.length; i++) {
+        const target = targets[i];
         if (target.isOriginal) items.push({ text: target.getName(), value: target.getName() });
       }
       return items.length > 0 ? items : [""];
@@ -618,21 +713,21 @@
 
     getBehaviours(optAll) {
       const items = [
-        { text: "max particles", value: "maxP" }, { text: "emission", value: "emission" },
-        { text: "lifetime", value: "time" }, { text: "speed", value: "speed" },
-        { text: "start x", value: "xPos" }, { text: "start y", value: "yPos" },
-        { text: "gravity x", value: "gravX" }, { text: "gravity y", value: "gravY" },
-        { text: "start direction", value: "sDir" }, { text: "end direction", value: "eDir" },
-        { text: "start spin", value: "sSpin" }, { text: "end spin", value: "eSpin" },
-        { text: "start size", value: "sSize" }, { text: "end size", value: "eSize" },
-        { text: "start stretch x", value: "sStreX" }, { text: "end stretch x", value: "eStreX" },
-        { text: "start stretch y", value: "sStreY" }, { text: "end stretch y", value: "eStreY" },
-        { text: "acceleration radius", value: "accelRad" }, { text: "acceleration tan", value: "accelTan" },
-        { text: "sine wave", value: "sinW" }, { text: "sine speed", value: "sinS" },
-        { text: "cosine wave", value: "cosW" },{ text: "cosine speed", value: "cosS" },
-        { text: "fade in", value: "fIn" }, { text: "fade out", value: "fOut" }
+        { text: Scratch.translate("max particles"), value: "maxP" }, { text: Scratch.translate("emission"), value: "emission" },
+        { text: Scratch.translate("lifetime"), value: "time" }, { text: Scratch.translate("speed"), value: "speed" },
+        { text: Scratch.translate("start x"), value: "xPos" }, { text: Scratch.translate("start y"), value: "yPos" },
+        { text: Scratch.translate("gravity x"), value: "gravX" }, { text: Scratch.translate("gravity y"), value: "gravY" },
+        { text: Scratch.translate("start direction"), value: "sDir" }, { text: Scratch.translate("end direction"), value: "eDir" },
+        { text: Scratch.translate("start spin"), value: "sSpin" }, { text: Scratch.translate("end spin"), value: "eSpin" },
+        { text: Scratch.translate("start size"), value: "sSize" }, { text: Scratch.translate("end size"), value: "eSize" },
+        { text: Scratch.translate("start stretch x"), value: "sStreX" }, { text: Scratch.translate("end stretch x"), value: "eStreX" },
+        { text: Scratch.translate("start stretch y"), value: "sStreY" }, { text: Scratch.translate("end stretch y"), value: "eStreY" },
+        { text: Scratch.translate("acceleration radius"), value: "accelRad" }, { text: Scratch.translate("acceleration tan"), value: "accelTan" },
+        { text: Scratch.translate("sine wave"), value: "sinW" }, { text: Scratch.translate("sine speed"), value: "sinS" },
+        { text: Scratch.translate("cosine wave"), value: "cosW" },{ text: Scratch.translate("cosine speed"), value: "cosS" },
+        { text: Scratch.translate("fade in"), value: "fIn" }, { text: Scratch.translate("fade out"), value: "fOut" }
       ];
-      if (optAll) items.push({ text: "start color", value: "sCol" }, { text: "end color", value: "eCol" });
+      if (optAll) items.push({ text: Scratch.translate("start color"), value: "sCol" }, { text: Scratch.translate("end color"), value: "eCol" });
       return items;
     }
 
@@ -651,8 +746,7 @@
     deleteEngine(args) {
       const target = this.getSprite(args.TARGET);
       if (target === "_all_") {
-        const engines = Object.values(allEngines);
-        for (let i = 0; i < engines.length; i++) disposeEngine(engines[i].target);
+        allEngines.forEach((engine) => disposeEngine(engine.target));
         return;
       }
       if (target && target[engineTag] !== undefined) disposeEngine(target);
@@ -670,8 +764,9 @@
     setVisible(args) {
       const target = this.getSprite(args.TARGET);
       if (target === "_all_") {
-        const engines = Object.values(allEngines);
-        for (let i = 0; i < engines.length; i++) engines[i].drawable.updateVisible(args.TYPE === "show");
+        allEngines.forEach((engine) => {
+          engine.drawable.updateVisible(args.TYPE === "show");
+        });
         return;
       }
       if (target && target[engineTag]) target[engineTag].drawable.updateVisible(args.TYPE === "show");
@@ -681,7 +776,7 @@
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) target[engineTag].drawable.updateScale(
         new Float32Array([
-          Scratch.Cast.toNumber(args.x), Scratch.Cast.toNumber(args.y)
+          Cast.toNumber(args.x), Cast.toNumber(args.y)
         ])
       );
     }
@@ -690,15 +785,16 @@
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
         const canvas = target[engineTag].canvas;
-        canvas.width = Math.max(0, Scratch.Cast.toNumber(args.w));
-        canvas.height = Math.max(0, Scratch.Cast.toNumber(args.h));
+        canvas.width = Math.min(5000, Math.max(1, Cast.toNumber(args.w)));
+        canvas.height = Math.min(5000, Math.max(1, Cast.toNumber(args.h)));
+        target[engineTag].projection = twgl.m4.ortho(0, canvas.width, canvas.height, 0, -1, 1);
       }
     }
 
     setLayer(args) {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
-        const ind = Scratch.Cast.toNumber(args.VAL);
+        const ind = Cast.toNumber(args.VAL);
         const id = target[engineTag].drawableId;
         render.setDrawableOrder(id, ind - render.getDrawableOrder(id), "sprite", true);
       }
@@ -712,15 +808,30 @@
 
     setEngineOpt(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) target[engineTag].interpolate = args.TYPE === "on";
+      if (target && target[engineTag]) {
+        const toggle = args.TYPE === "on";
+        switch (args.OPT) {
+          case "interpolation":
+            target[engineTag].interpolate = toggle;
+            break;
+          case "freeze":
+            target[engineTag].paused = toggle;
+            break;
+        }
+      }
     }
 
     createEmitter(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) target[engineTag].emitters[args.NAME] = {
-        pos: [0,0], texture: defaultTexture, opts: structuredClone(optionList),
+      if (!target || !target[engineTag]) return;
+      const engine = target[engineTag];
+      engine.emitters[args.NAME] = {
+        pos: [0,0], opts: structuredClone(optionList),
         frameCnt: 0, tintCache: new Map()
       };
+      newTexture(shapes.sqr, engine.gl, (t) => {
+        engine.emitters[args.NAME].texture = t;
+      });
     }
 
     deleteEmitter(args) {
@@ -739,7 +850,7 @@
       if (target && target[engineTag]) {
         const engine = target[engineTag];
         if (engine.emitters[args.NAME]) engine.emitters[args.NAME].pos = [
-          Scratch.Cast.toNumber(args.x), Scratch.Cast.toNumber(args.y) * -1
+          Cast.toNumber(args.x), Cast.toNumber(args.y) * -1
         ];
       }
     }
@@ -758,10 +869,7 @@
       if (target && target[engineTag]) {
         const engine = target[engineTag];
         const space = engine.emitters[args.NAME];
-        if (space) newTexture(args.IMG, (texture) => {
-          space.texture = texture;
-          space.tintCache = new Map(); // clear cache
-        });
+        if (space) newTexture(args.IMG, engine.gl, (texture) => { space.texture = texture });
       }
     }
 
@@ -780,17 +888,22 @@
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
         const engine = target[engineTag];
-        if (engine.emitters[args.NAME]) {
-          let type, val;
+        const emitter = engine.emitters[args.NAME];
+        if (emitter) {
+          let type, val, shouldResetCache = false;
           if (args.TOCOL) {
             type = args.TYPE === "sCol" ? "sCol" : "eCol";
-            val = rgb2Hsl(Scratch.Cast.toRgbColorObject(args.VAL));
+            val = Cast.toString(args.VAL);
+            shouldResetCache = true;
           } else {
-            type = args.TYPE;
-            val = Scratch.Cast.toNumber(args.VAL);
+            type = Cast.toString(args.TYPE);
+            if (type === "time") shouldResetCache = true;
+            val = Cast.toNumber(args.VAL);
           }
-          let opt = engine.emitters[args.NAME].opts[type];
-          if (opt) engine.emitters[args.NAME].opts[type] = { val, inf: Scratch.Cast.toNumber(args.INT) };
+          if (emitter.opts[type]) {
+            emitter.opts[type] = { val, inf: Cast.toNumber(args.INT) };
+            if (shouldResetCache) emitter.tintCache = new Map();
+          }
         }
       }
     }
@@ -814,7 +927,8 @@
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
         const engine = target[engineTag];
-        if (engine.emitters[args.NAME]) {
+        const emitter = engine.emitters[args.NAME];
+        if (emitter) {
           try {
             const rawOpts = JSON.parse(args.DATA);
             if (rawOpts.constructor.name !== "Object") return;
@@ -824,11 +938,13 @@
             for (let i = 0; i < entries.length; i++) {
               const entry = entries[i][1];
               if (typeof entry.inf === "number" &&
-                (entries[i][0].includes("Col") ? entry.val && entry.val.constructor.name === "Object" : typeof entry.val === "number")
+                (entries[i][0].includes("Col") ? typeof entry.val === "string" : typeof entry.val === "number")
               ) continue;
               else return;
             }
-            engine.emitters[args.NAME].opts = rawOpts;
+            emitter.opts = rawOpts;
+            emitter.tintCache = new Map();
+            console.log("Set!")
           } catch {}
         }
       }
@@ -860,7 +976,7 @@
       SB.SPgradients = { gradientUrls: {}, patched: false };
       const BSP = SB.BlockSvg.prototype, BSPR = BSP.render;
       BSP.render = function(...args) {
-        const blockTheme = ReduxStore.getState().scratchGui.theme.theme.blocks;
+        const blockTheme = ReduxStore.getState().scratchGui?.theme?.theme?.blocks;
         const res = BSPR.apply(this, args);
         let category;
         if (this?.svgPath_ && this?.category_ && (category = this.type.slice(0, this.type.indexOf("_"))) && SB.SPgradients.gradientUrls[category]) {
