@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.2.0.0
+// Version V.2.0.01
 
 (function (Scratch) {
   "use strict";
@@ -209,7 +209,7 @@ void main() {
 
   const makeEngine = (target) => {
     const canvas = document.createElement("canvas");
-    const gl = canvas.getContext("webgl");
+    const gl = canvas.getContext("webgl2") ?? canvas.getContext("webgl");
     canvas.width = runtime.stageWidth || 480;
     canvas.height = runtime.stageHeight || 360;
 
