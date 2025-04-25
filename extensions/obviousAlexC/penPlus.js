@@ -877,7 +877,7 @@
               return;
             }
             // Permission is checked earlier.
-            // eslint-disable-next-line no-restricted-syntax 
+            // eslint-disable-next-line no-restricted-syntax
             const image = new Image();
             image.onload = function () {
               gl.bindTexture(gl.TEXTURE_2D, texture);
