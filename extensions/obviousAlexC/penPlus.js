@@ -877,7 +877,7 @@
               return;
             }
             // Permission is checked earlier.
-            // eslint-disable-next-line no-restricted-syntax
+            // eslint-disable-next-line no-restricted-syntax 
             const image = new Image();
             image.onload = function () {
               gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -5792,8 +5792,8 @@
       if (!listOBJ) return { successful: false };
       let merged = {};
 
-      if (this.listCache[refinedID].prev != JSON.stringify(listOBJ)) {
-        console.log("reparse");
+      const stringified = JSON.stringify(listOBJ);
+      if (this.listCache[refinedID].prev != stringified) {
         //Map the list object if we can't find something
         listOBJ.map(function (str) {
           const obj = JSON.parse(str);
@@ -5816,7 +5816,7 @@
         });
 
         this.listCache[refinedID] = {
-          prev: JSON.stringify([...listREF.value]),
+          prev: stringified,
           dat: merged,
           keys: keys,
         };
