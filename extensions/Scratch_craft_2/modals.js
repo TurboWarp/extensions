@@ -67,5 +67,5 @@
         return confirm([args.text]);
       
     }
-    Scratch.extensions.register(new YaGamesSDKExtension());
+    Scratch.extensions.register(new modals());
   })(Scratch);
