@@ -50,6 +50,11 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@David-Orangemoon](https://scratch.mit.edu/users/pinksheep2917/) in https://github.com/TurboWarp/extensions/pull/103.
  - Font is Noto Sans.
 
+## Scratch_craft_2/modals.png
+ - Created by [scratch_craft_2](https://scratch.mit.edu/users/scratch_craft_2/) in https://github.com/TurboWarp/extensions/pull/2095.
+ - Font is Noto Sans.
+ - Background based on https://turbowarp.org/static/assets/cf07199bb768b01e6ac2a5c68fd8c3bb.svg
+ - Communication icon from https://www.svgrepo.com/svg/533234/message-circle-chat
 ## pointerlock.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/498.
  - Chain from https://svgsilh.com/ru/image/1300304.html.
