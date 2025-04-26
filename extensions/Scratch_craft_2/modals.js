@@ -1,3 +1,9 @@
+// Name: Modals
+// ID: htmlalert
+// Description: This extension adds modal dialog boxes.
+// By: scratch_craft_2 <https://scratch.mit.edu/users/scratch_craft_2/>
+// License: MPL-2.0
+
 (function (Scratch) {
     "use strict";
     class YaGamesSDKExtension {
