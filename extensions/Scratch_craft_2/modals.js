@@ -6,15 +6,12 @@
 
 (function (Scratch) {
     "use strict";
-    class YaGamesSDKExtension {
+    class modals {
       getInfo() {
         (function (Scratch) {
     "use strict";
-    class YaGamesSDKExtension {
+    class modals {
       getInfo() {
-        console.log(
-          "The alert() extension in turbowarp was created by scratch_craft_2",
-        );
         return {
           id: "htmlalert",
           name: "modals",
