@@ -8,8 +8,7 @@
     "use strict";
     class YaGamesSDKExtension {
       getInfo() {
-        console.log(
-          "(function (Scratch) {
+        (function (Scratch) {
     "use strict";
     class YaGamesSDKExtension {
       getInfo() {
