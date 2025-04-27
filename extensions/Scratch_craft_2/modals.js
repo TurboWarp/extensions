@@ -49,7 +49,7 @@
               blockType: Scratch.BlockType.BOOLEAN,
               text: "confirm [textic]",
               arguments: {
-                text: {
+                textic: {
                   defaultValue: "Did you see that movie?",
                   type: Scratch.ArgumentType.STRING,
                 },
