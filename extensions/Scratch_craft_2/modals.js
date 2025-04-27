@@ -6,10 +6,11 @@
 
 (function (Scratch) {
     "use strict";
-    class modals {
-      getInfo() {
-        (function (Scratch) {
-    "use strict";
+
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error("This Extension must run unsandboxed");
+  }
+
     class modals {
       getInfo() {
         return {
@@ -18,7 +19,7 @@
           color1: "#a3c0e1",
           blocks: [
             {
-              opcode: "alert",
+              opcode: "alertb",
               blockType: Scratch.BlockType.COMMAND,
               text: "alert [text]",
               arguments: {
@@ -29,7 +30,7 @@
             },
            },
           {
-              opcode: "Prompt",
+              opcode: "Promptb",
               blockType: Scratch.BlockType.REPORTER,
               text: "prompt [text], default value: [classic]",
               arguments: {
@@ -44,7 +45,7 @@
             },
            },
            { 
-              opcode: "Confirm",
+              opcode: "Confirmb",
               blockType: Scratch.BlockType.BOOLEAN,
               text: "confirm [text]",
               arguments: {
@@ -57,15 +58,15 @@
           ],
         };
       }
-      alert(args) {
-        alert([args.text]);
-      }
-      Prompt(args) {
-        return prompt([args.text], [args.classic]);
-      }
-      Confirm(args) {
-        return confirm([args.text]);
-      
+alertb(args) {
+ alert([args.text]);
+}
+Promptb(args) {
+  return prompt([args.text], [args.classic]);
+}
+Confirmb(args) {
+  return confirm([args.text]);
+}
     }
     Scratch.extensions.register(new modals());
   })(Scratch);
