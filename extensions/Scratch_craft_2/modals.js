@@ -21,9 +21,9 @@
             {
               opcode: "alertb",
               blockType: Scratch.BlockType.COMMAND,
-              text: "alert [text]",
+              text: "alert [textia]",
               arguments: {
-                text: {
+                textia: {
                   defaultValue: "hello!",
                   type: Scratch.ArgumentType.STRING,
                 },
@@ -32,9 +32,9 @@
           {
               opcode: "Promptb",
               blockType: Scratch.BlockType.REPORTER,
-              text: "prompt [text], default value: [classic]",
+              text: "prompt [textip], default value: [classic]",
               arguments: {
-                text: {
+                textip: {
                   defaultValue: "what's your name?",
                   type: Scratch.ArgumentType.STRING,
                 },
@@ -47,7 +47,7 @@
            { 
               opcode: "Confirmb",
               blockType: Scratch.BlockType.BOOLEAN,
-              text: "confirm [text]",
+              text: "confirm [textic]",
               arguments: {
                 text: {
                   defaultValue: "Did you see that movie?",
@@ -59,13 +59,13 @@
         };
       }
 alertb(args) {
- alert([args.text]);
+ alert([args.textia]);
 }
 Promptb(args) {
-  return prompt([args.text], [args.classic]);
+  return prompt([args.textip], [args.classic]);
 }
 Confirmb(args) {
-  return confirm([args.text]);
+  return confirm([args.textic]);
 }
     }
     Scratch.extensions.register(new modals());
