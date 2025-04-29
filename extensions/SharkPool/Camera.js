@@ -205,7 +205,9 @@
       position = translatePosition(position, true, camSystem);
     }
 
-    shouldEmit = (camSystem.ogXY[0] !== thisCam.xy[0] || camSystem.ogXY[1] !== thisCam.xy[1]);
+    shouldEmit =
+      camSystem.ogXY[0] !== thisCam.xy[0] ||
+      camSystem.ogXY[1] !== thisCam.xy[1];
     camSystem.ogXY = [...thisCam.xy];
     position = translatePosition(position, false, thisCam);
     if (camSystem.needsRefresh) {
