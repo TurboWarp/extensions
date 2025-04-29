@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.08
+// Version V.1.0.09
 
 (function (Scratch) {
   "use strict";
@@ -199,11 +199,15 @@
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
     const thisCam = allCameras[camSystem.name];
+    let shouldEmit = false;
     if (camSystem.needsRefresh) {
       // invert camera transformations
       position = translatePosition(position, true, camSystem);
     }
 
+    shouldEmit =
+      camSystem.ogXY[0] !== thisCam.xy[0] ||
+      camSystem.ogXY[1] !== thisCam.xy[1];
     camSystem.ogXY = [...thisCam.xy];
     position = translatePosition(position, false, thisCam);
     if (camSystem.needsRefresh) {
@@ -214,7 +218,10 @@
         this._position[0] = position[0];
         this._position[1] = position[1];
       }
-      this.setTransformDirty();
+      if (shouldEmit) {
+        render.dirty = true;
+        this.setTransformDirty();
+      }
     } else {
       ogUpdatePosition.call(this, position);
     }
@@ -240,11 +247,13 @@
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
     const thisCam = allCameras[camSystem.name];
+    let shouldEmit = false;
     if (camSystem.needsRefresh) {
       // invert camera transformations
       const safeOgSZ = camSystem.ogSZ !== 0 ? camSystem.ogSZ : 1e-10;
       scale[0] /= safeOgSZ;
       scale[1] /= safeOgSZ;
+      shouldEmit = safeOgSZ !== thisCam.zoom;
     }
 
     // avoid dividing 0 by 0
@@ -256,7 +265,12 @@
     if (scale[1] === 0) scale[1] = 1e-10 * Math.sign(safeZoom);
 
     ogUpdateScale.call(this, scale);
-    this.skin?.emitWasAltered();
+    if (shouldEmit) {
+      this._renderer.dirty = true;
+      this._rotationCenterDirty = true;
+      this._skinScaleDirty = true;
+      this.setTransformDirty();
+    }
   };
 
   // Clones should inherit the parents camera
