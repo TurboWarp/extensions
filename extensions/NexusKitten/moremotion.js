@@ -93,8 +93,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               default: "manually fence new x: [X] new y: [Y]",
-              description:
-                "Fences a specific new X and new Y for the sprite.",
+              description: "Fences a specific new X and new Y for the sprite.",
             }),
             arguments: {
               X: {
@@ -321,10 +320,12 @@
       util.target.setXY(newpos[0], newpos[1]);
     }
     fenceXY(args, util) {
-      return JSON.stringify(util.target.keepInFence(
-        Scratch.Cast.toNumber(args.X),
-        Scratch.Cast.toNumber(args.Y)
-      ));
+      return JSON.stringify(
+        util.target.keepInFence(
+          Scratch.Cast.toNumber(args.X),
+          Scratch.Cast.toNumber(args.Y)
+        )
+      );
     }
 
     directionto(args, util) {
@@ -458,17 +459,30 @@
 
     spritewh(args, util) {
       if (args.WHAT.startsWith("costume ")) {
-        const [w, h] = util.target.sprite.costumes[util.target.currentCostume].size;
+        const [w, h] =
+          util.target.sprite.costumes[util.target.currentCostume].size;
         if (args.WHAT.endsWith("width")) return Math.ceil(w);
         if (args.WHAT.endsWith("height")) return Math.ceil(h);
         return 0;
       }
       // Bounds may not always exist so default to a similar 0 valued object
-      const bounds = Scratch.vm.renderer.getBounds(util.target.drawableID) ?? {left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0};
-      switch(args.WHAT) {
+      const bounds = Scratch.vm.renderer.getBounds(util.target.drawableID) ?? {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        width: 0,
+        height: 0,
+      };
+      switch (args.WHAT) {
         case "bounds":
           // Useful for more precision or just getting the edges
-          return JSON.stringify(Object.assign({ width: bounds.width, height: bounds.height }, bounds));
+          return JSON.stringify(
+            Object.assign(
+              { width: bounds.width, height: bounds.height },
+              bounds
+            )
+          );
         case "width":
           return Math.ceil(bounds.width);
         case "height":
