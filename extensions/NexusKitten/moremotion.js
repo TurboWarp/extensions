@@ -2,6 +2,7 @@
 // ID: nkmoremotion
 // Description: More motion-related blocks.
 // By: NamelessCat <https://scratch.mit.edu/users/NamelessCat/>
+// By: Mio <https://scratch.mit.edu/users/0znzw/>
 // License: MIT
 
 (function (Scratch) {
@@ -84,6 +85,27 @@
               description:
                 "This blocks forces the sprite to be onscreen if it moved offscreen.",
             }),
+            extensions: ["colours_motion"],
+          },
+          {
+            filter: [Scratch.TargetType.SPRITE],
+            opcode: "fenceXY",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              default: "manually fence new x: [X] new y: [Y]",
+              description:
+                "Fences a specific new X and new Y for the sprite.",
+            }),
+            arguments: {
+              X: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              Y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+            },
             extensions: ["colours_motion"],
           },
           "---",
@@ -256,6 +278,10 @@
                 value: "height",
               },
               {
+                text: Scratch.translate("bounds"),
+                value: "bounds",
+              },
+              {
                 text: Scratch.translate("costume width"),
                 value: "costume width",
               },
@@ -293,6 +319,12 @@
         [util.target.x, util.target.y]
       );
       util.target.setXY(newpos[0], newpos[1]);
+    }
+    fenceXY(args, util) {
+      return JSON.stringify(util.target.keepInFence(
+        Scratch.Cast.toNumber(args.X),
+        Scratch.Cast.toNumber(args.Y)
+      ));
     }
 
     directionto(args, util) {
@@ -425,23 +457,24 @@
     }
 
     spritewh(args, util) {
-      if (args.WHAT === "width" || args.WHAT === "height") {
-        const bounds = Scratch.vm.renderer.getBounds(util.target.drawableID);
-        if (args.WHAT === "width") {
+      if (args.WHAT.startsWith("costume ")) {
+        const [w, h] = util.target.sprite.costumes[util.target.currentCostume].size;
+        if (args.WHAT.endsWith("width")) return Math.ceil(w);
+        if (args.WHAT.endsWith("height")) return Math.ceil(h);
+        return 0;
+      }
+      // Bounds may not always exist so default to a similar 0 valued object
+      const bounds = Scratch.vm.renderer.getBounds(util.target.drawableID) ?? {left: 0, right: 0, top: 0, bottom: 0, width: 0, height: 0};
+      switch(args.WHAT) {
+        case "bounds":
+          // Useful for more precision or just getting the edges
+          return JSON.stringify(Object.assign({ width: bounds.width, height: bounds.height }, bounds));
+        case "width":
           return Math.ceil(bounds.width);
-        } else {
+        case "height":
           return Math.ceil(bounds.height);
-        }
-      } else if (
-        args.WHAT === "costume width" ||
-        args.WHAT === "costume height"
-      ) {
-        const costume = util.target.sprite.costumes[util.target.currentCostume];
-        if (args.WHAT === "costume width") {
-          return Math.ceil(costume.size[0]);
-        } else {
-          return Math.ceil(costume.size[1]);
-        }
+        default:
+          return 0;
       }
     }
   }
