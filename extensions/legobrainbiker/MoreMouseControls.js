@@ -1,6 +1,6 @@
 // Name: More Mouse Controls
 // ID: legobrainbikerMoreMouseControls
-// Description: adds more options to detect properties of the cursor, including its position, clicking, and scrolling.
+// Description: Adds more options to detect properties of the cursor, including its position, clicking, and scrolling.
 // By: legobrainbiker <https://scratch.mit.edu/users/legobrainbiker/>
 // License: MPL-2.0
 (function (Scratch) {
@@ -11,10 +11,20 @@
     constructor() {
       this.mouseX = 0;
       this.mouseY = 0;
-      this.scroll = 0;
+      this.mouseWheelDelta = 0;
+      this.mouseWheelDeltaX = 0;
+      this.mouseZoomDelta = 0;
       this.buttons = [];
-      document.addEventListener("mousewheel", (e) => {
-        this.mouseWheelDelta = e.deltaY;
+      document.addEventListener("wheel", (e) => {
+        if (e.ctrlKey) {
+          this.mouseZoomDelta = e.deltaY;
+          this.mouseWheelDelta = 0;
+          this.mouseWheelDeltaX = 0;
+        } else {
+          this.mouseZoomDelta = 0;
+          this.mouseWheelDelta = e.deltaY;
+          this.mouseWheelDeltaX = e.deltaX;
+        }
         Scratch.vm.runtime.startHats(
           "legobrainbikerMoreMouseControls_onScroll"
         );
@@ -81,15 +91,30 @@
             text: Scratch.translate("disable context menu"),
           },
           {
+            opcode: "dissableScroll",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("disable scrolling and zooming"),
+          },
+          {
             opcode: "onScroll",
             blockType: Scratch.BlockType.EVENT,
             text: Scratch.translate("when scrolling"),
             isEdgeActivated: false,
           },
           {
-            opcode: "scrollamount",
+            opcode: "scrollAmount",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("scroll amount"),
+          },
+          {
+            opcode: "horozontalScrollAmount",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("horozontal scroll amount"),
+          },
+          {
+            opcode: "zoomAmount",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("zoom amount"),
           },
           {
             opcode: "mouseGlobalX",
@@ -121,8 +146,35 @@
         e.preventDefault();
       });
     }
-    scrollamount() {
-      return this.mouseWheelDelta || 0;
+    dissableScroll() {
+      Scratch.renderer.canvas.addEventListener(
+        "wheel",
+        (e) => {
+          e.preventDefault();
+          if (e.ctrlKey) {
+            this.mouseZoomDelta = e.deltaY;
+            this.mouseWheelDelta = 0;
+            this.mouseWheelDeltaX = 0;
+          } else {
+            this.mouseZoomDelta = 0;
+            this.mouseWheelDelta = e.deltaY;
+            this.mouseWheelDeltaX = e.deltaX;
+          }
+          Scratch.vm.runtime.startHats(
+            "legobrainbikerMoreMouseControls_onScroll"
+          );
+        },
+        { passive: false }
+      );
+    }
+    scrollAmount() {
+      return this.mouseWheelDelta;
+    }
+    horozontalScrollAmount() {
+      return this.mouseWheelDeltaX;
+    }
+    zoomAmount() {
+      return -this.mouseZoomDelta;
     }
     mouseGlobalX() {
       const canvas = Scratch.renderer.canvas.getBoundingClientRect();
