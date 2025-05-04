@@ -959,14 +959,16 @@
       bank.analyser.smoothingTimeConstant = 0.8;
       bank.waveformAnalyser = Pizzicato.context.createAnalyser();
       bank.waveformAnalyser.fftSize = 2048;
- 
+
       engine.connect(bank.analyser);
       engine.connect(bank.waveformAnalyser);
     }
 
     trackEndFn(bank, engine) {
-      bank.currentTime = engine.loop && bank.loopParm[1]
-        ? bank.loopParm[1] : engine.sourceNode.buffer.duration;
+      bank.currentTime =
+        engine.loop && bank.loopParm[1]
+          ? bank.loopParm[1]
+          : engine.sourceNode.buffer.duration;
     }
 
     // Block Funcs
@@ -1249,9 +1251,7 @@
         case "pan":
           return sound.effects[prop.toUpperCase()]?.options.pan * 100 || 0;
         case "distortion":
-          return (
-            sound.effects[prop.toUpperCase()]?.options.gain * 100 || 0
-          );
+          return sound.effects[prop.toUpperCase()]?.options.gain * 100 || 0;
         case "attack":
           return sound.context.attack * 100;
         case "release":
