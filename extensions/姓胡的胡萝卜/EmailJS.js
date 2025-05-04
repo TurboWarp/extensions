@@ -19,7 +19,7 @@
         getInfo() {
             return {
                 id: 'emailjsExtension',
-                name: 'EmailJS',
+                name: 'EmailJS', // 英文名称符合规范
                 unsandboxed: true,
                 blocks: [
                     {
