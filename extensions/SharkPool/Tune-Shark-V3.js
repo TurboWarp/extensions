@@ -1230,10 +1230,11 @@
           );
         case "channels":
           return src.buffer.numberOfChannels;
-        case "fft":
+        case "fft": {
           const dataArray = new Uint8Array(sound.analyser.frequencyBinCount);
           sound.analyser.getByteFrequencyData(dataArray);
           return JSON.stringify(Array.from(dataArray));
+        }
         case "source":
           return sound.src;
         case "binds":
