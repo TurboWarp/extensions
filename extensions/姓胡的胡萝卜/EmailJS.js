@@ -1,6 +1,6 @@
-// Name: EmailJS 电子邮件
+// Name: EmailJS
 // ID: emailjsExtension
-// Description: 使用 EmailJS 发送电子邮件。
+// Description: Allows sending emails using EmailJS service. Requires EmailJS account setup.
 // License: MPL-2.0
 
 (function(Scratch) {
@@ -20,12 +20,12 @@
             return {
                 id: 'emailjsExtension',
                 name: 'EmailJS',
-                unsandboxed: true, // 关键修复：启用非沙盒模式
+                unsandboxed: true,
                 blocks: [
                     {
                         opcode: 'setup',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: '设置 EmailJS 用户ID:[USERID] 服务ID:[SERVICEID] 模板ID:[TEMPLATEID]',
+                        text: 'Set EmailJS User ID:[USERID] Service ID:[SERVICEID] Template ID:[TEMPLATEID]',
                         arguments: {
                             USERID: {
                                 type: Scratch.ArgumentType.STRING,
@@ -44,7 +44,7 @@
                     {
                         opcode: 'send',
                         blockType: Scratch.BlockType.COMMAND,
-                        text: '发送邮件 收件人:[TO] 主题:[SUBJECT] 内容:[MESSAGE]',
+                        text: 'Send email To:[TO] Subject:[SUBJECT] Message:[MESSAGE]',
                         arguments: {
                             TO: {
                                 type: Scratch.ArgumentType.STRING,
@@ -63,7 +63,7 @@
                 ]
             };
         }
-        
+
         setup(args) {
             this.userId = args.USERID;
             this.serviceId = args.SERVICEID;
