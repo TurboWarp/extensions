@@ -506,7 +506,6 @@ gl_FragColor.a = baseAlpha;`
       }
       bfb.call(this, e, i);
     };
-    // eslint-disable-next-line
     function setupModes(e, n, a) {
       if (e) {
         gl.enable(gl.SCISSOR_TEST);
