@@ -249,7 +249,7 @@ gl_FragColor.a = baseAlpha;`
       if (opts.filter && !opts.filter(drawableID)) continue;
 
       const drawable = render._allDrawables[drawableID];
-      if (!drawable || !drawable.getVisible() && !opts.ignoreVisibility) continue;
+      if (!drawable || (!drawable.getVisible() && !opts.ignoreVisibility)) continue;
 
       const drawableScale = framebufferSpaceScaleDiffers ? [
         drawable.scale[0] * opts.framebufferWidth / render._nativeSize[0],
