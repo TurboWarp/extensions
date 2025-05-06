@@ -513,7 +513,6 @@ gl_FragColor.a = baseAlpha;`
         let E = ((e.x_min / scratchUnitWidth + 0.5) * width) | 0,
           S = ((e.y_min / scratchUnitHeight + 0.5) * height) | 0,
           N = ((e.x_max / scratchUnitWidth + 0.5) * width) | 0,
-          b,
           l = (((e.y_max / scratchUnitHeight + 0.5) * height) | 0) - S;
         a && (S = ((-e.y_max / scratchUnitHeight + 0.5) * height) | 0),
           gl.scissor(E, S, N - E, l);
