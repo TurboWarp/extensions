@@ -56,6 +56,7 @@
   "true-fantom/math",
   "true-fantom/regexp",
   "true-fantom/couplers",
+  "SamuelLouf/Geolocation",
   "Lily/AllMenus",
   "Lily/HackedBlocks",
   "Lily/Cast",
