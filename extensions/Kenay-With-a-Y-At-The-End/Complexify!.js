@@ -60,8 +60,7 @@ class Timer {
     }
 }
 
-function jsCode() { /**Again, thanks Rawify*/
-	'use strict';(function(r){function l(a,b){if(void 0===a||null===a)f.re=f.im=0;else if(void 0!==b)f.re=a,f.im=b;else switch(typeof a){case "object":if("im"in a&&"re"in a)f.re=a.re,f.im=a.im;else if("abs"in a&&"arg"in a){if(!isFinite(a.abs)&&isFinite(a.arg))return c.INFINITY;f.re=a.abs*Math.cos(a.arg);f.im=a.abs*Math.sin(a.arg)}else if("r"in a&&"phi"in a){if(!isFinite(a.r)&&isFinite(a.phi))return c.INFINITY;f.re=a.r*Math.cos(a.phi);f.im=a.r*Math.sin(a.phi)}else 2===a.length?(f.re=a[0],f.im=a[1]):m();
+(function(r){function l(a,b){if(void 0===a||null===a)f.re=f.im=0;else if(void 0!==b)f.re=a,f.im=b;else switch(typeof a){case "object":if("im"in a&&"re"in a)f.re=a.re,f.im=a.im;else if("abs"in a&&"arg"in a){if(!isFinite(a.abs)&&isFinite(a.arg))return c.INFINITY;f.re=a.abs*Math.cos(a.arg);f.im=a.abs*Math.sin(a.arg)}else if("r"in a&&"phi"in a){if(!isFinite(a.r)&&isFinite(a.phi))return c.INFINITY;f.re=a.r*Math.cos(a.phi);f.im=a.r*Math.sin(a.phi)}else 2===a.length?(f.re=a[0],f.im=a[1]):m();
 break;case "string":f.im=f.re=0;a=a.replace(/_/g,"").match(/\d+\.?\d*e[+-]?\d+|\d+\.?\d*|\.\d+|./g);b=1;let d=0;null===a&&m();for(let e=0;e<a.length;e++){const g=a[e];" "!==g&&"\t"!==g&&"\n"!==g&&("+"===g?b++:"-"===g?d++:("i"===g||"I"===g?(0===b+d&&m()," "===a[e+1]||isNaN(a[e+1])?f.im+=parseFloat((d%2?"-":"")+"1"):(f.im+=parseFloat((d%2?"-":"")+a[e+1]),e++)):((0===b+d||isNaN(g))&&m(),"i"===a[e+1]||"I"===a[e+1]?(f.im+=parseFloat((d%2?"-":"")+g),e++):f.re+=parseFloat((d%2?"-":"")+g)),b=d=0))}0<b+d&&
 m();break;case "number":f.im=0;f.re=a;break;default:m()}return f}function m(){throw SyntaxError("Invalid Param");}function n(a,b){a=Math.abs(a);b=Math.abs(b);a<b&&([a,b]=[b,a]);if(1E8>a)return Math.sqrt(a*a+b*b);b/=a;return a*Math.sqrt(1+b*b)}function p(a,b){const d=Math.abs(a),e=Math.abs(b);if(0===a)return Math.log(e);if(0===b)return Math.log(d);if(3E3>d&&3E3>e)return.5*Math.log(a*a+b*b);a*=.5;b*=.5;return.5*Math.log(a*a+b*b)+Math.LN2}function c(a,b){if(!(this instanceof c))return new c(a,b);a=l(a,
 b);this.re=a.re;this.im=a.im}const h=Math.cosh||function(a){return 1E-9>Math.abs(a)?1-a:.5*(Math.exp(a)+Math.exp(-a))},k=Math.sinh||function(a){return 1E-9>Math.abs(a)?a:.5*(Math.exp(a)-Math.exp(-a))},f={re:0,im:0};c.prototype={re:0,im:0,sign:function(){const a=n(this.re,this.im);return new c(this.re/a,this.im/a)},add:function(a,b){a=l(a,b);b=this.isInfinite();const d=!(isFinite(a.re)&&isFinite(a.im));return b||d?b&&d?c.NAN:c.INFINITY:new c(this.re+a.re,this.im+a.im)},sub:function(a,b){a=l(a,b);b=
@@ -80,7 +79,6 @@ a?a/0:0,0!==b?-b/0:0)).acosh()},inverse:function(){if(this.isZero())return c.INF
 Math.pow(10,a||0);return new c(Math.round(this.re*a)/a,Math.round(this.im*a)/a)},equals:function(a,b){a=l(a,b);return Math.abs(a.re-this.re)<=c.EPSILON&&Math.abs(a.im-this.im)<=c.EPSILON},clone:function(){return new c(this.re,this.im)},toString:function(){let a=this.re,b=this.im,d="";if(this.isNaN())return"NaN";if(this.isInfinite())return"Infinity";Math.abs(a)<c.EPSILON&&(a=0);Math.abs(b)<c.EPSILON&&(b=0);if(0===b)return d+a;0!==a?(d=d+a+" ",0>b?(b=-b,d+="-"):d+="+",d+=" "):0>b&&(b=-b,d+="-");1!==
 b&&(d+=b);return d+"i"},toVector:function(){return[this.re,this.im]},valueOf:function(){return 0===this.im?this.re:null},isNaN:function(){return isNaN(this.re)||isNaN(this.im)},isZero:function(){return 0===this.im&&0===this.re},isFinite:function(){return isFinite(this.re)&&isFinite(this.im)},isInfinite:function(){return!this.isFinite()}};c.ZERO=new c(0,0);c.ONE=new c(1,0);c.I=new c(0,1);c.PI=new c(Math.PI,0);c.E=new c(Math.E,0);c.INFINITY=new c(Infinity,Infinity);c.NAN=new c(NaN,NaN);c.EPSILON=1E-15;
 "function"===typeof define&&define.amd?define([],function(){return c}):"object"===typeof exports?(Object.defineProperty(c,"__esModule",{value:!0}),c["default"]=c,c.Complex=c,module.exports=c):r.Complex=c})(window);
-}
 
 function coolCis(ANGLE) { // e^ix trick
 	const angle = Complex(ANGLE);
@@ -110,9 +108,9 @@ function factorial(z, t) { // For non-naturals numbers
 class ComplexityExtension {
   constructor() { 
 	this.trig = ['sin', 'cos', 'tan', 'cot', 'sec', 'csc', 'asin', 'acos', 'atan', 'acot', 'asec', 'acsc', 'sinh', 'cosh', 'tanh', 'coth', 'sech', 'csch', 'asinh', 'acosh', 'atanh', 'acoth', 'asech', 'acsch']; // Used to make the menu look more clean.
-	this.terms = 100000; 
+	this.terms = 100000;
+	this.noSpacing = true
     try {
-      jsCode(); //Runs the code
       if (typeof window.Complex !== 'undefined') {
         this.Complex = window.Complex;
         console.log("We've complexified!");
@@ -297,6 +295,23 @@ class ComplexityExtension {
 		  },
 		},
 		"---",
+		{
+		  blockType: Scratch.BlockType.LABEL,
+		  text: Scratch.translate("Spacing"), 
+		},
+		{
+		  opcode: 'stateSpacing',
+		  blockType: Scratch.BlockType.BOOLEAN,
+		  text: 'spacing',
+		},
+		{
+		  opcode: 'switchSpacing',
+		  blockType: Scratch.BlockType.COMMAND,
+		  text: '[Sw] spacing',
+		  arguments: {
+			Sw: { type: Scratch.ArgumentType.STRING, menu: 'spacing' }
+		  },
+		},
 		{
 		  blockType: Scratch.BlockType.LABEL,
 		  text: Scratch.translate("Exponents"), 
@@ -550,6 +565,10 @@ class ComplexityExtension {
 		},
 	  ],
 	  menus: {
+		spacing: {
+		  acceptReporters: true,
+		  items: ['switch', 'turn on', 'turn off'] //For convertComplex
+		},
 		trigs: { acceptReporters: true, items: this.trig }, //For trigOfComplex
 		angles: {
 		  acceptReporters: true,
@@ -563,10 +582,13 @@ class ComplexityExtension {
 	};
   }
 
-
-  Complexity({ REAL, IMAG }) { 
+  Complexity({ REAL, IMAG }) {
+	REAL = Scratch.Cast.toNumber(REAL);
+	IMAG = Scratch.Cast.toNumber(IMAG);
 	try {
-	  return Complex(REAL, IMAG).toString(); //Don't forget: toString(), not Scratch.cast.toString()
+	  var r = Complex(REAL, IMAG).toString(); //Don't forget: toString(), not Scratch.cast.toString()
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -584,7 +606,9 @@ class ComplexityExtension {
 
   rectComplex({ REAL, IMAG }) {
 	try { //Simplifies multiplication, as shown:
-	  return Complex(IMAG).mul("i").add(Complex(REAL)).toString();
+	  var r = Complex(IMAG).mul("i").add(Complex(REAL)).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -611,18 +635,20 @@ class ComplexityExtension {
 
   conjugateComplex({ COMPLEX }) {
 	try {
-	  return Complex(COMPLEX).conjugate().toString();
+	  var r = Complex(COMPLEX).conjugate().toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
 	}
   }
 
-
-
   addComplex({ COMPLEX1, COMPLEX2 }) {
 	try {
-	  return Complex(COMPLEX1).add(Complex(COMPLEX2)).toString();
+	  var r = Complex(COMPLEX1).add(Complex(COMPLEX2)).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -631,7 +657,9 @@ class ComplexityExtension {
 
   subtractComplex({ COMPLEX1, COMPLEX2 }) {
 	try {
-	  return Complex(COMPLEX1).sub(Complex(COMPLEX2)).toString();
+	  var r = Complex(COMPLEX1).sub(Complex(COMPLEX2)).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -640,7 +668,9 @@ class ComplexityExtension {
 
   multiplyComplex({ COMPLEX1, COMPLEX2 }) {
 	try {
-	  return Complex(COMPLEX1).mul(Complex(COMPLEX2)).toString();
+	  var r = Complex(COMPLEX1).mul(Complex(COMPLEX2)).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -649,7 +679,9 @@ class ComplexityExtension {
 
   divideComplex({ COMPLEX1, COMPLEX2 }) {
 	try {
-	  return Complex(COMPLEX1).div(Complex(COMPLEX2)).toString();
+	  var r = Complex(COMPLEX1).div(Complex(COMPLEX2)).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -658,8 +690,10 @@ class ComplexityExtension {
 
   moduloComplex({ COMPLEX1, COMPLEX2 }) {
 	try {
-	  const c1 = Complex(COMPLEX1), c2 = Complex(COMPLEX2)	// A/B = D +R/B [and R<B], so floor(A/B)=D
-	  return c1.sub(c2.mul(c1.div(c2).floor())).toString();	// A   = DB+R   and thus R=A-B*(floor[A/B])
+	  const c1 = Complex(COMPLEX1), c2 = Complex(COMPLEX2)   // A/B = D +R/B [and R<B], so floor(A/B)=D
+	  var r = c1.sub(c2.mul(c1.div(c2).floor())).toString(); // A   = DB+R   and thus R=A-B*(floor[A/B])
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -668,7 +702,9 @@ class ComplexityExtension {
 
   negComplex({ COMPLEX }) {
 	try {
-	  return Complex(COMPLEX).neg().toString();
+	  var r = Complex(COMPLEX).neg().toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -677,7 +713,9 @@ class ComplexityExtension {
 
   inverseComplex({ COMPLEX }) {
 	try {
-	  return Complex(COMPLEX).inverse().toString();
+	  var r = Complex(COMPLEX).inverse().toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -686,7 +724,9 @@ class ComplexityExtension {
 
   polarComplex({ RADIUS, ANGLE }) {
 	try { 
-	  return coolCis(Complex(ANGLE)).mul(Complex(RADIUS)).toString();
+	  var r = coolCis(Complex(ANGLE)).mul(Complex(RADIUS)).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -695,7 +735,7 @@ class ComplexityExtension {
 
   absComplex({ COMPLEX }) {
 	try {
-	  return Complex(COMPLEX).abs().toString();
+	  return Complex(COMPLEX).abs();
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -704,7 +744,9 @@ class ComplexityExtension {
 
   complexSign({ COMPLEX }) {
 	try {
-	  return Complex(COMPLEX).sign().toString();
+	  var r = Complex(COMPLEX).sign().toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -713,7 +755,9 @@ class ComplexityExtension {
 
   cisThingie({ ANGLE }) {
 	try {
-	  return coolCis(ANGLE).toString();
+	  var r = coolCis(ANGLE).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -722,8 +766,8 @@ class ComplexityExtension {
 
   argComplex({ COMPLEX }) {
 	try { //There's an .arg() method, but it's a hidden direct Math.atan2()
-	  return Complex(COMPLEX).sign().log().mul('-i').toString(); //So, -i*ln(sign[x]) is used for a little bit more presicion
-	} catch (e) { 
+	  return Complex(COMPLEX).sign().log().mul('-i'); 
+	} catch (e) { //So, -i*ln(sign[x]) is used for a little bit more presicion
 	  console.log(e);
 	  return NaN
 	}
@@ -731,16 +775,42 @@ class ComplexityExtension {
 
   powComplex({ COMPLEX1, COMPLEX2 }) {
 	try {
-	  return Complex(COMPLEX1).pow(Complex(COMPLEX2)).toString();;
+	  var r = Complex(COMPLEX1).pow(Complex(COMPLEX2)).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
 	}
   }
 
+  stateSpacing(args, util) {
+	return !(this.noSpacing)
+  }
+
+  switchSpacing({ Sw }) {
+	try {
+	  if (typeof Sw == 'boolean') this.noSpacing = !Sw;
+	  if (typeof sw == 'string') {
+		Sw = Sw.toLowerCase();
+		switch (Sw) {
+		  case 'switch': this.noSpacing = !this.noSpacing; break;
+		  case 'no': case 'false': case 'turn off': this.noSpacing = true; break;
+		  case 'yes': case 'true': case 'turn on': this.noSpacing = false; break;
+		  default: console.log(sw); break;
+		}
+	  }
+	} catch (e) {
+	  console.log(e);
+	  return NaN
+	}
+  }
+  
   expComplex({ COMPLEX }) {
 	try {
-	  return Complex(COMPLEX).exp().toString();
+	  var r = Complex(COMPLEX).exp().toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -749,7 +819,9 @@ class ComplexityExtension {
 
   rootComplex({ COMPLEX1, COMPLEX2 }) {
 	try {
-	  return Complex(COMPLEX2).pow(Complex(COMPLEX1).inverse()).toString();
+	  var r = Complex(COMPLEX2).pow(Complex(COMPLEX1).inverse()).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -758,7 +830,9 @@ class ComplexityExtension {
 
   sqrtComplex({ COMPLEX }) {
 	try {
-	  return Complex(COMPLEX).sqrt().toString();
+	  var r = Complex(COMPLEX).sqrt().toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -767,7 +841,9 @@ class ComplexityExtension {
 
   logComplex({ BASE, INPUT }) {
 	  try {
-	  return Complex(INPUT).log().div(Complex(BASE).log()).toString();
+	  var r = Complex(INPUT).log().div(Complex(BASE).log()).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -776,7 +852,9 @@ class ComplexityExtension {
 
   lnComplex({ COMPLEX }) {
 	try {
-	  return Complex(COMPLEX).log().toString();
+	  var r = Complex(COMPLEX).log().toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN
@@ -785,7 +863,9 @@ class ComplexityExtension {
 
   getPosition(args, util) {
 	try {
-	  return Complex(util.target.x, util.target.y).toString();
+	  var r = Complex(util.target.x, util.target.y).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 		if (util.target.y < 0) {
 	  let imPart = util.target.y + "i"
@@ -796,55 +876,65 @@ class ComplexityExtension {
   }
 
   goToComplex(args, util) {
+	if (util.target.isStage) return;
 	const cInstance = Complex(args.COMPLEX);
 	util.target.setXY(cInstance.re, cInstance.im);
   }
 
   goAddComplex(args, util) {
+	if (util.target.isStage) return;
 	const cInstance = Complex(args.COMPLEX);
 	util.target.setXY(util.target.x + cInstance.re, util.target.y + cInstance.im);
   }
 
   goToPolar(args, util) {
+	if (util.target.isStage) return;
 	const cInstance = coolCis(args.ANGLY).mul(args.RADII);
 	util.target.setXY(cInstance.re, cInstance.im);
   }
 
   GoMulComplex(args, util) {
+	if (util.target.isStage) return;
 	const cIn = Complex(args.COMPLEX);
 	const cInstance = Complex(util.target.x, util.target.y).mul(cIn);
 	util.target.setXY(cInstance.re, cInstance.im);
   }
 
   glideComplex (args, util) {
+	if (util.target.isStage) return;
 	args.SECS = Scratch.Cast.toNumber(args.SECS);
+	if (args.SECS == 0) { //We've run out of time!
+		this.goToComplex(args, util);
+		return;
+	}
 	if (util.stackFrame.timer) {
 	  const timeElapsed = util.stackFrame.timer.timeElapsed();
 	  if (timeElapsed < util.stackFrame.duration * 1000) {
 		// We've moving! And we'll move again.
 		const frac = timeElapsed / (util.stackFrame.duration * 1000);
-		const dx = frac * (util.stackFrame.endX - util.stackFrame.startX);
-		const dy = frac * (util.stackFrame.endY - util.stackFrame.startY);
-		util.target.setXY(util.stackFrame.startX + dx, util.stackFrame.startY + dy);
+		const d = util.stackFrame.finish.sub(util.stackFrame.start).mul(frac);
+		util.target.setXY(util.stackFrame.start.re + d.re, util.stackFrame.start.im + d.im);
+		console.log(util.stackFrame);
 		util.yield();
 	  } else {
 		// We're done! Now, lets end this
-		util.target.setXY(util.stackFrame.endX, util.stackFrame.endY);
+		util.target.setXY(util.stackFrame.finish.re, util.stackFrame.finish.im);
+		console.log('end');
 	  }
 	} else {
 	  // We're starting! So, new Timer!
 	  util.stackFrame.timer = new Timer();
 	  util.stackFrame.timer.start();
-	  util.stackFrame.duration = args.SECS;
-	  util.stackFrame.startX = util.target.x;
-	  util.stackFrame.startY = util.target.y;
-	  util.stackFrame.endX = Complex(args.COMPLEX).re; //A little edit
-	  util.stackFrame.endY = Complex(args.COMPLEX).im;
-	  if (util.stackFrame.duration <= 0) {
-		// We can't glide -1 seconds, can we?
-		util.target.setXY(util.stackFrame.endX, util.stackFrame.endY);
-		return;
+	  if (args.SECS > 0) {
+	  util.stackFrame.start = new Complex(util.target.x, util.target.y);
+	  util.stackFrame.finish = new Complex(args.COMPLEX);
+	  } else {
+	  args.SECS = -args.SECS
+	  util.stackFrame.finish = new Complex(util.target.x, util.target.y);
+	  util.stackFrame.start = new Complex(args.COMPLEX);
 	  }
+	  util.stackFrame.duration = args.SECS;
+	console.log(util.stackFrame);
 	util.yield();
 	}
   }
@@ -856,7 +946,10 @@ class ComplexityExtension {
 	  const validTrigFunctions = this.trig;
 	  if (validTrigFunctions.includes(trigMethod) && typeof cInstance[trigMethod] === 'function') {
 		const result = cInstance[trigMethod]();
-		return result.isNaN() ? 'Infinity' : result.toString();
+		if (result.isNaN()) return 'Infinity'
+		var r = result.toString();
+		if (this.noSpacing) r = r.replace(/\s+/g, '');
+		return r;
 	  } else {
 		return "0";
 	  }
@@ -889,21 +982,22 @@ class ComplexityExtension {
   decimalComplex({ COMPLEX, OPERATION }) {
 	const complex = Complex(COMPLEX);
 	OPERATION = OPERATION.toLowerCase();
-	var result;
+	var r;
 	switch (OPERATION) {
 	  case 'ceil':
-		result = complex.ceil().toString();
+		r = complex.ceil().toString();
 		break;
 	  case 'floor':
-		result = complex.floor().toString();
+		r = complex.floor().toString();
 		break;
 	  case 'round':
-		result = complex.round().toString();
+		r = complex.round().toString();
 		break;
 	  default:
-		result = 0;
+		r = 0;
 	}
-	return result;
+	if (this.noSpacing) r = r.replace(/\s+/g, '');
+	return r;
   }
 
   equalsComplex({ COMPLEX1, COMPLEX2 }) {
@@ -955,7 +1049,9 @@ class ComplexityExtension {
 
   mulVectorAroundPoint({ VECTOR, POINT, FACTOR }) {
 	try { 
-	  return Complex(VECTOR).sub(Complex(POINT)).mul(Complex(FACTOR)).add(Complex(POINT)).toString();
+	  var r = Complex(VECTOR).sub(Complex(POINT)).mul(Complex(FACTOR)).add(Complex(POINT)).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN;
@@ -964,8 +1060,9 @@ class ComplexityExtension {
 
   rotateVectorAroundPoint({ VECTOR, POINT, ANGLE }) {
 	try {
-	  const result = Complex(VECTOR).sub(Complex(POINT)).mul(coolCis(Complex(ANGLE))).add(Complex(POINT));
-	  return result.toString();
+	  var r = Complex(VECTOR).sub(Complex(POINT)).mul(coolCis(Complex(ANGLE))).add(Complex(POINT)).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) {
 	  console.log(e);
 	  return NaN;
@@ -974,7 +1071,9 @@ class ComplexityExtension {
 
   facOf({ ZED }) {
 	try {
-	  return factorial(Complex(ZED), this.terms).toString();
+	  var r = factorial(Complex(ZED), this.terms).toString();
+	  if (this.noSpacing) r = r.replace(/\s+/g, '');
+	  return r;
 	} catch (e) { 
 	  console.log(e);
 	  return NaN;
@@ -991,8 +1090,9 @@ class ComplexityExtension {
   }
 
   setTfac({ ZED }) {
+	ZED = Scratch.Cast.toNumber(ZED);
 	try {
-	  if ( ZED>=0 && Number.isInteger(ZED)) this.terms = ZED;
+	  if (ZED >= 0 && Number.isInteger(ZED)) this.terms = ZED;
 	} catch (e) {
 	  console.log(e);
 	}
