@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.4.3
+// Version V.3.4.31
 
 (function (Scratch) {
   "use strict";
@@ -896,8 +896,11 @@
           clone.play(0, atTime);
           clone.sourceNode.playbackRate.value = con.pitch;
           clone.sourceNode.gainSuccessor.gain.value = con.gain;
+          const overlayIndex = con.overlays.length;
           con.overlays.push(clone);
           clone.on("end", () => {
+            clone.masterVolume.disconnect();
+            con.overlays.splice(overlayIndex, 1);
             delete soundBank[newName];
           });
         } else {
