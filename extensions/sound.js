@@ -1,6 +1,6 @@
-// Name: Sound
+// Name: URL Playback
 // ID: notSound
-// Description: Play sounds from URLs.
+// Description: Play sounds from URLs. Previously called "Sound".
 // License: MIT AND MPL-2.0
 
 ((Scratch) => {
@@ -168,7 +168,8 @@
       return {
         // 'sound' would conflict with normal Scratch
         id: "notSound",
-        name: Scratch.translate("Sound"),
+        name: Scratch.translate("URL Playback"),
+        color1: "#cf63cf",
         blocks: [
           {
             opcode: "play",
