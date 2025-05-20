@@ -49,6 +49,17 @@
             },
           },
           {
+            opcode: "json_err_msg",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("error message of [json]"),
+            arguments: {
+              json: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: `{"key":"value",}`,
+              },
+            },
+          },
+          {
             opcode: "json_is",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("is [json] [types]?"),
@@ -749,6 +760,15 @@
         } catch {
           return json;
         }
+      }
+    }
+
+    json_err_msg({ json }) {
+      try {
+        JSON.parse(json);
+        return '';
+      } catch (e) {
+        return e.toString();
       }
     }
 
