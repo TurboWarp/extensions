@@ -74,10 +74,29 @@
             extensions: ["colours_control"],
           },
           {
+            opcode: "createCloneOfMyselfWithVar",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "create clone of myself with [INPUTA] set to [INPUTB]"
+            ),
+            filter: [Scratch.TargetType.SPRITE],
+            arguments: {
+              INPUTA: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "variablesMenu",
+              },
+              INPUTB: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
             opcode: "createCloneWithVar",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "create clone with [INPUTA] set to [INPUTB]"
+              "create clone of original with [INPUTA] set to [INPUTB]"
             ),
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
@@ -437,6 +456,20 @@
         return Scratch.Cast.compare(variable.value, expectedValue) === 0;
       }
       return false;
+    }
+
+    createCloneOfMyselfWithVar(args, util) {
+      // @ts-expect-error - not typed yet
+      Scratch.vm.runtime.ext_scratch3_control._createClone(
+        '_myself_',
+        util.target
+      );
+      const clones = util.target.sprite.clones;
+      const cloneNum = clones.length - 1;
+      const cloneVariable = clones[cloneNum].lookupVariableById(args.INPUTA);
+      if (cloneVariable) {
+        cloneVariable.value = args.INPUTB;
+      }
     }
 
     createCloneWithVar(args, util) {
