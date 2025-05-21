@@ -461,7 +461,7 @@
     createCloneOfMyselfWithVar(args, util) {
       // @ts-expect-error - not typed yet
       Scratch.vm.runtime.ext_scratch3_control._createClone(
-        '_myself_',
+        "_myself_",
         util.target
       );
       const clones = util.target.sprite.clones;
