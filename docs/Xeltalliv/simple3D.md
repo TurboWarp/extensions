@@ -20,6 +20,7 @@
 7. [Integration with other extensions](#ext-integration)
 7.1. [Augmented Reality extension](#ar-integration)
 
+
 ## What is this <a name="description"></a>
 **Simple 3D** is an extension by [Vadik1](https://scratch.mit.edu/users/Vadik1) meant to enable creation of GPU accelerated 3D projects. It is not designed for making graphically complex 3D projects (for that, see [Pen+ v7](https://github.com/TurboWarp/extensions/pull/1377) and [WebGL2](https://github.com/TurboWarp/extensions/discussions/378) extensions, both with programmable shaders) and instead it's main focus is allowing people to create 3D projects easily and quickly. Nevertheless, despite lack of programmable shaders, it is still quite powerful. It covers the wide range of usages from something as high level as making an [AR project in less than 20 blocks](#ar-example) with models loaded from OBJ files, to something more low level like doing all the calculations on CPU and streaming transformed polygons every frame (like [Pen+](https://extensions.turbowarp.org/obviousAlexC/penPlus.js)). And of course everything in-between.
 
@@ -41,6 +42,10 @@ So in short, **this extension does not have any kind of scenes, objects, cameras
 3D models consist of vertices which together form primitives (points, lines, triangles). Each vertex has either 2D (XY) or 3D (XYZ) location described with 2 or 3 numbers respectively. Before drawing the mesh, you would usually set up transformation, which tells how to take those initial locations and transform them to correct location on your 2D screen. The typical way to do it, is to chain multiple simple transformations together. Simple transformations can be translation (offsetting), rotation, scaling, mirroring, skewing, etc.
 
 ## Drawing things <a name="simple-drawing"></a>
+
+> [!TIP]
+> For a more complete tutorial, see [here](https://xeltalliv.github.io/simple3d-extension/examples/) (external link).
+
 For now let's not worry about transformations and just draw something as is.
 First step would be to clear the screen:
 ```scratch
@@ -177,7 +182,7 @@ draw to the screen at X,Y. Use Z for depth check.
 And now it's time to make some actual Simple3D scratch blocks code.
 In Simple3D those transformations are combined into 1 big transformation, and all the steps have to be specified in reverse.
 ```scratch
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
 rotate around [Y v] by ((0) - (camRotY)) degrees :: sensing
 move X ((0) - (camX)) Y ((0) - (camY)) Z ((0) - (camZ)) :: sensing
@@ -190,7 +195,7 @@ draw mesh [my mesh] :: sensing
 
 Doing all of those steps again for every mesh you want to draw is inefficient. This is where doing steps in reverse becomes helpful. Combined with wrapper block, which saves the transformation when entering it, and restores it when exiting it, it is possible to do this:
 ```scratch
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
 rotate around [Y v] by ((0) - (camRotY)) degrees :: sensing
 move X ((0) - (camX)) Y ((0) - (camY)) Z ((0) - (camZ)) :: sensing
@@ -209,7 +214,7 @@ This will work and it is efficient, however this extension also provides advance
 And when you create one large transformation by youself, it has no way of doing that. Which is why, currently the correct way to setup transformations is like this:
 ```scratch
 configure [to projected from view space v] transformation :: sensing
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 
 configure [to view space from world space v] transformation :: sensing
 start with no transformation :: sensing
@@ -450,11 +455,28 @@ Length of supplied indices and weights lists have to match and be divisible by "
 ---
 ```scratch
 set [my mesh] [original v] transforms [listTransforms v] :: sensing
+set [my mesh] [current v] transforms [listTransforms v] :: sensing
 ```
 Used for setting original and current transforms of each bone.
 Transforms on how to get from original to current will be calculated and applied to vertices based on their bone indices and weights.
 Supplied list of transforms must have length divisible by 16. If not, operation fails.
-When setting one of the transforms, while the other one is not defined or has different length, the one being set will be set to both.
+Setting original transforms is optional. Missing original transforms are treated as empty transforms.
+
+---
+```scratch
+set [my mesh] interleaved [XY positions v] [list v] :: sensing
+```
+
+Used for setting vertex data. Does the same as those blocks:
+```scratch
+set [my mesh] positions XY [listX v] [listY v] :: sensing
+set [my mesh] positions XYZ [listX v] [listY v] [listZ v] :: sensing
+set [my mesh] colors RGB [listR v] [listG v] [listB v] :: sensing
+set [my mesh] colors RGBA [listR v] [listG v] [listB v] [listA v] :: sensing
+set [my mesh] texture coordinates UV [listU v] [listV v] :: sensing
+set [my mesh] texture coordinates UVW [listU v] [listV v] [listW v] :: sensing
+```
+but from a single list with all the components interleaved.
 
 ---
 ```scratch
@@ -523,7 +545,8 @@ set [my mesh] from [off v] [list v] :: sensing
 ```
 Decodes a 3D model file and uploads it into a mesh. Block continues instantly, but the model loading is performed in a separate thread, and it finishes with a delay. Currently, only one thread is used, so everything is queued and processed one by one. In the future, multiple threads might be used.
 
-**Note: This block is designed as a more of a shortcut for quick testing, rather than the main way of loading 3D models. For anything more complex make your own 3D model parser.**
+> [!IMPORTANT]
+> This block is designed as a more of a shortcut for quick testing, rather than the main way of loading 3D models. For anything more complex, make your own 3D model parser.
 
 File formats:
  - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) is a very common and well known 3D model file format. It supports UV texture coordinates, materials with colors and textures. However it does not have a standartized way to do vertex colors. This block implements a non-standart but widely supported way to represent vertex colors as 4th - 7th elements of `v`. The OBJ and MTL specification describes a lot of features, only some of which are currently (or even can be) supported by this importer. In particular, there is currently no way to import models which use multiple textures as this extensions only supports 1 texture per mesh. Normals and anything lighting related isn't and can't be supported. **In case both OBJ and MTL files need to be imported, combine them all into 1 list sequentially, first all of the MTL files and then the OBJ file.**
@@ -597,10 +620,48 @@ Default for mesh is "off".
 ```scratch
 set [my mesh] accurate interpolation (on v) :: sensing
 ```
+(DEPRECTATED)
 Used for enabling a more accurate interpolation method which doesn't have issues of texture coordinates extrapolating outside of the specified range on the triangle edges, causing unpleasant looking seams. It is more computationally expensive and should only be used when that is an issue.
 Enabling mipmapping and/or anisatropic filtering may prevent it from working and reintroduce seams.
 
 Default for mesh is "off".
+
+---
+```scratch
+set [my mesh] compute color (once at pixel center v) :: sensing
+```
+Replaces the deprectated "accurate interpolation" block.
+
+Changes how color of each pixel is computed when MSAA antialiasing is enabled.
+
+Sometimes it can be beneficial for visulas to make edges of rendered 3D graphics smoothed out instead of having sharply transitioning pixel colors. That is the problem that different antialiasing techniques are trying to slove. For now, in Simple3D extension MSAA antialiasing is always enabled for the main Simple3D layer, and always disabled when rendering to textures.
+
+The simplest way to do antialiasing is called [Supersampling](https://en.wikipedia.org/wiki/Supersampling) and consists of rendering the image at higher resoultion then what is needed and then downscaling it to lower resolution by averageing colors. It works, but it is quite slow.
+
+A cheaper alternative to supersampling is a technique known as [Multi-sample Antialiasing (MSAA)](https://en.wikipedia.org/wiki/Multisample_anti-aliasing). It still consists of rendering the image at higher resolution by giving each pixel multiple sub-pixels, however, the color for all the sub-pixels of a pixel is only computed once, usually based on position in the center of the pixel. At the end, the colors of all of the sub-pixels get averaged and the result is a rendered image with smooth edges. Sub-pixels are often referred as samples.
+
+Unlike supersampling, MSAA only smoothes out primitive edges and not the sharp pixelated transitions on the primitive itself (e.g. textures).
+
+- `once at pixel center`
+
+  This is a typical MSAA as described above.
+
+  It has an issue where if some of the samples on the edge of a pixel fall within the drawn primitive, but the center of a pixel doesn't, then the color will still be computed for the center of the pixel, causing passed in UV coordinates and vertex colors to be extrapolated beyond the specified range. It often results in visible texture seams casued by adjacent texture data bleeding into pixels that shouldn't have it or incorrect colors on edges.
+
+  Though, for most use cases this option is good enough with issue not being noticable. Since this is computationally the cheapest option, it is default.
+- `once at midpoint of covered samples`
+
+  This solves the issue described above by still computing color once, but instead of always doing it in the center of the pixel, which may not always fall within the primitive, it does it at the midpoint of all the samples that passed the inside-of-primitive check. Since all primitives are convex, this midpoint is also guaranteed to be within the primitive. This option is more computationally expensive, and as such, disabled by default.
+
+- `separately for each sample`
+
+  Computes color separately at each sample, turning this into Supersampling. This option relies on OES_shader_multisample_interpolation and as such isn't supported everywhere. It is also the most computationally expensive option.
+
+Note that enabling mipmapping and/or anisatropic filtering may reintroduce seams regardless of what was selected with this block.
+
+Using `separately for each sample` with fallback to `once at midpoint of covered samples` can be implemented by calling the block twice. Selecting `separately for each sample` when it isn't supported will do nothing and keep the previous value.
+
+Default for mesh is "once at pixel center".
 
 ---
 ```scratch
@@ -614,7 +675,19 @@ Use partial updates to add any extra polygons after the range that is being draw
 To remove polygons, move the ones from the end of the drawing range to location of the remove one and then shring the drawing
 range at the end.
 
-Deafult for mesh is not set. Once set, cannot be undone.
+Default for mesh is not set. Once set, cannot be undone.
+
+---
+```scratch
+set [my mesh] instance draw limit (10) :: sensing
+```
+Normally, how many instances are drawn is determined by the length of supplied lists.
+This block can be used to limit the amount of instances drawn to an even lower number.
+This can be useful together with partial list updates to be able to dynamically change amount of drawn instances without having to reupload the entire list. That is, preallocating space for some amount of instances in advance, but drawing less. When new instance needs to be added, using partial updates to update the instance data of the next unused instance and then increasing the limit by 1. To remove an instance, the last instance can be moved in it's place and then the limit reduced by 1.
+
+Setting to any value below 1 is equivalent to setting it to Infinity.
+
+Default for mesh is Infinity.
 
 ---
 ```scratch
@@ -644,8 +717,11 @@ This block may cause stutter when drawing something for the first time, as it wi
 ```
 Creates texture from image at specified URL.
 Will show a prompt if URL is not approved.
-If an image fails to load, you can usually open browser console and see what the error is. (F12 or Ctrl+Shift+I)
-**Note that websites cannot access any data from any other websites unless those other sites explicetly allow it. The correct term for it is CORS (Cross Origin Resource Sharing). You can use some CORS proxy to bypass it.**
+If an image fails to load, you can usually open browser console and see what the error is (F12 or Ctrl+Shift+I).
+
+> [!WARNING]
+> Websites cannot access any data from any other websites unless those other sites explicetly allow it. The correct term for it is CORS (Cross Origin Resource Sharing). You can use some CORS proxy to bypass it.
+
 🐢 Texture gets loaded with a delay.
 
 ---
@@ -715,7 +791,7 @@ Transformation `custom` does not affect anything. Use it for your own calculatio
 
 ---
 ```scratch
-start with perspective FOV (90) near (0.01) far (1000) :: sensing
+start with perspective FOV (90) near (0.1) far (1000) :: sensing
 ```
 Overwrites currently active transformation with the viewspace to clipspace conversion transformation for perspective projection.
 **Camera is assumed to be facing negative Z.**
@@ -734,7 +810,7 @@ when resolution changes :: sensing hat
 
 ---
 ```scratch
-start with orthographic near (0.01) far (1000) :: sensing
+start with orthographic near (0.1) far (1000) :: sensing
 ```
 Overwrites currently active transformation with the viewspace to clipspace conversion transformation for orthographic projection.
 **Camera is assumed to be facing negative Z.**
@@ -848,6 +924,37 @@ Internally extension stores everything with premultiplied alpha. When reading th
 (render target [width v] :: sensing)
 ```
 Allows reading properties of the current render target.
+
+---
+```scratch
+set [viewport box v] to X1:(0) Y1:(0) X2:(100) Y2:(100) :: sensing
+set [clipping box v] to X1:(0) Y1:(0) X2:(100) Y2:(100) :: sensing
+set [readback box v] to X1:(0) Y1:(0) X2:(100) Y2:(100) :: sensing
+```
+Configures custom rectangular areas for different purposes for the currently active render target.
+Viewport box specifies the area to which the rendered image will be stretched to cover from it's normal -1 to 1 range.
+Clipping box specifies the area in which pixels are allowed to be modified.
+Readback box specifies the area from which reading to list and reading to data URI blocks will read the pixels.
+
+Note: coordinates are specified in **real pixels** starting from the bottom left corner, **not scratch units**. You can get the size of the Simple3D layer in pixels from either:
+```scratch
+(stage width :: sensing)
+(stage height :: sensing)
+
+(render target [width v] :: sensing)
+(render target [height v] :: sensing)
+```
+And while it may match scratch units while the high quality pen is disabled, when **high quality pen is on**, the resolution will often be higher. Your projects need to account for that.
+
+Note: Those custom areas can either be set or not set. When they aren't set, they use X1:`0` Y1:`0` X2:`render target width` Y2:`render target height` and automatically update with resolution changes. If you set them to custom values, you need to handle rescaling manually.
+
+---
+```scratch
+clear [viewport box v] :: sensing
+clear [clipping box v] :: sensing
+clear [readback box v] :: sensing
+```
+Removes the custom rectangular areas configured by the block described above.
 
 
 ### Tinting and fog <a name="blocks-tinting-fog"></a>

@@ -40,7 +40,7 @@
   const renderer = runtime.renderer;
   const Cast = Scratch.Cast;
 
-  var createdSkins = [];
+  var createdSkins = {};
 
   class Skins {
     constructor() {
@@ -371,9 +371,9 @@
 
     deleteAllSkins() {
       this._refreshTargets();
-      for (let i = 0; i < createdSkins.length; i++)
-        renderer.destroySkin(createdSkins[i]);
-      createdSkins = [];
+      for (const skinName in createdSkins)
+        renderer.destroySkin(createdSkins[skinName]);
+      createdSkins = {};
     }
 
     restoreTargets(args) {
@@ -437,7 +437,7 @@
         contentType === "image/jpeg" ||
         contentType === "image/bmp"
       ) {
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line extension/check-can-fetch
         const output = new Image();
         output.src = URL;
         output.crossOrigin = "anonymous";

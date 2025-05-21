@@ -72,6 +72,7 @@
           {
             opcode: "trueFalseBoolean",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate
             text: "[TRUEFALSE]",
             arguments: {
               TRUEFALSE: {
@@ -338,6 +339,7 @@
           {
             opcode: "stringReporter",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "[STRING]",
             disableMonitor: true,
             hideFromPalette: hideLegacyBlocks,
@@ -409,6 +411,7 @@
           {
             opcode: "equalsExactly",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate
             text: "[ONE] === [TWO]",
             arguments: {
               ONE: {
@@ -424,6 +427,7 @@
           {
             opcode: "notEqualTo",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate
             text: "[INPUTA] ≠ [INPUTB]",
             arguments: {
               INPUTA: {
@@ -439,6 +443,7 @@
           {
             opcode: "moreThanEqual",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate
             text: "[INPUTA] ≥ [INPUTB]",
             arguments: {
               INPUTA: {
@@ -454,6 +459,7 @@
           {
             opcode: "lessThanEqual",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate
             text: "[INPUTA] ≤ [INPUTB]",
             arguments: {
               INPUTA: {
@@ -524,6 +530,7 @@
           {
             opcode: "negativeReporter",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "- [INPUT]",
             disableMonitor: true,
             arguments: {
@@ -536,6 +543,7 @@
           {
             opcode: "exponentBlock",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "[INPUTA] ^ [INPUTB]",
             disableMonitor: true,
             arguments: {
@@ -552,6 +560,7 @@
           {
             opcode: "rootBlock",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "[INPUTA] √ [INPUTB]",
             arguments: {
               INPUTA: {
@@ -883,6 +892,7 @@
 
           "---",
 
+          /* eslint-disable extension/should-translate */
           {
             opcode: "commentHat",
             blockType: Scratch.BlockType.HAT,
@@ -939,6 +949,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
 
           "---",
 
@@ -1240,19 +1251,20 @@
     }
 
     equalsExactly(args) {
+      // Intentionally not using Cast
       return args.ONE === args.TWO;
     }
 
     notEqualTo(args) {
-      return args.INPUTA != args.INPUTB;
+      return Scratch.Cast.compare(args.INPUTA, args.INPUTB) !== 0;
     }
 
     moreThanEqual(args) {
-      return args.INPUTA >= args.INPUTB;
+      return Scratch.Cast.compare(args.INPUTA, args.INPUTB) >= 0;
     }
 
     lessThanEqual(args) {
-      return args.INPUTA <= args.INPUTB;
+      return Scratch.Cast.compare(args.INPUTA, args.INPUTB) <= 0;
     }
 
     stringCheckBoolean(args) {
@@ -1346,6 +1358,10 @@
       vars["variables"] = {};
     }
 
+    listVariables() {
+      return JSON.stringify(Object.keys(vars["variables"]));
+    }
+
     greenFlag(args, util) {
       util.runtime.greenFlag();
     }
@@ -1356,14 +1372,13 @@
 
     setSpriteSVG(args, util) {
       try {
-        Scratch.vm.runtime.renderer.updateSVGSkin(
-          util.target.sprite.costumes[args.INPUTA - 1].skinId,
-          args.INPUTB
-        );
+        const skinId = util.target.sprite.costumes[args.INPUTA - 1].skinId;
+        const renderer = Scratch.vm.runtime.renderer;
+        renderer.updateSVGSkin(skinId, Scratch.Cast.toString(args.INPUTB));
+        renderer._allSkins[skinId].differsFromAsset = true;
       } catch (error) {
-        return;
+        console.error(error);
       }
-      Scratch.vm.emitTargetsUpdate();
     }
 
     alertBlock(args) {

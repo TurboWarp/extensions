@@ -31,9 +31,9 @@ Creates and opens an empty archive with nothing in it. The name is used for deal
 ---
 
 ```scratch
-open zip from (URL v) [https://extensions.turbowarp.org] named [archive] :: #a49a3a
+open archive from zip from (URL v) [https://extensions.turbowarp.org] named [archive] :: #a49a3a
 ```
-Opens a .zip (or .sb3 or .sprite3...) file.
+Creates and opens an archive from a .zip (or .sb3 or .sprite3...) file.
 
 The type can be one of the following:
 
@@ -45,7 +45,8 @@ The type can be one of the following:
 
 The name is used for dealing with multiple archives at time; it can be any non-empty string and does *not* have to be the archive's filename.
 
-If the file is not of zip format (e.g RAR or 7z) or is password-protected, it won't be opened. Make sure to check if it loaded successfully with the `error opening archive?` block. 
+> [!TIP]
+> If the file is not of zip format (like RAR or 7z) or is password-protected, it won't be opened. Make sure to check if it loaded successfully with the `error opening archive?` block. 
 
 ---
 
@@ -97,14 +98,14 @@ Multiple archives can be open at a time, but there is one "current archive" that
 ```scratch
 (current archive name :: #a49a3a)
 ```
-Returns the name of the currently open archive (or an empty string if there isn't one).
+Returns the name of the currently open archive, or an empty string if there isn't one.
 
 ---
 
 ```scratch
 (currently open archives :: #a49a3a)
 ```
-Returns the list of currently open archives, as a JSON array (which you can parse with the JSON extension). 
+Returns the list of currently open archives as a JSON array, which you can parse with the JSON extension.
 
 ---
 
@@ -122,14 +123,14 @@ Removes all archives that are currently open.
 
 ## File blocks
 
-Blocks for working with files (and blocks that are general to both files and folders/directories.) 
+Blocks for working with files, and blocks that are general to both files and folders/directories.
 
 ---
 
 ```scratch
-<folder [folder/] exists? :: #a49a3a>
+<[folder/] exists? :: #a49a3a>
 ```
-Returns if a file or directory exists or not. The slash at the end matters! If a directory named `folder` exists, `[folder] exists?` will return false, but `[folder/] exists?` will return true.
+Returns whether a file or directory exists or not. The slash at the end matters! If a directory named `folder` exists, `[folder] exists?` will return false, but `[folder/] exists?` will return true.
 
 ---
 
@@ -218,9 +219,9 @@ Available options:
 
 Available options:
 
- - **name**: Just the name of this file (without the directories it's in). For example, the name of `/folder1/folder2/dango.png` would be `dango.png`.
- - **path**: The full absolute path of this file (its name and any directories it's in).
- - **folder**: Just the folders this file is in (without its filename). For example, the folder of `/folder1/folder2/dango.png` would be `/folder1/folder2/`.
+ - **name**: Just the name of this file, without the directories it's in. For example, the name of `/folder1/folder2/dango.png` would be `dango.png`.
+ - **path**: The full absolute path of this file; its name and any directories it's in.
+ - **folder**: Just the folders this file is in, without its filename. For example, the folder of `/folder1/folder2/dango.png` would be `/folder1/folder2/`.
  - **modification date**: A human-readable version of the file's modification date. The output of this depends on the browser's language and possibly other factors.
  - **long modification date**: A longer human-readable version of the file's modification date. The output of this depends on the browser's language and possibly other factors.
  - **modified days since 2000**: The modification date of the file, as days since 2000.
@@ -250,7 +251,7 @@ Moves the current directory (the default origin of most file operations) to the 
 ```scratch
 (contents of directory [.] :: #a49a3a)
 ```
-Returns a list of files in a directory, as a JSON array (which you can parse with the JSON extension). 
+Returns a list of files in a directory as a JSON array, which you can parse with the JSON extension.
 
 ---
 

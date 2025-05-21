@@ -9129,6 +9129,7 @@
     getInfo() {
       return {
         id: "NGIO",
+        // eslint-disable-next-line extension/should-translate
         name: "Newgrounds",
 
         color1: "#EB7522",
@@ -9286,7 +9287,7 @@
             text: Scratch.translate("unlock medal [medalID]"),
             arguments: {
               medalID: {
-                type: Scratch.ArgumentType.STRING,
+                type: Scratch.ArgumentType.NUMBER,
                 defaultValue: Scratch.translate("MedalID"),
               },
             },
@@ -9672,7 +9673,7 @@
         if (loggedIn) {
           NGIO.keepSessionAlive();
         }
-        NGIO.unlockMedal(medalID);
+        NGIO.unlockMedal(Scratch.Cast.toNumber(medalID));
       }
     }
 
@@ -9682,7 +9683,7 @@
         if (loggedIn) {
           NGIO.keepSessionAlive();
         }
-        return NGIO.getMedal(medalID).unlocked;
+        return NGIO.getMedal(Scratch.Cast.toNumber(medalID)).unlocked;
       } else {
         return false;
       }

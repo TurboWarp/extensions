@@ -266,7 +266,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1646987348
 
 ## XmerOriginals/closecontrol.svg
- - Created by [XmerStudio](https://github.com/XmerStudio) in https://github.com/TurboWarp/extensions/pull/1384
+ - Created by [xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1607
 
 ## Lily/AllMenus.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issuecomment-1751696386
@@ -280,7 +280,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Background "blobs" by Scratch.
 
 ## DNin/wake-lock.svg
- - Created by [NexusKitten](https://github.com/NexusKitten) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1690949400
+ - Created by [@NamelessCat](https://scratch.mit.edu/users/NamelessCat/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1690949400
 
 ## veggiecan/browserfullscreen.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
@@ -296,13 +296,14 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## iframe.svg
- - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694716263
+ - Created by [@NamelessCat](https://scratch.mit.edu/users/NamelessCat/)
+ - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## Lily/Video.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
 
 ## veggiecan/mobilekeyboard.svg
- - Created by Veggiecan0419
+ - Created by [@NamelessCat](https://scratch.mit.edu/users/NamelessCat/)
 
 ## Xeltalliv/simple3D.png
  - Created by [@Xeltalliv](https://github.com/Xeltalliv).
