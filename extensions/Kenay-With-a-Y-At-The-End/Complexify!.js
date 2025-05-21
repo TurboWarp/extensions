@@ -1211,7 +1211,9 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "rotateVectorAroundPoint",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("rotate [VECTOR] around [POINT] by angle [ANGLE]"),
+            text: Scratch.translate(
+              "rotate [VECTOR] around [POINT] by angle [ANGLE]"
+            ),
             arguments: {
               VECTOR: {
                 type: Scratch.ArgumentType.STRING,
