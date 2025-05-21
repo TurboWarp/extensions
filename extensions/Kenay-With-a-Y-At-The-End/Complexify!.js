@@ -65,7 +65,6 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
     }
   }
 
-  (function (r) {
     function l(a, b) {
       let d; //For lint validation
       if (void 0 === a || null === a) f.re = f.im = 0;
@@ -584,9 +583,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
     c.INFINITY = new c(Infinity, Infinity);
     c.NAN = new c(NaN, NaN);
     c.EPSILON = 1e-15;
-    r.Complex = c;
-  })(window);
-  const Complex = c;
+    window.Complex = c;
 
   function coolCis(ANGLE) {
     // e^ix trick
