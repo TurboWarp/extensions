@@ -542,8 +542,8 @@
       const content = args.CONTENT;
       try {
         renderer.updateSVGSkin(costume.skinId, Scratch.Cast.toString(content));
-        await svgSkinFinishedLoading(renderer._allSkins[costume.skinId]);
         renderer._allSkins[costume.skinId].differsFromAsset = true;
+        await svgSkinFinishedLoading(renderer._allSkins[costume.skinId]);
       } catch (e) {
         console.error(e);
       }
