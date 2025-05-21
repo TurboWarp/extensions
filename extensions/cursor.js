@@ -286,20 +286,24 @@
     // This implements the https://surv-is-a-dev.github.io/static/0001tt.txt format for translatable menus and alike.
     _asCursor(cursor) {
       cursor = cursor.toLowerCase().trim();
-      if (cursor === "(0) none" || cursor === "0" || cursor === "none") return "none";
+      if (cursor === "(0) none" || cursor === "0" || cursor === "none")
+        return "none";
       if (cursor.startsWith("(")) {
         const closeIndex = cursor.indexOf(")");
         if (closeIndex > -1 && closeIndex < 4) {
-          const maybe = (cursors[parseInt(cursor.slice(1, closeIndex), 10) - 1] || {}).value;
+          const maybe = (
+            cursors[parseInt(cursor.slice(1, closeIndex), 10) - 1] || {}
+          ).value;
           if (!maybe) {
             cursor = cursor.slice(closeIndex);
-            if (cursors.some(cur => cur.value === cursor)) return cursor;
+            if (cursors.some((cur) => cur.value === cursor)) return cursor;
             return "none";
           }
           return maybe;
         }
       }
-      if (isNaN(cursor)) return cursors.some(cur => cur.value === cursor) ? cursor : "none";
+      if (isNaN(cursor))
+        return cursors.some((cur) => cur.value === cursor) ? cursor : "none";
       cursor = parseInt(cursor, 10);
       if (cursor > cursors.length || cursor < 1) return "none";
       return cursors[cursor - 1].value;
