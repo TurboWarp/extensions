@@ -67,7 +67,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
 
   (function (r) {
     function l(a, b) {
-	  let d; //For lint validation
+      let d; //For lint validation
       if (void 0 === a || null === a) f.re = f.im = 0;
       else if (void 0 !== b) (f.re = a), (f.im = b);
       else
@@ -1212,7 +1212,9 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "rotateVectorAroundPoint",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("rotate [VECTOR] around [POINT] by angle [ANGLE]"),
+            text: Scratch.translate(
+              "rotate [VECTOR] around [POINT] by angle [ANGLE]"
+            ),
             arguments: {
               VECTOR: {
                 type: Scratch.ArgumentType.STRING,
@@ -1689,14 +1691,16 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
         const cInstance = Complex(ANGLE);
         switch (TOSMTH) {
           case "degs to rads":
-            if (cInstance.im == 0)
-			{return (cInstance.re * 0.017453292519943295) % twoPi;}
+            if (cInstance.im == 0) {
+              return (cInstance.re * 0.017453292519943295) % twoPi;
+            }
             return cInstance.mul(0.017453292519943295).toString();
           case "𝜋":
             return cInstance.mul(3.141592653589793).toString();
           case "rads to degs":
-            if (cInstance.im == 0)
-			{return (cInstance.re * 57.29577951308232) % 360;}
+            if (cInstance.im == 0) {
+              return (cInstance.re * 57.29577951308232) % 360;
+            }
             return cInstance.mul(57.29577951308232).toString();
           default:
             return NaN;
