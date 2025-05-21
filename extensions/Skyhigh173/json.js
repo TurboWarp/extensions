@@ -705,7 +705,7 @@
               { text: Scratch.translate("includes"), value: "includes" },
               { text: Scratch.translate("starts with"), value: "starts with" },
               { text: Scratch.translate("ends with"), value: "ends with" },
-            ]
+            ],
           },
           analysis: {
             acceptReporters: true,
@@ -820,7 +820,7 @@
     json_err_msg({ json }) {
       try {
         JSON.parse(json);
-        return '';
+        return "";
       } catch (e) {
         return e.toString();
       }
