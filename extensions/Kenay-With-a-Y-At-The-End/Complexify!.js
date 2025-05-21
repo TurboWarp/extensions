@@ -584,16 +584,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
     c.INFINITY = new c(Infinity, Infinity);
     c.NAN = new c(NaN, NaN);
     c.EPSILON = 1e-15;
-    "function" === typeof define && define.amd
-      ? define([], function () {
-          return c;
-        })
-      : "object" === typeof exports
-        ? (Object.defineProperty(c, "__esModule", { value: !0 }),
-          (c["default"] = c),
-          (c.Complex = c),
-          (module.exports = c))
-        : (r.Complex = c);
+    r.Complex = c;
   })(window);
 
   function coolCis(ANGLE) {
