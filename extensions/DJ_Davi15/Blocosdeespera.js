@@ -1,6 +1,6 @@
 // Name: Blocos de espera
 // ID: djdavi15waitblocks
-// Description: Faça o projeto esperar outros tipos de tempo ao invés de .
+// Description: Faça o projeto esperar outros tipos de tempo ao invés de segundos.
 // By: DJ_Davi15 <https://scratch.mit.edu/users/DJ_Davi15/>
 // License: MIT
 
