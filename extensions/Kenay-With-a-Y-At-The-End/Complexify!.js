@@ -583,7 +583,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
     c.INFINITY = new c(Infinity, Infinity);
     c.NAN = new c(NaN, NaN);
     c.EPSILON = 1e-15;
-    window.Complex = c;
+  const Complex = c;
 
   function coolCis(ANGLE) {
     // e^ix trick
