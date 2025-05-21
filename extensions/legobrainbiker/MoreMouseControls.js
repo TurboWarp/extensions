@@ -15,20 +15,34 @@
       this.mouseWheelDeltaX = 0;
       this.mouseZoomDelta = 0;
       this.buttons = [];
-      document.addEventListener("wheel", (e) => {
-        if (e.ctrlKey) {
-          this.mouseZoomDelta = e.deltaY;
-          this.mouseWheelDelta = 0;
-          this.mouseWheelDeltaX = 0;
-        } else {
-          this.mouseZoomDelta = 0;
-          this.mouseWheelDelta = e.deltaY;
-          this.mouseWheelDeltaX = e.deltaX;
+      this.contextMenuDissabled = false;
+      document.addEventListener("contextmenu", (e) => {
+        if (this.contextMenuDissabled) {
+          e.preventDefault();
         }
-        Scratch.vm.runtime.startHats(
-          "legobrainbikerMoreMouseControls_onScroll"
-        );
       });
+      this.scrollDissabled = false;
+      document.addEventListener(
+        "wheel",
+        (e) => {
+          if (this.scrollDissabled) {
+            e.preventDefault();
+          }
+          if (e.ctrlKey) {
+            this.mouseZoomDelta = e.deltaY;
+            this.mouseWheelDelta = 0;
+            this.mouseWheelDeltaX = 0;
+          } else {
+            this.mouseZoomDelta = 0;
+            this.mouseWheelDelta = e.deltaY;
+            this.mouseWheelDeltaX = e.deltaX;
+          }
+          Scratch.vm.runtime.startHats(
+            "legobrainbikerMoreMouseControls_onScroll"
+          );
+        },
+        { passive: false }
+      );
       document.addEventListener("mouseup", (e) => {
         this.buttons[e.button] = false;
       });
@@ -38,6 +52,11 @@
       document.addEventListener("mousemove", (e) => {
         this.mouseX = e.clientX;
         this.mouseY = e.clientY;
+      });
+      document.addEventListener("mouseleave", (e) => {
+        this.mouseX = NaN;
+        this.mouseY = NaN;
+        // this could be problomatic for some projects. it's not great to add another edge case
       });
     }
     getInfo() {
@@ -86,14 +105,14 @@
             },
           },
           {
-            opcode: "dissableContextMenu",
+            opcode: "toggleContextMenu",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("disable context menu"),
+            text: Scratch.translate("toggle context menu"),
           },
           {
-            opcode: "dissableScroll",
+            opcode: "toggleScroll",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("disable scrolling and zooming"),
+            text: Scratch.translate("toggle scrolling and zooming"),
           },
           {
             opcode: "onScroll",
@@ -136,39 +155,16 @@
       return this.buttonPressed(args);
     }
     buttonPressed({ button }) {
-      console.log(button);
-      console.log(Scratch.Cast.toNumber(button));
-      console.log(this.buttons[Scratch.Cast.toNumber(button)]);
       return this.buttons[Scratch.Cast.toNumber(button)] || false;
     }
-    dissableContextMenu() {
-      document.addEventListener("contextmenu", (e) => {
-        e.preventDefault();
-      });
+    toggleContextMenu() {
+      this.contextMenuDissabled = !this.contextMenuDissabled;
     }
-    dissableScroll() {
-      Scratch.renderer.canvas.addEventListener(
-        "wheel",
-        (e) => {
-          e.preventDefault();
-          if (e.ctrlKey) {
-            this.mouseZoomDelta = e.deltaY;
-            this.mouseWheelDelta = 0;
-            this.mouseWheelDeltaX = 0;
-          } else {
-            this.mouseZoomDelta = 0;
-            this.mouseWheelDelta = e.deltaY;
-            this.mouseWheelDeltaX = e.deltaX;
-          }
-          Scratch.vm.runtime.startHats(
-            "legobrainbikerMoreMouseControls_onScroll"
-          );
-        },
-        { passive: false }
-      );
+    toggleScroll() {
+      this.scrollDissabled = !this.scrollDissabled;
     }
     scrollAmount() {
-      return this.mouseWheelDelta;
+      return -this.mouseWheelDelta;
     }
     horozontalScrollAmount() {
       return this.mouseWheelDeltaX;
