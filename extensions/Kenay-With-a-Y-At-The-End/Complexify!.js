@@ -586,7 +586,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
     c.EPSILON = 1e-15;
     r.Complex = c;
   })(window);
-	const Complex = c;
+  const Complex = c;
 
   function coolCis(ANGLE) {
     // e^ix trick
