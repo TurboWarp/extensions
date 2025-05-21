@@ -31,17 +31,6 @@
   elementContainer.ariaHidden = "true";
   document.body.appendChild(elementContainer);
 
-  // Updated code to apply the project's volume to that of the video.
-  // This allows the volume to interact with Scratch Addons and Sound Expanded.
-  const updateAudio = function () {
-    for (const skin of renderer._allSkins) {
-      if (skin instanceof VideoSkin) {
-        let projectVolume = runtime.audioEngine.inputNode.gain.value;
-        skin.videoElement.volume = skin.videoVolume * projectVolume;
-      }
-    }
-  };
-
   const BitmapSkin = runtime.renderer.exports.BitmapSkin;
   class VideoSkin extends BitmapSkin {
     constructor(id, renderer, videoName, videoSrc) {
@@ -53,6 +42,11 @@
       /** @type {string} */
       this.videoSrc = videoSrc;
 
+      /**
+       * Base volume as set by the scripts in the project, from 0 to 1.
+       * Does not account for eg. the project being muted.
+       * @type {number}
+       */
       this.videoVolume = 1;
 
       this.videoError = false;
@@ -122,6 +116,12 @@
       this.emitWasAltered();
     }
 
+    updateVolume() {
+      const projectVolume = runtime.audioEngine.inputNode.gain.value;
+      const trueVolume = this.videoVolume * projectVolume;
+      this.videoElement.volume = trueVolume;
+    }
+
     get size() {
       if (this.videoDirty) {
         this.reuploadVideo();
@@ -137,7 +137,6 @@
     }
 
     dispose() {
-      runtime.off("AFTER_EXECUTE", updateAudio);
       super.dispose();
       this.videoElement.pause();
       this.videoElement.remove();
@@ -154,13 +153,14 @@
 
       runtime.on("BEFORE_EXECUTE", () => {
         for (const skin of renderer._allSkins) {
-          if (skin instanceof VideoSkin && !skin.videoElement.paused) {
-            skin.markVideoDirty();
+          if (skin instanceof VideoSkin) {
+            skin.updateVolume();
+            if (!skin.videoElement.paused) {
+              skin.markVideoDirty();
+            }
           }
         }
       });
-
-      runtime.on("AFTER_EXECUTE", updateAudio);
 
       runtime.on("RUNTIME_PAUSED", () => {
         for (const skin of renderer._allSkins) {
@@ -699,7 +699,7 @@
 
       const value = Cast.toNumber(args.VALUE);
       videoSkin.videoVolume = Math.min(1, Math.max(0, value / 100));
-      updateAudio();
+      videoSkin.updateVolume();
     }
 
     setPlaybackRate(args) {
