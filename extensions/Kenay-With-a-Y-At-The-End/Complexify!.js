@@ -615,9 +615,9 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
     if (z.im == 0 && Number.isInteger(z.re)) {
       return classicFac(z.re);
     }
-    var x = (i = 1),
+    var x = 1,
       y = 0;
-    for (i; i <= t; i++) {
+    for (let i = 1; i <= t; i++) {
       const a = Complex(x, y).mul(
         Complex(1 + 1 / i)
           .pow(z)
@@ -689,7 +689,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "Complexity",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Complexify [REAL] [IMAG]",
+            text: Scratch.translate("Complexify [REAL] [IMAG]"),
             arguments: {
               REAL: { type: Scratch.ArgumentType.NUMBER, defaultValue: "3" },
               IMAG: { type: Scratch.ArgumentType.NUMBER, defaultValue: "4" },
@@ -703,7 +703,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "rectComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[REAL] + [IMAG] 𝙞",
+            text: Scratch.translate("[REAL] + [IMAG] 𝙞"),
             arguments: {
               REAL: { type: Scratch.ArgumentType.STRING, defaultValue: "3" },
               IMAG: { type: Scratch.ArgumentType.STRING, defaultValue: "4" },
@@ -712,7 +712,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "reComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Real Part of [COMPLEX]",
+            text: Scratch.translate("Real Part of [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -723,7 +723,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "imComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Im. Part of [COMPLEX]",
+            text: Scratch.translate("Im. Part of [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -734,7 +734,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "conjugateComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Conjugate of [COMPLEX]",
+            text: Scratch.translate("Conjugate of [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -749,7 +749,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "addComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[COMPLEX1] + [COMPLEX2]",
+            text: Scratch.translate("[COMPLEX1] + [COMPLEX2]"),
             arguments: {
               COMPLEX1: {
                 type: Scratch.ArgumentType.STRING,
@@ -764,7 +764,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "subtractComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[COMPLEX1] - [COMPLEX2]",
+            text: Scratch.translate("[COMPLEX1] - [COMPLEX2]"),
             arguments: {
               COMPLEX1: {
                 type: Scratch.ArgumentType.STRING,
@@ -779,7 +779,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "multiplyComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[COMPLEX1] × [COMPLEX2]",
+            text: Scratch.translate("[COMPLEX1] × [COMPLEX2]"),
             arguments: {
               COMPLEX1: {
                 type: Scratch.ArgumentType.STRING,
@@ -794,7 +794,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "divideComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[COMPLEX1] / [COMPLEX2]",
+            text: Scratch.translate("[COMPLEX1] / [COMPLEX2]"),
             arguments: {
               COMPLEX1: {
                 type: Scratch.ArgumentType.STRING,
@@ -809,7 +809,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "moduloComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[COMPLEX1] % [COMPLEX2]",
+            text: Scratch.translate("[COMPLEX1] % [COMPLEX2]"),
             arguments: {
               COMPLEX1: {
                 type: Scratch.ArgumentType.STRING,
@@ -825,7 +825,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "negComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Negative [COMPLEX]",
+            text: Scratch.translate("Negative [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -837,7 +837,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "inverseComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Inverse of [COMPLEX]",
+            text: Scratch.translate("Inverse of [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -853,7 +853,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "polarComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Polar [RADIUS] ∠ [ANGLE]",
+            text: Scratch.translate("Polar [RADIUS] ∠ [ANGLE]"),
             arguments: {
               RADIUS: { type: Scratch.ArgumentType.STRING, defaultValue: 5 },
               ANGLE: {
@@ -865,7 +865,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "absComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Magnitude of [COMPLEX]",
+            text: Scratch.translate("Magnitude of [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -876,7 +876,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "complexSign",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Sign of [COMPLEX]",
+            text: Scratch.translate("Sign of [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -887,7 +887,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "cisThingie",
             blockType: Scratch.BlockType.REPORTER,
-            text: "∠ [ANGLE]",
+            text: Scratch.translate("∠ [ANGLE]"),
             arguments: {
               ANGLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -898,7 +898,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "argComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Argument of [COMPLEX]",
+            text: Scratch.translate("Argument of [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -914,12 +914,12 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "stateSpacing",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "spacing",
+            text: Scratch.translate("spacing"),
           },
           {
             opcode: "switchSpacing",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[Sw] spacing",
+            text: Scratch.translate("[Sw] spacing"),
             arguments: {
               Sw: { type: Scratch.ArgumentType.STRING, menu: "spacing" },
             },
@@ -931,7 +931,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "powComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[COMPLEX1] ^ [COMPLEX2]",
+            text: Scratch.translate("[COMPLEX1] ^ [COMPLEX2]"),
             arguments: {
               COMPLEX1: {
                 type: Scratch.ArgumentType.STRING,
@@ -946,7 +946,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "expComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "𝑒 [COMPLEX]",
+            text: Scratch.translate("𝑒xp [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -958,7 +958,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "rootComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[COMPLEX1] √ [COMPLEX2]",
+            text: Scratch.translate("[COMPLEX1] √ [COMPLEX2]"),
             arguments: {
               COMPLEX1: {
                 type: Scratch.ArgumentType.STRING,
@@ -973,7 +973,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "sqrtComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Square Root of [COMPLEX]",
+            text: Scratch.translate("Square Root of [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -985,7 +985,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "logComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "log [BASE] of [INPUT]",
+            text: Scratch.translate("log [BASE] of [INPUT]"),
             arguments: {
               BASE: { type: Scratch.ArgumentType.STRING, defaultValue: "2+i" },
               INPUT: {
@@ -997,7 +997,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "lnComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "ln [COMPLEX]",
+            text: Scratch.translate("ln [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -1017,13 +1017,13 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
             filter: [Scratch.TargetType.SPRITE],
             opcode: "getPosition",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Complex Position",
+            text: Scratch.translate("Complex Position"),
           },
           {
             filter: [Scratch.TargetType.SPRITE],
             opcode: "goToComplex",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Go to [COMPLEX]",
+            text: Scratch.translate("Go to [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -1035,7 +1035,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
             filter: [Scratch.TargetType.SPRITE],
             opcode: "goAddComplex",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Move by [COMPLEX]",
+            text: Scratch.translate("Move by [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -1047,7 +1047,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
             filter: [Scratch.TargetType.SPRITE],
             opcode: "GoMulComplex",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Mul position by [COMPLEX]",
+            text: Scratch.translate("Mul position by [COMPLEX]"),
             arguments: {
               COMPLEX: { type: Scratch.ArgumentType.STRING, defaultValue: 5 },
             },
@@ -1056,7 +1056,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
             filter: [Scratch.TargetType.SPRITE],
             opcode: "goToPolar",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Go polar [RADII] ∠ [ANGLY]",
+            text: Scratch.translate("Go polar [RADII] ∠ [ANGLY]"),
             arguments: {
               RADII: { type: Scratch.ArgumentType.STRING, defaultValue: 50 },
               ANGLY: {
@@ -1069,7 +1069,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
             filter: [Scratch.TargetType.SPRITE],
             opcode: "glideComplex",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Glide [SECS] secs to [COMPLEX]",
+            text: Scratch.translate("Glide [SECS] secs to [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -1086,7 +1086,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "trigOfComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[TRIG] of [COMPLEX]",
+            text: Scratch.translate("[TRIG] of [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -1098,7 +1098,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "convertComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Find [ANGLE] [TOSMTH]",
+            text: Scratch.translate("Find [ANGLE] [TOSMTH]"),
             arguments: {
               ANGLE: { type: Scratch.ArgumentType.STRING, defaultValue: "30" },
               TOSMTH: { type: Scratch.ArgumentType.STRING, menu: "angles" },
@@ -1107,7 +1107,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "decimalComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[OPERATION] of [COMPLEX]",
+            text: Scratch.translate("[OPERATION] of [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -1127,7 +1127,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "equalsComplex",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[COMPLEX1] = [COMPLEX2]?",
+            text: Scratch.translate("[COMPLEX1] = [COMPLEX2]?"),
             arguments: {
               COMPLEX1: {
                 type: Scratch.ArgumentType.STRING,
@@ -1142,7 +1142,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "isFiniteComplex",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[COMPLEX] is finite?",
+            text: Scratch.translate("[COMPLEX] is finite?"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -1153,7 +1153,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "isNaNComplex",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[COMPLEX] is NaN?",
+            text: Scratch.translate("[COMPLEX] is NaN?"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -1169,7 +1169,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "complexArray",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[COMPLEX] to array",
+            text: Scratch.translate("[COMPLEX] to array"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -1180,7 +1180,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "complexJSON",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[COMPLEX] to JSON",
+            text: Scratch.translate("[COMPLEX] to JSON"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
@@ -1195,7 +1195,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "mulVectorAroundPoint",
             blockType: Scratch.BlockType.REPORTER,
-            text: "mul [VECTOR] around [POINT] by [FACTOR]",
+            text: Scratch.translate("mul [VECTOR] around [POINT] by [FACTOR]"),
             arguments: {
               VECTOR: {
                 type: Scratch.ArgumentType.STRING,
@@ -1211,7 +1211,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "rotateVectorAroundPoint",
             blockType: Scratch.BlockType.REPORTER,
-            text: "rotate [VECTOR] around [POINT] by angle [ANGLE]",
+            text: Scratch.translate("rotate [VECTOR] around [POINT] by angle [ANGLE]"),
             arguments: {
               VECTOR: {
                 type: Scratch.ArgumentType.STRING,
@@ -1236,7 +1236,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "facOf",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[ZED] !",
+            text: Scratch.translate("[ZED] !"),
             arguments: {
               ZED: { type: Scratch.ArgumentType.STRING, defaultValue: "3+4i" },
             },
@@ -1245,13 +1245,13 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "Tfac",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Terms of factorials",
+            text: Scratch.translate("Terms of factorials"),
             hideFromPalette: true,
           },
           {
             opcode: "setTfac",
             blockType: Scratch.BlockType.COMMAND,
-            text: "Set terms of factorials to [ZED]",
+            text: Scratch.translate("Set terms of factorials to [ZED]"),
             arguments: {
               ZED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100000 },
             },
