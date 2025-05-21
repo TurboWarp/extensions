@@ -1018,8 +1018,14 @@
     json_get_path({ path, json }) {
       try {
         path = JSON.parse(path);
+        if (!Array.isArray(path)) {
+          return "";
+        }
         json = JSON.parse(json);
         for (let key of path) {
+          if (!hasOwn(json, key)) {
+            return "";
+          }
           if (Array.isArray(json)) {
             if (key == 0) return "";
             if (key > 0) key--;
@@ -1041,6 +1047,9 @@
     json_set_path({ path, json, data }) {
       try {
         path = JSON.parse(path);
+        if (!Array.isArray(path)) {
+          return "";
+        }
         json = JSON.parse(json);
         let obj = json;
         data = this.json_valid_return(data);
@@ -1053,10 +1062,14 @@
             if (key >= obj.length || key < 0) return "";
           }
           count--;
-          if (count == 0) {
+          if (count === 0) {
             obj[key] = data;
           } else {
-            obj = obj[key];
+            if (hasOwn(obj, key)) {
+              obj = obj[key];
+            } else {
+              return "";
+            }
           }
         }
         return JSON.stringify(json);
