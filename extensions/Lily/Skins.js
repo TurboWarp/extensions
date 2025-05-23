@@ -296,7 +296,6 @@
 
       if (!(await svgSkinFinishedLoading(renderer._allSkins[skinId]))) {
         this._disposeSafe(skinId, skinName);
-        debugger;
         return;
       }
 
