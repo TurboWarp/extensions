@@ -6,6 +6,30 @@
 // Original: Complexity!
 // License: MIT AND MPL-2.0
 
+/* Excracted from <https://github.com/rawify/Complex.js/blob/main/LICENSE>
+MIT License
+
+Copyright (c) 2024 Robert Eisele
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 /**
 The first full version, Complexity!, can be downloaded from his Discord: <https://discord.gg/JZUZxHpF>
 Thanks "rawify" <https://github.com/rawify> for Complex.js v2.4.2 11/5/2024 <https://raw.org/article/complex-numbers-in-javascript/>
@@ -65,515 +89,526 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
     }
   }
 
-  function l(a, b) {
-    let d; //For lint validation
-    if (void 0 === a || null === a) f.re = f.im = 0;
-    else if (void 0 !== b) (f.re = a), (f.im = b);
-    else
-      switch (typeof a) {
-        case "object":
-          if ("im" in a && "re" in a) (f.re = a.re), (f.im = a.im);
-          else if ("abs" in a && "arg" in a) {
-            if (!isFinite(a.abs) && isFinite(a.arg)) return c.INFINITY;
-            f.re = a.abs * Math.cos(a.arg);
-            f.im = a.abs * Math.sin(a.arg);
-          } else if ("r" in a && "phi" in a) {
-            if (!isFinite(a.r) && isFinite(a.phi)) return c.INFINITY;
-            f.re = a.r * Math.cos(a.phi);
-            f.im = a.r * Math.sin(a.phi);
-          } else 2 === a.length ? ((f.re = a[0]), (f.im = a[1])) : m();
-          break;
-        case "string":
-          f.im = f.re = 0;
-          a = a
-            .replace(/_/g, "")
-            .match(/\d+\.?\d*e[+-]?\d+|\d+\.?\d*|\.\d+|./g);
-          b = 1;
-          d = 0;
-          null === a && m();
-          for (let e = 0; e < a.length; e++) {
-            const g = a[e];
-            " " !== g &&
-              "\t" !== g &&
-              "\n" !== g &&
-              ("+" === g
-                ? b++
-                : "-" === g
-                  ? d++
-                  : ("i" === g || "I" === g
-                      ? (0 === b + d && m(),
-                        " " === a[e + 1] || isNaN(a[e + 1])
-                          ? (f.im += parseFloat((d % 2 ? "-" : "") + "1"))
-                          : ((f.im += parseFloat(
-                              (d % 2 ? "-" : "") + a[e + 1]
-                            )),
-                            e++))
-                      : ((0 === b + d || isNaN(g)) && m(),
-                        "i" === a[e + 1] || "I" === a[e + 1]
-                          ? ((f.im += parseFloat((d % 2 ? "-" : "") + g)), e++)
-                          : (f.re += parseFloat((d % 2 ? "-" : "") + g))),
-                    (b = d = 0)));
-          }
-          0 < b + d && m();
-          break;
-        case "number":
-          f.im = 0;
-          f.re = a;
-          break;
-        default:
-          m();
-      }
-    return f;
-  }
-  function m() {
-    throw SyntaxError("Invalid Param");
-  }
-  function n(a, b) {
-    a = Math.abs(a);
-    b = Math.abs(b);
-    a < b && ([a, b] = [b, a]);
-    if (1e8 > a) return Math.sqrt(a * a + b * b);
-    b /= a;
-    return a * Math.sqrt(1 + b * b);
-  }
-  function p(a, b) {
-    const d = Math.abs(a),
-      e = Math.abs(b);
-    if (0 === a) return Math.log(e);
-    if (0 === b) return Math.log(d);
-    if (3e3 > d && 3e3 > e) return 0.5 * Math.log(a * a + b * b);
-    a *= 0.5;
-    b *= 0.5;
-    return 0.5 * Math.log(a * a + b * b) + Math.LN2;
-  }
-  function c(a, b) {
-    if (!(this instanceof c)) return new c(a, b);
-    a = l(a, b);
-    this.re = a.re;
-    this.im = a.im;
-  }
-  const h =
-      Math.cosh ||
-      function (a) {
-        return 1e-9 > Math.abs(a) ? 1 - a : 0.5 * (Math.exp(a) + Math.exp(-a));
+    function l(a, b) {
+      let d; //For lint validation
+      if (void 0 === a || null === a) f.re = f.im = 0;
+      else if (void 0 !== b) (f.re = a), (f.im = b);
+      else
+        switch (typeof a) {
+          case "object":
+            if ("im" in a && "re" in a) (f.re = a.re), (f.im = a.im);
+            else if ("abs" in a && "arg" in a) {
+              if (!isFinite(a.abs) && isFinite(a.arg)) return c.INFINITY;
+              f.re = a.abs * Math.cos(a.arg);
+              f.im = a.abs * Math.sin(a.arg);
+            } else if ("r" in a && "phi" in a) {
+              if (!isFinite(a.r) && isFinite(a.phi)) return c.INFINITY;
+              f.re = a.r * Math.cos(a.phi);
+              f.im = a.r * Math.sin(a.phi);
+            } else 2 === a.length ? ((f.re = a[0]), (f.im = a[1])) : m();
+            break;
+          case "string":
+            if (a == 'Infinity') return c.INFINITY;
+            if (a == 'NaN') return c.NAN;
+            f.im = f.re = 0;
+            a = a
+              .replace(/_/g, "")
+              .match(/\d+\.?\d*e[+-]?\d+|\d+\.?\d*|\.\d+|./g);
+            b = 1;
+            d = 0;
+            null === a && m();
+            for (let e = 0; e < a.length; e++) {
+              const g = a[e];
+              " " !== g &&
+                "\t" !== g &&
+                "\n" !== g &&
+                ("+" === g
+                  ? b++
+                  : "-" === g
+                    ? d++
+                    : ("i" === g || "I" === g
+                        ? (0 === b + d && m(),
+                          " " === a[e + 1] || isNaN(a[e + 1])
+                            ? (f.im += parseFloat((d % 2 ? "-" : "") + "1"))
+                            : ((f.im += parseFloat(
+                                (d % 2 ? "-" : "") + a[e + 1]
+                              )),
+                              e++))
+                        : ((0 === b + d || isNaN(g)) && m(),
+                          "i" === a[e + 1] || "I" === a[e + 1]
+                            ? ((f.im += parseFloat((d % 2 ? "-" : "") + g)),
+                              e++)
+                            : (f.re += parseFloat((d % 2 ? "-" : "") + g))),
+                      (b = d = 0)));
+            }
+            0 < b + d && m();
+            break;
+          case "number":
+            f.im = 0;
+            f.re = a;
+            break;
+          default:
+            m();
+        }
+      return f;
+    }
+    function m() {
+      throw SyntaxError("Invalid Param");
+    }
+    function n(a, b) {
+      a = Math.abs(a);
+      b = Math.abs(b);
+      a < b && ([a, b] = [b, a]);
+      if (1e8 > a) return Math.sqrt(a * a + b * b);
+      b /= a;
+      return a * Math.sqrt(1 + b * b);
+    }
+    function p(a, b) {
+      const d = Math.abs(a),
+        e = Math.abs(b);
+      if (0 === a) return Math.log(e);
+      if (0 === b) return Math.log(d);
+      if (3e3 > d && 3e3 > e) return 0.5 * Math.log(a * a + b * b);
+      a *= 0.5;
+      b *= 0.5;
+      return 0.5 * Math.log(a * a + b * b) + Math.LN2;
+    }
+    function c(a, b) {
+      if (!(this instanceof c)) return new c(a, b);
+      a = l(a, b);
+      this.re = a.re;
+      this.im = a.im;
+    }
+    const h =
+        Math.cosh ||
+        function (a) {
+          return 1e-9 > Math.abs(a)
+            ? 1 - a
+            : 0.5 * (Math.exp(a) + Math.exp(-a));
+        },
+      k =
+        Math.sinh ||
+        function (a) {
+          return 1e-9 > Math.abs(a) ? a : 0.5 * (Math.exp(a) - Math.exp(-a));
+        },
+      f = { re: 0, im: 0 };
+    c.prototype = {
+      re: 0,
+      im: 0,
+      sign: function () {
+        const a = n(this.re, this.im);
+        return new c(this.re / a, this.im / a);
       },
-    k =
-      Math.sinh ||
-      function (a) {
-        return 1e-9 > Math.abs(a) ? a : 0.5 * (Math.exp(a) - Math.exp(-a));
+      add: function (a, b) {
+        a = l(a, b);
+        b = this.isInfinite();
+        const d = !(isFinite(a.re) && isFinite(a.im));
+        return b || d
+          ? b && d
+            ? c.NAN
+            : c.INFINITY
+          : new c(this.re + a.re, this.im + a.im);
       },
-    f = { re: 0, im: 0 };
-  c.prototype = {
-    re: 0,
-    im: 0,
-    sign: function () {
-      const a = n(this.re, this.im);
-      return new c(this.re / a, this.im / a);
-    },
-    add: function (a, b) {
-      a = l(a, b);
-      b = this.isInfinite();
-      const d = !(isFinite(a.re) && isFinite(a.im));
-      return b || d
-        ? b && d
+      sub: function (a, b) {
+        a = l(a, b);
+        b = this.isInfinite();
+        const d = !(isFinite(a.re) && isFinite(a.im));
+        return b || d
+          ? b && d
+            ? c.NAN
+            : c.INFINITY
+          : new c(this.re - a.re, this.im - a.im);
+      },
+      mul: function (a, b) {
+        a = l(a, b);
+        b = this.isInfinite();
+        const d = !(isFinite(a.re) && isFinite(a.im)),
+          e = 0 === this.re && 0 === this.im,
+          g = 0 === a.re && 0 === a.im;
+        return (b && g) || (d && e)
           ? c.NAN
-          : c.INFINITY
-        : new c(this.re + a.re, this.im + a.im);
-    },
-    sub: function (a, b) {
-      a = l(a, b);
-      b = this.isInfinite();
-      const d = !(isFinite(a.re) && isFinite(a.im));
-      return b || d
-        ? b && d
-          ? c.NAN
-          : c.INFINITY
-        : new c(this.re - a.re, this.im - a.im);
-    },
-    mul: function (a, b) {
-      a = l(a, b);
-      b = this.isInfinite();
-      const d = !(isFinite(a.re) && isFinite(a.im)),
-        e = 0 === this.re && 0 === this.im,
-        g = 0 === a.re && 0 === a.im;
-      return (b && g) || (d && e)
-        ? c.NAN
-        : b || d
-          ? c.INFINITY
-          : 0 === a.im && 0 === this.im
-            ? new c(this.re * a.re, 0)
-            : new c(
-                this.re * a.re - this.im * a.im,
-                this.re * a.im + this.im * a.re
-              );
-    },
-    div: function (a, b) {
-      a = l(a, b);
-      b = this.isInfinite();
-      const d = !(isFinite(a.re) && isFinite(a.im)),
-        e = 0 === this.re && 0 === this.im,
-        g = 0 === a.re && 0 === a.im;
-      if ((e && g) || (b && d)) return c.NAN;
-      if (g || b) return c.INFINITY;
-      if (e || d) return c.ZERO;
-      if (0 === a.im) return new c(this.re / a.re, this.im / a.re);
-      if (Math.abs(a.re) < Math.abs(a.im))
-        return (
-          (b = a.re / a.im),
-          (a = a.re * b + a.im),
-          new c((this.re * b + this.im) / a, (this.im * b - this.re) / a)
-        );
-      b = a.im / a.re;
-      a = a.im * b + a.re;
-      return new c((this.re + this.im * b) / a, (this.im - this.re * b) / a);
-    },
-    pow: function (a, b) {
-      a = l(a, b);
-      b = 0 === this.re && 0 === this.im;
-      if (0 === a.re && 0 === a.im) return c.ONE;
-      if (0 === a.im) {
-        if (0 === this.im && 0 < this.re)
-          return new c(Math.pow(this.re, a.re), 0);
-        if (0 === this.re)
-          switch (((a.re % 4) + 4) % 4) {
-            case 0:
-              return new c(Math.pow(this.im, a.re), 0);
-            case 1:
-              return new c(0, Math.pow(this.im, a.re));
-            case 2:
-              return new c(-Math.pow(this.im, a.re), 0);
-            case 3:
-              return new c(0, -Math.pow(this.im, a.re));
-          }
-      }
-      if (b && 0 < a.re) return c.ZERO;
-      const d = Math.atan2(this.im, this.re),
-        e = p(this.re, this.im);
-      b = Math.exp(a.re * e - a.im * d);
-      a = a.im * e + a.re * d;
-      return new c(b * Math.cos(a), b * Math.sin(a));
-    },
-    sqrt: function () {
-      const a = this.re,
-        b = this.im;
-      if (0 === b)
-        return 0 <= a ? new c(Math.sqrt(a), 0) : new c(0, Math.sqrt(-a));
-      var d = n(a, b);
-      d = Math.sqrt(0.5 * (d + Math.abs(a)));
-      let e = Math.abs(b) / (2 * d);
-      return 0 <= a ? new c(d, 0 > b ? -e : e) : new c(e, 0 > b ? -d : d);
-    },
-    exp: function () {
-      const a = Math.exp(this.re);
-      return 0 === this.im
-        ? new c(a, 0)
-        : new c(a * Math.cos(this.im), a * Math.sin(this.im));
-    },
-    expm1: function () {
-      const a = this.re,
-        b = this.im;
-      var d = Math.expm1(a) * Math.cos(b);
-      var e = Math.PI / 4;
-      -e > b || b > e
-        ? (e = Math.cos(b) - 1)
-        : ((e = b * b),
-          (e *=
-            e *
-              (e *
+          : b || d
+            ? c.INFINITY
+            : 0 === a.im && 0 === this.im
+              ? new c(this.re * a.re, 0)
+              : new c(
+                  this.re * a.re - this.im * a.im,
+                  this.re * a.im + this.im * a.re
+                );
+      },
+      div: function (a, b) {
+        a = l(a, b);
+        b = this.isInfinite();
+        const d = !(isFinite(a.re) && isFinite(a.im)),
+          e = 0 === this.re && 0 === this.im,
+          g = 0 === a.re && 0 === a.im;
+        if ((e && g) || (b && d)) return c.NAN;
+        if (g || b) return c.INFINITY;
+        if (e || d) return c.ZERO;
+        if (0 === a.im) return new c(this.re / a.re, this.im / a.re);
+        if (Math.abs(a.re) < Math.abs(a.im))
+          return (
+            (b = a.re / a.im),
+            (a = a.re * b + a.im),
+            new c((this.re * b + this.im) / a, (this.im * b - this.re) / a)
+          );
+        b = a.im / a.re;
+        a = a.im * b + a.re;
+        return new c((this.re + this.im * b) / a, (this.im - this.re * b) / a);
+      },
+      pow: function (a, b) {
+        a = l(a, b);
+        b = 0 === this.re && 0 === this.im;
+        if (0 === a.re && 0 === a.im) return c.ONE;
+        if (0 === a.im) {
+          if (0 === this.im && 0 < this.re)
+            return new c(Math.pow(this.re, a.re), 0);
+          if (0 === this.re)
+            switch (((a.re % 4) + 4) % 4) {
+              case 0:
+                return new c(Math.pow(this.im, a.re), 0);
+              case 1:
+                return new c(0, Math.pow(this.im, a.re));
+              case 2:
+                return new c(-Math.pow(this.im, a.re), 0);
+              case 3:
+                return new c(0, -Math.pow(this.im, a.re));
+            }
+        }
+        if (b && 0 < a.re) return c.ZERO;
+        const d = Math.atan2(this.im, this.re),
+          e = p(this.re, this.im);
+        b = Math.exp(a.re * e - a.im * d);
+        a = a.im * e + a.re * d;
+        return new c(b * Math.cos(a), b * Math.sin(a));
+      },
+      sqrt: function () {
+        const a = this.re,
+          b = this.im;
+        if (0 === b)
+          return 0 <= a ? new c(Math.sqrt(a), 0) : new c(0, Math.sqrt(-a));
+        var d = n(a, b);
+        d = Math.sqrt(0.5 * (d + Math.abs(a)));
+        let e = Math.abs(b) / (2 * d);
+        return 0 <= a ? new c(d, 0 > b ? -e : e) : new c(e, 0 > b ? -d : d);
+      },
+      exp: function () {
+        const a = Math.exp(this.re);
+        return 0 === this.im
+          ? new c(a, 0)
+          : new c(a * Math.cos(this.im), a * Math.sin(this.im));
+      },
+      expm1: function () {
+        const a = this.re,
+          b = this.im;
+        var d = Math.expm1(a) * Math.cos(b);
+        var e = Math.PI / 4;
+        -e > b || b > e
+          ? (e = Math.cos(b) - 1)
+          : ((e = b * b),
+            (e *=
+              e *
                 (e *
                   (e *
                     (e *
-                      (e * (e / 20922789888e3 - 1 / 87178291200) +
-                        1 / 479001600) -
-                      1 / 3628800) +
-                    1 / 40320) -
-                  1 / 720) +
-                1 / 24) -
-            0.5));
-      return new c(d + e, Math.exp(a) * Math.sin(b));
-    },
-    log: function () {
-      const a = this.re,
-        b = this.im;
-      return 0 === b && 0 < a
-        ? new c(Math.log(a), 0)
-        : new c(p(a, b), Math.atan2(b, a));
-    },
-    abs: function () {
-      return n(this.re, this.im);
-    },
-    arg: function () {
-      return Math.atan2(this.im, this.re);
-    },
-    sin: function () {
-      const a = this.re,
-        b = this.im;
-      return new c(Math.sin(a) * h(b), Math.cos(a) * k(b));
-    },
-    cos: function () {
-      const a = this.re,
-        b = this.im;
-      return new c(Math.cos(a) * h(b), -Math.sin(a) * k(b));
-    },
-    tan: function () {
-      const a = 2 * this.re,
-        b = 2 * this.im,
-        d = Math.cos(a) + h(b);
-      return new c(Math.sin(a) / d, k(b) / d);
-    },
-    cot: function () {
-      const a = 2 * this.re,
-        b = 2 * this.im,
-        d = Math.cos(a) - h(b);
-      return new c(-Math.sin(a) / d, k(b) / d);
-    },
-    sec: function () {
-      const a = this.re,
-        b = this.im,
-        d = 0.5 * h(2 * b) + 0.5 * Math.cos(2 * a);
-      return new c((Math.cos(a) * h(b)) / d, (Math.sin(a) * k(b)) / d);
-    },
-    csc: function () {
-      const a = this.re,
-        b = this.im,
-        d = 0.5 * h(2 * b) - 0.5 * Math.cos(2 * a);
-      return new c((Math.sin(a) * h(b)) / d, (-Math.cos(a) * k(b)) / d);
-    },
-    asin: function () {
-      var a = this.re;
-      const b = this.im,
-        d = new c(b * b - a * a + 1, -2 * a * b).sqrt();
-      a = new c(d.re - b, d.im + a).log();
-      return new c(a.im, -a.re);
-    },
-    acos: function () {
-      var a = this.re;
-      const b = this.im,
-        d = new c(b * b - a * a + 1, -2 * a * b).sqrt();
-      a = new c(d.re - b, d.im + a).log();
-      return new c(Math.PI / 2 - a.im, a.re);
-    },
-    atan: function () {
-      var a = this.re;
-      const b = this.im;
-      if (0 === a) {
-        if (1 === b) return new c(0, Infinity);
-        if (-1 === b) return new c(0, -Infinity);
-      }
-      const d = a * a + (1 - b) * (1 - b);
-      a = new c((1 - b * b - a * a) / d, (-2 * a) / d).log();
-      return new c(-0.5 * a.im, 0.5 * a.re);
-    },
-    acot: function () {
-      const a = this.re,
-        b = this.im;
-      if (0 === b) return new c(Math.atan2(1, a), 0);
-      const d = a * a + b * b;
-      return 0 !== d
-        ? new c(a / d, -b / d).atan()
-        : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).atan();
-    },
-    asec: function () {
-      const a = this.re,
-        b = this.im;
-      if (0 === a && 0 === b) return new c(0, Infinity);
-      const d = a * a + b * b;
-      return 0 !== d
-        ? new c(a / d, -b / d).acos()
-        : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).acos();
-    },
-    acsc: function () {
-      const a = this.re,
-        b = this.im;
-      if (0 === a && 0 === b) return new c(Math.PI / 2, Infinity);
-      const d = a * a + b * b;
-      return 0 !== d
-        ? new c(a / d, -b / d).asin()
-        : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).asin();
-    },
-    sinh: function () {
-      const a = this.re,
-        b = this.im;
-      return new c(k(a) * Math.cos(b), h(a) * Math.sin(b));
-    },
-    cosh: function () {
-      const a = this.re,
-        b = this.im;
-      return new c(h(a) * Math.cos(b), k(a) * Math.sin(b));
-    },
-    tanh: function () {
-      const a = 2 * this.re,
-        b = 2 * this.im,
-        d = h(a) + Math.cos(b);
-      return new c(k(a) / d, Math.sin(b) / d);
-    },
-    coth: function () {
-      const a = 2 * this.re,
-        b = 2 * this.im,
-        d = h(a) - Math.cos(b);
-      return new c(k(a) / d, -Math.sin(b) / d);
-    },
-    csch: function () {
-      const a = this.re,
-        b = this.im,
-        d = Math.cos(2 * b) - h(2 * a);
-      return new c((-2 * k(a) * Math.cos(b)) / d, (2 * h(a) * Math.sin(b)) / d);
-    },
-    sech: function () {
-      const a = this.re,
-        b = this.im,
-        d = Math.cos(2 * b) + h(2 * a);
-      return new c((2 * h(a) * Math.cos(b)) / d, (-2 * k(a) * Math.sin(b)) / d);
-    },
-    asinh: function () {
-      let a = this.im;
-      this.im = -this.re;
-      this.re = a;
-      const b = this.asin();
-      this.re = -this.im;
-      this.im = a;
-      a = b.re;
-      b.re = -b.im;
-      b.im = a;
-      return b;
-    },
-    acosh: function () {
-      const a = this.acos();
-      if (0 >= a.im) {
-        var b = a.re;
-        a.re = -a.im;
-        a.im = b;
-      } else (b = a.im), (a.im = -a.re), (a.re = b);
-      return a;
-    },
-    atanh: function () {
-      var a = this.re,
-        b = this.im;
-      const d = 1 < a && 0 === b,
-        e = 1 - a,
-        g = 1 + a,
-        q = e * e + b * b;
-      a =
-        0 !== q
-          ? new c((g * e - b * b) / q, (b * e + g * b) / q)
-          : new c(-1 !== a ? a / 0 : 0, 0 !== b ? b / 0 : 0);
-      b = a.re;
-      a.re = p(a.re, a.im) / 2;
-      a.im = Math.atan2(a.im, b) / 2;
-      d && (a.im = -a.im);
-      return a;
-    },
-    acoth: function () {
-      const a = this.re,
-        b = this.im;
-      if (0 === a && 0 === b) return new c(0, Math.PI / 2);
-      const d = a * a + b * b;
-      return 0 !== d
-        ? new c(a / d, -b / d).atanh()
-        : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).atanh();
-    },
-    acsch: function () {
-      const a = this.re,
-        b = this.im;
-      if (0 === b)
+                      (e *
+                        (e * (e / 20922789888e3 - 1 / 87178291200) +
+                          1 / 479001600) -
+                        1 / 3628800) +
+                      1 / 40320) -
+                    1 / 720) +
+                  1 / 24) -
+              0.5));
+        return new c(d + e, Math.exp(a) * Math.sin(b));
+      },
+      log: function () {
+        const a = this.re,
+          b = this.im;
+        return 0 === b && 0 < a
+          ? new c(Math.log(a), 0)
+          : new c(p(a, b), Math.atan2(b, a));
+      },
+      abs: function () {
+        return n(this.re, this.im);
+      },
+      arg: function () {
+        return Math.atan2(this.im, this.re);
+      },
+      sin: function () {
+        const a = this.re,
+          b = this.im;
+        return new c(Math.sin(a) * h(b), Math.cos(a) * k(b));
+      },
+      cos: function () {
+        const a = this.re,
+          b = this.im;
+        return new c(Math.cos(a) * h(b), -Math.sin(a) * k(b));
+      },
+      tan: function () {
+        const a = 2 * this.re,
+          b = 2 * this.im,
+          d = Math.cos(a) + h(b);
+        return new c(Math.sin(a) / d, k(b) / d);
+      },
+      cot: function () {
+        const a = 2 * this.re,
+          b = 2 * this.im,
+          d = Math.cos(a) - h(b);
+        return new c(-Math.sin(a) / d, k(b) / d);
+      },
+      sec: function () {
+        const a = this.re,
+          b = this.im,
+          d = 0.5 * h(2 * b) + 0.5 * Math.cos(2 * a);
+        return new c((Math.cos(a) * h(b)) / d, (Math.sin(a) * k(b)) / d);
+      },
+      csc: function () {
+        const a = this.re,
+          b = this.im,
+          d = 0.5 * h(2 * b) - 0.5 * Math.cos(2 * a);
+        return new c((Math.sin(a) * h(b)) / d, (-Math.cos(a) * k(b)) / d);
+      },
+      asin: function () {
+        var a = this.re;
+        const b = this.im,
+          d = new c(b * b - a * a + 1, -2 * a * b).sqrt();
+        a = new c(d.re - b, d.im + a).log();
+        return new c(a.im, -a.re);
+      },
+      acos: function () {
+        var a = this.re;
+        const b = this.im,
+          d = new c(b * b - a * a + 1, -2 * a * b).sqrt();
+        a = new c(d.re - b, d.im + a).log();
+        return new c(Math.PI / 2 - a.im, a.re);
+      },
+      atan: function () {
+        var a = this.re;
+        const b = this.im;
+        if (0 === a) {
+          if (1 === b) return new c(0, Infinity);
+          if (-1 === b) return new c(0, -Infinity);
+        }
+        const d = a * a + (1 - b) * (1 - b);
+        a = new c((1 - b * b - a * a) / d, (-2 * a) / d).log();
+        return new c(-0.5 * a.im, 0.5 * a.re);
+      },
+      acot: function () {
+        const a = this.re,
+          b = this.im;
+        if (0 === b) return new c(Math.atan2(1, a), 0);
+        const d = a * a + b * b;
+        return 0 !== d
+          ? new c(a / d, -b / d).atan()
+          : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).atan();
+      },
+      asec: function () {
+        const a = this.re,
+          b = this.im;
+        if (0 === a && 0 === b) return new c(0, Infinity);
+        const d = a * a + b * b;
+        return 0 !== d
+          ? new c(a / d, -b / d).acos()
+          : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).acos();
+      },
+      acsc: function () {
+        const a = this.re,
+          b = this.im;
+        if (0 === a && 0 === b) return new c(Math.PI / 2, Infinity);
+        const d = a * a + b * b;
+        return 0 !== d
+          ? new c(a / d, -b / d).asin()
+          : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).asin();
+      },
+      sinh: function () {
+        const a = this.re,
+          b = this.im;
+        return new c(k(a) * Math.cos(b), h(a) * Math.sin(b));
+      },
+      cosh: function () {
+        const a = this.re,
+          b = this.im;
+        return new c(h(a) * Math.cos(b), k(a) * Math.sin(b));
+      },
+      tanh: function () {
+        const a = 2 * this.re,
+          b = 2 * this.im,
+          d = h(a) + Math.cos(b);
+        return new c(k(a) / d, Math.sin(b) / d);
+      },
+      coth: function () {
+        const a = 2 * this.re,
+          b = 2 * this.im,
+          d = h(a) - Math.cos(b);
+        return new c(k(a) / d, -Math.sin(b) / d);
+      },
+      csch: function () {
+        const a = this.re,
+          b = this.im,
+          d = Math.cos(2 * b) - h(2 * a);
         return new c(
-          0 !== a ? Math.log(a + Math.sqrt(a * a + 1)) : Infinity,
-          0
+          (-2 * k(a) * Math.cos(b)) / d,
+          (2 * h(a) * Math.sin(b)) / d
         );
-      const d = a * a + b * b;
-      return 0 !== d
-        ? new c(a / d, -b / d).asinh()
-        : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).asinh();
-    },
-    asech: function () {
-      const a = this.re,
-        b = this.im;
-      if (this.isZero()) return c.INFINITY;
-      const d = a * a + b * b;
-      return 0 !== d
-        ? new c(a / d, -b / d).acosh()
-        : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).acosh();
-    },
-    inverse: function () {
-      if (this.isZero()) return c.INFINITY;
-      if (this.isInfinite()) return c.ZERO;
-      const a = this.re,
-        b = this.im,
-        d = a * a + b * b;
-      return new c(a / d, -b / d);
-    },
-    conjugate: function () {
-      return new c(this.re, -this.im);
-    },
-    neg: function () {
-      return new c(-this.re, -this.im);
-    },
-    ceil: function (a) {
-      a = Math.pow(10, a || 0);
-      return new c(Math.ceil(this.re * a) / a, Math.ceil(this.im * a) / a);
-    },
-    floor: function (a) {
-      a = Math.pow(10, a || 0);
-      return new c(Math.floor(this.re * a) / a, Math.floor(this.im * a) / a);
-    },
-    round: function (a) {
-      a = Math.pow(10, a || 0);
-      return new c(Math.round(this.re * a) / a, Math.round(this.im * a) / a);
-    },
-    equals: function (a, b) {
-      a = l(a, b);
-      return (
-        Math.abs(a.re - this.re) <= c.EPSILON &&
-        Math.abs(a.im - this.im) <= c.EPSILON
-      );
-    },
-    clone: function () {
-      return new c(this.re, this.im);
-    },
-    toString: function () {
-      let a = this.re,
-        b = this.im,
-        d = "";
-      if (this.isNaN()) return "NaN";
-      if (this.isInfinite()) return "Infinity";
-      Math.abs(a) < c.EPSILON && (a = 0);
-      Math.abs(b) < c.EPSILON && (b = 0);
-      if (0 === b) return d + a;
-      0 !== a
-        ? ((d = d + a + " "),
-          0 > b ? ((b = -b), (d += "-")) : (d += "+"),
-          (d += " "))
-        : 0 > b && ((b = -b), (d += "-"));
-      1 !== b && (d += b);
-      return d + "i";
-    },
-    toVector: function () {
-      return [this.re, this.im];
-    },
-    valueOf: function () {
-      return 0 === this.im ? this.re : null;
-    },
-    isNaN: function () {
-      return isNaN(this.re) || isNaN(this.im);
-    },
-    isZero: function () {
-      return 0 === this.im && 0 === this.re;
-    },
-    isFinite: function () {
-      return isFinite(this.re) && isFinite(this.im);
-    },
-    isInfinite: function () {
-      return !this.isFinite();
-    },
-  };
-  c.ZERO = new c(0, 0);
-  c.ONE = new c(1, 0);
-  c.I = new c(0, 1);
-  c.PI = new c(Math.PI, 0);
-  c.E = new c(Math.E, 0);
-  c.INFINITY = new c(Infinity, Infinity);
-  c.NAN = new c(NaN, NaN);
-  c.EPSILON = 1e-15;
+      },
+      sech: function () {
+        const a = this.re,
+          b = this.im,
+          d = Math.cos(2 * b) + h(2 * a);
+        return new c(
+          (2 * h(a) * Math.cos(b)) / d,
+          (-2 * k(a) * Math.sin(b)) / d
+        );
+      },
+      asinh: function () {
+        let a = this.im;
+        this.im = -this.re;
+        this.re = a;
+        const b = this.asin();
+        this.re = -this.im;
+        this.im = a;
+        a = b.re;
+        b.re = -b.im;
+        b.im = a;
+        return b;
+      },
+      acosh: function () {
+        const a = this.acos();
+        if (0 >= a.im) {
+          var b = a.re;
+          a.re = -a.im;
+          a.im = b;
+        } else (b = a.im), (a.im = -a.re), (a.re = b);
+        return a;
+      },
+      atanh: function () {
+        var a = this.re,
+          b = this.im;
+        const d = 1 < a && 0 === b,
+          e = 1 - a,
+          g = 1 + a,
+          q = e * e + b * b;
+        a =
+          0 !== q
+            ? new c((g * e - b * b) / q, (b * e + g * b) / q)
+            : new c(-1 !== a ? a / 0 : 0, 0 !== b ? b / 0 : 0);
+        b = a.re;
+        a.re = p(a.re, a.im) / 2;
+        a.im = Math.atan2(a.im, b) / 2;
+        d && (a.im = -a.im);
+        return a;
+      },
+      acoth: function () {
+        const a = this.re,
+          b = this.im;
+        if (0 === a && 0 === b) return new c(0, Math.PI / 2);
+        const d = a * a + b * b;
+        return 0 !== d
+          ? new c(a / d, -b / d).atanh()
+          : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).atanh();
+      },
+      acsch: function () {
+        const a = this.re,
+          b = this.im;
+        if (0 === b)
+          return new c(
+            0 !== a ? Math.log(a + Math.sqrt(a * a + 1)) : Infinity,
+            0
+          );
+        const d = a * a + b * b;
+        return 0 !== d
+          ? new c(a / d, -b / d).asinh()
+          : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).asinh();
+      },
+      asech: function () {
+        const a = this.re,
+          b = this.im;
+        if (this.isZero()) return c.INFINITY;
+        const d = a * a + b * b;
+        return 0 !== d
+          ? new c(a / d, -b / d).acosh()
+          : new c(0 !== a ? a / 0 : 0, 0 !== b ? -b / 0 : 0).acosh();
+      },
+      inverse: function () {
+        if (this.isZero()) return c.INFINITY;
+        if (this.isInfinite()) return c.ZERO;
+        const a = this.re,
+          b = this.im,
+          d = a * a + b * b;
+        return new c(a / d, -b / d);
+      },
+      conjugate: function () {
+        return new c(this.re, -this.im);
+      },
+      neg: function () {
+        return new c(-this.re, -this.im);
+      },
+      ceil: function (a) {
+        a = Math.pow(10, a || 0);
+        return new c(Math.ceil(this.re * a) / a, Math.ceil(this.im * a) / a);
+      },
+      floor: function (a) {
+        a = Math.pow(10, a || 0);
+        return new c(Math.floor(this.re * a) / a, Math.floor(this.im * a) / a);
+      },
+      round: function (a) {
+        a = Math.pow(10, a || 0);
+        return new c(Math.round(this.re * a) / a, Math.round(this.im * a) / a);
+      },
+      equals: function (a, b) {
+        a = l(a, b);
+        return (
+          Math.abs(a.re - this.re) <= c.EPSILON &&
+          Math.abs(a.im - this.im) <= c.EPSILON
+        );
+      },
+      clone: function () {
+        return new c(this.re, this.im);
+      },
+      toString: function () {
+        let a = this.re,
+          b = this.im,
+          d = "";
+        if (this.isNaN()) return "NaN";
+        if (this.isInfinite()) return "Infinity";
+        Math.abs(a) < c.EPSILON && (a = 0);
+        Math.abs(b) < c.EPSILON && (b = 0);
+        if (0 === b) return d + a;
+        0 !== a
+          ? ((d = d + a + " "),
+            0 > b ? ((b = -b), (d += "-")) : (d += "+"),
+            (d += " "))
+          : 0 > b && ((b = -b), (d += "-"));
+        1 !== b && (d += b);
+        return d + "i";
+      },
+      toVector: function () {
+        return [this.re, this.im];
+      },
+      valueOf: function () {
+        return 0 === this.im ? this.re : null;
+      },
+      isNaN: function () {
+        return isNaN(this.re) || isNaN(this.im);
+      },
+      isZero: function () {
+        return 0 === this.im && 0 === this.re;
+      },
+      isFinite: function () {
+        return isFinite(this.re) && isFinite(this.im);
+      },
+      isInfinite: function () {
+        return !this.isFinite();
+      },
+    };
+    c.ZERO = new c(0, 0);
+    c.ONE = new c(1, 0);
+    c.I = new c(0, 1);
+    c.PI = new c(Math.PI, 0);
+    c.E = new c(Math.E, 0);
+    c.INFINITY = new c(Infinity, Infinity);
+    c.NAN = new c(NaN, NaN);
+    c.EPSILON = 1e-15;
   const Complex = c;
 
   function coolCis(ANGLE) {
@@ -927,14 +962,13 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "expComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("𝑒xp [COMPLEX]"),
+            text: Scratch.translate("exp [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "3+4i",
               },
             },
-            description: "Raises 𝑒 to the Complex",
           },
           {
             opcode: "rootComplex",
@@ -1088,11 +1122,11 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "decimalComplex",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[OPERATION] of [COMPLEX]"),
+            text: Scratch.translate("Digit [OPERATION] [COMPLEX]"),
             arguments: {
               COMPLEX: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "1+0i",
+                defaultValue: "3.00000004+3.999999996i",
               },
               OPERATION: {
                 type: Scratch.ArgumentType.STRING,
@@ -1176,7 +1210,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           {
             opcode: "mulVectorAroundPoint",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("mul [VECTOR] around [POINT] by [FACTOR]"),
+            text: Scratch.translate("Mul [VECTOR] around [POINT] by [FACTOR]"),
             arguments: {
               VECTOR: {
                 type: Scratch.ArgumentType.STRING,
@@ -1193,7 +1227,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
             opcode: "rotateVectorAroundPoint",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "rotate [VECTOR] around [POINT] by angle [ANGLE]"
+              "Rotate [VECTOR] around [POINT] by angle [ANGLE]"
             ),
             arguments: {
               VECTOR: {
@@ -1244,7 +1278,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
         menus: {
           spacing: {
             acceptReporters: true,
-            items: ["switch", "turn on", "turn off"], //For convertComplex
+            items: ["Switch", "Turn on", "Turn off"], //For convertComplex
           },
           trigs: { acceptReporters: true, items: this.trig }, //For trigOfComplex
           angles: {
@@ -1253,7 +1287,7 @@ Thanks "scratchfoundation" for the Timer <https://github.com/scratchfoundation/s
           },
           decTools: {
             acceptReporters: true,
-            items: ["round", "ceil", "floor"], //For decimalComplex
+            items: ["round up", "ceil of", "floor of"], //For decimalComplex
           },
         },
       };
