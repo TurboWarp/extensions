@@ -21,7 +21,7 @@
   const runtime = vm.runtime;
   const renderer = runtime.renderer;
   const Cast = Scratch.Cast;
-  
+
   const createSVGSkin = (...args) => {
     const skinId = renderer.createSVGSkin(...args);
     if (!skinId) return;
@@ -31,24 +31,30 @@
     const _onload = svgSkin._svgImage.onload;
     svgSkin._svgImage.onload = /**
      * @this {RenderWebGL.SVGSkin}
-     */(function(ev) {
+     */ function (ev) {
       // Reimplement the begining logic of SVGSkin to fix a loading error.
-      if (!this._size) throw '_size race';
+      if (!this._size) throw "_size race";
       if (this._size[0] === 0 || this._size[1] === 0) {
-        Object.getPrototypeOf(vm.renderer.exports.SVGSkin).prototype.setEmptyImageData.call(this);
+        Object.getPrototypeOf(
+          vm.renderer.exports.SVGSkin
+        ).prototype.setEmptyImageData.call(this);
         return;
       }
       const maxDimension = Math.ceil(Math.max(this._size[0], this._size[1]));
       const rendererMax = this._renderer.maxTextureDimension;
       let testScale = 2;
-      for (testScale; maxDimension * testScale <= rendererMax; testScale = testScale * 2) {
+      for (
+        testScale;
+        maxDimension * testScale <= rendererMax;
+        testScale = testScale * 2
+      ) {
         this._maxTextureScale = testScale;
       }
       this.resetMIPs();
       const _rotationCenter = this.calculateRotationCenter();
-      if (!Array.isArray(this._rotationCenter)) throw 'rotationCenter race';
+      if (!Array.isArray(this._rotationCenter)) throw "rotationCenter race";
       return _onload.call(this, ev);
-    }).bind(svgSkin);
+    }.bind(svgSkin);
     return skinId;
   };
 
@@ -263,11 +269,13 @@
 
     _disposeSafe(skinId, skinName) {
       if (renderer._allSkins[skinId]) renderer.destroySkin(skinId);
-      if (typeof skinName !== 'undefined') {
+      if (typeof skinName !== "undefined") {
         if (createdSkins[skinName] !== skinId) {
-          throw new Error(`Lily/Skins: skinName "${skinName}" mismatched with skinId "${skinId}". actual value of "${
-            skinName
-          }" is "${createdSkins[skinName]}". please report this to the developers`);
+          throw new Error(
+            `Lily/Skins: skinName "${skinName}" mismatched with skinId "${skinId}". actual value of "${
+              skinName
+            }" is "${createdSkins[skinName]}". please report this to the developers`
+          );
         }
         delete createdSkins[skinName];
       }
@@ -286,14 +294,15 @@
       const skinId = createSVGSkin(svgData);
       createdSkins[skinName] = skinId;
 
-      if (!await svgSkinFinishedLoading(renderer._allSkins[skinId])) {
+      if (!(await svgSkinFinishedLoading(renderer._allSkins[skinId]))) {
         this._disposeSafe(skinId, skinName);
         debugger;
         return;
       }
 
       if (oldSkinId) {
-        if (renderer._allSkins[oldSkinId]) this._refreshTargetsFromID(oldSkinId, false, skinId);
+        if (renderer._allSkins[oldSkinId])
+          this._refreshTargetsFromID(oldSkinId, false, skinId);
         this._disposeSafe(oldSkinId);
       }
     }
@@ -330,9 +339,9 @@
       skin._svgImage.onload = (...args) => {
         try {
           return _onload.apply(skin, args);
-        } catch(err) {
+        } catch (err) {
           // Handle a race condition.
-          if (err !== 'rotationCenter race') throw err;
+          if (err !== "rotationCenter race") throw err;
           this._disposeSafe(skinId, skinName);
           return;
         }
@@ -340,7 +349,8 @@
       createdSkins[skinName] = skinId;
 
       if (oldSkinId) {
-        if (renderer._allSkins[oldSkinId]) this._refreshTargetsFromID(oldSkinId, false, skinId);
+        if (renderer._allSkins[oldSkinId])
+          this._refreshTargetsFromID(oldSkinId, false, skinId);
         this._disposeSafe(oldSkinId);
       }
     }
@@ -359,7 +369,8 @@
       createdSkins[skinName] = skinId;
 
       if (oldSkinId) {
-        if (renderer._allSkins[oldSkinId]) this._refreshTargetsFromID(oldSkinId, false, skinId);
+        if (renderer._allSkins[oldSkinId])
+          this._refreshTargetsFromID(oldSkinId, false, skinId);
         this._disposeSafe(oldSkinId);
       }
     }
