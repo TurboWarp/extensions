@@ -60,7 +60,8 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1586464191
 
 ## sound.svg
- - Created by [@softedco](https://scratch.mit.edu/users/softed/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1369138404.
+ - Created by [@Scratch_Fakemon](https://scratch.mit.edu/users/Scratch_Fakemon) in https://github.com/TurboWarp/extensions/pull/2121
+ - Font is Lohit Devanagari.
 
 ## encoding.svg
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1632625905
