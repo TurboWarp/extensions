@@ -6,7 +6,7 @@
 // License: MIT
 
 // This extension needs to be unsandboxed to run!
-(async function(Scratch) {
+(function(Scratch) {
     "use strict";
 
     const blocks = [];
@@ -67,16 +67,24 @@
             type: Scratch.ArgumentType.STRING,
             defaultValue: "example.com"
         }
-    }, async (args) => {
-        return (Object.values(domains).indexOf(args.DOMAIN) > -1);
+    }, (args) => {
+        if (domains.length > 0) {
+            return (Object.values(domains).indexOf(args.DOMAIN) > -1);
+        } else {
+            throw new Error("Domains is currently loading");
+        }
     });
     createBlock(Scratch.BlockType.BOOLEAN, "checkDpiBlock", Scratch.translate("check dpi [DOMAIN] for block"), {
         DOMAIN: {
             type: Scratch.ArgumentType.STRING,
             defaultValue: "twitter.com"
         }
-    }, async (args) => {
-        return (Object.values(dpi).indexOf(args.DOMAIN) > -1);
+    }, (args) => {
+        if (dpi.length > 0) {
+            return (Object.values(dpi).indexOf(args.DOMAIN) > -1);
+        } else {
+            throw new Error("DPIs is currently loading");
+        }
     });
 
     Scratch.extensions.register(new Extension());
