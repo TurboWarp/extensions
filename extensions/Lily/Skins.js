@@ -51,8 +51,13 @@
         this._maxTextureScale = testScale;
       }
       this.resetMIPs();
-      const _rotationCenter = this.calculateRotationCenter();
-      if (!Array.isArray(this._rotationCenter)) throw "rotationCenter race";
+      const rotationCenter = this.calculateRotationCenter();
+      if (!Array.isArray(rotationCenter)) throw "rotationCenter race";
+      if (!Array.isArray(this._rotationCenter)) {
+        // This can happen if the file is loaded too fast.
+        // We will handle creating this ourselves to prevent a swarm of errors.
+        this._rotationCenter = [0, 0];
+      }
       return _onload.call(this, ev);
     }.bind(svgSkin);
     return skinId;
