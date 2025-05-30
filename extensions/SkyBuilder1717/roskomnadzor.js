@@ -79,7 +79,7 @@
       if (domains.length > 0) {
         return Object.values(domains).indexOf(args.DOMAIN) > -1;
       } else {
-        throw new Error("Domains is currently loading");
+        throw new Error(Scratch.translate("Domains is currently loading"));
       }
     }
   );
@@ -97,7 +97,7 @@
       if (dpi.length > 0) {
         return Object.values(dpi).indexOf(args.DOMAIN) > -1;
       } else {
-        throw new Error("DPIs is currently loading");
+        throw new Error(Scratch.translate("DPIs is currently loading"));
       }
     }
   );
