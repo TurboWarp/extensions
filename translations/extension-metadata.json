@@ -1414,6 +1414,8 @@
         "runtime-options@name": "Опции Выполнения",
         "shreder95ua/resolution@description": "Получает разрешение основного экрана.",
         "shreder95ua/resolution@name": "Разрешение Экрана",
+        "sound@description": "Воспроизведение звуков с URL-адресов. Ранее называлось «Звук».",
+        "sound@name": "Воспроизведение URL-адреса",
         "steamworks@description": "Подключите свой проект к Steamworks API.",
         "stretch@description": "Растягивает спрайты горизонтально или вертикально.",
         "stretch@name": "Растяжение",
