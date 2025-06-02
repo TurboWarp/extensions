@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.03
+// Version V.1.0.04
 
 (function (Scratch) {
   "use strict";
@@ -525,6 +525,7 @@
         boxInputs.push(item);
 
         const refreshedInput = elementStorage.inputs[item.data.id];
+        if (!refreshedInput) continue;
         const recentData = refreshedInput.data;
         element = createInput(
           recentData.id,
