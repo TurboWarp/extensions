@@ -5,7 +5,7 @@
 // By: CST1229 <https://scratch.mit.edu/users/CST1229/>
 // Licence: MIT
 
-// Version V.1.0.22
+// Version V.1.0.3
 
 (function (Scratch) {
   "use strict";
@@ -23,7 +23,9 @@
 
   const render = vm.renderer;
   const twgl = render.exports.twgl;
+
   const drawableKey = Symbol("SPlooksKey");
+  const MAX_REPLACERS = 15;
   const newUniforms = [
     "u_replaceColorFromSP",
     "u_replaceColorToSP",
@@ -57,6 +59,8 @@
     },
   };
 
+  let currentShader;
+
   /* patch for new effects */
   function initDrawable(drawable) {
     if (!drawable[drawableKey])
@@ -72,6 +76,7 @@
     newUniforms.forEach((name) => {
       shader.uniformSetters[name] = gl.getUniformLocation(shader.program, name);
     });
+    currentShader = shader;
     return shader;
   };
 
@@ -245,154 +250,54 @@ gl_FragColor.a = baseAlpha;`
     }
   };
 
-  const MAX_REPLACERS = 15;
-  // Clipping and Blending Support
-  let toCorrectThing = null,
-    active = false,
-    flipY = false;
-  const canvas = render.canvas;
-  let width = 0,
-    height = 0;
-  let scratchUnitWidth = 480,
-    scratchUnitHeight = 360;
+  const ogGetUniforms = render.exports.Drawable.prototype.getUniforms;
+  render.exports.Drawable.prototype.getUniforms = function() {
+    const gl = render.gl;
+    const uniforms = ogGetUniforms.call(this);
 
-  render._drawThese = function (drawables, drawMode, projection, opts = {}) {
-    // Clipping and Blending Support
-    active = true;
-    [scratchUnitWidth, scratchUnitHeight] = render.getNativeSize();
-
-    const gl = render._gl;
-    let currentShader = null;
-
-    const framebufferSpaceScaleDiffers =
-      "framebufferWidth" in opts &&
-      "framebufferHeight" in opts &&
-      opts.framebufferWidth !== render._nativeSize[0] &&
-      opts.framebufferHeight !== render._nativeSize[1];
-
-    const numDrawables = drawables.length;
-    for (let drawableIndex = 0; drawableIndex < numDrawables; ++drawableIndex) {
-      const drawableID = drawables[drawableIndex];
-      if (opts.filter && !opts.filter(drawableID)) continue;
-
-      const drawable = render._allDrawables[drawableID];
-      if (!drawable || (!drawable.getVisible() && !opts.ignoreVisibility))
-        continue;
-
-      const drawableScale = framebufferSpaceScaleDiffers
-        ? [
-            (drawable.scale[0] * opts.framebufferWidth) / render._nativeSize[0],
-            (drawable.scale[1] * opts.framebufferHeight) /
-              render._nativeSize[1],
-          ]
-        : drawable.scale;
-
-      if (!drawable.skin || !drawable.skin.getTexture(drawableScale)) continue;
-      if (opts.skipPrivateSkins && drawable.skin.private) continue;
-
-      const uniforms = {};
-
-      let effectBits = drawable.enabledEffects;
-      effectBits &= Object.prototype.hasOwnProperty.call(opts, "effectMask")
-        ? opts.effectMask
-        : effectBits;
-      const newShader = render._shaderManager.getShader(drawMode, effectBits);
-
-      if (render._regionId !== newShader) {
-        render._doExitDrawRegion();
-        render._regionId = newShader;
-
-        currentShader = newShader;
-        gl.useProgram(currentShader.program);
-        twgl.setBuffersAndAttributes(gl, currentShader, render._bufferInfo);
-        Object.assign(uniforms, { u_projectionMatrix: projection });
+    initDrawable(this);
+    const effectData = this[drawableKey];
+    const replacers = effectData.replacers;
+ 
+    const replaceFrom = new Float32Array(MAX_REPLACERS * 3).fill(0);
+    const replaceTo = new Float32Array(MAX_REPLACERS * 4).fill(0);
+    const replaceThresh = new Float32Array(MAX_REPLACERS).fill(1);
+    if (replacers.length > 0) {
+      for (let i = 0; i < Math.min(replacers.length, MAX_REPLACERS); i++) {
+        replaceFrom.set(replacers[i].targetVert, i * 3);
+        replaceTo.set(replacers[i].replaceVert, i * 4);
+        replaceThresh[i] = replacers[i].soft;
       }
-
-      /* handle new effects */
-      initDrawable(drawable);
-      const effectData = drawable[drawableKey];
-      const replacers = effectData.replacers;
-
-      const replaceFrom = new Float32Array(MAX_REPLACERS * 3).fill(0);
-      const replaceTo = new Float32Array(MAX_REPLACERS * 4).fill(0);
-      const replaceThresh = new Float32Array(MAX_REPLACERS).fill(1);
-      if (replacers.length > 0) {
-        for (let i = 0; i < Math.min(replacers.length, MAX_REPLACERS); i++) {
-          replaceFrom.set(replacers[i].targetVert, i * 3);
-          replaceTo.set(replacers[i].replaceVert, i * 4);
-          replaceThresh[i] = replacers[i].soft;
-        }
-      }
-
-      if (effectData.shouldMask) {
-        gl.activeTexture(gl.TEXTURE30);
-        gl.bindTexture(gl.TEXTURE_2D, effectData._maskTexture);
-        gl.uniform1i(currentShader.uniformSetters["u_maskTextureSP"], 30);
-        gl.activeTexture(gl.TEXTURE0);
-      }
-
-      const newUniformSetters = {
-        u_replaceColorFromSP: { method: "uniform3fv", value: replaceFrom },
-        u_replaceColorToSP: { method: "uniform4fv", value: replaceTo },
-        u_replaceThresholdSP: { method: "uniform1fv", value: replaceThresh },
-        u_numReplacersSP: {
-          method: "uniform1i",
-          value: replacers ? Math.min(replacers.length, MAX_REPLACERS) : 0,
-        },
-        u_tintColorSP: { method: "uniform4fv", value: effectData.tint },
-        u_warpSP: { method: "uniform2fv", value: effectData.warp },
-        u_shouldMaskSP: { method: "uniform1f", value: effectData.shouldMask },
-        u_saturateSP: {
-          method: "uniform1f",
-          value: effectData.newEffects.saturation,
-        },
-        u_opaqueSP: {
-          method: "uniform1f",
-          value: effectData.newEffects.opaque,
-        },
-        u_contrastSP: {
-          method: "uniform1f",
-          value: effectData.newEffects.contrast,
-        },
-        u_posterizeSP: {
-          method: "uniform1f",
-          value: effectData.newEffects.posterize,
-        },
-        u_sepiaSP: { method: "uniform1f", value: effectData.newEffects.sepia },
-        u_bloomSP: { method: "uniform1f", value: effectData.newEffects.bloom },
-      };
-
-      Object.entries(newUniformSetters).forEach(([key, { method, value }]) => {
-        if (currentShader.uniformSetters[key])
-          gl[method](currentShader.uniformSetters[key], value);
-      });
-      /* end of new effects */
-
-      Object.assign(
-        uniforms,
-        drawable.skin.getUniforms(drawableScale),
-        drawable.getUniforms()
-      );
-      if (opts.extraUniforms) Object.assign(uniforms, opts.extraUniforms);
-
-      if (uniforms.u_skin) {
-        twgl.setTextureParameters(gl, uniforms.u_skin, {
-          minMag: drawable.skin.useNearest(drawableScale, drawable)
-            ? gl.NEAREST
-            : gl.LINEAR,
-        });
-      }
-
-      twgl.setUniforms(currentShader, uniforms);
-      twgl.drawBufferInfo(gl, render._bufferInfo, gl.TRIANGLES);
     }
-    render._regionId = null;
 
-    // Clipping and Blending Support
-    gl.disable(gl.SCISSOR_TEST);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    active = false;
-  };
+    if (effectData.shouldMask) {
+      gl.activeTexture(gl.TEXTURE30);
+      gl.bindTexture(gl.TEXTURE_2D, effectData._maskTexture);
+      gl.uniform1i(currentShader.uniformSetters["u_maskTextureSP"], 30);
+      gl.activeTexture(gl.TEXTURE0);
+    }
+
+    const newUniformSetters = {
+      u_replaceColorFromSP: { method: "uniform3fv", value: replaceFrom },
+      u_replaceColorToSP: { method: "uniform4fv", value: replaceTo },
+      u_replaceThresholdSP: { method: "uniform1fv", value: replaceThresh },
+      u_numReplacersSP: { method: "uniform1i", value: replacers ? Math.min(replacers.length, MAX_REPLACERS) : 0 },
+      u_tintColorSP: { method: "uniform4fv", value: effectData.tint },
+      u_warpSP: { method: "uniform2fv", value: effectData.warp },
+      u_shouldMaskSP: { method: "uniform1f", value: effectData.shouldMask },
+      u_saturateSP: { method: "uniform1f", value: effectData.newEffects.saturation },
+      u_opaqueSP: { method: "uniform1f", value: effectData.newEffects.opaque },
+      u_contrastSP: { method: "uniform1f", value: effectData.newEffects.contrast },
+      u_posterizeSP: { method: "uniform1f", value: effectData.newEffects.posterize },
+      u_sepiaSP: { method: "uniform1f", value: effectData.newEffects.sepia },
+      u_bloomSP: { method: "uniform1f", value: effectData.newEffects.bloom }
+    };
+
+    Object.entries(newUniformSetters).forEach(([key, { method, value }]) => {
+      if (currentShader.uniformSetters[key]) gl[method](currentShader.uniformSetters[key], value);
+    });
+    return uniforms;
+  }
 
   // reset on stop/start/clear
   const ogClearEffects = vm.exports.RenderedTarget.prototype.clearEffects;
@@ -479,72 +384,6 @@ gl_FragColor.a = baseAlpha;`
       penSkin._lineShader.program,
       "a_penPoints"
     );
-  }
-
-  // Clipping and Blending Support
-  if (vm.extensionManager._loadedExtensions.has("xeltallivclipblend")) {
-    const gl = render._gl;
-    /* compressed code from Clipping and Blending.js */
-    const bfb = gl.bindFramebuffer;
-    const ogGetUniforms = render.exports.Drawable.prototype.getUniforms;
-    gl.bindFramebuffer = function (e, i) {
-      if (e == gl.FRAMEBUFFER) {
-        if (null == i)
-          (toCorrectThing = !0),
-            (flipY = !1),
-            (width = canvas.width),
-            (height = canvas.height);
-        else if (render._penSkinId) {
-          let f = render._allSkins[render._penSkinId]._framebuffer;
-          i == f.framebuffer
-            ? ((toCorrectThing = !0),
-              (flipY = !0),
-              (width = f.width),
-              (height = f.height))
-            : (toCorrectThing = !1);
-        } else toCorrectThing = !1;
-      }
-      bfb.call(this, e, i);
-    };
-    function setupModes(e, n, a) {
-      if (e) {
-        gl.enable(gl.SCISSOR_TEST);
-        let E = ((e.x_min / scratchUnitWidth + 0.5) * width) | 0,
-          S = ((e.y_min / scratchUnitHeight + 0.5) * height) | 0,
-          N = ((e.x_max / scratchUnitWidth + 0.5) * width) | 0,
-          l = (((e.y_max / scratchUnitHeight + 0.5) * height) | 0) - S;
-        a && (S = ((-e.y_max / scratchUnitHeight + 0.5) * height) | 0),
-          gl.scissor(E, S, N - E, l);
-      } else gl.disable(gl.SCISSOR_TEST);
-      switch (n) {
-        case "additive":
-          gl.blendEquation(gl.FUNC_ADD), gl.blendFunc(gl.ONE, gl.ONE);
-          break;
-        case "subtract":
-          gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT),
-            gl.blendFunc(gl.ONE, gl.ONE);
-          break;
-        case "multiply":
-          gl.blendEquation(gl.FUNC_ADD),
-            gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
-          break;
-        case "invert":
-          gl.blendEquation(gl.FUNC_ADD),
-            gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR);
-          break;
-        default:
-          gl.blendEquation(gl.FUNC_ADD),
-            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-      }
-    }
-    render.exports.Drawable.prototype.getUniforms = function () {
-      return (
-        active &&
-          toCorrectThing &&
-          setupModes(this.clipbox, this.blendMode, flipY),
-        ogGetUniforms.call(this)
-      );
-    };
   }
 
   // this will allow clones to inherit parent effects
