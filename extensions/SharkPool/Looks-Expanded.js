@@ -251,14 +251,14 @@ gl_FragColor.a = baseAlpha;`
   };
 
   const ogGetUniforms = render.exports.Drawable.prototype.getUniforms;
-  render.exports.Drawable.prototype.getUniforms = function() {
+  render.exports.Drawable.prototype.getUniforms = function () {
     const gl = render.gl;
     const uniforms = ogGetUniforms.call(this);
 
     initDrawable(this);
     const effectData = this[drawableKey];
     const replacers = effectData.replacers;
- 
+
     const replaceFrom = new Float32Array(MAX_REPLACERS * 3).fill(0);
     const replaceTo = new Float32Array(MAX_REPLACERS * 4).fill(0);
     const replaceThresh = new Float32Array(MAX_REPLACERS).fill(1);
@@ -281,23 +281,36 @@ gl_FragColor.a = baseAlpha;`
       u_replaceColorFromSP: { method: "uniform3fv", value: replaceFrom },
       u_replaceColorToSP: { method: "uniform4fv", value: replaceTo },
       u_replaceThresholdSP: { method: "uniform1fv", value: replaceThresh },
-      u_numReplacersSP: { method: "uniform1i", value: replacers ? Math.min(replacers.length, MAX_REPLACERS) : 0 },
+      u_numReplacersSP: {
+        method: "uniform1i",
+        value: replacers ? Math.min(replacers.length, MAX_REPLACERS) : 0,
+      },
       u_tintColorSP: { method: "uniform4fv", value: effectData.tint },
       u_warpSP: { method: "uniform2fv", value: effectData.warp },
       u_shouldMaskSP: { method: "uniform1f", value: effectData.shouldMask },
-      u_saturateSP: { method: "uniform1f", value: effectData.newEffects.saturation },
+      u_saturateSP: {
+        method: "uniform1f",
+        value: effectData.newEffects.saturation,
+      },
       u_opaqueSP: { method: "uniform1f", value: effectData.newEffects.opaque },
-      u_contrastSP: { method: "uniform1f", value: effectData.newEffects.contrast },
-      u_posterizeSP: { method: "uniform1f", value: effectData.newEffects.posterize },
+      u_contrastSP: {
+        method: "uniform1f",
+        value: effectData.newEffects.contrast,
+      },
+      u_posterizeSP: {
+        method: "uniform1f",
+        value: effectData.newEffects.posterize,
+      },
       u_sepiaSP: { method: "uniform1f", value: effectData.newEffects.sepia },
-      u_bloomSP: { method: "uniform1f", value: effectData.newEffects.bloom }
+      u_bloomSP: { method: "uniform1f", value: effectData.newEffects.bloom },
     };
 
     Object.entries(newUniformSetters).forEach(([key, { method, value }]) => {
-      if (currentShader.uniformSetters[key]) gl[method](currentShader.uniformSetters[key], value);
+      if (currentShader.uniformSetters[key])
+        gl[method](currentShader.uniformSetters[key], value);
     });
     return uniforms;
-  }
+  };
 
   // reset on stop/start/clear
   const ogClearEffects = vm.exports.RenderedTarget.prototype.clearEffects;
