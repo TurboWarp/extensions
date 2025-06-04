@@ -254,6 +254,7 @@ gl_FragColor.a = baseAlpha;`
   render.exports.Drawable.prototype.getUniforms = function () {
     const gl = render.gl;
     const uniforms = ogGetUniforms.call(this);
+    if (!currentShader) return uniforms;
 
     initDrawable(this);
     const effectData = this[drawableKey];
