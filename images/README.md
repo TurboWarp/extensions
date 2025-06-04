@@ -314,7 +314,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@ClaytonTDM](https://github.com/ClaytonTDM) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
 
 ## CST1229/images.svg
- - Created by [@mcnole25](https://github.com/mcnole25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-2122654376
+ - Created by [@wiktorlaskowski](https://github.com/wiktorlaskowski) in https://github.com/TurboWarp/extensions/pull/2144
 
 ## shreder95ua/resolution.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
