@@ -383,6 +383,7 @@
               },
             },
             filter: [Scratch.TargetType.SPRITE],
+            hideFromPalette: true,
             extensions: ["colours_looks"],
           },
           {
