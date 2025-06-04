@@ -32,8 +32,9 @@
   const runtime = vm.runtime;
   const renderer = vm.renderer;
   const _drawThese = renderer._drawThese;
-  const gl = renderer._gl;
+  const gl = renderer.gl;
   const canvas = renderer.canvas;
+  let Drawable = renderer?.exports?.Drawable || getDrawable();
   let width = 0;
   let height = 0;
   let scratchUnitWidth = 480;
@@ -109,10 +110,12 @@
     bfb.call(this, target, framebuffer);
   };
 
-  // Getting Drawable
-  const dr = renderer.createDrawable("background");
-  const DrawableProto = renderer._allDrawables[dr].__proto__;
-  renderer.destroyDrawable(dr, "background");
+  function getDrawable() {
+    const dr = renderer.createDrawable("background");
+    const Drawable = renderer._allDrawables[dr].constructor;
+    renderer.destroyDrawable(dr, "background");
+    return Drawable;
+  }
 
   function setupModes(clipbox, blendMode, flipY) {
     if (clipbox) {
@@ -136,17 +139,17 @@
   }
 
   // Modifying and expanding Drawable
-  const gu = DrawableProto.getUniforms;
-  DrawableProto.getUniforms = function () {
+  const gu = Drawable.prototype.getUniforms;
+  Drawable.prototype.getUniforms = function () {
     if (active && toCorrectThing) {
       setupModes(this.clipbox, this.blendMode, flipY);
     }
     return gu.call(this);
   };
-  DrawableProto.updateClipBox = function (clipbox) {
+  Drawable.prototype.updateClipBox = function (clipbox) {
     this.clipbox = clipbox;
   };
-  DrawableProto.updateBlendMode = function (blendMode) {
+  Drawable.prototype.updateBlendMode = function (blendMode) {
     this.blendMode = blendMode;
   };
 
