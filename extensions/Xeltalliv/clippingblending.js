@@ -39,6 +39,13 @@
   let scratchUnitWidth = 480;
   let scratchUnitHeight = 360;
   let penDirty = false;
+  const publicApi =
+    runtime.ext_clippingblendingapi ?? (runtime.ext_clippingblendingapi = {});
+  if (!publicApi.mainFramebuffer) publicApi.mainFramebuffer = null;
+  if (!publicApi.setActive)
+    publicApi.setActive = (value) => {
+      active = value;
+    };
 
   // prettier-ignore
   const Blendings = Object.assign(Object.create(null), {
@@ -70,7 +77,7 @@
   gl.bindFramebuffer = function (target, framebuffer) {
     let toCanvas = false;
     if (target == gl.FRAMEBUFFER) {
-      if (framebuffer == null) {
+      if (framebuffer == publicApi.mainFramebuffer) {
         toCanvas = true;
         toCorrectThing = true;
         flipY = false;
