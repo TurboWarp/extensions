@@ -309,6 +309,13 @@
         menuIconURI: icon,
         blocks: [
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate(
+              "Stage selected: no blocks"
+            ),
+            filter: [Scratch.TargetType.STAGE],
+          },
+          {
             opcode: "setClipbox",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
