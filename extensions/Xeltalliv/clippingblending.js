@@ -96,13 +96,17 @@
       gl.disable(gl.SCISSOR_TEST);
     }
     switch (blendMode) {
+      case "default behind":
+        gl.blendEquation(gl.FUNC_ADD);
+        gl.blendFunc(gl.ONE_MINUS_DST_ALPHA, gl.ONE);
+        break;
       case "additive":
         gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFunc(gl.ONE, gl.ONE);
+        gl.blendFuncSeparate(gl.ONE, gl.ONE, gl.ZERO, gl.ONE);
         break;
       case "subtract":
         gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT);
-        gl.blendFunc(gl.ONE, gl.ONE);
+        gl.blendFuncSeparate(gl.ONE, gl.ONE, gl.ZERO, gl.ONE);
         break;
       case "multiply":
         gl.blendEquation(gl.FUNC_ADD);
@@ -110,7 +114,15 @@
         break;
       case "invert":
         gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR);
+        gl.blendFuncSeparate(gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE);
+        break;
+      case "mask":
+        gl.blendEquation(gl.FUNC_ADD);
+        gl.blendFunc(gl.ZERO, gl.SRC_ALPHA);
+        break;
+      case "erase":
+        gl.blendEquation(gl.FUNC_ADD);
+        gl.blendFunc(gl.ZERO, gl.ONE_MINUS_SRC_ALPHA);
         break;
       default:
         gl.blendEquation(gl.FUNC_ADD);
@@ -400,10 +412,13 @@
             acceptReporters: true,
             items: [
               { text: Scratch.translate("default"), value: "default" },
+              { text: Scratch.translate("default behind"), value: "default behind" },
               { text: Scratch.translate("additive"), value: "additive" },
               { text: Scratch.translate("subtract"), value: "subtract" },
               { text: Scratch.translate("multiply"), value: "multiply" },
               { text: Scratch.translate("invert"), value: "invert" },
+              { text: Scratch.translate("mask"), value: "mask" },
+              { text: Scratch.translate("erase"), value: "erase" },
             ],
           },
           props: {
@@ -482,10 +497,13 @@
       let newValue = null;
       switch (BLENDMODE) {
         case "default":
+        case "default behind":
         case "additive":
         case "subtract":
         case "multiply":
         case "invert":
+        case "mask":
+        case "erase":
           newValue = BLENDMODE;
           break;
         default:
