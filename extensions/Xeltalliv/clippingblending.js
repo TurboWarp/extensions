@@ -310,9 +310,7 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate(
-              "Stage selected: no blocks"
-            ),
+            text: Scratch.translate("Stage selected: no blocks"),
             filter: [Scratch.TargetType.STAGE],
           },
           {
