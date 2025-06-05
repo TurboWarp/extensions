@@ -34,7 +34,7 @@
   const _drawThese = renderer._drawThese;
   const gl = renderer.gl;
   const canvas = renderer.canvas;
-  let Drawable = renderer?.exports?.Drawable || getDrawable();
+  let Drawable = renderer.exports.Drawable;
   let width = 0;
   let height = 0;
   let scratchUnitWidth = 480;
@@ -109,13 +109,6 @@
     }
     bfb.call(this, target, framebuffer);
   };
-
-  function getDrawable() {
-    const dr = renderer.createDrawable("background");
-    const Drawable = renderer._allDrawables[dr].constructor;
-    renderer.destroyDrawable(dr, "background");
-    return Drawable;
-  }
 
   function setupModes(clipbox, blendMode, flipY) {
     if (clipbox) {
