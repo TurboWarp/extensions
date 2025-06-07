@@ -1136,6 +1136,13 @@
     const drawable = renderer._allDrawables[drawableId];
     renderer.updateDrawableSkinId(drawableId, skinId);
 
+    // Prevent pick() from trying to read all the pixels from the 3D skin as this drawable does not
+    // correspond to a target, so it can't be dragged or anything like that. Fixes pick() doing an
+    // unnecessary GPU -> CPU transfer (very slow) for a collision test whose result doesn't matter.
+    if (renderer.markDrawableAsNoninteractive) {
+      renderer.markDrawableAsNoninteractive(drawableId);
+    }
+
     // Detect resizing
     drawable.setHighQuality = function (...args) {
       Object.getPrototypeOf(this).setHighQuality(...args);
