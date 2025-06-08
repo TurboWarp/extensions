@@ -890,11 +890,11 @@
             items: [
               {
                 text: Scratch.translate("a single"),
-                value: "single"
+                value: "single",
               },
               {
                 text: Scratch.translate("multiple"),
-                value: "multiple"
+                value: "multiple",
               },
             ],
           },
