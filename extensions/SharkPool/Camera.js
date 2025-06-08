@@ -120,9 +120,10 @@
   }
 
   function updateCamera(camera) {
-    for (let i = 0; i < render._allDrawables.length; i++) {
-      const drawable = render._allDrawables[i];
-      if (!drawable || !drawable.getVisible() || !drawable.skin) continue;
+    for (let i = 0; i < render._drawList.length; i++) {
+      const drawableId = render._drawList[i];
+      const drawable = render._allDrawables[drawableId];
+      if (!drawable.getVisible() || !drawable.skin) continue;
       if (!drawable[cameraSymbol]) setupState(drawable);
 
       const camSystem = drawable[cameraSymbol];
@@ -639,13 +640,15 @@
         });
 
       // Custom Drawable Layer (CST's 3D or Simple3D Exts for Example)
-      for (var i = 0; i < render._allDrawables.length; i++) {
-        const drawable = render._allDrawables[i];
-        if (drawable !== undefined && drawable.customDrawableName !== undefined)
+      for (var i = 0; i < render._drawList.length; i++) {
+        const drawableId = render._drawList[i];
+        const drawable = render._allDrawables[drawableId];
+        if (drawable.customDrawableName !== undefined) {
           objectNames.push({
             text: drawable.customDrawableName,
-            value: `${i}=SP-custLayer`,
+            value: `${drawableId}=SP-custLayer`,
           });
+        }
       }
 
       // Sprites
