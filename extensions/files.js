@@ -85,7 +85,7 @@
   /**
    * @param {string} accept See MODE_ constants above
    * @param {string} as See AS_ constants above
-   * @param {boolean} override makes modal use the File API if true
+   * @param {object} override makes modal use the File API if exists
    * @returns {Promise<string>} format given by as parameter
    */
   const showFilePrompt = (accept, as, override) =>
@@ -171,14 +171,14 @@
           input.click();
         } else {
           try {
-            if (override === "folder") {
+            if (override.type === "folder") {
               fileInfo = await window.showDirectoryPicker({
                 multiple: false,
                 types: [{ accept: { "*/*": [] } }],
               });
             } else {
               fileInfo = await window.showOpenFilePicker({
-                multiple: false,
+                multiple: override.allowMulti,
                 types: [{ accept: { "*/*": accept } }],
               });
             }
@@ -588,9 +588,13 @@
             opcode: "setStoredFile",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "open new stored [FILE] file named [NAME] as [TYPE]"
+              "open [MULTI] [FILE] file(s) and store as [TYPE] named [NAME]"
             ),
             arguments: {
+              MULTI: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "multiMode",
+              },
               NAME: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate("my-file-1"),
@@ -826,59 +830,6 @@
               },
             ],
           },
-          modalVisuals: {
-            acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("border color"),
-                value: "border",
-              },
-              {
-                text: Scratch.translate("text color"),
-                value: "text",
-              },
-              {
-                text: Scratch.translate("background color"),
-                value: "outer",
-              },
-              {
-                text: Scratch.translate("overlay opacity"),
-                value: "shadow",
-              },
-              {
-                text: Scratch.translate("font"),
-                value: "font",
-              },
-              {
-                text: Scratch.translate("font size"),
-                value: "sizeFont",
-              },
-              {
-                text: Scratch.translate("font thickness"),
-                value: "fontWeight",
-              },
-              {
-                text: Scratch.translate("letter spacing"),
-                value: "letterSpacing",
-              },
-              {
-                text: Scratch.translate("border radius"),
-                value: "borderRadius",
-              },
-              {
-                text: Scratch.translate("border type"),
-                value: "borderType",
-              },
-              {
-                text: Scratch.translate("background image"),
-                value: "image",
-              },
-              {
-                text: Scratch.translate("text"),
-                value: "textV",
-              },
-            ],
-          },
           FILE_SIZES: {
             acceptReporters: true,
             items: [
@@ -931,6 +882,72 @@
               {
                 text: Scratch.translate("both"),
                 value: "both",
+              },
+            ],
+          },
+          multiMode: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("a single"),
+                value: "single"
+              },
+              {
+                text: Scratch.translate("multiple"),
+                value: "multiple"
+              },
+            ],
+          },
+          modalVisuals: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("border color"),
+                value: "border",
+              },
+              {
+                text: Scratch.translate("text color"),
+                value: "text",
+              },
+              {
+                text: Scratch.translate("background color"),
+                value: "outer",
+              },
+              {
+                text: Scratch.translate("overlay opacity"),
+                value: "shadow",
+              },
+              {
+                text: Scratch.translate("font"),
+                value: "font",
+              },
+              {
+                text: Scratch.translate("font size"),
+                value: "sizeFont",
+              },
+              {
+                text: Scratch.translate("font thickness"),
+                value: "fontWeight",
+              },
+              {
+                text: Scratch.translate("letter spacing"),
+                value: "letterSpacing",
+              },
+              {
+                text: Scratch.translate("border radius"),
+                value: "borderRadius",
+              },
+              {
+                text: Scratch.translate("border type"),
+                value: "borderType",
+              },
+              {
+                text: Scratch.translate("background image"),
+                value: "image",
+              },
+              {
+                text: Scratch.translate("text"),
+                value: "textV",
               },
             ],
           },
@@ -1141,14 +1158,21 @@
 
     async setStoredFile(args) {
       if (!this.checkFileAPI()) return;
-      let fileTypes = args.FILE ? args.FILE.split(" ") : [];
+      const fileTypes = args.FILE ? args.FILE.split(" ") : [];
+      const isMulti = args.MULTI === "multiple";
+      const overrider = { type: "window", allowMulti: isMulti };
       try {
-        const picker = await showFilePrompt(fileTypes, "", "window");
+        const picker = await showFilePrompt(fileTypes, "", overrider);
         if (!picker) return;
-        storedFiles[args.NAME] = { file: picker[0], data: {} };
-        const metaData = await picker[0].getFile();
-        const encodedData = await this.encodeData(metaData, args.TYPE);
-        this.updateStore(args.NAME, encodedData, metaData);
+
+        const name = Scratch.Cast.toString(args.NAME);
+        for (let i = 0; i < picker.length; i++) {
+          const spaceName = isMulti ? name + (i + 1) : name;
+          storedFiles[spaceName] = { file: picker[i], data: {} };
+          const metaData = await picker[i].getFile();
+          const encodedData = await this.encodeData(metaData, args.TYPE);
+          this.updateStore(spaceName, encodedData, metaData);
+        }
       } catch (e) {
         console.warn(e);
       }
@@ -1157,7 +1181,7 @@
     async storedFolder(args) {
       if (!this.checkFileAPI()) return;
       try {
-        const picker = await showFilePrompt("Folder", "", "folder");
+        const picker = await showFilePrompt("Folder", "", { type: "folder" });
         if (!picker) return;
 
         const createExtFile = async (folderN, data) => {
@@ -1167,6 +1191,7 @@
           const encodedData = await this.encodeData(metaData, args.TYPE);
           this.updateStore(name, encodedData, metaData);
         };
+
         const digThroughFolder = async (folderCtx) => {
           const entries = folderCtx.entries();
           const folderN = args.NAME ? args.NAME : folderCtx.name;
@@ -1342,8 +1367,6 @@
         if (canFetch) {
           selectorOptions.image = `url(${encodeURI(args.IMG)})`;
           updateModalVisuals();
-        } else {
-          console.warn("Cannot fetch content from the URL.");
         }
       });
     }
