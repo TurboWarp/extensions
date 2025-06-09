@@ -19,7 +19,10 @@
     getInfo() {
       return {
         id: "htmlElements",
-        name: Scratch.translate({ default: "HTML Elements", id: "htmlElements.name" }),
+        name: Scratch.translate({
+          default: "HTML Elements",
+          id: "htmlElements.name",
+        }),
         color1: "#9596bf",
         color2: "#7b7c9e",
         blocks: this.getBlockDefinitions(),
