@@ -2823,6 +2823,7 @@
         "runtime-options@_stage size": "dimensioni Stage",
         "runtime-options@_turbo mode": "modalità turbo",
         "runtime-options@_width": "larghezza",
+        "sound@_URL Playback": "Riproduzione da URL",
         "sound@_play sound from url: [path] until done": "avvia riproduzione suono da url: [path] e attendi la fine",
         "sound@_start sound from url: [path]": "riproduci suono da url: [path]",
         "steamworks@_name": "nome",
