@@ -60,7 +60,8 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1586464191
 
 ## sound.svg
- - Created by [@softedco](https://scratch.mit.edu/users/softed/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1369138404.
+ - Created by [@Scratch_Fakemon](https://scratch.mit.edu/users/Scratch_Fakemon) in https://github.com/TurboWarp/extensions/pull/2121
+ - Font is Lohit Devanagari.
 
 ## encoding.svg
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1632625905
@@ -280,7 +281,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Background "blobs" by Scratch.
 
 ## DNin/wake-lock.svg
- - Created by [NexusKitten](https://github.com/NexusKitten) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1690949400
+ - Created by [@NamelessCat](https://scratch.mit.edu/users/NamelessCat/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1690949400
 
 ## veggiecan/browserfullscreen.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
@@ -296,13 +297,14 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## iframe.svg
- - Created by [HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694716263
+ - Created by [@NamelessCat](https://scratch.mit.edu/users/NamelessCat/)
+ - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 ## Lily/Video.svg
  - Created by [@LilyMakesThings](https://github.com/LilyMakesThings) in https://github.com/TurboWarp/extensions/pull/656
 
 ## veggiecan/mobilekeyboard.svg
- - Created by Veggiecan0419
+ - Created by [@NamelessCat](https://scratch.mit.edu/users/NamelessCat/)
 
 ## Xeltalliv/simple3D.png
  - Created by [@Xeltalliv](https://github.com/Xeltalliv).
@@ -312,7 +314,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@ClaytonTDM](https://github.com/ClaytonTDM) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
 
 ## CST1229/images.svg
- - Created by [@mcnole25](https://github.com/mcnole25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-2122654376
+ - Created by [@wiktorlaskowski](https://github.com/wiktorlaskowski) in https://github.com/TurboWarp/extensions/pull/2144
 
 ## shreder95ua/resolution.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796

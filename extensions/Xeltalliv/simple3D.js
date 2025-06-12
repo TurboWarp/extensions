@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.2.1
+// Version: 1.2.2
 
 (function (Scratch) {
   "use strict";
@@ -1092,6 +1092,7 @@
         canvas
       );
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      this._silhouette.update(canvas);
       this.emitWasAltered();
     }
     resizeCanvas() {
@@ -1134,6 +1135,13 @@
     drawableId = renderer.createDrawable("simple3D");
     const drawable = renderer._allDrawables[drawableId];
     renderer.updateDrawableSkinId(drawableId, skinId);
+
+    // Prevent pick() from trying to read all the pixels from the 3D skin as this drawable does not
+    // correspond to a target, so it can't be dragged or anything like that. Fixes pick() doing an
+    // unnecessary GPU -> CPU transfer (very slow) for a collision test whose result doesn't matter.
+    if (renderer.markDrawableAsNoninteractive) {
+      renderer.markDrawableAsNoninteractive(drawableId);
+    }
 
     // Detect resizing
     drawable.setHighQuality = function (...args) {
@@ -1485,7 +1493,7 @@ void main() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    // eslint-disable-next-line no-restricted-syntax
+    // eslint-disable-next-line extension/check-can-fetch
     const image = new Image();
     image.src =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAABg2lDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpUUqDnYQcchQneyiIo61FYpQIdQKrTqYvPQPmjQkKS6OgmvBwZ/FqoOLs64OroIg+APi7OCk6CIl3pcUWsT44PI+znvncN99gNCqMc3qSwCabpvZdFLMF1bF0CsEhAGqmMwsY16SMvBdX/cI8P0uzrP87/25BtWixYCASJxghmkTbxDPbtoG533iKKvIKvE58aRJDRI/cl3x+I1z2WWBZ0bNXDZFHCUWyz2s9DCrmBrxDHFM1XTKF/Ieq5y3OGu1Buv0yV8YKeory1ynGkMai1iCBBEKGqiiBhtx2nVSLGTpPOnjH3X9ErkUclXByLGAOjTIrh/8D37P1ipNT3lJkSTQ/+I4H+NAaBdoNx3n+9hx2idA8Bm40rv+eguY+yS92dViR8DQNnBx3dWUPeByBxh5MmRTdqUglVAqAe9n9E0FYPgWGFjz5tY5x+kDkKNZZW6Ag0NgokzZ6z7vDvfO7d87nfn9ACRZcoedT/mXAAAAGFBMVEVtbW11dXVtbf+EhIT/bW2goKBt/21t//8Qh6V7AAAACXBIWXMAABhMAAAYdAGfqEAgAAAAB3RJTUUH6AIIAA4YBFj9GAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABjSURBVAjXPctBDkAwFIThqdey91ygnIAoa9EzcIBGLyDS69MW/26+ZIAvZYwhZkbpNy/saKGOyUjmFeQ2J5Z+SUJNFi+TfK+/uKJCtENbhT2gYO7UNT+ie03nfoLqV4os4X/dFf0TKILDS0AAAAAASUVORK5CYII=";
@@ -1792,6 +1800,7 @@ void main() {
   let currentCulling;
   let currentCullingProps;
   let lastTextMeasurement;
+  let transformCache;
 
   function resetEverything() {
     gl.clearColor(0, 0, 0, 0);
@@ -1821,6 +1830,11 @@ void main() {
     currentCulling = 0;
     currentCullingProps = [null, null];
     lastTextMeasurement = null;
+    transformCache = {
+      from: m4.identity(),
+      to: m4.identity(),
+      matrix: m4.identity(),
+    };
     for (const mesh of meshes.values()) {
       mesh.destroy();
     }
@@ -1843,7 +1857,7 @@ void main() {
       def: function () {
         // Exempted from Scratch.openWindow as initiated by user gesture.
         // docsURI won't ask for permission so it doesn't make sense for this to either.
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line extension/use-scratch-open-window
         window.open("https://xeltalliv.github.io/simple3d-extension/");
       },
     },
@@ -1859,7 +1873,7 @@ void main() {
         );
         // Exempted from Scratch.openWindow as it is in response to a user gesture and it does not
         // bring in third-party websites at all.
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line extension/use-scratch-open-window
         window.open(url.href);
       },
     },
@@ -3421,7 +3435,7 @@ void main() {
                 resolve(null);
                 return;
               }
-              // eslint-disable-next-line no-restricted-syntax
+              // eslint-disable-next-line extension/check-can-fetch
               const img = new Image();
               if (
                 new URL(TEXURL, window.location.href).origin !==
@@ -3468,7 +3482,7 @@ void main() {
           const costumeIndex = target.getCostumeIndexByName(NAME);
           if (costumeIndex == -1) return;
           const costume = target.sprite.costumes[costumeIndex];
-          // eslint-disable-next-line no-restricted-syntax
+          // eslint-disable-next-line extension/check-can-fetch
           const img = new Image();
           img.src = costume.asset.encodeDataURI();
           img.onload = function () {
@@ -3659,13 +3673,15 @@ void main() {
             resolve(null);
             return;
           }
-          const values = list.value
-            .slice(pos, pos + lengthRequired)
-            .map(Cast.toNumber);
+          const data = new Uint8Array(lengthRequired);
+          const values = list.value;
+          for (let i = 0; i < lengthRequired; i++) {
+            data[i] = values[pos + i];
+          }
           imageSourceSync = {
             width: width,
             height: height,
-            data: new Uint8Array(values),
+            data: data,
           };
           resolve(imageSourceSync);
         });
@@ -4143,6 +4159,15 @@ void main() {
           transformed = vec;
           return;
         }
+        if (
+          lookup2[from] === transformCache.from &&
+          lookup2[to] === transformCache.to
+        ) {
+          transformed = m4.multiplyVec(transformCache.matrix, vec);
+          return;
+        }
+        transformCache.from = lookup2[from];
+        transformCache.to = lookup2[to];
         let swapped = false;
         if (from > to) {
           [from, to] = [to, from];
@@ -4153,6 +4178,7 @@ void main() {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
         if (swapped) totalMat = m4.inverse(totalMat);
+        transformCache.matrix = totalMat;
         transformed = m4.multiplyVec(totalMat, vec);
         if (TO == "projected (scratch units)") {
           transformed[0] =
@@ -4205,11 +4231,20 @@ void main() {
         let from = lookup[FROM];
         let to = lookup[TO];
         if (!from || !to) return;
-        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 1];
+        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 0];
         if (from == to) {
           transformed = vec;
           return;
         }
+        if (
+          lookup2[from] === transformCache.from &&
+          lookup2[to] === transformCache.to
+        ) {
+          transformed = m4.multiplyVec(transformCache.matrix, vec);
+          return;
+        }
+        transformCache.from = lookup2[from];
+        transformCache.to = lookup2[to];
         let swapped = false;
         if (from > to) {
           [from, to] = [to, from];
@@ -4219,11 +4254,8 @@ void main() {
         for (let i = from + 1; i < to; i++) {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
-        if (from + 1 == to) {
-          totalMat = totalMat.slice();
-        }
-        totalMat[12] = totalMat[13] = totalMat[14] = 0;
         if (swapped) totalMat = m4.inverse(totalMat);
+        transformCache.matrix = totalMat;
         transformed = m4.multiplyVec(totalMat, vec);
       },
     },

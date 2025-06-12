@@ -3,6 +3,7 @@
 // Description: Play videos from URLs.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // By: SharkPool
+// By: Fath11 <https://scratch.mit.edu/users/fath11/>
 // License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
@@ -40,6 +41,13 @@
 
       /** @type {string} */
       this.videoSrc = videoSrc;
+
+      /**
+       * Base volume as set by the scripts in the project, from 0 to 1.
+       * Does not account for eg. the project being muted.
+       * @type {number}
+       */
+      this.videoVolume = 1;
 
       this.videoError = false;
 
@@ -108,6 +116,12 @@
       this.emitWasAltered();
     }
 
+    updateVolume() {
+      const projectVolume = runtime.audioEngine.inputNode.gain.value;
+      const trueVolume = this.videoVolume * projectVolume;
+      this.videoElement.volume = trueVolume;
+    }
+
     get size() {
       if (this.videoDirty) {
         this.reuploadVideo();
@@ -139,7 +153,28 @@
 
       runtime.on("BEFORE_EXECUTE", () => {
         for (const skin of renderer._allSkins) {
-          if (skin instanceof VideoSkin && !skin.videoElement.paused) {
+          if (skin instanceof VideoSkin) {
+            skin.updateVolume();
+            if (!skin.videoElement.paused) {
+              skin.markVideoDirty();
+            }
+          }
+        }
+      });
+
+      runtime.on("RUNTIME_PAUSED", () => {
+        for (const skin of renderer._allSkins) {
+          if (skin instanceof VideoSkin) {
+            skin.videoElement.pause();
+            skin.markVideoDirty();
+          }
+        }
+      });
+
+      runtime.on("RUNTIME_UNPAUSED", () => {
+        for (const skin of renderer._allSkins) {
+          if (skin instanceof VideoSkin) {
+            skin.videoElement.play();
             skin.markVideoDirty();
           }
         }
@@ -246,6 +281,23 @@
             },
           },
           {
+            opcode: "startVideoAndWait",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "start video [NAME] at [DURATION] seconds and wait until done"
+            ),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              },
+              DURATION: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+            },
+          },
+          {
             opcode: "getAttribute",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[ATTRIBUTE] of video [NAME]"),
@@ -293,6 +345,21 @@
               NAME: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "my video",
+              },
+            },
+          },
+          {
+            opcode: "toggleLooping",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set video [NAME] to [LOOP]"),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "my video",
+              },
+              LOOP: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "playbackType",
               },
             },
           },
@@ -361,6 +428,10 @@
                 text: Scratch.translate("paused"),
                 value: "paused",
               },
+              {
+                text: Scratch.translate("looping"),
+                value: "looping",
+              },
             ],
           },
           attribute: {
@@ -389,6 +460,19 @@
               {
                 text: Scratch.translate("playback rate"),
                 value: "playback rate",
+              },
+            ],
+          },
+          playbackType: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("loop"),
+                value: "loop",
+              },
+              {
+                text: Scratch.translate("not loop"),
+                value: "not loop",
               },
             ],
           },
@@ -500,6 +584,25 @@
       videoSkin.markVideoDirty();
     }
 
+    startVideoAndWait(args, util) {
+      const videoName = Cast.toString(args.NAME);
+      const duration = Cast.toNumber(args.DURATION);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
+
+      if (!util.stackFrame.hasPlayed) {
+        videoSkin.videoElement.play();
+        videoSkin.videoElement.currentTime = duration;
+        videoSkin.markVideoDirty();
+
+        util.stackFrame.hasPlayed = true;
+      }
+
+      if (!videoSkin.videoElement.ended) {
+        util.yield();
+      }
+    }
+
     getAttribute(args) {
       const videoName = Cast.toString(args.NAME);
       const videoSkin = this.videos[videoName];
@@ -511,7 +614,7 @@
         case "duration":
           return videoSkin.videoElement.duration;
         case "volume":
-          return videoSkin.videoElement.volume * 100;
+          return videoSkin.videoVolume * 100;
         case "width":
           return videoSkin.size[0];
         case "height":
@@ -564,14 +667,29 @@
       videoSkin.markVideoDirty();
     }
 
+    toggleLooping(args) {
+      const videoName = Cast.toString(args.NAME);
+      const videoSkin = this.videos[videoName];
+      if (!videoSkin) return;
+
+      videoSkin.videoElement.loop = args.LOOP == "loop" ? true : false;
+    }
+
     getState(args) {
       const videoName = Cast.toString(args.NAME);
       const videoSkin = this.videos[videoName];
       if (!videoSkin) return args.STATE === "paused";
 
-      return args.STATE == "playing"
-        ? !videoSkin.videoElement.paused
-        : videoSkin.videoElement.paused;
+      switch (args.STATE) {
+        case "playing":
+          return !videoSkin.videoElement.paused;
+        case "paused":
+          return videoSkin.videoElement.paused;
+        case "looping":
+          return videoSkin.videoElement.loop;
+        default:
+          return false;
+      }
     }
 
     setVolume(args) {
@@ -580,7 +698,8 @@
       if (!videoSkin) return;
 
       const value = Cast.toNumber(args.VALUE);
-      videoSkin.videoElement.volume = Math.min(1, Math.max(0, value / 100));
+      videoSkin.videoVolume = Math.min(1, Math.max(0, value / 100));
+      videoSkin.updateVolume();
     }
 
     setPlaybackRate(args) {

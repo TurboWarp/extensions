@@ -20,6 +20,7 @@
         color2: "#c6be79",
         color3: "#a8a167",
         blocks: [
+          /* eslint-disable extension/should-translate */
           {
             opcode: "commentHat",
             blockType: Scratch.BlockType.HAT,
@@ -84,6 +85,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
         ],
       };
     }
