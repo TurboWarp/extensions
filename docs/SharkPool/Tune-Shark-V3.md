@@ -156,6 +156,7 @@ current time | current position in a sound
 source | source URL/URI of a sound
 estimated bpm | estimated beats-per-minute
 channels | the number of [channels](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Audio_concepts) in a sound
+fft data | a live Array of loudness values across all frequencies
 binds | an array of sound names binded to this sound
 *...various audio effects* | returns the inputted parameters for the effect
 
@@ -229,6 +230,18 @@ Parameters | What they Do
 time | interval between each echo
 feedback | intensity of each subsequent echo
 mix	| percentage of the original sound and the delayed sound
+
+```scratch
+🎛️ set pan 3D of sound [MySound] to x (0) y (50) z (50) ::#666666
+```
+
+Modulates the pan of a sound in a 3D space.
+
+Parameters | What they Do
+--- | ---
+x | pan left/right
+y | pan top/bottom
+z	| pan close/far
 
 ```scratch
 🎛️ set tremolo of sound [MySound] to speed (35) depth (80) mix (100) ::#666666
