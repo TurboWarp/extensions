@@ -1763,7 +1763,7 @@
         "TheShovel/LZ-String@description": "使用 LZ-string 压缩与解压文本。",
         "TheShovel/LZ-String@name": "LZ 压缩",
         "TheShovel/ShovelUtils@description": "一些杂七杂八的积木。",
-        "Xeltalliv/clippingblending@description": "在指定的区域与颜色混合模式进行裁剪。",
+        "Xeltalliv/clippingblending@description": "在指定的矩形区域进行裁剪以及不同模式的颜色混合。",
         "Xeltalliv/clippingblending@name": "裁剪与颜色混合",
         "Xeltalliv/simple3D@description": "轻松制作适用于 GPU 加速的 3D 项目。",
         "Xeltalliv/simple3D@name": "简单 3D",
