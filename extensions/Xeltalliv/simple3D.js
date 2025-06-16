@@ -1698,6 +1698,32 @@ void main() {
     return chunkedArray;
   }
 
+  class MultiDrawPolyfill {
+    constructor(gl) {
+      this.gl = gl;
+    }
+    multiDrawArraysWEBGL(mode, firstsList, firstsOffset, countsList, countsOffset, drawcount) {
+      for(let i=0; i<drawcount; i++) {
+        this.gl.drawArrays(mode, firstsList[i+firstsOffset], countsList[i+countsOffset]);
+      }
+    }
+    multiDrawElementsWEBGL(mode, countsList, countsOffset, type, offsetsList, offsetsOffset, drawcount) {
+      for(let i=0; i<drawcount; i++) {
+        this.gl.drawElements(mode, countsList[i+countsOffset], type, offsetsList[i+offsetsOffset]);
+      }
+    }
+    multiDrawArraysInstancedWEBGL(mode, firstsList, firstsOffset, countsList, countsOffset, instanceCountsList, instanceCountsOffset, drawcount) {
+      for(let i=0; i<drawcount; i++) {
+        this.gl.drawArraysInstanced(mode, firstsList[i+firstsOffset], countsList[i+countsOffset], instanceCountsList[i+instanceCountsOffset]);
+      }
+    }
+    multiDrawElementsInstancedWEBGL(mode, countsList, countsOffset, type, offsetsList, offsetsOffset, instanceCountsList, instanceCountsOffset, drawcount) {
+      for(let i=0; i<drawcount; i++) {
+        this.gl.drawElementsInstanced(mode, countsList[i+countsOffset], type, offsetsList[i+offsetsOffset], instanceCountsList[i+instanceCountsOffset]);
+      }
+    }
+  }
+
   if (!Scratch.extensions.unsandboxed)
     throw new Error("Simple 3D extension must be run unsandboxed");
 
@@ -1721,6 +1747,7 @@ void main() {
     gl.getExtension("MOZ_EXT_texture_filter_anisotropic") ||
     gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
   const ext_smi = gl.getExtension("OES_shader_multisample_interpolation");
+  const ext_md = gl.getExtension("WEBGL_multi_draw") || new MultiDrawPolyfill(gl);
   gl.enable(gl.DEPTH_TEST);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
   // prettier-ignore
@@ -2961,6 +2988,36 @@ void main() {
       },
     },
     {
+      opcode: "setMeshDrawRanges",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] vertex draw ranges from [STARTS] to [ENDS]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        STARTS: {
+          type: ArgumentType.STRING,
+          menu: "lists",
+        },
+        ENDS: {
+          type: ArgumentType.STRING,
+          menu: "lists",
+        },
+      },
+      def: function ({ NAME, STARTS, ENDS }, { target }) {
+        const mesh = meshes.get(Cast.toString(NAME));
+        const startsList = target.lookupVariableByNameAndType(STARTS, "list");
+        const endsList = target.lookupVariableByNameAndType(ENDS, "list");
+        if (!startsList || !endsList || !mesh) return;
+        const starts = startsList.value.map(x => Math.max(1, Math.floor(Cast.toNumber(x))) - 1);
+        const ends = endsList.value.map(x => Math.max(0, Math.floor(Cast.toNumber(x))));
+        const lengths = ends.map((x,i) => Math.max(0, ends[i] - starts[i]));
+        mesh.myData.drawRanges = [starts, lengths];
+        mesh.update();
+      },
+    },
+    {
       opcode: "setMeshInstanceLimit",
       blockType: BlockType.COMMAND,
       text: "set [NAME] instance draw limit [END]",
@@ -3304,71 +3361,131 @@ void main() {
           transforms.modelToWorld
         );
 
-        let start = 0;
-        let amount = mesh.buffers.indices
-          ? mesh.buffers.indices.length
-          : length;
-        if (mesh.data.drawRange) {
-          const size = mesh.buffers.indices
-            ? mesh.buffers.indices.bytesPerEl
-            : 1;
-          start = mesh.data.drawRange[0] * size;
-          const end = Math.min(
-            mesh.data.drawRange[0] + mesh.data.drawRange[1],
-            amount
-          );
-          amount = end - mesh.data.drawRange[0];
-        }
-        if (mesh.buffers.instanceTransforms) {
-          let instanceCount = mesh.buffers.instanceTransforms.length;
-          if (
-            mesh.data.maxInstances &&
-            mesh.data.maxInstances < instanceCount
-          ) {
-            instanceCount = mesh.data.maxInstances;
+
+        if (mesh.data.drawRanges && mesh.data.drawRanges[0].length == mesh.data.drawRanges[1].length) {
+          const multiDrawCount = mesh.data.drawRanges[0].length;
+          let starts = [];
+          let amounts = [];
+          for(let i=0; i<multiDrawCount; i++) {
+            const drStart = mesh.data.drawRanges[0][i];
+            const drAmount = mesh.data.drawRanges[1][i];
+            const amountMax = mesh.buffers.indices ? mesh.buffers.indices.length : length;
+            const size = mesh.buffers.indices ? mesh.buffers.indices.bytesPerEl : 1;
+            const start = drStart * size;
+            const end = Math.min(drStart + drAmount, amountMax);
+            const amount = end - drStart;
+            starts.push(start);
+            amounts.push(amount);
           }
-          if (mesh.buffers.indices) {
-            const indexTypes = [
-              null,
-              gl.UNSIGNED_BYTE,
-              gl.UNSIGNED_SHORT,
-              null,
-              gl.UNSIGNED_INT,
-            ];
-            gl.drawElementsInstanced(
-              mesh.data.primitives ?? gl.TRIANGLES,
-              amount,
-              indexTypes[mesh.buffers.indices.bytesPerEl],
-              start,
-              instanceCount
-            );
+          if (mesh.buffers.instanceTransforms) {
+            let instanceCount = mesh.buffers.instanceTransforms.length;
+            if (mesh.data.maxInstances && instanceCount > mesh.data.maxInstances) {
+              instanceCount = mesh.data.maxInstances;
+            }
+            if (mesh.buffers.indices) {
+              const indexTypes = [
+                null,
+                gl.UNSIGNED_BYTE,
+                gl.UNSIGNED_SHORT,
+                null,
+                gl.UNSIGNED_INT,
+              ];
+              ext_md.multiDrawElementsInstancedWEBGL(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                amounts, 0,
+                indexTypes[mesh.buffers.indices.bytesPerEl],
+                starts, 0,
+                new Float32Array(multiDrawCount).fill(instanceCount), 0,
+                multiDrawCount
+              );
+            } else {
+              ext_md.multiDrawArraysInstancedWEBGL(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                starts, 0,
+                amounts, 0,
+                new Float32Array(multiDrawCount).fill(instanceCount), 0,
+                multiDrawCount
+              );
+            }
           } else {
-            gl.drawArraysInstanced(
-              mesh.data.primitives ?? gl.TRIANGLES,
-              start,
-              amount,
-              instanceCount
-            );
+            if (mesh.buffers.indices) {
+              const indexTypes = [
+                null,
+                gl.UNSIGNED_BYTE,
+                gl.UNSIGNED_SHORT,
+                null,
+                gl.UNSIGNED_INT,
+              ];
+              ext_md.multiDrawElementsWEBGL(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                amounts, 0,
+                indexTypes[mesh.buffers.indices.bytesPerEl],
+                starts, 0,
+                multiDrawCount
+              );
+            } else {
+              console.log(mesh.data.primitives ?? gl.TRIANGLES, starts, 0, amounts, 0, multiDrawCount);
+              ext_md.multiDrawArraysWEBGL(mesh.data.primitives ?? gl.TRIANGLES, starts, 0, amounts, 0, multiDrawCount);
+            }
           }
         } else {
-          if (mesh.buffers.indices) {
-            const indexTypes = [
-              null,
-              gl.UNSIGNED_BYTE,
-              gl.UNSIGNED_SHORT,
-              null,
-              gl.UNSIGNED_INT,
-            ];
-            gl.drawElements(
-              mesh.data.primitives ?? gl.TRIANGLES,
-              amount,
-              indexTypes[mesh.buffers.indices.bytesPerEl],
-              start
-            );
+          let start = 0;
+          let amount = mesh.buffers.indices ? mesh.buffers.indices.length : length;
+          if (mesh.data.drawRange) {
+            const size = mesh.buffers.indices ? mesh.buffers.indices.bytesPerEl : 1;
+            start = mesh.data.drawRange[0] * size;
+            const end = Math.min(mesh.data.drawRange[0] + mesh.data.drawRange[1], amount);
+            amount = end - mesh.data.drawRange[0];
+          }
+          if (mesh.buffers.instanceTransforms) {
+            let instanceCount = mesh.buffers.instanceTransforms.length;
+            if (mesh.data.maxInstances && instanceCount > mesh.data.maxInstances) {
+              instanceCount = mesh.data.maxInstances;
+            }
+            if (mesh.buffers.indices) {
+              const indexTypes = [
+                null,
+                gl.UNSIGNED_BYTE,
+                gl.UNSIGNED_SHORT,
+                null,
+                gl.UNSIGNED_INT,
+              ];
+              gl.drawElementsInstanced(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                amount,
+                indexTypes[mesh.buffers.indices.bytesPerEl],
+                start,
+                instanceCount
+              );
+            } else {
+              gl.drawArraysInstanced(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                start,
+                amount,
+                instanceCount
+              );
+            }
           } else {
-            gl.drawArrays(mesh.data.primitives ?? gl.TRIANGLES, start, amount);
+            if (mesh.buffers.indices) {
+              const indexTypes = [
+                null,
+                gl.UNSIGNED_BYTE,
+                gl.UNSIGNED_SHORT,
+                null,
+                gl.UNSIGNED_INT,
+              ];
+              gl.drawElements(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                amount,
+                indexTypes[mesh.buffers.indices.bytesPerEl],
+                start
+              );
+            } else {
+              gl.drawArrays(mesh.data.primitives ?? gl.TRIANGLES, start, amount);
+            }
           }
         }
+
         if (currentRenderTarget === canvasRenderTarget) {
           canvasDirty = true; // Telling extension to update texture
           renderer.dirty = true; // Telling renderer to redraw the screen
