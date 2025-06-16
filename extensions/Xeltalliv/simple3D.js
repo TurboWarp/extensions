@@ -2535,13 +2535,13 @@ void main() {
       },
       def: function ({ NAME, TRANSFORMS, MATRIXES }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
-        const myData = mesh.myData;
         const list = target.lookupVariableByNameAndType(
           Cast.toString(MATRIXES),
           "list"
         );
         if (!mesh || !list) return;
         const value = list.value.map(Cast.toNumber);
+        const myData = mesh.myData;
 
         if (TRANSFORMS == "original") {
           myData.bonesOrig = chunkArray(value, 16).map(m4.inverse);
