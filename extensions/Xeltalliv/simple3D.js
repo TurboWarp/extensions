@@ -1259,6 +1259,9 @@ uniform mat4 u_model;
 #ifdef BONE_COUNT
 uniform mat4 u_bones[BONE_COUNT];
 #endif
+#ifdef POINT_SIZE
+uniform float u_point_size;
+#endif
 uniform vec2 u_uvOffset;
 uniform vec3 u_fog_position;
 
@@ -1355,6 +1358,9 @@ void main() {
 #endif
 #ifdef FOG_POS
   v_viewpos -= u_fog_position;
+#endif
+#ifdef POINT_SIZE
+  gl_PointSize = u_point_size;
 #endif
 }
 `;
@@ -2811,6 +2817,28 @@ void main() {
         if (!hasOwn(Primitives, primitivesName)) return;
         mesh.myData.primitives = Primitives[primitivesName];
         mesh.myData.primitivesName = primitivesName;
+        mesh.myData.primitivesSize = mesh.myData.primitivesSize || 1;
+        mesh.update();
+      },
+    },
+    {
+      opcode: "setMeshPrimitiveSize",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] primitive size [SIZE]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        SIZE: {
+          type: ArgumentType.STRING,
+          defaultValue: 1,
+        },
+      },
+      def: function ({ NAME, SIZE }, { target }) {
+        const mesh = meshes.get(Cast.toString(NAME));
+        if (!mesh) return;
+        mesh.myData.primitivesSize = Math.max(1, Cast.toNumber(SIZE));
         mesh.update();
       },
     },
@@ -3117,6 +3145,7 @@ void main() {
         if (mesh.data.makeOpaque) flags.push("MAKE_OPAQUE");
         if (mesh.data.billboarding) flags.push("BILLBOARD");
         if (mesh.data.uvOffset) flags.push("UV_OFFSET");
+        if (mesh.data.primitives === gl.POINTS) flags.push("POINT_SIZE");
         if (mesh.buffers.instanceTransforms) {
           flags.push("INSTANCING");
           if (mesh.buffers.instanceTransforms.size <= 3)
@@ -3340,6 +3369,12 @@ void main() {
         }
         if (mesh.data.alphaTest > 0) {
           gl.uniform1f(program.uloc.u_alpha_threshold, mesh.data.alphaTest);
+        }
+        if (mesh.data.primitives === gl.LINES || mesh.data.primitives === gl.LINE_STRIP || mesh.data.primitives === gl.LINE_LOOP) {
+          gl.lineWidth(mesh.data.primitivesSize);
+        }
+        if (mesh.data.primitives === gl.POINTS) {
+          gl.uniform1f(program.uloc.u_point_size, mesh.data.primitivesSize);
         }
 
         if (mesh.data.bonesDiff) {
