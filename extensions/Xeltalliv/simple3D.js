@@ -5176,10 +5176,17 @@ void main() {
   }
   gl.__proto__ = ogl; //*/
 
+  let warningShown = false;
   publicApi.i_will_not_ask_for_help_when_these_break = () => {
-    console.warn(
-      "WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. WHEN your code breaks, do not expect help.\n\nProper stable APIs will be added later."
-    );
+    if (!warningShown) {
+      console.warn(
+        "WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. WHEN your code breaks, do not expect help.\n\nProper stable APIs will be added later."
+      );
+      if (runtime.extensionManager.isExtensionURLLoaded("https://extensions.turbowarp.org/Xeltalliv/simple3D.js")) {
+        alert("WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. If you are making a project, please load Simple3D from a file or from text to prevent it from auto-updating. To do it, load correct version of Simple3D first, then open sb3 file.");
+      }
+      warningShown = true;
+    }
     return {
       canvas,
       gl,
