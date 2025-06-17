@@ -4158,6 +4158,55 @@ void main() {
       },
     },
     {
+      opcode: "matSkew",
+      blockType: BlockType.COMMAND,
+      text: "skew [AXIS1] by [FACTOR] [AXIS2]",
+      arguments: {
+        AXIS1: {
+          type: ArgumentType.STRING,
+          menu: "axis",
+        },
+        AXIS2: {
+          type: ArgumentType.STRING,
+          menu: "axis",
+        },
+        FACTOR: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 1,
+        },
+      },
+      def: function ({ AXIS1, AXIS2, FACTOR }) {
+        let index = 0;
+        switch (AXIS1) {
+          case "X":
+            index += 0;
+            break;
+          case "Y":
+            index += 1;
+            break;
+          case "Z":
+            index += 2;
+            break;
+          default:
+            return;
+        }
+        switch (AXIS2) {
+          case "X":
+            index += 0;
+            break;
+          case "Y":
+            index += 4;
+            break;
+          case "Z":
+            index += 8;
+            break;
+          default:
+            return;
+        }
+        transforms[selectedTransform][index] += Cast.toNumber(FACTOR);
+      },
+    },
+    {
       opcode: "matWrapper",
       blockType: BlockType.CONDITIONAL,
       text: "wrapper",
