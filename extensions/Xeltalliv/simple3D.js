@@ -1449,6 +1449,9 @@ void main() {
       console.log(gl.getShaderInfoLog(vsh));
       console.log(gl.getShaderInfoLog(fsh));
       console.log(gl.getProgramInfoLog(program));
+      console.log(flags);
+      console.log((defines + vshSrc).split("\n").map((m,i) => ((i+1)+"").padStart(3)+": "+m).join("\n"));
+      console.log((defines + fshSrc).split("\n").map((m,i) => ((i+1)+"").padStart(3)+": "+m).join("\n"));
     }
     gl.deleteShader(vsh);
     gl.deleteShader(fsh);
