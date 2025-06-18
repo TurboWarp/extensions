@@ -306,6 +306,7 @@
    * @returns {boolean}
    */
   const hasOwn = (obj, name) => Object.prototype.hasOwnProperty.call(obj, name);
+  const clamp = (value, min, max) => value > max ? max : (value < min ? min : value);
 
   class Buffer {
     constructor(type) {
@@ -1056,17 +1057,10 @@
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
       this._texture = texture;
-      this._nativeSize = renderer.getNativeSize();
-      this._boundOnNativeSizeChanged = this.onNativeSizeChanged.bind(this);
-      this._rotationCenter = [this._nativeSize[0] / 2, this._nativeSize[1] / 2];
-      renderer.on("NativeSizeChanged", this._boundOnNativeSizeChanged);
+      this.updateNativeSize();
       this.resizeCanvas();
     }
     dispose() {
-      renderer.removeListener(
-        "NativeSizeChanged",
-        this._boundOnNativeSizeChanged
-      );
       if (this._texture) {
         this._renderer.gl.deleteTexture(this._texture);
         this._texture = null;
@@ -1096,22 +1090,21 @@
       this.emitWasAltered();
     }
     resizeCanvas() {
-      if (renderer.useHighQualityRender) {
-        canvas.width = renderer.canvas.width;
-        canvas.height = renderer.canvas.height;
-      } else {
-        canvas.width = this._nativeSize[0];
-        canvas.height = this._nativeSize[1];
-      }
+      const nextSize = canvasResolution || (renderer.useHighQualityRender ? [renderer.canvas.width, renderer.canvas.height] : this._nativeSize);
+      if (canvas.width === nextSize[0] && canvas.height === nextSize[1]) return;
+      canvas.width = nextSize[0];
+      canvas.height = nextSize[1];
       if (currentRenderTarget == canvasRenderTarget)
         currentRenderTarget.updateViewport();
       runtime.startHats(`${extensionId}_whenCanvasResized`);
       this.updateContent();
     }
-    onNativeSizeChanged(event) {
-      this._nativeSize = event.newSize;
+    updateNativeSize() {
+      this._nativeSize = canvasNativeSize || renderer.getNativeSize();
       this._rotationCenter = [this._nativeSize[0] / 2, this._nativeSize[1] / 2];
-      this.resizeCanvas();
+    }
+    useNearest() {
+      return canvasUseNearest;
     }
   }
   function addSimple3DLayer(publicApi) {
@@ -1146,7 +1139,9 @@
     // Detect resizing
     drawable.setHighQuality = function (...args) {
       Object.getPrototypeOf(this).setHighQuality(...args);
-      this.skin.resizeCanvas();
+      runtime.startHats(`${extensionId}_whenStageResized`);
+      if (!canvasNativeSize) this.skin.updateNativeSize();
+      if (!canvasResolution) this.skin.resizeCanvas();
     };
 
     // Support for SharkPool's Layer Control extension
@@ -1706,6 +1701,29 @@ void main() {
     }
     return chunkedArray;
   }
+  function initGlContext(options = {}) {
+    lastContextOptions = options;
+    canvas = document.createElement("canvas");
+    gl = canvas.getContext("webgl2", options);
+    if (!gl)
+      alert(
+        "Simple 3D extension failed to get WebGL2 context. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
+      );
+    ext_af =
+      gl.getExtension("EXT_texture_filter_anisotropic") ||
+      gl.getExtension("MOZ_EXT_texture_filter_anisotropic") ||
+      gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+    ext_smi = gl.getExtension("OES_shader_multisample_interpolation");
+    ext_md = gl.getExtension("WEBGL_multi_draw") || new MultiDrawPolyfill(gl);
+    gl.enable(gl.DEPTH_TEST);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    texture = getDefaultTexture();
+  }
+  function disposeGlContext() {
+    gl.deleteTexture(texture);
+    canvas = null;
+    gl = null;
+  }
 
   class MultiDrawPolyfill {
     constructor(gl) {
@@ -1744,21 +1762,15 @@ void main() {
   const runtime = vm.runtime;
 
   const extensionId = "xeltallivSimple3D";
+  let lastContextOptions = {};
   let canvasDirty = true;
-  let canvas = document.createElement("canvas");
-  let gl = canvas.getContext("webgl2");
-  if (!gl)
-    alert(
-      "Simple 3D extension failed to get WebGL2 context. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
-    );
-  const ext_af =
-    gl.getExtension("EXT_texture_filter_anisotropic") ||
-    gl.getExtension("MOZ_EXT_texture_filter_anisotropic") ||
-    gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-  const ext_smi = gl.getExtension("OES_shader_multisample_interpolation");
-  const ext_md = gl.getExtension("WEBGL_multi_draw") || new MultiDrawPolyfill(gl);
-  gl.enable(gl.DEPTH_TEST);
-  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+  let canvas;
+  let gl;
+  let ext_af;
+  let ext_smi;
+  let ext_md;
+  let texture;
+  initGlContext();
   // prettier-ignore
   const Blendings = {
     "overwrite color (fastest for opaque)": [false],
@@ -1805,7 +1817,6 @@ void main() {
     "depth": gl.DEPTH_BUFFER_BIT,
     "color and depth": gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
   };
-  const texture = getDefaultTexture();
   const meshes = new Map();
   const programs = new ProgramManager();
   const modelDecoder = new ModelDecoder();
@@ -1837,8 +1848,29 @@ void main() {
   let currentCullingProps;
   let lastTextMeasurement;
   let transformCache;
+  let canvasNativeSize;
+  let canvasResolution;
+  let canvasUseNearest;
 
-  function resetEverything() {
+  function resetEverything(options = {}) {
+    for (const mesh of meshes.values()) {
+      mesh.destroy();
+    }
+    meshes.clear();
+    programs.clear();
+    modelDecoder.clear();
+    if (JSON.stringify(lastContextOptions) !== JSON.stringify(options)) {
+      console.log("Simple3D: Recreating canvas with different options.\nOld:", lastContextOptions, "New:", options);
+      disposeGlContext();
+      initGlContext(options);
+    }
+    canvasNativeSize = null;
+    canvasResolution = null;
+    canvasUseNearest = true;
+    if (skinId !== null) {
+      renderer._allSkins[skinId].updateNativeSize();
+      renderer._allSkins[skinId].resizeCanvas();
+    }
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     canvasRenderTarget.reset();
@@ -1871,12 +1903,6 @@ void main() {
       to: m4.identity(),
       matrix: m4.identity(),
     };
-    for (const mesh of meshes.values()) {
-      mesh.destroy();
-    }
-    meshes.clear();
-    programs.clear();
-    modelDecoder.clear();
     canvasDirty = true;
     renderer.dirty = true;
     runtime.requestRedraw();
@@ -4487,7 +4513,7 @@ void main() {
     {
       opcode: "renderToStage",
       blockType: BlockType.COMMAND,
-      text: "render to stage",
+      text: "render to canvas",
       def: function () {
         canvasRenderTarget.setAsRenderTarget();
       },
@@ -4827,18 +4853,146 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Resolution changes",
+      text: "Resolution changes and presentation",
+    },
+    {
+      opcode: "whenStageResized",
+      blockType: BlockType.EVENT,
+      text: "when stage resolution changes",
+      isEdgeActivated: false,
+    },
+    {
+      opcode: "stageResolutionWidth",
+      blockType: BlockType.REPORTER,
+      text: "horizontal stage resolution",
+      def: function() {
+        return renderer.canvas.width;
+      },
+    },
+    {
+      opcode: "stageResolutionHeight",
+      blockType: BlockType.REPORTER,
+      text: "vertical stage resolution",
+      def: function() {
+        return renderer.canvas.height;
+      },
+    },
+    {
+      opcode: "stageSizeWidth",
+      blockType: BlockType.REPORTER,
+      text: "stage width",
+      def: function() {
+        return runtime.stageWidth;
+      },
+    },
+    {
+      opcode: "stageSizeHeight",
+      blockType: BlockType.REPORTER,
+      text: "stage height",
+      def: function() {
+        return runtime.stageHeight;
+      },
+    },
+    {
+      opcode: "getHqPen",
+      blockType: BlockType.BOOLEAN,
+      text: "high quality pen enabled?",
+      def: function() {
+        return renderer.useHighQualityRender;
+      },
+    },
+    {
+      opcode: "setCanvasSize",
+      blockType: BlockType.COMMAND,
+      text: "set canvas [SIZE] to X: [X] Y: [Y]",
+      arguments: {
+        SIZE: {
+          type: ArgumentType.STRING,
+          defaultValue: "resolution",
+          menu: "canvasSizeProperty",
+        },
+        X: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 960,
+        },
+        Y: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 720,
+        },
+      },
+      def: function ({ SIZE, X, Y}) {
+        if (SIZE === "size") {
+           canvasNativeSize = [clamp(Cast.toNumber(X), 1, 4096), clamp(Cast.toNumber(Y), 1, 4096)];
+           renderer._allSkins[skinId].updateNativeSize();
+           if (!canvasResolution) renderer._allSkins[skinId].resizeCanvas();
+           canvasDirty = true; // Telling extension to update texture
+           renderer.dirty = true; // Telling renderer to redraw the screen
+           runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
+        if (SIZE === "resolution") {
+           canvasResolution = [clamp(Cast.toNumber(X), 1, 4096), clamp(Cast.toNumber(Y), 1, 4096)];
+           renderer._allSkins[skinId].resizeCanvas();
+           canvasDirty = true; // Telling extension to update texture
+           renderer.dirty = true; // Telling renderer to redraw the screen
+           runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
+      },
+    },
+    {
+      opcode: "clearCanvasSize",
+      blockType: BlockType.COMMAND,
+      text: "clear canvas [SIZE]",
+      arguments: {
+        SIZE: {
+          type: ArgumentType.STRING,
+          defaultValue: "resolution",
+          menu: "canvasSizeProperty",
+        },
+      },
+      def: function ({ SIZE, WIDTH, HEIGHT}) {
+        if (SIZE === "size") {
+           canvasNativeSize = null;
+           renderer._allSkins[skinId].updateNativeSize();
+           canvasDirty = true; // Telling extension to update texture
+           renderer.dirty = true; // Telling renderer to redraw the screen
+           runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
+        if (SIZE === "resolution") {
+           canvasResolution = null;
+           renderer._allSkins[skinId].resizeCanvas();
+           canvasDirty = true; // Telling extension to update texture
+           renderer.dirty = true; // Telling renderer to redraw the screen
+           runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
+      },
+    },
+    {
+      opcode: "canvasFilter",
+      blockType: BlockType.COMMAND,
+      text: "make scaled canvas look [FILTER]",
+      arguments: {
+        FILTER: {
+          type: ArgumentType.STRING,
+          menu: "textureFilter",
+        },
+      },
+      def: function ({ FILTER }) {
+        canvasUseNearest = FILTER !== "blurred";
+        canvasDirty = true; // Telling extension to update texture
+        renderer.dirty = true; // Telling renderer to redraw the screen
+        runtime.requestRedraw(); // Telling sequencer to yield in loops
+      },
     },
     {
       opcode: "whenCanvasResized",
       blockType: BlockType.EVENT,
-      text: "when resolution changes",
+      text: "when canvas resolution changes",
       isEdgeActivated: false,
     },
     {
       opcode: "canvasWidth",
       blockType: BlockType.REPORTER,
-      text: "stage width",
+      text: "canvas width",
       def: function () {
         return canvas.width;
       },
@@ -4846,9 +5000,48 @@ void main() {
     {
       opcode: "canvasHeight",
       blockType: BlockType.REPORTER,
-      text: "stage height",
+      text: "canvas height",
       def: function () {
         return canvas.height;
+      },
+    },
+    {
+      opcode: "displaySkin",
+      blockType: BlockType.COMMAND,
+      text: "display canvas on myself",
+      def: function (_, { target }) {
+        renderer._allDrawables[target.drawableID].skin = renderer._allSkins[skinId];
+        renderer._allDrawables[drawableId].updateVisible(false);
+        canvasDirty = true; // Telling extension to update texture
+        renderer.dirty = true; // Telling renderer to redraw the screen
+        runtime.requestRedraw(); // Telling sequencer to yield in loops
+      },
+    },
+    {
+      opcode: "restoreSkin",
+      blockType: BlockType.COMMAND,
+      text: "restore my look",
+      def: function (_, { target }) {
+        target.updateAllDrawableProperties();
+        renderer._allDrawables[drawableId].updateVisible(true);
+        canvasDirty = true; // Telling extension to update texture
+        renderer.dirty = true; // Telling renderer to redraw the screen
+        runtime.requestRedraw(); // Telling sequencer to yield in loops
+      },
+    },
+    {
+      opcode: "resetEverythingWithAntialias",
+      blockType: BlockType.COMMAND,
+      text: "reset everything with antialiasing [ANTIALIAS]",
+      arguments: {
+        ANTIALIAS: {
+          type: ArgumentType.STRING,
+          defaultValue: "true",
+          menu: "onOff",
+        },
+      },
+      def: function ({ ANTIALIAS }) {
+        resetEverything({ antialias: Cast.toBoolean(ANTIALIAS) });
       },
     },
   ];
@@ -5068,6 +5261,10 @@ void main() {
         acceptReporters: false,
         items: ["viewport box", "clipping box", "readback box"],
       },
+      canvasSizeProperty: {
+        acceptReporters: false,
+        items: ["size", "resolution"],
+      }
     },
   };
 
@@ -5083,8 +5280,7 @@ void main() {
       removeSimple3DLayer();
       modelDecoder.destroy();
       runtime.removeListener("PROJECT_LOADED", resetEverything);
-      canvas = null;
-      gl = null;
+      disposeGlContext();
       const noop = () => {};
       for (let block of definitions) {
         if (block == "---") continue;
