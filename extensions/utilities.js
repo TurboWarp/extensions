@@ -330,7 +330,7 @@
     }
 
     letters({ STRING, START, END }) {
-      return STRING.slice(Math.max(1, START) - 1, Math.min(STRING.length, END));
+      return Scratch.Cast.toString(STRING).slice(Math.max(1, START) - 1, Math.min(STRING.length, END));
     }
 
     clamp({ INPUT, MIN, MAX }) {
