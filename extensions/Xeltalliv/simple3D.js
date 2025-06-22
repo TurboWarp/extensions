@@ -306,7 +306,8 @@
    * @returns {boolean}
    */
   const hasOwn = (obj, name) => Object.prototype.hasOwnProperty.call(obj, name);
-  const clamp = (value, min, max) => value > max ? max : (value < min ? min : value);
+  const clamp = (value, min, max) =>
+    value > max ? max : value < min ? min : value;
 
   class Buffer {
     constructor(type) {
@@ -1090,7 +1091,11 @@
       this.emitWasAltered();
     }
     resizeCanvas() {
-      const nextSize = canvasResolution || (renderer.useHighQualityRender ? [renderer.canvas.width, renderer.canvas.height] : this._nativeSize);
+      const nextSize =
+        canvasResolution ||
+        (renderer.useHighQualityRender
+          ? [renderer.canvas.width, renderer.canvas.height]
+          : this._nativeSize);
       if (canvas.width === nextSize[0] && canvas.height === nextSize[1]) return;
       canvas.width = nextSize[0];
       canvas.height = nextSize[1];
@@ -1445,8 +1450,18 @@ void main() {
       console.log(gl.getShaderInfoLog(fsh));
       console.log(gl.getProgramInfoLog(program));
       console.log(flags);
-      console.log((defines + vshSrc).split("\n").map((m,i) => ((i+1)+"").padStart(3)+": "+m).join("\n"));
-      console.log((defines + fshSrc).split("\n").map((m,i) => ((i+1)+"").padStart(3)+": "+m).join("\n"));
+      console.log(
+        (defines + vshSrc)
+          .split("\n")
+          .map((m, i) => (i + 1 + "").padStart(3) + ": " + m)
+          .join("\n")
+      );
+      console.log(
+        (defines + fshSrc)
+          .split("\n")
+          .map((m, i) => (i + 1 + "").padStart(3) + ": " + m)
+          .join("\n")
+      );
     }
     gl.deleteShader(vsh);
     gl.deleteShader(fsh);
@@ -1730,24 +1745,78 @@ void main() {
     constructor(gl) {
       this.gl = gl;
     }
-    multiDrawArraysWEBGL(mode, firstsList, firstsOffset, countsList, countsOffset, drawcount) {
-      for(let i=0; i<drawcount; i++) {
-        this.gl.drawArrays(mode, firstsList[i+firstsOffset], countsList[i+countsOffset]);
+    multiDrawArraysWEBGL(
+      mode,
+      firstsList,
+      firstsOffset,
+      countsList,
+      countsOffset,
+      drawcount
+    ) {
+      for (let i = 0; i < drawcount; i++) {
+        this.gl.drawArrays(
+          mode,
+          firstsList[i + firstsOffset],
+          countsList[i + countsOffset]
+        );
       }
     }
-    multiDrawElementsWEBGL(mode, countsList, countsOffset, type, offsetsList, offsetsOffset, drawcount) {
-      for(let i=0; i<drawcount; i++) {
-        this.gl.drawElements(mode, countsList[i+countsOffset], type, offsetsList[i+offsetsOffset]);
+    multiDrawElementsWEBGL(
+      mode,
+      countsList,
+      countsOffset,
+      type,
+      offsetsList,
+      offsetsOffset,
+      drawcount
+    ) {
+      for (let i = 0; i < drawcount; i++) {
+        this.gl.drawElements(
+          mode,
+          countsList[i + countsOffset],
+          type,
+          offsetsList[i + offsetsOffset]
+        );
       }
     }
-    multiDrawArraysInstancedWEBGL(mode, firstsList, firstsOffset, countsList, countsOffset, instanceCountsList, instanceCountsOffset, drawcount) {
-      for(let i=0; i<drawcount; i++) {
-        this.gl.drawArraysInstanced(mode, firstsList[i+firstsOffset], countsList[i+countsOffset], instanceCountsList[i+instanceCountsOffset]);
+    multiDrawArraysInstancedWEBGL(
+      mode,
+      firstsList,
+      firstsOffset,
+      countsList,
+      countsOffset,
+      instanceCountsList,
+      instanceCountsOffset,
+      drawcount
+    ) {
+      for (let i = 0; i < drawcount; i++) {
+        this.gl.drawArraysInstanced(
+          mode,
+          firstsList[i + firstsOffset],
+          countsList[i + countsOffset],
+          instanceCountsList[i + instanceCountsOffset]
+        );
       }
     }
-    multiDrawElementsInstancedWEBGL(mode, countsList, countsOffset, type, offsetsList, offsetsOffset, instanceCountsList, instanceCountsOffset, drawcount) {
-      for(let i=0; i<drawcount; i++) {
-        this.gl.drawElementsInstanced(mode, countsList[i+countsOffset], type, offsetsList[i+offsetsOffset], instanceCountsList[i+instanceCountsOffset]);
+    multiDrawElementsInstancedWEBGL(
+      mode,
+      countsList,
+      countsOffset,
+      type,
+      offsetsList,
+      offsetsOffset,
+      instanceCountsList,
+      instanceCountsOffset,
+      drawcount
+    ) {
+      for (let i = 0; i < drawcount; i++) {
+        this.gl.drawElementsInstanced(
+          mode,
+          countsList[i + countsOffset],
+          type,
+          offsetsList[i + offsetsOffset],
+          instanceCountsList[i + instanceCountsOffset]
+        );
       }
     }
   }
@@ -1861,7 +1930,12 @@ void main() {
     programs.clear();
     modelDecoder.clear();
     if (JSON.stringify(lastContextOptions) !== JSON.stringify(options)) {
-      console.log("Simple3D: Recreating canvas with different options.\nOld:", lastContextOptions, "New:", options);
+      console.log(
+        "Simple3D: Recreating canvas with different options.\nOld:",
+        lastContextOptions,
+        "New:",
+        options
+      );
       disposeGlContext();
       initGlContext(options);
     }
@@ -3068,9 +3142,13 @@ void main() {
         const startsList = target.lookupVariableByNameAndType(STARTS, "list");
         const endsList = target.lookupVariableByNameAndType(ENDS, "list");
         if (!startsList || !endsList || !mesh) return;
-        const starts = startsList.value.map(x => Math.max(1, Math.floor(Cast.toNumber(x))) - 1);
-        const ends = endsList.value.map(x => Math.max(0, Math.floor(Cast.toNumber(x))));
-        const lengths = ends.map((x,i) => Math.max(0, ends[i] - starts[i]));
+        const starts = startsList.value.map(
+          (x) => Math.max(1, Math.floor(Cast.toNumber(x))) - 1
+        );
+        const ends = endsList.value.map((x) =>
+          Math.max(0, Math.floor(Cast.toNumber(x)))
+        );
+        const lengths = ends.map((x, i) => Math.max(0, ends[i] - starts[i]));
         mesh.myData.drawRanges = [starts, lengths];
         mesh.update();
       },
@@ -3400,7 +3478,11 @@ void main() {
         if (mesh.data.alphaTest > 0) {
           gl.uniform1f(program.uloc.u_alpha_threshold, mesh.data.alphaTest);
         }
-        if (mesh.data.primitives === gl.LINES || mesh.data.primitives === gl.LINE_STRIP || mesh.data.primitives === gl.LINE_LOOP) {
+        if (
+          mesh.data.primitives === gl.LINES ||
+          mesh.data.primitives === gl.LINE_STRIP ||
+          mesh.data.primitives === gl.LINE_LOOP
+        ) {
           gl.lineWidth(mesh.data.primitivesSize);
         }
         if (mesh.data.primitives === gl.POINTS) {
@@ -3426,16 +3508,22 @@ void main() {
           transforms.modelToWorld
         );
 
-
-        if (mesh.data.drawRanges && mesh.data.drawRanges[0].length == mesh.data.drawRanges[1].length) {
+        if (
+          mesh.data.drawRanges &&
+          mesh.data.drawRanges[0].length == mesh.data.drawRanges[1].length
+        ) {
           const multiDrawCount = mesh.data.drawRanges[0].length;
           let starts = [];
           let amounts = [];
-          for(let i=0; i<multiDrawCount; i++) {
+          for (let i = 0; i < multiDrawCount; i++) {
             const drStart = mesh.data.drawRanges[0][i];
             const drAmount = mesh.data.drawRanges[1][i];
-            const amountMax = mesh.buffers.indices ? mesh.buffers.indices.length : length;
-            const size = mesh.buffers.indices ? mesh.buffers.indices.bytesPerEl : 1;
+            const amountMax = mesh.buffers.indices
+              ? mesh.buffers.indices.length
+              : length;
+            const size = mesh.buffers.indices
+              ? mesh.buffers.indices.bytesPerEl
+              : 1;
             const start = drStart * size;
             const end = Math.min(drStart + drAmount, amountMax);
             const amount = end - drStart;
@@ -3444,7 +3532,10 @@ void main() {
           }
           if (mesh.buffers.instanceTransforms) {
             let instanceCount = mesh.buffers.instanceTransforms.length;
-            if (mesh.data.maxInstances && instanceCount > mesh.data.maxInstances) {
+            if (
+              mesh.data.maxInstances &&
+              instanceCount > mesh.data.maxInstances
+            ) {
               instanceCount = mesh.data.maxInstances;
             }
             if (mesh.buffers.indices) {
@@ -3457,18 +3548,24 @@ void main() {
               ];
               ext_md.multiDrawElementsInstancedWEBGL(
                 mesh.data.primitives ?? gl.TRIANGLES,
-                amounts, 0,
+                amounts,
+                0,
                 indexTypes[mesh.buffers.indices.bytesPerEl],
-                starts, 0,
-                new Float32Array(multiDrawCount).fill(instanceCount), 0,
+                starts,
+                0,
+                new Float32Array(multiDrawCount).fill(instanceCount),
+                0,
                 multiDrawCount
               );
             } else {
               ext_md.multiDrawArraysInstancedWEBGL(
                 mesh.data.primitives ?? gl.TRIANGLES,
-                starts, 0,
-                amounts, 0,
-                new Float32Array(multiDrawCount).fill(instanceCount), 0,
+                starts,
+                0,
+                amounts,
+                0,
+                new Float32Array(multiDrawCount).fill(instanceCount),
+                0,
                 multiDrawCount
               );
             }
@@ -3483,28 +3580,54 @@ void main() {
               ];
               ext_md.multiDrawElementsWEBGL(
                 mesh.data.primitives ?? gl.TRIANGLES,
-                amounts, 0,
+                amounts,
+                0,
                 indexTypes[mesh.buffers.indices.bytesPerEl],
-                starts, 0,
+                starts,
+                0,
                 multiDrawCount
               );
             } else {
-              console.log(mesh.data.primitives ?? gl.TRIANGLES, starts, 0, amounts, 0, multiDrawCount);
-              ext_md.multiDrawArraysWEBGL(mesh.data.primitives ?? gl.TRIANGLES, starts, 0, amounts, 0, multiDrawCount);
+              console.log(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                starts,
+                0,
+                amounts,
+                0,
+                multiDrawCount
+              );
+              ext_md.multiDrawArraysWEBGL(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                starts,
+                0,
+                amounts,
+                0,
+                multiDrawCount
+              );
             }
           }
         } else {
           let start = 0;
-          let amount = mesh.buffers.indices ? mesh.buffers.indices.length : length;
+          let amount = mesh.buffers.indices
+            ? mesh.buffers.indices.length
+            : length;
           if (mesh.data.drawRange) {
-            const size = mesh.buffers.indices ? mesh.buffers.indices.bytesPerEl : 1;
+            const size = mesh.buffers.indices
+              ? mesh.buffers.indices.bytesPerEl
+              : 1;
             start = mesh.data.drawRange[0] * size;
-            const end = Math.min(mesh.data.drawRange[0] + mesh.data.drawRange[1], amount);
+            const end = Math.min(
+              mesh.data.drawRange[0] + mesh.data.drawRange[1],
+              amount
+            );
             amount = end - mesh.data.drawRange[0];
           }
           if (mesh.buffers.instanceTransforms) {
             let instanceCount = mesh.buffers.instanceTransforms.length;
-            if (mesh.data.maxInstances && instanceCount > mesh.data.maxInstances) {
+            if (
+              mesh.data.maxInstances &&
+              instanceCount > mesh.data.maxInstances
+            ) {
               instanceCount = mesh.data.maxInstances;
             }
             if (mesh.buffers.indices) {
@@ -3546,7 +3669,11 @@ void main() {
                 start
               );
             } else {
-              gl.drawArrays(mesh.data.primitives ?? gl.TRIANGLES, start, amount);
+              gl.drawArrays(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                start,
+                amount
+              );
             }
           }
         }
@@ -4866,7 +4993,7 @@ void main() {
       opcode: "stageResolutionWidth",
       blockType: BlockType.REPORTER,
       text: "horizontal stage resolution",
-      def: function() {
+      def: function () {
         return renderer.canvas.width;
       },
     },
@@ -4874,7 +5001,7 @@ void main() {
       opcode: "stageResolutionHeight",
       blockType: BlockType.REPORTER,
       text: "vertical stage resolution",
-      def: function() {
+      def: function () {
         return renderer.canvas.height;
       },
     },
@@ -4882,7 +5009,7 @@ void main() {
       opcode: "stageSizeWidth",
       blockType: BlockType.REPORTER,
       text: "stage width",
-      def: function() {
+      def: function () {
         return runtime.stageWidth;
       },
     },
@@ -4890,7 +5017,7 @@ void main() {
       opcode: "stageSizeHeight",
       blockType: BlockType.REPORTER,
       text: "stage height",
-      def: function() {
+      def: function () {
         return runtime.stageHeight;
       },
     },
@@ -4898,7 +5025,7 @@ void main() {
       opcode: "getHqPen",
       blockType: BlockType.BOOLEAN,
       text: "high quality pen enabled?",
-      def: function() {
+      def: function () {
         return renderer.useHighQualityRender;
       },
     },
@@ -4921,21 +5048,27 @@ void main() {
           defaultValue: 720,
         },
       },
-      def: function ({ SIZE, X, Y}) {
+      def: function ({ SIZE, X, Y }) {
         if (SIZE === "size") {
-           canvasNativeSize = [clamp(Cast.toNumber(X), 1, 4096), clamp(Cast.toNumber(Y), 1, 4096)];
-           renderer._allSkins[skinId].updateNativeSize();
-           if (!canvasResolution) renderer._allSkins[skinId].resizeCanvas();
-           canvasDirty = true; // Telling extension to update texture
-           renderer.dirty = true; // Telling renderer to redraw the screen
-           runtime.requestRedraw(); // Telling sequencer to yield in loops
+          canvasNativeSize = [
+            clamp(Cast.toNumber(X), 1, 4096),
+            clamp(Cast.toNumber(Y), 1, 4096),
+          ];
+          renderer._allSkins[skinId].updateNativeSize();
+          if (!canvasResolution) renderer._allSkins[skinId].resizeCanvas();
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
         }
         if (SIZE === "resolution") {
-           canvasResolution = [clamp(Cast.toNumber(X), 1, 4096), clamp(Cast.toNumber(Y), 1, 4096)];
-           renderer._allSkins[skinId].resizeCanvas();
-           canvasDirty = true; // Telling extension to update texture
-           renderer.dirty = true; // Telling renderer to redraw the screen
-           runtime.requestRedraw(); // Telling sequencer to yield in loops
+          canvasResolution = [
+            clamp(Cast.toNumber(X), 1, 4096),
+            clamp(Cast.toNumber(Y), 1, 4096),
+          ];
+          renderer._allSkins[skinId].resizeCanvas();
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
         }
       },
     },
@@ -4950,20 +5083,20 @@ void main() {
           menu: "canvasSizeProperty",
         },
       },
-      def: function ({ SIZE, WIDTH, HEIGHT}) {
+      def: function ({ SIZE, WIDTH, HEIGHT }) {
         if (SIZE === "size") {
-           canvasNativeSize = null;
-           renderer._allSkins[skinId].updateNativeSize();
-           canvasDirty = true; // Telling extension to update texture
-           renderer.dirty = true; // Telling renderer to redraw the screen
-           runtime.requestRedraw(); // Telling sequencer to yield in loops
+          canvasNativeSize = null;
+          renderer._allSkins[skinId].updateNativeSize();
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
         }
         if (SIZE === "resolution") {
-           canvasResolution = null;
-           renderer._allSkins[skinId].resizeCanvas();
-           canvasDirty = true; // Telling extension to update texture
-           renderer.dirty = true; // Telling renderer to redraw the screen
-           runtime.requestRedraw(); // Telling sequencer to yield in loops
+          canvasResolution = null;
+          renderer._allSkins[skinId].resizeCanvas();
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
         }
       },
     },
@@ -5011,7 +5144,8 @@ void main() {
       blockType: BlockType.COMMAND,
       text: "display canvas on myself",
       def: function (_, { target }) {
-        renderer._allDrawables[target.drawableID].skin = renderer._allSkins[skinId];
+        renderer._allDrawables[target.drawableID].skin =
+          renderer._allSkins[skinId];
         canvasDirty = true; // Telling extension to update texture
         renderer.dirty = true; // Telling renderer to redraw the screen
         runtime.requestRedraw(); // Telling sequencer to yield in loops
@@ -5288,7 +5422,7 @@ void main() {
       canvasSizeProperty: {
         acceptReporters: false,
         items: ["size", "resolution"],
-      }
+      },
     },
   };
 
@@ -5402,8 +5536,14 @@ void main() {
       console.warn(
         "WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. WHEN your code breaks, do not expect help.\n\nProper stable APIs will be added later."
       );
-      if (runtime.extensionManager.isExtensionURLLoaded("https://extensions.turbowarp.org/Xeltalliv/simple3D.js")) {
-        alert("WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. If you are making a project, please load Simple3D from a file or from text to prevent it from auto-updating. To do it, load correct version of Simple3D first, then open sb3 file.");
+      if (
+        runtime.extensionManager.isExtensionURLLoaded(
+          "https://extensions.turbowarp.org/Xeltalliv/simple3D.js"
+        )
+      ) {
+        alert(
+          "WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. If you are making a project, please load Simple3D from a file or from text to prevent it from auto-updating. To do it, load correct version of Simple3D first, then open sb3 file."
+        );
       }
       warningShown = true;
     }
