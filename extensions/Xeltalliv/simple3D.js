@@ -5012,7 +5012,6 @@ void main() {
       text: "display canvas on myself",
       def: function (_, { target }) {
         renderer._allDrawables[target.drawableID].skin = renderer._allSkins[skinId];
-        renderer._allDrawables[drawableId].updateVisible(false);
         canvasDirty = true; // Telling extension to update texture
         renderer.dirty = true; // Telling renderer to redraw the screen
         runtime.requestRedraw(); // Telling sequencer to yield in loops
@@ -5024,7 +5023,24 @@ void main() {
       text: "restore my look",
       def: function (_, { target }) {
         target.updateAllDrawableProperties();
-        renderer._allDrawables[drawableId].updateVisible(true);
+        canvasDirty = true; // Telling extension to update texture
+        renderer.dirty = true; // Telling renderer to redraw the screen
+        runtime.requestRedraw(); // Telling sequencer to yield in loops
+      },
+    },
+    {
+      opcode: "setLayerVisibility",
+      blockType: BlockType.COMMAND,
+      text: "set Simple3D layer visibility to [STATE]",
+      arguments: {
+        STATE: {
+          type: ArgumentType.STRING,
+          defaultValue: "true",
+          menu: "visibility",
+        },
+      },
+      def: function ({ STATE }) {
+        renderer._allDrawables[drawableId].updateVisible(Cast.toBoolean(STATE));
         canvasDirty = true; // Telling extension to update texture
         renderer.dirty = true; // Telling renderer to redraw the screen
         runtime.requestRedraw(); // Telling sequencer to yield in loops
@@ -5085,6 +5101,13 @@ void main() {
         items: [
           { text: "on", value: "true" },
           { text: "off", value: "false" },
+        ],
+      },
+      visibility: {
+        acceptReporters: true,
+        items: [
+          { text: "visible", value: "true" },
+          { text: "hidden", value: "false" },
         ],
       },
       meshProperties: {
