@@ -1423,10 +1423,8 @@
       else if (args.TYPE === "detune") sound.detune = value * 1000;
       else if (args.TYPE === "speed") sound.speed = Math.max(0, value);
       else if (args.TYPE === "gain") sound.gain = value;
-      else if (args.TYPE === "attack")
-        sound.attack = Math.max(0, value);
-      else if (args.TYPE === "release")
-        sound.release = Math.max(0, value);
+      else if (args.TYPE === "attack") sound.attack = Math.max(0, value);
+      else if (args.TYPE === "release") sound.release = Math.max(0, value);
       else if (args.TYPE === "pan") {
         const pan = new Pizzicato.Effects.StereoPanner({
           pan: Math.max(-1, Math.min(1, value)),
