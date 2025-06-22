@@ -1704,6 +1704,7 @@ void main() {
   function initGlContext(options = {}) {
     lastContextOptions = options;
     canvas = document.createElement("canvas");
+    canvas.id = "simple3d-canvas";
     gl = canvas.getContext("webgl2", options);
     if (!gl)
       alert(
