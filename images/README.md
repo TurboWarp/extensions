@@ -321,3 +321,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## CubesterYT/KeySimulation.svg
  - Created by [@SharkPool-SP](https://github.com/SharkPool-SP/)
+
+## wiktorlaskowski/location.svg
+ - Created by [@wiktorlaskowski](https://github.com/wiktorlaskowski/)
