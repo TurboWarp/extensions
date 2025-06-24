@@ -644,7 +644,6 @@
       if (element) element.remove();
 
       if (input.type === "dropdown") {
-        const width = askInput.parentNode.getBoundingClientRect().width;
         const dropdown = document.createElement("select");
         dropdown.id = "SP-input_select";
         dropdown.setAttribute("class", askInput.getAttribute("class"));
@@ -905,7 +904,7 @@
       if (askBoxSettings.width < 0) askBoxSettings.width = undefined;
 
       askBoxSettings.x = Cast.toNumber(args.x);
-      askBoxSettings.y = args.y === NaN ? undefined : Cast.toNumber(args.y) * -1;
+      askBoxSettings.y = isNaN(args.y) ? undefined : Cast.toNumber(args.y) * -1;
       if (isNaN(args.y)) askBoxSettings.y = undefined;
       this.updateAskMonitor();
     }
