@@ -1,3 +1,10 @@
+// Name: Raycasting
+// ID: raycast
+// Description: Throw invisible rays and report information about the sprites it collided with. 
+// By: GatocDev https://scratch.mit.edu/users/Gatoc_Dev/
+// Original: GatocDev
+// License: MPL-2.0
+
 (function(Scratch) {
     'use strict';
 
