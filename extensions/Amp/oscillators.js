@@ -5,7 +5,7 @@
 // License: MPL-2.0
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
   let context = new AudioContext();
   let oscillator = new OscillatorNode(context);
   oscillator.connect(context.destination);
@@ -15,54 +15,54 @@
   class OscillatorExtension {
     getInfo() {
       return {
-        id: 'oscillator',
-        name: Scratch.translate('Oscillators'),
+        id: "oscillator",
+        name: Scratch.translate("Oscillators"),
         blocks: [
           {
-            opcode: 'startFreq',
+            opcode: "startFreq",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('start [WAVEFORM] wave at [FREQ] Hz'),
+            text: Scratch.translate("start [WAVEFORM] wave at [FREQ] Hz"),
             arguments: {
               WAVEFORM: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'WAVEFORM_MENU'
+                menu: "WAVEFORM_MENU",
               },
               FREQ: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 440
-              }
-            }
+                defaultValue: 440,
+              },
+            },
           },
           {
-            opcode: 'stopFreq',
+            opcode: "stopFreq",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stop wave")
-          }
+            text: Scratch.translate("stop wave"),
+          },
         ],
         menus: {
           WAVEFORM_MENU: {
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate('sine'),
-                value: 'sine'
+                text: Scratch.translate("sine"),
+                value: "sine",
               },
               {
-                text: Scratch.translate('square'),
-                value: 'square'
+                text: Scratch.translate("square"),
+                value: "square",
               },
               {
-                text: Scratch.translate('sawtooth'),
-                value: 'sawtooth'
+                text: Scratch.translate("sawtooth"),
+                value: "sawtooth",
               },
               {
-                text: Scratch.translate('triangle'),
-                value: 'triangle'
-              }
-            ]
-          }
-        }
-      }
+                text: Scratch.translate("triangle"),
+                value: "triangle",
+              },
+            ],
+          },
+        },
+      };
     }
 
     startFreq(args) {
