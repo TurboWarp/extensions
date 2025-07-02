@@ -3,7 +3,7 @@
 // Description: New Powerful Message Blocks that work with Vanilla Blocks!
 // By: SharkPool
 
-// Version 1.3.1
+// Version 1.3.11
 
 (function (Scratch) {
   "use strict";
@@ -552,8 +552,8 @@
     toggleOverlap(args) {
       const msg = Scratch.Cast.toString(args.BROADCAST_OPTION).toUpperCase();
       const index = threadedMsgs.indexOf(msg);
-      if (args.TOGGLE === "on" && index > -1) threadedMsgs.push(msg);
-      else if (args.TOGGLE === "off" && index === -1) threadedMsgs.splice(index, 1);
+      if (args.TOGGLE === "on" && index === -1) threadedMsgs.push(msg);
+      else if (args.TOGGLE === "off" && index > -1) threadedMsgs.splice(index, 1);
     }
 
     whenReceived(args, util) {
