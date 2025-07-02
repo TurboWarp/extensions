@@ -2,6 +2,7 @@
 // ID: SPrenderControl
 // Description: Control Visuals of Sprites, Backdrops, Pen, Video, and More!
 // By: SharkPool
+// License: MIT
 
 // Version V.1.2.1
 
@@ -26,7 +27,7 @@
     getInfo() {
       return {
         id: "SPrenderControl",
-        name: "Renderer Control",
+        name: Scratch.translate("Renderer Control"),
         color1: "#5386b5",
         color2: "#3d6184",
         color3: "#2f4c67",
