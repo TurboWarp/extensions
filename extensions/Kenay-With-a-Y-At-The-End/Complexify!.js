@@ -42,9 +42,8 @@ Thanks [@CubesterYT] and [@CubesterYT] for just passing by.
 And thanks [@Clickertale2] for being always there, always helping.
 */
 
-'use strict';
 (function (Scratch) {
-
+  "use strict";
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("Complexify! must run unsandboxed");
     //Y'know, for the `util` part to make sense.
@@ -2047,6 +2046,7 @@ function gamma(a, b) {
       SB.SPgradients = { gradientUrls: {}, patched: false };
       const BSP = SB.BlockSvg.prototype, BSPR = BSP.render;
       BSP.render = function(...args) {
+        /* calls the global ReduxStore */
         const res = BSPR.apply(this, args);
         let category;
         if (this?.svgPath_ && this?.category_ && (category = this.type.slice(0, this.type.indexOf("_"))) && SB.SPgradients.gradientUrls[category]) {
