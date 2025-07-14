@@ -42,7 +42,7 @@ Thanks [@CubesterYT] and [@CubesterYT] for just passing by.
 And thanks [@Clickertale2] for being always there, always helping.
 */
 
-
+'use strict';
 (function (Scratch) {
 
   if (!Scratch.extensions.unsandboxed) {
@@ -609,14 +609,6 @@ And thanks [@Clickertale2] for being always there, always helping.
     dir: function () { //Short for Direction. Don't ask why.
      return this.sign().log().mul(0, -1);
     },
-    root: function (a, b) { //Still in the works
-      var rt = l(a, b);
-	  let this_0 = this.isZero();
-	  let this_inf = this.isInfinite();
-	  if (rt.re == 0 && rt.im == 0) return c.INFINITY;
-	  if (!(isFinite(rt.re) && isFinite(rt.im))) return c.ZERO;
-      return this.pow(Complex(COMPLEX1).inverse())
-    },
 	/*
     inverse: function () {
       if (this.isZero()) return c.INFINITY;
@@ -666,6 +658,7 @@ function gamma(a, b) {
     return classicFac(x - 1) * x;
   }
   function factorial(z, t) {
+    if (Number.isInteger(z)) return classicFac(z)
     for (let i = 1; i <= t; i++) {
       const numerator = c(1 + 1 / i).pow(z);
       const denominator = z.div(i).add(1);
@@ -2054,17 +2047,11 @@ function gamma(a, b) {
       SB.SPgradients = { gradientUrls: {}, patched: false };
       const BSP = SB.BlockSvg.prototype, BSPR = BSP.render;
       BSP.render = function(...args) {
-        /* calls the global ReduxStore */
-        const blockTheme = ReduxStore.getState().scratchGui?.theme?.theme?.blocks;
         const res = BSPR.apply(this, args);
         let category;
         if (this?.svgPath_ && this?.category_ && (category = this.type.slice(0, this.type.indexOf("_"))) && SB.SPgradients.gradientUrls[category]) {
           // Cool checks, could we add more?
             this.svgPath_.setAttribute("fill", "url(#kenayComplexify-GRAD)"); //gradient id
-            if (blockTheme === "dark") {
-              this.svgPath_.setAttribute("fill-opacity", ".5");
-              this.svgPath_.setAttribute("stroke", "#0daaff");
-          }
         }
         return res;
       }
