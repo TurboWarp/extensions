@@ -4,45 +4,41 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.2.0.0
+// Version V.2.0.1
 
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed)
-    throw new Error("Script Control must be run unsandboxed");
+  if (!Scratch.extensions.unsandboxed) throw new Error("Script Control must be run unsandboxed");
 
   const menuIconURI =
-    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTguMTU4IiBoZWlnaHQ9IjExOC4xNTgiIHZpZXdCb3g9IjAgMCAxMTguMTU4IDExOC4xNTgiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCB4MT0iMTk4LjIyNSIgeTE9IjEzOC4yMjUiIHgyPSIyODEuNzc1IiB5Mj0iMjIxLjc3NSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGlkPSJhIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxMzUzNDciLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxZjMzMzQiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCB4MT0iMjAyLjA5NSIgeTE9IjE0Mi4wOTUiIHgyPSIyNzcuOTA1IiB5Mj0iMjE3LjkwNSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGlkPSJiIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxZTgzNzAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzYTYwNjIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48ZyBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0xOTguMjI1IDIyMS43NzVjLTIzLjA3Mi0yMy4wNzItMjMuMDcyLTYwLjQ3OCAwLTgzLjU1czYwLjQ3OC0yMy4wNzIgODMuNTUgMCAyMy4wNzIgNjAuNDc4IDAgODMuNTUtNjAuNDc4IDIzLjA3Mi04My41NSAwIiBmaWxsPSJ1cmwoI2EpIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTgwLjkyMSAtMTIwLjkyMSkiLz48cGF0aCBkPSJNMjAyLjA5NSAyMTcuOTA1Yy0yMC45MzQtMjAuOTM0LTIwLjkzNC01NC44NzYgMC03NS44MXM1NC44NzYtMjAuOTM0IDc1LjgxIDAgMjAuOTM0IDU0Ljg3NiAwIDc1LjgxLTU0Ljg3NiAyMC45MzQtNzUuODEgMCIgZmlsbD0idXJsKCNiKSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4MC45MjEgLTEyMC45MjEpIi8+PHBhdGggZD0iTTEwMi42MTEgNjcuNDc2Yy4yMiAyLjE1Ni0xLjA0NiA0LjA1NC0yLjgyNyA0LjIzNmwtMzQuMTkyIDMuNWMtLjg1OC4wODgtMS42MzYuNTc4LTIuMTYgMS4zNzRsLTMuOTQ3IDUuOTEzYy0uNTI1Ljc4OC0xLjMwMyAxLjI4NS0yLjE2IDEuMzczTDQwLjYzOCA4NS41OGMtLjg1OC4wODgtMS43Mi0uMjQyLTIuNDAxLS45MDZsLTUuMDU2LTQuOTkyYy0uNjgxLS42NzItMS41NDItLjk5NS0yLjM5NC0uOTA4bC04LjQwOC44NjFjLTEuNzguMTgyLTMuNDA1LTEuNDItMy42MjYtMy41NzVsLTMuMjA2LTMxLjMyM2MtLjIyLTIuMTU2IDEuMDQ2LTQuMDU0IDIuODI3LTQuMjM2bDguMzQzLS44NTRjLjg1OC0uMDg4IDEuNzIuMjQyIDIuMzk0LjkwN2w1LjEyOCA1LjA2NGMuNjgxLjY2NCAxLjU0My45OTQgMi40MDEuOTA2bDE2LjY4Ny0xLjcwOGMuODU4LS4wODggMS42MzUtLjU4NSAyLjE2LTEuMzczbDMuOTk3LTUuOTk4Yy41MzItLjc4OCAxLjMwOS0xLjI4NiAyLjE2Ny0xLjM3NGwzNC4xMjgtMy40OTJjMS43OC0uMTgyIDMuNDA1IDEuNDIgMy42MjYgMy41NzV6TTgwLjAwOCAzOS4zODRsLTEyLjUyNCAxLjI4MmMtOC4wNy44MjYtMTMuOTQyIDguMDM3LTEzLjExNiAxNi4xMDdzOC4wMzggMTMuOTQyIDE2LjEwNyAxMy4xMTZsMTIuNTI0LTEuMjgyYzguMDctLjgyNiAxMy45NDEtOC4wMzcgMTMuMTE1LTE2LjEwN3MtOC4wMzctMTMuOTQxLTE2LjEwNi0xMy4xMTZtLS4zMTkgMTQuNzk3Yy41OSA1Ljc2NC0zLjYwNSAxMC45MTUtOS4zNjkgMTEuNTA1YTEwLjQ5MiAxMC40OTIgMCAxIDEtMi4xMzQtMjAuODc1YzUuNzY0LS41ODkgMTAuOTE0IDMuNjA2IDExLjUwMyA5LjM3IiBmaWxsPSIjZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L2c+PC9zdmc+";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTguMTU4IiBoZWlnaHQ9IjExOC4xNTgiIHZpZXdCb3g9IjAgMCAxMTguMTU4IDExOC4xNTgiPjxkZWZzPjxsaW5lYXJHcmFkaWVudCB4MT0iMTk4LjIyNSIgeTE9IjEzOC4yMjUiIHgyPSIyODEuNzc1IiB5Mj0iMjIxLjc3NSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGlkPSJhIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxMzUzNDciLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMxZjMzMzQiLz48L2xpbmVhckdyYWRpZW50PjxsaW5lYXJHcmFkaWVudCB4MT0iMjAyLjA5NSIgeTE9IjE0Mi4wOTUiIHgyPSIyNzcuOTA1IiB5Mj0iMjE3LjkwNSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIGlkPSJiIj48c3RvcCBvZmZzZXQ9IjAiIHN0b3AtY29sb3I9IiMxZTgzNzAiLz48c3RvcCBvZmZzZXQ9IjEiIHN0b3AtY29sb3I9IiMzYTYwNjIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48ZyBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0xOTguMjI1IDIyMS43NzVjLTIzLjA3Mi0yMy4wNzItMjMuMDcyLTYwLjQ3OCAwLTgzLjU1czYwLjQ3OC0yMy4wNzIgODMuNTUgMCAyMy4wNzIgNjAuNDc4IDAgODMuNTUtNjAuNDc4IDIzLjA3Mi04My41NSAwIiBmaWxsPSJ1cmwoI2EpIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTgwLjkyMSAtMTIwLjkyMSkiLz48cGF0aCBkPSJNMjAyLjA5NSAyMTcuOTA1Yy0yMC45MzQtMjAuOTM0LTIwLjkzNC01NC44NzYgMC03NS44MXM1NC44NzYtMjAuOTM0IDc1LjgxIDAgMjAuOTM0IDU0Ljg3NiAwIDc1LjgxLTU0Ljg3NiAyMC45MzQtNzUuODEgMCIgZmlsbD0idXJsKCNiKSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4MC45MjEgLTEyMC45MjEpIi8+PHBhdGggZD0iTTEwMi42MTEgNjcuNDc2Yy4yMiAyLjE1Ni0xLjA0NiA0LjA1NC0yLjgyNyA0LjIzNmwtMzQuMTkyIDMuNWMtLjg1OC4wODgtMS42MzYuNTc4LTIuMTYgMS4zNzRsLTMuOTQ3IDUuOTEzYy0uNTI1Ljc4OC0xLjMwMyAxLjI4NS0yLjE2IDEuMzczTDQwLjYzOCA4NS41OGMtLjg1OC4wODgtMS43Mi0uMjQyLTIuNDAxLS45MDZsLTUuMDU2LTQuOTkyYy0uNjgxLS42NzItMS41NDItLjk5NS0yLjM5NC0uOTA4bC04LjQwOC44NjFjLTEuNzguMTgyLTMuNDA1LTEuNDItMy42MjYtMy41NzVsLTMuMjA2LTMxLjMyM2MtLjIyLTIuMTU2IDEuMDQ2LTQuMDU0IDIuODI3LTQuMjM2bDguMzQzLS44NTRjLjg1OC0uMDg4IDEuNzIuMjQyIDIuMzk0LjkwN2w1LjEyOCA1LjA2NGMuNjgxLjY2NCAxLjU0My45OTQgMi40MDEuOTA2bDE2LjY4Ny0xLjcwOGMuODU4LS4wODggMS42MzUtLjU4NSAyLjE2LTEuMzczbDMuOTk3LTUuOTk4Yy41MzItLjc4OCAxLjMwOS0xLjI4NiAyLjE2Ny0xLjM3NGwzNC4xMjgtMy40OTJjMS43OC0uMTgyIDMuNDA1IDEuNDIgMy42MjYgMy41NzV6TTgwLjAwOCAzOS4zODRsLTEyLjUyNCAxLjI4MmMtOC4wNy44MjYtMTMuOTQyIDguMDM3LTEzLjExNiAxNi4xMDdzOC4wMzggMTMuOTQyIDE2LjEwNyAxMy4xMTZsMTIuNTI0LTEuMjgyYzguMDctLjgyNiAxMy45NDEtOC4wMzcgMTMuMTE1LTE2LjEwN3MtOC4wMzctMTMuOTQxLTE2LjEwNi0xMy4xMTZtLS4zMTkgMTQuNzk3Yy41OSA1Ljc2NC0zLjYwNSAxMC45MTUtOS4zNjkgMTEuNTA1YTEwLjQ5MiAxMC40OTIgMCAxIDEtMi4xMzQtMjAuODc1YzUuNzY0LS41ODkgMTAuOTE0IDMuNjA2IDExLjUwMyA5LjM3IiBmaWxsPSIjZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiLz48L2c+PC9zdmc+";
 
   const vm = Scratch.vm;
   const Cast = Scratch.Cast;
   const runtime = vm.runtime;
   const translated = {
-    script: Scratch.translate("script-1"),
+    script: Scratch.translate("script-1")
   };
 
   const controlKey = Symbol("SPscriptsData");
   let markedScripts = new Map();
 
   const ogStepThreads = runtime.sequencer.stepThreads;
-  runtime.sequencer.stepThreads = function () {
+  runtime.sequencer.stepThreads = function() {
     markedScripts.forEach((script) => {
       const thread = script.threadCtx;
       if (thread[controlKey]) {
         if (thread.status !== 5) thread[controlKey] = thread.status;
-        thread.status = 5;
+        thread.status = 5
       }
     });
     return ogStepThreads.call(this);
   };
 
-  const expRenderedTarget = new vm.exports.RenderedTarget(
-    { blocks: null },
-    runtime
-  );
+  const expRenderedTarget = new vm.exports.RenderedTarget({ blocks: null }, runtime);
   const Blocks = expRenderedTarget.blocks.constructor;
   const ogGetNext = Blocks.prototype.getNextBlock;
-  Blocks.prototype.getNextBlock = function (name) {
+  Blocks.prototype.getNextBlock = function(name) {
     const thisBlock = ogGetNext.call(this, name);
     if (thisBlock) return thisBlock;
     for (const target of this.runtime.targets) {
@@ -51,9 +47,9 @@
       if (targetBlock) return targetBlock;
     }
     return undefined;
-  };
+  }
   const ogGetBranch = Blocks.prototype.getBranch;
-  Blocks.prototype.getBranch = function (id, branchNum) {
+  Blocks.prototype.getBranch = function(id, branchNum) {
     const thisBlock = ogGetBranch.call(this, id, branchNum);
     if (thisBlock) return thisBlock;
     for (const target of this.runtime.targets) {
@@ -62,105 +58,82 @@
       if (targetBlock) return targetBlock;
     }
     return undefined;
-  };
+  }
+
+  const color1 = "#3a6062";
 
   class SPscripts {
     getInfo() {
       return {
         id: "SPscripts",
         name: Scratch.translate("Script Control"),
-        color1: "#3a6062",
+        color1,
         color2: "#124d42",
         color3: "#1c2e2f",
         menuIconURI,
         blocks: [
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Markers"),
-          },
+          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Markers") },
           {
             opcode: "logScript",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("log this script with custom ID [ID]"),
             arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: translated.script,
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translated.script }
+            }
           },
           {
             opcode: "removeLog",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("erase script with custom ID [ID]"),
             arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: translated.script,
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translated.script }
+            }
           },
           {
             opcode: "removeLogs",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("remove all logged scripts"),
+            text: Scratch.translate("remove all logged scripts")
           },
           {
             opcode: "allLogs",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("all logged scripts"),
+            text: Scratch.translate("all logged scripts")
           },
           "---",
           {
             opcode: "indexLog",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "index of log in script with custom ID [ID]"
-            ),
+            text: Scratch.translate("index of log in script with custom ID [ID]"),
             arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: translated.script,
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translated.script }
+            }
           },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Control"),
-          },
+          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Control") },
           {
             opcode: "doScripts",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("[TYPE] script with ID [ID]"),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "CONTROL" },
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: translated.script,
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translated.script }
+            }
           },
           {
             opcode: "skipBlocks",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "start script with ID [ID] at block index [NUM]"
-            ),
+            text: Scratch.translate("start script with ID [ID] at block index [NUM]"),
             arguments: {
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: translated.script,
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translated.script }
+            }
           },
           {
             opcode: "skipMyBlocks",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("skip next [NUM] blocks"),
             arguments: {
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-            },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+            }
           },
           "---",
           {
@@ -169,67 +142,50 @@
             text: Scratch.translate("start script with ID [ID] in [TARGET]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: translated.script,
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translated.script }
+            }
           },
           {
             opcode: "doScriptClone",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "start script with ID [ID] in clones of [TARGET] with [VAR] set to [VAL]"
-            ),
+            text: Scratch.translate("start script with ID [ID] in clones of [TARGET] with [VAR] set to [VAL]"),
             arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: translated.script,
-              },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translated.script },
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS2" },
-              VAR: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "my variable",
-              },
-              VAL: { type: Scratch.ArgumentType.STRING, defaultValue: "0" },
-            },
+              VAR: { type: Scratch.ArgumentType.STRING, defaultValue: "my variable" },
+              VAL: { type: Scratch.ArgumentType.STRING, defaultValue: "0" }
+            }
           },
+          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Operations") },
           {
-            blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Operations"),
+            opcode: "threadCount",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("# of scripts running")
           },
+          "---",
           {
             opcode: "whileScript",
             blockType: Scratch.BlockType.LOOP,
             text: Scratch.translate("while script with ID [ID] is running"),
             arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: translated.script,
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translated.script }
+            }
           },
           {
             opcode: "isScript",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("script with ID [ID] running?"),
             arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: translated.script,
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translated.script }
+            }
           },
           {
             opcode: "isManual",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("script with ID [ID] manually running?"),
             arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: translated.script,
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translated.script }
+            }
           },
         ],
         menus: {
@@ -242,9 +198,9 @@
               { text: Scratch.translate("stop"), value: "stop" },
               { text: Scratch.translate("restart"), value: "restart" },
               { text: Scratch.translate("pause"), value: "pause" },
-              { text: Scratch.translate("unpause"), value: "unpause" },
-            ],
-          },
+              { text: Scratch.translate("unpause"), value: "unpause" }
+            ]
+          }
         },
       };
     }
@@ -252,21 +208,12 @@
     // Helper Funcs
     getTargets(spritesOnly) {
       const spriteNames = [];
-      if (spritesOnly)
-        spriteNames.push({
-          text: Scratch.translate("myself"),
-          value: "_myself_",
-        });
-      else
-        spriteNames.push({
-          text: Scratch.translate("Stage"),
-          value: "_stage_",
-        });
+      if (spritesOnly) spriteNames.push({ text: Scratch.translate("myself"), value: "_myself_" });
+      else spriteNames.push({ text: Scratch.translate("Stage"), value: "_stage_" });
       const targets = runtime.targets;
       for (let i = 1; i < targets.length; i++) {
         const target = targets[i];
-        if (target.isOriginal)
-          spriteNames.push({ text: target.getName(), value: target.getName() });
+        if (target.isOriginal) spriteNames.push({ text: target.getName(), value: target.getName() });
       }
       return spriteNames.length > 0 ? spriteNames : [""];
     }
@@ -279,9 +226,7 @@
 
     getThisBlock(util) {
       return util.thread.blockContainer.getBlock(
-        util.thread.isCompiled
-          ? util.thread.peekStack()
-          : util.thread.peekStackFrame().op.id
+        util.thread.isCompiled ? util.thread.peekStack() : util.thread.peekStackFrame().op.id
       );
     }
 
@@ -310,12 +255,11 @@
 
     addMissingData(srcObj, newObj) {
       // re-add any missing custom thread data
-      Reflect.ownKeys(srcObj).forEach((key) => {
+      Reflect.ownKeys(srcObj).forEach(key => {
         if (!(key in newObj)) newObj[key] = srcObj[key];
       });
-      Reflect.ownKeys(srcObj.stackFrames[0]).forEach((key) => {
-        if (!(key in newObj.stackFrames[0]))
-          newObj.stackFrames[0][key] = srcObj.stackFrames[0][key];
+      Reflect.ownKeys(srcObj.stackFrames[0]).forEach(key => {
+        if (!(key in newObj.stackFrames[0])) newObj.stackFrames[0][key] = srcObj.stackFrames[0][key];
       });
     }
 
@@ -323,12 +267,11 @@
     logScript(args, util) {
       const thisBlock = this.getThisBlock(util);
       if (!thisBlock) return;
-
+      
       const thread = util.thread;
       markedScripts.set(Cast.toString(args.ID), {
-        threadCtx: thread,
-        target: thread.ogTarget ?? thread.target,
-        logIndex: this.getBlockIndex(thread, thisBlock.id),
+        threadCtx: thread, target: thread.ogTarget ?? thread.target,
+        logIndex: this.getBlockIndex(thread, thisBlock.id)
       });
     }
 
@@ -356,12 +299,10 @@
       const ctx = script.threadCtx;
       switch (args.TYPE) {
         case "start":
-          if (this.targetHasBlock(ctx.topBlock, script.target))
-            runtime._pushThread(ctx.topBlock, script.target);
+          if (this.targetHasBlock(ctx.topBlock, script.target)) runtime._pushThread(ctx.topBlock, script.target);
           break;
         case "restart":
-          if (this.targetHasBlock(ctx.topBlock, script.target))
-            runtime._restartThread(ctx);
+          if (this.targetHasBlock(ctx.topBlock, script.target)) runtime._restartThread(ctx);
           break;
         case "stop":
           runtime._stopThread(ctx);
@@ -378,8 +319,7 @@
             ctx[controlKey] = undefined;
           }
           break;
-        default:
-          return;
+        default: return;
       }
     }
 
@@ -414,8 +354,7 @@
         if (!curID) break;
       }
 
-      if (thread.isCompiled)
-        this.addMissingData(thread, runtime._pushThread(curID, thread.target));
+      if (thread.isCompiled) this.addMissingData(thread, runtime._pushThread(curID, thread.target));
       else thread.reuseStackForNextBlock(curID);
     }
 
@@ -438,20 +377,20 @@
       const clones = target.sprite.clones;
       if (!varName) {
         for (const clone of clones) {
-          if (!clone.isOriginal)
-            this.pushThreadAsTarget(ctx.topBlock, clone, script.target);
+          if (!clone.isOriginal) this.pushThreadAsTarget(ctx.topBlock, clone, script.target);
         }
       } else {
         for (const clone of clones) {
           const variable = clone.lookupVariableByNameAndType(varName, "", true);
-          if (
-            variable &&
-            Cast.toString(variable.value) === Cast.toString(args.VAL)
-          ) {
+          if (variable && Cast.toString(variable.value) === Cast.toString(args.VAL)) {
             this.pushThreadAsTarget(ctx.topBlock, clone, script.target);
           }
         }
       }
+    }
+
+    threadCount() {
+      return runtime.threads.length;
     }
 
     whileScript(args, util) {
@@ -472,51 +411,38 @@
     }
   }
 
-  function add2Body() {
-    var grad = document.createElement("div");
-    grad.innerHTML = `
-      <svg><defs>
-        <linearGradient x1="200" y1="0" x2="240" y2="100" gradientUnits="userSpaceOnUse" id="SPscripts-GRAD1">
-        <stop offset="0" stop-color="#1e8370"/><stop offset="0.5" stop-color="#3a6062"/></linearGradient>
-      </defs></svg>`;
-    document.body.append(grad);
-  }
-  if (Scratch.gui)
-    Scratch.gui.getBlockly().then((SB) => {
-      add2Body();
-      if (!SB?.SPgradients?.patched) {
-        // Gradient Patch by 0znzw & SharkPool
-        SB.SPgradients = { gradientUrls: {}, patched: false };
-        const BSP = SB.BlockSvg.prototype,
-          BSPR = BSP.render;
-        BSP.render = function (...args) {
-          const blockTheme =
-            ReduxStore.getState().scratchGui?.theme?.theme?.blocks;
-          const res = BSPR.apply(this, args);
-          let category;
-          if (
-            this?.svgPath_ &&
-            this?.category_ &&
-            (category = this.type.slice(0, this.type.indexOf("_"))) &&
-            SB.SPgradients.gradientUrls[category]
-          ) {
-            const urls = SB.SPgradients.gradientUrls[category];
-            if (urls) {
-              this.svgPath_.setAttribute("fill", urls[0]);
-              if (blockTheme === "dark") {
-                this.svgPath_.setAttribute("fill-opacity", ".5");
-                this.svgPath_.setAttribute("stroke", "#31d6b7");
-              }
-            }
-          }
-          return res;
-        };
-        SB.SPgradients.patched = true;
+  if (Scratch.gui) Scratch.gui.getBlockly().then((SB) => {
+    function add2Body() {
+      const grad = document.querySelector(`div[class="SPgradCache"]`) || document.createElement("div");
+      grad.setAttribute("class", "SPgradCache");
+      grad.innerHTML = `
+        ${grad.innerHTML}
+        <svg><defs>
+          <linearGradient x1="200" y1="0" x2="240" y2="100" gradientUnits="userSpaceOnUse" id="SPscripts-GRAD1">
+          <stop offset="0" stop-color="#1e8370"/><stop offset="0.5" stop-color="#3a6062"/></linearGradient>
+        </defs></svg>`;
+      document.body.append(grad);
+    }
+    add2Body();
+    if (!SB?.SPgradients?.patched) {
+      /* Gradient Patch by SharkPool, inspired by 0znzw */
+      SB.SPgradients = { gradientUrls: new Map(), patched: true };
+      const ogBlockRender = SB.BlockSvg.prototype.render;
+      SB.BlockSvg.prototype.render = function(...args) {
+        const result = ogBlockRender.apply(this, args);
+        const gradPath = SB.SPgradients.gradientUrls.get(this.type.slice(0, this.type.indexOf("_")));
+        if (gradPath && this?.svgPath_ && this?.category_) {
+          const svg = this.svgPath_;
+          this.svgPath_.setAttribute(
+            svg.getAttribute("fill") === color1 ? "fill" : "stroke",
+            gradPath
+          );
+        }
+        return result;
       }
-      ScratchBlocks.SPgradients.gradientUrls["SPscripts"] = [
-        "url(#SPscripts-GRAD1)",
-      ];
-    });
+    }
+    SB.SPgradients.gradientUrls.set("SPscripts", "url(#SPscripts-GRAD)");
+  });
 
   Scratch.extensions.register(new SPscripts());
 })(Scratch);
