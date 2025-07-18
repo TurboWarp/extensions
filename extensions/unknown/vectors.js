@@ -149,7 +149,9 @@
 
     vectorMag(args) {
       const id = Scratch.Cast.toString(args.ID);
-      return magnitudes[id] !== undefined ? magnitudes[id] : Scratch.translate("null");
+      return magnitudes[id] !== undefined
+        ? magnitudes[id]
+        : Scratch.translate("null");
     }
 
     vectorDelete(args) {
@@ -164,7 +166,9 @@
 
     vectorDir(args) {
       const id = Scratch.Cast.toString(args.ID);
-      return directions[id] !== undefined ? directions[id] : Scratch.translate("null");
+      return directions[id] !== undefined
+        ? directions[id]
+        : Scratch.translate("null");
     }
 
     listofIDs() {
