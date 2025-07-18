@@ -108,7 +108,7 @@
             },
           },
           {
-            opcode: "listofIDs",
+            opcode: "listOfIDs",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("List of IDs"),
           },
