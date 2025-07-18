@@ -37,8 +37,8 @@
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "@transifex/api": "^7.1.3",
-    "eslint": "^9.24.0",
+    "@transifex/api": "^7.1.4",
+    "eslint": "^9.31.0",
     "espree": "^9.6.1",
     "esquery": "^1.6.0",
     "prettier": "^3.5.3",
