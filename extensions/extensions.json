@@ -2,5 +2,6 @@
   "name": "ZIP 解压增强版",
   "description": "更强大的ZIP文件解压，支持解压并且提取压缩包里面的内容，由THE_END开发（非官方",
   "file": "myextension.js",
+  "license": "MIT",
   "tags": ["utility"]
 }
