@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) [year] [author]
 class ZipExtension {
   constructor() {
     this.zip = null;
