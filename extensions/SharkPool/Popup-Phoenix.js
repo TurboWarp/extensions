@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.05
+// Version V.1.0.06
 
 (function (Scratch) {
   "use strict";
@@ -247,8 +247,10 @@
       element.type = type;
       element.value = options.defaultValue ?? "";
 
-      if (type === "password") element.setAttribute("autocomplete", "off");
-      else if (type === "color") {
+      if (type === "password") {
+        element.setAttribute("autocomplete", "off");
+        element.setAttribute("name", `SPpopupPheonixPass-${Math.random()}`);
+      } else if (type === "color") {
         inputHolder.setAttribute(
           "style",
           "display: flex; justify-content: center; width: 100%;"
