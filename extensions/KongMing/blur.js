@@ -3,18 +3,24 @@
     const blurCache = new Map()
     
     // 创建SVG皮肤并处理加载回调
-    function createSVGSkin(svgData,roX,roY) {
+    function createSVGSkin(svgData, roX, roY) {
         const skinId = runtime.renderer.createSVGSkin(svgData)
         if (!skinId) return null
         
         const svgSkin = runtime.renderer._allSkins[skinId]
-        svgSkin.rotationCenter = [roX,roY,0]
+        
+        // 确保立即设置旋转中心
+        svgSkin.rotationCenter = [roX, roY, 0]
+        
         const originalOnLoad = svgSkin._onLoad
         
         svgSkin._onLoad = function() {
             if (originalOnLoad) originalOnLoad.call(this)
             
+            // 再次确认旋转中心
+            this.rotationCenter = [roX, roY, 0]
             this._svgDirty = true
+            
             const drawableIds = runtime.renderer._skinIdToDrawableId[skinId] || []
             drawableIds.forEach(drawableId => {
                 runtime.renderer._allDrawables[drawableId]._skinDirty = true
@@ -143,7 +149,7 @@
                 const useCache = args.cache
                 
                 if(blur == 0) {
-                    this.restoreBlur(undefined,util)
+                    this.restoreBlur(undefined, util)
                     return
                 }
 
@@ -152,24 +158,30 @@
                 
                 const cacheKey = `${target.sprite.name}_${costume}_${blur}`
                 
-                // 检查缓存
                 if (useCache && blurCache.has(cacheKey)) {
-                    const skinId = blurCache.get(cacheKey)
-                    runtime.renderer.updateDrawableSkinId(target.drawableID, skinId)
+                    const cached = blurCache.get(cacheKey)
+                    runtime.renderer.updateDrawableSkinId(target.drawableID, cached.skinId)
                     runtime.requestRedraw()
                     return
                 }
                 
-                // 处理SVG
+                // 获取原始SVG和旋转中心
                 const originalSvgData = target.sprite.costumes_[costume - 1].asset.decodeText()
-                console.log('rox:',roX)
-                console.log('roy:',roY)
+                const roX = target.sprite.costumes_[costume - 1].rotationCenterX
+                const roY = target.sprite.costumes_[costume - 1].rotationCenterY
+                
                 const parser = new DOMParser()
                 const doc = parser.parseFromString(originalSvgData, "image/svg+xml")
                 const svg = doc.querySelector('svg')
                 if (!svg) throw new Error("Invalid SVG")
                 
-                // 处理defs和filter
+                // 确保SVG有正确的viewBox
+                if (!svg.hasAttribute('viewBox')) {
+                    const bbox = svg.getBBox()
+                    svg.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`)
+                }
+                
+                // 创建滤镜
                 let defs = svg.querySelector('defs') || 
                     svg.insertBefore(
                         doc.createElementNS('http://www.w3.org/2000/svg', 'defs'),
@@ -181,6 +193,11 @@
                         doc.createElementNS('http://www.w3.org/2000/svg', 'filter')
                     )
                 filter.id = 'blurFilter'
+                filter.setAttribute('x', '-50%')
+                filter.setAttribute('y', '-50%')
+                filter.setAttribute('width', '200%')
+                filter.setAttribute('height', '200%')
+                filter.setAttribute('filterUnits', 'userSpaceOnUse')
                 
                 let blurFilter = filter.querySelector('feGaussianBlur') || 
                     filter.appendChild(
@@ -194,14 +211,12 @@
                     .forEach(child => child.setAttribute('filter', 'url(#blurFilter)'))
                 
                 // 创建新皮肤
-                let roX = target.sprite.costumes_[costume - 1].rotationCenterX
-                let roY = target.sprite.costumes_[costume - 1].rotationCenterY
                 const newSvgData = new XMLSerializer().serializeToString(svg)
-                const skinId = createSVGSkin(newSvgData,roX,roY)
+                const skinId = createSVGSkin(newSvgData, roX, roY)
                 if (!skinId) throw new Error("Skin creation failed")
                 
                 // 更新缓存和渲染
-                if (useCache) blurCache.set(cacheKey, skinId)
+                if (useCache) blurCache.set(cacheKey, {skinId, roX, roY})
                 runtime.renderer.updateDrawableSkinId(target.drawableID, skinId)
                 runtime.requestRedraw()
                 
@@ -268,9 +283,18 @@
         clearCache() {
             blurCache.clear()
         }
-        restoreBlur(args,util){
-            let {target} = util
-            target.updateAllDrawableProperties()
+        restoreBlur(args, util) {
+            const target = util.target
+            const drawable = runtime.renderer._allDrawables[target.drawableID]
+            if (drawable) {
+                // 重置为原始皮肤
+                const originalSkinId = target.sprite.costumes_[target.currentCostume].skinId
+                runtime.renderer.updateDrawableSkinId(target.drawableID, originalSkinId)
+                
+                // 强制更新属性
+                drawable._skinDirty = true
+                runtime.requestRedraw()
+            }
         }
     }
 
