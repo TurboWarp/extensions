@@ -1,7 +1,7 @@
 {
-  "name": "ZIP 解压增强版",
-  "description": "更强大的ZIP文件解压，支持解压并且提取压缩包里面的内容，由THE_END开发（非官方",
-  "file": "myextension.js",
+  "name": "Python终端与高级文件管理器",
+  "description": "支持运行Python代码和创建沙盒环境，在使用之前请先“初始化沙盒”",
+  "file": "pythonandfile.js",
   "license": "MIT",
   "tags": ["utility"]
 }
