@@ -321,3 +321,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## CubesterYT/KeySimulation.svg
  - Created by [@SharkPool-SP](https://github.com/SharkPool-SP/)
+
+## FurryR/xterm.png
+ - Created by [@FurryR](https://github.com/FurryR/)
+ - xterm logo by [xterm.js](https://github.com/xtermjs/xterm.js) licensed under the MIT license
