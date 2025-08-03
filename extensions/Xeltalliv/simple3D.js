@@ -413,6 +413,11 @@
     reset() {
       this.depthTest = "closer";
       this.depthWrite = true;
+      this.viewport = null;
+      this.scissors = null;
+      this.readarea = null;
+      this.updateScissorsEnabled();
+      this.updateViewport();
     }
   }
   class Texture {
