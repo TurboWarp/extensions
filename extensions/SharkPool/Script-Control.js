@@ -494,7 +494,7 @@
         grad.innerHTML = `
         ${grad.innerHTML}
         <svg><defs>
-          <linearGradient x1="200" y1="0" x2="240" y2="100" gradientUnits="userSpaceOnUse" id="SPscripts-GRAD1">
+          <linearGradient x1="200" y1="0" x2="240" y2="100" gradientUnits="userSpaceOnUse" id="SPscripts-GRAD">
           <stop offset="0" stop-color="#1e8370"/><stop offset="0.5" stop-color="#3a6062"/></linearGradient>
         </defs></svg>`;
         document.body.append(grad);
