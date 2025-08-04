@@ -639,7 +639,11 @@
       return 0 - cast.toNumber(A);
     }
     min_or_max_block(args) {
-      if (args.MIN_OR_MAX === "min") { return Math.min(args.A, args.B); } else { return Math.max(args.A, args.B); }
+      if (args.MIN_OR_MAX === "min") {
+        return Math.min(args.A, args.B);
+      } else {
+        return Math.max(args.A, args.B);
+      }
     }
     more_or_equal_block({ A, B }) {
       return cast.compare(A, B) >= 0;
