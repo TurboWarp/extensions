@@ -154,6 +154,26 @@
             },
             extensions: ["colours_operators"],
           },
+          {
+            opcode: "min_or_max_block",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "get [A] [MIN_OR_MAX] [B]",
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "",
+              },
+              B: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "",
+              },
+              MIN_OR_MAX: {
+                type: Scratch.ArgumentType.NUMBER,
+                menu: "MIN_OR_MAX",
+              },
+            },
+            extensions: ["colours_operators"],
+          },
           "---",
           {
             opcode: "more_or_equal_block",
@@ -601,6 +621,10 @@
             acceptReporters: true,
             items: ["sin", "cos", "tan", "asin", "acos", "atan"],
           },
+          MIN_OR_MAX: {
+            acceptReporters: true,
+            items: ["min", "max"],
+          },
         },
       };
     }
@@ -613,6 +637,9 @@
     }
     negative_block({ A }) {
       return 0 - cast.toNumber(A);
+    }
+    min_or_max_block(args) {
+      if (args.MIN_OR_MAX === "min") { return Math.min(args.A, args.B); } else { return Math.max(args.A, args.B); }
     }
     more_or_equal_block({ A, B }) {
       return cast.compare(A, B) >= 0;
