@@ -520,7 +520,10 @@
           return result;
         };
       }
-      SB.SPgradients.gradientUrls.set("SPscripts", { path: "url(#SPscripts-GRAD)", check: color1 });
+      SB.SPgradients.gradientUrls.set("SPscripts", {
+        path: "url(#SPscripts-GRAD)",
+        check: color1,
+      });
     });
 
   Scratch.extensions.register(new SPscripts());
