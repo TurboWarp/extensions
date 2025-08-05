@@ -1344,10 +1344,10 @@ void main() {
           return result;
         };
       }
-      SB.SPgradients.gradientUrls.set(
-        "SPpartEngine",
-        { path: "url(#SPpartEngine-GRAD)", check: color1 }
-      );
+      SB.SPgradients.gradientUrls.set("SPpartEngine", {
+        path: "url(#SPpartEngine-GRAD)",
+        check: color1,
+      });
     });
 
   Scratch.extensions.register(new SPpartEngine());
