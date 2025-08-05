@@ -1330,15 +1330,15 @@ void main() {
         const ogBlockRender = SB.BlockSvg.prototype.render;
         SB.BlockSvg.prototype.render = function (...args) {
           const result = ogBlockRender.apply(this, args);
-          const gradPath = SB.SPgradients.gradientUrls.get(
+          const grad = SB.SPgradients.gradientUrls.get(
             this.type.slice(0, this.type.indexOf("_"))
           );
-          if (gradPath && this?.svgPath_ && this?.category_) {
+          if (grad && this?.svgPath_ && this?.category_) {
             const svg = this.svgPath_;
             const fill = svg.getAttribute("fill");
             this.svgPath_.setAttribute(
-              fill === color1 || fill === gradPath ? "fill" : "stroke",
-              gradPath
+              fill === grad.check || fill === grad.path ? "fill" : "stroke",
+              grad.path
             );
           }
           return result;
@@ -1346,7 +1346,7 @@ void main() {
       }
       SB.SPgradients.gradientUrls.set(
         "SPpartEngine",
-        "url(#SPpartEngine-GRAD)"
+        { path: "url(#SPpartEngine-GRAD)", check: color1 }
       );
     });
 
