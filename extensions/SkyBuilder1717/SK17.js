@@ -5,6 +5,8 @@
 // License: MIT
 
 (async function (Scratch) {
+  'use strict';
+
   if (!Scratch.extensions.unsandboxed)
     throw new Error("SK17 must run unsandboxed!");
 
@@ -123,14 +125,14 @@
     getInfo() {
       return {
         id: "SkyBuilder1717Encryption",
-        name: "SK17",
+        name: Scratch.translate("SK17"),
         color1: "#3f79bf",
         color2: "#2c4d8a",
         blocks: [
           {
             opcode: "encrypt",
             blockType: Scratch.BlockType.REPORTER,
-            text: "encrypt text [TEXT] with password [PASS]",
+            text:  Scratch.translate("encrypt text [TEXT] with password [PASS]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -145,7 +147,7 @@
           {
             opcode: "decrypt",
             blockType: Scratch.BlockType.REPORTER,
-            text: "decrypt text [TEXT] with password [PASS]",
+            text:  Scratch.translate("decrypt text [TEXT] with password [PASS]"),
             arguments: {
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
               PASS: {
@@ -157,7 +159,7 @@
           {
             opcode: "base64Encode",
             blockType: Scratch.BlockType.REPORTER,
-            text: "encode base64 [TEXT]",
+            text:  Scratch.translate("encode base64 [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -168,7 +170,7 @@
           {
             opcode: "base64Decode",
             blockType: Scratch.BlockType.REPORTER,
-            text: "decode base64 [TEXT]",
+            text:  Scratch.translate("decode base64 [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -179,7 +181,7 @@
           {
             opcode: "generatePassword",
             blockType: Scratch.BlockType.REPORTER,
-            text: "generate password length [LENGTH] with chars [CHARS]",
+            text:  Scratch.translate("generate password length [LENGTH] with chars [CHARS]"),
             arguments: {
               LENGTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 8 },
               CHARS: {
@@ -192,7 +194,7 @@
           {
             opcode: "checkSignature",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "verify signature [TEXT]",
+            text:  Scratch.translate("verify signature [TEXT]"),
             arguments: {
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
             },
@@ -200,7 +202,7 @@
           {
             opcode: "isValidEncrypted",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is encrypted data valid [TEXT]",
+            text:  Scratch.translate("is encrypted data valid [TEXT]"),
             arguments: {
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
             },
@@ -208,7 +210,7 @@
           {
             opcode: "saveFile",
             blockType: Scratch.BlockType.REPORTER,
-            text: "save text [TEXT] as file [FILENAME]",
+            text:  Scratch.translate("save text [TEXT] as file [FILENAME]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -224,7 +226,7 @@
             opcode: "loadFile",
             disableMonitor: true,
             blockType: Scratch.BlockType.REPORTER,
-            text: "load file as .enc",
+            text: Scratch.translate("load file as .enc"),
             arguments: {},
           },
         ],
@@ -245,7 +247,7 @@
       let ciphertext = new Uint8Array(cipherBuf);
       ciphertext = multiStageEncrypt(ciphertext, password);
       const out = concat(SIG, salt, iv, ciphertext);
-      return bytesToLatin1String(out);
+      return await bytesToLatin1String(out);
     }
 
     async decrypt(args) {
@@ -268,7 +270,7 @@
         key,
         ciphertext
       );
-      return new TextDecoder().decode(new Uint8Array(plainBuf));
+      return await new TextDecoder().decode(new Uint8Array(plainBuf));
     }
 
     base64Encode(args) {
