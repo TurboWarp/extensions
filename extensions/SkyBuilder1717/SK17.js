@@ -4,7 +4,7 @@
 // By: SkyBuilder1717
 // License: MIT
 
-(async function (Scratch) {
+(function (Scratch) {
   'use strict';
 
   if (!Scratch.extensions.unsandboxed)
