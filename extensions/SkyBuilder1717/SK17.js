@@ -5,335 +5,369 @@
 // License: MIT
 
 (async function (Scratch) {
-    if (!Scratch.extensions.unsandboxed) throw new Error("SK17 must run unsandboxed!");
+  if (!Scratch.extensions.unsandboxed)
+    throw new Error("SK17 must run unsandboxed!");
 
-    const SIG = new Uint8Array([83, 75, 49, 55]);
+  const SIG = new Uint8Array([83, 75, 49, 55]);
 
-    function bytesToLatin1String(u8) {
-        const CHUNK = 0x8000;
-        let result = '';
-        for (let i = 0; i < u8.length; i += CHUNK) {
-            const slice = u8.subarray(i, i + CHUNK);
-            result += String.fromCharCode.apply(null, slice);
-        }
-        return result;
+  function bytesToLatin1String(u8) {
+    const CHUNK = 0x8000;
+    let result = "";
+    for (let i = 0; i < u8.length; i += CHUNK) {
+      const slice = u8.subarray(i, i + CHUNK);
+      result += String.fromCharCode.apply(null, slice);
     }
+    return result;
+  }
 
-    function latin1StringToBytes(str) {
-        const u8 = new Uint8Array(str.length);
-        for (let i = 0; i < str.length; i++) {
-            u8[i] = str.charCodeAt(i) & 0xFF;
-        }
-        return u8;
+  function latin1StringToBytes(str) {
+    const u8 = new Uint8Array(str.length);
+    for (let i = 0; i < str.length; i++) {
+      u8[i] = str.charCodeAt(i) & 0xff;
     }
+    return u8;
+  }
 
-    function concat(...parts) {
-        const total = parts.reduce((s, p) => s + p.length, 0);
-        const out = new Uint8Array(total);
-        let off = 0;
-        for (const p of parts) {
-            out.set(p, off);
-            off += p.length;
-        }
-        return out;
+  function concat(...parts) {
+    const total = parts.reduce((s, p) => s + p.length, 0);
+    const out = new Uint8Array(total);
+    let off = 0;
+    for (const p of parts) {
+      out.set(p, off);
+      off += p.length;
     }
+    return out;
+  }
 
-    async function deriveKey(password, salt) {
-        const enc = new TextEncoder();
-        const pwKey = await crypto.subtle.importKey(
-            "raw",
-            enc.encode(password),
-            { name: "PBKDF2" },
-            false,
-            ["deriveKey"]
-        );
-        return await crypto.subtle.deriveKey(
-            {
-                name: "PBKDF2",
-                salt: salt,
-                iterations: 150000,
-                hash: "SHA-256"
+  async function deriveKey(password, salt) {
+    const enc = new TextEncoder();
+    const pwKey = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(password),
+      { name: "PBKDF2" },
+      false,
+      ["deriveKey"]
+    );
+    return await crypto.subtle.deriveKey(
+      {
+        name: "PBKDF2",
+        salt: salt,
+        iterations: 150000,
+        hash: "SHA-256",
+      },
+      pwKey,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["encrypt", "decrypt"]
+    );
+  }
+
+  function xorEncrypt(data, password) {
+    const pwdBytes = new TextEncoder().encode(password);
+    const result = new Uint8Array(data.length);
+    for (let i = 0; i < data.length; i++) {
+      result[i] = data[i] ^ pwdBytes[i % pwdBytes.length];
+    }
+    return result;
+  }
+
+  function rotateBytes(data, _) {
+    const len = data.length;
+    if (len === 0) return data;
+    const rotated = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      rotated[(i + 1) % len] = data[i];
+    }
+    return rotated;
+  }
+
+  function xorWithConst(data, constant) {
+    const result = new Uint8Array(data.length);
+    for (let i = 0; i < data.length; i++) {
+      result[i] = data[i] ^ constant;
+    }
+    return result;
+  }
+
+  const encryptionStages = [xorEncrypt, rotateBytes, xorWithConst];
+
+  function multiStageEncrypt(data, password) {
+    let encrypted = data;
+    for (const stage of encryptionStages) {
+      encrypted = stage(encrypted, password);
+    }
+    return encrypted;
+  }
+
+  function multiStageDecrypt(data, password) {
+    let decrypted = data;
+    for (let i = encryptionStages.length - 1; i >= 0; i--) {
+      const stage = encryptionStages[i];
+      if (stage === rotateBytes) {
+        const len = decrypted.length;
+        if (len > 0) {
+          const rotated = new Uint8Array(len);
+          for (let i = 0; i < len; i++) {
+            rotated[i] = decrypted[(i + 1) % len];
+          }
+          decrypted = rotated;
+        }
+      } else {
+        decrypted = stage(decrypted, password);
+      }
+    }
+    return decrypted;
+  }
+
+  class Extension {
+    getInfo() {
+      return {
+        id: "SkyBuilder1717Encryption",
+        name: "SK17",
+        color1: "#3f79bf",
+        color2: "#2c4d8a",
+        blocks: [
+          {
+            opcode: "encrypt",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "encrypt text [TEXT] with password [PASS]",
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello, World!",
+              },
+              PASS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "password",
+              },
             },
-            pwKey,
-            { name: "AES-GCM", length: 256 },
-            false,
-            ["encrypt", "decrypt"]
-        );
+          },
+          {
+            opcode: "decrypt",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "decrypt text [TEXT] with password [PASS]",
+            arguments: {
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+              PASS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "password",
+              },
+            },
+          },
+          {
+            opcode: "base64Encode",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "encode base64 [TEXT]",
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello",
+              },
+            },
+          },
+          {
+            opcode: "base64Decode",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "decode base64 [TEXT]",
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "SGVsbG8=",
+              },
+            },
+          },
+          {
+            opcode: "generatePassword",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "generate password length [LENGTH] with chars [CHARS]",
+            arguments: {
+              LENGTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 8 },
+              CHARS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue:
+                  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+              },
+            },
+          },
+          {
+            opcode: "checkSignature",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "verify signature [TEXT]",
+            arguments: {
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+            },
+          },
+          {
+            opcode: "isValidEncrypted",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: "is encrypted data valid [TEXT]",
+            arguments: {
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+            },
+          },
+          {
+            opcode: "saveFile",
+            blockType: Scratch.BlockType.REPORTER,
+            text: "save text [TEXT] as file [FILENAME]",
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello, World!",
+              },
+              FILENAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "file.enc",
+              },
+            },
+          },
+          {
+            opcode: "loadFile",
+            disableMonitor: true,
+            blockType: Scratch.BlockType.REPORTER,
+            text: "load file as .enc",
+            arguments: {},
+          },
+        ],
+      };
     }
 
-    function xorEncrypt(data, password) {
-        const pwdBytes = new TextEncoder().encode(password);
-        const result = new Uint8Array(data.length);
-        for (let i = 0; i < data.length; i++) {
-            result[i] = data[i] ^ pwdBytes[i % pwdBytes.length];
-        }
-        return result;
-    }
-    
-    function rotateBytes(data, _) {
-        const len = data.length;
-        if (len === 0) return data;
-        const rotated = new Uint8Array(len);
-        for (let i = 0; i < len; i++) {
-            rotated[(i + 1) % len] = data[i];
-        }
-        return rotated;
+    async encrypt(args) {
+      const password = args.PASS;
+      const data = new TextEncoder().encode(args.TEXT);
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await deriveKey(password, salt);
+      const cipherBuf = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv: iv },
+        key,
+        data
+      );
+      let ciphertext = new Uint8Array(cipherBuf);
+      ciphertext = multiStageEncrypt(ciphertext, password);
+      const out = concat(SIG, salt, iv, ciphertext);
+      return bytesToLatin1String(out);
     }
 
-    function xorWithConst(data, constant) {
-        const result = new Uint8Array(data.length);
-        for (let i = 0; i < data.length; i++) {
-            result[i] = data[i] ^ constant;
-        }
-        return result;
+    async decrypt(args) {
+      const password = args.PASS;
+      const u8 = latin1StringToBytes(args.TEXT);
+      if (u8.length < SIG.length + 16 + 12 + 1) throw new Error("Invalid data");
+      for (let i = 0; i < SIG.length; i++) {
+        if (u8[i] !== SIG[i]) throw new Error("Bad signature");
+      }
+      let off = SIG.length;
+      const salt = u8.slice(off, off + 16);
+      off += 16;
+      const iv = u8.slice(off, off + 12);
+      off += 12;
+      let ciphertext = u8.slice(off);
+      ciphertext = multiStageDecrypt(ciphertext, password);
+      const key = await deriveKey(password, salt);
+      const plainBuf = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: iv },
+        key,
+        ciphertext
+      );
+      return new TextDecoder().decode(new Uint8Array(plainBuf));
     }
 
-    const encryptionStages = [
-        xorEncrypt,
-        rotateBytes,
-        xorWithConst
-    ];
-
-    function multiStageEncrypt(data, password) {
-        let encrypted = data;
-        for (const stage of encryptionStages) {
-            encrypted = stage(encrypted, password);
-        }
-        return encrypted;
+    base64Encode(args) {
+      const u8 = new TextEncoder().encode(args.TEXT);
+      let binary = "";
+      u8.forEach((b) => (binary += String.fromCharCode(b)));
+      return btoa(binary);
     }
 
-    function multiStageDecrypt(data, password) {
-        let decrypted = data;
-        for (let i = encryptionStages.length - 1; i >= 0; i--) {
-            const stage = encryptionStages[i];
-            if (stage === rotateBytes) {
-                const len = decrypted.length;
-                if (len > 0) {
-                    const rotated = new Uint8Array(len);
-                    for (let i = 0; i < len; i++) {
-                        rotated[i] = decrypted[(i + 1) % len];
-                    }
-                    decrypted = rotated;
-                }
-            } else {
-                decrypted = stage(decrypted, password);
-            }
+    base64Decode(args) {
+      try {
+        const binary = atob(args.TEXT);
+        const u8 = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          u8[i] = binary.charCodeAt(i);
         }
-        return decrypted;
+        return new TextDecoder().decode(u8);
+      } catch {
+        return "";
+      }
     }
 
-    class Extension {
-        getInfo() {
-            return {
-                id: "SkyBuilder1717Encryption",
-                name: "SK17",
-                color1: "#3f79bf",
-                color2: "#2c4d8a",
-                blocks: [
-                    {
-                        opcode: "encrypt",
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: "encrypt text [TEXT] with password [PASS]",
-                        arguments: {
-                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "Hello, World!" },
-                            PASS: { type: Scratch.ArgumentType.STRING, defaultValue: "password" }
-                        }
-                    },
-                    {
-                        opcode: "decrypt",
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: "decrypt text [TEXT] with password [PASS]",
-                        arguments: {
-                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
-                            PASS: { type: Scratch.ArgumentType.STRING, defaultValue: "password" }
-                        }
-                    },
-                    {
-                        opcode: "base64Encode",
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: "encode base64 [TEXT]",
-                        arguments: {
-                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "Hello" }
-                        }
-                    },
-                    {
-                        opcode: "base64Decode",
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: "decode base64 [TEXT]",
-                        arguments: {
-                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "SGVsbG8=" }
-                        }
-                    },
-                    {
-                        opcode: "generatePassword",
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: "generate password length [LENGTH] with chars [CHARS]",
-                        arguments: {
-                            LENGTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 8 },
-                            CHARS: { type: Scratch.ArgumentType.STRING, defaultValue: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789" }
-                        }
-                    },
-                    {
-                        opcode: "checkSignature",
-                        blockType: Scratch.BlockType.BOOLEAN,
-                        text: "verify signature [TEXT]",
-                        arguments: {
-                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" }
-                        }
-                    },
-                    {
-                        opcode: "isValidEncrypted",
-                        blockType: Scratch.BlockType.BOOLEAN,
-                        text: "is encrypted data valid [TEXT]",
-                        arguments: {
-                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" }
-                        }
-                    },
-                    {
-                        opcode: "saveFile",
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: "save text [TEXT] as file [FILENAME]",
-                        arguments: {
-                            TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "Hello, World!" },
-                            FILENAME: { type: Scratch.ArgumentType.STRING, defaultValue: "file.enc" }
-                        }
-                    },
-                    {
-                        opcode: "loadFile",
-                        disableMonitor: true,
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: "load file as .enc",
-                        arguments: {}
-                    }
-                ]
-            };
-        }
-
-        async encrypt(args) {
-            const password = args.PASS;
-            const data = new TextEncoder().encode(args.TEXT);
-            const salt = crypto.getRandomValues(new Uint8Array(16));
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const key = await deriveKey(password, salt);
-            const cipherBuf = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, data);
-            let ciphertext = new Uint8Array(cipherBuf);
-            ciphertext = multiStageEncrypt(ciphertext, password);
-            const out = concat(SIG, salt, iv, ciphertext);
-            return bytesToLatin1String(out);
-        }
-
-        async decrypt(args) {
-            const password = args.PASS;
-            const u8 = latin1StringToBytes(args.TEXT);
-            if (u8.length < SIG.length + 16 + 12 + 1) throw new Error("Invalid data");
-            for (let i = 0; i < SIG.length; i++) {
-                if (u8[i] !== SIG[i]) throw new Error("Bad signature");
-            }
-            let off = SIG.length;
-            const salt = u8.slice(off, off + 16); off += 16;
-            const iv = u8.slice(off, off + 12); off += 12;
-            let ciphertext = u8.slice(off);
-            ciphertext = multiStageDecrypt(ciphertext, password);
-            const key = await deriveKey(password, salt);
-            const plainBuf = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ciphertext);
-            return new TextDecoder().decode(new Uint8Array(plainBuf));
-        }
-
-        base64Encode(args) {
-            const u8 = new TextEncoder().encode(args.TEXT);
-            let binary = '';
-            u8.forEach(b => binary += String.fromCharCode(b));
-            return btoa(binary);
-        }
-
-        base64Decode(args) {
-            try {
-                const binary = atob(args.TEXT);
-                const u8 = new Uint8Array(binary.length);
-                for (let i = 0; i < binary.length; i++) {
-                    u8[i] = binary.charCodeAt(i);
-                }
-                return new TextDecoder().decode(u8);
-            } catch {
-                return "";
-            }
-        }
-
-        generatePassword(args) {
-            const length = args.LENGTH;
-            const charset = args.CHARS;
-            let result = "";
-            const chars = charset ? String(charset) : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            for (let i = 0; i < length; i++) {
-                const randIndex = Math.floor(Math.random() * chars.length);
-                result += chars.charAt(randIndex);
-            }
-            return result;
-        }
-
-        checkSignature(args) {
-            const text = args.TEXT;
-            if (typeof text !== "string") return false;
-            if (text.length < SIG.length) return false;
-            for (let i = 0; i < SIG.length; i++) {
-                if (text.charCodeAt(i) !== SIG[i]) return false;
-            }
-            return true;
-        }
-
-        isValidEncrypted(args) {
-            const text = args.TEXT;
-            if (typeof text !== "string") return false;
-            const u8 = latin1StringToBytes(text);
-            if (u8.length < SIG.length + 16 + 12 + 1) return false;
-            for (let i = 0; i < SIG.length; i++) {
-                if (u8[i] !== SIG[i]) return false;
-            }
-            return true;
-        }
-
-        saveFile(args) {
-            const latin1String = args.TEXT;
-            const filename = args.FILENAME;
-            const u8 = latin1StringToBytes(latin1String);
-            const blob = new Blob([u8], { type: "application/octet-stream" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = filename || "file.enc";
-            document.body.appendChild(a);
-            a.click();
-            setTimeout(() => {
-                URL.revokeObjectURL(url);
-                a.remove();
-            }, 1000);
-            return filename || "file.enc";
-        }
-
-        loadFile() {
-            return new Promise((resolve) => {
-                const input = document.createElement("input");
-                input.type = "file";
-                input.accept = ".enc";
-                input.style.display = "none";
-                document.body.appendChild(input);
-                input.onchange = async () => {
-                    if (!input.files || input.files.length === 0) {
-                        document.body.removeChild(input);
-                        resolve("");
-                        return;
-                    }
-                    const f = input.files[0];
-                    const ab = await f.arrayBuffer();
-                    const u8 = new Uint8Array(ab);
-                    const s = bytesToLatin1String(u8);
-                    document.body.removeChild(input);
-                    resolve(s);
-                };
-                input.click();
-            });
-        }
+    generatePassword(args) {
+      const length = args.LENGTH;
+      const charset = args.CHARS;
+      let result = "";
+      const chars = charset
+        ? String(charset)
+        : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      for (let i = 0; i < length; i++) {
+        const randIndex = Math.floor(Math.random() * chars.length);
+        result += chars.charAt(randIndex);
+      }
+      return result;
     }
 
-    Scratch.extensions.register(new Extension());
+    checkSignature(args) {
+      const text = args.TEXT;
+      if (typeof text !== "string") return false;
+      if (text.length < SIG.length) return false;
+      for (let i = 0; i < SIG.length; i++) {
+        if (text.charCodeAt(i) !== SIG[i]) return false;
+      }
+      return true;
+    }
+
+    isValidEncrypted(args) {
+      const text = args.TEXT;
+      if (typeof text !== "string") return false;
+      const u8 = latin1StringToBytes(text);
+      if (u8.length < SIG.length + 16 + 12 + 1) return false;
+      for (let i = 0; i < SIG.length; i++) {
+        if (u8[i] !== SIG[i]) return false;
+      }
+      return true;
+    }
+
+    saveFile(args) {
+      const latin1String = args.TEXT;
+      const filename = args.FILENAME;
+      const u8 = latin1StringToBytes(latin1String);
+      const blob = new Blob([u8], { type: "application/octet-stream" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename || "file.enc";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+        a.remove();
+      }, 1000);
+      return filename || "file.enc";
+    }
+
+    loadFile() {
+      return new Promise((resolve) => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".enc";
+        input.style.display = "none";
+        document.body.appendChild(input);
+        input.onchange = async () => {
+          if (!input.files || input.files.length === 0) {
+            document.body.removeChild(input);
+            resolve("");
+            return;
+          }
+          const f = input.files[0];
+          const ab = await f.arrayBuffer();
+          const u8 = new Uint8Array(ab);
+          const s = bytesToLatin1String(u8);
+          document.body.removeChild(input);
+          resolve(s);
+        };
+        input.click();
+      });
+    }
+  }
+
+  Scratch.extensions.register(new Extension());
 })(Scratch);
