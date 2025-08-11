@@ -5,7 +5,7 @@
 // License: MIT
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   if (!Scratch.extensions.unsandboxed)
     throw new Error("SK17 must run unsandboxed!");
@@ -132,7 +132,7 @@
           {
             opcode: "encrypt",
             blockType: Scratch.BlockType.REPORTER,
-            text:  Scratch.translate("encrypt text [TEXT] with password [PASS]"),
+            text: Scratch.translate("encrypt text [TEXT] with password [PASS]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -147,7 +147,7 @@
           {
             opcode: "decrypt",
             blockType: Scratch.BlockType.REPORTER,
-            text:  Scratch.translate("decrypt text [TEXT] with password [PASS]"),
+            text: Scratch.translate("decrypt text [TEXT] with password [PASS]"),
             arguments: {
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
               PASS: {
@@ -159,7 +159,7 @@
           {
             opcode: "base64Encode",
             blockType: Scratch.BlockType.REPORTER,
-            text:  Scratch.translate("encode base64 [TEXT]"),
+            text: Scratch.translate("encode base64 [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -170,7 +170,7 @@
           {
             opcode: "base64Decode",
             blockType: Scratch.BlockType.REPORTER,
-            text:  Scratch.translate("decode base64 [TEXT]"),
+            text: Scratch.translate("decode base64 [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -181,7 +181,9 @@
           {
             opcode: "generatePassword",
             blockType: Scratch.BlockType.REPORTER,
-            text:  Scratch.translate("generate password length [LENGTH] with chars [CHARS]"),
+            text: Scratch.translate(
+              "generate password length [LENGTH] with chars [CHARS]"
+            ),
             arguments: {
               LENGTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 8 },
               CHARS: {
@@ -194,7 +196,7 @@
           {
             opcode: "checkSignature",
             blockType: Scratch.BlockType.BOOLEAN,
-            text:  Scratch.translate("verify signature [TEXT]"),
+            text: Scratch.translate("verify signature [TEXT]"),
             arguments: {
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
             },
@@ -202,7 +204,7 @@
           {
             opcode: "isValidEncrypted",
             blockType: Scratch.BlockType.BOOLEAN,
-            text:  Scratch.translate("is encrypted data valid [TEXT]"),
+            text: Scratch.translate("is encrypted data valid [TEXT]"),
             arguments: {
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
             },
@@ -210,7 +212,7 @@
           {
             opcode: "saveFile",
             blockType: Scratch.BlockType.REPORTER,
-            text:  Scratch.translate("save text [TEXT] as file [FILENAME]"),
+            text: Scratch.translate("save text [TEXT] as file [FILENAME]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
