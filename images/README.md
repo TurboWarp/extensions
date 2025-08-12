@@ -256,6 +256,11 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Dango based on dango from [Twemoji](https://twemoji.twitter.com/) under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
  - Background "blobs" by Scratch.
 
+## Clay/upload.png
+ - Created by [@ClaytonTDM](https://github.com/ClaytonTDM)
+ - Upload icon based on https://icons8.com/icon/367/upload
+ - Background based on https://app.haikei.app/
+
 ## XeroName/Deltatime.svg
  - Created by [@XeroName](https://scratch.mit.edu/users/plant2014/) in https://github.com/TurboWarp/extensions/pull/622
  - Incorporated some changes by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
