@@ -10,28 +10,18 @@
     let refreshToken = "";
     let uid = 0;
     let nickname = "";
-    Scratch.translate.setup({
-        "zh-cn": {
-            "shangcloud.setClientID": "设置应用ID",
-            "shangcloud.verifyClientID": "应用ID是否正确 [CLIENT_ID]",
-        },
-        "en": {
-            "shangcloud.setClientID": "Set client ID",
-            "shangcloud.verifyClientID": "Verify client ID [CLIENT_ID]",
-        }
-    });
     class ShangCloudExtension {
         getInfo() {
             return {
                 id: "shangcloud",
-                name: "ShangCloud 云变量",
+                name: Scratch.translate("shangcloud.name"),
                 color1: "#4CAF50",
                 color2: "#388E3C",
                 blocks: [
                     {
                         opcode: "setClientID",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "设置应用ID [CLIENT_ID]",
+                        text: Scratch.translate("shangcloud.setClientID"),
                         arguments: {
                             CLIENT_ID: { type: Scratch.ArgumentType.STRING, default: "" },
                         },
@@ -39,13 +29,13 @@
                     {
                         opcode: "verifyClientID",
                         blockType: Scratch.BlockType.BOOLEAN,
-                        text: "应用ID是否正确",
+                        text: Scratch.translate("shangcloud.verifyClientID"),
                         arguments: {},
                     },
                     {
                         opcode: "tryLogin",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "尝试获取用户授权并等待",
+                        text: Scratch.translate("shangcloud.tryLogin"),
                         arguments: {
                             CLIENT_ID: { type: Scratch.ArgumentType.STRING, default: "" },
                         },
@@ -54,20 +44,20 @@
                         opcode: "loginStatusBool",
                         blockType: Scratch.BlockType.BOOLEAN,
                         disableMonitor: true,
-                        text: "用户是否授权",
+                        text: Scratch.translate("shangcloud.loginStatusBool"),
                     },
                     {
                         opcode: "isTokenValid",
                         blockType: Scratch.BlockType.BOOLEAN,
                         disableMonitor: true,
-                        text: "登录令牌是否在有效期内？",
+                        text: Scratch.translate("shangcloud.isTokenValid"),
                         arguments: {},
                     },
                     {
                         opcode: "refreshToken",
                         blockType: Scratch.BlockType.BOOLEAN,
                         disableMonitor: true,
-                        text: "刷新登录令牌",
+                        text: Scratch.translate("shangcloud.refreshToken"),
                         arguments: {},
                     },
 
@@ -75,12 +65,12 @@
 
                     {
                         blockType: Scratch.BlockType.LABEL,
-                        text: "快速获取用户信息"
+                        text: Scratch.translate("shangcloud.label.getUserInfo"),
                     },
                     {
                         opcode: "getUserInfo",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "获取访问用户信息",
+                        text: Scratch.translate("shangcloud.getUserInfo"),
                         arguments: {
                             CLIENT_ID: { type: Scratch.ArgumentType.STRING, default: "" },
                         },
@@ -88,24 +78,24 @@
                     {
                         opcode: "userUid",
                         blockType: Scratch.BlockType.REPORTER,
-                        text: "访问用户ID",
+                        text: Scratch.translate("shangcloud.userUid"),
                     },
                     {
                         opcode: "userNickname",
                         blockType: Scratch.BlockType.REPORTER,
-                        text: "访问用户昵称",
+                        text: Scratch.translate("shangcloud.userNickname"),
                     },
 
                     "---",
 
                     {
                         blockType: Scratch.BlockType.LABEL,
-                        text: "云变量操作"
+                        text: Scratch.translate("shangcloud.label.cloudOperation"),
                     },
                     {
                         opcode: "writeVar",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "给云变量 [KEY] 赋值 [VALUE]",
+                        text: Scratch.translate("shangcloud.writeVar"),
                         arguments: {
                             KEY: { type: Scratch.ArgumentType.STRING, default: "temp" },
                             VALUE: { type: Scratch.ArgumentType.STRING, default: "1" },
@@ -114,7 +104,7 @@
                     {
                         opcode: "getVar",
                         blockType: Scratch.BlockType.REPORTER,
-                        text: "读取云变量 [KEY] 的值",
+                        text: Scratch.translate("shangcloud.getVar"),
                         arguments: {
                             KEY: { type: Scratch.ArgumentType.STRING, default: "temp" },
                         },
@@ -122,7 +112,7 @@
                     {
                         opcode: "delVar",
                         blockType: Scratch.BlockType.COMMAND,
-                        text: "删除云变量 [KEY]",
+                        text: Scratch.translate("shangcloud.delVar"),
                         arguments: {
                             KEY: { type: Scratch.ArgumentType.STRING, default: "temp" },
                         },
@@ -145,7 +135,7 @@
             }
             if (!accessToken) return false;
             try {
-                const res = await fetch(SHANGCLOUD_ORIGIN + "/api/token/test", {
+                const res = await Scratch.fetch(SHANGCLOUD_ORIGIN + "/api/token/test", {
                     method: "POST",
                     headers: {
                         Authorization: "Bearer " + accessToken,
@@ -165,7 +155,7 @@
         async delVar(args) {
             if (!accessToken) return;
             const key = args.KEY;
-            await fetch(SHANGCLOUD_ORIGIN + "/api/var/" + key, {
+            await Scratch.fetch(SHANGCLOUD_ORIGIN + "/api/var/" + key, {
                 method: "DELETE",
                 headers: {
                     Authorization: "Bearer " + accessToken,
@@ -175,7 +165,7 @@
         async getVar(args) {
             if (!accessToken) return;
             const key = args.KEY;
-            const res = await fetch(SHANGCLOUD_ORIGIN + "/api/var/" + key, {
+            const res = await Scratch.fetch(SHANGCLOUD_ORIGIN + "/api/var/" + key, {
                 method: "GET",
                 headers: {
                     Authorization: "Bearer " + accessToken,
@@ -193,7 +183,7 @@
             const value = args.VALUE;
             const params = new URLSearchParams();
             params.append("value", value);
-            await fetch(SHANGCLOUD_ORIGIN + "/api/var/" + key, {
+            await Scratch.fetch(SHANGCLOUD_ORIGIN + "/api/var/" + key, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -210,7 +200,7 @@
             }
             let params = new URLSearchParams();
             params.append("client_id", temp_client_id);
-            const res = await fetch(SHANGCLOUD_ORIGIN + "/api/verify/client_id", {
+            const res = await Scratch.fetch(SHANGCLOUD_ORIGIN + "/api/verify/client_id", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -232,7 +222,7 @@
                     alert("请先填写应用ID");
                     return;
                 }
-                const loginWindow = window.open(
+                const loginWindow = Scratch.openWindow(
                     SHANGCLOUD_ORIGIN +
                     "/auth/window?ui=1&client_id=" +
                     encodeURIComponent(client_id) +
@@ -266,7 +256,7 @@
             let param = new URLSearchParams();
             param.append("client_id", client_id);
             param.append("refresh_token", refreshToken);
-            const res = await fetch(SHANGCLOUD_ORIGIN + "/oauth/token", {
+            const res = await Scratch.fetch(SHANGCLOUD_ORIGIN + "/oauth/token", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -283,7 +273,7 @@
             return false;
         }
         async getUserInfo() {
-            const res = await fetch(SHANGCLOUD_ORIGIN + "/api/info/me", { method: "POST", credentials: "include" });
+            const res = await Scratch.fetch(SHANGCLOUD_ORIGIN + "/api/info/me", { method: "POST", credentials: "include" });
             const data = await res.json();
             if (!data.data) {
                 return;
