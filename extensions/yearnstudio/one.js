@@ -10,6 +10,12 @@
     let refreshToken = "";
     let uid = 0;
     let nickname = "";
+    Scratch.translate.setup({
+        "zh-cn": {
+            "shangcloud.setClientID": "设置应用ID",
+            "shangcloud.verifyClientID": "应用ID是否正确",
+        }
+    });
     class ShangCloudExtension {
         getInfo() {
             return {
@@ -286,4 +292,4 @@
         }
     }
     Scratch.extensions.register(new ShangCloudExtension());
-})(Scratch); //eslint-disable-line
+})(Scratch);  
