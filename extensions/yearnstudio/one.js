@@ -12,8 +12,42 @@
     let nickname = "";
     Scratch.translate.setup({
         "zh-cn": {
-            "shangcloud.setClientID": "设置应用ID",
+            "shangcloud.setClientID": "设置应用ID [CLIENT_ID]",
             "shangcloud.verifyClientID": "应用ID是否正确",
+            "shangcloud.tryLogin": "尝试获取用户授权并等待",
+            "shangcloud.loginStatusBool": "用户是否授权",
+            "shangcloud.isTokenValid": "登录令牌是否在有效期内？",
+            "shangcloud.refreshToken": "刷新登录令牌",
+            "shangcloud.getUserInfo": "获取访问用户信息",
+            "shangcloud.userUid": "访问用户ID",
+            "shangcloud.userNickname": "访问用户昵称",
+            "shangcloud.writeVar": "给云变量 [KEY] 赋值 [VALUE]",
+            "shangcloud.getVar": "读取云变量 [KEY] 的值",
+            "shangcloud.delVar": "删除云变量 [KEY]"
+        },
+        "en": {
+            "shangcloud.setClientID": "Set Client ID",
+            "shangcloud.verifyClientID": "Verify Client ID",
+            "shangcloud.tryLogin": "Try Login",
+            "shangcloud.loginStatusBool": "Login Status",
+            "shangcloud.isTokenValid": "Is Token Valid",
+            "shangcloud.writeVar": "Write Variable [KEY] [VALUE]",
+            "shangcloud.getVar": "Read Variable [KEY]",
+            "shangcloud.delVar": "Delete Variable [KEY]"
+        },
+        "zh-tw": {
+            "shangcloud.setClientID": "設置應用ID",
+            "shangcloud.verifyClientID": "應用ID是否正確",
+            "shangcloud.tryLogin": "嘗試獲取用戶授權並等待",
+            "shangcloud.loginStatusBool": "用戶是否授權",
+            "shangcloud.isTokenValid": "登錄令牌是否在有效期內？",
+            "shangcloud.refreshToken": "刷新登錄令牌",
+            "shangcloud.getUserInfo": "獲取訪問用戶信息",
+            "shangcloud.userUid": "訪問用戶ID",
+            "shangcloud.userNickname": "訪問用戶昵稱",
+            "shangcloud.writeVar": "給雲變量 [KEY] 賦值 [VALUE]",
+            "shangcloud.getVar": "讀取雲變量 [KEY] 的值",
+            "shangcloud.delVar": "刪除雲變量 [KEY]"
         }
     });
     class ShangCloudExtension {
