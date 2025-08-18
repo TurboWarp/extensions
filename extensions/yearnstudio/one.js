@@ -1,7 +1,7 @@
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("不行，必须跑非沙盒。");
+    throw new Error("You can not run in sandbox");
   }
   const SHANGCLOUD_ORIGIN = "https://api.yearnstudio.cn";
   let client_id = "";
