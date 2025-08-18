@@ -1682,6 +1682,8 @@
         "veggiecan/mobilekeyboard@name": "Екранна Клавіатура"
     },
     "zh-cn": {
+        "fshrimp/e621-sdk@description": "与 e621 API 交互的积木。",
+        "fshrimp/e621-sdk@name": "e621 SDK",
         "-SIPC-/consoles@description": "与内置于浏览器开发工具中的 JavaScript 控制台交互的积木。",
         "-SIPC-/consoles@name": "控制台",
         "-SIPC-/time@description": "关于时间、日期和时区的积木。",
