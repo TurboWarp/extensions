@@ -43,7 +43,7 @@ md.block.ruler.before(
       state.eMarks[startLine]
     );
 
-    const match = marker.match(/^\s*>\s*\[!([A-Z]+)]\s*(.*)/);
+    const match = marker.match(/^\s*>\s*\[!([A-Z]+)]\s*(.*)/i);
     if (!match) return false;
 
     const type = match[1].toLowerCase();
@@ -65,7 +65,7 @@ md.block.ruler.before(
     tokenTitle.children = [];
     state.push("paragraph_close", "p", -1);
 
-    // Process all lines inside the blockquote
+    state.push("paragraph_open", "p", 1);
     let nextLine = startLine + 1;
     while (nextLine < endLine) {
       const nextMarker = state.src.slice(
@@ -77,14 +77,13 @@ md.block.ruler.before(
         const lineContent = nextMarker.replace(/^\s*>?\s*/, "").trim();
 
         if (lineContent === "") {
-          state.push("paragraph_open", "p", 1);
-          state.push("paragraph_close", "p", -1);
+          const token = state.push("html_block", "", 0);
+          token.content = nextLine - 1 == startLine ? "<br/>" : "<br/><br/>";
+          token.children = [];
         } else {
-          state.push("paragraph_open", "p", 1);
           const token = state.push("inline", "", 0);
           token.content = lineContent;
           token.children = [];
-          state.push("paragraph_close", "p", -1);
         }
 
         nextLine++;
@@ -93,6 +92,7 @@ md.block.ruler.before(
       }
     }
 
+    state.push("paragraph_close", "p", -1);
     // Close alert div
     const tokenClose = state.push("html_block", "", 0);
     tokenClose.content = `</div>`;
