@@ -851,7 +851,8 @@
         if (item >= 0) {
           result = json[item];
         } else {
-          result = json[json.length + item];
+          const length = Scratch.Cast.toNumber(json.length);
+          result = json[length + item];
         }
         result = result ?? "";
         if (typeof result == "object") {

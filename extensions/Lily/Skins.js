@@ -17,30 +17,71 @@
     return true;
   };
 
-  /**
-   * @param {RenderWebGL.SVGSkin} svgSkin
-   * @returns {Promise<void>}
-   */
-  const svgSkinFinishedLoading = (svgSkin) =>
-    new Promise((resolve) => {
-      if (svgSkin._svgImageLoaded) {
-        resolve();
-      } else {
-        svgSkin._svgImage.addEventListener("load", () => {
-          resolve();
-        });
-        svgSkin._svgImage.addEventListener("error", () => {
-          resolve();
-        });
-      }
-    });
-
   const vm = Scratch.vm;
   const runtime = vm.runtime;
   const renderer = runtime.renderer;
   const Cast = Scratch.Cast;
 
-  var createdSkins = {};
+  const createSVGSkin = (...args) => {
+    const skinId = renderer.createSVGSkin(...args);
+    if (!skinId) return;
+    const svgSkin = renderer._allSkins[skinId];
+    if (!svgSkin) return;
+    // To prevent a issue in the skin loading we will override the onload event ourself.
+    const _onload = svgSkin._svgImage.onload;
+    svgSkin._svgImage.onload = /**
+     * @this {RenderWebGL.SVGSkin}
+     */ function (ev) {
+      // Reimplement the begining logic of SVGSkin to fix a loading error.
+      if (!this._size) throw "_size race";
+      if (this._size[0] === 0 || this._size[1] === 0) {
+        Object.getPrototypeOf(
+          vm.renderer.exports.SVGSkin
+        ).prototype.setEmptyImageData.call(this);
+        return;
+      }
+      const maxDimension = Math.ceil(Math.max(this._size[0], this._size[1]));
+      const rendererMax = this._renderer.maxTextureDimension;
+      let testScale = 2;
+      for (
+        testScale;
+        maxDimension * testScale <= rendererMax;
+        testScale = testScale * 2
+      ) {
+        this._maxTextureScale = testScale;
+      }
+      this.resetMIPs();
+      const rotationCenter = this.calculateRotationCenter();
+      if (!Array.isArray(rotationCenter)) throw "rotationCenter race";
+      if (!Array.isArray(this._rotationCenter)) {
+        // This can happen if the file is loaded too fast.
+        // We will handle creating this ourselves to prevent a swarm of errors.
+        this._rotationCenter = [0, 0];
+      }
+      return _onload.call(this, ev);
+    }.bind(svgSkin);
+    return skinId;
+  };
+
+  /**
+   * @param {RenderWebGL.SVGSkin} svgSkin
+   * @returns {Promise<boolean>}
+   */
+  const svgSkinFinishedLoading = (svgSkin) =>
+    new Promise((resolve) => {
+      if (svgSkin._svgImageLoaded) {
+        resolve(true);
+      } else {
+        svgSkin._svgImage.addEventListener("load", () => {
+          resolve(true);
+        });
+        svgSkin._svgImage.addEventListener("error", () => {
+          resolve(false);
+        });
+      }
+    });
+
+  const createdSkins = Object.create(null);
 
   class Skins {
     constructor() {
@@ -231,6 +272,20 @@
       };
     }
 
+    _disposeSafe(skinId, skinName) {
+      if (renderer._allSkins[skinId]) renderer.destroySkin(skinId);
+      if (typeof skinName !== "undefined") {
+        if (createdSkins[skinName] !== skinId) {
+          throw new Error(
+            `Lily/Skins: skinName "${skinName}" mismatched with skinId "${skinId}". actual value of "${
+              skinName
+            }" is "${createdSkins[skinName]}". please report this to the developers`
+          );
+        }
+        delete createdSkins[skinName];
+      }
+    }
+
     async registerSVGSkin(args) {
       const skinName = `lms-${Cast.toString(args.NAME)}`;
       const svgData = Cast.toString(args.SVG);
@@ -241,14 +296,18 @@
       }
 
       // This generally takes a few frames, so yield the block
-      const skinId = renderer.createSVGSkin(svgData);
+      const skinId = createSVGSkin(svgData);
       createdSkins[skinName] = skinId;
 
-      await svgSkinFinishedLoading(renderer._allSkins[skinId]);
+      if (!(await svgSkinFinishedLoading(renderer._allSkins[skinId]))) {
+        this._disposeSafe(skinId, skinName);
+        return;
+      }
 
       if (oldSkinId) {
-        this._refreshTargetsFromID(oldSkinId, false, skinId);
-        renderer.destroySkin(oldSkinId);
+        if (renderer._allSkins[oldSkinId])
+          this._refreshTargetsFromID(oldSkinId, false, skinId);
+        this._disposeSafe(oldSkinId);
       }
     }
 
@@ -275,11 +334,28 @@
       }
 
       const skinId = await this._createURLSkin(url, rotationCenter);
+      const skin = renderer._allSkins[skinId];
+      if (!skin || !skin._svgImage || !skin._svgImage.onload) {
+        this._disposeSafe(skinId);
+        return;
+      }
+      const _onload = skin._svgImage.onload;
+      skin._svgImage.onload = (...args) => {
+        try {
+          return _onload.apply(skin, args);
+        } catch (err) {
+          // Handle a race condition.
+          if (err !== "rotationCenter race") throw err;
+          this._disposeSafe(skinId, skinName);
+          return;
+        }
+      };
       createdSkins[skinName] = skinId;
 
       if (oldSkinId) {
-        this._refreshTargetsFromID(oldSkinId, false, skinId);
-        renderer.destroySkin(oldSkinId);
+        if (renderer._allSkins[oldSkinId])
+          this._refreshTargetsFromID(oldSkinId, false, skinId);
+        this._disposeSafe(oldSkinId);
       }
     }
 
@@ -297,8 +373,9 @@
       createdSkins[skinName] = skinId;
 
       if (oldSkinId) {
-        this._refreshTargetsFromID(oldSkinId, false, skinId);
-        renderer.destroySkin(oldSkinId);
+        if (renderer._allSkins[oldSkinId])
+          this._refreshTargetsFromID(oldSkinId, false, skinId);
+        this._disposeSafe(oldSkinId);
       }
     }
 
@@ -310,13 +387,18 @@
     setSkin(args, util) {
       const skinName = `lms-${Cast.toString(args.NAME)}`;
       if (!createdSkins[skinName]) return;
+      const skinId = createdSkins[skinName];
+      // Make sure the skin we are setting still well.. exists.
+      if (!renderer._allSkins[skinId]) {
+        this._disposeSafe(skinId, skinName);
+        return;
+      }
 
       const targetName = Cast.toString(args.TARGET);
       const target = this._getTargetFromMenu(targetName, util);
       if (!target) return;
       const drawableID = target.drawableID;
 
-      const skinId = createdSkins[skinName];
       renderer._allDrawables[drawableID].skin = renderer._allSkins[skinId];
     }
 
@@ -344,7 +426,11 @@
 
       if (!createdSkins[skinName]) return 0;
       const skinId = createdSkins[skinName];
-      if (!skins[skinId]) return 0;
+      if (!skins[skinId]) {
+        // If the skin doesnt exist in the renderer we should probably just delete it on our end...
+        this.safeDispose(skinId, skinName);
+        return 0;
+      }
 
       const size = skins[skinId].size;
       const attribute = Cast.toString(args.ATTRIBUTE).toLowerCase();
@@ -366,14 +452,14 @@
 
       this._refreshTargetsFromID(skinId, true);
       renderer.destroySkin(skinId);
-      Reflect.deleteProperty(createdSkins, skinName);
+      delete createdSkins[skinName];
     }
 
     deleteAllSkins() {
       this._refreshTargets();
-      for (const skinName in createdSkins)
-        renderer.destroySkin(createdSkins[skinName]);
-      createdSkins = {};
+      for (const skinName in createdSkins) {
+        this._disposeSafe(createdSkins[skinName], skinName);
+      }
     }
 
     restoreTargets(args) {
@@ -431,7 +517,7 @@
 
       const contentType = imageData.headers.get("Content-Type");
       if (contentType === "image/svg+xml") {
-        return renderer.createSVGSkin(await imageData.text(), rotationCenter);
+        return createSVGSkin(await imageData.text(), rotationCenter);
       } else if (
         contentType === "image/png" ||
         contentType === "image/jpeg" ||
