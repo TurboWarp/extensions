@@ -11,8 +11,8 @@
 3.5 [Collisions](#collisions)
 3.6 [Raycasting](#raycasting)
 3.7 [Forces](#forces)
-4. [Constraints](#constraints)
-5. [More Resources](#more-resources)
+3.8. [Constraints](#constraints)
+4. [More Resources](#more-resources)
  
 ## What This Is <a name="description"></a>
 **Ammo Physics** is a high-level 3D rigid body physics extension based on [Ammo.js](https://github.com/kripken/ammo.js), a JavaScript port of the well-known Bullet Physics SDK for C++. It brings high-quality realtime physics to Turbowarp. 
@@ -175,7 +175,7 @@ set [friction v] of body [body] to (0.5) :: #0fbd8c
 ```
 This block allows you to set a body's physical material properties. A float from 0 to 1 is accepted as a value.
 
-Friction 0 means entirely frictionless (for example, something like ice should have a friction of ~0.02). The default is 0.5.
+Friction 0 means entirely frictionless (for example, something like ice should have a friction of ~0.02). The default is 0.5. This type of friction is linear or sliding friction. More complex materials that have differing types of friction in different directions (e.g., ice skates have 0 friction forward but 1 friction side to side) or rolling friction aren't yet supported but may be upon enough user request.
 
 Restitution is just a fancy term for "bounciness". By default it is 0, so if you want a body to be bouncy you have to increase it. You might wonder why your body isn't more bouncy after you increase it:  **you also have to increase the restitution of the object it's bouncing off of (for example the ground) for it to react properly.**
 
@@ -230,4 +230,66 @@ Returns true if the specified body is touching any other body.
 ```
 Returns all bodies touching the specified body in a comma-delimited string.
 
-### Raycasting
+### Raycasting <a name="raycasting"></a>
+```scratch
+cast ray with name [ray] from x: (0) y: (0) z: (0) to x: (7) y: (15) z: (12) :: #0fbd8c
+```
+This block fires a ray with the specified name from point A to point B.
+
+```scratch
+cast ray with name [ray] from x: (0) y: (0) z: (0) with rotation x: (7) y: (15) z: (12) distance: (5) :: #0fbd8c
+```
+This block fires a ray with the specified name. Unlike the block above, it accepts a starting point and a **rotation in degrees**, and will move along that rotation until it hits a body or reaches the max distance.
+
+```scratch
+cast ray with name [ray] from x: (0) y: (0) z: (0) towards coordinate x: (7) y: (15) z: (12) distance: (5) :: #0fbd8c
+```
+This type of ray is fired from the given starting point towards another coordinate until it hits a body or reaches the max distance.
+
+```scratch
+(hit [x v] [position v] of ray [ray] :: #0fbd8c)
+```
+If the specified ray has hit a body, then position returns the X, Y, or Z hit point and normal returns the X, Y, or Z surface normal (direction, not rotation) of the hit point.
+
+If the specified ray has _not_ hit a body, then position returns the X, Y, or Z end point of the ray and normal returns null.
+
+
+```scratch
+<ray [ray] is touching body [body]? :: #0fbd8c>
+```
+Returns whether the specified ray is touching the specified body.
+
+```scratch
+delete ray [ray] :: #0fbd8c
+```
+This block removes a ray from the world.
+
+>[!IMPORTANT]
+> You should **ALWAYS** delete a ray when you're done with it to ensure proper memory management and optimization.
+
+### Forces <a name="forces"></a>
+Forces are interesting and helpful as they allow you to control a body's movement manually and realistically without simply setting transformations.
+
+Before we get started, let's define a few terms:
+**Force**: A force applied to a body over a period of time (every simulation step). E.g., an aircraft's thrust.
+**Impulse**: A force applied to a body immediately, such as the firing of a bullet or the jumping of a character.
+**Torque**: A rotational force that applies pure rotational force around the center of mass.
+
+Forces have a meter offset from the body's origin and so can apply rotational velocity **from that point**. If the offset is zero, no rotational velocity will result. For example, if you push an object at it's top while the bottom stays stationary, it will rotate to account for that motion. Generally speaking, higher offset values result in more rotational velocity.
+
+```scratch
+push body [body] with [force v] x: (1) y: (1) z: (1) newtons with offset x: (0) y: (0.25) z: (0) meters :: #0fbd8c
+```
+Pushes the specified body with a force or impulse of the given XYZ strength in newtons with the given XYZ offset in meters. May result in both linear and angular velocity.
+
+```scratch
+push body [body] with central [force v] x: (1) y: (1) z: (1) newtons :: #0fbd8c
+```
+Pushes the specified body with a force or impulse with the given XYZ strength in newtons. Only results in linear velocity. 
+>[!TIP]
+> Using this block with a capsule body is a great way to set up basic player movement!
+
+```scratch
+push body [body] with torque x: (1) y: (1) z: (1) :: #0fbd8c
+```
+Pushes the specified body with the given XYZ rotational torque in newton-meters. Only results in rotational velocity.
