@@ -605,7 +605,7 @@
       return this._texture;
     }
 
-    isMetricsReady () {
+    isMetricsReady() {
       if (this._needsReflow()) {
         this._reflowText();
       }
