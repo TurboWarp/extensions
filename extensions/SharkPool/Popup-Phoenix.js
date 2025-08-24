@@ -8,18 +8,25 @@
 
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed) throw new Error("Popup Phoenix must run unsandboxed!");
+  if (!Scratch.extensions.unsandboxed)
+    throw new Error("Popup Phoenix must run unsandboxed!");
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4Ny41MzIiIGhlaWdodD0iODcuNTMyIiB2aWV3Qm94PSIwIDAgODcuNTMyIDg3LjUzMiI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0uMDAxIDQzLjc2N0MuMDAxIDE5LjU5NSAxOS41OTQuMDAxIDQzLjc2Ni4wMDFzNDMuNzY2IDE5LjU5NCA0My43NjYgNDMuNzY2LTE5LjU5NCA0My43NjYtNDMuNzY2IDQzLjc2NlMwIDY3LjkzOSAwIDQzLjc2NyIgZmlsbD0iIzgyMTliZiIvPjxwYXRoIGQ9Ik01LjE2NSA0My43NjdjMC0yMS4zMiAxNy4yODItMzguNjAyIDM4LjYwMi0zOC42MDJzMzguNjAyIDE3LjI4MiAzOC42MDIgMzguNjAyLTE3LjI4MiAzOC42MDItMzguNjAyIDM4LjYwMlM1LjE2NSA2NS4wODcgNS4xNjUgNDMuNzY3IiBmaWxsPSIjYTgxMmZmIi8+PHBhdGggZD0ibTQwLjM5NyA1OC4wODctMy44NS42MDctLjE4MSA0Ljg3LTMuMTYgMS44MjUtMS40NDQtNi4yMS00LjEzOS0yLjU1NiAxLjkwNC0zLjMzNCA0LjQ3NiAyLjAwOCA0LjQ3NS0xLjQ0MS0zLjM4NC00LjUyNi0yLjY4OSAyLjAwMS00LjkyNy0uODc0IDIuNDY1LTMuNTktOC40NjUgMi4yOTItMi41NTYtNC4wNDUgOC4wNi0xLjgyOC0xMC4wNjgtLjc2My0xLjg0Ni01LjQ1MSAxMC4yOTEgMS4yMjctMTAuMzYtMy45OC45Ny02Ljc3OCA5LjQ4MyA1LjkzNC04LjA3NS05Ljc0NSAzLjI5Ni01LjM1NiAxMi40MjYgMTQuODA4LS4zNzQgNy41OCA1LjMzOSAxLjAyMSA1LjM2NS0xMS4xOTggOC4wMDMgMS41ODQtLjI5IDQuMzk3LTIuODk5LTEuMDM1LS4yMzMgMy43MSAxLjgzNSAyLjU0MiA0Ljc1Ny0xLjEtLjE2Mi02LjY5NCA3LjAyMy03LjY2OCA1LjI5Ny03LjQwOCAzLjI3MiAzLjkzNS03LjgxMSAxMS4yNDcgOS4xNzUtNy4wNi4xODggNy40MzMtOS40MDEgNC4yNTEgMTAuMzUtMS41My0xLjYyMSA2LjAzLTEwLjEzMy4xNDkgOS4xMTUgMS41Ni0zLjkwNyA0Ljc0OC04LjktMi45MTYgMi4zNDggMy4zODctNC43MDMgMS41Mi0yLjI4LTIuMjIzLTMuNjc5IDQuOTU0IDQuMTQ3LjcwMiA1LjEwNy0yLjMgMS41NjUgMy44NC00LjMyMyAyLS45NzEgNi41MzgtMy41ODgtMS4xMzMuMDM5LTUuMDY1LTMuOTM3LS42MzMuNDMgMi43MDMgNC4zIDYuNTI4LTIuODMyIDMuMzQtMi45NzMtMy4wMjMuNzUgNS4zNy0zLjE5NyAyLjg5NC0yLjk0LTIuOTYuNTI2LTUuMjk3LTIuNzggMy4xNTUtMi41NjQtMy42NCA0LjM2OS02LjU2NHoiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4Ny41MzIiIGhlaWdodD0iODcuNTMyIiB2aWV3Qm94PSIwIDAgODcuNTMyIDg3LjUzMiI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0uMDAxIDQzLjc2N0MuMDAxIDE5LjU5NSAxOS41OTQuMDAxIDQzLjc2Ni4wMDFzNDMuNzY2IDE5LjU5NCA0My43NjYgNDMuNzY2LTE5LjU5NCA0My43NjYtNDMuNzY2IDQzLjc2NlMwIDY3LjkzOSAwIDQzLjc2NyIgZmlsbD0iIzgyMTliZiIvPjxwYXRoIGQ9Ik01LjE2NSA0My43NjdjMC0yMS4zMiAxNy4yODItMzguNjAyIDM4LjYwMi0zOC42MDJzMzguNjAyIDE3LjI4MiAzOC42MDIgMzguNjAyLTE3LjI4MiAzOC42MDItMzguNjAyIDM4LjYwMlM1LjE2NSA2NS4wODcgNS4xNjUgNDMuNzY3IiBmaWxsPSIjYTgxMmZmIi8+PHBhdGggZD0ibTQwLjM5NyA1OC4wODctMy44NS42MDctLjE4MSA0Ljg3LTMuMTYgMS44MjUtMS40NDQtNi4yMS00LjEzOS0yLjU1NiAxLjkwNC0zLjMzNCA0LjQ3NiAyLjAwOCA0LjQ3NS0xLjQ0MS0zLjM4NC00LjUyNi0yLjY4OSAyLjAwMS00LjkyNy0uODc0IDIuNDY1LTMuNTktOC40NjUgMi4yOTItMi41NTYtNC4wNDUgOC4wNi0xLjgyOC0xMC4wNjgtLjc2My0xLjg0Ni01LjQ1MSAxMC4yOTEgMS4yMjctMTAuMzYtMy45OC45Ny02Ljc3OCA5LjQ4MyA1LjkzNC04LjA3NS05Ljc0NSAzLjI5Ni01LjM1NiAxMi40MjYgMTQuODA4LS4zNzQgNy41OCA1LjMzOSAxLjAyMSA1LjM2NS0xMS4xOTggOC4wMDMgMS41ODQtLjI5IDQuMzk3LTIuODk5LTEuMDM1LS4yMzMgMy43MSAxLjgzNSAyLjU0MiA0Ljc1Ny0xLjEtLjE2Mi02LjY5NCA3LjAyMy03LjY2OCA1LjI5Ny03LjQwOCAzLjI3MiAzLjkzNS03LjgxMSAxMS4yNDcgOS4xNzUtNy4wNi4xODggNy40MzMtOS40MDEgNC4yNTEgMTAuMzUtMS41My0xLjYyMSA2LjAzLTEwLjEzMy4xNDkgOS4xMTUgMS41Ni0zLjkwNyA0Ljc0OC04LjktMi45MTYgMi4zNDggMy4zODctNC43MDMgMS41Mi0yLjI4LTIuMjIzLTMuNjc5IDQuOTU0IDQuMTQ3LjcwMiA1LjEwNy0yLjMgMS41NjUgMy44NC00LjMyMyAyLS45NzEgNi41MzgtMy41ODgtMS4xMzMuMDM5LTUuMDY1LTMuOTM3LS42MzMuNDMgMi43MDMgNC4zIDYuNTI4LTIuODMyIDMuMzQtMi45NzMtMy4wMjMuNzUgNS4zNy0zLjE5NyAyLjg5NC0yLjk0LTIuOTYuNTI2LTUuMjk3LTIuNzggMy4xNTUtMi41NjQtMy42NCA0LjM2OS02LjU2NHoiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
   const getBlockIcon = (name) => {
     // lower file size moment
-    const start = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI";
-    return start + {
-      main: "3OS4xOTkiIGhlaWdodD0iODcuOTIyIiB2aWV3Qm94PSIwIDAgNzkuMTk5IDg3LjkyMiI+PHBhdGggZD0ibTI1LjkwMSA2NS41MDctNS4yNTUtLjA4Yy0xMS4wMy0uMDgtMTEuNzA3LS4wOC0xMi44ODktLjU5OC0uMzctLjE1Mi0yLjc1OC0yLjQyOS0yLjc1OC0yLjQyOVYyNS40NzdzMi4wODMtMi4xNSAyLjc1OC0yLjQzYzEuMTI2LS40NzggMS44NTgtLjUxOCAxMi44OS0uNTk3bDUuMjUzLS4wOHoiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIxMCIgb3BhY2l0eT0iLjI1Ii8+PHBhdGggZD0iTTMwLjQ2OSA2NS41MDdzLTIxLjUzLS4xNi0yMi43MS0uNjc3Yy0uNjc3LS4yOC0yLjc2LTIuNDMtMi43Ni0yLjQzVjI1LjQ3OHMyLjA4My0yLjE1MSAyLjc1OC0yLjQzYzEuMTI3LS40NzggMjIuNzEyLS42NzcgMjIuNzEyLS42Nzd6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0ibTUzLjYyOCAyMi4zNyA0LjkyMy4wOGMxMS4wMzEuMDggMTEuNzYzLjEyIDEyLjg5LjU5OC42NzQuMjc5IDIuNzU3IDIuNDMgMi43NTcgMi40M3YzNi45MjNzLTIuMDgzIDIuMTUtMi43NTggMi40MjljLTEuMTgyLjUxOC0xLjg1OC41MTgtMTIuODg5LjU5OGwtNC45MjMuMDh6IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMTAiIG9wYWNpdHk9Ii4yNSIvPjxwYXRoIGQ9Ik00OC44OTUgMjIuMzdzMjEuNTg1LjIgMjIuNzEuNjc4Yy42NzYuMjc5IDIuNzU5IDIuNDMgMi43NTkgMi40M3YzNi45MjNzLTIuMDgzIDIuMTUtMi43NTggMi40MjljLTEuMTgyLjUxOC0yMi43MTEuNjc3LTIyLjcxMS42Nzd6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0ibTI5LjI3OCA1LjAwNSAxMC44MzIuMDRjMTAuNTE2LjA4IDEwLjgzNC4xMiAxMS41MTEuNTk2IDIuNDMgMS44NzIgMi4zOSA0Ljk0LS4xNTkgNi42NTItLjc1Ny41MTgtMS4xMTUuNTU3LTQuMzQuNTU3aC0zLjUwNnY2Mi4xNzZoMy40NjVjMy45NDMgMCA0LjkuMzE4IDUuODE1IDEuOTUxIDEuMDM2IDEuODMzLjUxOCAzLjk0NC0xLjI3NSA1LjI1OC0uNjc3LjUxOC0uOTk1LjUxOC0xMS41MS41OThsLTEwLjgzNC4wOC0xLjExNi0uNTU4Yy0xLjE1NS0uNjM4LTIuMTktMi4xNS0yLjE5LTMuMzg2IDAtLjg3NS45OTUtMi42NjggMS43OTItMy4yNjUuNTk3LS40NzggMS4xMTUtLjUxOCA0LjM0Mi0uNTk4bDMuNjY0LS4wOFYxMi44OWwtMy42NjQtLjA4Yy0zLjIyNy0uMDgtMy43NDUtLjExOS00LjM0Mi0uNTk3LS43OTctLjU1OC0xLjc5Mi0yLjM1LTEuNzkyLTMuMjY2IDAtMS4yMzUuOTk1LTIuNzg4IDIuMTktMy4zODZ6IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMTAiIG9wYWNpdHk9Ii4yNSIvPjxwYXRoIGQ9Im0yOS4yNzggNS4wMDUgMTAuODMyLjA0YzEwLjUxNi4wOCAxMC44MzQuMTIgMTEuNTExLjU5NiAyLjQzIDEuODcyIDIuMzkgNC45NC0uMTU5IDYuNjUyLS43NTcuNTE4LTEuMTE1LjU1Ny00LjM0LjU1N2gtMy41MDZ2NjIuMTc2aDMuNDY1YzMuOTQzIDAgNC45LjMxOCA1LjgxNSAxLjk1MSAxLjAzNiAxLjgzMy41MTggMy45NDQtMS4yNzUgNS4yNTgtLjY3Ny41MTgtLjk5NS41MTgtMTEuNTEuNTk4bC0xMC44MzQuMDgtMS4xMTYtLjU1OGMtMS4xNTUtLjYzOC0yLjE5LTIuMTUtMi4xOS0zLjM4NiAwLS44NzUuOTk1LTIuNjY4IDEuNzkyLTMuMjY1LjU5Ny0uNDc4IDEuMTE1LS41MTggNC4zNDItLjU5OGwzLjY2NC0uMDhWMTIuODlsLTMuNjY0LS4wOGMtMy4yMjctLjA4LTMuNzQ1LS4xMTktNC4zNDItLjU5Ny0uNzk3LS41NTgtMS43OTItMi4zNS0xLjc5Mi0zLjI2NiAwLTEuMjM1Ljk5NS0yLjc4OCAyLjE5LTMuMzg2eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
-      color: "3NS41MzUiIGhlaWdodD0iNzEuNDk3IiB2aWV3Qm94PSIwIDAgNzUuNTM1IDcxLjQ5NyI+PHBhdGggZD0iTTIxLjMwNyAyMS40NjJDMjEuMzA3IDEyLjM3IDI4LjY3NyA1IDM3Ljc2OCA1czE2LjQ2MSA3LjM3IDE2LjQ2MSAxNi40NjItNy4zNyAxNi40NjEtMTYuNDYxIDE2LjQ2MS0xNi40NjEtNy4zNy0xNi40NjEtMTYuNDYxeiIgc3Ryb2tlPSIjMDAwIiBvcGFjaXR5PSIuMjUiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNNSA1MC4wMzZjMC05LjA5MSA3LjM3LTE2LjQ2MSAxNi40NjItMTYuNDYxczE2LjQ2MSA3LjM3IDE2LjQ2MSAxNi40NjFjMCA5LjA5Mi03LjM3IDE2LjQ2Mi0xNi40NjEgMTYuNDYyQzEyLjM3IDY2LjQ5OCA1IDU5LjEyOCA1IDUwLjAzNnoiIHN0cm9rZT0iIzAwMCIgb3BhY2l0eT0iLjI1IiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTM3LjYxMyA1MC4wMzZjMC05LjA5MSA3LjM3LTE2LjQ2MSAxNi40NjEtMTYuNDYxIDkuMDkyIDAgMTYuNDYyIDcuMzcgMTYuNDYyIDE2LjQ2MSAwIDkuMDkyLTcuMzcgMTYuNDYyLTE2LjQ2MiAxNi40NjJzLTE2LjQ2MS03LjM3LTE2LjQ2MS0xNi40NjJ6IiBzdHJva2U9IiMwMDAiIG9wYWNpdHk9Ii4yNSIgc3Ryb2tlLXdpZHRoPSIxMCIvPjxwYXRoIGQ9Ik0yMS4zMDcgMjEuNDYyQzIxLjMwNyAxMi4zNyAyOC42NzcgNSAzNy43NjggNXMxNi40NjEgNy4zNyAxNi40NjEgMTYuNDYyLTcuMzcgMTYuNDYxLTE2LjQ2MSAxNi40NjEtMTYuNDYxLTcuMzctMTYuNDYxLTE2LjQ2MSIgZmlsbD0iIzBmMCIvPjxwYXRoIGQ9Ik01IDUwLjAzNmMwLTkuMDkxIDcuMzctMTYuNDYxIDE2LjQ2Mi0xNi40NjFzMTYuNDYxIDcuMzcgMTYuNDYxIDE2LjQ2MWMwIDkuMDkyLTcuMzcgMTYuNDYyLTE2LjQ2MSAxNi40NjJDMTIuMzcgNjYuNDk4IDUgNTkuMTI4IDUgNTAuMDM2IiBmaWxsPSJyZWQiLz48cGF0aCBkPSJNMzcuNjEzIDUwLjAzNmMwLTkuMDkxIDcuMzctMTYuNDYxIDE2LjQ2MS0xNi40NjEgOS4wOTIgMCAxNi40NjIgNy4zNyAxNi40NjIgMTYuNDYxIDAgOS4wOTItNy4zNyAxNi40NjItMTYuNDYyIDE2LjQ2MnMtMTYuNDYxLTcuMzctMTYuNDYxLTE2LjQ2MiIgZmlsbD0iIzAwZiIvPjwvc3ZnPg==",
-      effect: "1Ny40NDIiIGhlaWdodD0iNzAuNDUiIHZpZXdCb3g9IjAgMCA1Ny40NDIgNzAuNDUiPjxwYXRoIGQ9Ik01IDQ5LjA0N2MtMy45ODgtOC4xMTctMy45OTYtMTguMjQzLjE1My0yNi40MUM5Ljg0IDEzLjA2MiAxNy43MyA4LjgxOCAyMC45IDcuNDM4YTMxLjQgMzEuNCAwIDAgMSA2LjA3Ni0yLjA4M2wyLjEyLS40NTdjMS41NTgtLjMyIDMuMTEuNjQ2IDMuNDQ3IDIuMTg3LjM0IDEuNTQ1LS42NTEgMy4wNjYtMi4yMTYgMy40MDJsLTIuMDYzLjQ0NWEyNS40IDI1LjQgMCAwIDAtNC45NiAxLjcxNmMtMi4wODMuOTAyLTguOTc0IDQuMzkyLTEyLjk0OSAxMi41MTUtMy4wMTcgNS45MzMtMy45MTcgMTUuMzY2LjgzMiAyMy4xNSA0LjMwMyA3LjQ5OCAxMy4xMTIgMTIuMDk1IDIxLjQ2OCAxMS4zMjEgNy45MDMtLjU2OCAxNS4xNTUtNS44MjggMTcuNjk4LTEyLjc5NSAyLjU4MS02LjU1Mi44NjYtMTMuMjY5LTEuOTY3LTE3LjA1Mi0zLjQxMy00LjY2LTcuNjYtNi4wOTQtOS4zMjgtNi40OTUtLjI0OS0uMDc0LTYuMDg1LTEuODI3LTExLjI0Ljc1NC0yLjIyIDEuMDY0LTUuMDkgMy40NTYtNi42MjggNy4wNS0xLjY2IDMuNzEyLTEuMjMgOC40ODQgMS4wMiAxMS42NTUgMi4yNjMgMy4zOTkgNi41MzIgNS4zMjMgMTAuMjAzIDQuNjcgMy42NTUtLjU3NSA2LjEyNy0zLjI5NCA2LjcxMy01LjY4My42ODktMi41NjgtLjM2OC00LjczOS0xLjE5My01LjUyLTEuNDAxLTEuMzgzLTIuNjExLTEuNDA2LTIuNjYzLTEuNDFhNSA1IDAgMCAwLTEuMDI2LjA1NGMtLjY1NC4yNC0xLjU4Mi43NjQtMS44NTQgMS4zMTYtLjA0OC4wOS0uMTcuMzQuMDY0Ljk2My41NjMgMS40NzctLjE5NyAzLjEzLTEuNjk0IDMuNjg1LTEuNDkuNTU4LTMuMTY3LS4xOTItMy43MzMtMS42NzMtLjkzMS0yLjQ1LS40MTYtNC4zNjguMTgtNS41NDYgMS41NTgtMy4wNjYgNS4xNzYtNC4xNzYgNS41ODUtNC4yOTQuMTg3LS4wNTcuMzg1LS4wOTEuNTgtLjEwOC4zOTgtLjA2IDEuMS0uMTU1IDIuMDUyLS4xMTggMi4xNzguMDI3IDQuNjYgMS4xNjUgNi41NjMgMy4wNDYgMi4yNDYgMi4xMiA0LjAwNiA2LjM4IDIuNzU4IDExLjAxMS0xLjIxNyA0Ljk1Ny01Ljg5NSA5LjA1Ni0xMS4zNTMgOS45MTQtNS44NyAxLjA0Ny0xMi40ODItMS44NDctMTUuOTczLTcuMDk0LTMuMzY1LTQuNzI4LTQuMDA5LTExLjY0Ny0xLjU0OC0xNy4xMzYgMi43LTYuMzIgNy44NTktOS4xOCA5LjM3My05LjkwNyA3LjI3OS0zLjYzNSAxNS4wNTktMS4yMzUgMTUuMzg2LTEuMTM0IDIuMDkzLjQ5NCA3LjkxMyAyLjQ0MyAxMi40MzcgOC42MjUgMy40NzcgNC42NSA2LjI5NyAxMy4zMzcgMi43MTQgMjIuNDMtMy4yNzMgOC45NjItMTIuNTkgMTUuNzctMjIuNjM4IDE2LjQ5My0uNzg4LjA3NC0xLjU4NS4xMTUtMi4zOC4xMTUtOS43NSAwLTE5LjYyNy01LjYyLTI0LjU4LTE0LjI1IDAgMC0uODIxLTEuNDE4LTEuMTgzLTIuMTUzeiIgc3Ryb2tlPSIjMDAwIiBvcGFjaXR5PSIuMjUiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNNi4xODIgNTEuMjAxYy01LjEzNC04LjQyLTUuNTUzLTE5LjY1Ny0xLjAzLTI4LjU2NUM5Ljg0IDEzLjA2MiAxNy43MyA4LjgxOCAyMC45IDcuNDM4YTMxLjQgMzEuNCAwIDAgMSA2LjA3Ni0yLjA4M2wyLjEyLS40NTdjMS41NTgtLjMyIDMuMTEuNjQ2IDMuNDQ3IDIuMTg3LjM0IDEuNTQ1LS42NTEgMy4wNjYtMi4yMTYgMy40MDJsLTIuMDYzLjQ0NWEyNS40IDI1LjQgMCAwIDAtNC45NiAxLjcxNmMtMi4wODMuOTAyLTguOTc0IDQuMzkyLTEyLjk0OSAxMi41MTUtMy4wMTcgNS45MzMtMy45MTcgMTUuMzY2LjgzMiAyMy4xNSA0LjMwMyA3LjQ5OCAxMy4xMTIgMTIuMDk1IDIxLjQ2OCAxMS4zMjEgNy45MDMtLjU2OCAxNS4xNTUtNS44MjggMTcuNjk4LTEyLjc5NSAyLjU4MS02LjU1Mi44NjYtMTMuMjY5LTEuOTY3LTE3LjA1Mi0zLjQxMy00LjY2LTcuNjYtNi4wOTQtOS4zMjgtNi40OTUtLjI0OS0uMDc0LTYuMDg1LTEuODI3LTExLjI0Ljc1NC0yLjIyIDEuMDY0LTUuMDkgMy40NTYtNi42MjggNy4wNS0xLjY2IDMuNzEyLTEuMjMgOC40ODQgMS4wMiAxMS42NTUgMi4yNjMgMy4zOTkgNi41MzIgNS4zMjMgMTAuMjAzIDQuNjcgMy42NTUtLjU3NSA2LjEyNy0zLjI5NCA2LjcxMy01LjY4My42ODktMi41NjgtLjM2OC00LjczOS0xLjE5My01LjUyLTEuNDAxLTEuMzgzLTIuNjExLTEuNDA2LTIuNjYzLTEuNDFhNSA1IDAgMCAwLTEuMDI2LjA1NGMtLjY1NC4yNC0xLjU4Mi43NjQtMS44NTQgMS4zMTYtLjA0OC4wOS0uMTcuMzQuMDY0Ljk2My41NjMgMS40NzctLjE5NyAzLjEzLTEuNjk0IDMuNjg1LTEuNDkuNTU4LTMuMTY3LS4xOTItMy43MzMtMS42NzMtLjkzMS0yLjQ1LS40MTYtNC4zNjguMTgtNS41NDYgMS41NTgtMy4wNjYgNS4xNzYtNC4xNzYgNS41ODUtNC4yOTQuMTg3LS4wNTcuMzg1LS4wOTEuNTgtLjEwOC4zOTgtLjA2IDEuMS0uMTU1IDIuMDUyLS4xMTggMi4xNzguMDI3IDQuNjYgMS4xNjUgNi41NjMgMy4wNDYgMi4yNDYgMi4xMiA0LjAwNiA2LjM4IDIuNzU4IDExLjAxMS0xLjIxNyA0Ljk1Ny01Ljg5NSA5LjA1Ni0xMS4zNTMgOS45MTQtNS44NyAxLjA0Ny0xMi40ODItMS44NDctMTUuOTczLTcuMDk0LTMuMzY1LTQuNzI4LTQuMDA5LTExLjY0Ny0xLjU0OC0xNy4xMzYgMi43LTYuMzIgNy44NTktOS4xOCA5LjM3My05LjkwNyA3LjI3OS0zLjYzNSAxNS4wNTktMS4yMzUgMTUuMzg2LTEuMTM0IDIuMDkzLjQ5NCA3LjkxMyAyLjQ0MyAxMi40MzcgOC42MjUgMy40NzcgNC42NSA2LjI5NyAxMy4zMzcgMi43MTQgMjIuNDMtMy4yNzMgOC45NjItMTIuNTkgMTUuNzctMjIuNjM4IDE2LjQ5My0uNzg4LjA3NC0xLjU4NS4xMTUtMi4zOC4xMTUtOS43NSAwLTE5LjYyNy01LjYyLTI0LjU4LTE0LjI1Ii8+PC9zdmc+"
-    }[name];
+    const start =
+      "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI";
+    return (
+      start +
+      {
+        main: "3OS4xOTkiIGhlaWdodD0iODcuOTIyIiB2aWV3Qm94PSIwIDAgNzkuMTk5IDg3LjkyMiI+PHBhdGggZD0ibTI1LjkwMSA2NS41MDctNS4yNTUtLjA4Yy0xMS4wMy0uMDgtMTEuNzA3LS4wOC0xMi44ODktLjU5OC0uMzctLjE1Mi0yLjc1OC0yLjQyOS0yLjc1OC0yLjQyOVYyNS40NzdzMi4wODMtMi4xNSAyLjc1OC0yLjQzYzEuMTI2LS40NzggMS44NTgtLjUxOCAxMi44OS0uNTk3bDUuMjUzLS4wOHoiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIxMCIgb3BhY2l0eT0iLjI1Ii8+PHBhdGggZD0iTTMwLjQ2OSA2NS41MDdzLTIxLjUzLS4xNi0yMi43MS0uNjc3Yy0uNjc3LS4yOC0yLjc2LTIuNDMtMi43Ni0yLjQzVjI1LjQ3OHMyLjA4My0yLjE1MSAyLjc1OC0yLjQzYzEuMTI3LS40NzggMjIuNzEyLS42NzcgMjIuNzEyLS42Nzd6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0ibTUzLjYyOCAyMi4zNyA0LjkyMy4wOGMxMS4wMzEuMDggMTEuNzYzLjEyIDEyLjg5LjU5OC42NzQuMjc5IDIuNzU3IDIuNDMgMi43NTcgMi40M3YzNi45MjNzLTIuMDgzIDIuMTUtMi43NTggMi40MjljLTEuMTgyLjUxOC0xLjg1OC41MTgtMTIuODg5LjU5OGwtNC45MjMuMDh6IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMTAiIG9wYWNpdHk9Ii4yNSIvPjxwYXRoIGQ9Ik00OC44OTUgMjIuMzdzMjEuNTg1LjIgMjIuNzEuNjc4Yy42NzYuMjc5IDIuNzU5IDIuNDMgMi43NTkgMi40M3YzNi45MjNzLTIuMDgzIDIuMTUtMi43NTggMi40MjljLTEuMTgyLjUxOC0yMi43MTEuNjc3LTIyLjcxMS42Nzd6IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0ibTI5LjI3OCA1LjAwNSAxMC44MzIuMDRjMTAuNTE2LjA4IDEwLjgzNC4xMiAxMS41MTEuNTk2IDIuNDMgMS44NzIgMi4zOSA0Ljk0LS4xNTkgNi42NTItLjc1Ny41MTgtMS4xMTUuNTU3LTQuMzQuNTU3aC0zLjUwNnY2Mi4xNzZoMy40NjVjMy45NDMgMCA0LjkuMzE4IDUuODE1IDEuOTUxIDEuMDM2IDEuODMzLjUxOCAzLjk0NC0xLjI3NSA1LjI1OC0uNjc3LjUxOC0uOTk1LjUxOC0xMS41MS41OThsLTEwLjgzNC4wOC0xLjExNi0uNTU4Yy0xLjE1NS0uNjM4LTIuMTktMi4xNS0yLjE5LTMuMzg2IDAtLjg3NS45OTUtMi42NjggMS43OTItMy4yNjUuNTk3LS40NzggMS4xMTUtLjUxOCA0LjM0Mi0uNTk4bDMuNjY0LS4wOFYxMi44OWwtMy42NjQtLjA4Yy0zLjIyNy0uMDgtMy43NDUtLjExOS00LjM0Mi0uNTk3LS43OTctLjU1OC0xLjc5Mi0yLjM1LTEuNzkyLTMuMjY2IDAtMS4yMzUuOTk1LTIuNzg4IDIuMTktMy4zODZ6IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMTAiIG9wYWNpdHk9Ii4yNSIvPjxwYXRoIGQ9Im0yOS4yNzggNS4wMDUgMTAuODMyLjA0YzEwLjUxNi4wOCAxMC44MzQuMTIgMTEuNTExLjU5NiAyLjQzIDEuODcyIDIuMzkgNC45NC0uMTU5IDYuNjUyLS43NTcuNTE4LTEuMTE1LjU1Ny00LjM0LjU1N2gtMy41MDZ2NjIuMTc2aDMuNDY1YzMuOTQzIDAgNC45LjMxOCA1LjgxNSAxLjk1MSAxLjAzNiAxLjgzMy41MTggMy45NDQtMS4yNzUgNS4yNTgtLjY3Ny41MTgtLjk5NS41MTgtMTEuNTEuNTk4bC0xMC44MzQuMDgtMS4xMTYtLjU1OGMtMS4xNTUtLjYzOC0yLjE5LTIuMTUtMi4xOS0zLjM4NiAwLS44NzUuOTk1LTIuNjY4IDEuNzkyLTMuMjY1LjU5Ny0uNDc4IDEuMTE1LS41MTggNC4zNDItLjU5OGwzLjY2NC0uMDhWMTIuODlsLTMuNjY0LS4wOGMtMy4yMjctLjA4LTMuNzQ1LS4xMTktNC4zNDItLjU5Ny0uNzk3LS41NTgtMS43OTItMi4zNS0xLjc5Mi0zLjI2NiAwLTEuMjM1Ljk5NS0yLjc4OCAyLjE5LTMuMzg2eiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
+        color:
+          "3NS41MzUiIGhlaWdodD0iNzEuNDk3IiB2aWV3Qm94PSIwIDAgNzUuNTM1IDcxLjQ5NyI+PHBhdGggZD0iTTIxLjMwNyAyMS40NjJDMjEuMzA3IDEyLjM3IDI4LjY3NyA1IDM3Ljc2OCA1czE2LjQ2MSA3LjM3IDE2LjQ2MSAxNi40NjItNy4zNyAxNi40NjEtMTYuNDYxIDE2LjQ2MS0xNi40NjEtNy4zNy0xNi40NjEtMTYuNDYxeiIgc3Ryb2tlPSIjMDAwIiBvcGFjaXR5PSIuMjUiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBkPSJNNSA1MC4wMzZjMC05LjA5MSA3LjM3LTE2LjQ2MSAxNi40NjItMTYuNDYxczE2LjQ2MSA3LjM3IDE2LjQ2MSAxNi40NjFjMCA5LjA5Mi03LjM3IDE2LjQ2Mi0xNi40NjEgMTYuNDYyQzEyLjM3IDY2LjQ5OCA1IDU5LjEyOCA1IDUwLjAzNnoiIHN0cm9rZT0iIzAwMCIgb3BhY2l0eT0iLjI1IiBzdHJva2Utd2lkdGg9IjEwIi8+PHBhdGggZD0iTTM3LjYxMyA1MC4wMzZjMC05LjA5MSA3LjM3LTE2LjQ2MSAxNi40NjEtMTYuNDYxIDkuMDkyIDAgMTYuNDYyIDcuMzcgMTYuNDYyIDE2LjQ2MSAwIDkuMDkyLTcuMzcgMTYuNDYyLTE2LjQ2MiAxNi40NjJzLTE2LjQ2MS03LjM3LTE2LjQ2MS0xNi40NjJ6IiBzdHJva2U9IiMwMDAiIG9wYWNpdHk9Ii4yNSIgc3Ryb2tlLXdpZHRoPSIxMCIvPjxwYXRoIGQ9Ik0yMS4zMDcgMjEuNDYyQzIxLjMwNyAxMi4zNyAyOC42NzcgNSAzNy43NjggNXMxNi40NjEgNy4zNyAxNi40NjEgMTYuNDYyLTcuMzcgMTYuNDYxLTE2LjQ2MSAxNi40NjEtMTYuNDYxLTcuMzctMTYuNDYxLTE2LjQ2MSIgZmlsbD0iIzBmMCIvPjxwYXRoIGQ9Ik01IDUwLjAzNmMwLTkuMDkxIDcuMzctMTYuNDYxIDE2LjQ2Mi0xNi40NjFzMTYuNDYxIDcuMzcgMTYuNDYxIDE2LjQ2MWMwIDkuMDkyLTcuMzcgMTYuNDYyLTE2LjQ2MSAxNi40NjJDMTIuMzcgNjYuNDk4IDUgNTkuMTI4IDUgNTAuMDM2IiBmaWxsPSJyZWQiLz48cGF0aCBkPSJNMzcuNjEzIDUwLjAzNmMwLTkuMDkxIDcuMzctMTYuNDYxIDE2LjQ2MS0xNi40NjEgOS4wOTIgMCAxNi40NjIgNy4zNyAxNi40NjIgMTYuNDYxIDAgOS4wOTItNy4zNyAxNi40NjItMTYuNDYyIDE2LjQ2MnMtMTYuNDYxLTcuMzctMTYuNDYxLTE2LjQ2MiIgZmlsbD0iIzAwZiIvPjwvc3ZnPg==",
+        effect:
+          "1Ny40NDIiIGhlaWdodD0iNzAuNDUiIHZpZXdCb3g9IjAgMCA1Ny40NDIgNzAuNDUiPjxwYXRoIGQ9Ik01IDQ5LjA0N2MtMy45ODgtOC4xMTctMy45OTYtMTguMjQzLjE1My0yNi40MUM5Ljg0IDEzLjA2MiAxNy43MyA4LjgxOCAyMC45IDcuNDM4YTMxLjQgMzEuNCAwIDAgMSA2LjA3Ni0yLjA4M2wyLjEyLS40NTdjMS41NTgtLjMyIDMuMTEuNjQ2IDMuNDQ3IDIuMTg3LjM0IDEuNTQ1LS42NTEgMy4wNjYtMi4yMTYgMy40MDJsLTIuMDYzLjQ0NWEyNS40IDI1LjQgMCAwIDAtNC45NiAxLjcxNmMtMi4wODMuOTAyLTguOTc0IDQuMzkyLTEyLjk0OSAxMi41MTUtMy4wMTcgNS45MzMtMy45MTcgMTUuMzY2LjgzMiAyMy4xNSA0LjMwMyA3LjQ5OCAxMy4xMTIgMTIuMDk1IDIxLjQ2OCAxMS4zMjEgNy45MDMtLjU2OCAxNS4xNTUtNS44MjggMTcuNjk4LTEyLjc5NSAyLjU4MS02LjU1Mi44NjYtMTMuMjY5LTEuOTY3LTE3LjA1Mi0zLjQxMy00LjY2LTcuNjYtNi4wOTQtOS4zMjgtNi40OTUtLjI0OS0uMDc0LTYuMDg1LTEuODI3LTExLjI0Ljc1NC0yLjIyIDEuMDY0LTUuMDkgMy40NTYtNi42MjggNy4wNS0xLjY2IDMuNzEyLTEuMjMgOC40ODQgMS4wMiAxMS42NTUgMi4yNjMgMy4zOTkgNi41MzIgNS4zMjMgMTAuMjAzIDQuNjcgMy42NTUtLjU3NSA2LjEyNy0zLjI5NCA2LjcxMy01LjY4My42ODktMi41NjgtLjM2OC00LjczOS0xLjE5My01LjUyLTEuNDAxLTEuMzgzLTIuNjExLTEuNDA2LTIuNjYzLTEuNDFhNSA1IDAgMCAwLTEuMDI2LjA1NGMtLjY1NC4yNC0xLjU4Mi43NjQtMS44NTQgMS4zMTYtLjA0OC4wOS0uMTcuMzQuMDY0Ljk2My41NjMgMS40NzctLjE5NyAzLjEzLTEuNjk0IDMuNjg1LTEuNDkuNTU4LTMuMTY3LS4xOTItMy43MzMtMS42NzMtLjkzMS0yLjQ1LS40MTYtNC4zNjguMTgtNS41NDYgMS41NTgtMy4wNjYgNS4xNzYtNC4xNzYgNS41ODUtNC4yOTQuMTg3LS4wNTcuMzg1LS4wOTEuNTgtLjEwOC4zOTgtLjA2IDEuMS0uMTU1IDIuMDUyLS4xMTggMi4xNzguMDI3IDQuNjYgMS4xNjUgNi41NjMgMy4wNDYgMi4yNDYgMi4xMiA0LjAwNiA2LjM4IDIuNzU4IDExLjAxMS0xLjIxNyA0Ljk1Ny01Ljg5NSA5LjA1Ni0xMS4zNTMgOS45MTQtNS44NyAxLjA0Ny0xMi40ODItMS44NDctMTUuOTczLTcuMDk0LTMuMzY1LTQuNzI4LTQuMDA5LTExLjY0Ny0xLjU0OC0xNy4xMzYgMi43LTYuMzIgNy44NTktOS4xOCA5LjM3My05LjkwNyA3LjI3OS0zLjYzNSAxNS4wNTktMS4yMzUgMTUuMzg2LTEuMTM0IDIuMDkzLjQ5NCA3LjkxMyAyLjQ0MyAxMi40MzcgOC42MjUgMy40NzcgNC42NSA2LjI5NyAxMy4zMzcgMi43MTQgMjIuNDMtMy4yNzMgOC45NjItMTIuNTkgMTUuNzctMjIuNjM4IDE2LjQ5My0uNzg4LjA3NC0xLjU4NS4xMTUtMi4zOC4xMTUtOS43NSAwLTE5LjYyNy01LjYyLTI0LjU4LTE0LjI1IDAgMC0uODIxLTEuNDE4LTEuMTgzLTIuMTUzeiIgc3Ryb2tlPSIjMDAwIiBvcGFjaXR5PSIuMjUiIHN0cm9rZS13aWR0aD0iMTAiLz48cGF0aCBmaWxsPSIjZmZmIiBkPSJNNi4xODIgNTEuMjAxYy01LjEzNC04LjQyLTUuNTUzLTE5LjY1Ny0xLjAzLTI4LjU2NUM5Ljg0IDEzLjA2MiAxNy43MyA4LjgxOCAyMC45IDcuNDM4YTMxLjQgMzEuNCAwIDAgMSA2LjA3Ni0yLjA4M2wyLjEyLS40NTdjMS41NTgtLjMyIDMuMTEuNjQ2IDMuNDQ3IDIuMTg3LjM0IDEuNTQ1LS42NTEgMy4wNjYtMi4yMTYgMy40MDJsLTIuMDYzLjQ0NWEyNS40IDI1LjQgMCAwIDAtNC45NiAxLjcxNmMtMi4wODMuOTAyLTguOTc0IDQuMzkyLTEyLjk0OSAxMi41MTUtMy4wMTcgNS45MzMtMy45MTcgMTUuMzY2LjgzMiAyMy4xNSA0LjMwMyA3LjQ5OCAxMy4xMTIgMTIuMDk1IDIxLjQ2OCAxMS4zMjEgNy45MDMtLjU2OCAxNS4xNTUtNS44MjggMTcuNjk4LTEyLjc5NSAyLjU4MS02LjU1Mi44NjYtMTMuMjY5LTEuOTY3LTE3LjA1Mi0zLjQxMy00LjY2LTcuNjYtNi4wOTQtOS4zMjgtNi40OTUtLjI0OS0uMDc0LTYuMDg1LTEuODI3LTExLjI0Ljc1NC0yLjIyIDEuMDY0LTUuMDkgMy40NTYtNi42MjggNy4wNS0xLjY2IDMuNzEyLTEuMjMgOC40ODQgMS4wMiAxMS42NTUgMi4yNjMgMy4zOTkgNi41MzIgNS4zMjMgMTAuMjAzIDQuNjcgMy42NTUtLjU3NSA2LjEyNy0zLjI5NCA2LjcxMy01LjY4My42ODktMi41NjgtLjM2OC00LjczOS0xLjE5My01LjUyLTEuNDAxLTEuMzgzLTIuNjExLTEuNDA2LTIuNjYzLTEuNDFhNSA1IDAgMCAwLTEuMDI2LjA1NGMtLjY1NC4yNC0xLjU4Mi43NjQtMS44NTQgMS4zMTYtLjA0OC4wOS0uMTcuMzQuMDY0Ljk2My41NjMgMS40NzctLjE5NyAzLjEzLTEuNjk0IDMuNjg1LTEuNDkuNTU4LTMuMTY3LS4xOTItMy43MzMtMS42NzMtLjkzMS0yLjQ1LS40MTYtNC4zNjguMTgtNS41NDYgMS41NTgtMy4wNjYgNS4xNzYtNC4xNzYgNS41ODUtNC4yOTQuMTg3LS4wNTcuMzg1LS4wOTEuNTgtLjEwOC4zOTgtLjA2IDEuMS0uMTU1IDIuMDUyLS4xMTggMi4xNzguMDI3IDQuNjYgMS4xNjUgNi41NjMgMy4wNDYgMi4yNDYgMi4xMiA0LjAwNiA2LjM4IDIuNzU4IDExLjAxMS0xLjIxNyA0Ljk1Ny01Ljg5NSA5LjA1Ni0xMS4zNTMgOS45MTQtNS44NyAxLjA0Ny0xMi40ODItMS44NDctMTUuOTczLTcuMDk0LTMuMzY1LTQuNzI4LTQuMDA5LTExLjY0Ny0xLjU0OC0xNy4xMzYgMi43LTYuMzIgNy44NTktOS4xOCA5LjM3My05LjkwNyA3LjI3OS0zLjYzNSAxNS4wNTktMS4yMzUgMTUuMzg2LTEuMTM0IDIuMDkzLjQ5NCA3LjkxMyAyLjQ0MyAxMi40MzcgOC42MjUgMy40NzcgNC42NSA2LjI5NyAxMy4zMzcgMi43MTQgMjIuNDMtMy4yNzMgOC45NjItMTIuNTkgMTUuNzctMjIuNjM4IDE2LjQ5My0uNzg4LjA3NC0xLjU4NS4xMTUtMi4zOC4xMTUtOS43NSAwLTE5LjYyNy01LjYyLTI0LjU4LTE0LjI1Ii8+PC9zdmc+",
+      }[name]
+    );
   };
 
   const Cast = Scratch.Cast;
@@ -29,15 +36,20 @@
   const keyUtil = runtime.ioDevices.keyboard;
 
   const defaultFonts = [
-    "Sans Serif", "Serif", "Handwriting",
-    "Marker", "Curly", "Pixel", "Scratch"
+    "Sans Serif",
+    "Serif",
+    "Handwriting",
+    "Marker",
+    "Curly",
+    "Pixel",
+    "Scratch",
   ];
   const translatedInputs = {
     popup: Scratch.translate("default-popup"),
     label: Scratch.translate("new-label"),
     input: Scratch.translate("new-input"),
     btnRow: Scratch.translate("default-button-row"),
-    button: Scratch.translate("submit-button")
+    button: Scratch.translate("submit-button"),
   };
 
   const validInputs = [
@@ -50,7 +62,7 @@
     createMenuItem("dropdown", "select"),
     createMenuItem("multi-select dropdown", "multiSelect"),
     createMenuItem("horizontal slider", "rangeHorz"),
-    createMenuItem("vertical slider", "rangeVert")
+    createMenuItem("vertical slider", "rangeVert"),
   ];
   const validBorders = [
     createMenuItem("none", "none"),
@@ -61,7 +73,7 @@
     createMenuItem("groove", "groove"),
     createMenuItem("ridge", "ridge"),
     createMenuItem("inset", "inset"),
-    createMenuItem("outset", "outset")
+    createMenuItem("outset", "outset"),
   ];
   const validEffects = [
     createMenuItem("blur", "blur"),
@@ -76,7 +88,7 @@
     createMenuItem("scale x", "scaleX"),
     createMenuItem("scale y", "scaleY"),
     createMenuItem("skew x", "skewX"),
-    createMenuItem("skew y", "skewY")
+    createMenuItem("skew y", "skewY"),
   ];
 
   // internals
@@ -84,24 +96,29 @@
     popups: Object.create(null),
     labels: Object.create(null),
     inputs: Object.create(null),
-    buttons: Object.create(null)
-  }
+    buttons: Object.create(null),
+  };
   const elementStorage = {
     popups: Object.create(null),
     labels: Object.create(null),
     inputs: Object.create(null),
     buttonRows: Object.create(null),
-    buttons: Object.create(null)
-  }
+    buttons: Object.create(null),
+  };
 
   const xmlEscape = function (unsafe) {
-    return Cast.toString(unsafe).replace(new RegExp(`[<>&'"]`, "g"), c => {
+    return Cast.toString(unsafe).replace(new RegExp(`[<>&'"]`, "g"), (c) => {
       switch (c) {
-        case "<": return "&lt;";
-        case ">": return "&gt;";
-        case "&": return "&amp;";
-        case "'": return "&apos;";
-        case "\"": return "&quot;";
+        case "<":
+          return "&lt;";
+        case ">":
+          return "&gt;";
+        case "&":
+          return "&amp;";
+        case "'":
+          return "&apos;";
+        case '"':
+          return "&quot;";
       }
     });
   };
@@ -137,18 +154,28 @@
       element = document.createElement("select");
       selectors.forEach((option) => {
         let opt = document.createElement("option");
-        opt.value = option; opt.text = option;
+        opt.value = option;
+        opt.text = option;
         element.appendChild(opt);
       });
 
-      element.addEventListener("focus", () => { options.menuOpened = true });
-      element.addEventListener("blur", () => { options.menuOpened = false });
-      element.addEventListener("change", (e) => setElementValue([e.target.value]));
+      element.addEventListener("focus", () => {
+        options.menuOpened = true;
+      });
+      element.addEventListener("blur", () => {
+        options.menuOpened = false;
+      });
+      element.addEventListener("change", (e) =>
+        setElementValue([e.target.value])
+      );
       setElementValue([selectors[0]]);
     } else if (type === "multiSelect") {
       const createOption = (text, index) => {
         const holder = document.createElement("div");
-        holder.setAttribute("style", "display: flex; padding: 5px; cursor: pointer");
+        holder.setAttribute(
+          "style",
+          "display: flex; padding: 5px; cursor: pointer"
+        );
 
         const check = document.createElement("input");
         check.type = "checkbox";
@@ -167,7 +194,10 @@
 
       element = document.createElement("div");
       const optionsDiv = document.createElement("div");
-      optionsDiv.setAttribute("style", "overflow-y: scroll; height: calc(100% - 1px);");
+      optionsDiv.setAttribute(
+        "style",
+        "overflow-y: scroll; height: calc(100% - 1px);"
+      );
       element.appendChild(optionsDiv);
 
       setElementValue(response);
@@ -176,7 +206,8 @@
         optionsDiv.appendChild(option);
 
         option.addEventListener("click", (e) => {
-          if (e.target.tagName === "PRE") e.target.parentNode.querySelector("input").click();
+          if (e.target.tagName === "PRE")
+            e.target.parentNode.querySelector("input").click();
           else if (e.target.tagName === "INPUT") {
             if (e.target.checked) response.push(selectors[i]);
             else response.splice(response.indexOf(selectors[i]), 1);
@@ -220,7 +251,10 @@
         element.setAttribute("autocomplete", "off");
         element.setAttribute("name", `SPpopupPheonixPass-${Math.random()}`);
       } else if (type === "color") {
-        inputHolder.setAttribute("style", "display: flex; justify-content: center; width: 100%;");
+        inputHolder.setAttribute(
+          "style",
+          "display: flex; justify-content: center; width: 100%;"
+        );
         const colorStyle = document.createElement("style");
         colorStyle.textContent = `
           input[type="color"] {
@@ -249,7 +283,7 @@
     return {
       type: "input",
       data: { id, type, options },
-      DOMelement: inputHolder
+      DOMelement: inputHolder,
     };
   };
 
@@ -261,7 +295,7 @@
     return {
       type: "buttonRow",
       data: { id, buttons: [] },
-      DOMelement: buttonRow
+      DOMelement: buttonRow,
     };
   };
 
@@ -275,7 +309,7 @@
     return {
       type: "button",
       data: { id, text },
-      DOMelement: element
+      DOMelement: element,
     };
   };
 
@@ -284,20 +318,20 @@
     if (type === "popup") {
       styleStorage.popups[id] = {
         SPstorage: {},
-        "display": "flex",
+        display: "flex",
         "flex-direction": "column",
-        "position": "absolute",
+        position: "absolute",
         "pointer-events": "auto",
-        "transform": "translate(-50%, -50%)",
-        "filter": "",
-        "left": "calc(50% + 0px)",
-        "top": "calc(50% + 0px)",
-        "width": "max-content",
-        "height": "auto",
-        "padding": "15px",
-        "background": "#fff",
+        transform: "translate(-50%, -50%)",
+        filter: "",
+        left: "calc(50% + 0px)",
+        top: "calc(50% + 0px)",
+        width: "max-content",
+        height: "auto",
+        padding: "15px",
+        background: "#fff",
         "box-shadow": "#000 0px 0px 5px",
-        "border": "1px none #000",
+        border: "1px none #000",
         "border-radius": "5px",
       };
     } else if (type === "label") {
@@ -305,66 +339,69 @@
         SPstorage: {},
         "font-size": "14px",
         "font-family": "Sans Serif",
-        "margin": "5px",
-        "color": "#000",
+        margin: "5px",
+        color: "#000",
         "text-shadow": "none",
         "-webkit-text-stroke-width": "0px",
-        "transform": "",
-        "filter": ""
+        transform: "",
+        filter: "",
       };
     } else if (type === "input") {
       styleStorage.inputs[id] = {
         SPstorage: {},
-        "width": "max-content",
-        "height": "auto",
-        "margin": "5px",
-        "padding": "5px",
-        "border": "1px solid #000",
+        width: "max-content",
+        height: "auto",
+        margin: "5px",
+        padding: "5px",
+        border: "1px solid #000",
         "border-radius": "4px",
         "text-align": "left",
         "font-size": "14px",
         "font-family": "Sans Serif",
-        "background": "#a5aec3",
+        background: "#a5aec3",
         "accent-color": "#9f50d9",
-        "color": "#000",
+        color: "#000",
         "text-shadow": "none",
         "-webkit-text-stroke-width": "0px",
-        "transform": "",
-        "filter": ""
+        transform: "",
+        filter: "",
       };
     } else if (type === "button") {
       styleStorage.buttons[id] = {
         SPstorage: {},
-        "width": "auto",
-        "height": "auto",
-        "cursor": "pointer",
-        "margin": "5px",
-        "padding": "5px 10px",
+        width: "auto",
+        height: "auto",
+        cursor: "pointer",
+        margin: "5px",
+        padding: "5px 10px",
         "border-radius": "5px",
-        "border": "1px none #fff",
-        "background": "#0074d9",
+        border: "1px none #fff",
+        background: "#0074d9",
         "font-size": "14px",
         "font-family": "Sans Serif",
-        "color": "#fff",
+        color: "#fff",
         "text-shadow": "none",
         "-webkit-text-stroke-width": "0px",
-        "transform": "",
-        "filter": ""
+        transform: "",
+        filter: "",
       };
     }
     return styleStorage[type + "s"][id];
-  }
+  };
 
   const genDefaultBox = (id, optEmptyElements) => {
     genDefaultStyles(id, "popup");
     const defaultElements = [];
     let submitBtn, cancelBtn;
     if (!optEmptyElements) {
-      defaultElements.push(createLabel("default-label", Scratch.translate("Whats Your Name?")));
-      defaultElements.push(createInput(
-        "default-input", "text",
-        { defaultValue: Scratch.translate("...type your name") }
-      ));
+      defaultElements.push(
+        createLabel("default-label", Scratch.translate("Whats Your Name?"))
+      );
+      defaultElements.push(
+        createInput("default-input", "text", {
+          defaultValue: Scratch.translate("...type your name"),
+        })
+      );
 
       const buttonRow = createButtonRow("default-button-row");
       submitBtn = createButton("submit-button", Scratch.translate("Submit"));
@@ -383,7 +420,7 @@
       lastBtnPressed: undefined,
       value: undefined,
       DOMelement: undefined,
-      elements: defaultElements
+      elements: defaultElements,
     };
     if (!optEmptyElements) {
       elementStorage.labels["default-label"] = defaultElements[0];
@@ -394,7 +431,7 @@
     }
     elementStorage.popups[id] = defaultBox;
     return defaultBox;
-  }
+  };
 
   // popup box GUI
   const compileStyles = (id, type) => {
@@ -403,7 +440,7 @@
     if (type === "input" && boxInfo?.data.type === "color") {
       // color inputs with these options look weird
       if (styleObj["width"] === "max-content") styleObj["width"] = "80%";
-      if (styleObj["height"] === "auto")styleObj["height"] = "30px";
+      if (styleObj["height"] === "auto") styleObj["height"] = "30px";
     }
 
     let styleString = "";
@@ -419,9 +456,13 @@
     let boxInputs = [];
 
     const popupContainer = document.createElement("div");
-    popupContainer.setAttribute("style", "position: fixed; width: 100%; height: 100%;");
-    popupContainer.style.pointerEvents = boxInfo.focused ? "auto" : "none"; 
-    if (boxInfo.focused) popupContainer.style.backgroundColor = "rgba(0,0,0,0.5)";
+    popupContainer.setAttribute(
+      "style",
+      "position: fixed; width: 100%; height: 100%;"
+    );
+    popupContainer.style.pointerEvents = boxInfo.focused ? "auto" : "none";
+    if (boxInfo.focused)
+      popupContainer.style.backgroundColor = "rgba(0,0,0,0.5)";
     if (boxInfo.isWindowed) popupContainer.style.zIndex = "9999";
     else {
       popupContainer.style.left = "-50%";
@@ -436,7 +477,8 @@
     // various element utils
     const handleClose = (event) => {
       // if theres no input, set the value to the button name
-      if (event) boxInfo.lastBtnPressed = event.target.getAttribute("returnValue");
+      if (event)
+        boxInfo.lastBtnPressed = event.target.getAttribute("returnValue");
       if (boxInputs.length === 0) boxInfo.value = boxInfo.lastBtnPressed ?? "";
       else compileInputValues();
       runtime.off("KEY_PRESSED", forceKeyHandler);
@@ -444,7 +486,8 @@
     };
     const forceKeyHandler = (key) => {
       if (boxInfo.forceKey === "shiftEnter") {
-        if (key === "enter" && runtime.ioDevices.keyboard.getKeyIsDown("shift")) handleClose();
+        if (key === "enter" && runtime.ioDevices.keyboard.getKeyIsDown("shift"))
+          handleClose();
         return;
       }
       if (key.toLowerCase() == boxInfo.forceKey.toLowerCase()) handleClose();
@@ -457,7 +500,9 @@
         const element = input.DOMelement;
 
         const returnValue = element.getAttribute("returnValue");
-        boxInfo.value = returnValue ? JSON.parse(returnValue) : element.firstChild.value;
+        boxInfo.value = returnValue
+          ? JSON.parse(returnValue)
+          : element.firstChild.value;
       } else {
         boxInfo.value = Object.create(null);
         for (let i = 0; i < boxInputs.length; i++) {
@@ -465,7 +510,9 @@
           const element = input.DOMelement;
 
           const returnValue = element.getAttribute("returnValue");
-          boxInfo.value[input.data.id] = returnValue ? JSON.parse(returnValue) : element.firstChild.value;
+          boxInfo.value[input.data.id] = returnValue
+            ? JSON.parse(returnValue)
+            : element.firstChild.value;
         }
       }
     };
@@ -484,21 +531,24 @@
         if (!refreshedInput) continue;
         const recentData = refreshedInput.data;
         element = createInput(
-          recentData.id, recentData.type, recentData.options
+          recentData.id,
+          recentData.type,
+          recentData.options
         ).DOMelement;
         item.DOMelement = element;
       }
-      popupPanel.appendChild(element)
+      popupPanel.appendChild(element);
 
       // add event listeners
       if (item.type === "input") {
         element.addEventListener("change", compileInputValues);
-        if (boxInfo.forceKey !== undefined) element.addEventListener("keydown", (e) => {
-          if (boxInfo.forceKey === keyUtil._keyStringToScratchKey(e.key)) {
-            handleClose();
-            e.preventDefault();
-          }
-        });
+        if (boxInfo.forceKey !== undefined)
+          element.addEventListener("keydown", (e) => {
+            if (boxInfo.forceKey === keyUtil._keyStringToScratchKey(e.key)) {
+              handleClose();
+              e.preventDefault();
+            }
+          });
       } else if (item.type === "buttonRow") {
         element.addEventListener("click", (e) => {
           if (e.target.tagName === "BUTTON") handleClose(e);
@@ -514,7 +564,8 @@
     boxInfo.DOMelement = popupContainer;
 
     // extra event listeners
-    if (boxInfo.forceKey !== undefined) runtime.on("KEY_PRESSED", forceKeyHandler);
+    if (boxInfo.forceKey !== undefined)
+      runtime.on("KEY_PRESSED", forceKeyHandler);
   };
 
   const closeBox = (id, optForce) => {
@@ -531,9 +582,10 @@
   const updateBoxVisuals = (id, type) => {
     const boxInfo = elementStorage[type][id];
     if (!boxInfo || !boxInfo.DOMelement) return;
-    const element = type === "buttons" ? boxInfo.DOMelement : boxInfo.DOMelement.firstChild;
+    const element =
+      type === "buttons" ? boxInfo.DOMelement : boxInfo.DOMelement.firstChild;
     element.setAttribute(
-      "style", 
+      "style",
       compileStyles(id, type.slice(0, type.length - 1))
     );
   };
@@ -541,15 +593,17 @@
   // extension utilities
   function createBlockLabel(text) {
     return {
-      blockType: Scratch.BlockType.LABEL, text: Scratch.translate(text)
+      blockType: Scratch.BlockType.LABEL,
+      text: Scratch.translate(text),
     };
-  };
+  }
 
   function createMenuItem(text, value) {
     return {
-      text: Scratch.translate(text), value
+      text: Scratch.translate(text),
+      value,
     };
-  };
+  }
 
   genDefaultBox("default-popup", false);
 
@@ -573,8 +627,11 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("show popup with ID [ID] and [TYPE]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup },
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "AWAITS" }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "AWAITS" },
             },
           },
           {
@@ -582,7 +639,10 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("show popup with ID [ID] and wait"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           {
@@ -590,7 +650,10 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("response from [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           "---",
@@ -599,13 +662,16 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("remove popup with ID [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           {
             opcode: "removeAllPopups",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("remove all popups")
+            text: Scratch.translate("remove all popups"),
           },
           createBlockLabel("Popups"),
           {
@@ -613,7 +679,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("create new popup with ID [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("new-popup") }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("new-popup"),
+              },
             },
           },
           {
@@ -621,28 +690,47 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete popup with ID [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           "---",
           {
             opcode: "append2Popup",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("append [TYPE] with ID [ELEMENT_ID] to popup [POP_ID]"),
+            text: Scratch.translate(
+              "append [TYPE] with ID [ELEMENT_ID] to popup [POP_ID]"
+            ),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "UI_ELEMENTS" },
-              ELEMENT_ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.label },
-              POP_ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ELEMENT_ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.label,
+              },
+              POP_ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           {
             opcode: "removeFromPopup",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("remove [TYPE] with ID [ELEMENT_ID] from popup [POP_ID]"),
+            text: Scratch.translate(
+              "remove [TYPE] with ID [ELEMENT_ID] from popup [POP_ID]"
+            ),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "UI_ELEMENTS" },
-              ELEMENT_ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.label },
-              POP_ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ELEMENT_ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.label,
+              },
+              POP_ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           {
@@ -650,7 +738,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("remove all elements from popup [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           "---",
@@ -659,9 +750,12 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set position of [ID] to x: [X] y: [Y]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup },
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
               X: { type: Scratch.ArgumentType.NUMBER },
-              Y: { type: Scratch.ArgumentType.NUMBER }
+              Y: { type: Scratch.ArgumentType.NUMBER },
             },
           },
           {
@@ -670,17 +764,28 @@
             text: Scratch.translate("[TYPE] position of [ID]"),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "POSITION" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           createBlockLabel("Labels"),
           {
             opcode: "createPopLabel",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("create new label with ID [ID] and text [TEXT]"),
+            text: Scratch.translate(
+              "create new label with ID [ID] and text [TEXT]"
+            ),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.label },
-              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("whats your name?") }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.label,
+              },
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("whats your name?"),
+              },
             },
           },
           {
@@ -688,7 +793,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete label with ID [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.label }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.label,
+              },
             },
           },
           createBlockLabel("Inputs"),
@@ -698,7 +806,10 @@
             text: Scratch.translate("create new [TYPE] input with ID [ID]"),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "INPUTS" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.input }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.input,
+              },
             },
           },
           {
@@ -706,17 +817,28 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete input with ID [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.input }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.input,
+              },
             },
           },
           "---",
           {
             opcode: "setDefaultValue",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set default value of input [ID] to [VALUE]"),
+            text: Scratch.translate(
+              "set default value of input [ID] to [VALUE]"
+            ),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.input },
-              VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate(`...type here`) }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.input,
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate(`...type here`),
+              },
             },
           },
           "---",
@@ -725,7 +847,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set slider [ID] min [MIN] max [MAX]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.input },
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.input,
+              },
               MIN: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
               MAX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
             },
@@ -736,17 +861,33 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set options of dropdown [ID] to [ARRAY]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.input },
-              ARRAY: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate(`["Option 1", "Option 2", "Option 3"]`) }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.input,
+              },
+              ARRAY: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate(
+                  `["Option 1", "Option 2", "Option 3"]`
+                ),
+              },
             },
           },
           {
             opcode: "isDropOpen",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is dropdown [DROP_ID] in popup [POP_ID] open?"),
+            text: Scratch.translate(
+              "is dropdown [DROP_ID] in popup [POP_ID] open?"
+            ),
             arguments: {
-              DROP_ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.input },
-              POP_ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              DROP_ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.input,
+              },
+              POP_ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           createBlockLabel("Buttons"),
@@ -755,16 +896,27 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("create new button row with ID [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.btnRow }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.btnRow,
+              },
             },
           },
           {
             opcode: "createPopBtn",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("create new button with ID [ID] and text [TEXT]"),
+            text: Scratch.translate(
+              "create new button with ID [ID] and text [TEXT]"
+            ),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.button },
-              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("Submit") }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.button,
+              },
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("Submit"),
+              },
             },
           },
           {
@@ -772,7 +924,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete button row with ID [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.btnRow }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.btnRow,
+              },
             },
           },
           {
@@ -780,7 +935,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete button with ID [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.button }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.button,
+              },
             },
           },
           "---",
@@ -789,8 +947,14 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("append button [BTN_ID] to row [ROW_ID]"),
             arguments: {
-              BTN_ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.button },
-              ROW_ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.btnRow }
+              BTN_ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.button,
+              },
+              ROW_ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.btnRow,
+              },
             },
           },
           {
@@ -798,8 +962,14 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("remove button [BTN_ID] from row [ROW_ID]"),
             arguments: {
-              BTN_ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.button },
-              ROW_ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.btnRow }
+              BTN_ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.button,
+              },
+              ROW_ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.btnRow,
+              },
             },
           },
           {
@@ -807,7 +977,10 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("remove all buttons from row [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.btnRow }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.btnRow,
+              },
             },
           },
           createBlockLabel("Operators"),
@@ -816,7 +989,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("all [TYPE] IDs"),
             arguments: {
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "UI_SELECT" }
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "UI_SELECT" },
             },
           },
           {
@@ -824,7 +997,10 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("is popup [ID] waiting?"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           {
@@ -832,17 +1008,28 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("last button pressed in [ID]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           "---",
           {
             opcode: "setPopupTarget",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("show next popup with ID [ID] on the [TYPE]"),
+            text: Scratch.translate(
+              "show next popup with ID [ID] on the [TYPE]"
+            ),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup },
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "POPUP_LOCATION" }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "POPUP_LOCATION",
+              },
             },
           },
           {
@@ -851,17 +1038,25 @@
             text: Scratch.translate("toggle [OPTION] in popup [ID] [TYPE]"),
             arguments: {
               OPTION: { type: Scratch.ArgumentType.STRING, menu: "EXTRA_OPTS" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup },
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLER" }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLER" },
             },
           },
           {
             opcode: "setForceClose",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set auto-close action in popup [ID] to [KEY] key"),
+            text: Scratch.translate(
+              "set auto-close action in popup [ID] to [KEY] key"
+            ),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup },
-              KEY: { type: Scratch.ArgumentType.STRING, menu: "FORCE_KEY" }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
+              KEY: { type: Scratch.ArgumentType.STRING, menu: "FORCE_KEY" },
             },
           },
           createBlockLabel("Customization"),
@@ -871,8 +1066,11 @@
             blockIconURI: getBlockIcon("color"),
             text: Scratch.translate("set alignment of popup [ID] to [TYPE]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup },
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "ALIGNMENT" }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "ALIGNMENT" },
             },
           },
           {
@@ -881,8 +1079,11 @@
             blockIconURI: getBlockIcon("color"),
             text: Scratch.translate("set alignment of input [ID] to [TYPE]"),
             arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.input },
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "ALIGNMENT" }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.input,
+              },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "ALIGNMENT" },
             },
           },
           "---",
@@ -893,31 +1094,44 @@
             text: Scratch.translate("set font of [ELEMENT] [ID] to [FONT]"),
             arguments: {
               ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "UI_MAIN2" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.label },
-              FONT: { type: Scratch.ArgumentType.STRING, menu: "FONTS" }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.label,
+              },
+              FONT: { type: Scratch.ArgumentType.STRING, menu: "FONTS" },
             },
           },
           {
             opcode: "setInputFontSZ",
             blockType: Scratch.BlockType.COMMAND,
             blockIconURI: getBlockIcon("color"),
-            text: Scratch.translate("set font size of [ELEMENT] [ID] to [SIZE]"),
+            text: Scratch.translate(
+              "set font size of [ELEMENT] [ID] to [SIZE]"
+            ),
             arguments: {
               ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "UI_MAIN2" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.label },
-              SIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.label,
+              },
+              SIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
             },
           },
           {
             opcode: "setElementOutline",
             blockType: Scratch.BlockType.COMMAND,
             blockIconURI: getBlockIcon("color"),
-            text: Scratch.translate("set text outline of [ELEMENT] [ID] to color [COLOR] weight [WEIGHT]"),
+            text: Scratch.translate(
+              "set text outline of [ELEMENT] [ID] to color [COLOR] weight [WEIGHT]"
+            ),
             arguments: {
               ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "UI_MAIN2" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.label },
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.label,
+              },
               COLOR: { type: Scratch.ArgumentType.COLOR },
-              WEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+              WEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
           },
           "---",
@@ -929,36 +1143,52 @@
             arguments: {
               PARAM: { type: Scratch.ArgumentType.STRING, menu: "POP_STYLES" },
               ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "UI_MAIN" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup },
-              VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: "#ff0000" }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "#ff0000",
+              },
             },
           },
           {
             opcode: "setElementBorder",
             blockType: Scratch.BlockType.COMMAND,
             blockIconURI: getBlockIcon("color"),
-            text: Scratch.translate("set border of [ELEMENT] [ID] to [TYPE] [COLOR] weight [WEIGHT]"),
+            text: Scratch.translate(
+              "set border of [ELEMENT] [ID] to [TYPE] [COLOR] weight [WEIGHT]"
+            ),
             arguments: {
               ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "UI_MAIN" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup },
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "BORDERS" },
               COLOR: { type: Scratch.ArgumentType.COLOR },
-              WEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+              WEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
           },
           {
             opcode: "setElementShadow",
             blockType: Scratch.BlockType.COMMAND,
             blockIconURI: getBlockIcon("color"),
-            text: Scratch.translate("set shadow of [ELEMENT] [ID] to x: [X] y: [Y] color [COLOR] blur [AMT] strength [BLUR]"),
+            text: Scratch.translate(
+              "set shadow of [ELEMENT] [ID] to x: [X] y: [Y] color [COLOR] blur [AMT] strength [BLUR]"
+            ),
             arguments: {
               ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "UI_MAIN" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup },
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
               X: { type: Scratch.ArgumentType.NUMBER },
               Y: { type: Scratch.ArgumentType.NUMBER },
               COLOR: { type: Scratch.ArgumentType.COLOR },
               AMT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              BLUR: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+              BLUR: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
           },
           "---",
@@ -969,19 +1199,27 @@
             text: Scratch.translate("reset effects of [ELEMENT] [ID]"),
             arguments: {
               ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "UI_MAIN" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
           {
             opcode: "setElementEffect",
             blockType: Scratch.BlockType.COMMAND,
             blockIconURI: getBlockIcon("effect"),
-            text: Scratch.translate("set [EFFECT] of [ELEMENT] [ID] to [VALUE]"),
+            text: Scratch.translate(
+              "set [EFFECT] of [ELEMENT] [ID] to [VALUE]"
+            ),
             arguments: {
               EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECTS" },
               ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "UI_MAIN" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup },
-              VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
+              VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
           },
           {
@@ -992,7 +1230,10 @@
             arguments: {
               EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECTS" },
               ELEMENT: { type: Scratch.ArgumentType.STRING, menu: "UI_MAIN" },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: translatedInputs.popup }
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: translatedInputs.popup,
+              },
             },
           },
         ],
@@ -1002,48 +1243,66 @@
           INPUTS: { acceptReporters: true, items: validInputs },
           BORDERS: { acceptReporters: true, items: validBorders },
           EFFECTS: { acceptReporters: true, items: validEffects },
-          UI_ELEMENTS: { acceptReporters: true, items: this.genElementList(false, true, false) },
-          UI_MAIN: { acceptReporters: true, items: this.genElementList(true, false, true) },
-          UI_MAIN2: { acceptReporters: true, items: this.genElementList(false, false, true) },
-          UI_SELECT: { acceptReporters: true, items: this.genElementList(true, true, true) },
+          UI_ELEMENTS: {
+            acceptReporters: true,
+            items: this.genElementList(false, true, false),
+          },
+          UI_MAIN: {
+            acceptReporters: true,
+            items: this.genElementList(true, false, true),
+          },
+          UI_MAIN2: {
+            acceptReporters: true,
+            items: this.genElementList(false, false, true),
+          },
+          UI_SELECT: {
+            acceptReporters: true,
+            items: this.genElementList(true, true, true),
+          },
           AWAITS: {
             acceptReporters: false,
-            items: [createMenuItem("wait", "wait"), createMenuItem("continue", "continue")]
+            items: [
+              createMenuItem("wait", "wait"),
+              createMenuItem("continue", "continue"),
+            ],
           },
           TOGGLER: {
             acceptReporters: false,
-            items: [createMenuItem("on", "on"), createMenuItem("off", "off")]
+            items: [createMenuItem("on", "on"), createMenuItem("off", "off")],
           },
           POSITION: {
             acceptReporters: false,
-            items: [createMenuItem("x", "x"), createMenuItem("y", "y")]
+            items: [createMenuItem("x", "x"), createMenuItem("y", "y")],
           },
           POPUP_LOCATION: {
             acceptReporters: false,
-            items: [createMenuItem("window", "window"), createMenuItem("canvas", "canvas")]
+            items: [
+              createMenuItem("window", "window"),
+              createMenuItem("canvas", "canvas"),
+            ],
           },
           ALIGNMENT: {
             acceptReporters: false,
             items: [
               createMenuItem("left", "left"),
               createMenuItem("right", "flex-end"),
-              createMenuItem("center", "center")
-            ]
+              createMenuItem("center", "center"),
+            ],
           },
           FORCE_KEY: {
             acceptReporters: true,
             items: [
               createMenuItem("none", "none"),
               createMenuItem("enter", "enter"),
-              createMenuItem("shift & enter", "shiftEnter")
-            ]
+              createMenuItem("shift & enter", "shiftEnter"),
+            ],
           },
           EXTRA_OPTS: {
             acceptReporters: true,
             items: [
               createMenuItem("focus mode", "focus"),
-              createMenuItem("auto close", "autoClose")
-            ]
+              createMenuItem("auto close", "autoClose"),
+            ],
           },
         },
       };
@@ -1051,14 +1310,21 @@
 
     // Helper Funcs
     getFonts() {
-      const custFonts = runtime.fontManager ? runtime.fontManager.getFonts().map((i) => ({ text: i.name, value: i.family })) : [];
-      return [ ...defaultFonts, ...custFonts ];
+      const custFonts = runtime.fontManager
+        ? runtime.fontManager
+            .getFonts()
+            .map((i) => ({ text: i.name, value: i.family }))
+        : [];
+      return [...defaultFonts, ...custFonts];
     }
 
     genElementList(addPopup, addRow, addButton) {
       const list = [];
       if (addPopup) list.push(createMenuItem("popup", "popup"));
-      list.push(createMenuItem("label", "label"), createMenuItem("input", "input"));
+      list.push(
+        createMenuItem("label", "label"),
+        createMenuItem("input", "input")
+      );
       if (addRow) list.push(createMenuItem("button row", "buttonRow"));
       if (addButton) list.push(createMenuItem("button", "button"));
       return list;
@@ -1073,7 +1339,7 @@
         createMenuItem("padding", "padding"),
         createMenuItem("width", "width"),
         createMenuItem("height", "height"),
-        createMenuItem("border radius", "border-radius")
+        createMenuItem("border radius", "border-radius"),
       ];
     }
 
@@ -1093,9 +1359,12 @@
         util.stackFrame.awaitingInput = true;
       }
 
-      if ((reportResponse ? true : args.TYPE === "wait") && popup?.waiting) util.yield();
-      if (reportResponse) return typeof popup.value === "object" ? 
-        JSON.stringify(popup.value) : popup.value || "";
+      if ((reportResponse ? true : args.TYPE === "wait") && popup?.waiting)
+        util.yield();
+      if (reportResponse)
+        return typeof popup.value === "object"
+          ? JSON.stringify(popup.value)
+          : popup.value || "";
     }
 
     // Block Funcs
@@ -1112,7 +1381,9 @@
       const id = Cast.toString(args.ID);
       const popup = elementStorage.popups[id];
       if (popup === undefined) return "";
-      return typeof popup.value === "object" ? JSON.stringify(popup.value) : popup.value || "";
+      return typeof popup.value === "object"
+        ? JSON.stringify(popup.value)
+        : popup.value || "";
     }
 
     removePopup(args) {
@@ -1151,7 +1422,7 @@
       if (popup === undefined || element === undefined) return;
 
       const elementIndex = popup.elements.findIndex((i) => {
-        return i.type === path && i.data.id === elementID
+        return i.type === path && i.data.id === elementID;
       });
       if (elementIndex === -1) popup.elements.push(element);
     }
@@ -1163,7 +1434,7 @@
       if (popup === undefined) return;
 
       const elementIndex = popup.elements.findIndex((i) => {
-        return i.type === path && i.data.id === elementID
+        return i.type === path && i.data.id === elementID;
       });
       if (elementIndex > -1) popup.elements.splice(elementIndex, 1);
     }
@@ -1185,7 +1456,8 @@
     getPos(args) {
       const id = Cast.toString(args.ID);
       const styles = styleStorage.popups[id] ?? genDefaultStyles(id, "popup");
-      if (args.TYPE === "x") return parseFloat(styles.left.replace("calc(50% + ", ""));
+      if (args.TYPE === "x")
+        return parseFloat(styles.left.replace("calc(50% + ", ""));
       else return parseFloat(styles.top.replace("calc(50% + ", "")) * -1;
     }
 
@@ -1248,7 +1520,7 @@
       const dropID = Cast.toString(args.DROP_ID);
       if (popup === undefined || !popup.waiting) return false;
       const dropdown = popup.elements.find((e) => {
-        return e.type === "input" && e.data.id === dropID
+        return e.type === "input" && e.data.id === dropID;
       });
       if (dropdown) return dropdown.data.options.menuOpened ?? false;
       return false;
@@ -1344,9 +1616,8 @@
       if (popup === undefined) return;
 
       const option = Cast.toString(args.OPTION);
-      popup[
-        option === "focus" ? "focused" : "autoControl"
-      ] = args.TYPE === "on";
+      popup[option === "focus" ? "focused" : "autoControl"] =
+        args.TYPE === "on";
     }
 
     setForceClose(args) {
@@ -1369,7 +1640,7 @@
 
     setInputAlign(args) {
       const id = Cast.toString(args.ID);
-      let isLabel = false
+      let isLabel = false;
       let styles = styleStorage.inputs[id];
       if (!styles) {
         styles = styleStorage.labels[id];
@@ -1410,9 +1681,12 @@
       const id = Cast.toString(args.ID);
       const param = Cast.toString(args.PARAM);
       let value = Cast.toString(args.VALUE);
-      const path = this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
+      const path =
+        this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
       const styles = styleStorage[path][id] ?? genDefaultStyles(id, path);
-      const isValidStyle = this.genStyleList().findIndex((i) => i.value === param);
+      const isValidStyle = this.genStyleList().findIndex(
+        (i) => i.value === param
+      );
 
       if (!param.includes("color") && param !== "background") {
         if (param === "width" || param === "height") {
@@ -1420,7 +1694,10 @@
           value = /^\d+$/.test(value) ? `${value}px` : value;
         } else {
           // handle cases where users to input specific attributes like "margin-left"
-          if (value.includes(" ")) value = /^\d+$/.test(value.replaceAll(" ", "")) ? value.replaceAll(" ", "px ") : value;
+          if (value.includes(" "))
+            value = /^\d+$/.test(value.replaceAll(" ", ""))
+              ? value.replaceAll(" ", "px ")
+              : value;
           else value = `${value}px`;
         }
       }
@@ -1432,10 +1709,13 @@
     setElementBorder(args) {
       const id = Cast.toString(args.ID);
       const weight = Cast.toNumber(args.WEIGHT);
-      const isBorderValid = validBorders.findIndex((i) => i.value === args.TYPE);
-      const path = this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
+      const isBorderValid = validBorders.findIndex(
+        (i) => i.value === args.TYPE
+      );
+      const path =
+        this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
       const styles = styleStorage[path][id] ?? genDefaultStyles(id, path);
-      styles[path === "labels" ? "border-bottom" : "border"] = 
+      styles[path === "labels" ? "border-bottom" : "border"] =
         `${isBorderValid > -1 ? args.TYPE : "none"} ${args.COLOR} ${weight}px`;
       updateBoxVisuals(id, path);
     }
@@ -1444,16 +1724,22 @@
       const id = Cast.toString(args.ID);
       const pos = [Cast.toNumber(args.X), Cast.toNumber(args.Y)];
       const weight = [Cast.toNumber(args.AMT), Cast.toNumber(args.BLUR)];
-      const path = this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
+      const path =
+        this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
       const styles = styleStorage[path][id] ?? genDefaultStyles(id, path);
-      if (path === "labels") styles["text-shadow"] = `${args.COLOR} ${pos[0]}px ${pos[1]}px ${weight[0]}px`;
-      else styles["box-shadow"] = `${args.COLOR} ${pos[0]}px ${pos[1]}px ${weight[0]}px ${weight[1]}px`;
+      if (path === "labels")
+        styles["text-shadow"] =
+          `${args.COLOR} ${pos[0]}px ${pos[1]}px ${weight[0]}px`;
+      else
+        styles["box-shadow"] =
+          `${args.COLOR} ${pos[0]}px ${pos[1]}px ${weight[0]}px ${weight[1]}px`;
       updateBoxVisuals(id, path);
     }
 
     resetElementEffect(args) {
       const id = Cast.toString(args.ID);
-      const path = this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
+      const path =
+        this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
       const styles = styleStorage[path][id] ?? genDefaultStyles(id, path);
       if (path === "popups") styles["transform"] = "translate(-50%, -50%)";
       styles["filter"] = "";
@@ -1465,7 +1751,8 @@
       const effectIndex = validEffects.findIndex((i) => i.value === effect);
       if (effectIndex === -1) return;
       const id = Cast.toString(args.ID);
-      const path = this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
+      const path =
+        this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
       const styles = styleStorage[path][id] ?? genDefaultStyles(id, path);
 
       let value = Cast.toNumber(args.VALUE);
@@ -1478,10 +1765,10 @@
           value += "px";
           break;
         case "brightness":
-          value = `${100 - (value * -1)}%`;
+          value = `${100 - value * -1}%`;
           break;
         case "opacity":
-          value = 1 - (value / 100);
+          value = 1 - value / 100;
           break;
         case "saturate":
         case "sepia":
@@ -1518,7 +1805,8 @@
       if (isValidEffect === -1) return "";
 
       const id = Cast.toString(args.ID);
-      const path = this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
+      const path =
+        this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
       const styles = styleStorage[path][id] ?? genDefaultStyles(id, path);
       return styles["SPstorage"][effect] ?? "";
     }
