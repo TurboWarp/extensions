@@ -1,0 +1,10 @@
+{
+  "name": "精美窗口",
+  "description": "创建和管理可拖动的精美窗口，支持多种特效、分组管理和模板功能",
+  "tags": ["ui", "windows", "gui", "interface", "popup"],
+  "authors": ["你的名字"],
+  "version": "1.0.0",
+  "dynamicEnable": true,
+  "dynamicDisable": true,
+  "unsandboxed": true
+}
