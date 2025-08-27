@@ -604,6 +604,13 @@
 
       return this._texture;
     }
+
+    isMetricsReady() {
+      if (this._needsReflow()) {
+        this._reflowText();
+      }
+      return true;
+    }
   }
 
   /**

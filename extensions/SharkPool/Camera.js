@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.05
+// Version V.1.0.09
 
 (function (Scratch) {
   "use strict";
@@ -53,6 +53,10 @@
   }
 
   // camera utils
+  const radianConstant = Math.PI / 180;
+  const epsilon = 1e-12;
+  const applyEpsilon = (value) => (Math.abs(value) < epsilon ? 0 : value);
+
   function setupState(drawable) {
     drawable[cameraSymbol] = {
       name: "default",
@@ -65,23 +69,26 @@
 
   function translatePosition(xy, invert, camData) {
     if (invert) {
-      const invRads = (camData.ogDir / 180) * Math.PI;
+      const invRads = camData.ogDir * radianConstant;
       const invSin = Math.sin(invRads),
         invCos = Math.cos(invRads);
       const scaledX = xy[0] / camData.ogSZ;
       const scaledY = xy[1] / camData.ogSZ;
       const invOffX = scaledX * invCos + scaledY * invSin;
       const invOffY = -scaledX * invSin + scaledY * invCos;
-      return [invOffX - camData.ogXY[0], invOffY - camData.ogXY[1]];
+      return [
+        applyEpsilon(invOffX - camData.ogXY[0]),
+        applyEpsilon(invOffY - camData.ogXY[1]),
+      ];
     } else {
-      const rads = (camData.dir / 180) * Math.PI;
+      const rads = camData.dir * radianConstant;
       const sin = Math.sin(rads),
         cos = Math.cos(rads);
       const offX = xy[0] + camData.xy[0];
       const offY = xy[1] + camData.xy[1];
       return [
-        camData.zoom * (offX * cos - offY * sin),
-        camData.zoom * (offX * sin + offY * cos),
+        applyEpsilon(camData.zoom * (offX * cos - offY * sin)),
+        applyEpsilon(camData.zoom * (offX * sin + offY * cos)),
       ];
     }
   }
@@ -113,9 +120,10 @@
   }
 
   function updateCamera(camera) {
-    for (let i = 0; i < render._allDrawables.length; i++) {
-      const drawable = render._allDrawables[i];
-      if (!drawable || !drawable.getVisible() || !drawable.skin) continue;
+    for (let i = 0; i < render._drawList.length; i++) {
+      const drawableId = render._drawList[i];
+      const drawable = render._allDrawables[drawableId];
+      if (!drawable.getVisible() || !drawable.skin) continue;
       if (!drawable[cameraSymbol]) setupState(drawable);
 
       const camSystem = drawable[cameraSymbol];
@@ -127,6 +135,7 @@
         camSystem.needsRefresh = false;
       }
     }
+    runtime.requestRedraw();
   }
 
   // camera system patches
@@ -140,6 +149,25 @@
       camSystem.ogXY = [0, 0];
     }
     ogPostSpriteInfo.call(this, data);
+  };
+
+  const ogPositionBubble = runtime.ext_scratch3_looks._positionBubble;
+  runtime.ext_scratch3_looks._positionBubble = function (target) {
+    // Expand the Bubble Limits to a Infinite Stage size if the camera
+    // goes beyond the set stage size
+    const drawable = render._allDrawables[target.drawableID];
+    if (!drawable[cameraSymbol]) setupState(drawable);
+    const camSystem = allCameras[drawable[cameraSymbol].name];
+
+    const ogNativeSize = render._nativeSize;
+    if (
+      Math.abs(camSystem.xy[0]) > runtime.stageWidth ||
+      Math.abs(camSystem.xy[1]) > runtime.stageHeight
+    ) {
+      render._nativeSize = [Infinity, Infinity];
+    }
+    ogPositionBubble.call(this, target);
+    render._nativeSize = ogNativeSize;
   };
 
   const ogGetBubbleBounds = render.getBoundsForBubble;
@@ -172,14 +200,32 @@
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
     const thisCam = allCameras[camSystem.name];
+    let shouldEmit = false;
     if (camSystem.needsRefresh) {
       // invert camera transformations
       position = translatePosition(position, true, camSystem);
     }
 
+    shouldEmit =
+      camSystem.ogXY[0] !== thisCam.xy[0] ||
+      camSystem.ogXY[1] !== thisCam.xy[1];
     camSystem.ogXY = [...thisCam.xy];
     position = translatePosition(position, false, thisCam);
-    ogUpdatePosition.call(this, position);
+    if (camSystem.needsRefresh) {
+      if (
+        this._position[0] !== position[0] ||
+        this._position[1] !== position[1]
+      ) {
+        this._position[0] = position[0];
+        this._position[1] = position[1];
+      }
+      if (shouldEmit) {
+        render.dirty = true;
+        this.setTransformDirty();
+      }
+    } else {
+      ogUpdatePosition.call(this, position);
+    }
   };
 
   const ogUpdateDirection = render.exports.Drawable.prototype.updateDirection;
@@ -202,11 +248,13 @@
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
     const thisCam = allCameras[camSystem.name];
+    let shouldEmit = false;
     if (camSystem.needsRefresh) {
       // invert camera transformations
       const safeOgSZ = camSystem.ogSZ !== 0 ? camSystem.ogSZ : 1e-10;
       scale[0] /= safeOgSZ;
       scale[1] /= safeOgSZ;
+      shouldEmit = safeOgSZ !== thisCam.zoom;
     }
 
     // avoid dividing 0 by 0
@@ -218,7 +266,26 @@
     if (scale[1] === 0) scale[1] = 1e-10 * Math.sign(safeZoom);
 
     ogUpdateScale.call(this, scale);
-    this.skin?.emitWasAltered();
+    if (shouldEmit) {
+      this._renderer.dirty = true;
+      this._rotationCenterDirty = true;
+      this._skinScaleDirty = true;
+      this.setTransformDirty();
+    }
+  };
+
+  // Clones should inherit the parents camera
+  const ogInitDrawable = vm.exports.RenderedTarget.prototype.initDrawable;
+  vm.exports.RenderedTarget.prototype.initDrawable = function (layerGroup) {
+    ogInitDrawable.call(this, layerGroup);
+    if (this.isOriginal) return;
+
+    const parentSprite = this.sprite.clones[0]; // clone[0] is always the original
+    const parentDrawable = render._allDrawables[parentSprite.drawableID];
+    const name = parentDrawable[cameraSymbol]?.name ?? "default";
+
+    const drawable = render._allDrawables[this.drawableID];
+    bindDrawable(drawable, name);
   };
 
   // Turbowarp Extension Storage
@@ -230,7 +297,7 @@
           xy: [0, 0],
           zoom: 1,
           dir: 0,
-          binds: name === "default" ? undefined : [],
+          binds: cam === "default" ? undefined : [],
         };
       });
   });
@@ -389,9 +456,19 @@
           },
           "---",
           {
+            opcode: "setDirectionNew",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set [CAMERA] camera direction to [NUM]"),
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+              NUM: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 },
+            },
+          },
+          {
             opcode: "setDirection",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set [CAMERA] camera direction to [NUM]"),
+            hideFromPalette: true, // deprecated, needed for compatibility
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
               NUM: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 },
@@ -428,9 +505,19 @@
             },
           },
           {
+            opcode: "getDirectionNew",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("[CAMERA] camera direction"),
+            disableMonitor: true,
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+            },
+          },
+          {
             opcode: "getDirection",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[CAMERA] camera direction"),
+            hideFromPalette: true, // deprecated, needed for compatibility
             disableMonitor: true,
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
@@ -486,6 +573,29 @@
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
           },
+          "---",
+          {
+            opcode: "renderedX",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("rendered x position of [TARGET]"),
+            arguments: {
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "EXACT_OBJECTS",
+              },
+            },
+          },
+          {
+            opcode: "renderedY",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("rendered y position of [TARGET]"),
+            arguments: {
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "EXACT_OBJECTS",
+              },
+            },
+          },
         ],
         menus: {
           CAMERAS: { acceptReporters: false, items: "getCameras" },
@@ -530,13 +640,15 @@
         });
 
       // Custom Drawable Layer (CST's 3D or Simple3D Exts for Example)
-      for (var i = 0; i < render._allDrawables.length; i++) {
-        const drawable = render._allDrawables[i];
-        if (drawable !== undefined && drawable.customDrawableName !== undefined)
+      for (var i = 0; i < render._drawList.length; i++) {
+        const drawableId = render._drawList[i];
+        const drawable = render._allDrawables[drawableId];
+        if (drawable.customDrawableName !== undefined) {
           objectNames.push({
             text: drawable.customDrawableName,
-            value: `${i}=SP-custLayer`,
+            value: `${drawableId}=SP-custLayer`,
           });
+        }
       }
 
       // Sprites
@@ -564,7 +676,12 @@
     }
 
     getCameras() {
-      return Object.keys(allCameras);
+      const cameraNames = Object.keys(allCameras);
+      return cameraNames.map((i) => {
+        if (i === "default")
+          return { text: Scratch.translate("default"), value: "default" };
+        else return { text: i, value: i };
+      });
     }
 
     refreshBlocks() {
@@ -607,9 +724,9 @@
       const videoLayer = runtime.ioDevices.video._drawable;
 
       if (name === "_pen_")
-        return penLayer ? { drawableID: penLayer } : undefined;
+        return penLayer > -1 ? { drawableID: penLayer } : undefined;
       else if (name === "_video_")
-        return videoLayer !== -1 ? { drawableID: videoLayer } : undefined;
+        return videoLayer > -1 ? { drawableID: videoLayer } : undefined;
       else if (name.includes("=SP-custLayer")) {
         const drawableID = parseInt(name);
         if (render._allDrawables[drawableID]?.customDrawableName !== undefined)
@@ -621,10 +738,10 @@
     }
 
     translateAngledMovement(xy, steps, direction) {
-      const radians = direction * (Math.PI / 180);
+      const radians = direction * radianConstant;
       return [
-        xy[0] + steps * Math.cos(radians),
-        xy[1] + steps * Math.sin(radians),
+        applyEpsilon(xy[0] + steps * Math.cos(radians)),
+        applyEpsilon(xy[1] + steps * Math.sin(radians)),
       ];
     }
 
@@ -742,6 +859,11 @@
       return allCameras[args.CAMERA].xy[1] * -1;
     }
 
+    setDirectionNew(args) {
+      if (!allCameras[args.CAMERA]) return;
+      allCameras[args.CAMERA].dir = 90 - Cast.toNumber(args.NUM);
+      updateCamera(args.CAMERA);
+    }
     setDirection(args) {
       if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].dir = Cast.toNumber(args.NUM) - 90;
@@ -769,6 +891,10 @@
       }
     }
 
+    getDirectionNew(args) {
+      if (!allCameras[args.CAMERA]) return 0;
+      return 90 - allCameras[args.CAMERA].dir;
+    }
     getDirection(args) {
       if (!allCameras[args.CAMERA]) return 0;
       return allCameras[args.CAMERA].dir + 90;
@@ -815,6 +941,20 @@
         false,
         camData
       )[1];
+    }
+
+    renderedX(args, util) {
+      const target = this.getTarget(args.TARGET, util);
+      if (!target) return "";
+      const drawable = render._allDrawables[target.drawableID];
+      return drawable._position[0];
+    }
+
+    renderedY(args, util) {
+      const target = this.getTarget(args.TARGET, util);
+      if (!target) return "";
+      const drawable = render._allDrawables[target.drawableID];
+      return drawable._position[1];
     }
   }
 
