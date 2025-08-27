@@ -1,4 +1,4 @@
-(function (Scratch) {
+l(function (Scratch) {
   'use strict';
   
   class UrlParamsExtension {
@@ -175,4 +175,5 @@
   }
   
   Scratch.extensions.register(new UrlParamsExtension());
+
 })(Scratch);
