@@ -97,5 +97,13 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
-  "Lily/McUtils" // McUtils should always be the last item.
+  "Lily/McUtils", // McUtils should always be the last item.
+  {
+    "name": "URL Parameters",
+    "description": "读取和修改URL参数和哈希值",
+    "file": "urlparams.js",
+    "license": "MIT",
+    "author": "Your Name",
+    "tags": ["utility", "web"]
+  },
 ]
