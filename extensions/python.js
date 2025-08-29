@@ -1110,4 +1110,5 @@ class PythonTerminalWithAdvancedFileManager {
 }
 
 // 注册扩展
+
 Scratch.extensions.register(new PythonTerminalWithAdvancedFileManager());
