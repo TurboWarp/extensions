@@ -99,11 +99,11 @@
   "obviousAlexC/newgroundsIO",
   "Lily/McUtils", // McUtils should always be the last item.
   {
-    "name": "URL Parameters",
-    "description": "读取和修改URL参数和哈希值",
-    "file": "urlparams.js",
+    "name": "Python",
+    "description": "运行Python代码",
+    "file": "python.js",
     "license": "MIT",
-    "author": "Your Name",
+    "author": "THE-END-MC",
     "tags": ["utility", "web"]
   },
 ]
