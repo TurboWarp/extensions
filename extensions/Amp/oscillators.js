@@ -1,5 +1,5 @@
 // Name: Oscillators
-// ID: oscillator
+// ID: aecOscillator
 // Description: Synthensize simple sound waves.
 // By: AmpElectrecuted <https://scratch.mit.edu/users/AmpElectrecuted/>
 // License: MPL-2.0
@@ -15,7 +15,7 @@
   class OscillatorExtension {
     getInfo() {
       return {
-        id: "oscillator",
+        id: "aecOscillator",
         name: Scratch.translate("Oscillators"),
         blocks: [
           {
