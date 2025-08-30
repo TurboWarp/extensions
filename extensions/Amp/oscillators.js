@@ -67,7 +67,7 @@
 
     startFreq(args) {
       oscillator.type = Scratch.Cast.toString(args.WAVEFORM);
-      oscillator.frequency.setValueAtTime(args.FREQ, context.currentTime);
+      oscillator.frequency.setValueAtTime(Scratch.Cast.toNumber(args.FREQ), context.currentTime);
       if (!isStart) {
         oscillator.start();
         isStart = true;
