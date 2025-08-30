@@ -236,6 +236,59 @@
       footer p {
         margin: 0 0 8px 0;
       }
+
+      .search-container {
+        display: flex;
+        justify-content: space-evenly;
+      }
+      
+      .column {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .search-base {
+        display: flex;
+        padding: 8px;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        background-color: transparent;
+        background-clip: padding-box;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        border-top: 2px solid #ff4c4c;
+        border-bottom: 2px solid #ff4c4c;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        transition: box-shadow .15s ease-in-out, box-shadow .15s ease-in-out;
+      }
+
+      .search-base:focus {
+        outline: none;
+        box-shadow: 0 0 0 .25rem rgba(236, 90, 84, .25);
+        transition: box-shadow .15s ease-in-out, box-shadow .15s ease-in-out;
+      }
+
+      .search-bar {
+        border-right: 1px solid #ff4c4c;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+        border-left: 2px solid #ff4c4c;
+        width: 75%;
+        max-width: 928px;
+      }
+
+      .search-sort {
+        border-left: 1px solid #ff4c4c;
+        border-radius: 0px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-right: 2px solid #ff4c4c;
+        width: 25%;
+        display: flex;
+      }
+
     </style>
   </head>
 
@@ -319,9 +372,74 @@
           extension.dataset.samplesOpen = extension.dataset.samplesOpen !== 'true';
         }
       });
+
+      window.addEventListener("load", () => {
+        const extensionElements = document.querySelectorAll(".extension");
+        const container = document.querySelector(".extensions");
+        const sort = document.getElementById("search-sort");
+
+        document.getElementById("search-bar").addEventListener("input", function (evt) {
+          const searchQuery = evt.srcElement.value.toLowerCase();
+
+          extensionElements.forEach(extension => {
+            const h2 = extension.querySelector("h2").textContent.toLowerCase();
+            const p = extension.querySelector("p").textContent.toLowerCase();
+            if (h2.includes(searchQuery) || p.includes(searchQuery)) {
+              extension.style.removeProperty("display");
+            } else {
+              extension.style.display = "none";
+            }
+          });
+
+          switch (sort.value) {
+            case "original":
+              originalOrder.forEach(div => container.appendChild(div));
+              break;
+            case "abc":
+              divs.sort((a, b) => a.textContent.localeCompare(b.textContent));
+              divs.forEach(div => container.appendChild(div));
+              break;
+            case "zxy":
+              divs.sort((a, b) => b.textContent.localeCompare(a.textContent));
+              divs.forEach(div => container.appendChild(div));
+              break;
+          }
+        });
+
+        const divs = Array.from(extensionElements);
+        const originalOrder = [...divs];
+
+        sort.addEventListener("change", function (evt) {
+          switch (evt.srcElement.value) {
+            case "original":
+              originalOrder.forEach(div => container.appendChild(div));
+              break;
+            case "abc":
+              divs.sort((a, b) => a.innerText.localeCompare(b.innerText));
+              divs.forEach(div => container.appendChild(div));
+              break;
+            case "zxy":
+              divs.sort((a, b) => b.innerText.localeCompare(a.innerText));
+              divs.forEach(div => container.appendChild(div));
+              break;
+          }
+        });
+      });
+
     </script>
 
     <div class="section extensions-outer">
+      <div class="search-container">
+        <input type="text" id="search-bar" class="search-base search-bar" placeholder="Search for extensions...">
+        <select class="search-base search-sort" id="search-sort">
+          <option value="original">Sort: Default</option>
+          <!--<option value="option2">Sort: Relevance</option>-->
+          <option value="abc">Sort: ABC</option>
+          <option value="zxy">Sort: ZXY</option>
+          <!--<option value="newest">Sort: Newest</option>
+          <option value="oldest">Sort: Oldest</option>-->
+        </select>
+      </div>
       <div class="extensions">
         <%
         const peopleToHTML = (people) => {
