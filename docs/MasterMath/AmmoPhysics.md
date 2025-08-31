@@ -1,8 +1,8 @@
 # Ammo Physics
 
 ## Table of contents
-1. [What This Is](#description)
-2. [Units](#units)
+1. [What Is Ammo Physics?](#description)
+2. [Units of Measurement](#units)
 3. [The Blocks](#the-blocks)
 3.1. [Simulation Control](#sim-control)
 3.2. [Bodies](#bodies)
@@ -14,7 +14,7 @@
 3.8. [Constraints](#constraints)
 4. [More Resources](#more-resources)
  
-## What This Is <a name="description"></a>
+## What is Ammo Physics? <a name="description"></a>
 **Ammo Physics** is a high-level 3D rigid body physics extension based on [Ammo.js](https://github.com/kripken/ammo.js), a JavaScript port of the well-known Bullet Physics SDK for C++. It brings high-quality realtime physics to Turbowarp. 
 
 ## Units <a name="units"></a>
@@ -29,7 +29,7 @@
 - Torque: newtons multiplied by meters (n•m)
 - Rotation: degrees
 
-These units are important because internally, Ammo.js uses single-precision floats, so **large values can cause loss of precision, instability, or solver issues**, which result in jittery or innacurate collisions, instability (objects tunnelling through each other), and oddly behaving constraints.
+Some Scratch-based 3D engines use large unitless values for scale, but because Ammo.js library uses single-precision floats, **large values can cause loss of precision, instability, or solver issues**, which result in jittery or innacurate collisions, instability (objects tunnelling through each other), and oddly behaving constraints.
 
 Generally speaking, **values in between 0.01-1000 are safe**. If you must scale outside SI units, make sure to scale units proportionally and consistently to avoid unexpected behavior.
 
@@ -44,7 +44,7 @@ This block removes all rigid bodies, rays, and constraints from the world and re
 step simulation :: #0fbd8c
 ```
 
-This block steps the physics simulation. You should put it in your game loop or tick event. It implicitly takes the deltatime, max sub steps, and current target framerate. The higher the framerate, the higher quality your physics simulation will be.
+This block increases the physics simulation by one step forward in time. You should put it in your game loop or tick event. It implicitly takes the deltatime, max sub steps, and current target framerate. The higher the framerate, the higher quality your physics simulation will be.
 
 ```scratch
 set max substeps (10) :: #0fbd8c
@@ -65,7 +65,7 @@ This sets the world's gravity in meters per second squared. By default, it match
 
 ### Bodies <a name="bodies"></a>
 >[!TIP]
-> You can set the mass of any body to 0 to make it static, not reacting to any forces (including gravity) while retaining collision. This is useful for things like ground or your level geometry.
+> You can set the mass of any body to 0 to make it static, not reacting to any forces (including gravity) while retaining collision. This is useful for things like the ground or your level geometry (game map).
 
 ```scratch
 (all bodies :: #0fbd8c)
@@ -106,7 +106,7 @@ create convex hull body with name: [body] mass: (5) from vertices: [select a lis
 ```
 This block is special. It will generate a convex hull body from a list of vertices.
 
-Convex hulls are great when you want a triangle mesh to have more detailed collision than a box or sphere but prioritize performance. They don't have concave collisions and encapsulate the set of vertices in the simplest possible shape that covers everything.
+Convex hulls are great when you want a triangle mesh to have more detailed collision than a box or sphere but prioritize performance. They don't have concave collisions and encapsulate the set of vertices in the simplest possible shape that covers the volume of the object without concave faces.
 
 The list of vertices must be in a specific format: each list item should contain one vertex, or three space-delimited coordinates. For example, the starting lines for a Suzanne monkey might look like this:
 ```
@@ -129,8 +129,6 @@ It requires:
 1. A space-delimited list of vertex coordinates as demonstrated above, but in a specific order.
 2. A space-delimited list of vertex indices for triangulated faces.
 
-This might sound complicated, because it is. Let's break it down. 
-
 Before importing your meshes into lists, you must triangulate the mesh so that there are only three vertices per face. Attempting to load a non-triangulated mesh will fail and log an error.
 For example, the corresponding face list to the Suzzane vertex list above looks like this:
 ```
@@ -142,7 +140,7 @@ For example, the corresponding face list to the Suzzane vertex list above looks 
 ```
 **Notice two crucial facts about this list**:
 1. There are no more than three values per item. This means that there are only three vertices per face.
-2. These values aren't coordinates; they correspond to the items in the vertex list that form a triangle.
+2. These values aren't coordinates; they correspond to the items in the vertex list that form a triangle (they're vertex indicies).
 
 Incorrect face data will reference incorrect vertex indicies, leading the solver to parse the mesh incorrectly. **You must be careful**. 
 
@@ -150,7 +148,7 @@ Additionally, you may notice there are **two types of triangle meshes**:
 1. Static
 2. Dynamic
 
-Static triangle meshes can't move and are bounding-volume-heirarchy accelerated. This means they are much more performant for static geometry like your level terrain or map, but they can't move or react to forces. **It does not support triangle-triangle interaction,** but is significantly faster for raycasting and convex hulls. This means dynamic triangle meshes won't be able to collide triangle-to-triangle with BVH static meshes.
+Static triangle meshes can't move and are bounding-volume-heirarchy accelerated. This means they are much more performant for static geometry like your level terrain or map, but they can't move or react to forces. **It does not support triangle-triangle interaction,** but is significantly faster for raycasting and convex hulls. Therefore, dynamic triangle meshes won't be able to collide triangle-to-triangle with BVH static meshes.
 
 Dynamic triangle meshes are special: they support **deformable and/or moving concave meshes**. They also support **triangle-to-triangle collision with other dynamic triangle meshes**. However:
 
@@ -168,7 +166,7 @@ You can add as many child shapes as you like, and configure their offset relativ
 ```scratch
 create rigid body from compound shape [shape] with mass: (5) :: #0fbd8c
 ```
-At first, this block may seem confusing -- after all, you might wonder why it's needed if you already created your compound shape. But for the physics engine to recognize it and add it to the world, you have to realize the compound **shape** into an actual **rigid body**. Once a compound shape has been realized, you cannot edit its geometry. This is for optimization purposes.
+At first, this block may seem confusing -- after all, you might wonder why it's needed if you already created your compound shape. But for the physics engine to recognize it and add it to the world, you have to realize the compound **shape** into an actual **rigid body**. **Once a compound shape has been realized, you cannot edit its geometry.** This is for optimization purposes.
 
 ```scratch
 set [friction v] of body [body] to (0.5) :: #0fbd8c
@@ -177,7 +175,7 @@ This block allows you to set a body's physical material properties. A float from
 
 Friction 0 means entirely frictionless (for example, something like ice should have a friction of ~0.02). The default is 0.5. This type of friction is linear or sliding friction. More complex materials that have differing types of friction in different directions (e.g., ice skates have 0 friction forward but 1 friction side to side) or rolling friction aren't yet supported but may be upon enough user request.
 
-Restitution is just a fancy term for "bounciness". By default it is 0, so if you want a body to be bouncy you have to increase it. You might wonder why your body isn't more bouncy after you increase it:  **you also have to increase the restitution of the object it's bouncing off of (for example the ground) for it to react properly.**
+By default bounciness (elasticity/restitution) is 0, so if you want a body to be bouncy you have to increase it. You might wonder why your body isn't more bouncy after you increase it:  **you also have to increase the bounciness of the of the reacting/colliding object (for example the ground) to see an effect.**
 
 ```scratch
 set gravity of body [body] to x: (0) y: (0) z: (0) :: #0fbd8c
