@@ -264,6 +264,12 @@
         transition: box-shadow .15s ease-in-out, box-shadow .15s ease-in-out;
       }
 
+      @media (prefers-color-scheme: dark) {
+        .search-base {
+          background-color: #111;
+        }
+      }
+
       .search-base:focus {
         outline: none;
         box-shadow: 0 0 0 .25rem rgba(236, 90, 84, .25);
