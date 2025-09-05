@@ -97,5 +97,13 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
-  "Lily/McUtils" // McUtils should always be the last item.
+  "Lily/McUtils", // McUtils should always be the last item.
+  {
+    "name": "Python",
+    "description": "运行Python代码",
+    "file": "python.js",
+    "license": "MIT",
+    "author": "THE-END-MC",
+    "tags": ["utility", "web"]
+  },
 ]
