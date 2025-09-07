@@ -17,22 +17,23 @@ class CameraExtension {
 
     getInfo() {
         return {
-            id: 'cameraExtensionByLibmaster169',
-            name: 'Camera Tools',
-            blocks: [
-                { opcode: 'startCamera', blockType: Scratch.BlockType.COMMAND, text: 'Uruchom kamerę' },
-                { opcode: 'stopCamera', blockType: Scratch.BlockType.COMMAND, text: 'Wyłącz kamerę' },
-                { opcode: 'captureFrame', blockType: Scratch.BlockType.COMMAND, text: 'Zapisz obraz z kamery' },
-                { opcode: 'getBinaryImage', blockType: Scratch.BlockType.REPORTER, text: 'Pobierz zakodowany obraz' },
-                { opcode: 'getPixelBinary', blockType: Scratch.BlockType.REPORTER, text: 'Piksel [X], [Y] w formie kodu', arguments: { X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }, Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } } },
-                { opcode: 'joinFrames', blockType: Scratch.BlockType.COMMAND, text: 'Połącz obraz z [DATA]', arguments: { DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "" } } },
-                { opcode: 'setPixelTo', blockType: Scratch.BlockType.COMMAND, text: 'Ustaw piksel [X], [Y] na kod [VALUE]', arguments: { X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }, Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }, VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: "900" } } },
-                { opcode: 'getFrameDataURL', blockType: Scratch.BlockType.REPORTER, text: 'Pobierz klatkę jako DATA:url' },
-                { opcode: 'startFilmRecording', blockType: Scratch.BlockType.COMMAND, text: 'Start nagrywania filmu' },
-                { opcode: 'stopFilmRecording', blockType: Scratch.BlockType.COMMAND, text: 'Zatrzymaj nagrywanie filmu' },
-                { opcode: 'getFilmDataURL', blockType: Scratch.BlockType.REPORTER, text: 'Pobierz film jako DATA:url' }
-            ]
-        };
+    id: 'cameraExtensionByLibmaster169',
+    name: 'Camera Tools',
+    blocks: [
+        { opcode: 'startCamera', blockType: Scratch.BlockType.COMMAND, text: 'Start camera' },
+        { opcode: 'stopCamera', blockType: Scratch.BlockType.COMMAND, text: 'Stop camera' },
+        { opcode: 'captureFrame', blockType: Scratch.BlockType.COMMAND, text: 'Capture image from camera' },
+        { opcode: 'getBinaryImage', blockType: Scratch.BlockType.REPORTER, text: 'Get encoded image' },
+        { opcode: 'getPixelBinary', blockType: Scratch.BlockType.REPORTER, text: 'Pixel [X], [Y] as code', arguments: { X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }, Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } } },
+        { opcode: 'joinFrames', blockType: Scratch.BlockType.COMMAND, text: 'Join image with [DATA]', arguments: { DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "" } } },
+        { opcode: 'setPixelTo', blockType: Scratch.BlockType.COMMAND, text: 'Set pixel [X], [Y] to code [VALUE]', arguments: { X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }, Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }, VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: "900" } } },
+        { opcode: 'getFrameDataURL', blockType: Scratch.BlockType.REPORTER, text: 'Get frame as DATA:url' },
+        { opcode: 'startFilmRecording', blockType: Scratch.BlockType.COMMAND, text: 'Start film recording' },
+        { opcode: 'stopFilmRecording', blockType: Scratch.BlockType.COMMAND, text: 'Stop film recording' },
+        { opcode: 'getFilmDataURL', blockType: Scratch.BlockType.REPORTER, text: 'Get film as DATA:url' }
+    ]
+};
+
     }
 
     startCamera() {
