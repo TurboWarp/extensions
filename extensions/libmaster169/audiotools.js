@@ -14,20 +14,21 @@ class AudioExtension {
 
     getInfo() {
         return {
-            id: 'audioExtension',
-            name: 'Audio Tools',
-            blocks: [
-                { opcode: 'startRecording', blockType: Scratch.BlockType.COMMAND, text: 'Rozpocznij nagrywanie' },
-                { opcode: 'stopRecording', blockType: Scratch.BlockType.COMMAND, text: 'Zatrzymaj nagrywanie' },
-		{ opcode: 'getLen', blockType: Scratch.BlockType.REPORTER, text: 'Pobierz długość nagrania w sekundach' },
-                { opcode: 'getBinaryData', blockType: Scratch.BlockType.REPORTER, text: 'Pobierz nagranie' },
-                { opcode: 'getSampleBinary', blockType: Scratch.BlockType.REPORTER, text: 'Próbka [INDEX]', arguments: { INDEX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } } },
-                { opcode: 'getSampleRate', blockType: Scratch.BlockType.REPORTER, text: 'Pobierz częstotliwość próbkowania' },
-                { opcode: 'playRecording', blockType: Scratch.BlockType.COMMAND, text: 'Odtwórz nagranie' },
-                { opcode: 'joinRecording', blockType: Scratch.BlockType.COMMAND, text: 'Połącz nagranie z [DATA]', arguments: { DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "0,0,0" } } },
-                { opcode: 'setSampleTo', blockType: Scratch.BlockType.COMMAND, text: 'Ustaw próbkę [INDEX] na [VALUE]', arguments: { INDEX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }, VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } } }
-            ]
-        };
+    id: 'audioExtension',
+    name: 'Audio Tools',
+    blocks: [
+        { opcode: 'startRecording', blockType: Scratch.BlockType.COMMAND, text: 'Start recording' },
+        { opcode: 'stopRecording', blockType: Scratch.BlockType.COMMAND, text: 'Stop recording' },
+        { opcode: 'getLen', blockType: Scratch.BlockType.REPORTER, text: 'Get recording length in seconds' },
+        { opcode: 'getBinaryData', blockType: Scratch.BlockType.REPORTER, text: 'Get recording' },
+        { opcode: 'getSampleBinary', blockType: Scratch.BlockType.REPORTER, text: 'Sample [INDEX]', arguments: { INDEX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } } },
+        { opcode: 'getSampleRate', blockType: Scratch.BlockType.REPORTER, text: 'Get sample rate' },
+        { opcode: 'playRecording', blockType: Scratch.BlockType.COMMAND, text: 'Play recording' },
+        { opcode: 'joinRecording', blockType: Scratch.BlockType.COMMAND, text: 'Join recording with [DATA]', arguments: { DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "0,0,0" } } },
+        { opcode: 'setSampleTo', blockType: Scratch.BlockType.COMMAND, text: 'Set sample [INDEX] to [VALUE]', arguments: { INDEX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }, VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } } }
+    ]
+};
+
     }
 
     startRecording() {
