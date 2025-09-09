@@ -136,13 +136,13 @@
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, World!"
+                defaultValue: "Hello, World!",
               },
               PASS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "password"
-              }
-            }
+                defaultValue: "password",
+              },
+            },
           },
           {
             opcode: "decrypt",
@@ -152,43 +152,49 @@
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
               PASS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "password"
-              }
-            }
+                defaultValue: "password",
+              },
+            },
           },
           {
             opcode: "base64Encode",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("encode base64 bytes [TEXT]"),
             arguments: {
-              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "Hello" }
-            }
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello",
+              },
+            },
           },
           {
             opcode: "base64Decode",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("decode base64 bytes [TEXT]"),
             arguments: {
-              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "SGVsbG8=" }
-            }
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "SGVsbG8=",
+              },
+            },
           },
           {
             opcode: "checkSignature",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("verify signature [TEXT]"),
             arguments: {
-              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" }
-            }
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+            },
           },
           {
             opcode: "isValidEncrypted",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("is encrypted data valid [TEXT]"),
             arguments: {
-              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" }
-            }
-          }
-        ]
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+            },
+          },
+        ],
       };
     }
 
