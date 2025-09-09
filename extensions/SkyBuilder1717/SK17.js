@@ -136,13 +136,13 @@
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, World!",
+                defaultValue: "Hello, World!"
               },
               PASS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "password",
-              },
-            },
+                defaultValue: "password"
+              }
+            }
           },
           {
             opcode: "decrypt",
@@ -152,86 +152,43 @@
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
               PASS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "password",
-              },
-            },
+                defaultValue: "password"
+              }
+            }
           },
           {
             opcode: "base64Encode",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("encode base64 [TEXT]"),
+            text: "encode base64 bytes [TEXT]",
             arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello",
-              },
-            },
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "Hello" }
+            }
           },
           {
             opcode: "base64Decode",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("decode base64 [TEXT]"),
+            text: "decode base64 bytes [TEXT]",
             arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "SGVsbG8=",
-              },
-            },
-          },
-          {
-            opcode: "generatePassword",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "generate password length [LENGTH] with chars [CHARS]"
-            ),
-            arguments: {
-              LENGTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 8 },
-              CHARS: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue:
-                  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
-              },
-            },
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "SGVsbG8=" }
+            }
           },
           {
             opcode: "checkSignature",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("verify signature [TEXT]"),
             arguments: {
-              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
-            },
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" }
+            }
           },
           {
             opcode: "isValidEncrypted",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("is encrypted data valid [TEXT]"),
             arguments: {
-              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
-            },
-          },
-          {
-            opcode: "saveFile",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("save text [TEXT] as file [FILENAME]"),
-            arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, World!",
-              },
-              FILENAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "file.enc",
-              },
-            },
-          },
-          {
-            opcode: "loadFile",
-            disableMonitor: true,
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("load file as .enc"),
-            arguments: {},
-          },
-        ],
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" }
+            }
+          }
+        ]
       };
     }
 
@@ -295,20 +252,6 @@
       }
     }
 
-    generatePassword(args) {
-      const length = args.LENGTH;
-      const charset = args.CHARS;
-      let result = "";
-      const chars = charset
-        ? String(charset)
-        : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (let i = 0; i < length; i++) {
-        const randIndex = Math.floor(Math.random() * chars.length);
-        result += chars.charAt(randIndex);
-      }
-      return result;
-    }
-
     checkSignature(args) {
       const text = args.TEXT;
       if (typeof text !== "string") return false;
@@ -328,48 +271,6 @@
         if (u8[i] !== SIG[i]) return false;
       }
       return true;
-    }
-
-    saveFile(args) {
-      const latin1String = args.TEXT;
-      const filename = args.FILENAME;
-      const u8 = latin1StringToBytes(latin1String);
-      const blob = new Blob([u8], { type: "application/octet-stream" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename || "file.enc";
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(() => {
-        URL.revokeObjectURL(url);
-        a.remove();
-      }, 1000);
-      return filename || "file.enc";
-    }
-
-    loadFile() {
-      return new Promise((resolve) => {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = ".enc";
-        input.style.display = "none";
-        document.body.appendChild(input);
-        input.onchange = async () => {
-          if (!input.files || input.files.length === 0) {
-            document.body.removeChild(input);
-            resolve("");
-            return;
-          }
-          const f = input.files[0];
-          const ab = await f.arrayBuffer();
-          const u8 = new Uint8Array(ab);
-          const s = bytesToLatin1String(u8);
-          document.body.removeChild(input);
-          resolve(s);
-        };
-        input.click();
-      });
     }
   }
 
