@@ -159,7 +159,7 @@
           {
             opcode: "base64Encode",
             blockType: Scratch.BlockType.REPORTER,
-            text: "encode base64 bytes [TEXT]",
+            text: Scratch.translate("encode base64 bytes [TEXT]"),
             arguments: {
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "Hello" }
             }
@@ -167,7 +167,7 @@
           {
             opcode: "base64Decode",
             blockType: Scratch.BlockType.REPORTER,
-            text: "decode base64 bytes [TEXT]",
+            text: Scratch.translate("decode base64 bytes [TEXT]"),
             arguments: {
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "SGVsbG8=" }
             }
