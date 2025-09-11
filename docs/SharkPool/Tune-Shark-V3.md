@@ -156,6 +156,7 @@ current time | current position in a sound
 source | source URL/URI of a sound
 estimated bpm | estimated beats-per-minute
 channels | the number of [channels](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Audio_concepts) in a sound
+sample rate | sample rate of a sound
 fft data | a live Array of loudness values across all frequencies
 binds | an array of sound names binded to this sound
 *...various audio effects* | returns the inputted parameters for the effect
