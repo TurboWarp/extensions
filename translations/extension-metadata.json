@@ -372,6 +372,10 @@
     "fr": {
         "runtime-options@name": "Options d'exécution"
     },
+    "he": {
+        "files@name": "קבצים",
+        "text@name": "טקסט"
+    },
     "hu": {
         "DT/cameracontrols@description": "Mozgasd a színpad látható részét.",
         "DT/cameracontrols@name": "Kamera V1",

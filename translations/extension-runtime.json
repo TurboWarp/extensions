@@ -2120,6 +2120,15 @@
         "obviousAlexC/penPlus@_Advanced": "Avancé",
         "runtime-options@_Runtime Options": "Options d'exécution"
     },
+    "he": {
+        "-SIPC-/consoles@_Error": "שגיאה",
+        "CST1229/zip@_URL": "כתובת אתר",
+        "Skyhigh173/json@_Advanced": "מתקדם",
+        "files@_Files": "קבצים",
+        "obviousAlexC/penPlus@_Advanced": "מתקדם",
+        "steamworks@_URL": "כתובת אתר",
+        "text@_Text": "טקסט"
+    },
     "hu": {
         "-SIPC-/consoles@_Error": "Hiba",
         "DT/cameracontrols@_Camera V1": "Kamera V1",
