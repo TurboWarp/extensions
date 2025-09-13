@@ -1,6 +1,6 @@
 // Name: Audio Tools
 // ID: audioExtension
-// Description: Read raw audio data from the microphone
+// Description: Read raw audio data from the microphone.
 // By: libmaster169
 // License: MPL-2.0
 /* generated l10n code */
