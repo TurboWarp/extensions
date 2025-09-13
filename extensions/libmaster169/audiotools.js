@@ -14,7 +14,7 @@ Scratch.translate.setup({
     "_Get sample rate": "Pobierz częstotliwość próbkowania",
     "_Play recording": "Odtwórz nagranie",
     "_Join recording with [DATA]": "Połącz nagranie z [DATA]",
-    "_Set sample [INDEX] to [VALUE]": "Ustaw próbkę [INDEX] na [VALUE]"
+    "_Set sample [INDEX] to [VALUE]": "Ustaw próbkę [INDEX] na [VALUE]",
   },
   en: {
     "_Start recording": "Start recording",
@@ -25,7 +25,7 @@ Scratch.translate.setup({
     "_Get sample rate": "Get sample rate",
     "_Play recording": "Play recording",
     "_Join recording with [DATA]": "Join recording with [DATA]",
-    "_Set sample [INDEX] to [VALUE]": "Set sample [INDEX] to [VALUE]"
+    "_Set sample [INDEX] to [VALUE]": "Set sample [INDEX] to [VALUE]",
   },
   de: {
     "_Start recording": "Aufnahme starten",
@@ -36,7 +36,7 @@ Scratch.translate.setup({
     "_Get sample rate": "Abtastrate abrufen",
     "_Play recording": "Aufnahme abspielen",
     "_Join recording with [DATA]": "Aufnahme mit [DATA] verbinden",
-    "_Set sample [INDEX] to [VALUE]": "Sample [INDEX] auf [VALUE] setzen"
+    "_Set sample [INDEX] to [VALUE]": "Sample [INDEX] auf [VALUE] setzen",
   },
   fr: {
     "_Start recording": "Commencer l'enregistrement",
@@ -47,7 +47,7 @@ Scratch.translate.setup({
     "_Get sample rate": "Obtenir le taux d'échantillonnage",
     "_Play recording": "Lire l'enregistrement",
     "_Join recording with [DATA]": "Joindre l'enregistrement avec [DATA]",
-    "_Set sample [INDEX] to [VALUE]": "Définir l'échantillon [INDEX] à [VALUE]"
+    "_Set sample [INDEX] to [VALUE]": "Définir l'échantillon [INDEX] à [VALUE]",
   },
   es: {
     "_Start recording": "Iniciar grabación",
@@ -58,7 +58,7 @@ Scratch.translate.setup({
     "_Get sample rate": "Obtener tasa de muestreo",
     "_Play recording": "Reproducir grabación",
     "_Join recording with [DATA]": "Unir grabación con [DATA]",
-    "_Set sample [INDEX] to [VALUE]": "Establecer muestra [INDEX] a [VALUE]"
+    "_Set sample [INDEX] to [VALUE]": "Establecer muestra [INDEX] a [VALUE]",
   },
   ja: {
     "_Start recording": "録音を開始",
@@ -69,7 +69,7 @@ Scratch.translate.setup({
     "_Get sample rate": "サンプルレートを取得",
     "_Play recording": "録音を再生",
     "_Join recording with [DATA]": "[DATA]と録音を結合",
-    "_Set sample [INDEX] to [VALUE]": "サンプル [INDEX] を [VALUE] に設定"
+    "_Set sample [INDEX] to [VALUE]": "サンプル [INDEX] を [VALUE] に設定",
   },
   ru: {
     "_Start recording": "Начать запись",
@@ -80,7 +80,7 @@ Scratch.translate.setup({
     "_Get sample rate": "Получить частоту дискретизации",
     "_Play recording": "Воспроизвести запись",
     "_Join recording with [DATA]": "Объединить запись с [DATA]",
-    "_Set sample [INDEX] to [VALUE]": "Установить сэмпл [INDEX] на [VALUE]"
+    "_Set sample [INDEX] to [VALUE]": "Установить сэмпл [INDEX] на [VALUE]",
   },
   "zh-cn": {
     "_Start recording": "开始录音",
@@ -91,147 +91,152 @@ Scratch.translate.setup({
     "_Get sample rate": "获取采样率",
     "_Play recording": "播放录音",
     "_Join recording with [DATA]": "将录音与 [DATA] 合并",
-    "_Set sample [INDEX] to [VALUE]": "将样本 [INDEX] 设置为 [VALUE]"
-  }
+    "_Set sample [INDEX] to [VALUE]": "将样本 [INDEX] 设置为 [VALUE]",
+  },
 });
 /* end generated l10n code */
 
 class AudioExtension {
-    constructor() {
-        this.recorder = null;
-        this.audioData = [];
-        this.context = new (window.AudioContext || window.webkitAudioContext)();
-        this.sampleRate = this.context.sampleRate;
-    }
+  constructor() {
+    this.recorder = null;
+    this.audioData = [];
+    this.context = new (window.AudioContext || window.webkitAudioContext)();
+    this.sampleRate = this.context.sampleRate;
+  }
 
-getInfo() {
-  return {
-    id: 'audioExtension',
-    name: 'Audio Tools',
-    blocks: [
-      {
-        opcode: 'startRecording',
-        blockType: Scratch.BlockType.COMMAND,
-        text: Scratch.translate("Start recording")
-      },
-      {
-        opcode: 'stopRecording',
-        blockType: Scratch.BlockType.COMMAND,
-        text: Scratch.translate("Stop recording")
-      },
-      {
-        opcode: 'getLen',
-        blockType: Scratch.BlockType.REPORTER,
-        text: Scratch.translate("Get recording length in seconds")
-      },
-      {
-        opcode: 'getBinaryData',
-        blockType: Scratch.BlockType.REPORTER,
-        text: Scratch.translate("Get recording")
-      },
-      {
-        opcode: 'getSampleBinary',
-        blockType: Scratch.BlockType.REPORTER,
-        text: Scratch.translate("Sample [INDEX]"),
-        arguments: {
-          INDEX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-        }
-      },
-      {
-        opcode: 'getSampleRate',
-        blockType: Scratch.BlockType.REPORTER,
-        text: Scratch.translate("Get sample rate")
-      },
-      {
-        opcode: 'playRecording',
-        blockType: Scratch.BlockType.COMMAND,
-        text: Scratch.translate("Play recording")
-      },
-      {
-        opcode: 'joinRecording',
-        blockType: Scratch.BlockType.COMMAND,
-        text: Scratch.translate("Join recording with [DATA]"),
-        arguments: {
-          DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "0,0,0" }
-        }
-      },
-      {
-        opcode: 'setSampleTo',
-        blockType: Scratch.BlockType.COMMAND,
-        text: Scratch.translate("Set sample [INDEX] to [VALUE]"),
-        arguments: {
-          INDEX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-          VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-        }
-      }
-    ]
-  };
-}
+  getInfo() {
+    return {
+      id: "audioExtension",
+      name: "Audio Tools",
+      blocks: [
+        {
+          opcode: "startRecording",
+          blockType: Scratch.BlockType.COMMAND,
+          text: Scratch.translate("Start recording"),
+        },
+        {
+          opcode: "stopRecording",
+          blockType: Scratch.BlockType.COMMAND,
+          text: Scratch.translate("Stop recording"),
+        },
+        {
+          opcode: "getLen",
+          blockType: Scratch.BlockType.REPORTER,
+          text: Scratch.translate("Get recording length in seconds"),
+        },
+        {
+          opcode: "getBinaryData",
+          blockType: Scratch.BlockType.REPORTER,
+          text: Scratch.translate("Get recording"),
+        },
+        {
+          opcode: "getSampleBinary",
+          blockType: Scratch.BlockType.REPORTER,
+          text: Scratch.translate("Sample [INDEX]"),
+          arguments: {
+            INDEX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+          },
+        },
+        {
+          opcode: "getSampleRate",
+          blockType: Scratch.BlockType.REPORTER,
+          text: Scratch.translate("Get sample rate"),
+        },
+        {
+          opcode: "playRecording",
+          blockType: Scratch.BlockType.COMMAND,
+          text: Scratch.translate("Play recording"),
+        },
+        {
+          opcode: "joinRecording",
+          blockType: Scratch.BlockType.COMMAND,
+          text: Scratch.translate("Join recording with [DATA]"),
+          arguments: {
+            DATA: { type: Scratch.ArgumentType.STRING, defaultValue: "0,0,0" },
+          },
+        },
+        {
+          opcode: "setSampleTo",
+          blockType: Scratch.BlockType.COMMAND,
+          text: Scratch.translate("Set sample [INDEX] to [VALUE]"),
+          arguments: {
+            INDEX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+          },
+        },
+      ],
+    };
+  }
 
+  startRecording() {
+    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+      this.recorder = new MediaRecorder(stream);
+      let dataChunks = [];
+      this.recorder.ondataavailable = (event) => dataChunks.push(event.data);
+      this.recorder.onstop = async () => {
+        let audioBlob = new Blob(dataChunks, { type: "audio/wav" });
+        let arrayBuffer = await audioBlob.arrayBuffer();
+        let audioBuffer = await this.context.decodeAudioData(arrayBuffer);
+        this.audioData = audioBuffer.getChannelData(0);
+        this.sampleRate = audioBuffer.sampleRate;
+      };
+      this.recorder.start();
+    });
+  }
 
-    startRecording() {
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            this.recorder = new MediaRecorder(stream);
-            let dataChunks = [];
-            this.recorder.ondataavailable = event => dataChunks.push(event.data);
-            this.recorder.onstop = async () => {
-                let audioBlob = new Blob(dataChunks, { type: 'audio/wav' });
-                let arrayBuffer = await audioBlob.arrayBuffer();
-                let audioBuffer = await this.context.decodeAudioData(arrayBuffer);
-                this.audioData = audioBuffer.getChannelData(0);
-                this.sampleRate = audioBuffer.sampleRate;
-            };
-            this.recorder.start();
-        });
+  stopRecording() {
+    if (this.recorder) {
+      this.recorder.stop();
     }
+  }
 
-    stopRecording() {
-        if (this.recorder) {
-            this.recorder.stop();
-        }
-    }
+  getBinaryData() {
+    return this.audioData.map((sample) => sample).join(",");
+  }
 
-    getBinaryData() {
-        return this.audioData.map(sample => (sample)).join(","); 
+  getSampleBinary(args) {
+    const index = args.INDEX;
+    if (this.audioData && this.audioData.length > index) {
+      return this.audioData[index];
     }
+    return 0;
+  }
 
-    getSampleBinary(args) {
-        const index = args.INDEX;
-        if (this.audioData && this.audioData.length > index) {
-            return this.audioData[index];
-        }
-        return 0;
-    }
+  getSampleRate() {
+    return this.sampleRate;
+  }
 
-    getSampleRate() {
-        return this.sampleRate; 
-    }
+  playRecording() {
+    if (!this.audioData.length) return;
 
-    playRecording() {
-        if (!this.audioData.length) return;
+    const buffer = this.context.createBuffer(
+      1,
+      this.audioData.length,
+      this.sampleRate
+    );
+    buffer.copyToChannel(new Float32Array(this.audioData), 0);
+    const source = this.context.createBufferSource();
+    source.buffer = buffer;
+    source.connect(this.context.destination);
+    source.start();
+  }
 
-        const buffer = this.context.createBuffer(1, this.audioData.length, this.sampleRate);
-        buffer.copyToChannel(new Float32Array(this.audioData), 0);
-        const source = this.context.createBufferSource();
-        source.buffer = buffer;
-        source.connect(this.context.destination);
-        source.start();
+  joinRecording(args) {
+    const newData = args.DATA.split(",").map(Number);
+    this.audioData = [].concat(newData);
+  }
+  getLen() {
+    return (
+      this.audioData.map((sample) => sample).join(",").length / this.sampleRate
+    );
+  }
+  setSampleTo(args) {
+    const index = args.INDEX;
+    const value = args.VALUE;
+    if (this.audioData && this.audioData.length > index) {
+      this.audioData[index] = value;
     }
-
-    joinRecording(args) {
-        const newData = args.DATA.split(",").map(Number);
-        this.audioData = [].concat(newData);
-    }
-    getLen() {
-	return this.audioData.map(sample => (sample)).join(",").length / this.sampleRate;
-    }
-    setSampleTo(args) {
-        const index = args.INDEX;
-        const value = args.VALUE;
-        if (this.audioData && this.audioData.length > index) {
-            this.audioData[index] = value;
-        }
-    }
+  }
 }
 
 Scratch.extensions.register(new AudioExtension());
