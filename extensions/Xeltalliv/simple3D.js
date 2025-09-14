@@ -1852,7 +1852,7 @@ void main() {
   const definitions = [
     {
       blockType: BlockType.BUTTON,
-      text: "Open extra resources",
+      text: Scratch.translate("Open extra resources"),
       func: "openSite",
       def: function () {
         // Exempted from Scratch.openWindow as initiated by user gesture.
@@ -1863,7 +1863,7 @@ void main() {
     },
     {
       blockType: BlockType.BUTTON,
-      text: "Open sample project",
+      text: Scratch.translate("Open sample project"),
       func: "getSampleProject",
       def: function () {
         const url = new URL(location.href);
@@ -1879,12 +1879,12 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Clearing",
+      text: Scratch.translate("Clearing"),
     },
     {
       opcode: "resetEverything",
       blockType: BlockType.COMMAND,
-      text: "reset everything",
+      text: Scratch.translate("reset everything"),
       def: function () {
         resetEverything();
       },
@@ -1893,7 +1893,7 @@ void main() {
     {
       opcode: "clear",
       blockType: BlockType.COMMAND,
-      text: "clear [LAYERS]",
+      text: Scratch.translate("clear [LAYERS]"),
       arguments: {
         LAYERS: {
           type: ArgumentType.STRING,
@@ -1920,7 +1920,7 @@ void main() {
     {
       opcode: "clearColor",
       blockType: BlockType.COMMAND,
-      text: "set clear color R: [RED] G: [GREEN] B: [BLUE] A: [ALPHA]",
+      text: Scratch.translate("set clear color R: [RED] G: [GREEN] B: [BLUE] A: [ALPHA]"),
       arguments: {
         RED: {
           type: ArgumentType.NUMBER,
@@ -1952,7 +1952,7 @@ void main() {
     {
       opcode: "depth",
       blockType: BlockType.COMMAND,
-      text: "depth test [TEST] write [WRITE]",
+      text: Scratch.translate("depth test [TEST] write [WRITE]"),
       arguments: {
         TEST: {
           type: ArgumentType.STRING,
@@ -1974,12 +1974,12 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Meshes",
+      text: Scratch.translate("Meshes"),
     },
     {
       opcode: "allMeshes",
       blockType: BlockType.REPORTER,
-      text: "all meshes",
+      text: Scratch.translate("all meshes"),
       disableMonitor: true,
       def: function () {
         return Array.from(meshes.keys()).join(",");
@@ -1988,7 +1988,7 @@ void main() {
     {
       opcode: "createMesh",
       blockType: BlockType.COMMAND,
-      text: "create mesh [NAME]",
+      text: Scratch.translate("create mesh [NAME]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2005,7 +2005,7 @@ void main() {
     {
       opcode: "deleteMesh",
       blockType: BlockType.COMMAND,
-      text: "delete mesh [NAME]",
+      text: Scratch.translate("delete mesh [NAME]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2021,7 +2021,7 @@ void main() {
     {
       opcode: "inheritMeshes",
       blockType: BlockType.COMMAND,
-      text: "make [NAME] inherit from meshes [NAMES]",
+      text: Scratch.translate("make [NAME] inherit from meshes [NAMES]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2055,7 +2055,7 @@ void main() {
     {
       opcode: "meshInfo",
       blockType: BlockType.REPORTER,
-      text: "mesh [NAME] [PROP]",
+      text: Scratch.translate("mesh [NAME] [PROP]"),
       allowDropAnywhere: true,
       arguments: {
         PROP: {
@@ -2079,7 +2079,7 @@ void main() {
     {
       opcode: "setMeshIndices",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] vertex indices [INDICES]",
+      text: Scratch.translate("set [NAME] vertex indices [INDICES]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2100,7 +2100,7 @@ void main() {
     {
       opcode: "setMeshPositionsXY",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] positions XY [X] [Y]",
+      text: Scratch.translate("set [NAME] positions XY [X] [Y]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2128,7 +2128,7 @@ void main() {
     {
       opcode: "setMeshPositionsXYZ",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] positions XYZ [X] [Y] [Z]",
+      text: Scratch.translate("set [NAME] positions XYZ [X] [Y] [Z]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2156,7 +2156,7 @@ void main() {
     {
       opcode: "setMeshColorsRGB",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] colors RGB [R] [G] [B]",
+      text: Scratch.translate("set [NAME] colors RGB [R] [G] [B]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2184,7 +2184,7 @@ void main() {
     {
       opcode: "setMeshColorsRGBA",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] colors RGBA [R] [G] [B] [A]",
+      text: Scratch.translate("set [NAME] colors RGBA [R] [G] [B] [A]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2216,7 +2216,7 @@ void main() {
     {
       opcode: "setMeshTexCoordUV",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] texture coordinates UV [U] [V]",
+      text: Scratch.translate("set [NAME] texture coordinates UV [U] [V]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2241,7 +2241,7 @@ void main() {
     {
       opcode: "setMeshTexture",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] texture [TEXTURE] [WRAP] [FILTER]",
+      text: Scratch.translate("set [NAME] texture [TEXTURE] [WRAP] [FILTER]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2298,7 +2298,7 @@ void main() {
     {
       opcode: "setMeshTexCoordUVW",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] cube texture coordinates UVW [U] [V] [W]",
+      text: Scratch.translate("set [NAME] cube texture coordinates UVW [U] [V] [W]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2326,7 +2326,7 @@ void main() {
     {
       opcode: "setMeshCubeTexture",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] cube texture [SIDE] [TEXTURE] [WRAP] [FILTER]",
+      text: Scratch.translate("set [NAME] cube texture [SIDE] [TEXTURE] [WRAP] [FILTER]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2396,7 +2396,7 @@ void main() {
     {
       opcode: "setMeshTextureMipmap",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] texture mipmapping [MIPMAPPING]",
+      text: Scratch.translate("set [NAME] texture mipmapping [MIPMAPPING]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2422,7 +2422,7 @@ void main() {
     {
       opcode: "setMeshTextureAnisotropy",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] texture anisotropic filtering [ANISOTROPY]",
+      text: Scratch.translate("set [NAME] texture anisotropic filtering [ANISOTROPY]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2447,7 +2447,7 @@ void main() {
     {
       opcode: "setMeshWeights",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] bone indices [INDICES] weights [WEIGHTS] count per vertex [COUNT]",
+      text: Scratch.translate("set [NAME] bone indices [INDICES] weights [WEIGHTS] count per vertex [COUNT]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2491,7 +2491,7 @@ void main() {
     {
       opcode: "setMeshTransforms",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] [TRANSFORMS] transforms [MATRIXES]",
+      text: Scratch.translate("set [NAME] [TRANSFORMS] transforms [MATRIXES]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2558,7 +2558,7 @@ void main() {
     {
       opcode: "setMeshInterleaved",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] interleaved [PROPERTY] [SRCLIST]",
+      text: Scratch.translate("set [NAME] interleaved [PROPERTY] [SRCLIST]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2614,7 +2614,7 @@ void main() {
     {
       opcode: "setMeshInstances",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] instance [PROPERTY] [SRCLIST]",
+      text: Scratch.translate("set [NAME] instance [PROPERTY] [SRCLIST]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2631,45 +2631,47 @@ void main() {
       },
       def: function ({ NAME, PROPERTY, SRCLIST }, { target }) {
         let bufferName, size, type;
-        if (PROPERTY == "transforms") {
-          bufferName = "instanceTransforms";
-          size = 16;
-          type = Float32Array;
-        }
-        if (PROPERTY == "XY positions") {
-          bufferName = "instanceTransforms";
-          size = 2;
-          type = Float32Array;
-        }
-        if (PROPERTY == "XYZ positions") {
-          bufferName = "instanceTransforms";
-          size = 3;
-          type = Float32Array;
-        }
-        if (PROPERTY == "XYZ positions and sizes") {
-          bufferName = "instanceTransforms";
-          size = 4;
-          type = Float32Array;
-        }
-        if (PROPERTY == "RGB colors") {
-          bufferName = "instanceColors";
-          size = 3;
-          type = Float32Array;
-        }
-        if (PROPERTY == "RGBA colors") {
-          bufferName = "instanceColors";
-          size = 4;
-          type = Float32Array;
-        }
-        if (PROPERTY == "UV offsets") {
-          bufferName = "instanceUVOffsets";
-          size = 2;
-          type = Float32Array;
-        }
-        if (PROPERTY == "UV offsets and sizes") {
-          bufferName = "instanceUVOffsets";
-          size = 4;
-          type = Float32Array;
+        switch (PROPERTY) {
+          case "transforms":
+            bufferName = "instanceTransforms";
+            size = 16;
+            type = Float32Array;
+            break;
+          case "XY positions":
+            bufferName = "instanceTransforms";
+            size = 2;
+            type = Float32Array;
+            break;
+          case "XYZ positions":
+            bufferName = "instanceTransforms";
+            size = 3;
+            type = Float32Array;
+            break;
+          case "XYZ positions and sizes":
+            bufferName = "instanceTransforms";
+            size = 4;
+            type = Float32Array;
+            break;
+          case "RGB colors":
+            bufferName = "instanceColors";
+            size = 3;
+            type = Float32Array;
+            break;
+          case "RGBA colors":
+            bufferName = "instanceColors";
+            size = 4;
+            type = Float32Array;
+            break;
+          case "UV offsets":
+            bufferName = "instanceUVOffsets";
+            size = 2;
+            type = Float32Array;
+            break;
+          case "UV offsets and sizes":
+            bufferName = "instanceUVOffsets";
+            size = 4;
+            type = Float32Array;
+            break;
         }
         if (!bufferName) return;
         const mesh = meshes.get(Cast.toString(NAME));
@@ -2680,7 +2682,7 @@ void main() {
     {
       opcode: "setMeshUploadOffset",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] list update offset [OFFSET]",
+      text: Scratch.translate("set [NAME] list update offset [OFFSET]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2699,7 +2701,7 @@ void main() {
     },
     {
       opcode: "setBufferUsageHint",
-      text: "set [NAME] optimize next uploaded lists for being [USAGE] updated",
+      text: Scratch.translate("set [NAME] optimize next uploaded lists for being [USAGE] updated"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2722,7 +2724,7 @@ void main() {
     {
       opcode: "setMeshFromFile",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] from [FILETYPE] [SRCLIST]",
+      text: Scratch.translate("set [NAME] from [FILETYPE] [SRCLIST]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2766,7 +2768,7 @@ void main() {
     {
       opcode: "setMeshPrimitives",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] primitives [PRIMITIVES]",
+      text: Scratch.translate("set [NAME] primitives [PRIMITIVES]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2790,7 +2792,7 @@ void main() {
     {
       opcode: "setMeshBlending",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] blending [BLENDING]",
+      text: Scratch.translate("set [NAME] blending [BLENDING]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2814,7 +2816,7 @@ void main() {
     {
       opcode: "setMeshCulling",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] cull [CULLING]",
+      text: Scratch.translate("set [NAME] cull [CULLING]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2837,7 +2839,7 @@ void main() {
     {
       opcode: "setMeshAlphaTest",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] discard pixels less opaque than [ALPHATEST], for those that pass [MAKEOPAQUE]",
+      text: Scratch.translate("set [NAME] discard pixels less opaque than [ALPHATEST], for those that pass [MAKEOPAQUE]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2866,7 +2868,7 @@ void main() {
     {
       opcode: "setMeshBillboarding",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] billboarding [BILLBOARDING]",
+      text: Scratch.translate("set [NAME] billboarding [BILLBOARDING]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2888,7 +2890,7 @@ void main() {
     {
       opcode: "setMeshCentroidInterpolation",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] accurate interpolation [USECENTROID]",
+      text: Scratch.translate("set [NAME] accurate interpolation [USECENTROID]"),
       hideFromPalette: true,
       arguments: {
         NAME: {
@@ -2911,7 +2913,7 @@ void main() {
     {
       opcode: "setMeshMultiSampleInterpolation",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] compute color [MODE]",
+      text: Scratch.translate("set [NAME] compute color [MODE]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2936,7 +2938,7 @@ void main() {
     {
       opcode: "setMeshDrawRange",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] vertex draw range from [START] to [END]",
+      text: Scratch.translate("set [NAME] vertex draw range from [START] to [END]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2963,7 +2965,7 @@ void main() {
     {
       opcode: "setMeshInstanceLimit",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] instance draw limit [END]",
+      text: Scratch.translate("set [NAME] instance draw limit [END]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2986,7 +2988,7 @@ void main() {
     {
       opcode: "setMeshTexCoordOffsetUV",
       blockType: BlockType.COMMAND,
-      text: "set [NAME] texture coordinate offset UV [U] [V]",
+      text: Scratch.translate("set [NAME] texture coordinate offset UV [U] [V]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -3009,7 +3011,7 @@ void main() {
     {
       opcode: "drawMesh",
       blockType: BlockType.COMMAND,
-      text: "draw mesh [NAME]",
+      text: Scratch.translate("draw mesh [NAME]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -3414,12 +3416,12 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Textures",
+      text: Scratch.translate("Textures"),
     },
     {
       opcode: "textureFromUrl",
       blockType: BlockType.REPORTER,
-      text: "texture from URL [TEXURL]",
+      text: Scratch.translate("texture from URL [TEXURL]"),
       arguments: {
         TEXURL: {
           type: ArgumentType.STRING,
@@ -3466,7 +3468,7 @@ void main() {
     {
       opcode: "textureFromCostume",
       blockType: BlockType.REPORTER,
-      text: "texture from costume [NAME]",
+      text: Scratch.translate("texture from costume [NAME]"),
       arguments: {
         NAME: {
           type: ArgumentType.COSTUME,
@@ -3503,7 +3505,7 @@ void main() {
     {
       opcode: "textureFromText",
       blockType: BlockType.REPORTER,
-      text: "texture from text [TEXT] font [FONT] color [COLOR]",
+      text: Scratch.translate("texture from text [TEXT] font [FONT] color [COLOR]"),
       arguments: {
         TEXT: {
           type: ArgumentType.STRING,
@@ -3547,7 +3549,7 @@ void main() {
     {
       opcode: "textureFromTextWithBorder",
       blockType: BlockType.REPORTER,
-      text: "texture from text [TEXT] font [FONT] color [COLOR] border [BORDERSIZE] [BORDERCOLOR]",
+      text: Scratch.translate("texture from text [TEXT] font [FONT] color [COLOR] border [BORDERSIZE] [BORDERCOLOR]"),
       arguments: {
         TEXT: {
           type: ArgumentType.STRING,
@@ -3619,7 +3621,7 @@ void main() {
     {
       opcode: "textureFromList",
       blockType: BlockType.REPORTER,
-      text: "texture from list [NAME] at [POS] of size [WIDTH] [HEIGHT]",
+      text: Scratch.translate("texture from list [NAME] at [POS] of size [WIDTH] [HEIGHT]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -3691,7 +3693,7 @@ void main() {
     {
       opcode: "textureFromSize",
       blockType: BlockType.REPORTER,
-      text: "texture of size [WIDTH] [HEIGHT]",
+      text: Scratch.translate("texture of size [WIDTH] [HEIGHT]"),
       arguments: {
         WIDTH: {
           type: ArgumentType.NUMBER,
@@ -3730,12 +3732,12 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Text measurement",
+      text: Scratch.translate("Text measurement"),
     },
     {
       opcode: "measureText",
       blockType: BlockType.COMMAND,
-      text: "measure text [TEXT] font [FONT]",
+      text: Scratch.translate("measure text [TEXT] font [FONT]"),
       arguments: {
         PROP: {
           type: ArgumentType.STRING,
@@ -3763,7 +3765,7 @@ void main() {
     {
       opcode: "readMeasuredText",
       blockType: BlockType.REPORTER,
-      text: "measured [DIR] size",
+      text: Scratch.translate("measured [DIR] size"),
       arguments: {
         DIR: {
           type: ArgumentType.STRING,
@@ -3784,12 +3786,12 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Fonts",
+      text: Scratch.translate("Fonts"),
     },
     {
       opcode: "getFont",
       blockType: BlockType.REPORTER,
-      text: "font [FONT] of size [SIZE]",
+      text: Scratch.translate("font [FONT] of size [SIZE]"),
       arguments: {
         FONT: {
           type: ArgumentType.STRING,
@@ -3809,12 +3811,12 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "View transformations",
+      text: Scratch.translate("View transformations"),
     },
     {
       opcode: "matSelect",
       blockType: BlockType.COMMAND,
-      text: "configure [TRANSFORM] transformation",
+      text: Scratch.translate("configure [TRANSFORM] transformation"),
       arguments: {
         TRANSFORM: {
           type: ArgumentType.STRING,
@@ -3830,7 +3832,7 @@ void main() {
     {
       opcode: "matStartWithPerspective",
       blockType: BlockType.COMMAND,
-      text: "start with perspective FOV: [FOV] near: [NEAR] far: [FAR]",
+      text: Scratch.translate("start with perspective FOV: [FOV] near: [NEAR] far: [FAR]"),
       arguments: {
         FOV: {
           type: ArgumentType.NUMBER,
@@ -3857,7 +3859,7 @@ void main() {
     {
       opcode: "matStartWithOrthographic",
       blockType: BlockType.COMMAND,
-      text: "start with orthographic near: [NEAR] far: [FAR]",
+      text: Scratch.translate("start with orthographic near: [NEAR] far: [FAR]"),
       arguments: {
         NEAR: {
           type: ArgumentType.NUMBER,
@@ -3879,7 +3881,7 @@ void main() {
     {
       opcode: "matStartWithIdentity",
       blockType: BlockType.COMMAND,
-      text: "start with no transformation",
+      text: Scratch.translate("start with no transformation"),
       def: function () {
         transforms[selectedTransform] = m4.identity();
       },
@@ -3887,7 +3889,7 @@ void main() {
     {
       opcode: "matStartWithExternal",
       blockType: BlockType.COMMAND,
-      text: "start with [SOURCE]",
+      text: Scratch.translate("start with [SOURCE]"),
       arguments: {
         SOURCE: {
           type: ArgumentType.STRING,
@@ -3903,7 +3905,7 @@ void main() {
     {
       opcode: "matStartWithSavedIn",
       blockType: BlockType.COMMAND,
-      text: "start with saved in [SRCLIST] at [POS]",
+      text: Scratch.translate("start with saved in [SRCLIST] at [POS]"),
       arguments: {
         SRCLIST: {
           type: ArgumentType.STRING,
@@ -3932,7 +3934,7 @@ void main() {
     {
       opcode: "matMove",
       blockType: BlockType.COMMAND,
-      text: "move X: [X] Y: [Y] Z: [Z]",
+      text: Scratch.translate("move X: [X] Y: [Y] Z: [Z]"),
       arguments: {
         X: {
           type: ArgumentType.NUMBER,
@@ -3956,7 +3958,7 @@ void main() {
     {
       opcode: "matRotate",
       blockType: BlockType.COMMAND,
-      text: "rotate around [AXIS] by [ANGLE] degrees",
+      text: Scratch.translate("rotate around [AXIS] by [ANGLE] degrees"),
       arguments: {
         AXIS: {
           type: ArgumentType.STRING,
@@ -3981,7 +3983,7 @@ void main() {
     {
       opcode: "matScale",
       blockType: BlockType.COMMAND,
-      text: "scale X: [X] Y: [Y] Z: [Z]",
+      text: Scratch.translate("scale X: [X] Y: [Y] Z: [Z]"),
       arguments: {
         X: {
           type: ArgumentType.NUMBER,
@@ -4008,7 +4010,7 @@ void main() {
     {
       opcode: "matWrapper",
       blockType: BlockType.CONDITIONAL,
-      text: "wrapper",
+      text: Scratch.translate("wrapper"),
       def: function (_, util) {
         if (util.stackFrame.undoWrapper) {
           util.stackFrame.undoWrapper = false;
@@ -4024,7 +4026,7 @@ void main() {
     {
       opcode: "matSaveInto",
       blockType: BlockType.COMMAND,
-      text: "save into [DSTLIST] at [POS]",
+      text: Scratch.translate("save into [DSTLIST] at [POS]"),
       arguments: {
         DSTLIST: {
           type: ArgumentType.STRING,
@@ -4058,7 +4060,7 @@ void main() {
     {
       opcode: "matReset",
       blockType: BlockType.COMMAND,
-      text: "reset transformation's [COMPONENT]",
+      text: Scratch.translate("reset transformation's [COMPONENT]"),
       arguments: {
         COMPONENT: {
           type: ArgumentType.STRING,
@@ -4089,12 +4091,12 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Manual transformations",
+      text: Scratch.translate("Manual transformations"),
     },
     {
       opcode: "matTransform",
       blockType: BlockType.COMMAND,
-      text: "transform X: [X] Y: [Y] Z: [Z]",
+      text: Scratch.translate("transform X: [X] Y: [Y] Z: [Z]"),
       arguments: {
         X: {
           type: ArgumentType.NUMBER,
@@ -4115,7 +4117,7 @@ void main() {
     {
       opcode: "matTransformFromTo",
       blockType: BlockType.COMMAND,
-      text: "transform X: [X] Y: [Y] Z: [Z] from [FROM] to [TO]",
+      text: Scratch.translate("transform X: [X] Y: [Y] Z: [Z] from [FROM] to [TO]"),
       arguments: {
         X: {
           type: ArgumentType.NUMBER,
@@ -4192,7 +4194,7 @@ void main() {
     {
       opcode: "matTransformFromToDir",
       blockType: BlockType.COMMAND,
-      text: "transform direction X: [X] Y: [Y] Z: [Z] from [FROM] to [TO]",
+      text: Scratch.translate("transform direction X: [X] Y: [Y] Z: [Z] from [FROM] to [TO]"),
       arguments: {
         X: {
           type: ArgumentType.NUMBER,
@@ -4262,7 +4264,7 @@ void main() {
     {
       opcode: "matTransformResult",
       blockType: BlockType.REPORTER,
-      text: "transformed [AXIS]",
+      text: Scratch.translate("transformed [AXIS]"),
       disableMonitor: true,
       arguments: {
         AXIS: {
@@ -4278,12 +4280,12 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Rendering into textures",
+      text: Scratch.translate("Rendering into textures"),
     },
     {
       opcode: "renderToStage",
       blockType: BlockType.COMMAND,
-      text: "render to stage",
+      text: Scratch.translate("render to stage"),
       def: function () {
         canvasRenderTarget.setAsRenderTarget();
       },
@@ -4291,7 +4293,7 @@ void main() {
     {
       opcode: "renderToTexture",
       blockType: BlockType.COMMAND,
-      text: "render to texture of [NAME]",
+      text: Scratch.translate("render to texture of [NAME]"),
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -4309,7 +4311,7 @@ void main() {
     {
       opcode: "renderToCubeTexture",
       blockType: BlockType.COMMAND,
-      text: "render to cube texture [SIDE] of [NAME]",
+      text: Scratch.translate("render to cube texture [SIDE] of [NAME]"),
       arguments: {
         SIDE: {
           type: ArgumentType.STRING,
@@ -4340,7 +4342,7 @@ void main() {
     {
       opcode: "readRenderTarget",
       blockType: BlockType.COMMAND,
-      text: "read current render target into [DSTLIST]",
+      text: Scratch.translate("read current render target into [DSTLIST]"),
       arguments: {
         DSTLIST: {
           type: ArgumentType.STRING,
@@ -4365,7 +4367,7 @@ void main() {
     {
       opcode: "renderTargetInfo",
       blockType: BlockType.REPORTER,
-      text: "render target [PROPERTY]",
+      text: Scratch.translate("render target [PROPERTY]"),
       allowDropAnywhere: true,
       disableMonitor: true,
       arguments: {
@@ -4421,7 +4423,7 @@ void main() {
     {
       opcode: "setRenderTargetBox",
       blockType: BlockType.COMMAND,
-      text: "set [BOXTYPE] to X1:[X1] Y1:[Y1] X2:[X2] Y2:[Y2]",
+      text: Scratch.translate("set [BOXTYPE] to X1:[X1] Y1:[Y1] X2:[X2] Y2:[Y2]"),
       arguments: {
         BOXTYPE: {
           type: ArgumentType.STRING,
@@ -4469,7 +4471,7 @@ void main() {
     {
       opcode: "clearRenderTargetBox",
       blockType: BlockType.COMMAND,
-      text: "clear [BOXTYPE]",
+      text: Scratch.translate("clear [BOXTYPE]"),
       arguments: {
         BOXTYPE: {
           type: ArgumentType.STRING,
@@ -4492,12 +4494,12 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Tinting and fog",
+      text: Scratch.translate("Tinting and fog"),
     },
     {
       opcode: "setGlobalColor",
       blockType: BlockType.COMMAND,
-      text: "set global color [OPERATION] R: [RED] G: [GREEN] B: [BLUE] A: [ALPHA]",
+      text: Scratch.translate("set global color [OPERATION] R: [RED] G: [GREEN] B: [BLUE] A: [ALPHA]"),
       arguments: {
         OPERATION: {
           type: ArgumentType.STRING,
@@ -4534,7 +4536,7 @@ void main() {
     {
       opcode: "setFogEnabled",
       blockType: BlockType.COMMAND,
-      text: "turn fog [STATE]",
+      text: Scratch.translate("turn fog [STATE]"),
       arguments: {
         STATE: {
           type: ArgumentType.STRING,
@@ -4548,7 +4550,7 @@ void main() {
     {
       opcode: "setFogColor",
       blockType: BlockType.COMMAND,
-      text: "set fog color R: [RED] G: [GREEN] B: [BLUE]",
+      text: Scratch.translate("set fog color R: [RED] G: [GREEN] B: [BLUE]"),
       arguments: {
         RED: {
           type: ArgumentType.NUMBER,
@@ -4574,7 +4576,7 @@ void main() {
     {
       opcode: "setFogDistance",
       blockType: BlockType.COMMAND,
-      text: "set fog distance near: [NEAR] far: [FAR]",
+      text: Scratch.translate("set fog distance near: [NEAR] far: [FAR]"),
       arguments: {
         NEAR: {
           type: ArgumentType.NUMBER,
@@ -4594,7 +4596,7 @@ void main() {
     {
       opcode: "setFogPosition",
       blockType: BlockType.COMMAND,
-      text: "set fog [SPACE] origin at X: [X] Y: [Y] Z: [Z]",
+      text: Scratch.translate("set fog [SPACE] origin at X: [X] Y: [Y] Z: [Z]"),
       arguments: {
         SPACE: {
           type: ArgumentType.STRING,
@@ -4623,18 +4625,18 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Resolution changes",
+      text: Scratch.translate("Resolution changes"),
     },
     {
       opcode: "whenCanvasResized",
       blockType: BlockType.EVENT,
-      text: "when resolution changes",
+      text: Scratch.translate("when resolution changes"),
       isEdgeActivated: false,
     },
     {
       opcode: "canvasWidth",
       blockType: BlockType.REPORTER,
-      text: "stage width",
+      text: Scratch.translate("stage width"),
       def: function () {
         return canvas.width;
       },
@@ -4642,7 +4644,7 @@ void main() {
     {
       opcode: "canvasHeight",
       blockType: BlockType.REPORTER,
-      text: "stage height",
+      text: Scratch.translate("stage height"),
       def: function () {
         return canvas.height;
       },
@@ -4651,7 +4653,7 @@ void main() {
 
   const extInfo = {
     id: extensionId,
-    name: "Simple 3D",
+    name: Scratch.translate("Simple 3D"),
     color1: "#5CB1D6",
     color2: "#47A8D1",
     color3: "#2E8EB8",
@@ -4685,33 +4687,58 @@ void main() {
       onOff: {
         acceptReporters: true,
         items: [
-          { text: "on", value: "true" },
-          { text: "off", value: "false" },
+          { text: Scratch.translate("on"), value: "true" },
+          { text: Scratch.translate("off"), value: "false" },
         ],
       },
       meshProperties: {
         acceptReporters: false,
-        items: ["exists", ...Object.keys(MeshPropFns)],
+        items: [{text: Scratch.translate("exists"), value: "exists"}, ...Object.keys(MeshPropFns)],
       },
       axis: {
         acceptReporters: false,
-        items: ["X", "Y", "Z"],
+        items: [{text: Scratch.translate("X"), value: "X"}, {text: Scratch.translate("Y"), value: "Y"}, {text: Scratch.translate("Z"), value: "Z"}],
       },
       textureWrap: {
         acceptReporters: false,
-        items: ["clamp to edge", "repeat"],
+        items: [{text: Scratch.translate("clamp to edge"), value: "clamp to edge"}, {text: Scratch.translate("repeat"), value: "repeat"}],
       },
       textureFilter: {
         acceptReporters: false,
-        items: ["pixelated", "blurred"],
+        items: [{text: Scratch.translate("pixelated"), value: "pixelated"}, {text: Scratch.translate("blurred"), value: "blurred"}],
       },
       textureMipmapping: {
         acceptReporters: false,
-        items: ["off", "sharp transitions", "smooth transitions"],
+        items: [{text: Scratch.translate("off"), value: "off"}, {text: Scratch.translate("sharp transitions"), value: "sharp transitions"}, {text: Scratch.translate("smooth transitions"), value: "smooth transitions"}],
       },
       cubeSide: {
         acceptReporters: true,
-        items: ["X+", "X-", "Y+", "Y-", "Z+", "Z-"],
+        items: [
+          {
+            text: Scratch.translate("X+"),
+            value: "X+"
+          },
+          {
+            text: Scratch.translate("X-"),
+            value: "X-"
+          },
+          {
+            text: Scratch.translate("Y+"),
+            value: "Y+",
+          },
+          {
+            text: Scratch.translate("Y-"),
+            value: "Y-",
+          },
+          {
+            text: Scratch.translate("Z+"),
+            value: "Z+",
+          },
+          {
+            text: Scratch.translate("Z-"),
+            value: "Z-",
+          },
+        ],
       },
       blending: {
         acceptReporters: true,
@@ -4723,119 +4750,177 @@ void main() {
       },
       skinningTransforms: {
         acceptReporters: true,
-        items: ["original", "current"],
+        items: [{text: Scratch.translate("original"), value: "original"}, {text: Scratch.translate("current"), value: "current"}],
       },
       renderTransforms: {
         acceptReporters: false,
         items: [
           {
-            text: "to projected from view space",
+            text: Scratch.translate("to projected from view space"),
             value: "viewToProjected",
           },
           {
-            text: "to view space from world space",
+            text: Scratch.translate("to view space from world space"),
             value: "worldToView",
           },
           {
-            text: "to world space from model space",
+            text: Scratch.translate("to world space from model space"),
             value: "modelToWorld",
           },
           {
-            text: "importing from file",
+            text: Scratch.translate("importing from file"),
             value: "import",
           },
           {
-            text: "custom",
+            text: Scratch.translate("custom"),
             value: "custom",
           },
         ],
       },
       matComponent: {
         acceptReporters: true,
-        items: ["offset", "rotation"],
+        items: [{text: Scratch.translate("offset"), value: "offset"}, {text: Scratch.translate("rotation"), value: "rotation"}],
       },
       vectorTransforms: {
         acceptReporters: false,
         items: [
-          "projected (scratch units)",
-          "projected",
-          "view space",
-          "world space",
-          "model space",
+          {
+            text: Scratch.translate("projected (scratch units"),
+            value: "projected (scratch units)"
+          },
+          {
+            text: Scratch.translate("projected"),
+            value: "projected"
+          },
+          {
+            text: Scratch.translate("view space"),
+            value: "view space"
+          },
+          {
+            text: Scratch.translate("world space"),
+            value: "world space"
+          },
+          {
+            text: Scratch.translate("model space"),
+            value: "model space"
+          },
         ],
       },
       vectorTransformsMin1: {
         acceptReporters: false,
-        items: ["projected", "view space", "world space", "model space"],
+        items: [
+          {
+          text: Scratch.translate("projected"),
+          value: "projected"
+          },
+          {
+            text: Scratch.translate("view space"),
+            value: "view space"
+          },
+          {
+            text: Scratch.translate("world space"),
+            value: "world space"
+          },
+          {
+            text: Scratch.translate("model space"),
+            value: "model space"
+          },
+        ],
       },
       vectorTransformsMin2: {
         acceptReporters: false,
-        items: ["view space", "world space", "model space"],
+        items: [
+          {
+            text: Scratch.translate("view space"),
+            value: "view space"
+          },
+          {
+            text: Scratch.translate("world space"),
+            value: "world space"
+          },
+          {
+            text: Scratch.translate("model space"),
+            value: "model space"
+          },
+        ],
       },
       fogSpace: {
         acceptReporters: false,
-        items: ["view space", "world space", "model space"],
+        items: [
+          {
+            text: Scratch.translate("view space"),
+            value: "view space"
+          },
+          {
+            text: Scratch.translate("world space"),
+            value: "world space"
+          },
+          {
+            text: Scratch.translate("model space"),
+            value: "model space"
+          },
+        ],
       },
       renderTargetProp: {
         acceptReporters: false,
-        items: ["width", "height"],
+        items: [{text: Scratch.translate("width"), value: "width"}, {text: Scratch.translate("height"), value: "height"}],
       },
       filetype: {
         acceptReporters: false,
-        items: ["obj mtl", "off"],
+        items: [{text: Scratch.translate("obj mtl"), value: "obj mtl"}, {text: Scratch.translate("off"), value: "off"}],
       },
       globalColor: {
         acceptReporters: false,
-        items: ["multiplier", "adder"],
+        items: [{text: Scratch.translate("multiplier"), value: "multiplier"}, {text: Scratch.translate("adder"), value: "adder"}],
       },
       alphaTestMode: {
         acceptReporters: false,
         items: [
-          { text: "preserve opacity", value: "false" },
-          { text: "make opaque", value: "true" },
+          { text: Scratch.translate("preserve opacity"), value: "false" },
+          { text: Scratch.translate("make opaque"), value: "true" },
         ],
       },
       instanceProperty: {
         acceptReporters: false,
         items: [
-          "transforms",
-          "XY positions",
-          "XYZ positions",
-          "XYZ positions and sizes",
-          "RGB colors",
-          "RGBA colors",
-          "UV offsets",
-          "UV offsets and sizes",
+          { text: Scratch.translate("transforms"), value: "transforms" },
+          { text: Scratch.translate("XY positions"), value: "XY positions" },
+          { text: Scratch.translate("XYZ positions"), value: "XYZ positions" },
+          { text: Scratch.translate("XYZ positions and sizes"), value: "XYZ positions and sizes" },
+          { text: Scratch.translate("RGB colors"), value: "RGB colors" },
+          { text: Scratch.translate("RGBA colors"), value: "RGBA colors" },
+          { text: Scratch.translate("UV offsets"), value: "UV offsets" },
+          { text: Scratch.translate("UV offsets and sizes"), value: "UV offsets and sizes" },
         ],
       },
       interleavedProperty: {
         acceptReporters: false,
         items: [
-          "XY positions",
-          "XYZ positions",
-          "RGB colors",
-          "RGBA colors",
-          "UV texture coordinates",
-          "UVW texture coordinates",
+          { text: Scratch.translate("XY positions"), value: "XY positions" },
+          { text: Scratch.translate("XYZ positions"), value: "XYZ positions" },
+          { text: Scratch.translate("RGB colors"), value: "RGB colors" },
+          { text: Scratch.translate("RGBA colors"), value: "RGBA colors" },
+          { text: Scratch.translate("UV texture coordinates"), value: "UV texture coordinates" },
+          { text: Scratch.translate("UVW texture coordinates"), value: "UVW texture coordinates" },
         ],
       },
       renderTargetProperty: {
         acceptReporters: false,
         items: [
-          "mesh name",
-          "width",
-          "height",
-          "aspect ratio",
-          "depth test",
-          "depth write",
-          "has depth storage",
-          "image as data URI",
-          "is valid for being drawn to",
-          "has viewport box",
-          "has clipping box",
-          "has readback box",
+          { text: Scratch.translate("mesh name"), value: "mesh name" },
+          { text: Scratch.translate("width"), value: "width" },
+          { text: Scratch.translate("height"), value: "height" },
+          { text: Scratch.translate("aspect ratio"), value: "aspect ratio" },
+          { text: Scratch.translate("depth test"), value: "depth test" },
+          { text: Scratch.translate("depth write"), value: "depth write" },
+          { text: Scratch.translate("has depth storage"), value: "has depth storage" },
+          { text: Scratch.translate("image as data URI"), value: "image as data URI" },
+          { text: Scratch.translate("is valid for being drawn to"), value: "is valid for being drawn to" },
+          { text: Scratch.translate("has viewport box"), value: "has viewport box" },
+          { text: Scratch.translate("has clipping box"), value: "has clipping box" },
+          { text: Scratch.translate("has readback box"), value: "has readback box" },
         ],
-      },
+      },      
       powersOfTwo: {
         acceptReporters: true,
         items: ["1", "2", "4", "8", "16"],
@@ -4846,23 +4931,37 @@ void main() {
       },
       directions: {
         acceptReporters: true,
-        items: ["up", "down", "left", "right", "x step"],
+        items: [
+          { text: Scratch.translate("up"), value: "up" },
+          { text: Scratch.translate("down"), value: "down" },
+          { text: Scratch.translate("left"), value: "left" },
+          { text: Scratch.translate("right"), value: "right" },
+          { text: Scratch.translate("x step"), value: "x step" },
+        ],
       },
       bufferUsage: {
         acceptReporters: true,
-        items: ["rarely", "frequently fully", "frequently partially"],
+        items: [
+          { text: Scratch.translate("rarely"), value: "rarely" },
+          { text: Scratch.translate("frequently fully"), value: "frequently fully" },
+          { text: Scratch.translate("frequently partially"), value: "frequently partially" },
+        ],
       },
       multiSampleInterpolation: {
         acceptReporters: true,
         items: [
-          "once at pixel center",
-          "once at midpoint of covered samples",
-          "separately for each sample",
+          { text: Scratch.translate("once at pixel center"), value: "once at pixel center" },
+          { text: Scratch.translate("once at midpoint of covered samples"), value: "once at midpoint of covered samples" },
+          { text: Scratch.translate("separately for each sample"), value: "separately for each sample" },
         ],
       },
       boxType: {
         acceptReporters: false,
-        items: ["viewport box", "clipping box", "readback box"],
+        items: [
+          { text: Scratch.translate("viewport box"), value: "viewport box" },
+          { text: Scratch.translate("clipping box"), value: "clipping box" },
+          { text: Scratch.translate("readback box"), value: "readback box" },
+        ],
       },
     },
   };
