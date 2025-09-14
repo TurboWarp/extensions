@@ -15,7 +15,7 @@
       getInfo() {
         return {
           id: "htmlalert",
-          name: "modals",
+          name: Scratch.translate("Modals"),
           color1: "#a3c0e1",
           blocks: [
             {
