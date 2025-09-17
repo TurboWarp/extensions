@@ -18,7 +18,7 @@
     getInfo() {
       return {
         id: "modals",
-        name: "Modals",
+        name: Scratch.translate("Modals"),
         color1: "#a01c1c",
         color2: "#861515",
         color3: "#6d1212",
