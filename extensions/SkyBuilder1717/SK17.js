@@ -1,4 +1,4 @@
-// Name: SK17
+// Name: Encryption
 // ID: SkyBuilder1717Encryption
 // Description: Adds new encryption format: SK17. Useful for saving games and loading private data in compiled games.
 // By: SkyBuilder1717
