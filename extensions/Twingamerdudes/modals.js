@@ -26,7 +26,9 @@
           {
             opcode: "showModal",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("show modal [TEXT] with the background [COLOR] and text color [TCOLOR]"),
+            text: Scratch.translate(
+              "show modal [TEXT] with the background [COLOR] and text color [TCOLOR]"
+            ),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
