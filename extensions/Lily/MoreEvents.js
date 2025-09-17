@@ -236,7 +236,9 @@
       });
 
       runtime.on("RUNTIME_UNPAUSED", () => {
-        runtime.once("BEFORE_EXECUTE", () => { runtime.startHats("lmsMoreEvents_whenProjectUnPaused") });
+        runtime.once("BEFORE_EXECUTE", () => {
+          runtime.startHats("lmsMoreEvents_whenProjectUnPaused");
+        });
       });
     }
 
