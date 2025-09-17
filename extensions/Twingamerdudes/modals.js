@@ -177,7 +177,7 @@
     }
 
     whenButtonPressed(args) {
-      if (buttonPressed == args.BUTTON) {
+      if (buttonPressed == Scratch.Cast.toString(args.BUTTON)) {
         buttonPressed = "";
         return true;
       }
