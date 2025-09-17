@@ -143,18 +143,21 @@
        * Credit is appreciated.
        */
       // If Scratch.gui is not defined then we are (most likely) packaged
-      if (Scratch.gui) Scratch.gui.getBlockly().then(ScratchBlocks => {
-        const originalCheck =
-          ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter;
+      if (Scratch.gui)
+        Scratch.gui.getBlockly().then((ScratchBlocks) => {
+          const originalCheck =
+            ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter;
 
-        ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter = function (
-          block
-        ) {
-          const result = originalCheck(block);
-          if (result) return result;
-          return block.isShadow() && regeneratedReporters.includes(block.type);
-        };
-      });
+          ScratchBlocks.scratchBlocksUtils.isShadowArgumentReporter = function (
+            block
+          ) {
+            const result = originalCheck(block);
+            if (result) return result;
+            return (
+              block.isShadow() && regeneratedReporters.includes(block.type)
+            );
+          };
+        });
 
       /**
        * Override to add in the "output" and "outputShape"
