@@ -1,7 +1,7 @@
 // Name: BigInt
 // ID: skyhigh173BigInt
 // Description: Math blocks that work on infinitely large integers (no decimals).
-// By: Skyhigh173
+// By: Skyhigh173 <https://scratch.mit.edu/users/Skyhigh173/>
 // License: MIT
 // Context: BigInt is short for "Big Integer" which can be infinitely big. "number" refers to normal numbers that have limits.
 
@@ -57,6 +57,7 @@
         name: Scratch.translate("BigInt"),
         color1: "#59C093",
         blocks: [
+          /* eslint-disable extension/should-translate */
           {
             opcode: "from",
             blockType: Scratch.BlockType.REPORTER,
@@ -371,6 +372,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
         ],
         menus: {
           op: {

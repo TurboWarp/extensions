@@ -7,7 +7,7 @@
     getInfo() {
       return {
         id: "nonameawacnnumber",
-        name: "中文数字",
+        name: Scratch.translate("Chinese Numbers"),
         color1: "#cb0000",
         color2: "#a20000",
         color3: "#a20000",
@@ -16,7 +16,9 @@
             opcode: "CN_number",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: "中文数字 [a] 大写 [u]",
+            text: Scratch.translate(
+              "convert [a] to chinese number using [u] numerals"
+            ),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -34,11 +36,11 @@
             acceptReporters: true,
             items: [
               {
-                text: "关闭",
+                text: Scratch.translate("standard"),
                 value: "0",
               },
               {
-                text: "打开",
+                text: Scratch.translate("financial"),
                 value: "1",
               },
             ],

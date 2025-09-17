@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.0.1
+// Version: 1.2.2
 
 (function (Scratch) {
   "use strict";
@@ -11,7 +11,8 @@
   /*
    * A modified version of m4 library based on one of the earlier lessons on webglfundamentals.org
    * All lessons can be found on https://github.com/gfxfundamentals/webgl-fundamentals/tree/master
-   * licensed under BSD 3-Clause license
+   * licensed under BSD 3-Clause license.
+   * Only this section of the code is BSD 3-Clause. The rest of the extension is MPL-2.0.
    */
 
   /*
@@ -66,66 +67,111 @@
         0, 0, b, 1
       ];
     },
-    translation(tx, ty, tz) {
-      return [
-        1,  0,  0,  0,
-        0,  1,  0,  0,
-        0,  0,  1,  0,
-        tx, ty, tz, 1,
-      ];
-    },
-    xRotation(angleInRadians) {
-      const c = Math.cos(angleInRadians);
-      const s = Math.sin(angleInRadians);
-      return [
-        1, 0, 0, 0,
-        0, c, s, 0,
-        0, -s, c, 0,
-        0, 0, 0, 1,
-      ];
-    },
-    yRotation(angleInRadians) {
-      const c = Math.cos(angleInRadians);
-      const s = Math.sin(angleInRadians);
-      return [
-        c, 0, -s, 0,
-        0, 1, 0, 0,
-        s, 0, c, 0,
-        0, 0, 0, 1,
-      ];
-    },
-    zRotation(angleInRadians) {
-      const c = Math.cos(angleInRadians);
-      const s = Math.sin(angleInRadians);
-      return [
-        c,  s, 0, 0,
-        -s, c, 0, 0,
-        0,  0, 1, 0,
-        0,  0, 0, 1,
-      ];
-    },
-    scaling(sx, sy, sz) {
-      return [
-        sx, 0,  0,  0,
-        0, sy,  0,  0,
-        0,  0, sz,  0,
-        0,  0,  0,  1,
-      ];
-    },
     translate(m, tx, ty, tz) {
-      return m4.multiply(m, m4.translation(tx, ty, tz));
+      return [
+        m[0],
+        m[1],
+        m[2],
+        m[3],
+        m[4],
+        m[5],
+        m[6],
+        m[7],
+        m[8],
+        m[9],
+        m[10],
+        m[11],
+        tx * m[0] + ty * m[4] + tz * m[8] + m[12],
+        tx * m[1] + ty * m[5] + tz * m[9] + m[13],
+        tx * m[2] + ty * m[6] + tz * m[10] + m[14],
+        tx * m[3] + ty * m[7] + tz * m[11] + m[15],
+      ];
     },
     xRotate(m, angleInRadians) {
-      return m4.multiply(m, m4.xRotation(angleInRadians));
+      const c = Math.cos(angleInRadians);
+      const s = Math.sin(angleInRadians);
+      return [
+        m[0],
+        m[1],
+        m[2],
+        m[3],
+        c * m[4] + s * m[8],
+        c * m[5] + s * m[9],
+        c * m[6] + s * m[10],
+        c * m[7] + s * m[11],
+        c * m[8]  - s * m[4],
+        c * m[9]  - s * m[5],
+        c * m[10] - s * m[6],
+        c * m[11] - s * m[7],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     yRotate(m, angleInRadians) {
-      return m4.multiply(m, m4.yRotation(angleInRadians));
+      const c = Math.cos(angleInRadians);
+      const s = Math.sin(angleInRadians);
+      return [
+        c * m[0] - s * m[8],
+        c * m[1] - s * m[9],
+        c * m[2] - s * m[10],
+        c * m[3] - s * m[11],
+        m[4],
+        m[5],
+        m[6],
+        m[7],
+        s * m[0] + c * m[8],
+        s * m[1] + c * m[9],
+        s * m[2] + c * m[10],
+        s * m[3] + c * m[11],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     zRotate(m, angleInRadians) {
-      return m4.multiply(m, m4.zRotation(angleInRadians));
+      const c = Math.cos(angleInRadians);
+      const s = Math.sin(angleInRadians);
+      return [
+        c * m[0] + s * m[4],
+        c * m[1] + s * m[5],
+        c * m[2] + s * m[6],
+        c * m[3] + s * m[7],
+        c * m[4] - s * m[0],
+        c * m[5] - s * m[1],
+        c * m[6] - s * m[2],
+        c * m[7] - s * m[3],
+        m[8],
+        m[9],
+        m[10],
+        m[11],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     scale(m, sx, sy, sz) {
-      return m4.multiply(m, m4.scaling(sx, sy, sz));
+      return [
+        sx * m[0],
+        sx * m[1],
+        sx * m[2],
+        sx * m[3],
+        sy * m[4],
+        sy * m[5],
+        sy * m[6],
+        sy * m[7],
+        sz * m[8],
+        sz * m[9],
+        sz * m[10],
+        sz * m[11],
+        m[12],
+        m[13],
+        m[14],
+        m[15],
+      ];
     },
     multiply(a, b) {
       const a00 = a[0 * 4 + 0];
@@ -196,10 +242,10 @@
       const a31 = a[3 * 4 + 1];
       const a32 = a[3 * 4 + 2];
       const a33 = a[3 * 4 + 3];
-      const b00 = b[0 * 4 + 0];
-      const b01 = b[0 * 4 + 1];
-      const b02 = b[0 * 4 + 2];
-      const b03 = b[0 * 4 + 3];
+      const b00 = b[0];
+      const b01 = b[1];
+      const b02 = b[2];
+      const b03 = b[3];
       return [
         b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30,
         b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31,
@@ -224,23 +270,24 @@
       ];
     },
     inverse: function(m) {
-      const inv = m4.zero();
-      inv[0]  =  m[5] * m[10] * m[15] - m[5]  * m[11] * m[14] - m[9]  * m[6] * m[15] + m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10];
-      inv[4]  = -m[4] * m[10] * m[15] + m[4]  * m[11] * m[14] + m[8]  * m[6] * m[15] - m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10];
-      inv[8]  =  m[4] * m[9]  * m[15] - m[4]  * m[11] * m[13] - m[8]  * m[5] * m[15] + m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9];
-      inv[12] = -m[4] * m[9]  * m[14] + m[4]  * m[10] * m[13] + m[8]  * m[5] * m[14] - m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[9];
-      inv[1]  = -m[1] * m[10] * m[15] + m[1]  * m[11] * m[14] + m[9]  * m[2] * m[15] - m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10];
-      inv[5]  =  m[0] * m[10] * m[15] - m[0]  * m[11] * m[14] - m[8]  * m[2] * m[15] + m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10];
-      inv[9]  = -m[0] * m[9]  * m[15] + m[0]  * m[11] * m[13] + m[8]  * m[1] * m[15] - m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9];
-      inv[13] =  m[0] * m[9]  * m[14] - m[0]  * m[10] * m[13] - m[8]  * m[1] * m[14] + m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9];
-      inv[2]  =  m[1] * m[6]  * m[15] - m[1]  * m[7]  * m[14] - m[5]  * m[2] * m[15] + m[5] * m[3] * m[14] + m[13] * m[2] * m[7]  - m[13] * m[3] * m[6];
-      inv[6]  = -m[0] * m[6]  * m[15] + m[0]  * m[7]  * m[14] + m[4]  * m[2] * m[15] - m[4] * m[3] * m[14] - m[12] * m[2] * m[7]  + m[12] * m[3] * m[6];
-      inv[10] =  m[0] * m[5]  * m[15] - m[0]  * m[7]  * m[13] - m[4]  * m[1] * m[15] + m[4] * m[3] * m[13] + m[12] * m[1] * m[7]  - m[12] * m[3] * m[5];
-      inv[14] = -m[0] * m[5]  * m[14] + m[0]  * m[6]  * m[13] + m[4]  * m[1] * m[14] - m[4] * m[2] * m[13] - m[12] * m[1] * m[6]  + m[12] * m[2] * m[5];
-      inv[3]  = -m[1] * m[6]  * m[11] + m[1]  * m[7]  * m[10] + m[5]  * m[2] * m[11] - m[5] * m[3] * m[10] - m[9]  * m[2] * m[7]  + m[9]  * m[3] * m[6];
-      inv[7]  =  m[0] * m[6]  * m[11] - m[0]  * m[7]  * m[10] - m[4]  * m[2] * m[11] + m[4] * m[3] * m[10] + m[8]  * m[2] * m[7]  - m[8]  * m[3] * m[6];
-      inv[11] = -m[0] * m[5]  * m[11] + m[0]  * m[7]  * m[9]  + m[4]  * m[1] * m[11] - m[4] * m[3] * m[9]  - m[8]  * m[1] * m[7]  + m[8]  * m[3] * m[5];
-      inv[15] =  m[0] * m[5]  * m[10] - m[0]  * m[6]  * m[9]  - m[4]  * m[1] * m[10] + m[4] * m[2] * m[9]  + m[8]  * m[1] * m[6]  - m[8]  * m[2] * m[5];
+      const inv = [
+         m[5] * m[10] * m[15] - m[5]  * m[11] * m[14] - m[9]  * m[6] * m[15] + m[9] * m[7] * m[14] + m[13] * m[6] * m[11] - m[13] * m[7] * m[10],
+        -m[1] * m[10] * m[15] + m[1]  * m[11] * m[14] + m[9]  * m[2] * m[15] - m[9] * m[3] * m[14] - m[13] * m[2] * m[11] + m[13] * m[3] * m[10],
+         m[1] * m[6]  * m[15] - m[1]  * m[7]  * m[14] - m[5]  * m[2] * m[15] + m[5] * m[3] * m[14] + m[13] * m[2] * m[7]  - m[13] * m[3] * m[6],
+        -m[1] * m[6]  * m[11] + m[1]  * m[7]  * m[10] + m[5]  * m[2] * m[11] - m[5] * m[3] * m[10] - m[9]  * m[2] * m[7]  + m[9]  * m[3] * m[6],
+        -m[4] * m[10] * m[15] + m[4]  * m[11] * m[14] + m[8]  * m[6] * m[15] - m[8] * m[7] * m[14] - m[12] * m[6] * m[11] + m[12] * m[7] * m[10],
+         m[0] * m[10] * m[15] - m[0]  * m[11] * m[14] - m[8]  * m[2] * m[15] + m[8] * m[3] * m[14] + m[12] * m[2] * m[11] - m[12] * m[3] * m[10],
+        -m[0] * m[6]  * m[15] + m[0]  * m[7]  * m[14] + m[4]  * m[2] * m[15] - m[4] * m[3] * m[14] - m[12] * m[2] * m[7]  + m[12] * m[3] * m[6],
+         m[0] * m[6]  * m[11] - m[0]  * m[7]  * m[10] - m[4]  * m[2] * m[11] + m[4] * m[3] * m[10] + m[8]  * m[2] * m[7]  - m[8]  * m[3] * m[6],
+         m[4] * m[9]  * m[15] - m[4]  * m[11] * m[13] - m[8]  * m[5] * m[15] + m[8] * m[7] * m[13] + m[12] * m[5] * m[11] - m[12] * m[7] * m[9],
+        -m[0] * m[9]  * m[15] + m[0]  * m[11] * m[13] + m[8]  * m[1] * m[15] - m[8] * m[3] * m[13] - m[12] * m[1] * m[11] + m[12] * m[3] * m[9],
+         m[0] * m[5]  * m[15] - m[0]  * m[7]  * m[13] - m[4]  * m[1] * m[15] + m[4] * m[3] * m[13] + m[12] * m[1] * m[7]  - m[12] * m[3] * m[5],
+        -m[0] * m[5]  * m[11] + m[0]  * m[7]  * m[9]  + m[4]  * m[1] * m[11] - m[4] * m[3] * m[9]  - m[8]  * m[1] * m[7]  + m[8]  * m[3] * m[5],
+        -m[4] * m[9]  * m[14] + m[4]  * m[10] * m[13] + m[8]  * m[5] * m[14] - m[8] * m[6] * m[13] - m[12] * m[5] * m[10] + m[12] * m[6] * m[9],
+         m[0] * m[9]  * m[14] - m[0]  * m[10] * m[13] - m[8]  * m[1] * m[14] + m[8] * m[2] * m[13] + m[12] * m[1] * m[10] - m[12] * m[2] * m[9],
+        -m[0] * m[5]  * m[14] + m[0]  * m[6]  * m[13] + m[4]  * m[1] * m[14] - m[4] * m[2] * m[13] - m[12] * m[1] * m[6]  + m[12] * m[2] * m[5],
+         m[0] * m[5]  * m[10] - m[0]  * m[6]  * m[9]  - m[4]  * m[1] * m[10] + m[4] * m[2] * m[9]  + m[8]  * m[1] * m[6]  - m[8]  * m[2] * m[5]
+      ];
       const det = m[0] * inv[0] + m[1] * inv[4] + m[2] * inv[8] + m[3] * inv[12];
       if (det == 0) return m4.zero();
       const invDet = 1 / det;
@@ -275,15 +322,44 @@
   class RenderTarget {
     constructor() {
       this.destroyed = false;
+      this.viewport = null;
+      this.scissors = null;
+      this.readarea = null;
     }
     setAsRenderTarget() {
       currentRenderTarget = this;
       gl.bindFramebuffer(gl.FRAMEBUFFER, this.getFramebuffer());
       this.updateViewport();
       this.updateDepth();
+      this.updateScissorsEnabled();
+    }
+    updateScissorsEnabled() {
+      if (this.scissors) {
+        gl.enable(gl.SCISSOR_TEST);
+      } else {
+        gl.disable(gl.SCISSOR_TEST);
+      }
     }
     updateViewport() {
-      gl.viewport(0, 0, this.width, this.height);
+      const a = this.viewport;
+      const b = this.scissors;
+      if (a) {
+        gl.viewport(a.x, a.y, a.w, a.h);
+      } else {
+        gl.viewport(0, 0, this.width, this.height);
+      }
+      if (b) {
+        gl.scissor(b.x, b.y, b.w, b.h);
+      }
+    }
+    getReadarea() {
+      if (this.readarea) return this.readarea;
+      return {
+        x: 0,
+        y: 0,
+        w: this.width,
+        h: this.height,
+      };
     }
     updateDepth() {
       if (this.depthTest == "everything" && !this.depthWrite) {
@@ -634,6 +710,7 @@
     }
     checkIfValid() {
       if (currentRenderTarget.getMesh() == this) return false;
+      if (!this.buffers.position) return false;
       let length = -1;
       let lengthIns = -1;
       for (const name in this.buffers) {
@@ -648,6 +725,25 @@
       }
       if (length == -1) return false;
       return true;
+    }
+    estimateListVRAM() {
+      let sum = 0;
+      for (const name in this.myBuffers) {
+        const buffer = this.myBuffers[name];
+        sum += buffer.length * buffer.size * buffer.bytesPerEl;
+      }
+      return sum;
+    }
+    estimateTextureVRAM() {
+      const texture = this.myData.texture;
+      if (!texture) return 0;
+      let pixelsVRAM = texture.width * texture.height * 4;
+      if (texture.hasDepthBuffer) pixelsVRAM *= 2;
+      if (texture instanceof TextureCube) pixelsVRAM *= 6;
+      return pixelsVRAM;
+    }
+    estimateVRAM() {
+      return this.estimateListVRAM() + this.estimateTextureVRAM();
     }
     destroy() {
       for (let name in this.myBuffers) {
@@ -711,18 +807,22 @@
       mesh.data.drawRange && mesh.data.drawRange[0] + mesh.data.drawRange[1],
     "vertex draw range length": (mesh) =>
       mesh.data.drawRange && mesh.data.drawRange[1],
+    "instance draw limit": (mesh) => mesh.data.maxInstances ?? Infinity,
 
     "partial list update enabled": (mesh) => mesh.uploadOffset >= 0,
+    "estimate own VRAM usage": (mesh) => mesh.estimateVRAM(),
+    "estimate own list VRAM usage": (mesh) => mesh.estimateListVRAM(),
+    "estimate own texture VRAM usage": (mesh) => mesh.estimateTextureVRAM(),
   };
-  const workerSrc = `
+  let workerSrc = `
   class OffModelImporter {
     constructor(dataRaw) {
-      const dataStr = dataRaw.map(str => str.replaceAll("\t", " ").trim()).filter(str => str.length && str[0] !== "#");
-      const dataArr = dataStr.map(str => str.split(" ").filter(e => e).map(e => +e));
+      const dataStr = dataRaw.map(str => str.split("#")[0].replaceAll("\t", " ").trim()).filter(str => str.length);
+      const dataArr = dataStr.map(str => str.split(" ").filter(e => e));
       let i = 0;
-      if (dataStr[i] == "OFF") i++;
+      if (dataStr[i].endsWith("OFF")) i++;
       if (dataArr[i].length !== 3) return false;
-      const [vertexCount, faceCount, edgeCount] = dataArr[i]; i++;
+      const [vertexCount, faceCount, edgeCount] = dataArr[i].map(n => +n); i++;
       const vertices = dataArr.slice(i, i+vertexCount); i += vertexCount;
       const faces = dataArr.slice(i, i+faceCount); i += faceCount;
       this.vertices = vertices;
@@ -731,7 +831,8 @@
         rgba: []
       }
       for(const face of faces) {
-        this.addPoly(face.slice(1, 1+face[0]), face.slice(1+face[0]));
+        const nVerts = +face[0];
+        this.addPoly(face.slice(1, 1+nVerts), face.slice(1+nVerts));
       }
       let hasColor = false;
       const rgba = this.output.rgba;
@@ -744,6 +845,7 @@
       if (!hasColor) delete this.output.rgba;
     }
     addPoly(vs, fallback) {
+      fallback = fallback.map(this.parseColor);
       if (fallback.length == 3) fallback.push(1);
       for(let i=2; i<vs.length; i++) {
         this.addVertex(vs[  0], fallback);
@@ -753,8 +855,14 @@
     }
     addVertex(idx, fallback) {
       const v = this.vertices[idx];
-      this.output.xyz.push(v[0], v[1], v[2]);
-      this.output.rgba.push(v[3] ?? fallback[0], v[4] ?? fallback[1] ?? 1, v[5] ?? fallback[2] ?? 1, v[6] ?? fallback[3] ?? 1);
+      this.output.xyz.push(+v[0], +v[1], +v[2]);
+      this.output.rgba.push(this.parseColor(v[3]) ?? fallback[0] ?? 1, this.parseColor(v[4]) ?? fallback[1] ?? 1, this.parseColor(v[5]) ?? fallback[2] ?? 1, this.parseColor(v[6]) ?? fallback[3] ?? 1);
+    }
+    parseColor(string) {
+      const number = +string;
+      if (!Number.isFinite(number)) return undefined;
+      if (string.indexOf(".") == -1) return number / 255;
+      return number;
     }
   }
   class ObjModelImporter {
@@ -789,7 +897,7 @@
           materialLast = arr[1];
           materials[materialLast] = [1,1,1,1];
         }
-        if (arr[0] == "Ka") {
+        if (arr[0] == "Kd") {
           const color = materials[materialLast];
           color[0] = +arr[1];
           color[1] = +arr[2];
@@ -845,9 +953,12 @@
         const a = importMatrix;
         if (needsScaling) {
           for(let i=0; i<xyz.length; i+=3) {
-            xyz[i  ] = xyz[i] * a[0] + xyz[i+1] * a[4] + xyz[i+2] * a[8] + a[12];
-            xyz[i+1] = xyz[i] * a[1] + xyz[i+1] * a[5] + xyz[i+2] * a[9] + a[13];
-            xyz[i+2] = xyz[i] * a[2] + xyz[i+1] * a[6] + xyz[i+2] * a[10] + a[14];
+            const x = xyz[i];
+            const y = xyz[i+1];
+            const z = xyz[i+2];
+            xyz[i  ] = x * a[0] + y * a[4] + z * a[8] + a[12];
+            xyz[i+1] = x * a[1] + y * a[5] + z * a[9] + a[13];
+            xyz[i+2] = x * a[2] + y * a[6] + z * a[10] + a[14];
           }
         }
       }
@@ -867,27 +978,71 @@
   class ModelDecoder {
     constructor() {
       this.worker = null;
-      this.last = new Promise((res) => res());
+      this.timeout = -1;
       this.resolveFn = null;
+      this.queue = [];
+      this.timeLimit = 90000;
+      this.boundHandle = this.handle.bind(this);
     }
-    async decode(type, array, importMatrix) {
+    decode(type, array, importMatrix) {
+      return new Promise((resolve) => {
+        this.queue.push({ data: { type, array, importMatrix }, resolve });
+        this.tryMoveQueue();
+      });
+    }
+    tryMoveQueue() {
+      if (this.busy) return;
+      if (this.queue.length == 0) return;
       if (!this.worker) {
         this.worker = new Worker(
           `data:text/javascript;base64,${btoa(workerSrc)}`
         );
-        this.worker.onmessage = this.handle.bind(this);
+        this.worker.addEventListener("message", this.boundHandle);
       }
-      let onceDone;
-      const previous = this.last;
-      this.last = new Promise((res) => (onceDone = res));
-      await previous;
-      this.worker.postMessage({ type, array, importMatrix });
-      const output = await new Promise((res) => (this.resolveFn = res));
-      onceDone();
-      return output;
+      const { data, resolve } = this.queue.shift();
+      this.resolveFn = resolve;
+      this.busy = true;
+      this.worker.postMessage(data);
+      this.timeout = setTimeout(this.restartWorker.bind(this), this.timeLimit);
     }
     handle(output) {
+      if (this.timeout !== -1) {
+        clearTimeout(this.timeout);
+        this.timeout = -1;
+      }
       this.resolveFn(output.data);
+      this.resolveFn = null;
+      this.busy = false;
+      this.tryMoveQueue();
+    }
+    clear() {
+      for (const { resolve } of this.queue) {
+        resolve(null);
+      }
+      this.queue = [];
+    }
+    destroy() {
+      this.clear();
+      this.destroyWorker();
+    }
+    destroyWorker() {
+      if (this.resolveFn) {
+        this.resolveFn(null);
+        this.resolveFn = null;
+      }
+      if (this.worker) {
+        this.worker.removeEventListener("message", this.boundHandle);
+        this.worker.terminate();
+        this.worker = null;
+        this.busy = false;
+      }
+    }
+    restartWorker() {
+      console.warn(
+        "Simple3D: Worker took too long to decode the model and was terminated"
+      );
+      this.destroyWorker();
+      this.tryMoveQueue();
     }
   }
   class SimpleSkin extends Scratch.vm.renderer.exports.Skin {
@@ -902,16 +1057,16 @@
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
       this._texture = texture;
       this._nativeSize = renderer.getNativeSize();
+      this._boundOnNativeSizeChanged = this.onNativeSizeChanged.bind(this);
       this._rotationCenter = [this._nativeSize[0] / 2, this._nativeSize[1] / 2];
-      renderer.on("NativeSizeChanged", this.onNativeSizeChanged.bind(this));
-      const urq = renderer._updateRenderQuality.bind(renderer);
-      renderer._updateRenderQuality = (...args) => {
-        urq(args);
-        this.resizeCanvas();
-      };
+      renderer.on("NativeSizeChanged", this._boundOnNativeSizeChanged);
       this.resizeCanvas();
     }
     dispose() {
+      renderer.removeListener(
+        "NativeSizeChanged",
+        this._boundOnNativeSizeChanged
+      );
       if (this._texture) {
         this._renderer.gl.deleteTexture(this._texture);
         this._texture = null;
@@ -937,6 +1092,7 @@
         canvas
       );
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+      this._silhouette.update(canvas);
       this.emitWasAltered();
     }
     resizeCanvas() {
@@ -973,32 +1129,75 @@
     }
 
     // Create drawable and skin
-    const skinId = renderer._nextSkinId++;
+    skinId = renderer._nextSkinId++;
     const skin = new SimpleSkin(skinId, renderer);
     renderer._allSkins[skinId] = skin;
-    const drawableId = renderer.createDrawable("simple3D");
+    drawableId = renderer.createDrawable("simple3D");
+    const drawable = renderer._allDrawables[drawableId];
     renderer.updateDrawableSkinId(drawableId, skinId);
-    redraw();
 
-    const drawOriginal = renderer.draw;
-    renderer.draw = function () {
-      if (this.dirty) redraw();
-      drawOriginal.call(this);
-    };
-
-    function redraw() {
-      skin.updateContent(canvas);
-      runtime.requestRedraw();
+    // Prevent pick() from trying to read all the pixels from the 3D skin as this drawable does not
+    // correspond to a target, so it can't be dragged or anything like that. Fixes pick() doing an
+    // unnecessary GPU -> CPU transfer (very slow) for a collision test whose result doesn't matter.
+    if (renderer.markDrawableAsNoninteractive) {
+      renderer.markDrawableAsNoninteractive(drawableId);
     }
 
-    publicApi.redraw = redraw;
-  }
-  const vshSrc = `
-precision highp float;
+    // Detect resizing
+    drawable.setHighQuality = function (...args) {
+      Object.getPrototypeOf(this).setHighQuality(...args);
+      this.skin.resizeCanvas();
+    };
 
+    // Support for SharkPool's Layer Control extension
+    drawable.customDrawableName = "Simple3D Layer";
+
+    if (!publicApi.redraw) {
+      const drawOriginal = renderer.draw;
+      renderer.draw = function () {
+        if (this.dirty && publicApi.redraw) publicApi.redraw();
+        drawOriginal.call(this);
+      };
+    }
+
+    publicApi.redraw = function () {
+      if (canvasDirty) {
+        skin.updateContent(canvas);
+        canvasDirty = false;
+      }
+    };
+    publicApi.redraw();
+  }
+  function removeSimple3DLayer() {
+    renderer.destroyDrawable(drawableId, "simple3D");
+    renderer.destroySkin(skinId);
+
+    const index = renderer._groupOrdering.indexOf("simple3D");
+    if (index == -1) return;
+    const start = renderer._layerGroups["simple3D"].drawListOffset;
+    const end =
+      renderer._layerGroups[renderer._groupOrdering[index + 1]].drawListOffset;
+    if (start !== end) return;
+    renderer._groupOrdering.splice(index, 1);
+    delete renderer._layerGroups["simple3D"];
+    for (let i = 0; i < renderer._groupOrdering.length; i++) {
+      renderer._layerGroups[renderer._groupOrdering[i]].groupIndex = i;
+    }
+    publicApi.redraw = null;
+  }
+  let vshSrc = `
+#ifdef MSAA_CENTROID
+#define INTERPOLATION centroid
+#endif
+#ifdef MSAA_SAMPLE
+#extension GL_OES_shader_multisample_interpolation : require
+#define INTERPOLATION sample
+#endif
 #ifndef INTERPOLATION
 #define INTERPOLATION
 #endif
+
+precision highp float;
 
 in vec4 a_position;
 #ifdef COLORS
@@ -1159,14 +1358,21 @@ void main() {
 #endif
 }
 `;
-  const fshSrc = `
-precision mediump float;
-
+  let fshSrc = `
+#ifdef MSAA_CENTROID
+#define INTERPOLATION centroid
+#endif
+#ifdef MSAA_SAMPLE
+#extension GL_OES_shader_multisample_interpolation : require
+#define INTERPOLATION sample
+#endif
 #ifndef INTERPOLATION
 #define INTERPOLATION
 #endif
 
-centroid in vec4 v_color;
+precision mediump float;
+
+INTERPOLATION in vec4 v_color;
 #ifdef TEXTURES
 #if TEXTURES == 2
 INTERPOLATION in vec2 v_uv;
@@ -1287,7 +1493,7 @@ void main() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    // eslint-disable-next-line no-restricted-syntax
+    // eslint-disable-next-line extension/check-can-fetch
     const image = new Image();
     image.src =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAABg2lDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpUUqDnYQcchQneyiIo61FYpQIdQKrTqYvPQPmjQkKS6OgmvBwZ/FqoOLs64OroIg+APi7OCk6CIl3pcUWsT44PI+znvncN99gNCqMc3qSwCabpvZdFLMF1bF0CsEhAGqmMwsY16SMvBdX/cI8P0uzrP87/25BtWixYCASJxghmkTbxDPbtoG533iKKvIKvE58aRJDRI/cl3x+I1z2WWBZ0bNXDZFHCUWyz2s9DCrmBrxDHFM1XTKF/Ieq5y3OGu1Buv0yV8YKeory1ynGkMai1iCBBEKGqiiBhtx2nVSLGTpPOnjH3X9ErkUclXByLGAOjTIrh/8D37P1ipNT3lJkSTQ/+I4H+NAaBdoNx3n+9hx2idA8Bm40rv+eguY+yS92dViR8DQNnBx3dWUPeByBxh5MmRTdqUglVAqAe9n9E0FYPgWGFjz5tY5x+kDkKNZZW6Ag0NgokzZ6z7vDvfO7d87nfn9ACRZcoedT/mXAAAAGFBMVEVtbW11dXVtbf+EhIT/bW2goKBt/21t//8Qh6V7AAAACXBIWXMAABhMAAAYdAGfqEAgAAAAB3RJTUUH6AIIAA4YBFj9GAAAABl0RVh0Q29tbWVudABDcmVhdGVkIHdpdGggR0lNUFeBDhcAAABjSURBVAjXPctBDkAwFIThqdey91ygnIAoa9EzcIBGLyDS69MW/26+ZIAvZYwhZkbpNy/saKGOyUjmFeQ2J5Z+SUJNFi+TfK+/uKJCtENbhT2gYO7UNT+ie03nfoLqV4os4X/dFf0TKILDS0AAAAAASUVORK5CYII=";
@@ -1303,6 +1509,16 @@ void main() {
       );
     };
     return texture;
+  }
+  // requireNonPackagedRuntime by LilyMakesThings
+  function requireNonPackagedRuntime(blockName) {
+    if (runtime.isPackaged) {
+      alert(
+        `To use the Simple3D ${blockName} block, the creator of the packaged project must uncheck "Remove raw asset data after loading to save RAM" under advanced settings in the packager.`
+      );
+      return false;
+    }
+    return true;
   }
   /*
    * Profiler has shown that this was the main bottleneck, so:
@@ -1410,7 +1626,7 @@ void main() {
     let value = [];
     let restarts = [];
     for (let i = 0; i < list.value.length; i++) {
-      let num = Cast.toNumber(list.value[i]) - 1;
+      let num = Math.floor(Cast.toNumber(list.value[i]) - 1);
       if (num < 0) {
         restarts.push(i);
       } else if (num > maxNum) {
@@ -1419,6 +1635,11 @@ void main() {
       value.push(num);
     }
     let restartIndex, typedArray;
+    if (maxNum > 4294967294) {
+      alert(
+        `Simple3D error: Found vertex index ${maxNum}. The maximum supported value is 4294967295.`
+      );
+    }
     if (maxNum > 65534) {
       typedArray = Uint32Array;
       restartIndex = 4294967295;
@@ -1443,6 +1664,7 @@ void main() {
     target = gl.ARRAY_BUFFER
   ) {
     if (!mesh || !value) return;
+    if (value.length % size !== 0) return;
     if (mesh.uploadOffset < 0) {
       const buffer =
         mesh.myBuffers[name] ?? (mesh.myBuffers[name] = new Buffer(type));
@@ -1468,6 +1690,13 @@ void main() {
       );
     }
   }
+  function chunkArray(array, size) {
+    const chunkedArray = [];
+    for (let i = 0; i < array.length; i += size) {
+      chunkedArray.push(array.slice(i, i + size));
+    }
+    return chunkedArray;
+  }
 
   if (!Scratch.extensions.unsandboxed)
     throw new Error("Simple 3D extension must be run unsandboxed");
@@ -1480,22 +1709,25 @@ void main() {
   const runtime = vm.runtime;
 
   const extensionId = "xeltallivSimple3D";
-  const canvas = document.createElement("canvas");
-  const gl = canvas.getContext("webgl2");
+  let canvasDirty = true;
+  let canvas = document.createElement("canvas");
+  let gl = canvas.getContext("webgl2");
   if (!gl)
     alert(
-      "Simple 3D extension failed to get WebGL2 conetxt. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
+      "Simple 3D extension failed to get WebGL2 context. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
     );
   const ext_af =
     gl.getExtension("EXT_texture_filter_anisotropic") ||
     gl.getExtension("MOZ_EXT_texture_filter_anisotropic") ||
     gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+  const ext_smi = gl.getExtension("OES_shader_multisample_interpolation");
   gl.enable(gl.DEPTH_TEST);
   gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
   // prettier-ignore
   const Blendings = {
     "overwrite color (fastest for opaque)": [false],
     "default": [true, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
+    "default behind": [true, gl.ONE_MINUS_DST_ALPHA, gl.ONE, gl.ONE_MINUS_DST_ALPHA, gl.ONE, gl.FUNC_ADD],
     "additive": [true, gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
     "subtractive": [true, gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
     "multiply": [true, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
@@ -1547,6 +1779,9 @@ void main() {
     publicApi.externalTransforms ?? (publicApi.externalTransforms = {});
   const canvasRenderTarget = new CanvasRenderTarget();
 
+  let drawableId = null;
+  let skinId = null;
+
   let currentRenderTarget;
   let transforms;
   let transformed;
@@ -1565,6 +1800,7 @@ void main() {
   let currentCulling;
   let currentCullingProps;
   let lastTextMeasurement;
+  let transformCache;
 
   function resetEverything() {
     gl.clearColor(0, 0, 0, 0);
@@ -1594,11 +1830,18 @@ void main() {
     currentCulling = 0;
     currentCullingProps = [null, null];
     lastTextMeasurement = null;
+    transformCache = {
+      from: m4.identity(),
+      to: m4.identity(),
+      matrix: m4.identity(),
+    };
     for (const mesh of meshes.values()) {
       mesh.destroy();
     }
     meshes.clear();
     programs.clear();
+    modelDecoder.clear();
+    canvasDirty = true;
     renderer.dirty = true;
     runtime.requestRedraw();
   }
@@ -1607,6 +1850,17 @@ void main() {
   runtime.on("PROJECT_LOADED", resetEverything);
 
   const definitions = [
+    {
+      blockType: BlockType.BUTTON,
+      text: "Open extra resources",
+      func: "openSite",
+      def: function () {
+        // Exempted from Scratch.openWindow as initiated by user gesture.
+        // docsURI won't ask for permission so it doesn't make sense for this to either.
+        // eslint-disable-next-line extension/use-scratch-open-window
+        window.open("https://xeltalliv.github.io/simple3d-extension/");
+      },
+    },
     {
       blockType: BlockType.BUTTON,
       text: "Open sample project",
@@ -1619,7 +1873,7 @@ void main() {
         );
         // Exempted from Scratch.openWindow as it is in response to a user gesture and it does not
         // bring in third-party websites at all.
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line extension/use-scratch-open-window
         window.open(url.href);
       },
     },
@@ -1656,8 +1910,11 @@ void main() {
           gl.clear(ClearLayers[LAYERS]);
           gl.depthMask(false);
         }
-        renderer.dirty = true; //TODO: only do this when rendering to
-        runtime.requestRedraw(); //TODO: main canvas, not to framebuffers
+        if (currentRenderTarget === canvasRenderTarget) {
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
       },
     },
     {
@@ -1683,11 +1940,12 @@ void main() {
         },
       },
       def: function ({ RED, GREEN, BLUE, ALPHA }) {
+        const alpha = Cast.toNumber(ALPHA);
         gl.clearColor(
-          Cast.toNumber(RED),
-          Cast.toNumber(GREEN),
-          Cast.toNumber(BLUE),
-          Cast.toNumber(ALPHA)
+          Cast.toNumber(RED) * alpha,
+          Cast.toNumber(GREEN) * alpha,
+          Cast.toNumber(BLUE) * alpha,
+          alpha
         );
       },
     },
@@ -2250,34 +2508,107 @@ void main() {
       },
       def: function ({ NAME, TRANSFORMS, MATRIXES }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
+        const myData = mesh.myData;
         const list = target.lookupVariableByNameAndType(
           Cast.toString(MATRIXES),
           "list"
         );
         if (!mesh || !list) return;
         const value = list.value.map(Cast.toNumber);
-        const value2 = [];
-        for (let i = 0; i < value.length; i += 16) {
-          value2.push(value.slice(i, i + 16));
+
+        if (TRANSFORMS == "original") {
+          myData.bonesOrig = chunkArray(value, 16).map(m4.inverse);
+          if (!myData.bonesCurr) {
+            if (myData.bonesCurrRaw) {
+              myData.bonesCurr = chunkArray(myData.bonesCurrRaw, 16);
+              myData.bonesCurrRaw = null;
+            } else {
+              myData.bonesCurr = chunkArray(value, 16);
+            }
+          }
         }
-        if (
-          TRANSFORMS == "original" ||
-          !mesh.bonesOrig ||
-          mesh.bonesOrig.length !== value2.length
-        )
-          mesh.bonesOrig = value2.map(m4.inverse);
-        if (
-          TRANSFORMS == "current" ||
-          !mesh.bonesCurr ||
-          mesh.bonesCurr.length !== value2.length
-        )
-          mesh.bonesCurr = value2;
-        const diff = [];
-        for (let i = 0; i < mesh.bonesCurr.length; i++) {
-          diff.push(m4.multiply(mesh.bonesCurr[i], mesh.bonesOrig[i]));
+        if (TRANSFORMS == "current") {
+          if (myData.bonesOrig) {
+            myData.bonesCurr = chunkArray(value, 16);
+            myData.bonesCurrRaw = null;
+          } else {
+            myData.bonesCurrRaw = value;
+          }
         }
-        mesh.bonesDiff = diff.flat();
+        if (myData.bonesOrig) {
+          const diff = [];
+          const end = Math.min(
+            myData.bonesCurr.length,
+            myData.bonesOrig.length
+          );
+          let i = 0;
+          for (; i < end; i++) {
+            diff.push(m4.multiply(myData.bonesCurr[i], myData.bonesOrig[i]));
+          }
+          for (; i < myData.bonesCurr.length; i++) {
+            diff.push(myData.bonesCurr[i]);
+          }
+          myData.bonesDiff = diff.flat();
+        } else {
+          myData.bonesDiff = myData.bonesCurrRaw;
+        }
         mesh.update();
+      },
+    },
+    {
+      opcode: "setMeshInterleaved",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] interleaved [PROPERTY] [SRCLIST]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        PROPERTY: {
+          type: ArgumentType.STRING,
+          menu: "interleavedProperty",
+        },
+        SRCLIST: {
+          type: ArgumentType.STRING,
+          menu: "lists",
+        },
+      },
+      def: function ({ NAME, PROPERTY, SRCLIST }, { target }) {
+        let bufferName, size, type;
+        if (PROPERTY == "XY positions") {
+          bufferName = "position";
+          size = 2;
+          type = Float32Array;
+        }
+        if (PROPERTY == "XYZ positions") {
+          bufferName = "position";
+          size = 3;
+          type = Float32Array;
+        }
+        if (PROPERTY == "RGB colors") {
+          bufferName = "colors";
+          size = 3;
+          type = Uint8Array;
+        }
+        if (PROPERTY == "RGBA colors") {
+          bufferName = "colors";
+          size = 4;
+          type = Uint8Array;
+        }
+        if (PROPERTY == "UV texture coordinates") {
+          bufferName = "texCoords";
+          size = 2;
+          type = Float32Array;
+        }
+        if (PROPERTY == "UVW texture coordinates") {
+          bufferName = "texCoords";
+          size = 3;
+          type = Float32Array;
+        }
+        if (!bufferName) return;
+        const mesh = meshes.get(Cast.toString(NAME));
+        const value = compact(target, [SRCLIST], type);
+        uploadBuffer(mesh, bufferName, value, size, 0);
       },
     },
     {
@@ -2558,6 +2889,7 @@ void main() {
       opcode: "setMeshCentroidInterpolation",
       blockType: BlockType.COMMAND,
       text: "set [NAME] accurate interpolation [USECENTROID]",
+      hideFromPalette: true,
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
@@ -2572,7 +2904,32 @@ void main() {
         const mesh = meshes.get(Cast.toString(NAME));
         const useCentroid = Cast.toBoolean(USECENTROID);
         if (!mesh) return;
-        mesh.myData.useCentroidInterpolation = useCentroid;
+        mesh.myData.interpolation = useCentroid ? "MSAA_CENTROID" : "";
+        mesh.update();
+      },
+    },
+    {
+      opcode: "setMeshMultiSampleInterpolation",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] compute color [MODE]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        MODE: {
+          type: ArgumentType.STRING,
+          menu: "multiSampleInterpolation",
+        },
+      },
+      def: function ({ NAME, MODE }, { target }) {
+        const mesh = meshes.get(Cast.toString(NAME));
+        if (!mesh) return;
+        if (MODE === "once at pixel center") mesh.myData.interpolation = "";
+        if (MODE === "once at midpoint of covered samples")
+          mesh.myData.interpolation = "MSAA_CENTROID";
+        if (MODE === "separately for each sample" && ext_smi)
+          mesh.myData.interpolation = "MSAA_SAMPLE";
         mesh.update();
       },
     },
@@ -2600,6 +2957,29 @@ void main() {
         const end = Math.max(0, Math.floor(Cast.toNumber(END)));
         if (!mesh) return;
         mesh.myData.drawRange = [start, Math.max(0, end - start)];
+        mesh.update();
+      },
+    },
+    {
+      opcode: "setMeshInstanceLimit",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] instance draw limit [END]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        END: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 10,
+        },
+      },
+      def: function ({ NAME, END }, { target }) {
+        const mesh = meshes.get(Cast.toString(NAME));
+        let end = Math.floor(Cast.toNumber(END));
+        if (end < 1) end = Infinity;
+        if (!mesh) return;
+        mesh.myData.maxInstances = end;
         mesh.update();
       },
     },
@@ -2642,6 +3022,7 @@ void main() {
         if (!mesh) return;
         if (!currentRenderTarget.checkIfValid()) return;
         if (currentRenderTarget.getMesh() == mesh) return;
+        if (!mesh.buffers.position) return;
 
         // TODO: only recompute this after one or more buffers were changed
         let length = -1;
@@ -2670,19 +3051,18 @@ void main() {
           if (fogSpace == "model space") flags.push("FOG_IN_MODEL_SPACE");
           if (fogPosition) flags.push("FOG_POS");
         }
-        if (mesh.buffers.boneIndices && mesh.bonesDiff) {
+        if (mesh.buffers.boneIndices && mesh.data.bonesDiff) {
           flags.push(`SKINNING ${mesh.buffers.boneIndices.size}`);
-          flags.push(`BONE_COUNT ${mesh.bonesDiff.length / 16}`);
+          flags.push(`BONE_COUNT ${mesh.data.bonesDiff.length / 16}`);
         }
-        if (mesh.data.useCentroidInterpolation)
-          flags.push("INTERPOLATION centroid");
+        if (mesh.data.interpolation) flags.push(mesh.data.interpolation);
         if (mesh.data.alphaTest > 0) flags.push("ALPHATEST");
         if (mesh.data.makeOpaque) flags.push("MAKE_OPAQUE");
         if (mesh.data.billboarding) flags.push("BILLBOARD");
         if (mesh.data.uvOffset) flags.push("UV_OFFSET");
         if (mesh.buffers.instanceTransforms) {
           flags.push("INSTANCING");
-          if (mesh.buffers.instanceTransforms.size == 3)
+          if (mesh.buffers.instanceTransforms.size <= 3)
             flags.push("INSTANCE_POS");
           if (mesh.buffers.instanceTransforms.size == 4)
             flags.push("INSTANCE_POS_SCALE");
@@ -2905,8 +3285,8 @@ void main() {
           gl.uniform1f(program.uloc.u_alpha_threshold, mesh.data.alphaTest);
         }
 
-        if (mesh.bonesDiff) {
-          gl.uniformMatrix4fv(program.uloc.u_bones, false, mesh.bonesDiff);
+        if (mesh.data.bonesDiff) {
+          gl.uniformMatrix4fv(program.uloc.u_bones, false, mesh.data.bonesDiff);
         }
         if (mesh.data.uvOffset) {
           gl.uniform2fv(program.uloc.u_uvOffset, mesh.data.uvOffset);
@@ -2933,10 +3313,20 @@ void main() {
             ? mesh.buffers.indices.bytesPerEl
             : 1;
           start = mesh.data.drawRange[0] * size;
-          const end = Math.min(start + mesh.data.drawRange[1], amount);
-          amount = end - start;
+          const end = Math.min(
+            mesh.data.drawRange[0] + mesh.data.drawRange[1],
+            amount
+          );
+          amount = end - mesh.data.drawRange[0];
         }
         if (mesh.buffers.instanceTransforms) {
+          let instanceCount = mesh.buffers.instanceTransforms.length;
+          if (
+            mesh.data.maxInstances &&
+            mesh.data.maxInstances < instanceCount
+          ) {
+            instanceCount = mesh.data.maxInstances;
+          }
           if (mesh.buffers.indices) {
             const indexTypes = [
               null,
@@ -2950,14 +3340,14 @@ void main() {
               amount,
               indexTypes[mesh.buffers.indices.bytesPerEl],
               start,
-              mesh.buffers.instanceTransforms.length
+              instanceCount
             );
           } else {
             gl.drawArraysInstanced(
               mesh.data.primitives ?? gl.TRIANGLES,
               start,
               amount,
-              mesh.buffers.instanceTransforms.length
+              instanceCount
             );
           }
         } else {
@@ -2979,8 +3369,11 @@ void main() {
             gl.drawArrays(mesh.data.primitives ?? gl.TRIANGLES, start, amount);
           }
         }
-        renderer.dirty = true; //TODO: only do this when rendering to
-        runtime.requestRedraw(); //TODO: main canvas, not to framebuffers
+        if (currentRenderTarget === canvasRenderTarget) {
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
 
         if (mesh.buffers.colors) {
           gl.disableVertexAttribArray(program.aloc.a_color);
@@ -3042,7 +3435,7 @@ void main() {
                 resolve(null);
                 return;
               }
-              // eslint-disable-next-line no-restricted-syntax
+              // eslint-disable-next-line extension/check-can-fetch
               const img = new Image();
               if (
                 new URL(TEXURL, window.location.href).origin !==
@@ -3082,10 +3475,14 @@ void main() {
       def: function ({ NAME }, { target }) {
         imageSourceSync = null;
         imageSource = new Promise((resolve, reject) => {
+          if (!requireNonPackagedRuntime("texture from costume")) {
+            resolve(null);
+            return;
+          }
           const costumeIndex = target.getCostumeIndexByName(NAME);
           if (costumeIndex == -1) return;
           const costume = target.sprite.costumes[costumeIndex];
-          // eslint-disable-next-line no-restricted-syntax
+          // eslint-disable-next-line extension/check-can-fetch
           const img = new Image();
           img.src = costume.asset.encodeDataURI();
           img.onload = function () {
@@ -3179,6 +3576,7 @@ void main() {
         COLOR = Cast.toRgbColorObject(COLOR);
         BORDERSIZE = Cast.toNumber(BORDERSIZE);
         BORDERCOLOR = Cast.toRgbColorObject(BORDERCOLOR);
+        const BORDERSIZECEIL = Math.ceil(BORDERSIZE);
         imageSourceSync = null;
         imageSource = new Promise((resolve, reject) => {
           const canv = document.createElement("canvas");
@@ -3186,9 +3584,13 @@ void main() {
           ctx.font = FONT;
           const m = ctx.measureText(TEXT);
           canv.width =
-            m.actualBoundingBoxLeft + m.actualBoundingBoxRight + 2 * BORDERSIZE;
+            m.actualBoundingBoxLeft +
+            m.actualBoundingBoxRight +
+            2 * BORDERSIZECEIL;
           canv.height =
-            m.fontBoundingBoxAscent + m.fontBoundingBoxDescent + 2 * BORDERSIZE;
+            m.fontBoundingBoxAscent +
+            m.fontBoundingBoxDescent +
+            2 * BORDERSIZECEIL;
           ctx.clearRect(0, 0, canv.width, canv.height);
           ctx.font = FONT;
           ctx.lineWidth = BORDERSIZE;
@@ -3196,13 +3598,13 @@ void main() {
           ctx.strokeStyle = `rgba(${BORDERCOLOR.r},${BORDERCOLOR.g},${BORDERCOLOR.b},${(BORDERCOLOR.a ?? 255) / 255})`;
           ctx.fillText(
             TEXT,
-            m.actualBoundingBoxLeft + BORDERSIZE,
-            m.fontBoundingBoxAscent + BORDERSIZE
+            m.actualBoundingBoxLeft + BORDERSIZECEIL,
+            m.fontBoundingBoxAscent + BORDERSIZECEIL
           );
           ctx.strokeText(
             TEXT,
-            m.actualBoundingBoxLeft + BORDERSIZE,
-            m.fontBoundingBoxAscent + BORDERSIZE
+            m.actualBoundingBoxLeft + BORDERSIZECEIL,
+            m.fontBoundingBoxAscent + BORDERSIZECEIL
           );
           imageSourceSync = {
             width: canv.width,
@@ -3271,13 +3673,15 @@ void main() {
             resolve(null);
             return;
           }
-          const values = list.value
-            .slice(pos, pos + lengthRequired)
-            .map(Cast.toNumber);
+          const data = new Uint8Array(lengthRequired);
+          const values = list.value;
+          for (let i = 0; i < lengthRequired; i++) {
+            data[i] = values[pos + i];
+          }
           imageSourceSync = {
             width: width,
             height: height,
-            data: new Uint8Array(values),
+            data: data,
           };
           resolve(imageSourceSync);
         });
@@ -3374,6 +3778,7 @@ void main() {
         if (DIR == "down") return lastTextMeasurement.fontBoundingBoxDescent;
         if (DIR == "left") return lastTextMeasurement.actualBoundingBoxLeft;
         if (DIR == "right") return lastTextMeasurement.actualBoundingBoxRight;
+        if (DIR == "x step") return lastTextMeasurement.width;
         return 0;
       },
     },
@@ -3392,7 +3797,7 @@ void main() {
           defaultValue: "Sans Serif",
         },
         SIZE: {
-          type: ArgumentType.STRING,
+          type: ArgumentType.NUMBER,
           defaultValue: 32,
         },
       },
@@ -3433,7 +3838,7 @@ void main() {
         },
         NEAR: {
           type: ArgumentType.NUMBER,
-          defaultValue: 0.01,
+          defaultValue: 0.1,
         },
         FAR: {
           type: ArgumentType.NUMBER,
@@ -3456,7 +3861,7 @@ void main() {
       arguments: {
         NEAR: {
           type: ArgumentType.NUMBER,
-          defaultValue: 0.01,
+          defaultValue: 0.1,
         },
         FAR: {
           type: ArgumentType.NUMBER,
@@ -3754,6 +4159,15 @@ void main() {
           transformed = vec;
           return;
         }
+        if (
+          lookup2[from] === transformCache.from &&
+          lookup2[to] === transformCache.to
+        ) {
+          transformed = m4.multiplyVec(transformCache.matrix, vec);
+          return;
+        }
+        transformCache.from = lookup2[from];
+        transformCache.to = lookup2[to];
         let swapped = false;
         if (from > to) {
           [from, to] = [to, from];
@@ -3764,6 +4178,7 @@ void main() {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
         if (swapped) totalMat = m4.inverse(totalMat);
+        transformCache.matrix = totalMat;
         transformed = m4.multiplyVec(totalMat, vec);
         if (TO == "projected (scratch units)") {
           transformed[0] =
@@ -3816,11 +4231,20 @@ void main() {
         let from = lookup[FROM];
         let to = lookup[TO];
         if (!from || !to) return;
-        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 1];
+        const vec = [Cast.toNumber(X), Cast.toNumber(Y), Cast.toNumber(Z), 0];
         if (from == to) {
           transformed = vec;
           return;
         }
+        if (
+          lookup2[from] === transformCache.from &&
+          lookup2[to] === transformCache.to
+        ) {
+          transformed = m4.multiplyVec(transformCache.matrix, vec);
+          return;
+        }
+        transformCache.from = lookup2[from];
+        transformCache.to = lookup2[to];
         let swapped = false;
         if (from > to) {
           [from, to] = [to, from];
@@ -3830,8 +4254,8 @@ void main() {
         for (let i = from + 1; i < to; i++) {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
-        totalMat[12] = totalMat[13] = totalMat[14] = 0;
         if (swapped) totalMat = m4.inverse(totalMat);
+        transformCache.matrix = totalMat;
         transformed = m4.multiplyVec(totalMat, vec);
       },
     },
@@ -3930,11 +4354,10 @@ void main() {
         );
         if (!list) return;
         if (!currentRenderTarget.checkIfValid()) return;
-        const width = currentRenderTarget.width;
-        const height = currentRenderTarget.height;
-        if (width == 0 || height == 0) return;
-        const pixels = new Uint8ClampedArray(width * height * 4);
-        gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        const { x, y, w, h } = currentRenderTarget.getReadarea();
+        if (w == 0 || h == 0) return;
+        const pixels = new Uint8ClampedArray(w * h * 4);
+        gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
         list.value = Array.from(pixels);
         list._monitorUpToDate = false;
       },
@@ -3965,11 +4388,10 @@ void main() {
           return currentRenderTarget.hasDepthBuffer;
         if (PROPERTY == "image as data URI") {
           if (!currentRenderTarget.checkIfValid()) return "";
-          const width = currentRenderTarget.width;
-          const height = currentRenderTarget.height;
-          if (width == 0 || height == 0) return "";
-          const pixels = new Uint8ClampedArray(width * height * 4);
-          gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+          const { x, y, w, h } = currentRenderTarget.getReadarea();
+          if (w == 0 || h == 0) return "";
+          const pixels = new Uint8ClampedArray(w * h * 4);
+          gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
           for (let i = 0; i < pixels.length; i += 4) {
             // Internally we store everything with permultiplied alpha. Undoing it
             const alpha = pixels[i + 3] / 255;
@@ -3978,16 +4400,94 @@ void main() {
             pixels[i + 2] /= alpha;
           }
           const canv = document.createElement("canvas");
-          canv.width = width;
-          canv.height = height;
+          canv.width = w;
+          canv.height = h;
           const ctx = canv.getContext("2d");
-          const imgData = new ImageData(pixels, width, height);
+          const imgData = new ImageData(pixels, w, h);
           ctx.putImageData(imgData, 0, 0);
           return canv.toDataURL();
         }
         if (PROPERTY == "is valid for being drawn to")
           return currentRenderTarget.checkIfValid();
+        if (PROPERTY == "has viewport box")
+          return currentRenderTarget.viewport !== null;
+        if (PROPERTY == "has clipping box")
+          return currentRenderTarget.scissors !== null;
+        if (PROPERTY == "has readback box")
+          return currentRenderTarget.readarea !== null;
         return "";
+      },
+    },
+    {
+      opcode: "setRenderTargetBox",
+      blockType: BlockType.COMMAND,
+      text: "set [BOXTYPE] to X1:[X1] Y1:[Y1] X2:[X2] Y2:[Y2]",
+      arguments: {
+        BOXTYPE: {
+          type: ArgumentType.STRING,
+          menu: "boxType",
+        },
+        X1: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 0,
+        },
+        Y1: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 0,
+        },
+        X2: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 100,
+        },
+        Y2: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 100,
+        },
+      },
+      def: function ({ BOXTYPE, X1, Y1, X2, Y2 }) {
+        X1 = Cast.toNumber(X1);
+        Y1 = Cast.toNumber(Y1);
+        X2 = Cast.toNumber(X2);
+        Y2 = Cast.toNumber(Y2);
+        const x = Math.min(X1, X2);
+        const y = Math.min(Y1, Y2);
+        const w = Math.max(X1, X2) - x;
+        const h = Math.max(Y1, Y2) - y;
+        if (BOXTYPE == "viewport box") {
+          currentRenderTarget.viewport = { x, y, w, h };
+        }
+        if (BOXTYPE == "clipping box") {
+          currentRenderTarget.scissors = { x, y, w, h };
+          currentRenderTarget.updateScissorsEnabled();
+        }
+        if (BOXTYPE == "readback box") {
+          currentRenderTarget.readarea = { x, y, w, h };
+        }
+        currentRenderTarget.updateViewport();
+      },
+    },
+    {
+      opcode: "clearRenderTargetBox",
+      blockType: BlockType.COMMAND,
+      text: "clear [BOXTYPE]",
+      arguments: {
+        BOXTYPE: {
+          type: ArgumentType.STRING,
+          menu: "boxType",
+        },
+      },
+      def: function ({ BOXTYPE }) {
+        if (BOXTYPE == "viewport box") {
+          currentRenderTarget.viewport = null;
+        }
+        if (BOXTYPE == "clipping box") {
+          currentRenderTarget.scissors = null;
+          currentRenderTarget.updateScissorsEnabled();
+        }
+        if (BOXTYPE == "readback box") {
+          currentRenderTarget.readarea = null;
+        }
+        currentRenderTarget.updateViewport();
       },
     },
     {
@@ -4308,6 +4808,17 @@ void main() {
           "UV offsets and sizes",
         ],
       },
+      interleavedProperty: {
+        acceptReporters: false,
+        items: [
+          "XY positions",
+          "XYZ positions",
+          "RGB colors",
+          "RGBA colors",
+          "UV texture coordinates",
+          "UVW texture coordinates",
+        ],
+      },
       renderTargetProperty: {
         acceptReporters: false,
         items: [
@@ -4320,6 +4831,9 @@ void main() {
           "has depth storage",
           "image as data URI",
           "is valid for being drawn to",
+          "has viewport box",
+          "has clipping box",
+          "has readback box",
         ],
       },
       powersOfTwo: {
@@ -4332,11 +4846,23 @@ void main() {
       },
       directions: {
         acceptReporters: true,
-        items: ["up", "down", "left", "right"],
+        items: ["up", "down", "left", "right", "x step"],
       },
       bufferUsage: {
         acceptReporters: true,
         items: ["rarely", "frequently fully", "frequently partially"],
+      },
+      multiSampleInterpolation: {
+        acceptReporters: true,
+        items: [
+          "once at pixel center",
+          "once at midpoint of covered samples",
+          "separately for each sample",
+        ],
+      },
+      boxType: {
+        acceptReporters: false,
+        items: ["viewport box", "clipping box", "readback box"],
       },
     },
   };
@@ -4347,6 +4873,19 @@ void main() {
         (b) => b.opcode == "matStartWithExternal"
       ).hideFromPalette = Object.keys(externalTransforms).length == 0;
       return extInfo;
+    }
+    dispose() {
+      resetEverything();
+      removeSimple3DLayer();
+      modelDecoder.destroy();
+      runtime.removeListener("PROJECT_LOADED", resetEverything);
+      canvas = null;
+      gl = null;
+      const noop = () => {};
+      for (let block of definitions) {
+        if (block == "---") continue;
+        Extension.prototype[block.opcode ?? block.func] = noop;
+      }
     }
     fontsMenu() {
       const defaultFonts = [
@@ -4432,6 +4971,46 @@ void main() {
     }
   }
   gl.__proto__ = ogl; //*/
+
+  publicApi.i_will_not_ask_for_help_when_these_break = () => {
+    console.warn(
+      "WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. WHEN your code breaks, do not expect help.\n\nProper stable APIs will be added later."
+    );
+    return {
+      canvas,
+      gl,
+      definitions,
+      meshes,
+      programs,
+      modelDecoder,
+      uploadBuffer,
+      getFshSrc: () => fshSrc,
+      setFshSrc: (src) => {
+        fshSrc = src;
+      },
+      getVshSrc: () => vshSrc,
+      setVshSrc: (src) => {
+        vshSrc = src;
+      },
+      canvasRenderTarget,
+      resetEverything,
+      getTransforms: () => transforms,
+      setTransforms: (t) => {
+        transforms = t;
+      },
+      getSelectedTransform: () => selectedTransform,
+      setSelectedTransform: (t) => {
+        selectedTransform = t;
+      },
+      getWorkerSrc: () => workerSrc,
+      setWorkerSrc: (src) => {
+        workerSrc = src;
+      },
+      extInfo,
+      Extension,
+      Blendings,
+    };
+  };
 
   Scratch.extensions.register(new Extension());
 })(Scratch);

@@ -95,7 +95,7 @@
           e++
         ) {
           var s = o.charCodeAt(e);
-          (n[2 * e] = s >>> 8), (n[2 * e + 1] = s % 256);
+          ((n[2 * e] = s >>> 8), (n[2 * e + 1] = s % 256));
         }
         return n;
       },
@@ -162,63 +162,64 @@
             if (Object.prototype.hasOwnProperty.call(u, c)) {
               if (c.charCodeAt(0) < 256) {
                 for (e = 0; e < h; e++)
-                  (m <<= 1),
-                    v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++;
+                  ((m <<= 1),
+                    v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++);
                 for (t = c.charCodeAt(0), e = 0; e < 8; e++)
-                  (m = (m << 1) | (1 & t)),
+                  ((m = (m << 1) | (1 & t)),
                     v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++,
-                    (t >>= 1);
+                    (t >>= 1));
               } else {
                 for (t = 1, e = 0; e < h; e++)
-                  (m = (m << 1) | t),
+                  ((m = (m << 1) | t),
                     v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++,
-                    (t = 0);
+                    (t = 0));
                 for (t = c.charCodeAt(0), e = 0; e < 16; e++)
-                  (m = (m << 1) | (1 & t)),
+                  ((m = (m << 1) | (1 & t)),
                     v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++,
-                    (t >>= 1);
+                    (t >>= 1));
               }
-              0 == --l && ((l = Math.pow(2, h)), h++), delete u[c];
+              (0 == --l && ((l = Math.pow(2, h)), h++), delete u[c]);
             } else
               for (t = s[c], e = 0; e < h; e++)
-                (m = (m << 1) | (1 & t)),
+                ((m = (m << 1) | (1 & t)),
                   v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++,
-                  (t >>= 1);
-            0 == --l && ((l = Math.pow(2, h)), h++),
+                  (t >>= 1));
+            (0 == --l && ((l = Math.pow(2, h)), h++),
               (s[p] = f++),
-              (c = String(a));
+              (c = String(a)));
           }
         if ("" !== c) {
           if (Object.prototype.hasOwnProperty.call(u, c)) {
             if (c.charCodeAt(0) < 256) {
               for (e = 0; e < h; e++)
-                (m <<= 1), v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++;
+                ((m <<= 1),
+                  v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++);
               for (t = c.charCodeAt(0), e = 0; e < 8; e++)
-                (m = (m << 1) | (1 & t)),
+                ((m = (m << 1) | (1 & t)),
                   v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++,
-                  (t >>= 1);
+                  (t >>= 1));
             } else {
               for (t = 1, e = 0; e < h; e++)
-                (m = (m << 1) | t),
+                ((m = (m << 1) | t),
                   v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++,
-                  (t = 0);
+                  (t = 0));
               for (t = c.charCodeAt(0), e = 0; e < 16; e++)
-                (m = (m << 1) | (1 & t)),
+                ((m = (m << 1) | (1 & t)),
                   v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++,
-                  (t >>= 1);
+                  (t >>= 1));
             }
-            0 == --l && ((l = Math.pow(2, h)), h++), delete u[c];
+            (0 == --l && ((l = Math.pow(2, h)), h++), delete u[c]);
           } else
             for (t = s[c], e = 0; e < h; e++)
-              (m = (m << 1) | (1 & t)),
+              ((m = (m << 1) | (1 & t)),
                 v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++,
-                (t >>= 1);
+                (t >>= 1));
           0 == --l && ((l = Math.pow(2, h)), h++);
         }
         for (t = 2, e = 0; e < h; e++)
-          (m = (m << 1) | (1 & t)),
+          ((m = (m << 1) | (1 & t)),
             v == o - 1 ? ((v = 0), d.push(n(m)), (m = 0)) : v++,
-            (t >>= 1);
+            (t >>= 1));
         for (;;) {
           if (((m <<= 1), v == o - 1)) {
             d.push(n(m));
@@ -258,28 +259,28 @@
           };
         for (t = 0; t < 3; t += 1) l[t] = t;
         for (s = 0, a = Math.pow(2, 2), p = 1; p != a; )
-          (u = g.val & g.position),
+          ((u = g.val & g.position),
             (g.position >>= 1),
             0 == g.position && ((g.position = n), (g.val = e(g.index++))),
             (s |= (u > 0 ? 1 : 0) * p),
-            (p <<= 1);
+            (p <<= 1));
         switch (s) {
           case 0:
             for (s = 0, a = Math.pow(2, 8), p = 1; p != a; )
-              (u = g.val & g.position),
+              ((u = g.val & g.position),
                 (g.position >>= 1),
                 0 == g.position && ((g.position = n), (g.val = e(g.index++))),
                 (s |= (u > 0 ? 1 : 0) * p),
-                (p <<= 1);
+                (p <<= 1));
             c = r(s);
             break;
           case 1:
             for (s = 0, a = Math.pow(2, 16), p = 1; p != a; )
-              (u = g.val & g.position),
+              ((u = g.val & g.position),
                 (g.position >>= 1),
                 0 == g.position && ((g.position = n), (g.val = e(g.index++))),
                 (s |= (u > 0 ? 1 : 0) * p),
-                (p <<= 1);
+                (p <<= 1));
             c = r(s);
             break;
           case 2:
@@ -288,29 +289,29 @@
         for (l[3] = c, i = c, v.push(c); ; ) {
           if (g.index > o) return "";
           for (s = 0, a = Math.pow(2, d), p = 1; p != a; )
-            (u = g.val & g.position),
+            ((u = g.val & g.position),
               (g.position >>= 1),
               0 == g.position && ((g.position = n), (g.val = e(g.index++))),
               (s |= (u > 0 ? 1 : 0) * p),
-              (p <<= 1);
+              (p <<= 1));
           switch ((c = s)) {
             case 0:
               for (s = 0, a = Math.pow(2, 8), p = 1; p != a; )
-                (u = g.val & g.position),
+                ((u = g.val & g.position),
                   (g.position >>= 1),
                   0 == g.position && ((g.position = n), (g.val = e(g.index++))),
                   (s |= (u > 0 ? 1 : 0) * p),
-                  (p <<= 1);
-              (l[h++] = r(s)), (c = h - 1), f--;
+                  (p <<= 1));
+              ((l[h++] = r(s)), (c = h - 1), f--);
               break;
             case 1:
               for (s = 0, a = Math.pow(2, 16), p = 1; p != a; )
-                (u = g.val & g.position),
+                ((u = g.val & g.position),
                   (g.position >>= 1),
                   0 == g.position && ((g.position = n), (g.val = e(g.index++))),
                   (s |= (u > 0 ? 1 : 0) * p),
-                  (p <<= 1);
-              (l[h++] = r(s)), (c = h - 1), f--;
+                  (p <<= 1));
+              ((l[h++] = r(s)), (c = h - 1), f--);
               break;
             case 2:
               return v.join("");
@@ -321,10 +322,10 @@
             if (c !== h) return null;
             m = i + i.charAt(0);
           }
-          v.push(m),
+          (v.push(m),
             (l[h++] = i + m.charAt(0)),
             (i = m),
-            0 == --f && ((f = Math.pow(2, d)), d++);
+            0 == --f && ((f = Math.pow(2, d)), d++));
         }
       },
     };
@@ -349,12 +350,14 @@
     getInfo() {
       return {
         id: "shovellzcompress",
-        name: "LZ Compress",
+        name: Scratch.translate("LZ Compress"),
+        color1: "#2f3463",
+        color2: "#2b2f59",
         blocks: [
           {
             opcode: "compress",
             blockType: Scratch.BlockType.REPORTER,
-            text: "compress [TEXT] to [TYPE]",
+            text: Scratch.translate("compress [TEXT] to [TYPE]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -369,7 +372,7 @@
           {
             opcode: "decompress",
             blockType: Scratch.BlockType.REPORTER,
-            text: "decompress [TEXT] from [TYPE]",
+            text: Scratch.translate("decompress [TEXT] from [TYPE]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -386,11 +389,31 @@
           COMPRESSIONTYPES: {
             acceptReporters: true,
             items: [
-              "Raw",
-              "Base64",
-              "EncodedURIComponent",
-              "Uint8Array",
-              "UTF16",
+              { text: Scratch.translate("Raw"), value: "Raw" },
+              { text: Scratch.translate("Base64"), value: "Base64" },
+              {
+                text: Scratch.translate({
+                  default: "EncodedURIComponent",
+                  description:
+                    "A type of encoding that happens to also be used in URLs.",
+                }),
+                value: "EncodedURIComponent",
+              },
+              {
+                text: Scratch.translate({
+                  default: "Uint8Array",
+                  description: "An array of bytes.",
+                }),
+                value: "Unit8Array",
+              },
+              {
+                text: Scratch.translate({
+                  default: "UTF16",
+                  description:
+                    "A type of unicode encoding. For almost all languages this translates to just 'UTF16'",
+                }),
+                value: "UTF16",
+              },
             ],
           },
         },

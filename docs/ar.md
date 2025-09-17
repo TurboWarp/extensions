@@ -6,7 +6,8 @@
  - [ARCore](https://play.google.com/store/apps/details?id=com.google.ar.core) (if on Android)
  - browser with [WebXR API and immersive-ar](https://immersive-web.github.io/webxr-samples/report/) session type support
 
-At the moment of writing, only Chromium-based browsers on Android support immersive-ar session type.
+> [!WARNING]
+> At the moment of writing, only Chromium-based browsers on Android support immersive-ar session type.
 
 ## Other information
 
@@ -17,7 +18,7 @@ At the moment of writing, only Chromium-based browsers on Android support immers
 ## Blocks
 
 ```scratch
-enter ar mode :: #d10000
+enter AR mode :: #d10000
 ```
 If AR is not supported and the error message haven't been shown yet, shows a popup with an error message.
 
@@ -28,7 +29,7 @@ The origin of coordinate system is placed at or close to position of the device 
 ---
 
 ```scratch
-exit ar mode :: #d10000
+exit AR mode :: #d10000
 ```
 
 If the project is in AR mode, exits it.
@@ -37,7 +38,7 @@ If the project is in AR mode, exits it.
 
 
 ```scratch
-<is in ar? :: #d10000>
+<is in AR? :: #d10000>
 ```
 Tells if the project is currently in AR mode.
 
@@ -60,7 +61,7 @@ After entering AR mode, is is not immediately available as the map of the enviro
 ---
 
 ```scratch
-<is [hit position v] available :: #d10000>
+<is [hit position v] available? :: #d10000>
 ```
 Tells if AR engine knows where the point of ray intersection is.
 

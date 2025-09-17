@@ -105,22 +105,22 @@
     var t = v * (1 - (1 - f) * s);
     switch (i % 6) {
       case 0:
-        (r = v), (g = t), (b = p);
+        ((r = v), (g = t), (b = p));
         break;
       case 1:
-        (r = q), (g = v), (b = p);
+        ((r = q), (g = v), (b = p));
         break;
       case 2:
-        (r = p), (g = v), (b = t);
+        ((r = p), (g = v), (b = t));
         break;
       case 3:
-        (r = p), (g = q), (b = v);
+        ((r = p), (g = q), (b = v));
         break;
       case 4:
-        (r = t), (g = p), (b = v);
+        ((r = t), (g = p), (b = v));
         break;
       case 5:
-        (r = v), (g = p), (b = q);
+        ((r = v), (g = p), (b = q));
         break;
     }
     return [(r * 255) | 0, (g * 255) | 0, (b * 255) | 0];
@@ -604,6 +604,13 @@
 
       return this._texture;
     }
+
+    isMetricsReady() {
+      if (this._needsReflow()) {
+        this._reflowText();
+      }
+      return true;
+    }
   }
 
   /**
@@ -836,7 +843,7 @@
           {
             opcode: "setOutlineWidth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set outline width to [WIDTH]",
+            text: Scratch.translate("set outline width to [WIDTH]"),
             hideFromPalette: compatibilityMode,
             arguments: {
               WIDTH: {
@@ -849,7 +856,7 @@
           {
             opcode: "setOutlineColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set outline color to [COLOR]",
+            text: Scratch.translate("set outline color to [COLOR]"),
             hideFromPalette: compatibilityMode,
             arguments: {
               COLOR: {
@@ -876,7 +883,25 @@
             opcode: "getLines",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("# of lines"),
+            hideFromPalette: true,
+            disableMonitor: true,
+            extensions: ["colours_looks"],
+          },
+          {
+            opcode: "getLinesV2",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              default: "# of lines [WITH_WORD_WRAP]",
+              description:
+                "[WITH_WORD_WRAP] is a menu with choices 'with word wrap' and 'without word wrap'",
+            }),
             hideFromPalette: compatibilityMode,
+            arguments: {
+              WITH_WORD_WRAP: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "twWordWrap",
+              },
+            },
             disableMonitor: true,
             extensions: ["colours_looks"],
           },
@@ -1003,7 +1028,7 @@
           {
             opcode: "setShakeIntensity",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set shake intensity to [NUM]%",
+            text: Scratch.translate("set shake intensity to [NUM]%"),
             hideFromPalette: compatibilityMode,
             arguments: {
               NUM: {
@@ -1178,6 +1203,19 @@
           twFont: {
             acceptReporters: true,
             items: "getFonts",
+          },
+          twWordWrap: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("with word wrap"),
+                value: "with word wrap",
+              },
+              {
+                text: Scratch.translate("without word wrap"),
+                value: "without word wrap",
+              },
+            ],
           },
         },
       };
@@ -1380,6 +1418,21 @@
       const state = this._getState(util.target);
       const text = state.skin.text;
       return text.split("\n").length;
+    }
+
+    getLinesV2(args, util) {
+      const drawableID = util.target.drawableID;
+      const skin = renderer._allDrawables[drawableID].skin;
+      if (!(skin instanceof TextCostumeSkin)) return 0;
+
+      const state = this._getState(util.target);
+      if (Scratch.Cast.toString(args.WITH_WORD_WRAP) === "with word wrap") {
+        if (state.skin._needsReflow()) {
+          state.skin._reflowText();
+        }
+        return state.skin.lines.length;
+      }
+      return state.skin.text.split("\n").length;
     }
 
     setAlignment(args, util) {
