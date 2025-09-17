@@ -154,7 +154,7 @@
           {
             opcode: "doesPageExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("does page [NAME] exists?"),
+            text: Scratch.translate("does page [NAME] exist?"),
             disableMonitor: true,
             arguments: {
               NAME: {
