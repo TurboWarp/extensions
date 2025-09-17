@@ -58,6 +58,7 @@
   "true-fantom/math",
   "true-fantom/regexp",
   "true-fantom/couplers",
+  "DogeisCut/FormatNumbers",
   "Lily/AllMenus",
   "Lily/HackedBlocks",
   "Lily/Cast",

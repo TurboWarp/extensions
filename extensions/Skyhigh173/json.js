@@ -851,7 +851,8 @@
         if (item >= 0) {
           result = json[item];
         } else {
-          result = json[json.length + item];
+          const length = Scratch.Cast.toNumber(json.length);
+          result = json[length + item];
         }
         result = result ?? "";
         if (typeof result == "object") {
@@ -1108,7 +1109,7 @@
           ) {
             count ||= 1;
             if (freqMap.has(num)) ++count;
-            if (count > mode[1]) (mode[0] = num), (mode[1] = count);
+            if (count > mode[1]) ((mode[0] = num), (mode[1] = count));
             freqMap.set(num, count);
           }
           return mode[0];
