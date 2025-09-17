@@ -68,7 +68,7 @@
             arguments: {
               WHAT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "getCurrent_menu",
+                menu: "coordinates",
               },
             },
           },
