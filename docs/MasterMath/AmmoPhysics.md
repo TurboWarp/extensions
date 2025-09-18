@@ -291,3 +291,15 @@ Pushes the specified body with a force or impulse with the given XYZ strength in
 push body [body] with torque x: (1) y: (1) z: (1) :: #0fbd8c
 ```
 Pushes the specified body with the given XYZ rotational torque in newton-meters. Only results in rotational velocity.
+
+### Constraints <a name="constraints"></a>
+
+Constraints not supported:
+- Cone Twist Constraint: a ragdoll-joint like constraint, not available due to complexity
+- Generic 6DOF Constraint: a entirely manually setup constraint that provides full control of the behavior, not available due to complexity.
+
+Either of these may be implemented if enough users request them.
+
+## More Resources <a name="more-resources"></a>
+
+**Work in Progress, coming soon**
