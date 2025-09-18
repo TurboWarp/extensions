@@ -1,13 +1,15 @@
 // Name: Ammo Physics
 // ID: masterMathAmmoPhysics
-// Description: Advanced three dimentional rigid body physics.
+// Description: Advanced three dimentional rigid body physics and collision detection.
 // By: -MasterMath- <https://scratch.mit.edu/users/-MasterMath-/>
 // License: MPL-2.0 and MIT
+
+// V0.9.5
 
 // Development using Cannon.js started December 14, 2024 - discontinued.
 // Development using Ammo.js started January 30, 2025.
 
-// ChatGPT and AI LLMs were used to assist in the learning of Ammo.js. It did not write all of the code for me.
+// ChatGPT and AI LLMs were used to assist in the learning of Ammo.js due to the apparent lack of documentation. It did not write all of the code for me.
 
 /* eslint-disable */
 (function (Scratch) {
@@ -168,6 +170,9 @@
               if (array.value[i] != "") {
                 const item = array.value[i].split(" ");
                 if (item.length !== 3) {
+                  console.warn(
+                    `Attempted to process invalid vertex list "${list}"`
+                  );
                   return;
                 }
                 points.push(
@@ -199,6 +204,9 @@
                 ?.map((n) => Scratch.Cast.toNumber(n));
               // * validate triangulated mesh
               if (indices.length !== 3) {
+                console.warn(
+                  `Attempted to process non-triangulated face list "${faceList}"`
+                );
                 return;
               }
 
@@ -259,7 +267,10 @@
       //* ------------
 
       runtime.on("PROJECT_START", () => {
-        //! On rare occasion, this seems to trigger an "Aborted: OOM (Out of Memory)" error and breaks the project until the page is refreshed.
+        //! On rare occasion, there's an "Aborted: OOM (Out of Memory)" error that breaks the project until the page is refreshed.
+        //! This seems to be due to poor cleanup after pressing the green flag, so all ammo aren't destroyed and leak into memory...
+        //! The easiest way would be to iterate through everything that inherits from Ammo and Ammo.destroy it, but I don't think
+        //! there's a way to do this without adding every created Ammo object to an array or something.
         world.setGravity(new Ammo.btVector3(0, -9.81, 0));
         for (const key in bodies) {
           if (Object.prototype.hasOwnProperty.call(bodies, key)) {
@@ -301,7 +312,7 @@
         constraints = {};
       });
 
-      // SVG Icons from Blender source code: https://github.com/blender/blender/tree/main/release/datafiles/icons_svg
+      // These SVG Icons from Blender source code: https://github.com/blender/blender/tree/main/release/datafiles/icons_svg
       const sphereIcon =
         "data:image/svg+xml;base64,PHN2ZyBpZD0ic3ZnMyIgaGVpZ2h0PSIxNjAwIiB2aWV3Qm94PSIwIDAgMTYwMCAxNjAwIiB3aWR0aD0iMTYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIj48c29kaXBvZGk6bmFtZWR2aWV3IHBhZ2Vjb2xvcj0iIzMwMzAzMCIgc2hvd2dyaWQ9InRydWUiPjxpbmtzY2FwZTpncmlkIGlkPSJncmlkNSIgdW5pdHM9InB4IiBzcGFjaW5neD0iMTAwIiBzcGFjaW5neT0iMTAwIiBjb2xvcj0iIzQ3NzJiMyIgb3BhY2l0eT0iMC4yIiB2aXNpYmxlPSJ0cnVlIiAvPjwvc29kaXBvZGk6bmFtZWR2aWV3PjxnIGZpbGw9IiNmZmYiPjxwYXRoIGlkPSJwYXRoMiIgZD0ibTM5MSAzMzBjLTEuODQ2OTIgMC0zLjUxOTU3LjI4MjYxLTQuNzc1MzkuNzY1NjItLjYyNzkxLjI0MTUxLTEuMTU0NzguNTMwNTItMS41NTA3OC44OTA2M3MtLjY3MzgzLjgyMjkyLS42NzM4MyAxLjM0Mzc1YS41MDAwNS41MDAwNSAwIDEgMCAxIDBjMC0uMTY5NTUuMDg1OC0uMzY1NDEuMzQ3NjYtLjYwMzUyLjI2MTg0LS4yMzgxLjY4Nzk1LS40ODYzNCAxLjIzNjMyLS42OTcyNiAxLjA5Njc2LS40MjE4NCAyLjY3MzA0LS42OTkyMiA0LjQxNjAyLS42OTkyMnMzLjMxOTI2LjI3NzM4IDQuNDE2MDIuNjk5MjJjLjU0ODM3LjIxMDkyLjk3NDQ4LjQ1OTE2IDEuMjM2MzIuNjk3MjYuMjYxODUuMjM4MTEuMzQ3NjYuNDMzOTcuMzQ3NjYuNjAzNTJhLjUwMDA1LjUwMDA1IDAgMSAwIDEgMGMwLS41MjA4My0uMjc3ODMtLjk4MzY0LS42NzM4My0xLjM0Mzc1cy0uOTIyODctLjY0OTEyLTEuNTUwNzgtLjg5MDYzYy0xLjI1NTgyLS40ODMwMS0yLjkyODQ3LS43NjU2Mi00Ljc3NTM5LS43NjU2MnoiIG9wYWNpdHk9Ii41IiB0cmFuc2Zvcm09Im1hdHJpeCgxMDAgMCAwIDEwMCAtMzgzMDAgLTMyNTAwKSIvPjxwYXRoIGlkPSJwYXRoMSIgZD0ibTM5MSAzODljLTMuODM4MzYtLjAwMDAxLTYuOTYwOTcgMy4xMDUzNC02Ljk5NjA5IDYuOTM1NTVhLjUwMDA1LjUwMDA1IDAgMCAwIC0uMDAzOTEuMDY0NDVjMCAzLjg2MDEyIDMuMTM5ODggNy4wMDAwMSA3IDcgLjAxNzEgMCAuMDMzNy0uMDAyLjA1MDgtLjAwMmEuNTAwMDUuNTAwMDUgMCAwIDAgLjAxLS4wMDJjMy44MzE3Ni0uMDMyOTIgNi45MzkyLTMuMTU2MzIgNi45MzkyLTYuOTk2IDAtLjAxNzEtLjAwMi0uMDMzNy0uMDAyLS4wNTA4YS41MDAwNS41MDAwNSAwIDAgMCAtLjAwMi0uMDFjLS4wMzI4LTMuODEwOTUtMy4xMjI4OS02LjkwMTY2LTYuOTMzNTktNi45MzU1NGEuNTAwMDUuNTAwMDUgMCAwIDAgLS4wNjI0MS0uMDAzNjZ6bTAgMWMzLjMxOTY4IDAgNiAyLjY4MDMyIDYgNiAwIC4xNjk1NS0uMDg1OC4zNjU0MS0uMzQ3NjYuNjAzNTItLjI2MTg0LjIzODEtLjY4Nzk1LjQ4NjM0LTEuMjM2MzIuNjk3MjYtMS4wOTY3Ni40MjE4NC0yLjY3MzA0LjY5OTIyLTQuNDE2MDIuNjk5MjItLjY1OTM5IDAtMS4yODIyMS0uMDUwOS0xLjg3Njk1LS4xMjMwNS0uMDcyMi0uNTk0NzQtLjEyMzA1LTEuMjE3NTYtLjEyMzA1LTEuODc2OTUgMC0xLjc0Mjk4LjI3NzM4LTMuMzE5MjYuNjk5MjItNC40MTYwMi4yMTA5Mi0uNTQ4MzcuNDU5MTYtLjk3NDQ4LjY5NzI2LTEuMjM2MzIuMjM4MTEtLjI2MTg1LjQzMzk3LS4zNDc2Ni42MDM1Mi0uMzQ3NjZ6bS0xLjc2MzY3LjI2MzY3Yy0uMTczMzcuMjg3MTktLjMzMjc0LjYwMjI0LS40NzA3MS45NjA5NC0uNDgzMDEgMS4yNTU4Mi0uNzY1NjIgMi45Mjg0Ny0uNzY1NjIgNC43NzUzOSAwIC41OTQ4Ni4wMzc5IDEuMTYyMjkuMDkzNyAxLjcxMjg5LS41NTg5Ny0uMTEzLTEuMDc5NTEtLjI0NjYyLTEuNTA5NzctLjQxMjExLS41NDgzNy0uMjEwOTItLjk3NDQ4LS40NTkxNi0xLjIzNjMyLS42OTcyNi0uMjYxOC0uMjM4MTEtLjM0NzYxLS40MzM5Ny0uMzQ3NjEtLjYwMzUyIDAtMi43MDU2NyAxLjc4MDM0LTQuOTg1MTIgNC4yMzYzMy01LjczNjMzem0tMy45NzI2NiA3LjVjLjI4NzE5LjE3MzM3LjYwMjI0LjMzMjc0Ljk2MDk0LjQ3MDcxLjU4NTI0LjIyNTA5IDEuMjY4MDIuNDAxNTMgMi4wMDk3Ny41MzEyNC4xMjk3Mi43NDE3NC4zMDYxNiAxLjQyNDUzLjUzMTI0IDIuMDA5NzcuMTM3OTcuMzU4Ny4yOTczNC42NzM3NS40NzA3MS45NjA5NC0xLjg5ODYzLS41ODA3NC0zLjM5MTkyLTIuMDc0MDItMy45NzI2Ni0zLjk3MjY2em0xMS40NzI2NiAwYy0uNzUxMjIgMi40NTU5OS0zLjAzMDY3IDQuMjM2MzMtNS43MzYzMyA0LjIzNjMzLS4xNjk1NSAwLS4zNjU0MS0uMDg1OC0uNjAzNTItLjM0NzY2LS4yMzgxLS4yNjE4NC0uNDg2MzQtLjY4Nzk1LS42OTcyNi0xLjIzNjMyLS4xNjU0OS0uNDMwMjYtLjI5OTExLS45NTA4LS40MTIxMS0xLjUwOTc3LjU1MDYuMDU1OSAxLjExODAzLjA5MzcgMS43MTI4OS4wOTM3IDEuODQ2OTIgMCAzLjUxOTU3LS4yODI2MiA0Ljc3NTM5LS43NjU2Mi4zNTg3LS4xMzc5Ny42NzM3NS0uMjk3MzQuOTYwOTQtLjQ3MDcxeiIgdHJhbnNmb3JtPSJtYXRyaXgoMTAwIDAgMCAxMDAgLTM4MzAwIC0zODgwMCkiLz48L2c+PC9zdmc+";
       const cubeIcon =
@@ -314,19 +325,19 @@
         "data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjE2MDAiIHZpZXdCb3g9IjAgMCAxNjAwIDE2MDAiIHdpZHRoPSIxNjAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIiB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiPjxzb2RpcG9kaTpuYW1lZHZpZXcgcGFnZWNvbG9yPSIjMzAzMDMwIiBzaG93Z3JpZD0idHJ1ZSI+PGlua3NjYXBlOmdyaWQgaWQ9ImdyaWQ1IiB1bml0cz0icHgiIHNwYWNpbmd4PSIxMDAiIHNwYWNpbmd5PSIxMDAiIGNvbG9yPSIjNDc3MmIzIiBvcGFjaXR5PSIwLjIiIHZpc2libGU9InRydWUiIC8+PC9zb2RpcG9kaTpuYW1lZHZpZXc+PGcgZmlsbD0iI2ZmZiI+PGcgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyIgdHJhbnNmb3JtPSJtYXRyaXgoMTAwIDAgMCAxMDAgLTUwODk5Ljk5OTk5OTk5OTk5IC0zODgwMCkiPjxwYXRoIGQ9Im01MTkuMDI1MzkgMzg5LjA1NjY0Yy0xLjIzMDE0LjA2NDUtMi40MjM1Ni42MzQ1LTMuMzc4OTEgMS41ODk4NGwtNCA0Yy0uOTU1MzQuOTU1MzUtMS41MzAwMSAyLjE1MTQ2LTEuNTk3NjUgMy4zODQ3Ny0uMDY3NiAxLjIzMzMxLjM4Nzg2IDIuNDk1NzEgMS40MTQwNiAzLjUwOTc3IDEuMDIzOTIgMS4wMTE4IDIuMjgxNTggMS40NjY4NiAzLjUxMTcyIDEuNDAyMzQgMS4yMzAxNC0uMDY0NSAyLjQyMzU2LS42MzQ1IDMuMzc4OTEtMS41ODk4NGw0LTRjLjk1NTM0LS45NTUzNSAxLjUzMDAxLTIuMTUxNDYgMS41OTc2NS0zLjM4NDc3LjA2NzYtMS4yMzMzMS0uMzg3ODYtMi40OTU3LTEuNDE0MDYtMy41MDk3Ny0xLjAyMzkyLTEuMDExOC0yLjI4MTU4LTEuNDY2ODYtMy41MTE3Mi0xLjQwMjM0em0uMDUyNy45OTgwNWMuOTU2MTctLjA1MDIgMS45MTE5OS4yODEzNCAyLjc1NTg2IDEuMTE1MjMuODQxNi44MzE2NSAxLjE3MTcxIDEuNzg1NjIgMS4xMTkxNCAyLjc0NDE0LS4wNTI2Ljk1ODUzLS41MDQ2MiAxLjkzMDQyLTEuMzA2NjQgMi43MzI0MmwtNCA0Yy0uODAyMDEuODAyMDItMS43Njg0NCAxLjI0ODY4LTIuNzI0NiAxLjI5ODgzLS45NTYxNy4wNTAyLTEuOTExOTktLjI4MTM0LTIuNzU1ODYtMS4xMTUyMy0uODQxNi0uODMxNjQtMS4xNzE3MS0xLjc4NTYyLTEuMTE5MTQtMi43NDQxNC4wNTI2LS45NTg1My41MDQ2Mi0xLjkzMDQxIDEuMzA2NjQtMi43MzI0Mmw0LTRjLjgwMjAxLS44MDIwMiAxLjc2ODQ0LTEuMjQ4NjggMi43MjQ2LTEuMjk4ODN6Ii8+PHBhdGggZD0ibTUxNy40NzI2NiAzOTEuOTk0MTRhLjUwMDA1LjUwMDA1IDAgMCAwIC0uNDU4OTkuNjIzMDVjLjE4NjY4Ljc3NjQyLjI4NDkxIDEuNDI0OTQgMS4xNDA2MyAyLjI0NDE0LjgxNS43ODAyMiAxLjM5MjgyLjk0MzEyIDIuMjQwMjMgMS4xMjY5NWEuNTAwMDUuNTAwMDUgMCAxIDAgLjIxMDk0LS45NzY1NmMtLjg0OTMxLS4xODQyNS0xLjAzODQ5LS4xODI1NS0xLjc1OTc3LS44NzMwNS0uNzIyMTgtLjY5MTM2LS42NTY2NS0uOTEyNjgtLjg1OTM3LTEuNzU1ODZhLjUwMDA1LjUwMDA1IDAgMCAwIC0uNTEzNjctLjM4ODY3eiIgZmlsbC1ydWxlPSJldmVub2RkIiBvcGFjaXR5PSIuOCIvPjwvZz48L2c+PC9zdmc+";
       const meshIcon =
         "data:image/svg+xml;base64,PHN2ZyBoZWlnaHQ9IjE2MDAiIHZpZXdCb3g9IjAgMCAxODAwIDE2MDAiIHdpZHRoPSIxODAwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOmlua3NjYXBlPSJodHRwOi8vd3d3Lmlua3NjYXBlLm9yZy9uYW1lc3BhY2VzL2lua3NjYXBlIiB4bWxuczpzb2RpcG9kaT0iaHR0cDovL3NvZGlwb2RpLnNvdXJjZWZvcmdlLm5ldC9EVEQvc29kaXBvZGktMC5kdGQiPjxzb2RpcG9kaTpuYW1lZHZpZXcgcGFnZWNvbG9yPSIjMzAzMDMwIiBzaG93Z3JpZD0idHJ1ZSI+PGlua3NjYXBlOmdyaWQgaWQ9ImdyaWQ1IiB1bml0cz0icHgiIHNwYWNpbmd4PSIxMDAiIHNwYWNpbmd5PSIxMDAiIGNvbG9yPSIjNDc3MmIzIiBvcGFjaXR5PSIwLjIiIHZpc2libGU9InRydWUiIC8+PC9zb2RpcG9kaTpuYW1lZHZpZXc+PGcgZmlsbD0iI2ZmZiI+PGcgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyIgdHJhbnNmb3JtPSJtYXRyaXgoMTAwIDAgMCAxMDAgLTEzMDAwIC0zODc5OS45OTk5KSI+PHBhdGggZD0ibTEzNS41IDM4OWEuNTAwMDQ5OTcuNTAwMDQ5OTcgMCAwIDAgLS4zMzAwOC4xMjMwNWwtMiAxLjc1YS41MDAwNDk5Ny41MDAwNDk5NyAwIDAgMCAtLjE2OTkyLjM3Njk1djEuNzVoLTEuNWEuNTAwMDQ5OTcuNTAwMDQ5OTcgMCAwIDAgLS41LjV2MS41YzAgLjk4NjExLjc0MDU0IDEuNjg4OSAxLjU2ODM2IDEuOTE5OTIuNzE1MjUuMTk5NjEgMS41MTQyMS4wNDgyIDIuMTgzNTktLjM4NDc2bDEuMjQ4MDUgMS40MDQyOXYyLjMxMDU1YzAgLjg4ODg5LjM5NDE5IDEuNjE4NDguOTY4NzUgMi4wNzgxMi41NzQ1Ni40NTk2NSAxLjMwNjI1LjY3MTg4IDIuMDMxMjUuNjcxODhzMS40NTY2OS0uMjEyMjMgMi4wMzEyNS0uNjcxODhjLjU3NDU2LS40NTk2NC45Njg3NS0xLjE4OTIzLjk2ODc1LTIuMDc4MTJ2LTIuMzEwNTVsMS4yNDgwNS0xLjQwNDI5Yy42NjkzOC40MzI5OCAxLjQ2ODM0LjU4NDM3IDIuMTgzNTkuMzg0NzYuODI3ODItLjIzMTAyIDEuNTY4MzYtLjkzMzgxIDEuNTY4MzYtMS45MTk5MnYtMS41YS41MDAwNDk5Ny41MDAwNDk5NyAwIDAgMCAtLjUtLjVoLTEuNXYtMS43NWEuNTAwMDQ5OTcuNTAwMDQ5OTcgMCAwIDAgLS4xNjk5Mi0uMzc2OTVsLTItMS43NWEuNTAwMDQ5OTcuNTAwMDQ5OTcgMCAwIDAgLS4zMzAwOC0uMTIzMDVoLTJhLjUwMDA0OTk3LjUwMDA0OTk3IDAgMCAwIC0uMzUzNTIuMTQ2NDhsLS44NTM1MS44NTM1MmgtLjU4NTk0bC0uODUzNTEtLjg1MzUyYS41MDAwNDk5Ny41MDAwNDk5NyAwIDAgMCAtLjM1MzUyLS4xNDY0OHptLjE4NzUgMWgxLjYwNTQ3bC44NTM1MS44NTM1MmEuNTAwMDQ5OTcuNTAwMDQ5OTcgMCAwIDAgLjM1MzUyLjE0NjQ4aDFhLjUwMDA0OTk3LjUwMDA0OTk3IDAgMCAwIC4zNTM1Mi0uMTQ2NDhsLjg1MzUxLS44NTM1MmgxLjYwNTQ3bDEuNjg3NSAxLjQ3ODUydjIuMDIxNDhhLjUwMDA0OTk3LjUwMDA0OTk3IDAgMCAwIC41LjVoMS41djFjMCAuNTEzODktLjMyMTk2LjgxMTEtLjgzNzg5Ljk1NTA4LS4zOTQwOC4xMDk5Ny0uODIxMi0uMDYyOS0xLjIwNzAzLS4yNWEuNTAwMDQ5OTcuNTAwMDQ5OTcgMCAwIDAgLS44MjgxMy0uNTM3MTFsLTIgMi4yNWEuNTAwMDQ5OTcuNTAwMDQ5OTcgMCAwIDAgLS4xMjY5NS4zMzIwM3YyLjVjMCAuNjExMTEtLjIzMDgxIDEuMDA2NTItLjU5Mzc1IDEuMjk2ODgtLjM2Mjk0LjI5MDM1LS44ODEyNS40NTMxMi0xLjQwNjI1LjQ1MzEycy0xLjA0MzMxLS4xNjI3Ny0xLjQwNjI1LS40NTMxMmMtLjM2Mjk0LS4yOTAzNi0uNTkzNzUtLjY4NTc3LS41OTM3NS0xLjI5Njg4di0yLjVhLjUwMDA0OTk3LjUwMDA0OTk3IDAgMCAwIC0uMTI2OTUtLjMzMjAzbC0yLTIuMjVhLjUwMDA0OTk3LjUwMDA0OTk3IDAgMCAwIC0uODI4MTMuNTM3MTFjLS4zODU4My4xODcwNy0uODEyOTUuMzU5OTctMS4yMDcwMy4yNS0uNTE1OTMtLjE0Mzk4LS44Mzc4OS0uNDQxMTktLjgzNzg5LS45NTUwOHYtMWgxLjVhLjUwMDA0OTk3LjUwMDA0OTk3IDAgMCAwIC41LS41di0yLjAyMzQ0eiIvPjxwYXRoIGQ9Im0xMzcgMzkyYS41MDAwNS41MDAwNSAwIDAgMCAtLjM1MzUyLjE0NjQ4bC0uNS41YS41MDAwNS41MDAwNSAwIDAgMCAtLjE0NjQ4LjM1MzUydi41YS41MDAwNS41MDAwNSAwIDEgMCAxIDB2LS4yOTI5N2wuMjA3MDMtLjIwNzAzaC4yOTI5N2EuNTAwMDUuNTAwMDUgMCAxIDAgMC0xem00IDBhLjUwMDA1LjUwMDA1IDAgMCAwIC0uMzUzNTIuMTQ2NDhsLS41LjVhLjUwMDA1LjUwMDA1IDAgMCAwIC0uMTQ2NDguMzUzNTJ2LjVhLjUwMDA1LjUwMDA1IDAgMSAwIDEgMHYtLjI5Mjk3bC4yMDcwMy0uMjA3MDNoLjI5Mjk3YS41MDAwNS41MDAwNSAwIDEgMCAwLTF6bS0yLjUgM2EuNTAwMDUuNTAwMDUgMCAxIDAgMCAxaDFhLjUwMDA1LjUwMDA1IDAgMSAwIDAtMXoiIG9wYWNpdHk9Ii44Ii8+PC9nPjwvZz48L3N2Zz4=";
-      // compound icon made by me, combining Blender's icons
+      // compound icon made by me, combining Blender's icons into one
       const compoundIcon =
         "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxMzQ4Ljg4NzA5IiBoZWlnaHQ9IjEyMTMuNzc3NDIiIHZpZXdCb3g9IjAsMCwxMzQ4Ljg4NzA5LDEyMTMuNzc3NDIiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQ2Ny42ODk1Miw0MTUuNDAyMzIpIj48ZyBmaWxsPSIjZmZmZmZmIiBzdHJva2U9Im5vbmUiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTg0MC41NDkzNiwtNDEzLjk5MzIyYzIyLjQ0ODQ2LDAuMDAyMjUgNDAuNjQ2LDE4LjE5OTc1IDQwLjY0ODIxLDQwLjY0ODIxdjgxMi45NjQ1NWMtMC4wMDE5LDEwLjc3OTk0IC00LjI4NTMyLDIxLjExNzc1IC0xMS45MDgyOSwyOC43Mzk5MmwtNDcuOTE2MDYsNDcuOTE2MDZjLTAuNzM5MDksLTguMDAwNDEgLTIuNTAzMTYsLTE1Ljk3MjggLTMuMjAzNTIsLTIzLjk4NTg5Yy0xLjc5NTYsLTIwLjU0MzY4IC0yLjUxMTI0LC02Mi43NzIyIC0xOC4yNjg1NiwtODUuNjg3MjN2LTY4Mi4yOTY2bC0xNjIuNTkyOTIsMTYyLjkxMDgxdjMzNy4xOTU3MWMtNC44ODQ0MiwtNC4yNDk0NCAtMTEuMDgyODYsLTcuMDI3NDggLTE3LjkwNSwtNy42NDM2N2MtMS4wMDE4LC0wLjAyOTczIC0xLjk3NTI0LC0wLjA2MjY5IC0yLjg4NzgyLC0wLjEyOTc5Yy0xMS45MTUxNywtMC44NzYzMyAtMjMuODk5NTksMC4zNDEyMSAtMzUuODQyMDQsMGMtOC42NzA5NSwtMC4yNDc3NSAtMTYuODUwODQsLTEuNzE5OTggLTI0LjY2MTYsLTIuNDQ4Njh2LTMwMi45OTc1OWgtNzMxLjY2ODA5djI3OC4xNjk0N2MtOS45NDA4OCwzLjk4Njg5IC0xNy4zOTI3NCwxMi44NjQ5MyAtMTkuMzc4MDUsMjMuNjU2NTljLTAuMzQ0MjYsMS44NzEyOCAtMC41MjQxNSwzLjgwMDA5IC0wLjUyNDE1LDUuNzcwOTJjLTIuMjA0OTUsMTEuMzE5OTYgLTcuNzkxOTMsMjAuNzI5MjggLTE0LjM3NjMzLDMwLjM3MTk1Yy0xMi4xNDIyNSwxNy43ODE5NyAtMzIuNjEyOTQsMjYuODkzNzEgLTQ3LjAxNzg5LDQxLjY0NTJ2LTQyMC4yNjI0MmMwLjAwMTksLTEwLjc3OTk0IDQuMjg1MzIsLTIxLjExNzc1IDExLjkwODI5LC0yOC43Mzk5MmwyNDMuODg5MzUsLTI0My44ODkzNWM3LjYyMjE4LC03LjYyMjk3IDE3Ljk1OTk5LC0xMS45MDY0MiAyOC43Mzk5MiwtMTEuOTA4Mjl6TS0xMTguMTc3MzEsLTE3MC4xMDM4N2g2OTguMDA2NDdsMTYyLjExNjUxLC0xNjIuNTkyOTJoLTY5Ny41MzAwOXoiLz48cGF0aCBkPSJNMTAzLjc2NjQ2LDcyNC4xNTcxMWM0LjY3ODE2LC0zLjIxMDY5IDkuMTE1MjksLTYuNDY2ODUgMTMuMjUwNDUsLTkuNjk5NzZjOS44NDI4OCwtNy42OTUzIDE0LjM5ODk5LC0yMS41MjQzMSAyMy4wODAwMiwtMzAuMzYwOTJjMTEuMDMwMDksLTExLjIyNzczIDI3LjE0NDk4LC0yNC45Njg2NCAzMi41Nzk0MSwtNDEuMjM1NzVoMTY4Ljg5MTQ4YzMuOTYxMjgsNi41ODg0OSA5LjE5NDgxLDEyLjM3NDA2IDEzLjUxMDk3LDE4LjMwMTcxYzE5LjgxNDc5LDI3LjIxMzAyIDQ2LjE1NDcyLDQ4Ljg3MzQ5IDc2LjQ4MTE5LDYyLjk5NDcyeiIvPjxwYXRoIGQ9IiIvPjxwYXRoIGQ9IiIvPjxwYXRoIGQ9IiIvPjxwYXRoIGQ9Ik01Ni44NTA3NSwtNDAzLjQ5NTYxYzcuNzc5NzMsNy43Nzk3MyAxMi4wNzM4OSwxOC4zODA1MyAxMS45MDE3OSwyOS4zODEzNHY3NzIuMzE2MzRoMjM2LjY4Nzc1Yy0wLjMxMTgsMS4zMDg2NiAtMC41NDI0NCwyLjY0ODc2IC0wLjY4NjI5LDQuMDE0NzVjLTEuMDQ0ODQsMy4zOTk0NSAtMy43MzIwMSw2LjA1NTEyIC01LjYxNjg5LDkuMDcwOTVjLTEzLjMzOTEsMjEuMzQyNTggLTE4LjEzMzU0LDQzLjI0MzYzIC0xNi45MTYxOSw2OC4yMTA3NWgtMTU3LjQ4NTk1Yy0xLjY0MTI1LC03LjA3MjA0IC03Ljg2NDIyLC0xMy41NTM5MiAtMTAuMzg3MzgsLTE5LjY0NTM2Yy05LjQxNzgxLC0yMi43MzY2MiAtMzIuMzg0NSwtNDQuMjA5ODEgLTQ4LjI5Njc2LC02MS40Mjk5NWMtNy45NzA5NywtOC42MjYxNCAtMjMuMjkzODksLTE4LjM2MTk2IC0zMC4xNDI3MSwtMjguMzk1MjNjLTQuMjg5NTQsLTYuMjg0MDEgLTguNDY1MzUsLTE2LjIwNjYgLTEzLjAxNzg1LC0yMS41MTc4NWMtMy41MzQyOCwtNC4xMjMzMyAtOC44NzgyNiwtNy44NjM4MSAtMTEuMjY0MjgsLTEyLjUxNTQ0Yy0wLjA4MjAyLC0wLjE1OTg5IC0wLjE1OTU4LC0wLjMyMjk5IC0wLjIzMjk4LC0wLjQ4OTA2YzAuMTUzODEsLTEuMjY1OTcgMC4yMzI5OCwtMi41NTQ5NSAwLjIzMjk4LC0zLjg2MjRjMCwtNC42MzE5OCAtMC45OTM2NiwtOS4wMzE5MSAtMi43Nzk0NiwtMTIuOTk4MmMtMC4yOTQ3MiwtMC45OTUyNyAtMC42Nzc1OCwtMS45NTE0NCAtMS4xODIyMywtMi44NDg1OWMtMC42OTA3LC0xLjIyNzkgLTEuNTIyMzcsLTIuMzE1ODUgLTIuNDY2OTYsLTMuMjkxNTdjLTQuMzMyOTIsLTUuNzExMDkgLTEwLjU1Nzg2LC05LjkwNzkyIC0xNy43NDEyMSwtMTEuNjU2OHYtNjc0Ljk2MjI5Yy0wLjE2ODY0LC0xMC43ODA2NiAzLjk1MjM4LC0yMS4xODY3MSAxMS40NTYzNywtMjguOTI4ODVjNy41MDM5OSwtNy43NDIxNCAxNy43NzYyOSwtMTIuMTg2MTUgMjguNTU2OTMsLTEyLjM1NDI4YzExLjAwMDg0LC0wLjE3MjA2IDIxLjYwMTY0LDQuMTIyMSAyOS4zODEzNCwxMS45MDE3OXoiIG9wYWNpdHk9IjAuNSIvPjxwYXRoIGQ9IiIgb3BhY2l0eT0iMC41Ii8+PHBhdGggZD0iTTExMC4yODc1MSw0OTkuNDM2MWMzMC43ODQzMiwxMy40NzA3NSA1Ni40NzcxOSwyOS4zODY3IDc1LjU5NTU1LDQ4LjEzMjU5YzE5LjExODg2LDE4Ljc0NTg2IDMyLjM0Mzc3LDQxLjU1ODkzIDMyLjM0Mzc3LDY3LjA3OTQ4YzAuMTI0OTQsOC44MzQ0OSAtNC41MTY2MiwxNy4wNTE4NyAtMTIuMTQ3MzYsMjEuNTA1NTVjLTcuNjMwNzQsNC40NTM3MSAtMTcuMDY4MzgsNC40NTM3MSAtMjQuNjk5MTIsMGMtNy42MzA3NCwtNC40NTM3MSAtMTIuMjcyMzIsLTEyLjY3MTA5IC0xMi4xNDczNiwtMjEuNTA1NTVjMCwtOC4zMTYzIC00LjU5MTE5LC0xOS4yOTU5NCAtMTcuNzAyOTUsLTMyLjE1MjIxYy0xMy4xMTE3MywtMTIuODU2MjggLTM0LjAxMzk5LC0yNi40MzM3NCAtNjAuODU5NjgsLTM4LjE4MDc0Yy01My42OTA4OCwtMjMuNDk0IC0xMzAuNTczNTQsLTM5LjkwMzE5IC0yMTUuNDAwNDcsLTM5LjkwMzE5Yy04NC44MjY5NywwIC0xNjEuNzA5NTksMTYuNDA5MTkgLTIxNS40MDA0NywzOS45MDMxOWMtMjYuODQ1NjksMTEuNzQ3MDMgLTQ3Ljc0NzkyLDI1LjMyNDQ3IC02MC44NTk2OCwzOC4xODA3NGMtMTMuMTEyMiwxMi44NTYyOCAtMTcuNzAyOTUsMjMuODM1OTEgLTE3LjcwMjk1LDMyLjE1MjIxYzAuMTI0OTQsOC44MzQ0OSAtNC41MTY2MiwxNy4wNTE4NyAtMTIuMTQ3MzYsMjEuNTA1NTVjLTcuNjMwNzQsNC40NTM3MSAtMTcuMDY4MzgsNC40NTM3MSAtMjQuNjk5MTIsMGMtNy42MzA3NCwtNC40NTM3MSAtMTIuMjcyMjksLTEyLjY3MTA5IC0xMi4xNDczNiwtMjEuNTA1NTVjMCwtMjUuNTIwNTUgMTMuMjI0OTEsLTQ4LjMzMzYyIDMyLjM0Mzc3LC02Ny4wNzk0OGMxOS4xMTgzOSwtMTguNzQ1ODYgNDQuODExMjYsLTM0LjY2MTg0IDc1LjU5NTU1LC00OC4xMzI1OWM2MS41Njk1OSwtMjYuOTQxNjMgMTQzLjk2NjQ4LC00NC4wMTc5NCAyMzUuMDE3NjIsLTQ0LjAxNzk0YzkxLjA1MTE0LDAgMTczLjQ0ODA0LDE3LjA3NjMxIDIzNS4wMTc2Miw0NC4wMTc5NHoiIG9wYWNpdHk9IjAuNSIvPjxwYXRoIGQ9Ik0tMTAwLjIzMzE3LDExMi40NjEyMmM4LjEzOTEsMC4wMTA1OSAxNS43NDE2LDQuMDYyNTUgMjAuMjg4MzYsMTAuODEzMjVsMjgxLjcxNDYyLDQxNi40NDc3MmMwLjQxMSwwLjYyMDE1IDAuNzkzNTgsMS4yNTg3NCAxLjE0NjQ1LDEuOTEzNjljMTAuNTY3OTcsMTkuMjU2NTEgMTUuMzEwNTYsNDAuMTk4NzQgMTUuMzEwNTYsNjAuNzYzODRjMCw1OS42NDYyMyAtNDMuOTExNywxMDkuMzY5NDYgLTEwNi4xMjE2NiwxNDIuODY2ODRjLTYyLjIwOTQ1LDMzLjQ5NzM4IC0xNDUuMzMxOTQsNTMuMTA4NTQgLTIzNi44MzUyOCw1My4xMDg1NGMtOTEuNTAzMzUsMCAtMTc0LjYyNTg2LC0xOS42MTExNiAtMjM2LjgzNTI4LC01My4xMDg1NGMtNjIuMjA5OTIsLTMzLjQ5NzM4IC0xMDYuMTIxNjYsLTgzLjIyMDYxIC0xMDYuMTIxNjYsLTE0Mi44NjY4NGMwLC0yMC41ODMyIDQuODAwNDQsLTQxLjUyODg1IDE1LjIxNDUzLC02MC42Njc5N2MwLjM4MjIyLC0wLjY4OTU2IDAuNzk3NTQsLTEuMzYwMjIgMS4yNDQ0NSwtMi4wMDk3MmwyODEuNzE0NjIsLTQxNi40NDc3MmM0LjU0NjQxLC02Ljc1MDA3IDEyLjE0ODAyLC0xMC44MDE5IDIwLjI4NjM5LC0xMC44MTMwOXpNLTQwOS41MDY4OCw1NjUuMzY3MjZjLTYuMTYzNDIsMTEuNDM5OTUgLTkuMTg2MzUsMjQuMTYyNDggLTkuMTg2MzUsMzcuMDMyNDVjMCwzNS4wNTg4NiAyNy4zMjk3NSw3MS4xNDQ1NyA4MC4zODAzLDk5LjcxMDExYzUzLjA1MTA1LDI4LjU2NTU4IDEyOS4yMDgwNSw0Ny4yNzE0MSAyMTMuNTgyODIsNDcuMjcxNDFjODQuMzc0NzYsMCAxNjAuNTMxNzksLTE4LjcwNTg3IDIxMy41ODI4MiwtNDcuMjcxNDFjNTMuMDUwNTQsLTI4LjU2NTU4IDgwLjM4MDMsLTY0LjY1MTI1IDgwLjM4MDMsLTk5LjcxMDExYzAsLTEzLjE0ODA1IC0yLjg0NTA3LC0yNS4zMTcwOCAtOS4wOTA4MywtMzYuODQxMDZsLTI3My4zODkxLC00MDQuMTAzNThoLTIyLjk2NjM3eiIvPjxwYXRoIGQ9Ik03NTAuODQwODUsMzkyLjQyMzAyYzI1LjM3NTg0LDkuNzYwMiA0Ni42NjgzOCwyMS40NDAwNCA2Mi42NzIwMiwzNS45OTMyMmMxNi4wMDM2NCwxNC41NTMxOCAyNy4yMzE2MywzMy4yNTY4MyAyNy4yMzE2Myw1NC4zMDUyM2MwLjEwMzA0LDcuMjg3MjQgLTMuNzI1NTgsMTQuMDY1NDUgLTEwLjAxOTg5LDE3LjczOTE1Yy02LjI5NDMxLDMuNjczNyAtMTQuMDc5MDgsMy42NzM3IC0yMC4zNzM0MiwwYy02LjI5NDMxLC0zLjY3MzcgLTEwLjEyMjk2LC0xMC40NTE5MSAtMTAuMDE5OTIsLTE3LjczOTE1YzAsLTYuODUyMDYgLTMuNDY3ODUsLTE0Ljc2NzM3IC0xNC4wNTAwOCwtMjQuMzkwMTdjLTEwLjU4MTc5LC05LjYyMjM5IC0yNy44MDIyNywtMTkuNjU0NTggLTQ5Ljk2MzY1LC0yOC4xNzg1Yy00NC4zMjM1OSwtMTcuMDQ3OTEgLTEwOC4wMjYxNiwtMjguMjU3NzQgLTE3OC40NjU1NywtMjguMjU3NzRjLTcwLjQzOTQyLDAgLTEzNC4xNDE5NSwxMS4yMDk4MyAtMTc4LjQ2NTU0LDI4LjI1Nzc0Yy0yMi4xNjEzOCw4LjUyMzk2IC0zOS4zODE4NywxOC41NTYxMSAtNDkuOTYzNjksMjguMTc4NWMtMTAuNTgyNTgsOS42MjI4IC0xNC4wNTAwOCwxNy41MzgxMiAtMTQuMDUwMDgsMjQuMzkwMTdjMC4xMDMwNCw3LjI4NzI0IC0zLjcyNTYxLDE0LjA2NTQ1IC0xMC4wMTk5MiwxNy43MzkxNWMtNi4yOTQzMSwzLjY3MzcgLTE0LjA3OTExLDMuNjczNyAtMjAuMzczNDIsMGMtNi4yOTQzMSwtMy42NzM3IC0xMC4xMjI5NiwtMTAuNDUxOTEgLTEwLjAxOTkyLC0xNy43MzkxNWMwLC0yMS4wNDg0MyAxMS4yMjgwMiwtMzkuNzUyMDUgMjcuMjMxNjMsLTU0LjMwNTIzYzE2LjAwMzY0LC0xNC41NTMxOCAzNy4yOTYxOCwtMjYuMjMzMDMgNjIuNjcyMDIsLTM1Ljk5MzIyYzUwLjc1MTc1LC0xOS41MTk5OCAxMTguMzQ4ODgsLTMwLjk0MTE3IDE5Mi45ODg4NywtMzAuOTQxMTdjNzQuNjM5OTksMCAxNDIuMjM3MTIsMTEuNDIxMTYgMTkyLjk4ODg3LDMwLjk0MTE3eiIgb3BhY2l0eT0iMC41Ii8+PHBhdGggZD0iTTU2MC4zNzIyMiwxOTkuOTc2OTRjMTU0LjAwMjYzLDEuMzY5MTkgMjc4Ljg4MzEyLDEyNi4yNzQ3MiAyODAuMjA4NjQsMjgwLjI4NzQ2YzAuMDI4MzMsMC4xMzQ0NCAwLjA1NTI3LDAuMjY5MTcgMC4wODA4NSwwLjQwNDEyYzAsMC42OTEwOCAwLjA4MDgyLDEuMzYxOSAwLjA4MDgyLDIuMDUyOThjMCwxNTUuMTczODEgLTEyNS41ODE2NCwyODEuNDAwNDQgLTI4MC40MzUzNywyODIuNzMwODRjLTAuMTM0NDQsMC4wMjgzMyAtMC4yNjkxNCwwLjA1NTI3IC0wLjQwNDEyLDAuMDgwODVjLTAuNjkxMDgsMCAtMS4zNjE5NCwwLjA4MDg1IC0yLjA1MzAxLDAuMDgwODVjLTE1NS45OTk4NywwLjAwMDQxIC0yODIuODkyNDgsLTEyNi44OTI2OCAtMjgyLjg5MjQ4LC0yODIuODkyNTFjLTAuMDAzNDksLTAuODcwNzIgMC4wNDkyOCwtMS43NDA3MSAwLjE1Nzk5LC0yLjYwNDYxYzEuNDE5MywtMTU0Ljc5MTExIDEyNy42MTQwMiwtMjgwLjI4ODI4IDI4Mi43MzQ0OSwtMjgwLjI4Nzg3YzAuODQyOTksLTAuMDAzMzYgMS42ODUzNywwLjA0NjA1IDIuNTIyMjEsMC4xNDc5MXpNNTMzLjQ1OTg4LDI1NC4yOTIyOGMtOS42MjIzOSwxMC41ODE4MiAtMTkuNjU0NTgsMjcuODAyMjcgLTI4LjE3ODU0LDQ5Ljk2MzY5Yy0xNy4wNDc5MSw0NC4zMjM1OSAtMjguMjU3NzQsMTA4LjAyNjEzIC0yOC4yNTc3NCwxNzguNDY1NTRjMCwyNi42NDgwNSAyLjA1NTAxLDUxLjgxODI0IDQuOTcyODUsNzUuODUzNmMyNC4wMzUzNiwyLjkxNTg0IDQ5LjIwNTUxLDQuOTcyODUgNzUuODUzNTcsNC45NzI4NWM3MC40Mzk0MiwwIDEzNC4xNDE5OCwtMTEuMjA5ODMgMTc4LjQ2NTU3LC0yOC4yNTc3NGMyMi4xNjEzOCwtOC41MjM5NiAzOS4zODE4NywtMTguNTU2MTEgNDkuOTYzNjksLTI4LjE3ODVjMTAuNTgyNjEsLTkuNjIyOCAxNC4wNTAwNSwtMTcuNTM4MTUgMTQuMDUwMDUsLTI0LjM5MDJjMCwtMTM0LjE1ODk0IC0xMDguMzIwMzcsLTI0Mi40NzkyNyAtMjQyLjQ3OTMxLC0yNDIuNDc5MjdjLTYuODUyMDYsMCAtMTQuNzY3MzcsMy40Njc4NSAtMjQuMzkwMTcsMTQuMDUwMDV6TTMxNS4zNzA3Nyw0ODIuNzIxNTFjMCw2Ljg1MjA2IDMuNDY3ODUsMTQuNzY3NCAxNC4wNDgwNSwyNC4zOTAyYzEwLjU4MTgyLDkuNjIyMzkgMjcuODAyMjcsMTkuNjU0NTggNDkuOTYzNjksMjguMTc4NWMxNy4zODgxNyw2LjY4ODAxIDM4LjQyNDg4LDEyLjA4Nzk5IDYxLjAxNDY3LDE2LjY1NDY5Yy0yLjI1NTA2LC0yMi4yNTE1MiAtMy43ODY3MiwtNDUuMTgzMTkgLTMuNzg2NzIsLTY5LjIyMzRjMCwtNzQuNjM5OTkgMTEuNDIxMTksLTE0Mi4yMzcxMiAzMC45NDEyLC0xOTIuOTg4ODRjNS41NzU4MiwtMTQuNDk2MjMgMTIuMDE2NDYsLTI3LjIyODQzIDE5LjAyMjksLTM4LjgzNDY4Yy05OS4yNTQ0NSwzMC4zNTg4IC0xNzEuMjAzNzIsMTIyLjQ3ODcxIC0xNzEuMjAzNzIsMjMxLjgyMzU1ek00ODYuNTc0NDYsNzE0LjU0NTA1Yy03LjAwNjQ0LC0xMS42MDYyNSAtMTMuNDQ3MDgsLTI0LjMzODQ1IC0xOS4wMjI5LC0zOC44MzQ2OGMtOS4wOTYyMSwtMjMuNjUxNDMgLTE2LjIyNjczLC01MS4yNDUxOCAtMjEuNDY5MTMsLTgxLjIyMTI4Yy0yOS45NzY1MSwtNS4yNDIwMiAtNTcuNTY5ODMsLTEyLjM3MjU0IC04MS4yMjEyNSwtMjEuNDY5MWMtMTQuNDk2MjMsLTUuNTc1ODIgLTI3LjIyODQzLC0xMi4wMTY0NiAtMzguODM0NjgsLTE5LjAyMjkzYzIzLjQ2OTU3LDc2LjczMDE1IDgzLjgxODIyLDEzNy4wNzg0MiAxNjAuNTQ3OTYsMTYwLjU0Nzk5ek03ODkuNjczNTksNTUzLjk5NTA3Yy0xMS42MDYyOCw3LjAwNjQ0IC0yNC4zMzg0NSwxMy40NDcwOCAtMzguODM0NjgsMTkuMDIyOWMtNTAuNzUxNzUsMTkuNTE5NTcgLTExOC4zNDg4OCwzMC45NDExNyAtMTkyLjk4ODg3LDMwLjk0MTE3Yy0yNC4wNDAyMSwwIC00Ni45NzE4OCwtMS41Mjc2IC02OS4yMjMzNiwtMy43ODY3MmM0LjU2NjcsMjIuNTg5NzUgOS45NjY3MSw0My42MjY0OSAxNi42NTQ2OSw2MS4wMTQ2N2M4LjUyMzk2LDIyLjE2MTM4IDE4LjU1NjE0LDM5LjM4MTg3IDI4LjE3ODU0LDQ5Ljk2MzY5YzkuNjIyOCwxMC41ODI2MSAxNy41MzgxMiwxNC4wNTAwNSAyNC4zOTAxNywxNC4wNTAwNWMxMDkuMzQ0NDIsMCAyMDEuNDY0MzMsLTcxLjk0OTI3IDIzMS44MjM1NSwtMTcxLjIwMzcyeiIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjcwNy42ODk1MTY5NjIzNDM0OjU5NS40MDIzMjIzNjY5Njg1LS0+";
       // Raycast icon by me in Turbowarp SVG editor
       const raycastIcon =
         "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzNjAiIGhlaWdodD0iMzYwIiB2aWV3Qm94PSIwLDAsMzYwLDM2MCI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTYwLDApIj48ZyBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIj48cGF0aCBkPSJNMTM4LjA3NjUxLDMwOS4yMjQxOGwtMjcuMzAwNjksLTI3LjMwMDY5bDI0Ni4yNjkzMywtMjQ2LjI2OTMzbDI3LjMwMDY5LDI3LjMwMDY5eiIgZmlsbC1vcGFjaXR5PSIwLjUwMTk2IiBmaWxsPSIjZmZmZmZmIi8+PHBhdGggZD0iTTM1Ny4wNDUxNiw2Mi45NTQ4NGMtNy41Mzg4NywtNy41Mzg4NyAtNy41Mzg4NywtMTkuNzYxODIgMCwtMjcuMzAwNjljNy41Mzg4NywtNy41Mzg4NyAxOS43NjE4MSwtNy41Mzg4NyAyNy4zMDA2OCwwLjAwMDAxYzcuNTM4ODcsNy41Mzg4NyA3LjUzODg4LDE5Ljc2MTgxIDAuMDAwMDEsMjcuMzAwNjhjLTcuNTM4ODcsNy41Mzg4NyAtMTkuNzYxODIsNy41Mzg4NyAtMjcuMzAwNjksMHoiIGZpbGw9IiNmZmZmZmYiLz48cGF0aCBkPSJNMTAwLjA4MzE5LDMxOS45MTY4MWMtMTMuNDQ0MjUsLTEzLjQ0NDI1IC0xMy40NDQyNSwtMzUuMjQxNyAwLC00OC42ODU5NWMxMy40NDQyNSwtMTMuNDQ0MjUgMzUuMjQxNjksLTEzLjQ0NDI0IDQ4LjY4NTk0LDAuMDAwMDFjMTMuNDQ0MjUsMTMuNDQ0MjUgMTMuNDQ0MjYsMzUuMjQxNjkgMC4wMDAwMSw0OC42ODU5NGMtMTMuNDQ0MjUsMTMuNDQ0MjUgLTM1LjI0MTcsMTMuNDQ0MjUgLTQ4LjY4NTk1LDB6IiBmaWxsPSIjZmZmZmZmIi8+PHBhdGggZD0iTTI0MCw2OC42MDl2LTM4LjYwOWgxMzAuNjk1NXYzOC42MDl6IiBmaWxsPSIjZmZmZmZmIi8+PHBhdGggZD0iTTM1MS4zOTEsNDkuMzA0NWgzOC42MDl2MTMwLjY5NTVoLTM4LjYwOXoiIGZpbGw9IiNmZmZmZmYiLz48cGF0aCBkPSJNMjI2LjM0OTY2LDYyLjk1NDg0Yy03LjUzODg3LC03LjUzODg3IC03LjUzODg3LC0xOS43NjE4MiAwLC0yNy4zMDA2OWM3LjUzODg3LC03LjUzODg3IDE5Ljc2MTgxLC03LjUzODg3IDI3LjMwMDY4LDAuMDAwMDFjNy41Mzg4Nyw3LjUzODg3IDcuNTM4ODgsMTkuNzYxODEgMC4wMDAwMSwyNy4zMDA2OGMtNy41Mzg4Nyw3LjUzODg3IC0xOS43NjE4Miw3LjUzODg3IC0yNy4zMDA2OSwweiIgZmlsbD0iI2ZmZmZmZiIvPjxwYXRoIGQ9Ik0zNTcuMDQ1MTYsMTkzLjY1MDM0Yy03LjUzODg3LC03LjUzODg3IC03LjUzODg3LC0xOS43NjE4MiAwLC0yNy4zMDA2OWM3LjUzODg3LC03LjUzODg3IDE5Ljc2MTgxLC03LjUzODg3IDI3LjMwMDY4LDAuMDAwMDFjNy41Mzg4Nyw3LjUzODg3IDcuNTM4ODgsMTkuNzYxODEgMC4wMDAwMSwyNy4zMDA2OGMtNy41Mzg4Nyw3LjUzODg3IC0xOS43NjE4Miw3LjUzODg3IC0yNy4zMDA2OSwweiIgZmlsbD0iI2ZmZmZmZiIvPjxwYXRoIGQ9Ik02MCwzNjB2LTM2MGgzNjB2MzYweiIgZmlsbD0ibm9uZSIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjE4MDoxODAtLT4=";
-      // https://fontawesome.com/icons/link?f=classic&s=solid
+      // Constraint icon from https://fontawesome.com/icons/link?f=classic&s=solid
       const constraintIcon =
         "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI1NzYiIGhlaWdodD0iNDQ4LjIiIHZpZXdCb3g9IjAsMCw1NzYsNDQ4LjIiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQ4LDQ0KSI+PGcgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0zNzEuNSwyMGMtMTYuNiwwIC0zMi43LDQuNSAtNDYuOCwxMi43Yy0xNS44LC0xNiAtMzQuMiwtMjkuNCAtNTQuNSwtMzkuNWMyOC4yLC0yNCA2NC4xLC0zNy4yIDEwMS4zLC0zNy4yYzg2LjQsMCAxNTYuNSw3MCAxNTYuNSwxNTYuNWMwLDQxLjUgLTE2LjUsODEuMyAtNDUuOCwxMTAuNmwtNzEuMSw3MS4xYy0yOS4zLDI5LjMgLTY5LjEsNDUuOCAtMTEwLjYsNDUuOGMtODYuNCwwIC0xNTYuNSwtNzAgLTE1Ni41LC0xNTYuNWMwLC0xLjUgMCwtMyAwLjEsLTQuNWMwLjUsLTE3LjcgMTUuMiwtMzEuNiAzMi45LC0zMS4xYzE3LjcsMC41IDMxLjYsMTUuMiAzMS4xLDMyLjljMCwwLjkgMCwxLjggMCwyLjZjMCw1MS4xIDQxLjQsOTIuNSA5Mi41LDkyLjVjMjQuNSwwIDQ4LC05LjcgNjUuNCwtMjcuMWw3MS4xLC03MS4xYzE3LjMsLTE3LjMgMjcuMSwtNDAuOSAyNy4xLC02NS40YzAsLTUxLjEgLTQxLjQsLTkyLjUgLTkyLjUsLTkyLjV6TTIyNy4yLDk3LjNjLTEuOSwtMC44IC0zLjgsLTEuOSAtNS41LC0zLjFjLTEyLjYsLTYuNSAtMjcsLTEwLjIgLTQyLjEsLTEwLjJjLTI0LjUsMCAtNDgsOS43IC02NS40LDI3LjFsLTcxLjEsNzEuMWMtMTcuMywxNy4zIC0yNy4xLDQwLjkgLTI3LjEsNjUuNGMwLDUxLjEgNDEuNCw5Mi41IDkyLjUsOTIuNWMxNi41LDAgMzIuNiwtNC40IDQ2LjcsLTEyLjZjMTUuOCwxNiAzNC4yLDI5LjQgNTQuNiwzOS41Yy0yOC4yLDIzLjkgLTY0LDM3LjIgLTEwMS4zLDM3LjJjLTg2LjQsMCAtMTU2LjUsLTcwIC0xNTYuNSwtMTU2LjVjMCwtNDEuNSAxNi41LC04MS4zIDQ1LjgsLTExMC42bDcxLjEsLTcxLjFjMjkuMywtMjkuMyA2OS4xLC00NS44IDExMC42LC00NS44Yzg2LjYsMCAxNTYuNSw3MC42IDE1Ni41LDE1Ni45YzAsMS4zIDAsMi42IDAsMy45Yy0wLjQsMTcuNyAtMTUuMSwzMS42IC0zMi44LDMxLjJjLTE3LjcsLTAuNCAtMzEuNiwtMTUuMSAtMzEuMiwtMzIuOGMwLC0wLjggMCwtMS41IDAsLTIuM2MwLC0zMy43IC0xOCwtNjMuMyAtNDQuOCwtNzkuNnoiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjoyODg6MjI0LS0+";
 
-      // TODO: Scratch.Cast()
       //! Fix bugs:
       //! • Out of memory -- I can't remove this, but I can potentially mitigate it with good memory management using Ammo.destroy(); However, creating 1000 cubes at once or spamming a script with lots of creating objects will cause this to fail.
+      //! It's an inevitable error that's going to happen, it seems like the easiest way to prevent it is by educating users on the limitations of large-scale usage with this extension.
       //* NOTE TO SELF: @s_federici <https://scratch.mit.edu/users/s_federici> and @costc075202 <https://scratch.mit.edu/users/costc075202> want to know when this is finished.
 
       class AmmoPhysics {
@@ -1359,7 +1370,7 @@
                 opcode: "addConstraint",
                 blockType: Scratch.BlockType.COMMAND,
                 text: Scratch.translate(
-                  "add [type] with name: [name] to body [bodyA] from body [bodyB] and enable collision [collide]"
+                  "attach body [bodyA] to body [bodyB] using [type] constraint with name: [name] and enable collision [collide]"
                 ),
                 blockIconURI: constraintIcon,
                 arguments: {
@@ -1382,6 +1393,32 @@
                   collide: {
                     type: Scratch.ArgumentType.BOOLEAN,
                     defaultValue: false,
+                  },
+                },
+              },
+              {
+                opcode: "setConstraintLimits",
+                blockType: Scratch.BlockType.COMMAND,
+                text: Scratch.translate(
+                  "set constraint [constraint] limits to x: [x] y: [y] z: [z]"
+                ),
+                blockIconURI: constraintIcon,
+                arguments: {
+                  constraint: {
+                    type: Scratch.ArgumentType.STRING,
+                    defaultValue: "constraint",
+                  },
+                  x: {
+                    type: Scratch.ArgumentType.NUMBER,
+                    defaultValue: 0,
+                  },
+                  y: {
+                    type: Scratch.ArgumentType.NUMBER,
+                    defaultValue: 0,
+                  },
+                  z: {
+                    type: Scratch.ArgumentType.NUMBER,
+                    defaultValue: 0,
                   },
                 },
               },
@@ -1434,7 +1471,7 @@
                     value: "setFriction",
                   },
                   {
-                    text: Scratch.translate("restitution"),
+                    text: Scratch.translate("bounciness"),
                     value: "setRestitution",
                   },
                 ],
@@ -1474,8 +1511,8 @@
                     value: "position",
                   },
                   {
-                    text: Scratch.translate("rotation"),
-                    value: "rotation",
+                    text: Scratch.translate("normal"),
+                    value: "normal",
                   },
                 ],
               },
@@ -1544,6 +1581,10 @@
                   {
                     text: Scratch.translate("fixed constraint"),
                     value: "btFixedConstraint",
+                  },
+                  {
+                    text: Scratch.translate("slider"),
+                    value: "btSliderConstraint",
                   },
                 ],
               },
@@ -1623,11 +1664,16 @@
             bodies[key].collisions = [];
           }
 
-          world.stepSimulation(
-            deltaTime,
-            maxSubSteps,
-            1 / runtime.frameLoop.framerate
-          );
+          if (runtime.frameLoop.framerate === 0) {
+            world.stepSimulation(deltaTime, maxSubSteps);
+          } else {
+            world.stepSimulation(
+              deltaTime,
+              maxSubSteps,
+              1 / runtime.frameLoop.framerate
+            );
+          }
+
           const dispatcher = world.getDispatcher();
           const numManifolds = dispatcher.getNumManifolds();
 
@@ -1823,6 +1869,7 @@
           );
           const body = new Ammo.btRigidBody(rbInfo);
 
+          body.userData = name;
           world.addRigidBody(body);
           bodies[name] = body;
           bodies[name].collisions = [];
@@ -2030,15 +2077,17 @@
           }
         }
 
-        //TODO: casting this block and below
-
         setBodyTransformation({ transform, name, x, y, z }, { target }) {
+          name = Cast.toString(name);
+          x = Cast.toNumber(x);
+          y = Cast.toNumber(y);
+          z = Cast.toNumber(z);
           if (bodies[name]) {
             const tempTransform = new Ammo.btTransform();
             bodies[name].getMotionState().getWorldTransform(tempTransform);
             const quaternion = eulerToQuaternion(x, y, z);
 
-            switch (transform) {
+            switch (Cast.toString(transform)) {
               case "position":
                 tempTransform.setOrigin(new Ammo.btVector3(x, y, z));
                 break;
@@ -2065,6 +2114,10 @@
         }
 
         changeBodyTransformation({ transform, name, x, y, z }, { target }) {
+          name = Cast.toString(name);
+          x = Cast.toNumber(x);
+          y = Cast.toNumber(y);
+          z = Cast.toNumber(z);
           if (bodies[name]) {
             const tempTransform = new Ammo.btTransform();
             bodies[name].getMotionState().getWorldTransform(tempTransform);
@@ -2076,7 +2129,7 @@
             );
             const rotation = quaternionToEuler(tempTransform.getRotation());
 
-            switch (transform) {
+            switch (Cast.toString(transform)) {
               case "position":
                 tempTransform.setOrigin(newPos);
                 break;
@@ -2116,6 +2169,7 @@
         }
 
         bodyTransformation({ xyz, transform, name }, { target }) {
+          name = Cast.toString(name);
           if (bodies[name]) {
             const newTransform = new Ammo.btTransform();
             bodies[name].getMotionState().getWorldTransform(newTransform);
@@ -2123,7 +2177,7 @@
             const position = newTransform.getOrigin();
             const rotation = newTransform.getRotation();
 
-            switch (transform) {
+            switch (Cast.toString(transform)) {
               case "position":
                 return position[xyz]();
               case "rotation":
@@ -2139,8 +2193,9 @@
         }
 
         toggleCollisionResponse({ toggle, name }, { target }) {
+          name = Cast.toString(name);
           if (bodies[name]) {
-            if (toggle == "enable") {
+            if (Cast.toString(toggle) == "enable") {
               bodies[name].setCollisionFlags(
                 bodies[name].getCollisionFlags() & ~4
               );
@@ -2159,18 +2214,27 @@
         }
 
         bodyTouchingBody({ body, body2 }) {
-          return bodies[body]?.collisions.includes(body2);
+          return bodies[Cast.toString(body)]?.collisions.includes(
+            Cast.toString(body2)
+          );
         }
 
         bodyTouchingAny({ body }) {
-          return bodies[body]?.collisions.length > 0;
+          return bodies[Cast.toString(body)]?.collisions.length > 0;
         }
 
         allBodiesTouchingBody({ body }) {
-          return bodies[body]?.collisions;
+          return bodies[Cast.toString(body)]?.collisions;
         }
 
         rayCast({ name, x, y, z, x2, y2, z2 }) {
+          name = Cast.toString(name);
+          x = Cast.toNumber(x);
+          y = Cast.toNumber(y);
+          z = Cast.toNumber(z);
+          x2 = Cast.toNumber(x2);
+          y2 = Cast.toNumber(y2);
+          z2 = Cast.toNumber(z2);
           if (rays[name]) {
             Ammo.destroy(rays[name]);
             delete rays[name];
@@ -2183,13 +2247,15 @@
           rays[name].endpoint = to;
         }
 
+        // TODO: rotZ never used...
         rayCastDirection({ name, x, y, z, rotX, rotY, rotZ, distance }) {
+          name = Cast.toString(name);
           if (rays[name]) {
             Ammo.destroy(rays[name]);
             delete rays[name];
           }
-          const pitch = (rotX * Math.PI) / 180;
-          const yaw = (rotY * Math.PI) / 180;
+          const pitch = (Cast.toNumber(rotX) * Math.PI) / 180;
+          const yaw = (Cast.toNumber(rotY) * Math.PI) / 180;
           const dir = new Ammo.btVector3(
             Math.cos(yaw) * Math.cos(pitch),
             Math.sin(pitch),
@@ -2197,7 +2263,11 @@
           );
           dir.op_mul(distance);
 
-          const from = new Ammo.btVector3(x, y, z);
+          const from = new Ammo.btVector3(
+            Cast.toNumber(x),
+            Cast.toNumber(y),
+            Cast.toNumber(z)
+          );
           const to = new Ammo.btVector3(
             from.x() + dir.x(),
             from.y() + dir.y(),
@@ -2211,6 +2281,13 @@
         }
 
         rayCastTowards({ name, x, y, z, x2, y2, z2, distance }) {
+          name = Cast.toString(name);
+          x = Cast.toNumber(x);
+          y = Cast.toNumber(y);
+          z = Cast.toNumber(z);
+          x2 = Cast.toNumber(x2);
+          y2 = Cast.toNumber(y2);
+          z2 = Cast.toNumber(z2);
           if (rays[name]) {
             Ammo.destroy(rays[name]);
             delete rays[name];
@@ -2232,16 +2309,20 @@
         }
 
         getRay({ xyz, property, name }, { target }) {
+          name = Cast.toString(name);
           if (rays[name]) {
             const callback = rays[name];
-            if (callback && callback.hasHit()) {
-              switch (property) {
+            if (callback) {
+              switch (Cast.toString(property)) {
                 case "position":
-                  return callback.get_m_hitPointWorld()[xyz]();
-                case "rotation":
-                  return callback.get_m_hitNormalWorld()[xyz]();
+                  return callback.hasHit()
+                    ? callback.get_m_hitPointWorld()[xyz]()
+                    : rays[name].endpoint[xyz];
+                case "normal":
+                  return callback.hasHit()
+                    ? callback.get_m_hitNormalWorld()[xyz]()
+                    : null;
               }
-              return rays[name].endpoint[xyz];
             }
             return null;
           } else {
@@ -2252,6 +2333,8 @@
         }
 
         getRayTouching({ name, body }, { target }) {
+          name = Cast.toString(name);
+          body = Cast.toString(body);
           if (rays[name]) {
             if (bodies[body]) {
               return bodies[body]?.includes(
@@ -2273,6 +2356,7 @@
         }
 
         deleteRay({ name }, { target }) {
+          name = Cast.toString(name);
           if (rays[name]) {
             Ammo.destroy(rays[name]);
             delete rays[name];
@@ -2284,13 +2368,22 @@
         }
 
         // TODO: include blocks that can apply forces based on direction and magnitude
+        // TODO: do I want to support local transformation possibilities? e.g., push (body) forward (x) amount in the direction it's facing
         pushForce({ name, force, x, y, z, x2, y2, z2 }, { target }) {
+          name = Cast.toString(name);
+          x = Cast.toNumber(x);
+          y = Cast.toNumber(y);
+          z = Cast.toNumber(z);
+          x2 = Cast.toNumber(x2);
+          y2 = Cast.toNumber(y2);
+          z2 = Cast.toNumber(z2);
           if (bodies[name]) {
-            bodies[name][force](
-              new Ammo.btVector3(x, y, z),
-              new Ammo.btVector3(x2, y2, z2)
-            );
+            force = new Ammo.btVector3(x, y, z);
+            const offset = new Ammo.btVector3(x2, y2, z2);
+            bodies[name][force](force, offset);
             bodies[name].activate(true);
+            Ammo.destroy(force);
+            Ammo.destroy(offset);
           } else {
             console.warn(
               `Attempted to apply force on nonexistent body "${name}" in ${target.isStage ? "Stage" : `Sprite "${target.sprite.name}"`}`
@@ -2299,9 +2392,15 @@
         }
 
         pushCentralForce({ name, force, x, y, z }, { target }) {
+          name = Cast.toString(name);
+          x = Cast.toNumber(x);
+          y = Cast.toNumber(y);
+          z = Cast.toNumber(z);
           if (bodies[name]) {
-            bodies[name][force](new Ammo.btVector3(x, y, z));
+            force = new Ammo.btVector3(x, y, z);
+            bodies[name][force](force);
             bodies[name].activate(true);
+            Ammo.destroy(force);
           } else {
             console.warn(
               `Attempted to apply force on nonexistent body "${name}" in ${target.isStage ? "Stage" : `Sprite "${target.sprite.name}"`}`
@@ -2310,9 +2409,15 @@
         }
 
         pushTorque({ name, torque, x, y, z }, { target }) {
+          name = Cast.toString(name);
+          x = Cast.toNumber(x);
+          y = Cast.toNumber(y);
+          z = Cast.toNumber(z);
           if (bodies[name]) {
-            bodies[name][torque](new Ammo.btVector3(x, y, z));
+            torque = new Ammo.btVector3(x, y, z);
+            bodies[name][torque](torque);
             bodies[name].activate(true);
+            Ammo.destroy(torque);
           } else {
             console.warn(
               `Attempted to apply force on nonexistent body "${name}" in ${target.isStage ? "Stage" : `Sprite "${target.sprite.name}"`}`
@@ -2321,46 +2426,145 @@
         }
 
         clearForces({ name }, { target }) {
+          name = Cast.toString(name);
           if (bodies[name]) {
             bodies[name].clearForces();
             bodies[name].activate(true);
           } else {
             console.warn(
-              `Attempted to clear forcees of nonexistent body "${name}" in ${target.isStage ? "Stage" : `Sprite "${target.sprite.name}"`}`
+              `Attempted to clear forces of nonexistent body "${name}" in ${target.isStage ? "Stage" : `Sprite "${target.sprite.name}"`}`
             );
           }
         }
 
-        // TODO: Add slider and cone twist constraint types.
+        // TODO: compute local frames/pivots instead of world transformation
         addConstraint({ type, name, bodyA, bodyB, collide }, { target }) {
           if (bodies[bodyA] && bodies[bodyB] && !constraints[name]) {
-            const transform1 = new Ammo.btTransform();
-            bodies[bodyA].getMotionState().getWorldTransform(transform1);
+            const a = bodies[bodyA];
+            const b = bodies[bodyB];
 
-            const transform2 = new Ammo.btTransform();
-            bodies[bodyB].getMotionState().getWorldTransform(transform2);
+            const transA = a.getCenterOfMassTransform();
+            const transB = b.getCenterOfMassTransform();
 
             let constraint;
-            if (type == "btPoint2PointConstraint") {
-              constraint = new Ammo[type](
-                bodies[bodyA],
-                bodies[bodyB],
-                transform1.getOrigin(),
-                transform2.getOrigin()
-              );
-            } else {
-              constraint = new Ammo[type](
-                bodies[bodyA],
-                bodies[bodyB],
-                transform1,
-                transform2
-              );
+
+            switch (type) {
+              case "btPoint2PointConstraint": {
+                const invA = new Ammo.btTransform();
+                invA.setIdentity();
+                invA.setOrigin(transA.getOrigin());
+                invA.setRotation(transA.getRotation());
+                invA.inverse();
+
+                const invB = new Ammo.btTransform();
+                invB.setIdentity();
+                invB.setOrigin(transB.getOrigin());
+                invB.setRotation(transB.getRotation());
+                invB.inverse();
+
+                const localA = invA
+                  .op_mul(new Ammo.btTransform().setIdentity())
+                  .getOrigin();
+                const localB = invB
+                  .op_mul(new Ammo.btTransform().setIdentity())
+                  .getOrigin();
+
+                constraint = new Ammo.btPoint2PointConstraint(
+                  a,
+                  b,
+                  localA,
+                  localB
+                );
+                break;
+              }
+
+              case "btHingeConstraint": {
+                const frameInA = new Ammo.btTransform();
+                frameInA.setIdentity();
+                frameInA.setOrigin(new Ammo.btVector3(0, 0, 0));
+
+                const frameInB = new Ammo.btTransform();
+                frameInB.setIdentity();
+                frameInB.setOrigin(new Ammo.btVector3(0, 0, 0));
+
+                constraint = new Ammo.btHingeConstraint(
+                  a,
+                  b,
+                  frameInA,
+                  frameInB,
+                  false
+                );
+                break;
+              }
+
+              case "btSliderConstraint": {
+                const invA = new Ammo.btTransform(transA);
+                invA.inverse();
+                const invB = new Ammo.btTransform(transB);
+                invB.inverse();
+
+                const frameInA = invA.op_mul(transB);
+                const frameInB = invB.op_mul(transB);
+
+                constraint = new Ammo.btSliderConstraint(
+                  a,
+                  b,
+                  frameInA,
+                  frameInB,
+                  true
+                );
+                break;
+              }
+
+              case "btFixedConstraint": {
+                const invA = new Ammo.btTransform(transA);
+                invA.inverse();
+                const invB = new Ammo.btTransform(transB);
+                invB.inverse();
+
+                const frameInA = invA.op_mul(transB);
+                const frameInB = invB.op_mul(transB);
+
+                constraint = new Ammo.btFixedConstraint(
+                  a,
+                  b,
+                  frameInA,
+                  frameInB
+                );
+                break;
+              }
+
+              default:
+                throw new Error(`Unknown constraint type: ${type}`);
             }
 
+            world.addConstraint(constraint, !Scratch.Cast.toBoolean(collide));
             constraints[name] = constraint;
-
-            world.addConstraint(constraint, !Scratch.Cast.toBoolean(collide)); // if true, disable collision. Enable collision = false by default.
           }
+        }
+
+        setConstraintLimits({ constraint, x, y, z }, { target }) {
+          const c = constraints[constraint];
+          if (!c) return;
+
+          // Hinge: x = lowerAngle, y = upperAngle
+          if (c instanceof Ammo.btHingeConstraint) {
+            c.setLimit(x, y);
+            return;
+          }
+
+          // Slider: x = lowerLin, y = upperLin, z = lowerAng, assume upperAng = -lowerAng
+          if (c instanceof Ammo.btSliderConstraint) {
+            c.setLowerLinLimit(x);
+            c.setUpperLinLimit(y);
+            c.setLowerAngLimit(z);
+            c.setUpperAngLimit(-z);
+            return;
+          }
+
+          console.warn(
+            `Attempted to set limits of unsupporting or nonexistent constraint "${constraint} in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name + '"'}`
+          );
         }
 
         removeConstraint({ name }, { target }) {
