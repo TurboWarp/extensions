@@ -948,10 +948,6 @@
       //* ------------
 
       runtime.on("PROJECT_START", () => {
-        //! On rare occasion, there's an "Aborted: OOM (Out of Memory)" error that breaks the project until the page is refreshed.
-        //! This seems to be due to poor cleanup after pressing the green flag, so all ammo aren't destroyed and leak into memory...
-        //! The easiest way would be to iterate through everything that inherits from Ammo and Ammo.destroy it, but I don't think
-        //! there's a way to do this without adding every created Ammo object to an array or something.
         world.setGravity(new Ammo.btVector3(0, -9.81, 0));
         for (const key in bodies) {
           if (Object.prototype.hasOwnProperty.call(bodies, key)) {
@@ -1016,9 +1012,6 @@
       const constraintIcon =
         "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI1NzYiIGhlaWdodD0iNDQ4LjIiIHZpZXdCb3g9IjAsMCw1NzYsNDQ4LjIiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDQ4LDQ0KSI+PGcgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSJub25lIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0zNzEuNSwyMGMtMTYuNiwwIC0zMi43LDQuNSAtNDYuOCwxMi43Yy0xNS44LC0xNiAtMzQuMiwtMjkuNCAtNTQuNSwtMzkuNWMyOC4yLC0yNCA2NC4xLC0zNy4yIDEwMS4zLC0zNy4yYzg2LjQsMCAxNTYuNSw3MCAxNTYuNSwxNTYuNWMwLDQxLjUgLTE2LjUsODEuMyAtNDUuOCwxMTAuNmwtNzEuMSw3MS4xYy0yOS4zLDI5LjMgLTY5LjEsNDUuOCAtMTEwLjYsNDUuOGMtODYuNCwwIC0xNTYuNSwtNzAgLTE1Ni41LC0xNTYuNWMwLC0xLjUgMCwtMyAwLjEsLTQuNWMwLjUsLTE3LjcgMTUuMiwtMzEuNiAzMi45LC0zMS4xYzE3LjcsMC41IDMxLjYsMTUuMiAzMS4xLDMyLjljMCwwLjkgMCwxLjggMCwyLjZjMCw1MS4xIDQxLjQsOTIuNSA5Mi41LDkyLjVjMjQuNSwwIDQ4LC05LjcgNjUuNCwtMjcuMWw3MS4xLC03MS4xYzE3LjMsLTE3LjMgMjcuMSwtNDAuOSAyNy4xLC02NS40YzAsLTUxLjEgLTQxLjQsLTkyLjUgLTkyLjUsLTkyLjV6TTIyNy4yLDk3LjNjLTEuOSwtMC44IC0zLjgsLTEuOSAtNS41LC0zLjFjLTEyLjYsLTYuNSAtMjcsLTEwLjIgLTQyLjEsLTEwLjJjLTI0LjUsMCAtNDgsOS43IC02NS40LDI3LjFsLTcxLjEsNzEuMWMtMTcuMywxNy4zIC0yNy4xLDQwLjkgLTI3LjEsNjUuNGMwLDUxLjEgNDEuNCw5Mi41IDkyLjUsOTIuNWMxNi41LDAgMzIuNiwtNC40IDQ2LjcsLTEyLjZjMTUuOCwxNiAzNC4yLDI5LjQgNTQuNiwzOS41Yy0yOC4yLDIzLjkgLTY0LDM3LjIgLTEwMS4zLDM3LjJjLTg2LjQsMCAtMTU2LjUsLTcwIC0xNTYuNSwtMTU2LjVjMCwtNDEuNSAxNi41LC04MS4zIDQ1LjgsLTExMC42bDcxLjEsLTcxLjFjMjkuMywtMjkuMyA2OS4xLC00NS44IDExMC42LC00NS44Yzg2LjYsMCAxNTYuNSw3MC42IDE1Ni41LDE1Ni45YzAsMS4zIDAsMi42IDAsMy45Yy0wLjQsMTcuNyAtMTUuMSwzMS42IC0zMi44LDMxLjJjLTE3LjcsLTAuNCAtMzEuNiwtMTUuMSAtMzEuMiwtMzIuOGMwLC0wLjggMCwtMS41IDAsLTIuM2MwLC0zMy43IC0xOCwtNjMuMyAtNDQuOCwtNzkuNnoiLz48L2c+PC9nPjwvc3ZnPjwhLS1yb3RhdGlvbkNlbnRlcjoyODg6MjI0LS0+";
 
-      //! Fix bugs:
-      //! • Out of memory -- I can't remove this, but I can potentially mitigate it with good memory management using Ammo.destroy(); However, creating 1000 cubes at once or spamming a script with lots of creating objects will cause this to fail.
-      //! It's an inevitable error that's going to happen, it seems like the easiest way to prevent it is by educating users on the limitations of large-scale usage with this extension.
       //* NOTE TO SELF: @s_federici <https://scratch.mit.edu/users/s_federici> and @costc075202 <https://scratch.mit.edu/users/costc075202> want to know when this is finished.
 
       class AmmoPhysics {
