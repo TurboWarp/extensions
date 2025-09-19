@@ -39,7 +39,7 @@
 
   class Geolocation {
     constructor() {
-      this.options = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 };
+      this.options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
     }
 
     getInfo() {
@@ -84,7 +84,7 @@
             arguments: {
               SECONDS: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 5,
+                defaultValue: 10,
               },
             },
           },
@@ -158,7 +158,7 @@
 
     async getCurrent(args) {
       if (!(await this.isAllowed())) return "";
-      var coordinates = await getGeolocation();
+      var coordinates = await getGeolocation(this.options);
       if (coordinates.success == true) {
         return coordinates[args.WHAT];
       } else {
@@ -195,4 +195,5 @@
     }
   }
   Scratch.extensions.register(new Geolocation());
+  // @ts-ignore
 })(Scratch);
