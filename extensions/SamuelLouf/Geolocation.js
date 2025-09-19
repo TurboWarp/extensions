@@ -39,7 +39,11 @@
 
   class Geolocation {
     constructor() {
-      this.options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
+      this.options = {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0,
+      };
     }
 
     getInfo() {
