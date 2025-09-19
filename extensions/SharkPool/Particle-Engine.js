@@ -1,6 +1,6 @@
 // Name: Particle Engine
 // ID: SPpartEngine
-// Description: Create powerful Particle Engines without Clones.
+// Description: Create powerful particle engines without clones.
 // By: SharkPool
 // Licence: MIT
 
