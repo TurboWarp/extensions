@@ -1918,10 +1918,10 @@
         b = this._hash;
         n = b.words;
         for (a = 0; 4 > a; a++)
-          (c = n[a]),
+          ((c = n[a]),
             (n[a] =
               (((c << 8) | (c >>> 24)) & 16711935) |
-              (((c << 24) | (c >>> 8)) & 4278255360));
+              (((c << 24) | (c >>> 8)) & 4278255360)));
         return b;
       },
       clone: function () {
@@ -1958,7 +1958,7 @@
             n && s.update(n);
             var n = s.update(d).finalize(r);
             s.reset();
-            for (var a = 1; a < p; a++) (n = s.finalize(n)), s.reset();
+            for (var a = 1; a < p; a++) ((n = s.finalize(n)), s.reset());
             b.concat(n);
           }
           b.sigBytes = 4 * q;
@@ -2091,7 +2091,7 @@
             a = a.mode;
           if (this._xformMode == this._ENC_XFORM_MODE)
             var c = a.createEncryptor;
-          else (c = a.createDecryptor), (this._minBufferSize = 1);
+          else ((c = a.createDecryptor), (this._minBufferSize = 1));
           this._mode = c.call(a, this, b && b.words);
         },
         _doProcessBlock: function (a, b) {
@@ -2102,7 +2102,7 @@
           if (this._xformMode == this._ENC_XFORM_MODE) {
             a.pad(this._data, this.blockSize);
             var b = this._process(!0);
-          } else (b = this._process(!0)), a.unpad(b);
+          } else ((b = this._process(!0)), a.unpad(b));
           return b;
         },
         blockSize: 4,
@@ -2265,7 +2265,7 @@
             }
           c = this._invKeySchedule = [];
           for (d = 0; d < a; d++)
-            (j = a - d),
+            ((j = a - d),
               (k = d % 4 ? e[j] : e[j - 4]),
               (c[d] =
                 4 > d || 4 >= j
@@ -2273,7 +2273,7 @@
                   : b[l[k >>> 24]] ^
                     x[l[(k >>> 16) & 255]] ^
                     q[l[(k >>> 8) & 255]] ^
-                    n[l[k & 255]]);
+                    n[l[k & 255]]));
         },
         encryptBlock: function (a, b) {
           this._doCryptBlock(a, b, this._keySchedule, t, r, w, v, l);
