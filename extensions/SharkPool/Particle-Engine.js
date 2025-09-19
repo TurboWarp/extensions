@@ -78,8 +78,14 @@
         wrap: gl.CLAMP_TO_EDGE,
         src: [0, 0, 0, 0], // Dummy pixel
       });
-      this._rotationCenter = [240, 180];
-      this._size = [480, 360];
+      this._size = [
+        runtime.stageWidth || 480,
+        runtime.stageHeight || 360
+      ];
+      this._rotationCenter = [
+        this._size[0] / 2,
+        this._size[1] / 2
+      ];
     }
     dispose() {
       if (this._texture) {
@@ -202,6 +208,7 @@
   const newTexture = (url, gl, callback) => {
     Scratch.canFetch(url).then((canFetch) => {
       if (!canFetch) return;
+      // eslint-disable-next-line extension/check-can-fetch  extension/check-can-fetch
       const img = new Image();
       img.crossOrigin = "Anonymous";
       img.src = url;
@@ -308,6 +315,14 @@ void main() {
       skin.size = size;
       canvas.width = size[0];
       canvas.height = size[1];
+      engine.projection = twgl.m4.ortho(
+        0,
+        size[0],
+        size[1],
+        0,
+        -1,
+        1
+      );
     }).bind(this);
     vm.on("STAGE_SIZE_CHANGED", drawable.stageSZChange);
     runtime.requestRedraw();
@@ -526,6 +541,7 @@ void main() {
       const emitters = Object.values(engine.emitters);
       for (const emitter of emitters) {
         emitter.frameCnt = 0;
+        emitter.data.clear();
         emitter.tintCache.clear();
       }
     });
