@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.2.0.21
+// Version V.2.0.3
 
 (function (Scratch) {
   "use strict";
@@ -62,8 +62,7 @@
     sCol: { val: "#ff00ff", inf: 0 },
     eCol: { val: "#0000ff", inf: 0 },
   };
-  let tabBlured = false,
-    deltaTime = 0,
+  let deltaTime = 0,
     prevTime = 0;
 
   const allEngines = new Map();
@@ -201,17 +200,20 @@
   const rng = (val, inf) => val + (Math.random() * 2 - 1) * inf;
 
   const newTexture = (url, gl, callback) => {
-    // eslint-disable-next-line
-    const img = new Image();
-    img.crossOrigin = "Anonymous";
-    img.src = url;
-    img.onerror = (e) => console.error("Error loading texture:", e);
-    img.onload = () =>
-      callback({
-        tWidth: img.width,
-        tHeight: img.height,
-        texture: twgl.createTexture(gl, { src: img, flipY: true }),
-      });
+    Scratch.canFetch(url).then((canFetch) => {
+      if (!canFetch) return;
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.src = url;
+      img.onerror = (e) => console.error("Error loading texture:", e);
+      img.onload = () => {
+        callback({
+          tWidth: img.width,
+          tHeight: img.height,
+          texture: twgl.createTexture(gl, { src: img, flipY: true }),
+        });
+      };
+    });
   };
 
   const createParticleRGB = (color) => {
@@ -534,16 +536,9 @@ void main() {
     allEngines.forEach((engine) => disposeEngine(engine.target))
   );
 
-  window.addEventListener("focus", () => {
-    tabBlured = false;
-  });
-  window.addEventListener("blur", () => {
-    tabBlured = true;
-  });
-
   // update non-interpolated engines
   runtime.on("AFTER_EXECUTE", () => {
-    if (tabBlured || runtime.ioDevices.clock._paused) return;
+    if (runtime.ioDevices.clock._paused) return;
     allEngines.forEach((engine) => {
       if (engine.paused || engine.interpolate) return;
       updateEngine(engine);
@@ -552,15 +547,14 @@ void main() {
   });
 
   // update interpolated engines
-  function interpolateEngines() {
-    if (tabBlured || runtime.ioDevices.clock._paused) {
+  function interpolateEngines(deltaFrame) {
+    if (runtime.ioDevices.clock._paused) {
       requestAnimationFrame(interpolateEngines);
       return;
     }
 
-    const now = performance.now();
-    deltaTime = prevTime === 0 ? 0 : (now - prevTime) * 0.001;
-    prevTime = now;
+    deltaTime = prevTime === 0 ? 0 : (deltaFrame - prevTime) * 0.001;
+    prevTime = deltaFrame;
 
     const fps = +(1 / deltaTime).toFixed(2);
     const frameTime = 1000 / fps;
@@ -881,8 +875,8 @@ void main() {
           },
         ],
         menus: {
-          TARGETS: { acceptReporters: true, items: this.getTargets(false) },
-          ALL_TARG: { acceptReporters: true, items: this.getTargets(true) },
+          TARGETS: { acceptReporters: true, items: "getTargets" },
+          ALL_TARG: { acceptReporters: true, items: "getTargetsAll" },
           BEHAVIOURS: {
             acceptReporters: true,
             items: this.getBehaviours(false),
@@ -948,10 +942,8 @@ void main() {
     }
 
     // Helper Funcs
-    getTargets(optAll) {
+    getTargets() {
       const items = [{ text: Scratch.translate("Stage"), value: "_stage_" }];
-      if (optAll)
-        items.push({ text: Scratch.translate("all"), value: "_all_" });
       const targets = runtime.targets;
       for (let i = 1; i < targets.length; i++) {
         const target = targets[i];
@@ -959,6 +951,17 @@ void main() {
           items.push({ text: target.getName(), value: target.getName() });
       }
       return items.length > 0 ? items : [""];
+    }
+
+    getTargetsAll() {
+      // hey I dont like this either, id rather this be part of 'getTargets', but it has to be dynamic.
+      let items = this.getTargets();
+      items = [
+        ...items.slice(0, 1),
+        { text: Scratch.translate("all"), value: "_all_" },
+        ...items.slice(1, items.length)
+      ];
+      return items;
     }
 
     getBehaviours(optAll) {
