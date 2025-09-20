@@ -81,14 +81,16 @@
             arguments: {
               VALUE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "start_stop"
-              }
-            }
+                menu: "start_stop",
+              },
+            },
           },
           {
             opcode: "isWatchingPos",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is TurboWarp watching the users position?"),
+            text: Scratch.translate(
+              "is TurboWarp watching the users position?"
+            ),
           },
           "---",
           {
@@ -194,14 +196,15 @@
                 value: "stop",
               },
             ],
-          }
+          },
         },
       };
     }
 
     async getCurrent(args, util) {
       if (!(await this.isAllowed())) return "";
-      var coordinates = util.thread._coordinates || (await getGeolocation(this.options));
+      var coordinates =
+        util.thread._coordinates || (await getGeolocation(this.options));
       if (coordinates.success == true) {
         return coordinates[args.WHAT];
       } else {
@@ -210,21 +213,31 @@
     }
 
     async changePositionWatching(args) {
-      if ((args.VALUE == "start") && this.isWatching || (args.VALUE == "stop") && !this.isWatching) return "";
+      if (
+        (args.VALUE == "start" && this.isWatching) ||
+        (args.VALUE == "stop" && !this.isWatching)
+      )
+        return "";
       if (!(await this.isAllowed())) return "";
-      
-      this.isWatching = (args.VALUE == "start");
 
-      if (args.VALUE == "start"){
-        this.watcherID = navigator.geolocation.watchPosition((pos) => {
-          var threads = Scratch.vm.runtime.startHats('samuelloufgeolocation_onUserMove');
-          for (var thread of threads){
-            var coords = pos.toJSON().coords;
-            coords.success = true;
-            // @ts-ignore
-            thread._coordinates = coords;
-          }
-        }, () => {}, this.options);
+      this.isWatching = args.VALUE == "start";
+
+      if (args.VALUE == "start") {
+        this.watcherID = navigator.geolocation.watchPosition(
+          (pos) => {
+            var threads = Scratch.vm.runtime.startHats(
+              "samuelloufgeolocation_onUserMove"
+            );
+            for (var thread of threads) {
+              var coords = pos.toJSON().coords;
+              coords.success = true;
+              // @ts-ignore
+              thread._coordinates = coords;
+            }
+          },
+          () => {},
+          this.options
+        );
       } else {
         navigator.geolocation.clearWatch(this.watcherID);
       }
