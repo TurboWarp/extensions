@@ -2065,7 +2065,7 @@
      * @param {import("scratch-vm").BlockUtility} util util
      * @param {String} id The field to get the data from
      * @param {Boolean} unsafe i don't remember :trol:
-     * @returns
+     * @returns {String}
      */
     textFromOp(util, id, unsafe) {
       // IMPORTANT: All menus in this extension accept reporters because otherwise the field gets stored elsewhere
@@ -2074,96 +2074,46 @@
       // blob.fields should have exactly one key, except in the case of raw blocks(see comment a little further down)
 
       const blob = _blocks[id];
-      switch (blob.opcode) {
-        case "text": {
-          return blob.fields.TEXT.value;
-        }
-        case "math_number": {
-          return blob.fields.NUM.value;
-        }
-        case "gpusb3_menu_VARTYPES": {
-          return blob.fields.VARTYPES.value;
-        }
-        case "gpusb3_menu_VAROPS": {
-          return blob.fields.VAROPS.value;
-        }
-        case "gpusb3_menu_TYPES": {
-          return blob.fields.TYPES.value;
-        }
-        case "gpusb3_menu_WGSLFUNCS": {
-          return blob.fields.WGSLFUNCS.value;
-        }
-        case "gpusb3_menu_FUNCTYPES": {
-          return blob.fields.FUNCTYPES.value;
-        }
-        case "gpusb3_menu_RAWTYPES": {
-          return blob.fields.RAWTYPES.value;
-        }
 
-        case "gpusb3_menu_BGLENTRYTYPES": {
-          return blob.fields.BGLENTRYTYPES.value;
-        }
+      try {
+        if (blob.opcode?.startsWith("gpusb3_menu_")) {
+          const name = blob.opcode.split("gpusb3_menu_")[1];
 
-        case "gpusb3_menu_CONSTRUCTABLETYPES": {
-          return blob.fields.CONSTRUCTABLETYPES.value;
-        }
+          if (Object.prototype.hasOwnProperty.call(blob.fields, name)) {
+            return blob.fields[name].value;
+          } else throw new Error();
+        } else {
+          switch (blob.opcode) {
+            case "text": {
+              return blob.fields.TEXT.value;
+            }
+            case "math_number": {
+              return blob.fields.NUM.value;
+            }
 
-        case "gpusb3_menu_BUFFERUSAGE": {
-          return blob.fields.BUFFERUSAGE.value;
-        }
+            case "gpusb3_samplerType": {
+              // IMPORTANT: For blocks with no inputs, such as the wip sampler type block, it will not be detected as a block and instead
+              // considered a "raw" input. it doesn't really matter because this is the only block with it, but for new blocks it's important
+              return "sampler"; // the codesmell here is crazy but this should work well enough
+            }
 
-        case "gpusb3_menu_BUFFERENTRYTYPE": {
-          return blob.fields.BUFFERENTRYTYPE.value;
-        }
-
-        case "gpusb3_menu_VARUSAGE": {
-          return blob.fields.VARUSAGE.value;
-        }
-
-        case "gpusb3_menu_ATOMICBASES": {
-          return blob.fields.ATOMICBASES.value;
-        }
-
-        case "gpusb3_menu_ATOMICFUNCTIONS": {
-          return blob.fields.ATOMICFUNCTIONS.value;
-        }
-
-        case "gpusb3_menu_BARRIERFUNCTIONS": {
-          return blob.fields.BARRIERFUNCTIONS.value;
-        }
-
-        case "gpusb3_menu_TEXTUREBASETYPES": {
-          return blob.fields.TEXTUREBASETYPES.value;
-        }
-
-        case "gpusb3_samplerType": {
-          // IMPORTANT: For blocks with no inputs, such as the scrapped sampler type block, it will not be detected as a block and instead
-          // considered a "raw" input. it doesn't really matter because this is the only block with it, but for new blocks it's important
-          return "sampler"; // the codesmell here is crazy but this should work well enough
-        }
-
-        case "gpusb3_menu_VARIABLEACCESSTYPES": {
-          return blob.fields.VARIABLEACCESSTYPES.value;
-        }
-
-        case "gpusb3_menu_TEXTURECOLORFORMATS": {
-          return blob.fields.TEXTURECOLORFORMATS.value;
-        }
-
-        default: {
-          if (unsafe) {
-            return "";
+            default:
+              throw new Error();
           }
-          this.throwError(
-            "MissingOp",
-            "Input type not found, did you forget to add a menu?",
-            "TextFromOp",
-            "Input type not found, did you forget to add a menu?"
-          );
-          console.log(blob);
-
-          return "Failed to get value";
         }
+      } catch {
+        if (unsafe) {
+          return "";
+        }
+        this.throwError(
+          "MissingOp",
+          "Input type not found, did you forget to add a menu?",
+          "TextFromOp",
+          "Input type not found, did you forget to add a menu?"
+        );
+        console.log(blob);
+
+        return "Failed to get value";
       }
     }
 
