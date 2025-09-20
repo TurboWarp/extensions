@@ -131,10 +131,13 @@
         source: errorsource ?? "Undefined. This is an error, please report it!",
         full: full ?? "Undefined. This is an error, please report it!",
       };
-      error.name   = errorname ?? "Undefined. This is an error, please report it!";
-      error.body   = errorbody ?? "Undefined. This is an error, please report it!";
-      error.source = errorsource ?? "Undefined. This is an error, please report it!";
-      error.full   = full ?? "Undefined. This is an error, please report it!";
+      error.name =
+        errorname ?? "Undefined. This is an error, please report it!";
+      error.body =
+        errorbody ?? "Undefined. This is an error, please report it!";
+      error.source =
+        errorsource ?? "Undefined. This is an error, please report it!";
+      error.full = full ?? "Undefined. This is an error, please report it!";
 
       console.error(error);
 
@@ -3768,7 +3771,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
 
     genF32(args, util) {
       // unusable
-      return ""
+      return "";
     }
 
     wgslWhileLoop(args, util) {}
@@ -4214,8 +4217,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       let j;
       try {
         j = JSON.parse(args.ARRAY);
-        if (!Array.isArray(j))
-          throw new Error(); // this is just to break out of the try branch
+        if (!Array.isArray(j)) throw new Error(); // this is just to break out of the try branch
       } catch {
         return this.throwError(
           "InvalidArray",
