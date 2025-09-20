@@ -44,6 +44,9 @@
         timeout: 10000,
         maximumAge: 0,
       };
+
+      this.isWatching = false;
+      this.watcherID = null;
     }
 
     getInfo() {
@@ -66,6 +69,29 @@
           },
           "---",
           {
+            opcode: "onUserMove",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when the user's position changes"),
+            isEdgeActivated: false,
+          },
+          {
+            opcode: "changePositionWatching",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("[VALUE] watching the user's position"),
+            arguments: {
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "start_stop"
+              }
+            }
+          },
+          {
+            opcode: "isWatchingPos",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("is TurboWarp watching the users position?"),
+          },
+          "---",
+          {
             opcode: "getCurrent",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("get [WHAT]"),
@@ -79,7 +105,7 @@
           "---",
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Options"),
+            text: Scratch.translate("Geolocation Options"),
           },
           {
             opcode: "setTimeoutTo",
@@ -156,13 +182,26 @@
               },
             ],
           },
+          start_stop: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("start"),
+                value: "start",
+              },
+              {
+                text: Scratch.translate("stop"),
+                value: "stop",
+              },
+            ],
+          }
         },
       };
     }
 
-    async getCurrent(args) {
+    async getCurrent(args, util) {
       if (!(await this.isAllowed())) return "";
-      var coordinates = await getGeolocation(this.options);
+      var coordinates = util.thread._coordinates || (await getGeolocation(this.options));
       if (coordinates.success == true) {
         return coordinates[args.WHAT];
       } else {
@@ -170,7 +209,34 @@
       }
     }
 
+    async changePositionWatching(args) {
+      if ((args.VALUE == "start") && this.isWatching || (args.VALUE == "stop") && !this.isWatching) return "";
+      if (!(await this.isAllowed())) return "";
+      
+      this.isWatching = (args.VALUE == "start");
+
+      if (args.VALUE == "start"){
+        this.watcherID = navigator.geolocation.watchPosition((pos) => {
+          var threads = Scratch.vm.runtime.startHats('samuelloufgeolocation_onUserMove');
+          for (var thread of threads){
+            var coords = pos.toJSON().coords;
+            coords.success = true;
+            // @ts-ignore
+            thread._coordinates = coords;
+          }
+        }, () => {}, this.options);
+      } else {
+        navigator.geolocation.clearWatch(this.watcherID);
+      }
+    }
+
+    isWatchingPos() {
+      return this.isWatching;
+    }
+
     async isAllowed() {
+      if (!this.isSupported()) return false;
+      // @ts-ignore
       return await Scratch.canGeolocate();
     }
 
@@ -198,6 +264,7 @@
       return this.options.enableHighAccuracy;
     }
   }
+  // @ts-ignore
   Scratch.extensions.register(new Geolocation());
   // @ts-ignore
 })(Scratch);
