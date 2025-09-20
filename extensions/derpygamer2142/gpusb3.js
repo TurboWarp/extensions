@@ -24,7 +24,6 @@
   let buffers = {},
     bindGroups = {},
     bindGroupLayouts = {},
-    bufferRefs = {}, // deprecated, not used anywhere anymore
     arrayBuffers = {},
     views = {},
     textures = {}, // webgpu texture objects, actual images will be yoinked from ~~the pen+ costume library(if available)~~(scrapped idea, too complicated. i go into more detail elsewhere) and costume list
@@ -62,7 +61,6 @@
       buffers = {};
       bindGroups = {};
       bindGroupLayouts = {};
-      bufferRefs = {}; // unused but we clear this just in case
       arrayBuffers = {};
       views = {};
       textures = {};
@@ -133,6 +131,10 @@
         source: errorsource ?? "Undefined. This is an error, please report it!",
         full: full ?? "Undefined. This is an error, please report it!",
       };
+      error.name   = errorname ?? "Undefined. This is an error, please report it!";
+      error.body   = errorbody ?? "Undefined. This is an error, please report it!";
+      error.source = errorsource ?? "Undefined. This is an error, please report it!";
+      error.full   = full ?? "Undefined. This is an error, please report it!";
 
       console.error(error);
 
@@ -171,8 +173,6 @@
         name: Scratch.translate("GPU.sb3"),
 
         color1: "#27c90e",
-        // color2: "#166af2",
-        // color3: "#032966",
         docsURI: "https://extensions.derpygamer2142.com/docs/gpusb3",
         blocks: [
           {
@@ -201,9 +201,9 @@
             ),
             isEdgeActivated: false,
             arguments: {
-              // all arguments here are grabbed using some workspace tomfoolery, hence why they don't support anything other than text
-              // originally these were fetched using a modified version of the wgsl transpiler(generateWGSL) but i just had stupid idiot brain fungus
-              // and thought that was a good idea despite it being horrible and the least efficient way to do it
+              // due to the way the compilation step is invoked, the names of shaders do not accept block inputs.
+              // having a seperate compilation step specifically to get the name of a shader that has no reason to be dynamic in the first place
+              // (which is how this was for a while before a rework) is kind of silly
               NAME: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate("myShader"),
@@ -276,6 +276,8 @@
               },
             },
           },
+
+          "---",
 
           {
             blockType: "label",
@@ -572,7 +574,6 @@
 
           {
             // i don't remember why this is hidden but i think it was important
-            hideFromPalette: true,
             opcode: "clearBuffer",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
@@ -589,7 +590,7 @@
               },
               OFFSET: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 128,
+                defaultValue: 0,
               },
             },
             color1: BUFFERCOLOR,
@@ -690,7 +691,7 @@
           },
 
           {
-            // this is unused, it's still here for the 2 people(more like 0) who might have projects using this from the month period when it was in use
+            // this is unused, it's still here for the 2 people who might have projects using this from the month period when it was in use
             // https://webidl.spec.whatwg.org/#AllowSharedBufferSource
             opcode: "genF32",
             blockType: Scratch.BlockType.REPORTER,
@@ -757,6 +758,8 @@
             },
             color1: TEXTURECOLOR,
           },
+
+          "---",
 
           {
             blockType: "label",
@@ -1031,6 +1034,8 @@
             color1: ARRAYBUFFERCOLOR,
           },
 
+          "---",
+
           {
             blockType: "label",
             text: Scratch.translate("WGSL Blocks"),
@@ -1247,7 +1252,8 @@
           },
 
           {
-            hideFromPalette: true, // this doesn't work with compute shaders, but if i decide to get freaky and somehow add other shader types(i probably won't) why redo code
+            hideFromPalette: true, // this doesn't work with compute shaders and was originally added
+            // due to me not reading all the documentation before implementing. will come back when rendering is added
             opcode: "samplerType",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("Sampler type"),
@@ -1452,7 +1458,6 @@
             text: Scratch.translate("func arg input [ARG], next [NEXT]"),
             arguments: {
               ARG: {
-                // yee haw i'm a pirate
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "15",
               },
@@ -1572,6 +1577,8 @@
             },
             color1: FUNCTIONCOLOR,
           },
+
+          "---",
 
           {
             blockType: "label",
@@ -1694,8 +1701,7 @@
         ],
 
         menus: {
-          // webgpu/wgsl stuff intentionally not translated
-          // https://discord.com/channels/837024174865776680/1132437506655268926/1345066146625491095
+          // webgpu/wgsl stuff intentionally not translated by contributor request
 
           // all menus have acceptReporters set to true as otherwise they are located in other places in the block data
           // and it causes all sorts of issues
@@ -1709,18 +1715,17 @@
               "bool",
               "auto",
               // f16?
+              // todo: f16(and other extensions) requires browser support checking
+              // add blocks for this
             ],
           },
           VARTYPES: {
-            // unlike javascript, let is kinda constant but var is variable and const is constant
             acceptReporters: true,
             items: ["var", "let", "const"],
           },
 
           VAROPS: {
-            // same as javascript
-            // if you are reviewing this i would be concerned if you didn't at least
-            // know what the majority of these do
+            // same operators as javascript
             acceptReporters: true,
             items: [
               "=",
@@ -1754,7 +1759,7 @@
               "countTrailingZeros",
               "degrees",
               "determinant",
-              // only for fragment shaders
+              // only for fragment shaders, todo
               /*"dpdx",
               "dpdxCoarse",
               "dpdxFine",
@@ -1790,7 +1795,7 @@
               "textureDimensions",
               "textureLoad",
               "textureStore",
-              // only for fragment shaders
+              // only for fragment shaders, todo
               //"textureSample",
               // "textureSampleBaseClampToEdge"
               // "textureSampleBias"
@@ -1966,8 +1971,9 @@
               "rgba8snorm",
               "rgba8uint",
               "rgba8sint",
-              "bgra8unorm",
-              "bgra8unorm-srgb",
+              // bgra8unorm requires a special feature, todo
+              // "bgra8unorm",
+              // "bgra8unorm-srgb",
               // Packed 32-bit formats
               // "rgb9e5ufloat",
               // "rgb10a2uint",
@@ -2128,11 +2134,8 @@
         }
 
         case "gpusb3_samplerType": {
-          // v past me either didn't finish this comment or removed part of it, and i don't remember what it said
-          // i am now reworking the compiler and i could probably fix whatever i was yapping about but i don't want to look through stuff to figure it out
-          // the "solution" here is to just do whatever this case does and return the desired input if anyone ever decides to use this kind of block again
-
-          // IMPORTANT: For blocks with no inputs, such as the scrapped sampler type block,
+          // IMPORTANT: For blocks with no inputs, such as the scrapped sampler type block, it will not be detected as a block and instead
+          // considered a "raw" input. it doesn't really matter because this is the only block with it, but for new blocks it's important
           return "sampler"; // the codesmell here is crazy but this should work well enough
         }
 
@@ -3022,7 +3025,6 @@ while (${this.genWGSL(util, b.COND, recursionDepth + 1)}) {
 
           case "gpusb3_barrier": {
             if (!b.TYPE._raw) {
-              // barrier block minecraft??????
               this.throwError(
                 "UnexpectedInput",
                 "Unexpected input in block input!",
@@ -3631,7 +3633,6 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       let parsed;
       try {
         parsed = JSON.parse(args.DESC);
-        // if (!Object.prototype.hasOwnProperty.call(parsed,"type")) throw new Error("skibidi toilet ohio grimace shake rizz")
       } catch {
         return this.throwError(
           "InvalidEntryDescriptor",
@@ -3767,14 +3768,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
 
     genF32(args, util) {
       // unusable
-      let array;
-      try {
-        array = JSON.parse(args.ARRAY);
-      } catch {
-        array = [];
-      }
-      bufferRefs[this.getBlockId(util)] = new Float32Array(array);
-      return this.getBlockId(util);
+      return ""
     }
 
     wgslWhileLoop(args, util) {}
@@ -3971,6 +3965,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       // GPUMapMode.READ assumes no writing will be done
       // aka if you want to write to your mapped buffer you need to transfer it to the cpu, mess with it, then transfer it to a different buffer
       // and send it back to the gpu
+      // this will be fixed with the Great GPU.sb3 Rendering Update of '25(Optimistically, Maybe '26 at the Latest)
       if (!Object.prototype.hasOwnProperty.call(buffers, args.BUFFER)) {
         return this.throwError(
           "BufferNotFound",
@@ -4125,7 +4120,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       let j;
       try {
         j = JSON.parse(args.ARRAY);
-        if (!Array.isArray(j)) throw new Error("skibidi toilet ohio rizz");
+        if (!Array.isArray(j)) throw new Error(); // unseen error to break out of the try branch
       } catch {
         return this.throwError(
           "InvalidArray",
@@ -4206,7 +4201,6 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
           Scratch.Cast.toNumber(args.INDEX)
         ] = Scratch.Cast.toNumber(args.VALUE);
       } else {
-        console.log("aaaaa");
         return this.throwError(
           "ViewNotFound",
           "View not found",
@@ -4221,7 +4215,7 @@ ${b.SUBSTACK ? this.genWGSL(util, b.SUBSTACK, recursionDepth + 1) : ""}
       try {
         j = JSON.parse(args.ARRAY);
         if (!Array.isArray(j))
-          throw new Error("balkan rage winter arc jonkler trollge phonk"); // 🤫🧏
+          throw new Error(); // this is just to break out of the try branch
       } catch {
         return this.throwError(
           "InvalidArray",
