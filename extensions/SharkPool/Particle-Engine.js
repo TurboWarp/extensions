@@ -62,7 +62,23 @@
     sCol: { val: "#ff00ff", inf: 0 },
     eCol: { val: "#0000ff", inf: 0 },
   };
-  let deltaTime = 0,
+
+  // ripped from Clipping and Blening extension
+  // prettier-ignore
+  const gl = render.gl;
+  const Blendings = Object.assign(Object.create(null), {
+    "default": [gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
+    "additive": [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
+    "additive with alpha": [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_ADD],
+    "subtract": [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
+    "subtract with alpha": [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
+    "multiply": [gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
+    "invert": [gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE, gl.FUNC_ADD],
+    "mask": [gl.ZERO, gl.SRC_ALPHA, gl.ZERO, gl.SRC_ALPHA, gl.FUNC_ADD],
+  });
+
+  let engineCount = 0,
+    deltaTime = 0,
     prevTime = 0;
 
   const allEngines = new Map();
@@ -119,60 +135,15 @@
     }
   }
 
-  function applyBlends(gl, type) {
-    switch (type) {
-      case "additive":
-        gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFuncSeparate(gl.ONE, gl.ONE, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        break;
-      case "subtract":
-        gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT);
-        gl.blendFuncSeparate(gl.ONE, gl.ONE, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        break;
-      case "multiply":
-        gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFuncSeparate(
-          gl.DST_COLOR,
-          gl.ONE_MINUS_SRC_ALPHA,
-          gl.ONE,
-          gl.ONE_MINUS_SRC_ALPHA
-        );
-        break;
-      case "screen":
-        gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFuncSeparate(
-          gl.ONE,
-          gl.ONE_MINUS_SRC_COLOR,
-          gl.ONE,
-          gl.ONE_MINUS_SRC_ALPHA
-        );
-        break;
-      case "invert":
-        gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFuncSeparate(
-          gl.ONE_MINUS_DST_COLOR,
-          gl.ONE_MINUS_SRC_COLOR,
-          gl.ONE,
-          gl.ONE_MINUS_SRC_ALPHA
-        );
-        break;
-      default:
-        gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFuncSeparate(
-          gl.SRC_ALPHA,
-          gl.ONE_MINUS_SRC_ALPHA,
-          gl.ONE,
-          gl.ONE_MINUS_SRC_ALPHA
-        );
-    }
-  }
-
   // Patch to allow opacity and blends in our engine
   const gu = Drawable.prototype.getUniforms;
   Drawable.prototype.getUniforms = function () {
     const gl = this._renderer.gl;
-    if (this[engineTag]) applyBlends(gl, this[engineTag]);
-    else {
+    if (this[engineTag]) {
+      const blend = Blendings[this[engineTag]] ?? Blendings.default;
+      gl.blendEquation(blend[4]);
+      gl.blendFuncSeparate(blend[0], blend[1], blend[2], blend[3]);
+    } else {
       if (vm.extensionManager._loadedExtensions.has("xeltallivclipblend"))
         return gu.call(this);
       gl.blendEquation(gl.FUNC_ADD);
@@ -182,6 +153,13 @@
   };
 
   // Constants
+  /* 
+    browsers have a maximum number of webgl contexts (8-16),
+    we will warn the user in the editor if they pass this limit
+  */
+  const ENGINE_CAP = 7;
+
+  const FPS_NORM = 100 / 3; // 33.333 FPS
   const radianConvert = Math.PI / 180;
   const vertices = [
     -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5,
@@ -208,7 +186,7 @@
   const newTexture = (url, gl, callback) => {
     Scratch.canFetch(url).then((canFetch) => {
       if (!canFetch) return;
-      // eslint-disable-next-line extension/check-can-fetch  extension/check-can-fetch
+      // eslint-disable-next-line extension/check-can-fetch
       const img = new Image();
       img.crossOrigin = "Anonymous";
       img.src = url;
@@ -339,7 +317,7 @@ void main() {
     allEngines.delete(target.getName());
   };
 
-  const updateEngine = (engine) => {
+  const updateEngine = (engine, delta) => {
     const {
       canvas,
       gl,
@@ -347,11 +325,9 @@ void main() {
       bufferInfo,
       projection,
       emitters,
-      interpolate,
       noTrails,
     } = engine;
     const { width, height } = canvas;
-    const delta = interpolate ? 1 + deltaTime : 1;
     const lifeRate = 0.01 * delta;
 
     // Clear canvas
@@ -479,8 +455,8 @@ void main() {
         ogPos[1] -= gravY * ind * delta;
 
         const waveT = conLife - life;
-        particle.x = ogPos[0] + fastSin(waveT * sinS) * sinW * delta;
-        particle.y = ogPos[1] + fastCos(waveT * cosS) * cosW * delta;
+        particle.x = ogPos[0] + fastSin(waveT * sinS) * sinW;
+        particle.y = ogPos[1] + fastCos(waveT * cosS) * cosW;
 
         const fadeIn = ind * (1 / fIn);
         const fadeOut = (conLife - ind) * (1 / fOut);
@@ -497,7 +473,7 @@ void main() {
           tintCache.set(tintKey, tint);
         }
 
-        particle.ind++;
+        particle.ind += delta;
         particle.life -= lifeRate;
 
         const screenX = particle.x + width * 0.5;
@@ -526,12 +502,12 @@ void main() {
         });
         twgl.drawBufferInfo(gl, bufferInfo);
 
-        const deltaFactor = delta / conLife;
-        particle.dir += (eDir - dir) * deltaFactor;
-        particle.spin += (eSpin - spin) * deltaFactor;
-        particle.size += (eSize - size) * deltaFactor;
-        particle.streX += (eStreX - streX) * deltaFactor;
-        particle.streY += (eStreY - streY) * deltaFactor;
+        const progress = delta / conLife;
+        particle.dir += (eDir - dir) * progress;
+        particle.spin += (eSpin - spin) * progress;
+        particle.size += (eSize - size) * progress;
+        particle.streX += (eStreX - streX) * progress;
+        particle.streY += (eStreY - streY) * progress;
       }
     }
   };
@@ -557,7 +533,10 @@ void main() {
     if (runtime.ioDevices.clock._paused) return;
     allEngines.forEach((engine) => {
       if (engine.paused || engine.interpolate) return;
-      updateEngine(engine);
+
+      // 30 FPS is a normal delta, anything else would need normalization
+      const normalizedDelta = runtime.currentStepTime / FPS_NORM;
+      updateEngine(engine, normalizedDelta);
       engine.skin.setContent(engine.canvas);
     });
   });
@@ -569,28 +548,21 @@ void main() {
       return;
     }
 
-    deltaTime = prevTime === 0 ? 0 : (deltaFrame - prevTime) * 0.001;
+    deltaTime = prevTime === 0 ? 0 : (deltaFrame - prevTime) * 0.033;
     prevTime = deltaFrame;
 
-    const fps = +(1 / deltaTime).toFixed(2);
-    const frameTime = 1000 / fps;
+    let hasReasonToRefresh = false;
     allEngines.forEach((engine) => {
       if (!engine.interpolate || engine.paused) return;
-
-      let remainingTime = deltaTime * 1000;
-      const updatesNeeded = Math.floor(remainingTime / frameTime);
-      for (let j = 0; j < updatesNeeded; j++) {
-        updateEngine(engine);
-        engine.skin.setContent(engine.canvas);
-        remainingTime -= frameTime;
-        if (remainingTime < frameTime) break;
-      }
-
-      if (remainingTime > 0) {
-        updateEngine(engine);
-        engine.skin.setContent(engine.canvas);
-      }
+      updateEngine(engine, deltaTime);
+      engine.skin.setContent(engine.canvas);
+      hasReasonToRefresh = true;
     });
+
+    if (hasReasonToRefresh) {
+      render.dirty = true;
+    }
+
     requestAnimationFrame(interpolateEngines);
   }
   requestAnimationFrame(interpolateEngines);
@@ -947,10 +919,18 @@ void main() {
             items: [
               { text: Scratch.translate("default"), value: "default" },
               { text: Scratch.translate("additive"), value: "additive" },
+              {
+                text: Scratch.translate("additive with alpha"),
+                value: "additive with alpha",
+              },
               { text: Scratch.translate("subtract"), value: "subtract" },
-              { text: Scratch.translate("screen"), value: "screen" },
+              {
+                text: Scratch.translate("subtract with alpha"),
+                value: "subtract with alpha",
+              },
               { text: Scratch.translate("multiply"), value: "multiply" },
               { text: Scratch.translate("invert"), value: "invert" },
+              { text: Scratch.translate("mask"), value: "mask" },
             ],
           },
         },
@@ -1023,10 +1003,30 @@ void main() {
       return runtime.getSpriteTargetByName(name);
     }
 
+    checkEngineContexts() {
+      // its fair to trust that the user knows what theyre doing if they ingore this
+      if (engineCount > ENGINE_CAP) {
+        const warningText = "WARNING: Particle Engine -- reached unstable number of engines!";
+        if (typeof scaffolding === "undefined") {
+          /* global ReduxStore */
+          const state = ReduxStore.getState().scratchGui;
+          if (!state.mode.isPlayerOnly && !state.mode.isFullScreen) {
+            alert(warningText);
+            return;
+          }
+        }
+        console.warn(warningText);
+      }
+    }
+
     // Block Funcs
     createEngine(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag] === undefined) makeEngine(target);
+      if (target && target[engineTag] === undefined) {
+        this.checkEngineContexts();
+        makeEngine(target);
+        engineCount++;
+      }
     }
 
     deleteEngine(args) {
@@ -1035,7 +1035,10 @@ void main() {
         allEngines.forEach((engine) => disposeEngine(engine.target));
         return;
       }
-      if (target && target[engineTag] !== undefined) disposeEngine(target);
+      if (target && target[engineTag] !== undefined) {
+        disposeEngine(target);
+        engineCount--;
+      }
     }
 
     engineAction(args) {
@@ -1112,6 +1115,7 @@ void main() {
         const toggle = args.TYPE === "on";
         switch (args.OPT) {
           case "interpolation":
+            if (toggle) runtime.setInterpolation(true);
             engine.interpolate = toggle;
             break;
           case "freeze":
