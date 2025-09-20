@@ -67,14 +67,38 @@
   // prettier-ignore
   const gl = render.gl;
   const Blendings = Object.assign(Object.create(null), {
-    "default": [gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
-    "additive": [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
+    default: [
+      gl.ONE,
+      gl.ONE_MINUS_SRC_ALPHA,
+      gl.ONE,
+      gl.ONE_MINUS_SRC_ALPHA,
+      gl.FUNC_ADD,
+    ],
+    additive: [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
     "additive with alpha": [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_ADD],
-    "subtract": [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
-    "subtract with alpha": [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
-    "multiply": [gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
-    "invert": [gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE, gl.FUNC_ADD],
-    "mask": [gl.ZERO, gl.SRC_ALPHA, gl.ZERO, gl.SRC_ALPHA, gl.FUNC_ADD],
+    subtract: [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
+    "subtract with alpha": [
+      gl.ONE,
+      gl.ONE,
+      gl.ONE,
+      gl.ONE,
+      gl.FUNC_REVERSE_SUBTRACT,
+    ],
+    multiply: [
+      gl.DST_COLOR,
+      gl.ONE_MINUS_SRC_ALPHA,
+      gl.DST_COLOR,
+      gl.ONE_MINUS_SRC_ALPHA,
+      gl.FUNC_ADD,
+    ],
+    invert: [
+      gl.ONE_MINUS_DST_COLOR,
+      gl.ONE_MINUS_SRC_COLOR,
+      gl.ZERO,
+      gl.ONE,
+      gl.FUNC_ADD,
+    ],
+    mask: [gl.ZERO, gl.SRC_ALPHA, gl.ZERO, gl.SRC_ALPHA, gl.FUNC_ADD],
   });
 
   let engineCount = 0,
@@ -94,14 +118,8 @@
         wrap: gl.CLAMP_TO_EDGE,
         src: [0, 0, 0, 0], // Dummy pixel
       });
-      this._size = [
-        runtime.stageWidth || 480,
-        runtime.stageHeight || 360
-      ];
-      this._rotationCenter = [
-        this._size[0] / 2,
-        this._size[1] / 2
-      ];
+      this._size = [runtime.stageWidth || 480, runtime.stageHeight || 360];
+      this._rotationCenter = [this._size[0] / 2, this._size[1] / 2];
     }
     dispose() {
       if (this._texture) {
@@ -293,14 +311,7 @@ void main() {
       skin.size = size;
       canvas.width = size[0];
       canvas.height = size[1];
-      engine.projection = twgl.m4.ortho(
-        0,
-        size[0],
-        size[1],
-        0,
-        -1,
-        1
-      );
+      engine.projection = twgl.m4.ortho(0, size[0], size[1], 0, -1, 1);
     }).bind(this);
     vm.on("STAGE_SIZE_CHANGED", drawable.stageSZChange);
     runtime.requestRedraw();
@@ -955,7 +966,7 @@ void main() {
       items = [
         ...items.slice(0, 1),
         { text: Scratch.translate("all"), value: "_all_" },
-        ...items.slice(1, items.length)
+        ...items.slice(1, items.length),
       ];
       return items;
     }
@@ -1006,7 +1017,8 @@ void main() {
     checkEngineContexts() {
       // its fair to trust that the user knows what theyre doing if they ingore this
       if (engineCount > ENGINE_CAP) {
-        const warningText = "WARNING: Particle Engine -- reached unstable number of engines!";
+        const warningText =
+          "WARNING: Particle Engine -- reached unstable number of engines!";
         if (typeof scaffolding === "undefined") {
           /* global ReduxStore */
           const state = ReduxStore.getState().scratchGui;
