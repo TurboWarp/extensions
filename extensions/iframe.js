@@ -274,7 +274,7 @@
           {
             opcode: "whenMessage",
             blockType: Scratch.BlockType.EVENT,
-            text: Scratch.translate("when message from iframe is received"),
+            text: Scratch.translate("when message from iframe is sent"),
             isEdgeActivated: false,
           },
           {
