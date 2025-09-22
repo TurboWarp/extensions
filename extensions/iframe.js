@@ -54,6 +54,7 @@
   let interactive = true;
   let resizeBehavior = "scale";
   let latestMessage = null;
+  let isTrusted = false;
 
   const updateFrameAttributes = () => {
     if (!iframe) {
@@ -123,8 +124,10 @@
   };
 
   const handleFrameMessage = (e) => {
-    latestMessage = e.data;
-    Scratch.vm.runtime.startHats("iframe_whenMessage");
+    if (isTrusted) {
+      latestMessage = e.data;
+      Scratch.vm.runtime.startHats("iframe_whenMessage");
+    }
   };
   window.onmessage = handleFrameMessage;
 
@@ -326,6 +329,7 @@
     async display({ URL }) {
       closeFrame();
       if (await Scratch.canEmbed(URL)) {
+        isTrusted = false;
         createFrame(Scratch.Cast.toString(URL));
       }
     }
@@ -336,6 +340,7 @@
         Scratch.Cast.toString(HTML)
       )}`;
       if (await Scratch.canEmbed(url)) {
+        isTrusted = true;
         createFrame(url);
       }
     }
@@ -417,7 +422,9 @@
     }
 
     sendMessage({ MESSAGE }) {
-      iframe.contentWindow.postMessage(MESSAGE, "*");
+      if (isTrusted) {
+        iframe.contentWindow.postMessage(MESSAGE, "*");
+      }
     }
 
     clearMessage() {
