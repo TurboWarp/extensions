@@ -5271,7 +5271,7 @@
         });
       } else {
         if (NGIO.session && !loggedIn) return "Not logged in!";
-        return "Can't get data from NewGrounds!";
+        return "Can't get data from Newgrounds!";
       }
     }
 
