@@ -93,7 +93,7 @@
 
     //assign each item to a place in the object;
     for (let item in data) {
-      returned[data[item].id] = data;
+      returned[data[item].id] = data[item];
     }
 
     return returned;
@@ -153,7 +153,8 @@
           gameData.medals = quickParseData(NGIO.medals);
           gameData.saveSlots = quickParseData(NGIO.saveSlots);
           gameData.scoreBoards = quickParseData(NGIO.scoreBoards);
-          
+
+          console.log(gameData);
           break;
         } else {
           ConnectionStatus = "Opted Out";
@@ -170,10 +171,6 @@
 
         break;
     }
-  }
-  const onSaveComplete = (slot) => {
-    saveCompleted = true;
-    gameData.saveSlots = quickParseData(NGIO.saveSlots);
   }
 
   let scorePosted = false;
@@ -206,8 +203,9 @@
       boxSizing: "border-box"
     },
     sc_monitor_rows_outer: {
-	    flex_grow: "1",
-      boxSizing: "border-box"
+	    flexGrow: "1",
+      boxSizing: "border-box",
+      overflowY: "scroll"
     },
     sc_monitor_list_footer: {
       display: "flex",
@@ -216,6 +214,51 @@
       fontWeight: "bold",
       padding: "3px",
       boxSizing: "border-box"
+    },
+
+    sc_monitor_row_root: {
+      position: "relative",
+      top: "0",
+      left: "0",
+      display: "flex",
+      justifyContent: "space-around",
+      alignItems: "center",
+      padding: "2px",
+      width: "100%",
+      boxSizing: "border-box"
+    },
+    sc_monitor_row_index: {
+      fontWeight: "bold",
+      color: "hsla(225, 15%, 40%, 1)",
+      margin: "0 3px",
+      boxSizing: "border-box"
+    },
+    sc_monitor_row_value_outer: {
+      display: "flex",
+      alignItems: "center",
+      minWidth: "40px",
+      height: "22px",
+      border: "1px solid hsla(0, 0%, 0%, 0.15)",
+      backgroundColor: "#fc662c",
+      color: "white",
+      margin: "0 3px",
+      borderRadius: "calc(0.5rem / 2)",
+      flexGrow: "1",
+      boxSizing: "border-box"
+    },
+    sc_monitor_row_value_inner: {
+      padding: "3px 5px",
+      width: "100%",
+      color: "inherit",
+      background: "none",
+      border: "none",
+      font: "inherit",
+      outline: "none",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      userSelect: "text",
+      webkitUserSelect: "text",
+      whiteSpace: "pre",
     }
   }
 
@@ -424,9 +467,34 @@
             },
           },
           {
+            opcode: "getMedalData",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get [data] of medal [medalID]"),
+            arguments: {
+              data: {
+                menu: "medalDatType",                
+              },
+              medalID: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: Scratch.translate("MedalID"),
+              },
+            },
+          },
+          {
             opcode: "isMedalUnlocked",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("is medal [medalID] unlocked?"),
+            arguments: {
+              medalID: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: Scratch.translate("MedalID"),
+              },
+            },
+          },
+          {
+            opcode: "isMedalSecret",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("is medal [medalID] secret?"),
             arguments: {
               medalID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -461,6 +529,19 @@
             },
           },
           {
+            opcode: "scoreboardName",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "name of scoreboard [scoreBoardID]"
+            ),
+            arguments: {
+              scoreBoardID: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "000000",
+              }
+            },
+          },
+          {
             opcode: "getScore",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
@@ -484,6 +565,23 @@
                 menu: "scoreDataType",
               },
             },
+          },
+          {
+            opcode: "setScoreboardVisibility",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "[visibilityType] scoreboard [scoreBoardID]"
+            ),
+            arguments: {
+              visibilityType: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "visibilityTypes",
+              },
+              scoreBoardID: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "000000",
+              },
+            }
           },
 
           "---", //Referrals
@@ -524,6 +622,31 @@
               {
                 text: Scratch.translate("profile picture"),
                 value: "icon",
+              },
+            ],
+          },
+          medalDatType: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("name"),
+                value: "name",
+              },
+              {
+                text: Scratch.translate("description"),
+                value: "description",
+              },
+              {
+                text: Scratch.translate("icon"),
+                value: "icon",
+              },
+              {
+                text: Scratch.translate("difficulty"),
+                value: "difficulty",
+              },
+              {
+                text: Scratch.translate("value"),
+                value: "value",
               },
             ],
           },
@@ -573,13 +696,94 @@
               },
             ],
           },
+          visibilityTypes: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("show"),
+                value: "show",
+              },
+              {
+                text: Scratch.translate("hide"),
+                value: "hide",
+              }
+            ],
+          }
         },
       };
     }
 
     //Monitors
     _createMonitorFor(scoreBoardID, x, y, width, height) {
-      if (true) {}
+      if (!gameData.scoreBoards[scoreBoardID]) return;
+
+      const scoreboard = gameData.scoreBoards[scoreBoardID];
+      
+      if (true) {
+        //Create elements and set up css
+        const monitorRoot = document.createElement("div");
+        setElementCSS(monitorRoot, customCSS.sc_monitor_root);
+
+        monitorRoot.style.width = "100px";
+        monitorRoot.style.height = "200px";
+
+        const monitorHeader = document.createElement("div");
+        setElementCSS(monitorHeader, customCSS.sc_monitor_list_label);
+        monitorHeader.innerText = scoreboard.name;
+
+        const monitorInner = document.createElement("div");
+        setElementCSS(monitorInner, customCSS.sc_monitor_rows_outer);
+
+        const monitorFooter = document.createElement("div");
+        setElementCSS(monitorFooter, customCSS.sc_monitor_list_footer);
+
+        monitorRoot.appendChild(monitorHeader);
+        monitorRoot.appendChild(monitorInner);
+        monitorRoot.appendChild(monitorFooter);
+
+        const searchOptions = {
+          period: NGIO.PERIOD_ALL_TIME,
+          social: true,
+          skip: 0,
+          limit: 20,
+        };
+
+        NGIO.getScores(scoreBoardID, searchOptions, (board, scores) => {
+          monitorInner.innerHTML = "";
+
+          console.log(scores);
+
+          for (let scoreID in scores) {
+            const score = scores[0];
+            console.log(score, score.user.name);
+
+            const rowOuter = document.createElement("label");
+            setElementCSS(rowOuter, customCSS.sc_monitor_row_root);
+
+            const rowIndex = document.createElement("img");
+            setElementCSS(rowIndex, customCSS.sc_monitor_row_index);
+            rowIndex.src = score.user.icons.small;
+
+            const rowValue = document.createElement("div");
+            setElementCSS(rowValue, customCSS.sc_monitor_row_value_outer);
+
+            const rowValueText = document.createElement("div");
+            setElementCSS(rowValueText, customCSS.sc_monitor_row_value_inner);
+            rowValueText.innerText = score.formatted_value;
+
+            rowOuter.appendChild(rowIndex);
+            rowOuter.appendChild(rowValue);
+            rowValue.appendChild(rowValueText);
+
+            rowIndex.onmouseover = () => { rowValueText.innerText = score.user.name; }
+            rowIndex.onmouseout = () => { rowValueText.innerText = score.formatted_value; }
+
+            monitorInner.appendChild(rowOuter);
+          }
+        })
+
+        Scratch.renderer.addOverlay(monitorRoot);
+      }
     }
 
     //Referrals
@@ -606,6 +810,7 @@
         skip: rank - 1,
         limit: 1,
       };
+
       return new Promise((resolve, reject) => {
         NGIO.getScores(scoreBoardID, searchOptions, (board, scores) => {
           // <= declaring the board before scores so that we can retrieve the scores.
@@ -651,6 +856,20 @@
           Scratch.vm.runtime.startHats("NGIO_onScorePosted");
         });
       }
+    }
+
+    scoreboardName({ scoreBoardID }) {
+      if (NGIO.session && gameData.scoreBoards[scoreBoardID]) {
+        console.log(gameData.scoreBoards[scoreBoardID]);
+        return gameData.scoreBoards[scoreBoardID].name;
+      } 
+      else {
+        return "";
+      }     
+    }
+
+    setScoreboardVisibility({ visibilityType, scoreBoardID }) {
+      if (visibilityType == "show") this._createMonitorFor(scoreBoardID);
     }
 
     onScorePosted() {}
@@ -851,7 +1070,7 @@
     doesSlotHaveData({ Slot }) {
       if (NGIO.session && loggedIn) {
         this.revitalizeSession();
-        
+
         //Configure our slot to be in a good range!
         Slot = Math.max(1, Math.floor(Scratch.Cast.toNumber(Slot)));
 
@@ -884,15 +1103,50 @@
         medalID = Scratch.Cast.toNumber(medalID);
 
         if (!(NGIO.session && gameData.medals[medalID])) return false;
-        const medal = NGIO.getMedal(medalID);
-
-        //Make sure the medal exists
-        return medal.unlocked;
+        return gameData.medals[medalID].unlocked;
       } else {
         return false;
       }
     }
 
+    isMedalSecret({ medalID }) {
+      if (NGIO.session && loggedIn) {
+        this.revitalizeSession();
+
+        medalID = Scratch.Cast.toNumber(medalID);
+
+        if (!(NGIO.session && gameData.medals[medalID])) return false;
+        return gameData.medals[medalID].secret;
+      } else {
+        return false;
+      }
+    }
+    
+    getMedalData({ data, medalID }) {
+      if (NGIO.session && loggedIn) {
+        this.revitalizeSession();
+
+        medalID = Scratch.Cast.toNumber(medalID);
+
+        if (!(NGIO.session && gameData.medals[medalID])) return "";
+
+        const medal = gameData.medals[medalID];
+        switch (data) {
+          case "name": return medal.name;
+          case "description": return medal.description;
+          //Make sure we get a url
+          case "icon": return (medal.icon.startsWith("https:")) ? medal.icon : "https:" + medal.icon;
+          case "difficulty": return medal.difficulty;
+          case "value": return medal.value;
+        
+          default: return "";
+        }
+      } else {
+        return "";
+      }
+    }
+
+    //To keep the session alive!
     revitalizeSession() {
       //Get and keep the session alive
       NGIO.getConnectionStatus(statusReport);
