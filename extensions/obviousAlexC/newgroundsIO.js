@@ -65,7 +65,6 @@
 
   let ConnectionStatus = "Awaiting";
   let loggedIn = false;
-  let saveCompleted = false;
 
   const NGOptions = {
     // This should match the version number in your Newgrounds App Settings page
@@ -174,8 +173,6 @@
         break;
     }
   };
-
-  let scorePosted = false;
 
   //css "classes" for our monitor for convience
   const customCSS = {
@@ -312,7 +309,7 @@
       this.serializedMonitors = {};
 
       this.setupSaving();
-      vm.runtime.on("PROJECT_LOADED", () => {
+      Scratch.vm.runtime.on("PROJECT_LOADED", () => {
         this.setupSaving.call(this);
       });
     }
@@ -1217,7 +1214,6 @@
             event.stopImmediatePropagation();
 
             boundingRect = renderer.canvas.getBoundingClientRect();
-            const rootRect = monitorRoot.getBoundingClientRect();
 
             offsetX = monitorData.width / runtime.stageWidth;
             offsetY = monitorData.height / runtime.stageHeight;
@@ -1604,7 +1600,7 @@
           //Try to get the data
           if (!gameData.saveSlots[Slot]) resolve("");
           else
-            NGIO.getSaveSlotData(Scratch.Cast.toNumber(Slot), () => {
+            NGIO.getSaveSlotData(Scratch.Cast.toNumber(Slot), (data) => {
               if (data) saveDat = Scratch.Cast.toString(data);
               else saveDat = "";
 
