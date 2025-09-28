@@ -109,6 +109,10 @@
     icon: "https://raw.githubusercontent.com/David-Orangemoon/DataHoldersRepo/main/newgroundsHolding/UnknownUser.png",
   };
 
+  let monitorDisplayData = {
+    itemCount: 20,
+  }
+
   //Status functions and variable
   const statusReport = (status) => {
     if (NGIO.isWaitingStatus) {
@@ -153,8 +157,6 @@
           gameData.medals = quickParseData(NGIO.medals);
           gameData.saveSlots = quickParseData(NGIO.saveSlots);
           gameData.scoreBoards = quickParseData(NGIO.scoreBoards);
-
-          console.log(gameData);
           break;
         } else {
           ConnectionStatus = "Opted Out";
@@ -192,7 +194,10 @@
       display: "flex",
       flexDirection: "column",
       pointerEvents: "all",
-      boxSizing: "border-box"
+      boxSizing: "border-box",
+      //Picked up is drop-shadow(rgba(0, 0, 0, 0.6) 2px 2px 4px)
+      filter: "drop-shadow(rgba(0, 0, 0, 0.0) 0px 0px 0px)",
+      transition: "filter 300ms"
     },
     sc_monitor_list_label: {
 	    backgroundColor: "white",
@@ -200,7 +205,8 @@
 	    fontWeight: "bold",
 	    borderBottom: "1px solid hsla(0, 0%, 0%, 0.15)",
 	    padding: "3px",
-      boxSizing: "border-box"
+      boxSizing: "border-box",
+      display: "flex"
     },
     sc_monitor_rows_outer: {
 	    flexGrow: "1",
@@ -231,7 +237,10 @@
       fontWeight: "bold",
       color: "hsla(225, 15%, 40%, 1)",
       margin: "0 3px",
-      boxSizing: "border-box"
+      boxSizing: "border-box",
+      width: "25px",
+      height: "25px",
+      borderRadius: "4px"
     },
     sc_monitor_row_value_outer: {
       display: "flex",
@@ -239,7 +248,7 @@
       minWidth: "40px",
       height: "22px",
       border: "1px solid hsla(0, 0%, 0%, 0.15)",
-      backgroundColor: "#fc662c",
+      backgroundColor: "#EB7522",
       color: "white",
       margin: "0 3px",
       borderRadius: "calc(0.5rem / 2)",
@@ -259,6 +268,24 @@
       userSelect: "text",
       webkitUserSelect: "text",
       whiteSpace: "pre",
+    },
+
+
+    sc_monitor_page_text: {
+	    flexGrow: "1",
+      boxSizing: "border-box",
+    },
+    sc_monitor_page_button: {
+      border: "1px solid",
+      borderRadius: "4px",
+      borderColor: "rgba(0, 0, 0, 0.15)",
+      background: "white"
+    },
+    sc_monitor_page_button_disabled: {
+      border: "1px solid",
+      borderRadius: "4px",
+      borderColor: "rgba(0, 0, 0, 0.15)",
+      background: "hsla(215, 100%, 95%, 1)"
     }
   }
 
@@ -270,8 +297,60 @@
     }
   }
 
+  //Finally our scratch stuff
+  const runtime = Scratch.vm.runtime;
+  const renderer = Scratch.vm.renderer;
+  const isPackaged = (typeof scaffolding !== "undefined");
+
+  const originifyJson = (inObject) => {
+    return JSON.parse(JSON.stringify(inObject));
+  }
+
   ("use strict");
   class NewgroundsAPI {
+    constructor() {
+      this.monitors = {};
+      this.serializedMonitors = {};
+
+      this.setupSaving();
+      vm.runtime.on("PROJECT_LOADED", () => {this.setupSaving.call(this)});
+    }
+
+    setupSaving() {
+      if (Scratch.extensions.isPenguinMod) {
+        this.serialize = () => {
+          return JSON.stringify({
+            monitors: this.serializedMonitors,
+          });
+        };
+
+        this.deserialize = (serialized) => {
+          let deserializedData = JSON.parse(serialized);
+          this.monitors = deserializedData.monitors;
+          this.serializedMonitors = deserializedData.monitors;
+        };
+      }
+      else {
+        //Storage flip flop
+        if (!runtime.extensionStorage["NGIO"]) runtime.extensionStorage["NGIO"] = new Object({ monitors: {} });
+        
+        this.serializedMonitors = originifyJson(runtime.extensionStorage["NGIO"].monitors);
+        this.monitors = originifyJson(runtime.extensionStorage["NGIO"].monitors);
+      }
+    }
+
+    serializeMonitor(monitorData) {
+      this.serializedMonitors[monitorData.id] = {
+        x: monitorData.x,
+        y: monitorData.y,
+        width: monitorData.width,
+        height: monitorData.height,
+        id: monitorData.id,
+      };
+
+      if (!Scratch.extensions.isPenguinMod) runtime.extensionStorage["NGIO"].monitors = this.serializedMonitors;
+    }
+
     getInfo() {
       return {
         id: "NGIO",
@@ -454,7 +533,13 @@
           },
 
           "---", //Medal Blocks
-
+          
+          {
+            opcode: "onMedalUnlockedHat",
+            blockType: Scratch.BlockType.HAT,
+            text: Scratch.translate("when medal unlocked"),
+            isEdgeActivated: false
+          },
           {
             opcode: "unlockMedal",
             blockType: Scratch.BlockType.COMMAND,
@@ -567,6 +652,31 @@
             },
           },
           {
+            opcode: "getScoresBulk",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "get the first [count] ranks starting from rank [rank] in scoreboard [scoreBoardID] from the timespan of [timeSpan]"
+            ),
+            arguments: {
+              scoreBoardID: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "000000",
+              },
+              rank: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "1",
+              },
+              timeSpan: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "periodTypes",
+              },
+              count: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "20",
+              },
+            },
+          },
+          {
             opcode: "setScoreboardVisibility",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
@@ -580,6 +690,26 @@
               scoreBoardID: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "000000",
+              },
+            }
+          },
+
+          "---", //Settings/changability
+          
+          {
+            opcode: "setMonitorDisplayData",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "set [property] to [value]"
+            ),
+            arguments: {
+              property: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "displayPropertyTypes",
+              },
+              value: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "20",
               },
             }
           },
@@ -706,7 +836,20 @@
               {
                 text: Scratch.translate("hide"),
                 value: "hide",
+              },
+              {
+                text: Scratch.translate("refresh"),
+                value: "refresh",
               }
+            ],
+          },
+          displayPropertyTypes: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("itemCount"),
+                value: "itemCount",
+              },
             ],
           }
         },
@@ -714,22 +857,44 @@
     }
 
     //Monitors
-    _createMonitorFor(scoreBoardID, x, y, width, height) {
+    _createMonitorFor(scoreBoardID) {
       if (!gameData.scoreBoards[scoreBoardID]) return;
 
       const scoreboard = gameData.scoreBoards[scoreBoardID];
+
+      let monitorExists = true;
+
+      //Create data if it doesn't exist
+      if (!this.monitors[scoreBoardID]) {
+        monitorExists = false;
+        this.monitors[scoreBoardID] = {
+          x: (runtime.stageWidth / 2) - 62.5,
+          y: (runtime.stageHeight / 2) - 100,
+          width: 125,
+          height: 200,
+          id: scoreBoardID
+        }
+
+        this.serializeMonitor(this.monitors[scoreBoardID]);
+      }
+      else if (!this.monitors[scoreBoardID].element) monitorExists = false;
+
+      //Now we decide if we need to create or just ignore the monitor
+      const monitorData = this.monitors[scoreBoardID];
       
-      if (true) {
+      if (!monitorExists) {
         //Create elements and set up css
         const monitorRoot = document.createElement("div");
         setElementCSS(monitorRoot, customCSS.sc_monitor_root);
 
-        monitorRoot.style.width = "100px";
-        monitorRoot.style.height = "200px";
+        //Position the root
+        monitorRoot.style.width = `${monitorData.width}px`;
+        monitorRoot.style.height = `${monitorData.height}px`;
+        monitorRoot.style.top = `${monitorData.y}px`;
+        monitorRoot.style.left = `${monitorData.x}px`;
 
         const monitorHeader = document.createElement("div");
         setElementCSS(monitorHeader, customCSS.sc_monitor_list_label);
-        monitorHeader.innerText = scoreboard.name;
 
         const monitorInner = document.createElement("div");
         setElementCSS(monitorInner, customCSS.sc_monitor_rows_outer);
@@ -741,28 +906,84 @@
         monitorRoot.appendChild(monitorInner);
         monitorRoot.appendChild(monitorFooter);
 
+        //Data
+        let page = 0;
+
+        //Contents
         const searchOptions = {
           period: NGIO.PERIOD_ALL_TIME,
-          social: true,
-          skip: 0,
-          limit: 20,
+          social: false,
+          skip: page * monitorDisplayData.itemCount,
+          limit: monitorDisplayData.itemCount + 1,
         };
 
-        NGIO.getScores(scoreBoardID, searchOptions, (board, scores) => {
+        //Header elements of the monitor
+        const monitorLabel = document.createElement("div");
+        setElementCSS(monitorLabel, { flexGrow: "1" });
+        monitorLabel.innerText = scoreboard.name;
+
+        const buttonRefresh = document.createElement("div");
+        buttonRefresh.innerText = "↻";
+
+        monitorHeader.appendChild(buttonRefresh);
+        monitorHeader.appendChild(monitorLabel);
+
+        //Footer elements of the monitor
+        const buttonPrevious = document.createElement("button");
+        setElementCSS(buttonPrevious, customCSS.sc_monitor_page_button);
+        buttonPrevious.innerText = "Last";
+
+        const pageText = document.createElement("div");
+        setElementCSS(pageText, customCSS.sc_monitor_page_text);
+        pageText.innerHTML = `Page<br>${page + 1}`;
+
+        const buttonNext = document.createElement("button");
+        setElementCSS(buttonNext, customCSS.sc_monitor_page_button);
+        buttonNext.innerText = "Next";
+
+        monitorFooter.appendChild(buttonPrevious);
+        monitorFooter.appendChild(pageText);
+        monitorFooter.appendChild(buttonNext);
+
+        //Actually displaying the board
+        const displayBoard = (board, scores) => {
+          if (scores.length == 0) { 
+            buttonPrevious.disabled = true;
+            buttonNext.disabled = true;
+            return;
+          }
+
+          pageText.innerHTML = `Page<br>${page + 1}`;
+
+          //Make sure buttons are valid
+          buttonPrevious.disabled = false;
+          buttonNext.disabled = false;
+
+          if (page == 0) buttonPrevious.disabled = true;
+          if (scores.length != (monitorDisplayData.itemCount + 1)) buttonNext.disabled = true;
+
+          //Make sure buttons reflect the options
+          if (buttonPrevious.disabled) setElementCSS(buttonPrevious, customCSS.sc_monitor_page_button_disabled);
+          else setElementCSS(buttonPrevious, customCSS.sc_monitor_page_button);
+
+          if (buttonNext.disabled) setElementCSS(buttonNext, customCSS.sc_monitor_page_button_disabled);
+          else setElementCSS(buttonNext, customCSS.sc_monitor_page_button);
+
+          //start displaying the monitor
+          let scoresToDisplay = scores.length;
+          if (scores.length == (monitorDisplayData.itemCount + 1)) scoresToDisplay--;
+
           monitorInner.innerHTML = "";
 
-          console.log(scores);
-
-          for (let scoreID in scores) {
-            const score = scores[0];
-            console.log(score, score.user.name);
+          for (let scoreID = 0; scoreID < scoresToDisplay; scoreID++) {
+            const score = scores[scoreID];
 
             const rowOuter = document.createElement("label");
             setElementCSS(rowOuter, customCSS.sc_monitor_row_root);
 
             const rowIndex = document.createElement("img");
             setElementCSS(rowIndex, customCSS.sc_monitor_row_index);
-            rowIndex.src = score.user.icons.small;
+            rowIndex.src = score.user.icons.large;
 
             const rowValue = document.createElement("div");
             setElementCSS(rowValue, customCSS.sc_monitor_row_value_outer);
@@ -780,9 +1001,160 @@
 
             monitorInner.appendChild(rowOuter);
           }
-        })
+        }
+
+        buttonPrevious.onclick = () => {
+          page -= 1;
+          searchOptions.skip = page * monitorDisplayData.itemCount;
+          NGIO.getScores(scoreBoardID, searchOptions, displayBoard);
+        }
+
+        buttonNext.onclick = () => {
+          page += 1;
+          searchOptions.skip = page * monitorDisplayData.itemCount;
+          NGIO.getScores(scoreBoardID, searchOptions, displayBoard);
+        }
+
+        //For refreshing through the monitor, add a cooldown so we can do this easier;
+        const refreshClicked = (event) => {
+          event.stopImmediatePropagation();
+          
+          buttonRefresh.removeEventListener("click", refreshClicked);
+          NGIO.getScores(scoreBoardID, searchOptions, displayBoard);
+
+          setTimeout(() => {
+            buttonRefresh.addEventListener("click", refreshClicked);
+          }, 1000);
+        }
+
+        buttonRefresh.addEventListener("click", refreshClicked);
+
+        //Add dragging if we are in the editor
+        if (!isPackaged) {
+          //Create and add it down here for reasons
+          const resizeDiv = document.createElement("div");
+          setElementCSS(resizeDiv, { cursor: "ne-resize" });
+          resizeDiv.innerText = "=";
+          monitorHeader.appendChild(resizeDiv);
+
+          //Now define the stuff we need for movement
+          let boundingRect = renderer.canvas.getBoundingClientRect();
+          let offsetX = 0;
+          let offsetY = 0;
+          let originalX = 0;
+          let originalY = 0;
+          let yoffsetForResizing = 0;
+
+          //Monitor movement code
+          const monitorDragMoveEvent = (event) => {
+            //Get position from a 0-1 scale
+            let placedPositionX = (event.clientX - offsetX - boundingRect.x) / boundingRect.width;
+            let placedPositionY = (event.clientY - offsetY - boundingRect.y) / boundingRect.height;
+
+            //Clamp to stage
+            placedPositionX = Math.min(Math.max(0, placedPositionX), (1 - (monitorData.width / runtime.stageWidth))) * runtime.stageWidth;
+            placedPositionY = Math.min(Math.max(0, placedPositionY), (1 - (monitorData.height / runtime.stageHeight))) * runtime.stageHeight;
+
+            monitorData.x = placedPositionX;
+            monitorData.y = placedPositionY;
+
+            setElementCSS(monitorRoot, {
+              left: `${placedPositionX}px`,
+              top: `${placedPositionY}px`
+            });
+          }
+
+          const monitorDragReleaseEvent = () => {
+            setElementCSS(monitorRoot, { filter: "drop-shadow(rgba(0, 0, 0, 0.0) 0px 0px 0px)" });
+
+            this.serializeMonitor(this.monitors[scoreBoardID]);
+
+            document.removeEventListener("mousemove", monitorDragMoveEvent);
+
+            document.removeEventListener("mouseup", monitorDragReleaseEvent);
+            document.removeEventListener("mouseleave", monitorDragReleaseEvent);
+          }
+
+          const monitorResizeMoveEvent = (event) => {
+            //Get position from a 0-1 scale
+            let placedSizeX = ((event.clientX - originalX) / boundingRect.width) + offsetX;
+            let placedSizeY = ((originalY - event.clientY) / boundingRect.height) + offsetY;
+
+            //Clamp to stage          
+            let placedPositionY = (yoffsetForResizing - (Math.max(125 / runtime.stageHeight, placedSizeY) - offsetY)) * runtime.stageHeight;
+            placedSizeX = Math.min(Math.max(125 / runtime.stageWidth, placedSizeX), 1) * runtime.stageWidth;
+            placedSizeY = Math.min(Math.max(125 / runtime.stageHeight, placedSizeY), 1) * runtime.stageHeight;
+
+            monitorData.width = placedSizeX;
+            monitorData.height = placedSizeY;
+            monitorData.y = placedPositionY;
+
+            setElementCSS(monitorRoot, {
+              width: `${placedSizeX}px`,
+              height: `${placedSizeY}px`,
+              top: `${placedPositionY}px`
+            });          
+          }
+
+          const monitorResizeReleaseEvent = (event) => {
+            setElementCSS(monitorRoot, { filter: "drop-shadow(rgba(0, 0, 0, 0.0) 0px 0px 0px)" });
+
+          this.serializeMonitor(this.monitors[scoreBoardID]);
+
+            document.removeEventListener("mousemove", monitorResizeMoveEvent);
+
+            document.removeEventListener("mouseup", monitorResizeReleaseEvent);
+            document.removeEventListener("mouseleave", monitorResizeReleaseEvent);
+          }
+
+          monitorHeader.onmousedown = (event) => {
+            event.stopImmediatePropagation();
+            
+            boundingRect = renderer.canvas.getBoundingClientRect();
+            const rootRect = monitorRoot.getBoundingClientRect();
+
+            offsetX = event.clientX - rootRect.x;
+            offsetY = event.clientY - rootRect.y;
+            originalX = event.clientX;
+            originalY = event.clientY;
+
+            setElementCSS(monitorRoot, { filter: "drop-shadow(rgba(0, 0, 0, 0.6) 2px 2px 4px)" });
+
+            document.addEventListener("mousemove", monitorDragMoveEvent);
+
+            document.addEventListener("mouseup", monitorDragReleaseEvent);
+            document.addEventListener("mouseleave", monitorDragReleaseEvent);
+          }
+
+          resizeDiv.onmousedown = () => {
+            event.stopImmediatePropagation();
+            
+            boundingRect = renderer.canvas.getBoundingClientRect();
+            const rootRect = monitorRoot.getBoundingClientRect();
+
+            offsetX = monitorData.width / runtime.stageWidth;
+            offsetY = monitorData.height / runtime.stageHeight;
+            yoffsetForResizing = monitorData.y / runtime.stageHeight;
+            originalX = event.clientX;
+            originalY = event.clientY;
+
+            document.addEventListener("mousemove", monitorResizeMoveEvent);
+
+            document.addEventListener("mouseup", monitorResizeReleaseEvent);
+            document.addEventListener("mouseleave", monitorResizeReleaseEvent);
+          }
+        }
+
+        //Display the first page
+        NGIO.getScores(scoreBoardID, searchOptions, displayBoard);
 
         Scratch.renderer.addOverlay(monitorRoot);
+
+        //Finally store our new root element
+        monitorData.element = monitorRoot;
+        monitorData.refresh = () => {
+          NGIO.getScores(scoreBoardID, searchOptions, displayBoard);
+        }
       }
     }
 
@@ -806,8 +1178,8 @@
       
       const searchOptions = {
         period: timeSpan,
-        social: true,
-        skip: rank - 1,
+        social: false,
+        skip: Math.max(1, Scratch.Cast.toNumber(rank)) - 1,
         limit: 1,
       };
 
@@ -850,17 +1222,50 @@
       });
     }
 
+    getScoresBulk({ count, rank, scoreBoardID, timeSpan }) {
+      if (!(NGIO.session && gameData.scoreBoards[scoreBoardID])) return 0;
+      
+      const searchOptions = {
+        period: timeSpan,
+        social: false,
+        skip: Math.max(1, Scratch.Cast.toNumber(rank)) - 1,
+        limit: Math.min(Math.max(1, Scratch.Cast.toNumber(count)), 100),
+      };
+
+      return new Promise((resolve, reject) => {
+        NGIO.getScores(scoreBoardID, searchOptions, (board, scores) => {
+          const output = [];
+
+          for (let scoreID in scores) {
+            output.push({
+              name: scores[scoreID].user.name,
+              id: scores[scoreID].user.id,
+              isSupporting: scores[scoreID].user.supporter,
+              icon: scores[scoreID].user.icons.large,
+              score: scores[scoreID].value,
+              formattedScore: scores[scoreID].formatted_value
+            });
+          }
+
+          resolve(JSON.stringify(output));
+        });
+      });
+    }
+
     postScore({ score, scoreBoardID }) {
       if (NGIO.session && gameData.scoreBoards[scoreBoardID]) {
-        NGIO.postScore(scoreBoardID, score, () => {
-          Scratch.vm.runtime.startHats("NGIO_onScorePosted");
+        //Wrap it in a promise to make sure the code is ran post score posting.
+        return new Promise((resolve, reject) => {
+          NGIO.postScore(scoreBoardID, Math.round(Scratch.Cast.toNumber(score)), () => {
+            runtime.startHats("NGIO_onScorePosted");
+            resolve();
+          });
         });
       }
     }
 
     scoreboardName({ scoreBoardID }) {
       if (NGIO.session && gameData.scoreBoards[scoreBoardID]) {
-        console.log(gameData.scoreBoards[scoreBoardID]);
         return gameData.scoreBoards[scoreBoardID].name;
       } 
       else {
@@ -870,9 +1275,37 @@
 
     setScoreboardVisibility({ visibilityType, scoreBoardID }) {
       if (visibilityType == "show") this._createMonitorFor(scoreBoardID);
+      else if (visibilityType == "refresh") {
+        if (this.monitors[scoreBoardID] && this.monitors[scoreBoardID].refresh) {
+          this.monitors[scoreBoardID].refresh();
+        }
+      }
+      else {
+        if (this.monitors[scoreBoardID] && this.monitors[scoreBoardID].element) {
+          const element = this.monitors[scoreBoardID].element;
+          element.parentElement.removeChild(element);
+
+          //Clean up the scoreboard
+          delete this.monitors[scoreBoardID].element;
+          delete this.monitors[scoreBoardID].refresh;
+        }
+      }
     }
 
     onScorePosted() {}
+
+    //! V Completely necessary comment.
+    // :3
+    setMonitorDisplayData({ property, value }) {
+      switch (property) {
+        case "itemCount":
+          monitorDisplayData.itemCount = Math.min(Math.max(1, Scratch.Cast.toNumber(value)), 100);
+          break;
+      
+        default:
+          break;
+      }
+    }
 
     //Other Stuff
 
@@ -908,13 +1341,13 @@
                 break;
 
               case "Login Required":
-                Scratch.vm.runtime.startHats("NGIO_onLoginRequired");
+                runtime.startHats("NGIO_onLoginRequired");
                 clearInterval(intervalID);
                 resolve();
                 break;
 
               case "Logged In":
-                Scratch.vm.runtime.startHats("NGIO_onLoginSuccess");
+                runtime.startHats("NGIO_onLoginSuccess");
                 clearInterval(intervalID);
 
                 //Set userDat object data
@@ -1029,15 +1462,20 @@
         //Configure our slot to be in a good range!
         Slot = Math.max(1, Math.floor(Scratch.Cast.toNumber(Slot)));
 
-        NGIO.setSaveSlotData(
-          Scratch.Cast.toString(Slot),
-          Scratch.Cast.toString(Data),
-          () => {
-            Scratch.vm.runtime.startHats("NGIO_onSaveCompletedHat");
-            //Create dummy slot.
-            gameData.saveSlots[Slot] = {};
-          }
-        );
+        return new Promise((resolve, reject) => {
+          NGIO.setSaveSlotData(
+            Scratch.Cast.toString(Slot),
+            Scratch.Cast.toString(Data),
+            () => {
+              runtime.startHats("NGIO_onSaveCompletedHat");
+              //Create dummy slot.
+              gameData.saveSlots[Slot] = {
+                hasData: true,
+              };
+
+              resolve();
+            });
+        })
       }
     }
 
@@ -1047,19 +1485,15 @@
         Slot = Math.max(1, Math.floor(Scratch.Cast.toNumber(Slot)));
         let saveDat = "Nothing in Slot";
 
-        
         return new Promise((resolve, reject) => {
-          //When the slot is loaded parse our data
-          function onSaveDataLoaded(data) {
+          //Try to get the data
+          if (!gameData.saveSlots[Slot]) resolve("");
+          else NGIO.getSaveSlotData(Scratch.Cast.toNumber(Slot), () => {
             if (data) saveDat = Scratch.Cast.toString(data);
             else saveDat = "";
 
             resolve(saveDat);
-          }
-
-          //Try to get the data
-          if (!gameData.saveSlots[Slot]) resolve("");
-          else NGIO.getSaveSlotData(Scratch.Cast.toNumber(Slot), onSaveDataLoaded);
+          });
         });
       } else {
         if (NGIO.session && !loggedIn) return "Not logged in!";
@@ -1085,6 +1519,8 @@
     }
 
     //Medals
+    onMedalUnlockedHat() {}
+
     unlockMedal({ medalID }) {
       if (NGIO.session && loggedIn) {
         this.revitalizeSession();
@@ -1092,7 +1528,9 @@
         medalID = Scratch.Cast.toNumber(medalID);
 
         if (!(NGIO.session && gameData.medals[medalID])) return;
-        NGIO.unlockMedal(medalID);
+        NGIO.unlockMedal(medalID,() => {
+            runtime.startHats("NGIO_onMedalUnlockedHat");
+        });
       }
     }
 
