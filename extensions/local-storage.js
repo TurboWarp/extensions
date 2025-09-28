@@ -1,4 +1,4 @@
-// Name: Local Storage
+// Name: Local Storage V1
 // ID: localstorage
 // Description: Store data persistently. Like cookies, but better.
 // License: MIT AND MPL-2.0
