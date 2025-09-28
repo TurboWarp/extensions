@@ -49,7 +49,7 @@
   }
 
   //Make sure we load everything
-  if ((!NewgroundsIO) || (!NGIO) || (!CryptoJS)) {
+  if (!NewgroundsIO || !NGIO || !CryptoJS) {
     console.warn("One library needed for NGIO could not be loaded!");
   }
   /* eslint-enable */
@@ -86,7 +86,7 @@
     medals: {},
     scoreBoards: {},
     saveSlots: {},
-  }
+  };
 
   const quickParseData = (data) => {
     const returned = {};
@@ -97,7 +97,7 @@
     }
 
     return returned;
-  }
+  };
 
   //Define our user data.
   let userDat = {
@@ -111,7 +111,7 @@
 
   let monitorDisplayData = {
     itemCount: 20,
-  }
+  };
 
   //Status functions and variable
   const statusReport = (status) => {
@@ -173,7 +173,7 @@
 
         break;
     }
-  }
+  };
 
   let scorePosted = false;
 
@@ -197,21 +197,21 @@
       boxSizing: "border-box",
       //Picked up is drop-shadow(rgba(0, 0, 0, 0.6) 2px 2px 4px)
       filter: "drop-shadow(rgba(0, 0, 0, 0.0) 0px 0px 0px)",
-      transition: "filter 300ms"
+      transition: "filter 300ms",
     },
     sc_monitor_list_label: {
-	    backgroundColor: "white",
-	    textAlign: "center",
-	    fontWeight: "bold",
-	    borderBottom: "1px solid hsla(0, 0%, 0%, 0.15)",
-	    padding: "3px",
+      backgroundColor: "white",
+      textAlign: "center",
+      fontWeight: "bold",
+      borderBottom: "1px solid hsla(0, 0%, 0%, 0.15)",
+      padding: "3px",
       boxSizing: "border-box",
-      display: "flex"
+      display: "flex",
     },
     sc_monitor_rows_outer: {
-	    flexGrow: "1",
+      flexGrow: "1",
       boxSizing: "border-box",
-      overflowY: "scroll"
+      overflowY: "scroll",
     },
     sc_monitor_list_footer: {
       display: "flex",
@@ -219,7 +219,7 @@
       textAlign: "center",
       fontWeight: "bold",
       padding: "3px",
-      boxSizing: "border-box"
+      boxSizing: "border-box",
     },
 
     sc_monitor_row_root: {
@@ -231,7 +231,7 @@
       alignItems: "center",
       padding: "2px",
       width: "100%",
-      boxSizing: "border-box"
+      boxSizing: "border-box",
     },
     sc_monitor_row_index: {
       fontWeight: "bold",
@@ -240,7 +240,7 @@
       boxSizing: "border-box",
       width: "25px",
       height: "25px",
-      borderRadius: "4px"
+      borderRadius: "4px",
     },
     sc_monitor_row_value_outer: {
       display: "flex",
@@ -253,7 +253,7 @@
       margin: "0 3px",
       borderRadius: "calc(0.5rem / 2)",
       flexGrow: "1",
-      boxSizing: "border-box"
+      boxSizing: "border-box",
     },
     sc_monitor_row_value_inner: {
       padding: "3px 5px",
@@ -270,24 +270,23 @@
       whiteSpace: "pre",
     },
 
-
     sc_monitor_page_text: {
-	    flexGrow: "1",
+      flexGrow: "1",
       boxSizing: "border-box",
     },
     sc_monitor_page_button: {
       border: "1px solid",
       borderRadius: "4px",
       borderColor: "rgba(0, 0, 0, 0.15)",
-      background: "white"
+      background: "white",
     },
     sc_monitor_page_button_disabled: {
       border: "1px solid",
       borderRadius: "4px",
       borderColor: "rgba(0, 0, 0, 0.15)",
-      background: "hsla(215, 100%, 95%, 1)"
-    }
-  }
+      background: "hsla(215, 100%, 95%, 1)",
+    },
+  };
 
   const setElementCSS = (element, cssObject) => {
     if (element instanceof HTMLElement && typeof cssObject == "object") {
@@ -295,16 +294,16 @@
         element.style[key] = cssObject[key];
       }
     }
-  }
+  };
 
   //Finally our scratch stuff
   const runtime = Scratch.vm.runtime;
   const renderer = Scratch.vm.renderer;
-  const isPackaged = (typeof scaffolding !== "undefined");
+  const isPackaged = typeof scaffolding !== "undefined";
 
   const originifyJson = (inObject) => {
     return JSON.parse(JSON.stringify(inObject));
-  }
+  };
 
   ("use strict");
   class NewgroundsAPI {
@@ -313,7 +312,9 @@
       this.serializedMonitors = {};
 
       this.setupSaving();
-      vm.runtime.on("PROJECT_LOADED", () => {this.setupSaving.call(this)});
+      vm.runtime.on("PROJECT_LOADED", () => {
+        this.setupSaving.call(this);
+      });
     }
 
     setupSaving() {
@@ -329,13 +330,17 @@
           this.monitors = deserializedData.monitors;
           this.serializedMonitors = deserializedData.monitors;
         };
-      }
-      else {
+      } else {
         //Storage flip flop
-        if (!runtime.extensionStorage["NGIO"]) runtime.extensionStorage["NGIO"] = new Object({ monitors: {} });
-        
-        this.serializedMonitors = originifyJson(runtime.extensionStorage["NGIO"].monitors);
-        this.monitors = originifyJson(runtime.extensionStorage["NGIO"].monitors);
+        if (!runtime.extensionStorage["NGIO"])
+          runtime.extensionStorage["NGIO"] = new Object({ monitors: {} });
+
+        this.serializedMonitors = originifyJson(
+          runtime.extensionStorage["NGIO"].monitors
+        );
+        this.monitors = originifyJson(
+          runtime.extensionStorage["NGIO"].monitors
+        );
       }
     }
 
@@ -348,7 +353,8 @@
         id: monitorData.id,
       };
 
-      if (!Scratch.extensions.isPenguinMod) runtime.extensionStorage["NGIO"].monitors = this.serializedMonitors;
+      if (!Scratch.extensions.isPenguinMod)
+        runtime.extensionStorage["NGIO"].monitors = this.serializedMonitors;
     }
 
     getInfo() {
@@ -367,19 +373,19 @@
           //Login Stuff
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Connection")
+            text: Scratch.translate("Connection"),
           },
           {
             opcode: "onLoginSuccess",
             blockType: Scratch.BlockType.HAT,
             text: Scratch.translate("when login success"),
-            isEdgeActivated: false
+            isEdgeActivated: false,
           },
           {
             opcode: "onLoginRequired",
             blockType: Scratch.BlockType.HAT,
             text: Scratch.translate("when login required"),
-            isEdgeActivated: false
+            isEdgeActivated: false,
           },
           {
             opcode: "promptLogin",
@@ -425,7 +431,7 @@
               },
             },
           },
-          
+
           {
             opcode: "setConnectionData",
             blockType: Scratch.BlockType.COMMAND,
@@ -452,7 +458,7 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("API data")
+            text: Scratch.translate("API data"),
           },
           {
             opcode: "isNewgrounds",
@@ -478,7 +484,7 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Changes will occur post refresh.")
+            text: Scratch.translate("Changes will occur post refresh."),
           },
           {
             opcode: "getMedals",
@@ -495,7 +501,7 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("User data")
+            text: Scratch.translate("User data"),
           },
           {
             opcode: "getIfSupporter",
@@ -517,13 +523,13 @@
           "---", //Save Blocks
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Save data")
+            text: Scratch.translate("Save data"),
           },
           {
             opcode: "onSaveCompletedHat",
             blockType: Scratch.BlockType.HAT,
             text: Scratch.translate("when save completed"),
-            isEdgeActivated: false
+            isEdgeActivated: false,
           },
           {
             opcode: "saveData",
@@ -564,16 +570,16 @@
           },
 
           "---", //Medal Blocks
-          
+
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Medals")
+            text: Scratch.translate("Medals"),
           },
           {
             opcode: "onMedalUnlockedHat",
             blockType: Scratch.BlockType.HAT,
             text: Scratch.translate("when medal unlocked"),
-            isEdgeActivated: false
+            isEdgeActivated: false,
           },
           {
             opcode: "unlockMedal",
@@ -592,7 +598,7 @@
             text: Scratch.translate("get [data] of medal [medalID]"),
             arguments: {
               data: {
-                menu: "medalDatType",                
+                menu: "medalDatType",
               },
               medalID: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -627,13 +633,13 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Scoreboards")
+            text: Scratch.translate("Scoreboards"),
           },
           {
             opcode: "onScorePosted",
             blockType: Scratch.BlockType.HAT,
             text: Scratch.translate("when score posted"),
-            isEdgeActivated: false
+            isEdgeActivated: false,
           },
           {
             opcode: "postScore",
@@ -655,14 +661,12 @@
           {
             opcode: "scoreboardName",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "name of scoreboard [scoreBoardID]"
-            ),
+            text: Scratch.translate("name of scoreboard [scoreBoardID]"),
             arguments: {
               scoreBoardID: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "000000",
-              }
+              },
             },
           },
           {
@@ -731,21 +735,19 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "000000",
               },
-            }
+            },
           },
 
           "---", //Settings/changability
-          
+
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Extra")
+            text: Scratch.translate("Extra"),
           },
           {
             opcode: "setMonitorDisplayData",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "set [property] to [value]"
-            ),
+            text: Scratch.translate("set [property] to [value]"),
             arguments: {
               property: {
                 type: Scratch.ArgumentType.STRING,
@@ -755,7 +757,7 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "20",
               },
-            }
+            },
           },
 
           "---", //Referrals
@@ -884,7 +886,7 @@
               {
                 text: Scratch.translate("refresh"),
                 value: "refresh",
-              }
+              },
             ],
           },
           displayPropertyTypes: {
@@ -895,7 +897,7 @@
                 value: "itemCount",
               },
             ],
-          }
+          },
         },
       };
     }
@@ -912,20 +914,19 @@
       if (!this.monitors[scoreBoardID]) {
         monitorExists = false;
         this.monitors[scoreBoardID] = {
-          x: (runtime.stageWidth / 2) - 62.5,
-          y: (runtime.stageHeight / 2) - 100,
+          x: runtime.stageWidth / 2 - 62.5,
+          y: runtime.stageHeight / 2 - 100,
           width: 125,
           height: 200,
-          id: scoreBoardID
-        }
+          id: scoreBoardID,
+        };
 
         this.serializeMonitor(this.monitors[scoreBoardID]);
-      }
-      else if (!this.monitors[scoreBoardID].element) monitorExists = false;
+      } else if (!this.monitors[scoreBoardID].element) monitorExists = false;
 
       //Now we decide if we need to create or just ignore the monitor
       const monitorData = this.monitors[scoreBoardID];
-      
+
       if (!monitorExists) {
         //Create elements and set up css
         const monitorRoot = document.createElement("div");
@@ -991,7 +992,7 @@
 
         //Actually displaying the board
         const displayBoard = (board, scores) => {
-          if (scores.length == 0) { 
+          if (scores.length == 0) {
             buttonPrevious.disabled = true;
             buttonNext.disabled = true;
             return;
@@ -1004,18 +1005,28 @@
           buttonNext.disabled = false;
 
           if (page == 0) buttonPrevious.disabled = true;
-          if (scores.length != (monitorDisplayData.itemCount + 1)) buttonNext.disabled = true;
+          if (scores.length != monitorDisplayData.itemCount + 1)
+            buttonNext.disabled = true;
 
           //Make sure buttons reflect the options
-          if (buttonPrevious.disabled) setElementCSS(buttonPrevious, customCSS.sc_monitor_page_button_disabled);
+          if (buttonPrevious.disabled)
+            setElementCSS(
+              buttonPrevious,
+              customCSS.sc_monitor_page_button_disabled
+            );
           else setElementCSS(buttonPrevious, customCSS.sc_monitor_page_button);
 
-          if (buttonNext.disabled) setElementCSS(buttonNext, customCSS.sc_monitor_page_button_disabled);
+          if (buttonNext.disabled)
+            setElementCSS(
+              buttonNext,
+              customCSS.sc_monitor_page_button_disabled
+            );
           else setElementCSS(buttonNext, customCSS.sc_monitor_page_button);
 
           //start displaying the monitor
           let scoresToDisplay = scores.length;
-          if (scores.length == (monitorDisplayData.itemCount + 1)) scoresToDisplay--;
+          if (scores.length == monitorDisplayData.itemCount + 1)
+            scoresToDisplay--;
 
           monitorInner.innerHTML = "";
 
@@ -1040,36 +1051,40 @@
             rowOuter.appendChild(rowValue);
             rowValue.appendChild(rowValueText);
 
-            rowIndex.onmouseover = () => { rowValueText.innerText = score.user.name; }
-            rowIndex.onmouseout = () => { rowValueText.innerText = score.formatted_value; }
+            rowIndex.onmouseover = () => {
+              rowValueText.innerText = score.user.name;
+            };
+            rowIndex.onmouseout = () => {
+              rowValueText.innerText = score.formatted_value;
+            };
 
             monitorInner.appendChild(rowOuter);
           }
-        }
+        };
 
         buttonPrevious.onclick = () => {
           page -= 1;
           searchOptions.skip = page * monitorDisplayData.itemCount;
           NGIO.getScores(scoreBoardID, searchOptions, displayBoard);
-        }
+        };
 
         buttonNext.onclick = () => {
           page += 1;
           searchOptions.skip = page * monitorDisplayData.itemCount;
           NGIO.getScores(scoreBoardID, searchOptions, displayBoard);
-        }
+        };
 
         //For refreshing through the monitor, add a cooldown so we can do this easier;
         const refreshClicked = (event) => {
           event.stopImmediatePropagation();
-          
+
           buttonRefresh.removeEventListener("click", refreshClicked);
           NGIO.getScores(scoreBoardID, searchOptions, displayBoard);
 
           setTimeout(() => {
             buttonRefresh.addEventListener("click", refreshClicked);
           }, 1000);
-        }
+        };
 
         buttonRefresh.addEventListener("click", refreshClicked);
 
@@ -1092,24 +1107,36 @@
           //Monitor movement code
           const monitorDragMoveEvent = (event) => {
             //Get position from a 0-1 scale
-            let placedPositionX = (event.clientX - offsetX - boundingRect.x) / boundingRect.width;
-            let placedPositionY = (event.clientY - offsetY - boundingRect.y) / boundingRect.height;
+            let placedPositionX =
+              (event.clientX - offsetX - boundingRect.x) / boundingRect.width;
+            let placedPositionY =
+              (event.clientY - offsetY - boundingRect.y) / boundingRect.height;
 
             //Clamp to stage
-            placedPositionX = Math.min(Math.max(0, placedPositionX), (1 - (monitorData.width / runtime.stageWidth))) * runtime.stageWidth;
-            placedPositionY = Math.min(Math.max(0, placedPositionY), (1 - (monitorData.height / runtime.stageHeight))) * runtime.stageHeight;
+            placedPositionX =
+              Math.min(
+                Math.max(0, placedPositionX),
+                1 - monitorData.width / runtime.stageWidth
+              ) * runtime.stageWidth;
+            placedPositionY =
+              Math.min(
+                Math.max(0, placedPositionY),
+                1 - monitorData.height / runtime.stageHeight
+              ) * runtime.stageHeight;
 
             monitorData.x = placedPositionX;
             monitorData.y = placedPositionY;
 
             setElementCSS(monitorRoot, {
               left: `${placedPositionX}px`,
-              top: `${placedPositionY}px`
+              top: `${placedPositionY}px`,
             });
-          }
+          };
 
           const monitorDragReleaseEvent = () => {
-            setElementCSS(monitorRoot, { filter: "drop-shadow(rgba(0, 0, 0, 0.0) 0px 0px 0px)" });
+            setElementCSS(monitorRoot, {
+              filter: "drop-shadow(rgba(0, 0, 0, 0.0) 0px 0px 0px)",
+            });
 
             this.serializeMonitor(this.monitors[scoreBoardID]);
 
@@ -1117,17 +1144,26 @@
 
             document.removeEventListener("mouseup", monitorDragReleaseEvent);
             document.removeEventListener("mouseleave", monitorDragReleaseEvent);
-          }
+          };
 
           const monitorResizeMoveEvent = (event) => {
             //Get position from a 0-1 scale
-            let placedSizeX = ((event.clientX - originalX) / boundingRect.width) + offsetX;
-            let placedSizeY = ((originalY - event.clientY) / boundingRect.height) + offsetY;
+            let placedSizeX =
+              (event.clientX - originalX) / boundingRect.width + offsetX;
+            let placedSizeY =
+              (originalY - event.clientY) / boundingRect.height + offsetY;
 
-            //Clamp to stage          
-            let placedPositionY = (yoffsetForResizing - (Math.max(125 / runtime.stageHeight, placedSizeY) - offsetY)) * runtime.stageHeight;
-            placedSizeX = Math.min(Math.max(125 / runtime.stageWidth, placedSizeX), 1) * runtime.stageWidth;
-            placedSizeY = Math.min(Math.max(125 / runtime.stageHeight, placedSizeY), 1) * runtime.stageHeight;
+            //Clamp to stage
+            let placedPositionY =
+              (yoffsetForResizing -
+                (Math.max(125 / runtime.stageHeight, placedSizeY) - offsetY)) *
+              runtime.stageHeight;
+            placedSizeX =
+              Math.min(Math.max(125 / runtime.stageWidth, placedSizeX), 1) *
+              runtime.stageWidth;
+            placedSizeY =
+              Math.min(Math.max(125 / runtime.stageHeight, placedSizeY), 1) *
+              runtime.stageHeight;
 
             monitorData.width = placedSizeX;
             monitorData.height = placedSizeY;
@@ -1136,24 +1172,29 @@
             setElementCSS(monitorRoot, {
               width: `${placedSizeX}px`,
               height: `${placedSizeY}px`,
-              top: `${placedPositionY}px`
-            });          
-          }
+              top: `${placedPositionY}px`,
+            });
+          };
 
           const monitorResizeReleaseEvent = (event) => {
-            setElementCSS(monitorRoot, { filter: "drop-shadow(rgba(0, 0, 0, 0.0) 0px 0px 0px)" });
+            setElementCSS(monitorRoot, {
+              filter: "drop-shadow(rgba(0, 0, 0, 0.0) 0px 0px 0px)",
+            });
 
-          this.serializeMonitor(this.monitors[scoreBoardID]);
+            this.serializeMonitor(this.monitors[scoreBoardID]);
 
             document.removeEventListener("mousemove", monitorResizeMoveEvent);
 
             document.removeEventListener("mouseup", monitorResizeReleaseEvent);
-            document.removeEventListener("mouseleave", monitorResizeReleaseEvent);
-          }
+            document.removeEventListener(
+              "mouseleave",
+              monitorResizeReleaseEvent
+            );
+          };
 
           monitorHeader.onmousedown = (event) => {
             event.stopImmediatePropagation();
-            
+
             boundingRect = renderer.canvas.getBoundingClientRect();
             const rootRect = monitorRoot.getBoundingClientRect();
 
@@ -1162,17 +1203,19 @@
             originalX = event.clientX;
             originalY = event.clientY;
 
-            setElementCSS(monitorRoot, { filter: "drop-shadow(rgba(0, 0, 0, 0.6) 2px 2px 4px)" });
+            setElementCSS(monitorRoot, {
+              filter: "drop-shadow(rgba(0, 0, 0, 0.6) 2px 2px 4px)",
+            });
 
             document.addEventListener("mousemove", monitorDragMoveEvent);
 
             document.addEventListener("mouseup", monitorDragReleaseEvent);
             document.addEventListener("mouseleave", monitorDragReleaseEvent);
-          }
+          };
 
           resizeDiv.onmousedown = () => {
             event.stopImmediatePropagation();
-            
+
             boundingRect = renderer.canvas.getBoundingClientRect();
             const rootRect = monitorRoot.getBoundingClientRect();
 
@@ -1186,7 +1229,7 @@
 
             document.addEventListener("mouseup", monitorResizeReleaseEvent);
             document.addEventListener("mouseleave", monitorResizeReleaseEvent);
-          }
+          };
         }
 
         //Display the first page
@@ -1198,7 +1241,7 @@
         monitorData.element = monitorRoot;
         monitorData.refresh = () => {
           NGIO.getScores(scoreBoardID, searchOptions, displayBoard);
-        }
+        };
       }
     }
 
@@ -1219,7 +1262,7 @@
 
     getScore({ rank, scoreBoardID, timeSpan, scoreDataType }) {
       if (!(NGIO.session && gameData.scoreBoards[scoreBoardID])) return 0;
-      
+
       const searchOptions = {
         period: timeSpan,
         social: false,
@@ -1268,7 +1311,7 @@
 
     getScoresBulk({ count, rank, scoreBoardID, timeSpan }) {
       if (!(NGIO.session && gameData.scoreBoards[scoreBoardID])) return "{}";
-      
+
       const searchOptions = {
         period: timeSpan,
         social: false,
@@ -1287,7 +1330,7 @@
               isSupporting: scores[scoreID].user.supporter,
               icon: scores[scoreID].user.icons.large,
               score: scores[scoreID].value,
-              formattedScore: scores[scoreID].formatted_value
+              formattedScore: scores[scoreID].formatted_value,
             });
           }
 
@@ -1300,10 +1343,14 @@
       if (NGIO.session && gameData.scoreBoards[scoreBoardID]) {
         //Wrap it in a promise to make sure the code is ran post score posting.
         return new Promise((resolve, reject) => {
-          NGIO.postScore(scoreBoardID, Math.round(Scratch.Cast.toNumber(score)), () => {
-            util.startHats("NGIO_onScorePosted");
-            resolve();
-          });
+          NGIO.postScore(
+            scoreBoardID,
+            Math.round(Scratch.Cast.toNumber(score)),
+            () => {
+              util.startHats("NGIO_onScorePosted");
+              resolve();
+            }
+          );
         });
       }
     }
@@ -1311,21 +1358,25 @@
     scoreboardName({ scoreBoardID }) {
       if (NGIO.session && gameData.scoreBoards[scoreBoardID]) {
         return gameData.scoreBoards[scoreBoardID].name;
-      } 
-      else {
+      } else {
         return "";
-      }     
+      }
     }
 
     setScoreboardVisibility({ visibilityType, scoreBoardID }) {
       if (visibilityType == "show") this._createMonitorFor(scoreBoardID);
       else if (visibilityType == "refresh") {
-        if (this.monitors[scoreBoardID] && this.monitors[scoreBoardID].refresh) {
+        if (
+          this.monitors[scoreBoardID] &&
+          this.monitors[scoreBoardID].refresh
+        ) {
           this.monitors[scoreBoardID].refresh();
         }
-      }
-      else {
-        if (this.monitors[scoreBoardID] && this.monitors[scoreBoardID].element) {
+      } else {
+        if (
+          this.monitors[scoreBoardID] &&
+          this.monitors[scoreBoardID].element
+        ) {
           const element = this.monitors[scoreBoardID].element;
           element.parentElement.removeChild(element);
 
@@ -1336,16 +1387,21 @@
       }
     }
 
-    onScorePosted() { return true; }
+    onScorePosted() {
+      return true;
+    }
 
     //! V Completely necessary comment.
     // :3
     setMonitorDisplayData({ property, value }) {
       switch (property) {
         case "itemCount":
-          monitorDisplayData.itemCount = Math.min(Math.max(1, Scratch.Cast.toNumber(value)), 100);
+          monitorDisplayData.itemCount = Math.min(
+            Math.max(1, Scratch.Cast.toNumber(value)),
+            100
+          );
           break;
-      
+
         default:
           break;
       }
@@ -1353,47 +1409,51 @@
 
     //Other Stuff
 
-    onLoginSuccess() { return true; }
+    onLoginSuccess() {
+      return true;
+    }
 
-    onLoginRequired() { return true; }
+    onLoginRequired() {
+      return true;
+    }
 
     waitForValid(util) {
       return new Promise((resolve, reject) => {
-          const intervalID = setInterval(() => {
-            NGIO.getConnectionStatus(statusReport);
+        const intervalID = setInterval(() => {
+          NGIO.getConnectionStatus(statusReport);
 
-            //Wait for finish
-            switch (ConnectionStatus) {
-              //In case we aren't awaiting
-              case "Awaiting":
-                break;
+          //Wait for finish
+          switch (ConnectionStatus) {
+            //In case we aren't awaiting
+            case "Awaiting":
+              break;
 
-              case "Login Required":
-                util.startHats("NGIO_onLoginRequired");
-                clearInterval(intervalID);
-                resolve();
-                break;
+            case "Login Required":
+              util.startHats("NGIO_onLoginRequired");
+              clearInterval(intervalID);
+              resolve();
+              break;
 
-              case "Logged In":
-                util.startHats("NGIO_onLoginSuccess");
-                clearInterval(intervalID);
+            case "Logged In":
+              util.startHats("NGIO_onLoginSuccess");
+              clearInterval(intervalID);
 
-                //Set userDat object data
-                userDat.logged = NGIO.hasUser;
-                if (userDat.logged == true) {
-                  userDat.icon = NGIO.user.icons.large;
-                  userDat.name = NGIO.user.name;
-                  userDat.supporter = NGIO.user.supporter;
-                  userDat.id = NGIO.user.id;
-                }
-                resolve();
-                break;
+              //Set userDat object data
+              userDat.logged = NGIO.hasUser;
+              if (userDat.logged == true) {
+                userDat.icon = NGIO.user.icons.large;
+                userDat.name = NGIO.user.name;
+                userDat.supporter = NGIO.user.supporter;
+                userDat.id = NGIO.user.id;
+              }
+              resolve();
+              break;
 
-              default:
-                clearInterval(intervalID);
-                resolve();
-                break;
-            }
+            default:
+              clearInterval(intervalID);
+              resolve();
+              break;
+          }
         });
       });
     }
@@ -1460,22 +1520,24 @@
       if (NGIO.session) {
         const output = {};
 
-        for (let medalID in gameData.medals) { output[gameData.medals[medalID].name] = medalID; }
+        for (let medalID in gameData.medals) {
+          output[gameData.medals[medalID].name] = medalID;
+        }
 
         return JSON.stringify(output);
-      }
-      else return "{}";
+      } else return "{}";
     }
 
     getScoreboards() {
       if (NGIO.session) {
         const output = {};
 
-        for (let scoreboardID in gameData.scoreBoards) { output[gameData.scoreBoards[scoreboardID].name] = scoreboardID; }
+        for (let scoreboardID in gameData.scoreBoards) {
+          output[gameData.scoreBoards[scoreboardID].name] = scoreboardID;
+        }
 
         return JSON.stringify(output);
-      }
-      else return "{}";
+      } else return "{}";
     }
 
     //User Stuff
@@ -1505,7 +1567,9 @@
 
     // Save Blocks
 
-    onSaveCompletedHat() { return true; }
+    onSaveCompletedHat() {
+      return true;
+    }
 
     saveData({ Data, Slot }, util) {
       if (NGIO.session && loggedIn) {
@@ -1524,8 +1588,9 @@
               };
 
               resolve();
-            });
-        })
+            }
+          );
+        });
       }
     }
 
@@ -1538,12 +1603,13 @@
         return new Promise((resolve, reject) => {
           //Try to get the data
           if (!gameData.saveSlots[Slot]) resolve("");
-          else NGIO.getSaveSlotData(Scratch.Cast.toNumber(Slot), () => {
-            if (data) saveDat = Scratch.Cast.toString(data);
-            else saveDat = "";
+          else
+            NGIO.getSaveSlotData(Scratch.Cast.toNumber(Slot), () => {
+              if (data) saveDat = Scratch.Cast.toString(data);
+              else saveDat = "";
 
-            resolve(saveDat);
-          });
+              resolve(saveDat);
+            });
         });
       } else {
         if (NGIO.session && !loggedIn) return "Not logged in!";
@@ -1569,7 +1635,9 @@
     }
 
     //Medals
-    onMedalUnlockedHat() { return true; }
+    onMedalUnlockedHat() {
+      return true;
+    }
 
     unlockMedal({ medalID }, util) {
       if (NGIO.session && loggedIn) {
@@ -1578,8 +1646,8 @@
         medalID = Scratch.Cast.toNumber(medalID);
 
         if (!(NGIO.session && gameData.medals[medalID])) return;
-        NGIO.unlockMedal(medalID,() => {
-            util.startHats("NGIO_onMedalUnlockedHat");
+        NGIO.unlockMedal(medalID, () => {
+          util.startHats("NGIO_onMedalUnlockedHat");
         });
       }
     }
@@ -1609,7 +1677,7 @@
         return false;
       }
     }
-    
+
     getMedalData({ data, medalID }) {
       if (NGIO.session && loggedIn) {
         this.revitalizeSession();
@@ -1620,14 +1688,22 @@
 
         const medal = gameData.medals[medalID];
         switch (data) {
-          case "name": return medal.name;
-          case "description": return medal.description;
+          case "name":
+            return medal.name;
+          case "description":
+            return medal.description;
           //Make sure we get a url
-          case "icon": return (medal.icon.startsWith("https:")) ? medal.icon : "https:" + medal.icon;
-          case "difficulty": return medal.difficulty;
-          case "value": return medal.value;
-        
-          default: return "";
+          case "icon":
+            return medal.icon.startsWith("https:")
+              ? medal.icon
+              : "https:" + medal.icon;
+          case "difficulty":
+            return medal.difficulty;
+          case "value":
+            return medal.value;
+
+          default:
+            return "";
         }
       } else {
         return "";
@@ -1642,7 +1718,7 @@
     }
   }
 
-  setInterval(function() {
+  setInterval(function () {
     NGIO.keepSessionAlive();
   }, 30000);
 
