@@ -366,6 +366,10 @@
         blocks: [
           //Login Stuff
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Connection")
+          },
+          {
             opcode: "onLoginSuccess",
             blockType: Scratch.BlockType.HAT,
             text: Scratch.translate("when login success"),
@@ -379,7 +383,7 @@
           },
           {
             opcode: "promptLogin",
-            blockType: Scratch.BlockType.COMMAND, //skipLogin
+            blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("prompt user login"),
           },
           {
@@ -421,7 +425,7 @@
               },
             },
           },
-
+          
           {
             opcode: "setConnectionData",
             blockType: Scratch.BlockType.COMMAND,
@@ -431,7 +435,7 @@
             arguments: {
               gameID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("gameID"),
+                defaultValue: Scratch.translate("Game ID"),
               },
               code: {
                 type: Scratch.ArgumentType.STRING,
@@ -446,6 +450,10 @@
 
           "---", //Status Blocks
 
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("API data")
+          },
           {
             opcode: "isNewgrounds",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -468,8 +476,27 @@
             text: Scratch.translate("API status"),
           },
 
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Changes will occur post refresh.")
+          },
+          {
+            opcode: "getMedals",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("game medals"),
+          },
+          {
+            opcode: "getScoreboards",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("game scoreboards"),
+          },
+
           "---", //User Blocks
 
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("User data")
+          },
           {
             opcode: "getIfSupporter",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -488,6 +515,10 @@
           },
 
           "---", //Save Blocks
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Save data")
+          },
           {
             opcode: "onSaveCompletedHat",
             blockType: Scratch.BlockType.HAT,
@@ -535,6 +566,10 @@
           "---", //Medal Blocks
           
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Medals")
+          },
+          {
             opcode: "onMedalUnlockedHat",
             blockType: Scratch.BlockType.HAT,
             text: Scratch.translate("when medal unlocked"),
@@ -547,7 +582,7 @@
             arguments: {
               medalID: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: Scratch.translate("MedalID"),
+                defaultValue: "000000",
               },
             },
           },
@@ -561,7 +596,7 @@
               },
               medalID: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: Scratch.translate("MedalID"),
+                defaultValue: "000000",
               },
             },
           },
@@ -572,7 +607,7 @@
             arguments: {
               medalID: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: Scratch.translate("MedalID"),
+                defaultValue: "000000",
               },
             },
           },
@@ -583,13 +618,17 @@
             arguments: {
               medalID: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: Scratch.translate("MedalID"),
+                defaultValue: "000000",
               },
             },
           },
 
           "---", //Scoreboard Blocks
 
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Scoreboards")
+          },
           {
             opcode: "onScorePosted",
             blockType: Scratch.BlockType.HAT,
@@ -676,6 +715,7 @@
               },
             },
           },
+          "---",
           {
             opcode: "setScoreboardVisibility",
             blockType: Scratch.BlockType.COMMAND,
@@ -696,6 +736,10 @@
 
           "---", //Settings/changability
           
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Extra")
+          },
           {
             opcode: "setMonitorDisplayData",
             blockType: Scratch.BlockType.COMMAND,
@@ -847,7 +891,7 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("itemCount"),
+                text: Scratch.translate("Users per Page"),
                 value: "itemCount",
               },
             ],
@@ -1223,7 +1267,7 @@
     }
 
     getScoresBulk({ count, rank, scoreBoardID, timeSpan }) {
-      if (!(NGIO.session && gameData.scoreBoards[scoreBoardID])) return 0;
+      if (!(NGIO.session && gameData.scoreBoards[scoreBoardID])) return "{}";
       
       const searchOptions = {
         period: timeSpan,
@@ -1252,12 +1296,12 @@
       });
     }
 
-    postScore({ score, scoreBoardID }) {
+    postScore({ score, scoreBoardID }, util) {
       if (NGIO.session && gameData.scoreBoards[scoreBoardID]) {
         //Wrap it in a promise to make sure the code is ran post score posting.
         return new Promise((resolve, reject) => {
           NGIO.postScore(scoreBoardID, Math.round(Scratch.Cast.toNumber(score)), () => {
-            runtime.startHats("NGIO_onScorePosted");
+            util.startHats("NGIO_onScorePosted");
             resolve();
           });
         });
@@ -1292,7 +1336,7 @@
       }
     }
 
-    onScorePosted() {}
+    onScorePosted() { return true; }
 
     //! V Completely necessary comment.
     // :3
@@ -1309,27 +1353,11 @@
 
     //Other Stuff
 
-    onLoginSuccess() {
-      if (!userDat.logged) {
+    onLoginSuccess() { return true; }
 
-        NGIO.getConnectionStatus(statusReport);
-        return NGIO.hasUser;
-      } else {
-        return false;
-      }
-    }
+    onLoginRequired() { return true; }
 
-    onLoginRequired() {
-      if (!userDat.requiredFired && ConnectionStatus == "Login Required") {
-        userDat.requiredFired = true;
-        NGIO.getConnectionStatus(statusReport);
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    waitForValid() {
+    waitForValid(util) {
       return new Promise((resolve, reject) => {
           const intervalID = setInterval(() => {
             NGIO.getConnectionStatus(statusReport);
@@ -1341,13 +1369,13 @@
                 break;
 
               case "Login Required":
-                runtime.startHats("NGIO_onLoginRequired");
+                util.startHats("NGIO_onLoginRequired");
                 clearInterval(intervalID);
                 resolve();
                 break;
 
               case "Logged In":
-                runtime.startHats("NGIO_onLoginSuccess");
+                util.startHats("NGIO_onLoginSuccess");
                 clearInterval(intervalID);
 
                 //Set userDat object data
@@ -1370,10 +1398,10 @@
       });
     }
 
-    promptLogin() {
-      if (NGIO.session) {
+    promptLogin(args, util) {
+      if (NGIO.session && !userDat.logged) {
         NGIO.openLoginPage();
-        return this.waitForValid();
+        return this.waitForValid(util);
       }
     }
 
@@ -1395,13 +1423,13 @@
       NGIO.getConnectionStatus(statusReport);
     }
 
-    setConnectionData({ gameID, code, version }) {
+    setConnectionData({ gameID, code, version }, util) {
       return new Promise((resolve, reject) => {
         NGOptions.version = version;
         NGIO.init(gameID, code, NGOptions);
 
         //Add a hook for the connection status to Newgrounds.
-        this.waitForValid().then(() => {
+        this.waitForValid(util).then(() => {
           resolve();
         });
       });
@@ -1426,6 +1454,28 @@
 
     isNewgrounds() {
       return isNG;
+    }
+
+    getMedals() {
+      if (NGIO.session) {
+        const output = {};
+
+        for (let medalID in gameData.medals) { output[gameData.medals[medalID].name] = medalID; }
+
+        return JSON.stringify(output);
+      }
+      else return "{}";
+    }
+
+    getScoreboards() {
+      if (NGIO.session) {
+        const output = {};
+
+        for (let scoreboardID in gameData.scoreBoards) { output[gameData.scoreBoards[scoreboardID].name] = scoreboardID; }
+
+        return JSON.stringify(output);
+      }
+      else return "{}";
     }
 
     //User Stuff
@@ -1455,9 +1505,9 @@
 
     // Save Blocks
 
-    onSaveCompletedHat() {}
+    onSaveCompletedHat() { return true; }
 
-    saveData({ Data, Slot }) {
+    saveData({ Data, Slot }, util) {
       if (NGIO.session && loggedIn) {
         //Configure our slot to be in a good range!
         Slot = Math.max(1, Math.floor(Scratch.Cast.toNumber(Slot)));
@@ -1467,7 +1517,7 @@
             Scratch.Cast.toString(Slot),
             Scratch.Cast.toString(Data),
             () => {
-              runtime.startHats("NGIO_onSaveCompletedHat");
+              util.startHats("NGIO_onSaveCompletedHat");
               //Create dummy slot.
               gameData.saveSlots[Slot] = {
                 hasData: true,
@@ -1519,9 +1569,9 @@
     }
 
     //Medals
-    onMedalUnlockedHat() {}
+    onMedalUnlockedHat() { return true; }
 
-    unlockMedal({ medalID }) {
+    unlockMedal({ medalID }, util) {
       if (NGIO.session && loggedIn) {
         this.revitalizeSession();
 
@@ -1529,7 +1579,7 @@
 
         if (!(NGIO.session && gameData.medals[medalID])) return;
         NGIO.unlockMedal(medalID,() => {
-            runtime.startHats("NGIO_onMedalUnlockedHat");
+            util.startHats("NGIO_onMedalUnlockedHat");
         });
       }
     }
@@ -1592,13 +1642,9 @@
     }
   }
 
-  //Keep Session alive if game is connected.
-  setInterval(() => {
-    NGIO.getConnectionStatus(statusReport);
-    if (loggedIn) {
-      NGIO.keepSessionAlive();
-    }
-  }, 1500);
+  setInterval(function() {
+    NGIO.keepSessionAlive();
+  }, 30000);
 
   Scratch.extensions.register(new NewgroundsAPI());
 })(Scratch);
