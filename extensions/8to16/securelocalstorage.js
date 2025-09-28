@@ -1,6 +1,6 @@
 // Name: Local Storage V2
 // ID: 8x2sls
-// Description: Store data persistently and securely. Like cookies, but better.
+// Description: Store data persistently, with non-foolproof hack prevention. Like cookies, but better.
 // By: 8to16 <https://scratch.mit.edu/users/8to16/>
 // License: MIT AND MPL-2.0
 
