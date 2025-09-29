@@ -48,7 +48,7 @@ As a rule of thumb, any extension is unlikely to be accepted if:
  - The person submitting the extension has written the entire extension with an LLM
  - The LLM produced faulty code or "hallucinated" things that do not exist in the present context
 
-While there are no rules explicitly prohibiting the use of machine learning models to produce the images used in an extension or to write the extension's description, it does not make you look favorable with the extension reviewers.
+While there are no rules explicitly prohibiting the use of machine learning models to produce the images used in an extension or to write the extension's description, it does not make you favorable with many of the extension reviewers.
 ## License
 
 **We are not lawyers. This is not legal advice.**
