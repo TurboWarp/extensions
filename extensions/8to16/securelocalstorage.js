@@ -14,7 +14,9 @@
   }
 
   // If no crypto.randomUUID support, error out.
-  
+  if (typeof crypto.randomUUID !== "function") {
+    throw new Error("Browser is too old for randomUUID; please use Local Storage V1 isntead");
+  }
 
   // Hack to store the UUID. Using bracket notation due to type issues.
   let uuid = "";
