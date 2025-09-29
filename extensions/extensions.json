@@ -10,6 +10,7 @@
   "runtime-options",
   "fetch",
   "text",
+  "8to16/securelocalstorage",
   "local-storage",
   "true-fantom/base",
   "bitwise",
