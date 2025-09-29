@@ -15,7 +15,9 @@
 
   // If no crypto.randomUUID support, error out.
   if (typeof crypto.randomUUID !== "function") {
-    throw new Error("Browser is too old for randomUUID; please use Local Storage V1 instead");
+    throw new Error(
+      "Browser is too old for randomUUID; please use Local Storage V1 instead"
+    );
   }
 
   // Load the UUID if it already exists; else generate a new one.
