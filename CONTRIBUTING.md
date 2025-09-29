@@ -21,6 +21,7 @@ Strictly, nothing is banned, but the following are *highly* discouraged:
  - One-use personal extensions (load the extension as a local file instead)
  - Extensions whose primary purpose is monetization (not in the spirit of an open source project)
  - Joke extensions (they aren't funny when they cause us to get bug reports)
+ - Extensions that were written mostly or entirely by a large language model (ChatGPT, Gemini, Perplexity, Claude, Grok, etc.)
 
 Some extensions were added before these rules existed. That doesn't mean you will be exempted too.
 
@@ -40,6 +41,14 @@ New extensions should be added in a user folder. You can name your folder anythi
 
 Extensions must be self-contained. All libraries and hardcoded resources should be embedded into the extension's JavaScript file. If you include minified code, please link where to find the unminified code and include a copy of the original license.
 
+## Some guidelines for LLM-generated code
+As a rule of thumb, any extension is unlikely to be accepted if:
+ - It would not fulfill its primary goals without the portions which were written by an LLM
+ - The person submitting the extension does not appear to understand the LLM-generated code to a reasonable extent
+ - The person submitting the extension has written the entire extension with an LLM
+ - The LLM produced faulty code or "hallucinated" things that do not exist in the present context
+
+While there are no rules explicitly prohibiting the use of machine learning models to produce the images used in an extension or to write the extension's description, it does not make you look favorable with the extension reviewers.
 ## License
 
 **We are not lawyers. This is not legal advice.**
