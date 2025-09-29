@@ -13,35 +13,8 @@
     throw new Error("Local Storage V2 extension must run unsandboxed");
   }
 
-  // Polyfill for crypto.randomUUID.
-  // This part was created using ChatGPT (GPT-4-mini).
-  if (typeof crypto.randomUUID !== "function") {
-    // @ts-ignore
-    crypto.randomUUID = function () {
-      // Generate an array of 16 random bytes
-      const bytes = new Uint8Array(16);
-      crypto.getRandomValues(bytes);
-
-      // Per RFC 4122 §4.4, set the version and variant bits
-      bytes[6] = (bytes[6] & 0x0f) | 0x40; // version 4
-      bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant 10xxxxxx
-
-      // Convert to UUID string format: xxxxxxxx-xxxx-Mxxx-Nxxx-xxxxxxxxxxxx
-      const hex = [...bytes].map((b) => b.toString(16).padStart(2, "0"));
-
-      return (
-        hex.slice(0, 4).join("") +
-        "-" +
-        hex.slice(4, 6).join("") +
-        "-" +
-        hex.slice(6, 8).join("") +
-        "-" +
-        hex.slice(8, 10).join("") +
-        "-" +
-        hex.slice(10, 16).join("")
-      );
-    };
-  }
+  // If no crypto.randomUUID support, error out.
+  
 
   // Hack to store the UUID. Using bracket notation due to type issues.
   let uuid = "";
@@ -102,11 +75,6 @@
               },
             },
           },
-          {
-            opcode: "deleteAll",
-            text: Scratch.translate("delete all keys"),
-            blockType: Scratch.BlockType.COMMAND,
-          },
         ],
       };
     }
@@ -141,18 +109,6 @@
       return localStorage[this._constructKeyName(args.KEY)]
         ? Scratch.Cast.toString(localStorage[this._constructKeyName(args.KEY)])
         : "";
-    }
-
-    deleteAll() {
-      for (let i = localStorage.length - 1; i >= 0; i--) {
-        const key = localStorage.key(i);
-        if (
-          key &&
-          key.startsWith(`extensions.turbowarp.org/local-storage-v2#${uuid}/`)
-        ) {
-          localStorage.removeItem(key);
-        }
-      }
     }
   }
 
