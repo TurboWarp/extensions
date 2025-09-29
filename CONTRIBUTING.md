@@ -28,7 +28,7 @@ Some extensions were added before these rules existed. That doesn't mean you wil
 
 Every merged extension is more code that we will be expected to maintain indefinitely, even if you disappear. Remember: broken extensions mean that real projects by real people no longer work. If the renderer is rewritten one day, we will have to ensure that extensions like Clipping & Blending, RGB Channels, and Augmented Reality still work. That's not a small commitment.
 
-We're all volunteers who all have lives outside of Scratch extensions. Many have full time jobs or are full time students. We'll get to you as soon as we can, so please be patient.
+We're all volunteers who all have lives outside of TurboWarp extensions. Many have full time jobs or are full time students. We'll get to you as soon as we can, so please be patient.
 
 Every extension is also covered under [our bug bounty](https://github.com/TurboWarp/extensions/security/policy), so mindlessly merging things will have a direct impact on my wallet.
 
