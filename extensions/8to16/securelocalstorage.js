@@ -15,10 +15,10 @@
 
   // If no crypto.randomUUID support, error out.
   if (typeof crypto.randomUUID !== "function") {
-    throw new Error("Browser is too old for randomUUID; please use Local Storage V1 isntead");
+    throw new Error("Browser is too old for randomUUID; please use Local Storage V1 instead");
   }
 
-  // Hack to store the UUID. Using bracket notation due to type issues.
+  // Load the UUID if it already exists; else generate a new one.
   let uuid = "";
   function _configureUUID(force) {
     if (force || !Scratch.vm.runtime.platform["secureLocalStorageUUID"]) {
@@ -50,7 +50,6 @@
             text: Scratch.translate("Reset Storage Scope"),
             blockType: Scratch.BlockType.BUTTON,
           },
-
           {
             opcode: "setKey",
             text: Scratch.translate("set key [KEY] to [VALUE]"),
@@ -97,6 +96,7 @@
           })
         )
       ) {
+        // true = force, meaning the UUID will regenerate even if it already exists.
         _configureUUID(true);
       }
     }
