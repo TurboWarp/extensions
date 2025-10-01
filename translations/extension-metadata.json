@@ -406,6 +406,8 @@
         "DNin/wake-lock@description": "Impedisce al tuo computer di andare in standby.",
         "DNin/wake-lock@name": "Blocco Standby",
         "DT/cameracontrols@description": "Sposta la parte visibile dello Stage.",
+        "DogeisCut/FormatNumbers@description": "Permette di formattare i numeri di molte cifre usando lo standard AD, in virgola fissa, in virgola mobile o in notazione scientifica.",
+        "DogeisCut/FormatNumbers@name": "Formattazione Numeri",
         "JeremyGamer13/tween@description": "Metodi di interpolazione per rendere più fluide le animazioni.",
         "JeremyGamer13/tween@name": "Animazioni Interpolate",
         "Lily/AllMenus@description": "Categoria speciale che contiene tutti i menu di tutte le categorie e tutte le estensioni di Scratch.",
