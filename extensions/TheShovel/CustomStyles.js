@@ -729,7 +729,7 @@
               },
               {
                 text: Scratch.translate("list scrolling"),
-                value: "list scrolling"
+                value: "list scrolling",
               },
             ],
           },
@@ -915,7 +915,10 @@
         return askInputRoundness;
       } else if (args.ITEM === "ask prompt button image") {
         return askButtonImage;
-      } else if (args.ITEM === "list scrolling" || args.ITEM === "list scroll rule") {
+      } else if (
+        args.ITEM === "list scrolling" ||
+        args.ITEM === "list scroll rule"
+      ) {
         if (allowScrolling === "hidden") {
           return "disabled";
         } else {
