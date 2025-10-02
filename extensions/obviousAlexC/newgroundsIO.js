@@ -1482,7 +1482,6 @@
     setConnectionData({ gameID, code, version }, util) {
       //eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve, reject) => {
-
         //Just do it once
         const canFetch = await Scratch.canFetch("https://www.newgrounds.io/");
 
