@@ -917,6 +917,9 @@
         return askButtonImage;
       } else if (
         args.ITEM === "list scrolling" ||
+        // Old version of this extension had "list scroll rule" in the menu so
+        // we'll support either.
+        // https://github.com/TurboWarp/extensions/pull/2262
         args.ITEM === "list scroll rule"
       ) {
         if (allowScrolling === "hidden") {
