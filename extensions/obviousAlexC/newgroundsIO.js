@@ -1480,7 +1480,17 @@
     }
 
     setConnectionData({ gameID, code, version }, util) {
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
+
+        //Just do it once
+        const canFetch = await Scratch.canFetch("https://www.newgrounds.io/");
+
+        //Make sure it is possible
+        if (!canFetch) {
+          reject();
+          return;
+        }
+
         NGOptions.version = version;
         NGIO.init(gameID, code, NGOptions);
 
