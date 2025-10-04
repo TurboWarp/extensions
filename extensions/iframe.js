@@ -53,6 +53,8 @@
   let height = -1; // negative means default
   let interactive = true;
   let resizeBehavior = "scale";
+  let latestMessage = null;
+  let isTrusted = false;
 
   const updateFrameAttributes = () => {
     if (!iframe) {
@@ -120,6 +122,14 @@
       overlay = null;
     }
   };
+
+  const handleFrameMessage = (e) => {
+    if (isTrusted) {
+      latestMessage = e.data;
+      Scratch.vm.runtime.startHats("iframe_whenMessage");
+    }
+  };
+  window.onmessage = handleFrameMessage;
 
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateFrameAttributes);
 
@@ -247,6 +257,35 @@
               },
             },
           },
+          "---",
+          {
+            opcode: "sendMessage",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("send message [MESSAGE] to iframe"),
+            arguments: {
+              MESSAGE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello",
+              },
+            },
+          },
+          {
+            opcode: "clearMessage",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("clear iframe message"),
+          },
+          {
+            opcode: "whenMessage",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when message from iframe is sent"),
+            isEdgeActivated: false,
+          },
+          {
+            opcode: "iframeMessage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("iframe message"),
+            disableMonitor: true,
+          },
         ],
         menus: {
           getMenu: {
@@ -290,6 +329,7 @@
     async display({ URL }) {
       closeFrame();
       if (await Scratch.canEmbed(URL)) {
+        isTrusted = false;
         createFrame(Scratch.Cast.toString(URL));
       }
     }
@@ -300,6 +340,7 @@
         Scratch.Cast.toString(HTML)
       )}`;
       if (await Scratch.canEmbed(url)) {
+        isTrusted = true;
         createFrame(url);
       }
     }
@@ -378,6 +419,20 @@
           updateFrameAttributes();
         }
       }
+    }
+
+    sendMessage({ MESSAGE }) {
+      if (isTrusted) {
+        iframe.contentWindow.postMessage(MESSAGE, "*");
+      }
+    }
+
+    clearMessage() {
+      latestMessage = null;
+    }
+
+    iframeMessage() {
+      return latestMessage;
     }
   }
 
