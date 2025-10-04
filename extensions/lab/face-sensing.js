@@ -8,17 +8,22 @@
 
   const initializeDetector = async () => {
     // TODO: this is awful
-    await import('https://cdn.jsdelivr.net/npm/@mediapipe/face_detection');
-    await import('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core');
-    await import('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl');
-    await import('https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection');
+    await import("https://cdn.jsdelivr.net/npm/@mediapipe/face_detection");
+    await import("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core");
+    await import("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl");
+    await import(
+      "https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection"
+    );
     const faceDetection = window.faceDetection;
-  
-    return faceDetection.createDetector(faceDetection.SupportedModels.MediaPipeFaceDetector, {
-      runtime: 'mediapipe',
-      // TODO: this is also awful
-      solutionPath: 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection',
-    });
+
+    return faceDetection.createDetector(
+      faceDetection.SupportedModels.MediaPipeFaceDetector,
+      {
+        runtime: "mediapipe",
+        // TODO: this is also awful
+        solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection",
+      }
+    );
   };
 
   /**
@@ -66,29 +71,29 @@
      * @returns {number[]} x, y in Scratch space
      */
     const getKeyPointInScratchSpace = (name) => {
-      const keypoint = blazefaceFace.keypoints.find(i => i.name === name);
+      const keypoint = blazefaceFace.keypoints.find((i) => i.name === name);
       return videoSpaceToScratchSpace(keypoint.x, keypoint.y);
     };
 
-    const nose = getKeyPointInScratchSpace('noseTip');
-    const mouth = getKeyPointInScratchSpace('mouthCenter');
-    const rightEye = getKeyPointInScratchSpace('rightEye');
-    const leftEye = getKeyPointInScratchSpace('leftEye');
+    const nose = getKeyPointInScratchSpace("noseTip");
+    const mouth = getKeyPointInScratchSpace("mouthCenter");
+    const rightEye = getKeyPointInScratchSpace("rightEye");
+    const leftEye = getKeyPointInScratchSpace("leftEye");
     const betweenEyes = [
       (rightEye[0] + leftEye[0]) / 2,
       (rightEye[1] + leftEye[1]) / 2,
     ];
-    const leftEar = getKeyPointInScratchSpace('leftEarTragion');
-    const rightEar = getKeyPointInScratchSpace('rightEarTragion');
+    const leftEar = getKeyPointInScratchSpace("leftEarTragion");
+    const rightEar = getKeyPointInScratchSpace("rightEarTragion");
     const topOfHead = [0, 0];
 
     const size = Math.round(blazefaceFace.box.width * 1.25);
 
     const tiltRadians = Math.atan2(
       rightEar[1] - leftEar[1],
-      rightEar[0] - leftEar[0],
+      rightEar[0] - leftEar[0]
     );
-    const tilt = Math.round(90 - (tiltRadians * 180 / Math.PI));
+    const tilt = Math.round(90 - (tiltRadians * 180) / Math.PI);
 
     lastFace = {
       nose,
@@ -100,7 +105,7 @@
       rightEye,
       topOfHead,
       size,
-      tilt
+      tilt,
     };
   };
 
@@ -110,7 +115,7 @@
     }
 
     const frame = videoDevice.getFrame({
-      format: 'canvas'
+      format: "canvas",
     });
     if (!frame) {
       isFaceCurrentlyDetected = false;
@@ -118,9 +123,10 @@
     }
 
     isEstimationInFlight = true;
-    detector.estimateFaces(frame, {
-      flipHorizontal: true
-    })
+    detector
+      .estimateFaces(frame, {
+        flipHorizontal: true,
+      })
       .then((faces) => {
         isEstimationInFlight = false;
         if (faces.length > 0) {
@@ -137,12 +143,41 @@
       });
   };
 
-  const detector = await initializeDetector();
   const videoDevice = Scratch.vm.runtime.ioDevices.video;
-  Scratch.vm.runtime.on('AFTER_EXECUTE', estimationLoop);
+  const renderer = Scratch.vm.renderer;
+
+  const detector = await initializeDetector();
+  Scratch.vm.runtime.on("AFTER_EXECUTE", estimationLoop);
+
+  /**
+   * @param {unknown} part Part from Scratch blocks
+   * @returns {number[]|null}
+   */
+  const getPart = (part) => {
+    part = Scratch.Cast.toNumber(part);
+    if (part === 0) {
+      return lastFace.leftEye;
+    } else if (part === 1) {
+      return lastFace.rightEye;
+    } else if (part === 2) {
+      return lastFace.nose;
+    } else if (part === 3) {
+      return lastFace.mouth;
+    } else if (part === 4) {
+      return lastFace.leftEar;
+    } else if (part === 5) {
+      return lastFace.rightEar;
+    } else if (part === 6) {
+      return lastFace.betweenEyes;
+    } else if (part === 7) {
+      return lastFace.topOfHead;
+    } else {
+      return null;
+    }
+  };
 
   class FaceSensing {
-    constructor () {
+    constructor() {
       videoDevice.enableVideo();
     }
 
@@ -179,7 +214,8 @@
           "---",
 
           {
-            blockType: Scratch.BlockType.EVENT,
+            blockType: Scratch.BlockType.HAT,
+            isEdgeActivated: true,
             opcode: "whenTilted",
             text: Scratch.translate("when face tilts [DIRECTION]"),
             arguments: {
@@ -191,7 +227,8 @@
           },
 
           {
-            blockType: Scratch.BlockType.EVENT,
+            blockType: Scratch.BlockType.HAT,
+            isEdgeActivated: true,
             opcode: "whenSpriteTouchesPart",
             text: Scratch.translate("when this sprite touches a [PART]"),
             arguments: {
@@ -203,7 +240,8 @@
           },
 
           {
-            blockType: Scratch.BlockType.EVENT,
+            blockType: Scratch.BlockType.HAT,
+            isEdgeActivated: true,
             opcode: "whenFaceDetected",
             text: Scratch.translate("when a face is detected"),
           },
@@ -293,30 +331,12 @@
         return;
       }
 
-      let position;
-
-      const part = Scratch.Cast.toNumber(args.PART);
-      if (part === 0) {
-        position = lastFace.leftEye;
-      } else if (part === 1) {
-        position = lastFace.rightEye;
-      } else if (part === 2) {
-        position = lastFace.nose;
-      } else if (part === 3) {
-        position = lastFace.mouth;
-      } else if (part === 4) {
-        position = lastFace.leftEar;
-      } else if (part === 5) {
-        position = lastFace.rightEar;
-      } else if (part === 6) {
-        position = lastFace.betweenEyes;
-      } else if (part === 7) {
-        position = lastFace.topOfHead;
+      const part = getPart(args.PART);
+      if (!part) {
+        return;
       }
 
-      if (position) {
-        util.target.setXY(position[0], position[1]);
-      }
+      util.target.setXY(part[0], part[1]);
     }
 
     pointInFaceTiltDirection(args, util) {
@@ -329,6 +349,44 @@
       if (isFaceCurrentlyDetected) {
         util.target.setSize(lastFace.size);
       }
+    }
+
+    whenTilted(args, util) {
+      if (!isFaceCurrentlyDetected) {
+        return false;
+      }
+
+      const direction = Scratch.Cast.toString(args.DIRECTION);
+      if (direction === "left") {
+        return lastFace.tilt < 80;
+      } else if (direction === "right") {
+        return lastFace.tilt > 100;
+      } else {
+        return false;
+      }
+    }
+
+    whenSpriteTouchesPart(args, util) {
+      if (!isFaceCurrentlyDetected) {
+        return false;
+      }
+
+      const part = getPart(args.PART);
+      if (!part) {
+        return false;
+      }
+
+      const drawable = renderer._allDrawables[util.target.drawableID];
+      if (!drawable) {
+        return false;
+      }
+
+      drawable.updateCPURenderAttributes();
+      return drawable.isTouching(part);
+    }
+
+    whenFaceDetected() {
+      return isFaceCurrentlyDetected;
     }
 
     faceIsDetected() {
