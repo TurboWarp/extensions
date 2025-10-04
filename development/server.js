@@ -36,7 +36,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/*", (req, res, next) => {
+app.use("/", (req, res, next) => {
+  if (req.method !== 'GET') {
+    next();
+    return;
+  }
+
   if (!mostRecentBuild) {
     res.contentType("text/plain");
     res.status(500);
@@ -61,6 +66,6 @@ app.use((req, res) => {
 
 // The port the server runs on matters. The editor only treats port 8000 as unsandboxed.
 const PORT = 8000;
-app.listen(8000, () => {
+app.listen(PORT, () => {
   console.log(`Development server is ready on http://localhost:${PORT}/`);
 });
