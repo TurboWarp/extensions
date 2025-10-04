@@ -2,7 +2,7 @@ import Builder from "./builder.js";
 import * as Colors from "./colors.js";
 
 const builder = new Builder("production");
-const errors = builder.validate();
+const errors = await builder.validate();
 
 if (errors.length === 0) {
   console.log(
