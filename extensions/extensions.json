@@ -4,6 +4,7 @@
   "stretch",
   "gamepad",
   "box2d",
+  "MasterMath/AmmoPhysics",
   "files",
   "pointerlock",
   "cursor",
