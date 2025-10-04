@@ -1,4 +1,5 @@
 import * as fs from "node:fs";
+import * as fsPromises from "node:fs/promises";
 import * as pathUtil from "node:path";
 import * as urlUtil from "node:url";
 import AdmZip from "adm-zip";
@@ -122,11 +123,12 @@ class BuildFile {
   }
 
   read() {
-    return fs.readFileSync(this.sourcePath);
+    return fsPromises.readFile(this.sourcePath);
   }
 
   validate() {
     // no-op by default
+    return Promise.resolve();
   }
 
   /**
@@ -158,8 +160,8 @@ class ExtensionFile extends BuildFile {
     this.mode = mode;
   }
 
-  read() {
-    const data = fs.readFileSync(this.sourcePath, "utf-8");
+  async read() {
+    const data = await fsPromises.readFile(this.sourcePath, "utf-8");
 
     if (this.mode !== "development") {
       const translations = filterTranslationsByPrefix(
@@ -475,8 +477,8 @@ class JSONMetadataFile extends BuildFile {
 }
 
 class ImageFile extends BuildFile {
-  validate() {
-    const contents = this.read();
+  async validate() {
+    const contents = await this.read();
     const { width, height } = imageSize(contents);
     const aspectRatio = width / height;
     if (aspectRatio !== 2) {
@@ -490,15 +492,15 @@ class ImageFile extends BuildFile {
 }
 
 class SVGFile extends ImageFile {
-  validate() {
-    const contents = this.read();
+  async validate() {
+    const contents = await this.read();
     if (contents.includes("<text")) {
       throw new Error(
         "SVG must not contain <text> elements -- please convert the text to a path. This ensures it will display correctly on all devices."
       );
     }
 
-    super.validate();
+    await super.validate();
   }
 }
 
@@ -545,8 +547,8 @@ class DocsFile extends BuildFile {
     this.extensionSlug = extensionSlug;
   }
 
-  read() {
-    const markdown = super.read().toString("utf-8");
+  async read() {
+    const markdown = (await super.read()).toString("utf-8");
     return renderDocs(markdown, this.extensionSlug);
   }
 
@@ -608,15 +610,16 @@ class Build {
     );
   }
 
-  export(root) {
+  async export(root) {
     mkdirp(root);
 
     for (const [relativePath, file] of Object.entries(this.files)) {
       const directoryName = pathUtil.dirname(relativePath);
-      fs.mkdirSync(pathUtil.join(root, directoryName), {
-        recursive: true,
-      });
-      fs.writeFileSync(pathUtil.join(root, relativePath), file.read());
+      await mkdirp(pathUtil.join(root, directoryName));
+      await fsPromises.writeFile(
+        pathUtil.join(root, relativePath),
+        await file.read()
+      );
     }
   }
 
@@ -662,13 +665,13 @@ class Build {
   /**
    * @param {string} root
    */
-  exportL10N(root) {
-    mkdirp(root);
+  async exportL10N(root) {
+    await mkdirp(root);
 
     const groups = this.generateL10N();
     for (const [name, strings] of Object.entries(groups)) {
       const filename = pathUtil.join(root, `exported-${name}.json`);
-      fs.writeFileSync(filename, JSON.stringify(strings, null, 2));
+      await fsPromises.writeFile(filename, JSON.stringify(strings, null, 2));
     }
   }
 }
@@ -700,11 +703,11 @@ class Builder {
     );
   }
 
-  build() {
+  async build() {
     const build = new Build(this.mode);
 
     const featuredExtensionSlugs = ExtendedJSON.parse(
-      fs.readFileSync(
+      await fsPromises.readFile(
         pathUtil.join(this.extensionsRoot, "extensions.json"),
         "utf-8"
       )
@@ -715,20 +718,20 @@ class Builder {
      * @type {Record<string, Record<string, Record<string, string>>>}
      */
     const translations = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.translationsRoot
     )) {
       if (!filename.endsWith(".json")) {
         continue;
       }
       const group = filename.split(".")[0];
-      const data = JSON.parse(fs.readFileSync(absolutePath, "utf-8"));
+      const data = JSON.parse(await fsPromises.readFile(absolutePath, "utf-8"));
       translations[group] = data;
     }
 
     /** @type {Record<string, ExtensionFile>} */
     const extensionFiles = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.extensionsRoot
     )) {
       if (!filename.endsWith(".js")) {
@@ -749,7 +752,7 @@ class Builder {
 
     /** @type {Record<string, ImageFile>} */
     const extensionImages = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.imagesRoot
     )) {
       const extension = pathUtil.extname(filename);
@@ -769,7 +772,7 @@ class Builder {
 
     /** @type {Map<string, SampleFile[]>} */
     const samples = new Map();
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.samplesRoot
     )) {
       if (!filename.endsWith(".sb3")) {
@@ -788,13 +791,13 @@ class Builder {
       build.files[`/samples/${filename}`] = file;
     }
 
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.websiteRoot
     )) {
       build.files[`/${filename}`] = new BuildFile(absolutePath);
     }
 
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.docsRoot
     )) {
       if (!filename.endsWith(".md")) {
@@ -842,12 +845,12 @@ class Builder {
     return build;
   }
 
-  tryBuild(...args) {
+  async tryBuild(...args) {
     const start = new Date();
     process.stdout.write(`[${start.toLocaleTimeString()}] Building... `);
 
     try {
-      const build = this.build(...args);
+      const build = await this.build(...args);
       const time = Date.now() - start.getTime();
       console.log(`done in ${time}ms`);
       return build;
@@ -859,8 +862,14 @@ class Builder {
     return null;
   }
 
-  startWatcher(callback) {
-    callback(this.tryBuild());
+  async startWatcher(callback) {
+    // Call for initial build.
+    callback(await this.tryBuild());
+
+    // Make a watcher for all future builds.
+    let isBuildInProgress = false;
+    let wasBuildRequestDuringBuild = false;
+
     chokidar
       .watch(
         [
@@ -875,17 +884,33 @@ class Builder {
           ignoreInitial: true,
         }
       )
-      .on("all", () => {
-        callback(this.tryBuild());
+      .on("all", async () => {
+        if (isBuildInProgress) {
+          wasBuildRequestDuringBuild = true;
+        } else {
+          isBuildInProgress = true;
+
+          do {
+            wasBuildRequestDuringBuild = false;
+
+            try {
+              callback(await this.tryBuild());
+            } catch (e) {
+              console.error(e);
+            }
+          } while (wasBuildRequestDuringBuild);
+
+          isBuildInProgress = false;
+        }
       });
   }
 
-  validate() {
+  async validate() {
     const errors = [];
-    const build = this.build();
+    const build = await this.build();
     for (const [fileName, file] of Object.entries(build.files)) {
       try {
-        file.validate();
+        await file.validate();
       } catch (e) {
         errors.push({
           fileName,
