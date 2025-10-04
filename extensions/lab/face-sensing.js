@@ -231,40 +231,42 @@
         ],
 
         menus: {
+          // These menus were all designed to be compatible with Scratch Lab
+          // That's why no reporters and why the values are somewhat arbitrary
           part: {
-            acceptReporters: false, // compatibility with Scratch Lab
+            acceptReporters: false,
             items: [
               {
                 text: Scratch.translate("nose"),
-                value: "nose",
+                value: "2",
               },
               {
                 text: Scratch.translate("mouth"),
-                value: "mouth",
+                value: "3",
               },
               {
                 text: Scratch.translate("left eye"),
-                value: "left eye",
+                value: "0",
               },
               {
                 text: Scratch.translate("right eye"),
-                value: "right eye",
+                value: "1",
               },
               {
                 text: Scratch.translate("between eyes"),
-                value: "between eyes",
+                value: "6",
               },
               {
                 text: Scratch.translate("left ear"),
-                value: "left ear",
+                value: "4",
               },
               {
                 text: Scratch.translate("right ear"),
-                value: "right ear",
+                value: "5",
               },
               {
                 text: Scratch.translate("top of head"),
-                value: "top of head",
+                value: "7",
               },
             ],
           },
@@ -293,22 +295,22 @@
 
       let position;
 
-      const part = Scratch.Cast.toString(args.PART);
-      if (part === 'nose') {
-        position = lastFace.nose;
-      } else if (part === 'mouth') {
-        position = lastFace.mouth;
-      } else if (part === 'left eye') {
+      const part = Scratch.Cast.toNumber(args.PART);
+      if (part === 0) {
         position = lastFace.leftEye;
-      } else if (part === 'right eye') {
+      } else if (part === 1) {
         position = lastFace.rightEye;
-      } else if (part === 'between eyes') {
-        position = lastFace.betweenEyes;
-      } else if (part === 'left ear') {
+      } else if (part === 2) {
+        position = lastFace.nose;
+      } else if (part === 3) {
+        position = lastFace.mouth;
+      } else if (part === 4) {
         position = lastFace.leftEar;
-      } else if (part === 'right ear') {
+      } else if (part === 5) {
         position = lastFace.rightEar;
-      } else if (part === 'top of head') {
+      } else if (part === 6) {
+        position = lastFace.betweenEyes;
+      } else if (part === 7) {
         position = lastFace.topOfHead;
       }
 
