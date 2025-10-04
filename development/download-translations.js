@@ -1,13 +1,13 @@
-const pathUtil = require("path");
-const fs = require("fs");
-const {
+import * as pathUtil from "node:path";
+import * as fs from "node:fs";
+import {
   transifexApi,
   ORGANIZATION_NAME,
   PROJECT_NAME,
   RUNTIME_RESOURCE,
   METADATA_RESOURCE,
   SOURCE_LOCALE,
-} = require("./transifex-common");
+} from "./transifex-common.js";
 
 /**
  * @template T

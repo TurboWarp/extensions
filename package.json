@@ -5,6 +5,7 @@
   "exports": {
     "./builder": "./development/builder.js"
   },
+  "type": "module",
   "scripts": {
     "start": "node development/server.js",
     "dev": "node development/server.js",
