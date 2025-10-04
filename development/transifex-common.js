@@ -1,4 +1,4 @@
-const { transifexApi } = require("@transifex/api");
+import transifexApi from "@transifex/api";
 
 const TOKEN = process.env.TRANSIFEX_TOKEN;
 if (!TOKEN) {
@@ -36,7 +36,7 @@ transifexApi.setup({
   auth: TOKEN,
 });
 
-module.exports = {
+export {
   transifexApi,
   ORGANIZATION_NAME,
   PROJECT_NAME,

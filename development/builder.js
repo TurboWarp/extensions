@@ -1,10 +1,16 @@
-const fs = require("fs");
-const AdmZip = require("adm-zip");
-const pathUtil = require("path");
-const ExtendedJSON = require("@turbowarp/json");
-const compatibilityAliases = require("./compatibility-aliases");
-const parseMetadata = require("./parse-extension-metadata");
-const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
+import * as fs from "node:fs";
+import * as pathUtil from "node:path";
+import AdmZip from "adm-zip";
+import chokidar from "chokidar";
+import spdxParser from "spdx-expression-parse";
+import { imageSize } from "image-size";
+import ExtendedJSON from "@turbowarp/json";
+import compatibilityAliases from "./compatibility-aliases.js";
+import parseMetadata from "./parse-extension-metadata.js";
+import parseTranslations from "./parse-extension-translations.js";
+import renderTemplate from "./render-template.js";
+import renderDocs from "./render-docs.js";
+import { mkdirp, recursiveReadDirectory } from "./fs-utils.js";
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -213,7 +219,6 @@ class ExtensionFile extends BuildFile {
       );
     }
 
-    const spdxParser = require("spdx-expression-parse");
     try {
       // Don't care about the result -- just see if it parses.
       spdxParser(metadata.license);
@@ -264,7 +269,6 @@ class ExtensionFile extends BuildFile {
       },
     };
 
-    const parseTranslations = require("./parse-extension-translations");
     const jsCode = fs.readFileSync(this.sourcePath, "utf-8");
     const unprefixedRuntimeStrings = parseTranslations(jsCode);
     const runtimeStrings = Object.fromEntries(
@@ -290,7 +294,7 @@ class HomepageFile extends BuildFile {
     samples,
     mode
   ) {
-    super(pathUtil.join(__dirname, "homepage-template.ejs"));
+    super(pathUtil.join(import.meta.dirname, "homepage-template.ejs"));
 
     /** @type {Record<string, ExtensionFile>} */
     this.extensionFiles = extensionFiles;
@@ -344,8 +348,6 @@ class HomepageFile extends BuildFile {
   }
 
   read() {
-    const renderTemplate = require("./render-template");
-
     const mostRecentExtensions = Object.entries(this.extensionFiles)
       .sort((a, b) => b[1].getLastModified() - a[1].getLastModified())
       .slice(0, 5)
@@ -473,7 +475,6 @@ class JSONMetadataFile extends BuildFile {
 
 class ImageFile extends BuildFile {
   validate() {
-    const { imageSize } = require("image-size");
     const contents = this.read();
     const { width, height } = imageSize(contents);
     const aspectRatio = width / height;
@@ -544,7 +545,6 @@ class DocsFile extends BuildFile {
   }
 
   read() {
-    const renderDocs = require("./render-docs");
     const markdown = super.read().toString("utf-8");
     return renderDocs(markdown, this.extensionSlug);
   }
@@ -688,12 +688,15 @@ class Builder {
       this.mode = mode;
     }
 
-    this.extensionsRoot = pathUtil.join(__dirname, "../extensions");
-    this.websiteRoot = pathUtil.join(__dirname, "../website");
-    this.imagesRoot = pathUtil.join(__dirname, "../images");
-    this.docsRoot = pathUtil.join(__dirname, "../docs");
-    this.samplesRoot = pathUtil.join(__dirname, "../samples");
-    this.translationsRoot = pathUtil.join(__dirname, "../translations");
+    this.extensionsRoot = pathUtil.join(import.meta.dirname, "../extensions");
+    this.websiteRoot = pathUtil.join(import.meta.dirname, "../website");
+    this.imagesRoot = pathUtil.join(import.meta.dirname, "../images");
+    this.docsRoot = pathUtil.join(import.meta.dirname, "../docs");
+    this.samplesRoot = pathUtil.join(import.meta.dirname, "../samples");
+    this.translationsRoot = pathUtil.join(
+      import.meta.dirname,
+      "../translations"
+    );
   }
 
   build() {
@@ -804,7 +807,9 @@ class Builder {
 
     // Don't rely on node_modules being stored in a specific location or having a specific structure
     // so that this works when we are a dependency in a bigger npm tree.
-    const scratchblocksPath = require.resolve("@turbowarp/scratchblocks");
+    const scratchblocksPath = new URL(
+      import.meta.resolve("@turbowarp/scratchblocks")
+    ).pathname;
     build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
       scratchblocksPath
     );
@@ -854,8 +859,6 @@ class Builder {
   }
 
   startWatcher(callback) {
-    // Load chokidar lazily.
-    const chokidar = require("chokidar");
     callback(this.tryBuild());
     chokidar
       .watch(
@@ -893,4 +896,4 @@ class Builder {
   }
 }
 
-module.exports = Builder;
+export default Builder;
