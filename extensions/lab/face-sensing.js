@@ -85,15 +85,41 @@
     ];
     const leftEar = getKeyPointInScratchSpace("leftEarTragion");
     const rightEar = getKeyPointInScratchSpace("rightEarTragion");
-    const topOfHead = [0, 0];
 
+    // Not sure how Scratch Lab computes the rest of these as blazeface doesn't just
+    // directly tell us. These seem to match close enough based on my personal testing.
+
+    // Seems to be just an arbitrary scale conversion between the blazeface size and the
+    // size reported to the project?
+    // TODO: improve this
     const size = Math.round(blazefaceFace.box.width * 1.25);
 
-    const tiltRadians = Math.atan2(
+    // The ears can tell us the horizontal direction to determine the tilt.
+    const horizontalDirection = [
+      rightEar[0] - leftEar[0],
       rightEar[1] - leftEar[1],
-      rightEar[0] - leftEar[0]
+    ];
+    const tiltRadians = Math.atan2(
+      horizontalDirection[1],
+      horizontalDirection[0]
     );
     const tilt = Math.round(90 - (tiltRadians * 180) / Math.PI);
+
+    // From the horizontal direction we can compute the normalized up direction.
+    const upDirection = [
+      -horizontalDirection[1],
+      horizontalDirection[0]
+    ];
+    const upMagnitude = Math.sqrt(upDirection[0] ** 2 + upDirection[1] ** 2);
+    upDirection[0] /= upMagnitude;
+    upDirection[1] /= upMagnitude;
+
+    // Approximate the top of the head by going up from the center of the eyes.
+    // TODO: improve this
+    const topOfHead = [
+      betweenEyes[0] + upDirection[0] * size * 0.35,
+      betweenEyes[1] + upDirection[1] * size * 0.35,
+    ];
 
     lastFace = {
       nose,
@@ -122,6 +148,8 @@
       return;
     }
 
+    // TODO: should throttle a bit more to more accurately match Scratch Lab and reduce
+    // performance impact.
     isEstimationInFlight = true;
     detector
       .estimateFaces(frame, {
