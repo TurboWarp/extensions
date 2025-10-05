@@ -3,8 +3,9 @@ import Builder from "./builder.js";
 
 let mostRecentBuild = null;
 const builder = new Builder("development");
-await builder.startWatcher((newBuild) => {
+await builder.startWatcher(async (newBuild) => {
   mostRecentBuild = newBuild;
+  await newBuild.checkForNewImports();
 });
 
 const app = express();

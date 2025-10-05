@@ -13,6 +13,12 @@ import parseTranslations from "./parse-extension-translations.js";
 import renderTemplate from "./render-template.js";
 import renderDocs from "./render-docs.js";
 import { mkdirp, recursiveReadDirectory } from "./fs-utils.js";
+import {
+  fetchAllDependencies,
+  parseExtensionDependencies,
+  rewriteImportsToInlineURLs,
+  synchronizeDependencyList,
+} from "./dependency-management.js";
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -138,6 +144,14 @@ class BuildFile {
     // no-op by default, to be overridden
     return null;
   }
+
+  /**
+   * @returns {Promise<string[]>}
+   */
+  getDependencies() {
+    // no-op by default, to be overridden
+    return Promise.resolve([]);
+  }
 }
 
 class ExtensionFile extends BuildFile {
@@ -161,7 +175,7 @@ class ExtensionFile extends BuildFile {
   }
 
   async read() {
-    const data = await fsPromises.readFile(this.sourcePath, "utf-8");
+    let data = await fsPromises.readFile(this.sourcePath, "utf-8");
 
     if (this.mode !== "development") {
       const translations = filterTranslationsByPrefix(
@@ -169,13 +183,15 @@ class ExtensionFile extends BuildFile {
         `${this.slug}@`
       );
       if (translations !== null) {
-        return insertAfterCommentsBeforeCode(
+        data = insertAfterCommentsBeforeCode(
           data,
           `/* generated l10n code */Scratch.translate.setup(${JSON.stringify(
             translations
           )});/* end generated l10n code */`
         );
       }
+
+      data = rewriteImportsToInlineURLs(data);
     }
 
     return data;
@@ -285,6 +301,12 @@ class ExtensionFile extends BuildFile {
       "extension-metadata": metadataStrings,
       "extension-runtime": runtimeStrings,
     };
+  }
+
+  async getDependencies() {
+    return parseExtensionDependencies(
+      await fsPromises.readFile(this.sourcePath, "utf-8")
+    );
   }
 }
 
@@ -674,6 +696,18 @@ class Build {
       await fsPromises.writeFile(filename, JSON.stringify(strings, null, 2));
     }
   }
+
+  async checkForNewImports() {
+    const allImports = new Set();
+    for (const file of Object.values(this.files)) {
+      const fileImports = await file.getDependencies();
+      for (const imp of fileImports) {
+        allImports.add(imp);
+      }
+    }
+
+    await synchronizeDependencyList(allImports);
+  }
 }
 
 class Builder {
@@ -705,6 +739,10 @@ class Builder {
 
   async build() {
     const build = new Build(this.mode);
+
+    if (this.mode !== "development") {
+      await fetchAllDependencies();
+    }
 
     const featuredExtensionSlugs = ExtendedJSON.parse(
       await fsPromises.readFile(
@@ -864,7 +902,7 @@ class Builder {
 
   async startWatcher(callback) {
     // Call for initial build.
-    callback(await this.tryBuild());
+    await callback(await this.tryBuild());
 
     // Make a watcher for all future builds.
     let isBuildInProgress = false;
@@ -892,7 +930,7 @@ class Builder {
 
           do {
             wasBuildRequestDuringBuild = false;
-            callback(await this.tryBuild());
+            await callback(await this.tryBuild());
           } while (wasBuildRequestDuringBuild);
 
           isBuildInProgress = false;
