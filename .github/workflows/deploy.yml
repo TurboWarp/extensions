@@ -15,7 +15,7 @@ jobs:
 
     # If you are forking and want to set up your own website, adjust the repository and branch
     # below to match your repository or remove the condition entirely.
-    if: ${{ github.repository == 'TurboWarp/extensions' && github.ref == 'refs/heads/master' }}
+    if: ${{ github.repository == 'OmniBlocks/extensions' && github.ref == 'refs/heads/master' }}
 
     steps:
       - name: Checkout
