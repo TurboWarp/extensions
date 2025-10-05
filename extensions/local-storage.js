@@ -10,14 +10,46 @@
     throw new Error("Local Storage must be run unsandboxed");
   }
 
-  const PREFIX = "extensions.turbowarp.org/local-storage:";
-  let namespace = "";
-  const getFullStorageKey = () => `${PREFIX}${namespace}`;
+  const getNamespace = () =>
+    Scratch.vm.runtime.extensionStorage["localstorage"]?.namespace;
+
+  const setNamespace = (newNamespace) => {
+    Scratch.vm.runtime.extensionStorage["localstorage"] = {
+      namespace: newNamespace,
+    };
+    Scratch.vm.extensionManager.refreshBlocks("localstorage");
+  };
+
+  const generateRandomNamespace = () => {
+    // doesn't need to be cryptographically secure and doesn't need to have excessive length
+    // this has 16^16 = 18446744073709551616 possible namespaces which is plenty
+    const soup = "0123456789abcdef";
+    let id = "";
+    for (let i = 0; i < 16; i++) {
+      id += soup[Math.floor(Math.random() * soup.length)];
+    }
+    return id;
+  };
+
+  const generateRandomNamespaceIfMissing = () => {
+    if (!getNamespace()) {
+      setNamespace(generateRandomNamespace());
+    }
+  };
+
+  Scratch.vm.runtime.on("PROJECT_LOADED", () => {
+    generateRandomNamespaceIfMissing();
+  });
+
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    generateRandomNamespace();
+  });
+
+  generateRandomNamespaceIfMissing();
 
   let lastNamespaceWarning = 0;
-
   const validNamespace = () => {
-    const valid = !!namespace;
+    const valid = !!getNamespace();
     if (!valid && Date.now() - lastNamespaceWarning > 3000) {
       alert(
         Scratch.translate(
@@ -29,10 +61,13 @@
     return valid;
   };
 
+  const STORAGE_PREFIX = "extensions.turbowarp.org/local-storage:";
+  const getStorageKey = () => `${STORAGE_PREFIX}${getNamespace()}`;
+
   const readFromStorage = () => {
     try {
       // localStorage could throw if unsupported
-      const data = localStorage.getItem(getFullStorageKey());
+      const data = localStorage.getItem(getStorageKey());
       if (data) {
         // JSON.parse could throw if data is invalid
         const parsed = JSON.parse(data);
@@ -61,14 +96,14 @@
     try {
       if (Object.keys(data).length > 0) {
         localStorage.setItem(
-          getFullStorageKey(),
+          getStorageKey(),
           JSON.stringify({
             time: Math.round(Date.now() / 1000),
             data,
           })
         );
       } else {
-        localStorage.removeItem(getFullStorageKey());
+        localStorage.removeItem(getStorageKey());
       }
     } catch (error) {
       console.error("error saving to locacl storage", error);
@@ -77,16 +112,12 @@
 
   window.addEventListener("storage", (event) => {
     if (
-      namespace &&
-      event.key === getFullStorageKey() &&
+      getNamespace() &&
+      event.key === getStorageKey() &&
       event.storageArea === localStorage
     ) {
       Scratch.vm.runtime.startHats("localstorage_whenChanged");
     }
-  });
-
-  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
-    namespace = "";
   });
 
   class LocalStorage {
@@ -97,20 +128,22 @@
         docsURI: "https://extensions.turbowarp.org/local-storage",
         blocks: [
           {
-            opcode: "setProjectId",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set storage namespace ID to [ID]"),
-            arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("project title"),
-              },
-            },
+            blockType: Scratch.BlockType.LABEL,
+            text: getNamespace()
+              ? Scratch.translate(
+                  {
+                    default: "Namespace: {namespace}",
+                  },
+                  {
+                    namespace: getNamespace(),
+                  }
+                )
+              : Scratch.translate("No namespace set"),
           },
           {
             opcode: "get",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get key [KEY]"),
+            text: Scratch.translate("get [KEY] from storage"),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
@@ -121,7 +154,7 @@
           {
             opcode: "set",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set key [KEY] to [VALUE]"),
+            text: Scratch.translate("set [KEY] to [VALUE] in storage"),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
@@ -136,7 +169,7 @@
           {
             opcode: "remove",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete key [KEY]"),
+            text: Scratch.translate("delete [KEY] from storage"),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
@@ -147,7 +180,7 @@
           {
             opcode: "removeAll",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete all keys"),
+            text: Scratch.translate("delete storage"),
           },
           {
             opcode: "whenChanged",
@@ -155,12 +188,26 @@
             text: Scratch.translate("when another window changes storage"),
             isEdgeActivated: false,
           },
+          "---",
+          {
+            opcode: "setProjectId",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set namespace to [ID]"),
+            arguments: {
+              ID: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: getNamespace() || Scratch.translate("project title"),
+              },
+            },
+          },
         ],
       };
     }
+
     setProjectId({ ID }) {
-      namespace = Scratch.Cast.toString(ID);
+      setNamespace(Scratch.Cast.toString(ID));
     }
+
     get({ KEY }) {
       if (!validNamespace()) {
         return "";
@@ -172,6 +219,7 @@
       }
       return storage[KEY];
     }
+
     set({ KEY, VALUE }) {
       if (!validNamespace()) {
         return "";
@@ -180,6 +228,7 @@
       storage[Scratch.Cast.toString(KEY)] = VALUE;
       saveToLocalStorage(storage);
     }
+
     remove({ KEY }) {
       if (!validNamespace()) {
         return "";
@@ -188,6 +237,7 @@
       delete storage[Scratch.Cast.toString(KEY)];
       saveToLocalStorage(storage);
     }
+
     removeAll() {
       if (!validNamespace()) {
         return "";
@@ -195,5 +245,6 @@
       saveToLocalStorage({});
     }
   }
+
   Scratch.extensions.register(new LocalStorage());
 })(Scratch);
