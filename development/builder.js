@@ -1,5 +1,6 @@
 import * as fs from "node:fs";
 import * as pathUtil from "node:path";
+import * as urlUtil from "node:url";
 import AdmZip from "adm-zip";
 import chokidar from "chokidar";
 import spdxParser from "spdx-expression-parse";
@@ -807,9 +808,9 @@ class Builder {
 
     // Don't rely on node_modules being stored in a specific location or having a specific structure
     // so that this works when we are a dependency in a bigger npm tree.
-    const scratchblocksPath = new URL(
+    const scratchblocksPath = urlUtil.fileURLToPath(
       import.meta.resolve("@turbowarp/scratchblocks")
-    ).pathname;
+    );
     build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
       scratchblocksPath
     );
