@@ -892,12 +892,7 @@ class Builder {
 
           do {
             wasBuildRequestDuringBuild = false;
-
-            try {
-              callback(await this.tryBuild());
-            } catch (e) {
-              console.error(e);
-            }
+            callback(await this.tryBuild());
           } while (wasBuildRequestDuringBuild);
 
           isBuildInProgress = false;
