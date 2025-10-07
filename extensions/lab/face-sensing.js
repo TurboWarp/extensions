@@ -27,7 +27,8 @@
       {
         runtime: "mediapipe",
         // TODO: this is also awful
-        solutionPath: "https://packagerdata.turbowarp.org/facesensing00/@mediapipe/face_detection@0.4.1646425229",
+        solutionPath:
+          "https://packagerdata.turbowarp.org/facesensing00/@mediapipe/face_detection@0.4.1646425229",
       }
     );
   };
