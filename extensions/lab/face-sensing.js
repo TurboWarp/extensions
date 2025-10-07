@@ -1,6 +1,6 @@
 // Name: Face Sensing
 // ID: faceSensing
-// Description: Compatible with Scratch Lab's Face Sensing experiment.
+// Description: Sense faces with the camera.
 // License: MPL-2.0
 
 (async function (Scratch) {
@@ -86,13 +86,13 @@
     const leftEar = getKeyPointInScratchSpace("leftEarTragion");
     const rightEar = getKeyPointInScratchSpace("rightEarTragion");
 
-    // Not sure how Scratch Lab computes the rest of these as blazeface doesn't just
+    // Not sure how Scratch computes the rest of these as blazeface doesn't just
     // directly tell us. These seem to match close enough based on my personal testing.
 
-    // Seems to be just an arbitrary scale conversion between the blazeface size and the
-    // size reported to the project?
+    // Not entirely sure how Scratch defines this. But just using the width as the size
+    // seems to match whatever they do?
     // TODO: improve this
-    const size = Math.round(blazefaceFace.box.width * 1.25);
+    const size = Math.round(blazefaceFace.box.width);
 
     // The ears can tell us the horizontal direction to determine the tilt.
     const horizontalDirection = [
@@ -145,7 +145,7 @@
       return;
     }
 
-    // TODO: should throttle a bit more to more accurately match Scratch Lab and reduce
+    // TODO: should throttle a bit more to more accurately match Scratch and reduce
     // performance impact.
     isEstimationInFlight = true;
     detector
@@ -277,7 +277,7 @@
             blockType: Scratch.BlockType.BOOLEAN,
             opcode: "faceIsDetected",
             text: Scratch.translate("a face is detected?"),
-            disableMonitor: true, // parity with Scratch Lab
+            disableMonitor: true, // parity with Scratch
           },
 
           {
@@ -294,7 +294,7 @@
         ],
 
         menus: {
-          // These menus were all designed to be compatible with Scratch Lab
+          // These menus were all designed to be compatible with Scratch
           // That's why no reporters and why the values are somewhat arbitrary
           part: {
             acceptReporters: false,
@@ -335,7 +335,7 @@
           },
 
           direction: {
-            acceptReporters: false, // compatibility with Scratch Lab
+            acceptReporters: false, // compatibility with Scratch
             items: [
               {
                 text: Scratch.translate("left"),
