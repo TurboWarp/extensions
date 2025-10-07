@@ -106,10 +106,7 @@
     const tilt = Math.round(90 - (tiltRadians * 180) / Math.PI);
 
     // From the horizontal direction we can compute the normalized up direction.
-    const upDirection = [
-      -horizontalDirection[1],
-      horizontalDirection[0]
-    ];
+    const upDirection = [-horizontalDirection[1], horizontalDirection[0]];
     const upMagnitude = Math.sqrt(upDirection[0] ** 2 + upDirection[1] ** 2);
     upDirection[0] /= upMagnitude;
     upDirection[1] /= upMagnitude;
