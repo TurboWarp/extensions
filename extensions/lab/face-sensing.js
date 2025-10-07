@@ -53,7 +53,6 @@
   /** @type {Face|null} */
   let lastFace = null;
   let isFaceCurrentlyDetected = false;
-  let isEstimationInFlight = false;
 
   /**
    * @param {number} x Coordinate in video space (horizontally flipped)
@@ -131,29 +130,36 @@
       tilt,
     };
   };
-
+  
   const estimationLoop = () => {
-    if (isEstimationInFlight) {
-      return;
-    }
+    // Goal is 15 estimations per second, which seems to match Scratch.
+    // Going faster or slower makes the "when touching x" blocks behave differently,
+    // so want to match if possible.
+
+    let timeoutFinished = false;
+    let estimationFinished = false;
+    setTimeout(() => {
+      timeoutFinished = true;
+      if (estimationFinished) {
+        estimationLoop();
+      }
+    }, 1000 / 15);
 
     const frame = videoDevice.getFrame({
       format: "canvas",
     });
+
     if (!frame) {
       isFaceCurrentlyDetected = false;
+      estimationFinished = true;
       return;
     }
 
-    // TODO: should throttle a bit more to more accurately match Scratch and reduce
-    // performance impact.
-    isEstimationInFlight = true;
     detector
       .estimateFaces(frame, {
         flipHorizontal: true,
       })
       .then((faces) => {
-        isEstimationInFlight = false;
         if (faces.length > 0) {
           isFaceCurrentlyDetected = true;
           updateFace(faces[0]);
@@ -163,8 +169,13 @@
       })
       .catch((error) => {
         console.error(error);
-        isEstimationInFlight = false;
         isFaceCurrentlyDetected = false;
+      })
+      .then(() => {
+        estimationFinished = true;
+        if (timeoutFinished) {
+          estimationLoop();
+        }
       });
   };
 
@@ -172,7 +183,7 @@
   const renderer = Scratch.vm.renderer;
 
   const detector = await initializeDetector();
-  Scratch.vm.runtime.on("AFTER_EXECUTE", estimationLoop);
+  estimationLoop();
 
   /**
    * @param {unknown} part Part from Scratch blocks
