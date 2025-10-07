@@ -271,6 +271,7 @@
     sc_monitor_page_text: {
       flexGrow: "1",
       boxSizing: "border-box",
+      whiteSpace: "pre"
     },
     sc_monitor_page_button: {
       border: "1px solid",
@@ -978,7 +979,7 @@
 
         const pageText = document.createElement("div");
         setElementCSS(pageText, customCSS.sc_monitor_page_text);
-        pageText.innerHTML = `Page<br>${page + 1}`;
+        pageText.textContent = `Page\n${page + 1}`;
 
         const buttonNext = document.createElement("button");
         setElementCSS(buttonNext, customCSS.sc_monitor_page_button);
@@ -996,7 +997,7 @@
             return;
           }
 
-          pageText.innerHTML = `Page<br>${page + 1}`;
+          pageText.textContent = `Page\n${page + 1}`;
 
           //Make sure buttons are valid
           buttonPrevious.disabled = false;
@@ -1026,7 +1027,9 @@
           if (scores.length == monitorDisplayData.itemCount + 1)
             scoresToDisplay--;
 
-          monitorInner.innerHTML = "";
+          while (monitorInner.firstChild) {
+            monitorInner.removeChild(monitorInner.firstChild);
+          }
 
           for (let scoreID = 0; scoreID < scoresToDisplay; scoreID++) {
             const score = scores[scoreID];
