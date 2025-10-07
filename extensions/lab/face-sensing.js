@@ -2,6 +2,7 @@
 // ID: faceSensing
 // Description: Sense faces with the camera.
 // License: MPL-2.0
+// Scratch-compatible: true
 
 (async function (Scratch) {
   "use strict";
