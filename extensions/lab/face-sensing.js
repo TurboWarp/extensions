@@ -212,11 +212,22 @@
     }
   };
 
-  class FaceSensing {
-    constructor() {
-      videoDevice.enableVideo();
+  const checkIfShouldTurnOnVideoForFirstRun = () => {
+    const stage = Scratch.vm.runtime.getTargetForStage();
+    if (!stage) {
+      // project is still loading
+      Scratch.vm.runtime.once('PROJECT_LOADED', checkIfShouldTurnOnVideoForFirstRun);
+      return;
     }
 
+    if (stage.videoState !== 'off') {
+      videoDevice.enableVideo();
+    }
+  };
+
+  checkIfShouldTurnOnVideoForFirstRun();
+
+  class FaceSensing {
     getInfo() {
       return {
         id: "faceSensing",
