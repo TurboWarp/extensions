@@ -9,16 +9,16 @@
   const initializeDetector = async () => {
     // TODO: this is awful
     await import(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js"
+      "https://packagerdata.turbowarp.org/facesensing00/@mediapipe/face_detection@0.4.1646425229/face_detection.js"
     );
     await import(
-      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js"
+      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js"
     );
     await import(
-      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"
+      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"
     );
     await import(
-      "https://cdn.jsdelivr.net/npm/@tensorflow-models/face-detection@1.0.3/dist/face-detection.min.js"
+      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow-models/face-detection@1.0.3/dist/face-detection.min.js"
     );
     const faceDetection = window.faceDetection;
 
@@ -27,7 +27,7 @@
       {
         runtime: "mediapipe",
         // TODO: this is also awful
-        solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229",
+        solutionPath: "https://packagerdata.turbowarp.org/facesensing00/@mediapipe/face_detection@0.4.1646425229",
       }
     );
   };
