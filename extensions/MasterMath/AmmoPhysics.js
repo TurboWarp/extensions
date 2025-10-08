@@ -181,9 +181,7 @@
             }
           }
         } else {
-          console.warn(
-            `Attempted to process nonexistent vertex list "${list}"`
-          );
+          return;
         }
         return points;
       }
@@ -231,15 +229,40 @@
         let faces = objList.filter((line) => line.startsWith("f "));
         if (faces) faces = faces.map((line) => line.split("f ")[1]);
 
+        console.log(vertices, faces);
+
         if (
-          vertices.every((item) => item.split(" ")?.length == 3) &&
-          faces.every((item) => item.split(" ")?.length == 3)
+          vertices.every((item) => item.split(" ").length == 3) &&
+          faces.every((item) => item.split(" ").length == 3)
         ) {
           return { vertices, faces };
+        } else if (
+          vertices.every((item) => item.split(" ").length == 3) &&
+          !faces.every((item) => item.split(" ").length == 3)
+        ) {
+          return vertices;
         } else {
           return;
         }
       }
+
+      /*
+        function processOBJ(objList) {
+      let vertices = objList.filter(line => line.startsWith("v ")) || [];
+      vertices = vertices.map(line => line.split("v ")[1]);
+
+      let faces = objList.filter(line => line.startsWith("f ")) || [];
+      faces = faces.map(line => line.split("f ")[1]);
+
+      if (vertices.length > 0 && faces.length > 0 &&
+          vertices.every(item => item.split(" ").length === 3) &&
+          faces.every(item => item.split(" ").length === 3)) {
+        return { vertices, faces };
+      } else {
+        return { vertices: [], faces: [] }; // Return empty arrays if invalid
+      }
+    }
+     */
 
       let collisionConfig = new Ammo.btDefaultCollisionConfiguration();
       let dispatcher = new Ammo.btCollisionDispatcher(collisionConfig);
@@ -1734,7 +1757,7 @@
           }
           // get the vertices from the list
           const points = processVertices(
-            target.lookupVariableByNameAndType(vertices, "list").value
+            target.lookupVariableByNameAndType(vertices, "list")?.value
           );
 
           if (!points) {
@@ -1748,7 +1771,7 @@
           const faceList = target.lookupVariableByNameAndType(
             faces,
             "list"
-          ).value;
+          )?.value;
           const mesh = createTriangleMesh(points, faceList);
 
           if (!mesh) {
@@ -1809,17 +1832,18 @@
             }
           }
 
-          let objFile;
-          if (obj) {
-            objFile = processOBJ(
-              target.lookupVariableByNameAndType(obj, "list").value
-            );
-          } else {
+          if (!target.lookupVariableByNameAndType(obj, "list")) {
             console.warn(
               `Attempted to create OBJ body from nonexistent list "${obj}"`
             );
             return;
           }
+
+          const objFile = processOBJ(
+            target.lookupVariableByNameAndType(obj, "list").value
+          );
+
+          console.log(objFile);
 
           if (type == "btConvexHullShape") {
             const points = processVertices(objFile.vertices);
@@ -1855,15 +1879,15 @@
               return;
             }
 
-            let shape;
-            const mesh = createTriangleMesh(points, objFile.faces);
-
-            if (!mesh) {
+            if (!objFile.faces) {
               console.warn(
                 `Attempted to create mesh body from non-triangulated OBJ file "${obj}"`
               );
               return;
             }
+
+            let shape;
+            const mesh = createTriangleMesh(points, objFile.faces);
 
             if (type == "btBvhTriangleMeshShape") {
               shape = new Ammo[type](mesh, true); // useQuantizedAabbCompression true
