@@ -3,21 +3,21 @@
 ## Table of contents
 1. [What Is Ammo Physics?](#description)
 2. [Units of Measurement](#units)
-3. [The Blocks](#the-blocks)
-3.1. [Simulation Control](#sim-control)
-3.2. [Bodies](#bodies)
-3.3. [More Complex Bodies](#complex-bodies)
-3.4 [Transformations](#transformations)
-3.5 [Collisions](#collisions)
-3.6 [Raycasting](#raycasting)
-3.7 [Forces](#forces)
-3.8. [Constraints](#constraints)
-4. [More Resources](#more-resources)
+3. [Optimization](#optimization)
+4. [The Blocks](#the-blocks)
+4.1. [Simulation Control](#sim-control)
+4.2. [Bodies](#bodies)
+4.3. [More Complex Bodies](#complex-bodies)
+4.4 [Transformations](#transformations)
+4.5 [Collisions](#collisions)
+4.6 [Raycasting](#raycasting)
+4.7 [Forces](#forces)
+5. [More Resources](#more-resources)
  
 ## What is Ammo Physics? <a name="description"></a>
 **Ammo Physics** is a high-level 3D rigid body physics extension based on [Ammo.js](https://github.com/kripken/ammo.js), a JavaScript port of the well-known Bullet Physics SDK for C++. It brings high-quality realtime physics to Turbowarp. 
 
-## Units <a name="units"></a>
+## Units of Measurement <a name="units"></a>
 >[!IMPORTANT]
 > In Ammo Physics, units matter. Proper usage of units will ensure the expected result.
 
@@ -29,28 +29,39 @@
 - Torque: newtons multiplied by meters (n•m)
 - Rotation: degrees
 
-Some Scratch-based 3D engines use large unitless values for scale, but because Ammo.js library uses single-precision floats, **large values can cause loss of precision, instability, or solver issues**, which result in jittery or innacurate collisions, instability (objects tunnelling through each other), and oddly behaving constraints.
+Some Scratch-based 3D engines use large unitless values for scale, but because Ammo.js library uses single-precision floats, **large values can cause loss of precision, instability, or solver issues**, like jittery or innacurate collisions or instability (objects tunnelling through each other).
 
 Generally speaking, **values in between 0.01-1000 are safe**. If you must scale outside SI units, make sure to scale units proportionally and consistently to avoid unexpected behavior.
+
+## Optimization <a name="optimization"></a>
+
+Ammo Physics is designed to be scalable, but especially large or complex physics scenes may cause performance degredation or meet memory limitations. Ammo Physics will automatically scale the allocated memory to meed the needs of your scene, but without proper memory management you can cause your browser to crash. 
+
+>[!IMPORTANT]
+> You should **ALWAYS** delete rays and bodies when you're done with them to free up memory. 
+
+Extremely large quantities of rigid bodies or extremely complex rigid bodies may cause drops in framerate. As a general rule, use the bare minimum required for your project. If you don't need dynamic concave triangle meshes, use convex hulls instead. If you do need dynamic triangle meshes, simplify the mesh complexity and reduce triangle count to make the computation workload easier on Ammo Physics. 
 
 ## The Blocks <a name="the-blocks"></a>
 ### Simulation Control <a name="sim-control"></a>
 ```scratch
 reset world :: #0fbd8c
 ```
-This block removes all rigid bodies, rays, and constraints from the world and resets the gravity. This function is automatically called when pressing the green flag, even if it isn't present.
+This block removes all rigid bodies, rays, and constraints from the world and resets the gravity. This function is automatically called when pressing the green flag.
 
 ```scratch
 step simulation :: #0fbd8c
 ```
 
-This block increases the physics simulation by one step forward in time. You should put it in your game loop or tick event. It implicitly takes the deltatime, max sub steps, and current target framerate. The higher the framerate, the higher quality your physics simulation will be.
+This block increases the physics simulation by one step forward in time. You should put it in your game loop or tick event. It implicitly takes the deltatime, max sub steps, and current target framerate. Generally speaking, the higher the framerate, the higher quality your physics simulation will be.
+
+If Turbowarp's runtime framerate is set to 0, Ammo Physics will implicitly use your screen's refresh rate, just like Turbowarp will. 
 
 ```scratch
 set max substeps (10) :: #0fbd8c
 ```
 
-This block sets the max substeps of the physics simulation. This can help in complicated simulations as it computes extra physics steps per frame if necessary. By default, the physics world loads with 10 max sub steps.
+This block sets the max substeps of the physics simulation. This can help in complicated simulations as it computes extra physics steps per frame **if necessary**. By default, the physics world loads with 10 max sub steps. 
 If your project's deltatime is higher than your target framerate, simulation substeps are used to account for the loss in quality. For example: 
 - Your project's target framerate is 60 FPS.
 - Your project is lagging a bit, so your delta time might be running at 33ms instead of 16ms, so you need at least 2 substeps per frame to account for the loss in simulation quality.
@@ -65,7 +76,7 @@ This sets the world's gravity in meters per second squared. By default, it match
 
 ### Bodies <a name="bodies"></a>
 >[!TIP]
-> You can set the mass of any body to 0 to make it static, not reacting to any forces (including gravity) while retaining collision. This is useful for things like the ground or your level geometry (game map).
+> You can set the mass of any body to 0 to make it static, or not reacting to any forces (including gravity), while retaining collision. This is useful for things like the ground or your level geometry (game map).
 
 ```scratch
 (all bodies :: #0fbd8c)
@@ -98,7 +109,8 @@ create capsule body with name: [body] mass: (5) radius: (0.5) height: (1) :: #0f
 Creates a capsule body with the specified, name, mass, radius, and height. This body is great for using as your player's hitbox!
 
 >[!TIP]
-> Bodies support **safe replacement**, meaning that when you create a new object with the same name as an already existing object, it will override the new object safely. This can be strategically used to change a body's properties later, but beware of optimization.
+> Bodies support **safe replacement**, meaning that when you create a new object with the same name as an already existing object, it will override the new object safely. This can be strategically used to change a body's properties later, but don't do this too frequently and beware of optimization.
+
 ### Complex Bodies <a name="complex-bodies"></a>
 
 ```scratch
@@ -173,7 +185,7 @@ set [friction v] of body [body] to (0.5) :: #0fbd8c
 ```
 This block allows you to set a body's physical material properties. A float from 0 to 1 is accepted as a value.
 
-Friction 0 means entirely frictionless (for example, something like ice should have a friction of ~0.02). The default is 0.5. This type of friction is linear or sliding friction. More complex materials that have differing types of friction in different directions (e.g., ice skates have 0 friction forward but 1 friction side to side) or rolling friction aren't yet supported but may be upon enough user request.
+Friction 0 means entirely frictionless (for example, something like ice should have a friction of ≈0.02). The default is 0.5. This type of friction is linear or sliding friction. More complex materials that have differing types of friction in different directions (e.g., ice skates have 0 friction forward but 1 friction side to side) or rolling friction aren't yet supported but may be upon enough user request.
 
 By default bounciness (elasticity/restitution) is 0, so if you want a body to be bouncy you have to increase it. You might wonder why your body isn't more bouncy after you increase it:  **you also have to increase the bounciness of the of the reacting/colliding object (for example the ground) to see an effect.**
 
@@ -262,9 +274,6 @@ delete ray [ray] :: #0fbd8c
 ```
 This block removes a ray from the world.
 
->[!IMPORTANT]
-> You should **ALWAYS** delete a ray when you're done with it to ensure proper memory management and optimization.
-
 ### Forces <a name="forces"></a>
 Forces are interesting and helpful as they allow you to control a body's movement manually and realistically without simply setting transformations.
 
@@ -285,21 +294,15 @@ push body [body] with central [force v] x: (1) y: (1) z: (1) newtons :: #0fbd8c
 ```
 Pushes the specified body with a force or impulse with the given XYZ strength in newtons. Only results in linear velocity. 
 >[!TIP]
-> Using this block with a capsule body is a great way to set up basic player movement!
+> Using this push central force block with a capsule body is a great way to set up basic player movement!
 
 ```scratch
 push body [body] with torque x: (1) y: (1) z: (1) :: #0fbd8c
 ```
 Pushes the specified body with the given XYZ rotational torque in newton-meters. Only results in rotational velocity.
 
-### Constraints <a name="constraints"></a>
-
-Constraints not supported:
-- Cone Twist Constraint: a ragdoll-joint like constraint, not available due to complexity
-- Generic 6DOF Constraint: a entirely manually setup constraint that provides full control of the behavior, not available due to complexity.
-
-Either of these may be implemented if enough users request them.
-
 ## More Resources <a name="more-resources"></a>
 
-**Work in Progress, coming soon**
+If you want to report a bug or suggest a new feature, please give feedback to me on my <a href="https://scratch.mit.edu/users/-MasterMath-">Scratch profile comments.</a>
+
+Sample projects coming soon.
