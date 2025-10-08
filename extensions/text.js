@@ -408,7 +408,8 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate({
               default: "[STRING] [POSITION] with [SUBSTRING]?",
-              description: "[POSITION] is a dropdown with 'starts' and 'ends'. The block then takes the form '[STRING] starts with [SUBSTRING]?' or '[STRING] ends with [SUBSTRING]?'"
+              description:
+                "[POSITION] is a dropdown with 'starts' and 'ends'. The block then takes the form '[STRING] starts with [SUBSTRING]?' or '[STRING] ends with [SUBSTRING]?'",
             }),
             arguments: {
               STRING: {
