@@ -406,7 +406,10 @@
           {
             opcode: "posWith",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("[STRING] [POSITION]s with [SUBSTRING]?"),
+            text: Scratch.translate({
+              default: "[STRING] [POSITION] with [SUBSTRING]?",
+              description: "[POSITION] is a dropdown with 'starts' and 'ends'. The block then takes the form '[STRING] starts with [SUBSTRING]?' or '[STRING] ends with [SUBSTRING]?'"
+            }),
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -464,11 +467,11 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("start"),
+                text: Scratch.translate("starts"),
                 value: "starts",
               },
               {
-                text: Scratch.translate("end"),
+                text: Scratch.translate("ends"),
                 value: "ends",
               },
             ],
