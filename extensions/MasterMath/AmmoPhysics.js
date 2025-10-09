@@ -170,9 +170,9 @@
               }
               points.push(
                 new Ammo.btVector3(
-                  Scratch.Cast.toNumber(item[0]),
-                  Scratch.Cast.toNumber(item[1]),
-                  Scratch.Cast.toNumber(item[2])
+                  Cast.toNumber(item[0]),
+                  Cast.toNumber(item[1]),
+                  Cast.toNumber(item[2])
                 )
               );
             }
@@ -193,7 +193,7 @@
             if (faceList[i] != "") {
               const indices = faceList[i]
                 ?.split(" ")
-                ?.map((n) => Scratch.Cast.toNumber(n) - 1);
+                ?.map((n) => Cast.toNumber(n) - 1);
               // * validate triangulated mesh
               if (indices.length !== 3) {
                 console.warn(
@@ -1647,7 +1647,7 @@
         }
 
         allBodies() {
-          return Scratch.Cast.toString(Object.keys(bodies));
+          return Cast.toString(Object.keys(bodies));
         }
 
         createBoxBody({ name, mass, x, y, z }) {
@@ -2102,13 +2102,20 @@
             Ammo.destroy(gravity);
           } else {
             console.warn(
-              `Attempted to set gravity of nonexistent body "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
+              `Attempted to set gravity of nonexistent body "${body}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
             );
           }
         }
 
-        bodyActive({ body }) {
-          return bodies[Scratch.Cast.toString(body)]?.isActive() || false;
+        bodyActive({ name }, { target }) {
+          if (bodies[Cast.toString(name)]) {
+            return bodies[Cast.toString(name)].isActive();
+          } else {
+            console.warn(
+              `Attempted to get activity of nonexistent body "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
+            );
+            return false;
+          }
         }
 
         anyBodyActive() {
