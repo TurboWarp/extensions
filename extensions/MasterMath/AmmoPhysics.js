@@ -166,7 +166,6 @@
             if (array[i] != "") {
               const item = array[i].split(" ");
               if (item.length !== 3) {
-                console.log("hello");
                 return;
               }
               points.push(
@@ -228,6 +227,15 @@
 
         let faces = objList.filter((line) => line.startsWith("f "));
         if (faces) faces = faces.map((line) => line.split("f ")[1]);
+
+        // handle slash notation if present
+        if (faces)
+          faces = faces.map((line) =>
+            line
+              .split(" ")
+              .map((part) => (part.includes("/") ? part.split("/")[0] : part))
+              .join(" ")
+          );
 
         if (
           vertices.every((item) => item.split(" ").length == 3) &&
@@ -2100,7 +2108,7 @@
         }
 
         bodyActive({ body }) {
-          return bodies[body]?.isActive() || false;
+          return bodies[Scratch.Cast.toString(body)]?.isActive() || false;
         }
 
         anyBodyActive() {
