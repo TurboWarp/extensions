@@ -1,11 +1,11 @@
-const {
+import {
   transifexApi,
   ORGANIZATION_NAME,
   PROJECT_NAME,
   RUNTIME_RESOURCE,
   METADATA_RESOURCE,
-} = require("./transifex-common");
-const Builder = require("./builder");
+} from "./transifex-common.js";
+import Builder from "./builder.js";
 
 const uploadRuntimeStrings = async (strings) => {
   if (

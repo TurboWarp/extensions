@@ -278,7 +278,7 @@
             opcode: "getHeaderJSON",
             blockType: BlockType.REPORTER,
             disableMonitor: true,
-            text: Scratch.translate("headers as json"),
+            text: Scratch.translate("response headers as json"),
           },
           {
             opcode: "getHeaderValue",
@@ -289,7 +289,7 @@
                 defaultValue: "name",
               },
             },
-            text: Scratch.translate("[name] from header"),
+            text: Scratch.translate("[name] from response headers"),
           },
           "---",
           {
@@ -334,7 +334,7 @@
                 defaultValue: this.request.mimeType,
               },
             },
-            text: Scratch.translate("set content type to [type]"),
+            text: Scratch.translate("set request content type to [type]"),
           },
           {
             opcode: "setRequestmethod",
@@ -361,7 +361,7 @@
                 defaultValue: this.request.mimeType,
               },
             },
-            text: Scratch.translate("in header set [name] to [value]"),
+            text: Scratch.translate("in request headers set [name] to [value]"),
           },
           {
             opcode: "setHeaderJSON",
@@ -372,7 +372,7 @@
                 defaultValue: `{"Content-Type": "${this.request.mimeType}"}`,
               },
             },
-            text: Scratch.translate("set headers to json [json]"),
+            text: Scratch.translate("set request headers to json [json]"),
           },
           {
             opcode: "setBody",

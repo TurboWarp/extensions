@@ -1,5 +1,5 @@
-const fs = require("fs");
-const pathUtil = require("path");
+import * as fs from "node:fs";
+import * as pathUtil from "node:path";
 
 /**
  * Recursively read a directory.
@@ -7,7 +7,7 @@ const pathUtil = require("path");
  * @returns {Array<[string, string]>} List of tuples [name, absolutePath].
  * The return result includes files in subdirectories, but not the subdirectories themselves.
  */
-const recursiveReadDirectory = (directory) => {
+export const recursiveReadDirectory = (directory) => {
   const result = [];
   for (const name of fs.readdirSync(directory)) {
     if (name.startsWith(".")) {
@@ -35,7 +35,7 @@ const recursiveReadDirectory = (directory) => {
  * Synchronous create a directory and any parents. Does nothing if the folder already exists.
  * @param {string} directory
  */
-const mkdirp = (directory) => {
+export const mkdirp = (directory) => {
   try {
     fs.mkdirSync(directory, {
       recursive: true,
@@ -45,9 +45,4 @@ const mkdirp = (directory) => {
       throw e;
     }
   }
-};
-
-module.exports = {
-  recursiveReadDirectory,
-  mkdirp,
 };
