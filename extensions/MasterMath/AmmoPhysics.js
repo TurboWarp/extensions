@@ -229,8 +229,6 @@
         let faces = objList.filter((line) => line.startsWith("f "));
         if (faces) faces = faces.map((line) => line.split("f ")[1]);
 
-        console.log(vertices, faces);
-
         if (
           vertices.every((item) => item.split(" ").length == 3) &&
           faces.every((item) => item.split(" ").length == 3)
@@ -1707,8 +1705,6 @@
             return;
           }
 
-          console.log(list);
-
           if (list) {
             const shape = new Ammo.btConvexHullShape();
             list.forEach((i) => shape.addPoint(i, true));
@@ -1842,8 +1838,6 @@
           const objFile = processOBJ(
             target.lookupVariableByNameAndType(obj, "list").value
           );
-
-          console.log(objFile);
 
           if (type == "btConvexHullShape") {
             const points = processVertices(objFile.vertices);
