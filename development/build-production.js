@@ -1,8 +1,8 @@
-const pathUtil = require("path");
-const Builder = require("./builder");
+import * as pathUtil from "node:path";
+import Builder from "./builder.js";
 
-const outputDirectory = pathUtil.join(__dirname, "../build");
-const l10nOutput = pathUtil.join(__dirname, "../build-l10n");
+const outputDirectory = pathUtil.join(import.meta.dirname, "../build");
+const l10nOutput = pathUtil.join(import.meta.dirname, "../build-l10n");
 
 const builder = new Builder("production");
 const build = builder.build();
