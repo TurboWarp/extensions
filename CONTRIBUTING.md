@@ -90,6 +90,13 @@ Most extensions shouldn't need external documentation -- it should be obvious wh
 
 Static resources such as example resources used by extensions go in the `website` folder.
 
+## Making sure that your extension can be easily translated
+### In block text
+Make sure to use `Scratch.translate()` on any user-facing text in your extension, unless there is a good reason not to.
+
+### In your extension's image
+You should avoid putting any important text in your extension's image, because TurboWarp does not know how to translate it.
+
 ## Banned APIs
 
 Don't use these:
