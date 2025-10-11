@@ -124,7 +124,7 @@
   };
 
   window.addEventListener("message", (e) => {
-    if (iframe && e.source === iframe.contentWindow) {
+    if (iframe && iframe.contentWindow && e.source === iframe.contentWindow) {
       latestMessage =
         typeof e.data === "string" ||
         typeof e.data === "number" ||
@@ -418,7 +418,9 @@
     }
 
     sendMessage({ MESSAGE }) {
-      iframe.contentWindow.postMessage(MESSAGE, "*");
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage(MESSAGE, "*");
+      }
     }
 
     iframeMessage() {
