@@ -53,7 +53,7 @@
       });
 
       window.addEventListener("message", (e) => {
-        if (e.source === window.parent) {
+        if (e.source === window.parent && e.source !== window) {
           document.querySelector(".received").textContent = `Last message received by iframe: ${e.data}`;
         }
       });
