@@ -124,7 +124,7 @@
   };
 
   window.addEventListener("message", (e) => {
-    if (e.source === iframe.contentWindow) {
+    if (iframe && e.source === iframe.contentWindow) {
       latestMessage =
         typeof e.data === "string" ||
         typeof e.data === "number" ||
