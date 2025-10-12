@@ -1,3 +1,9 @@
+// Name: MountainAI
+// ID: radereMountainAI
+// Description: Create and run on-device GPT AI models.
+// By: RadereDev
+// License: MPL-2.0
+
 (function (Scratch) {
   "use strict";
 
@@ -300,7 +306,7 @@
 
     getInfo() {
       return {
-        id: "MountainAI",
+        id: "radereMountainAI",
         name: Scratch.translate("MountainAI"),
         blocks: [
           {
