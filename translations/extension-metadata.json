@@ -507,6 +507,8 @@
         "godslayerakp/ws@description": "Connessione manuale a server WebSocket.",
         "iframe@description": "Mostra pagine web o HTML nello Stage.",
         "itchio@description": "Blocchi che interagiscono con il sito itch.io. Non ufficiale.",
+        "lab/face-sensing@description": "Rileva i movimenti del volto usando la webcam.",
+        "lab/face-sensing@name": "Sensore del Volto",
         "lab/text@description": "Un modo semplice per mostrare e animare il testo. Compatibie con i blocchi sperimentali \"Testo Animato\" di Scratch Lab.",
         "lab/text@name": "Testo Animato",
         "local-storage@description": "Memorizza dati persistenti. Come i cookie, ma in modo migliore.",
