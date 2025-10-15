@@ -142,25 +142,26 @@ draw [my mesh] :: sensing
 Result should once again look the same.
 
 ### Primitive restart index
-"triangle strips" and "triangle fans" are no doubt efficient, but when using it you only get 1 long continious thing of triangles, meaning that to draw many "strips" or "fans" you will have to call "draw mesh" many times, cancelling the efficiency.
-However there is a solution for it. You can use "triangle strips" and "triangle fans" together with list of indices. If you specify index 0 or below, it will interrupt the previous chain of triangles and restart a new one.
+"triangle strips" and "triangle fans" are efficient, but when using it you only get 1 long continuous mesh of triangles, meaning that to draw many "strips" or "fans" you will have to call "draw mesh" many times, which makes it less efficient.
+
+The solution to this is to use "triangle strips" and "triangle fans" together with list of indices. If you specify index 0 or below, it will interrupt the previous chain of triangles and restart a new one.
 
 Same applies to "line strip" and "line loop".
 
 ## Setting up transformations <a name="transformations"></a>
-The typical sequence of simple transformation for 3D project goes like this:
-First you start off with having a 3D model in it's own coordinate system (model space), with all vertex positions stored relatively from it's origin. The first step would be to transform it to the world coordinate system. If the object has it's own rotation, rotate every vertex around it's origin (0,0,0) by correct amount of degrees. If it is scaled, scale them. Then once that is done, offset every vertex by object's world position. Now positions of all of the vertices are in the world coordinate system (world space).
+The typical sequence of simple transformation for a 3D project goes like this:
+You'd start off with having a 3D model in it's own coordinate system (model space), with all vertex positions stored relative to its origin. The first step after this would be to transform it to the world coordinate system. If the object has its own rotation, rotate every vertex around its origin (0,0,0) by the correct amount of degrees. If it's scaled, scale them. Once that is done, offset every vertex by the object's world position. Now the positions of all of the vertices are in the world coordinate system (world space).
 
-The next step is to transfrorm them to the coordinate system relatively to the viewer, where viewer is at X:0, Y:0, Z:0 and is always facing negative Z. In 3D projects on normal scratch it is common for viewer to face positive Z, where the more Z something has, the further away it is in front of the viewer, but in case of this extension, it was designed like most software outside scratch - the **less** Z something has, the further it is in front of the viewer. To do this transformation, first subtract camera position from position of every vertex. That will place the camera in the origin of the world and make everything relatively to it, but rotation is still not taken into a count. To use it, rotate every point by negated/inverse camera rotation.
+The next step is to transfrorm them to the coordinate system relative to the viewer, where the viewer is at X:0, Y:0, Z:0 and is always facing negative Z. In 3D projects on normal ("vanilla") Scratch, it is common for the viewer to be facing positive Z, where the more Z something has, the further away it is in front of the viewer. In the case of this extension - as well as most software outside of Scratch - the **less** Z something has, the further it is in front of the viewer. To do this transformation, first subtract camera position from position of every vertex. That will place the camera in the origin of the world and position everything relatively to it, but rotation is still not taken into account. To use it, rotate every point by negated/inverse camera rotation.
 
-What you now have are 3D positions relatively to the camera. But your screen is 2D, so the last step is to do the projection. The general gist of it is that you divide all X and Y by Z, so that the further something is, the smaller it is and the closer it is to the center of the screen. And while doing that, clipping everything that goes offscreen or too close and behind you.
+What you now have are 3D positions relative to the camera. But your screen is 2D, so the last step is to do the projection. The general gist of it is that you divide all X and Y by Z, so that the further something is, the smaller it is and the closer it is to the center of the screen. And while doing that, clipping everything that goes offscreen or too close and behind you.
 
 But in reality it's somewhat more complicated.
 You first transform X, Y, Z into X, Y, Z and W of the clip space and then GPU automatically clips X, Y and Z to the rangle from -W to W, and then divides
 X, Y, Z by W, so X, Y, Z end up in range from -1 to 1. Where W is the actual depth, while Z is depth converted to the correct range to be used with the
 depth buffer (everything below -1 and above 1 gets clipped) (too far and too close).
 
-If that sounded complicated, do not worry, Simple3D extension mostly handles it for you.
+If that sounded complicated, don't worry, Simple3D extension mostly handles it for you.
 
 So let's recap:
 ```
@@ -179,8 +180,8 @@ divide X,Y,Z by depth W (done by GPU, cannot be controlled)
 draw to the screen at X,Y. Use Z for depth check.
 ```
 
-And now it's time to make some actual Simple3D scratch blocks code.
-In Simple3D those transformations are combined into 1 big transformation, and all the steps have to be specified in reverse.
+And now it's time to make some actual Simple3D code.
+In Simple3D, those transformations are combined into 1 big transformation, and all the steps have to be specified in reverse.
 ```scratch
 start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
@@ -193,7 +194,7 @@ scale X (objectSizeX) Y (objectSizeY) Z (objectSizeZ) :: sensing
 draw mesh [my mesh] :: sensing
 ```
 
-Doing all of those steps again for every mesh you want to draw is inefficient. This is where doing steps in reverse becomes helpful. Combined with wrapper block, which saves the transformation when entering it, and restores it when exiting it, it is possible to do this:
+Doing all of those steps again for every mesh you want to draw is inefficient. This is where doing steps in reverse becomes helpful. The wrapper block will save the transformation when entered, and will restore it when exited. Using this, it's possible to do this:
 ```scratch
 start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
@@ -210,8 +211,8 @@ draw mesh [my mesh] :: sensing
 } :: sensing
 end
 ```
-This will work and it is efficient, however this extension also provides advanced features like fog, instancing, billboarding, which need to intervine in some of the intermediate steps.
-And when you create one large transformation by youself, it has no way of doing that. Which is why, currently the correct way to setup transformations is like this:
+This will work and it is efficient, however this extension also provides advanced features (such as fog, instancing, and billboarding) that will need to intervene in some of the intermediate steps.
+This means when you create one big transformation by yourself, it will have no way of doing that. This is why currently the correct way to setup transformations is like this:
 ```scratch
 configure [to projected from view space v] transformation :: sensing
 start with perspective FOV (90) near (0.1) far (1000) :: sensing
@@ -232,8 +233,8 @@ scale X (objectSizeX) Y (objectSizeY) Z (objectSizeZ) :: sensing
 draw mesh [my mesh] :: sensing
 end
 ```
-The extension allows you to split your large transformation into 3 separate transformations, which will be applied sequentially, allowing some of the features to do their thing inbetween.
-It also allows you to easily got between different coordinate systems using those blocks:
+The extension allows you to split your large transformation into 3 separate transformations, which will be applied sequentially, allowing some of the features to act inbetween.
+It also allows you to easily work between different coordinate systems using those blocks:
 ```scratch
 transform X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
 transform direction X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
@@ -258,12 +259,12 @@ When billboarding is enabled:
 5. transformed by instance transform
 6. transformed from world space to view space
 7. saved position is added to current position
-8. transformed from veiw space to clip space
+8. transformed from view space to clip space
 9. division of XYZ by W (performed automatically by the GPU)
 
 ### Vertex colors
 1. vertex color is read, white if not provided
-2. multipled by instance color
+2. multiplied by instance color
 
 ### Vertex UVs
 For each vertex, the UV texture coordinates at it are calculated as follows:
@@ -274,13 +275,13 @@ For each vertex, the UV texture coordinates at it are calculated as follows:
 
 ### Pixel Colors
 For each pixel, the final color calculation goes as follows:
-1. texture is read or white if texture is not provided
-2. multipled by interpolated vertex color RGBA
+1. texture is read, blank if texture is not provided
+2. multiplied by interpolated vertex color RGBA
 3. alpha threshold check is performed
-4. make opaque is applied
-5. multipled by global color multipler
+4. "make opaque" is applied
+5. multiplied by global color multiplier
 6. added global color adder
-7. fog is aplied
+7. fog is applied
 
 
 ## Blocks <a name="blocks"></a>
@@ -309,12 +310,12 @@ Clear color is a global value.
 set depth test (closer v) write (on v) :: sensing
 ```
 Before new pixel is drawn, it's depth is compared to the pixel already drawn on that location.
-If it passes according to the check in the first argument of this block, it gets drawn. If it fails, the new pixel gets discarded, and whatever was there remains there.
+If it passes according to the check in the first argument of this block, it gets drawn. If it fails, the new pixel gets discarded, and whatever was there remains.
 The second argument controls when check passes whether only color should be updated or both color and depth value. Turning this off can be useful for drawing transparent things, which should react to already drawn opaque things, while not modifying depth to not interfer with each other.
 **Depth test and write are values that are saved separately for each render target.**
 Despite all 6 sides of the cube texture being different render targets, they still share those values.
 
-For stage, default values are "closer" and "on". **However, for textures used as render targets default values are "everything" and "off".** Memory for storing depth is not even allocated until depth write is set to "on".
+For stage, default values are "closer" and "on". **However, for textures used as render targets, default values are "everything" and "off".** Memory for storing depth is not even allocated until depth write is set to "on".
 
 
 ### Meshes <a name="blocks-meshes"></a>
@@ -327,9 +328,9 @@ Lists all the mesh names separated by commas. Mainly meant to be used manually f
 ```scratch
 create mesh [my mesh] :: sensing
 ```
-Creates an empty mesh with the specified name. If mesh with such name already exists, the old one gets fully deleted first.
+Creates an empty mesh with the specified name. If a mesh with such name already exists, it gets replaced.
 
-Also, whitespaces at both ends of the name, as well as any commas get removed from the mesh name. This is done for compatibility with "make mesh inhert" block.
+Whitespaces and commas will be removed from the mesh name. This is done for compatibility with "make mesh inherit" block.
 
 ---
 ```scratch
@@ -344,9 +345,9 @@ make mesh [my mesh 3] inherit from meshes [my mesh 1,my mesh 2] :: sensing
 Sets up the first mesh to inherit any lists or properties from multiple other meshes. 
 If multiple other meshes have the same property, the last one takes the priority.
 If any of the specified meshes to inherit form a cyclic dependancy, the entire operation fails.
-Names are provided in a comma separated list. Mesh names are trimmed from spaces on both ends. So `my mesh 1,my mesh 2`, `my mesh 1, my mesh 2`, and `    my mesh 1    ,   my mesh 2   ` will all behave the same.
+Names are provided in a comma-separated list. Mesh names are trimmed from spaces on both ends. So `my mesh 1,my mesh 2`, `my mesh 1, my mesh 2`, and `    my mesh 1    ,   my mesh 2   ` will all behave the same.
 
-This is the a key feature meant to avoid data duplication. When using it, nothing that could be expensive is duplicated.
+This is a key feature meant to avoid data duplication. When using it, nothing that could be expensive is duplicated.
 **Use this instead of uploading the same lists or textures into multiple different meshes.**
 You can even rapidly change what meshes are inherited while the project is running.
 
@@ -361,7 +362,7 @@ Used to obtain properties of a mesh.
 set [my mesh] vertex indices [list v] :: sensing
 ```
 An optional mesh list used to provide the order in which vertices are read and used to construct primitives.
-Starts from 1. Specifying value 0 or below can be used to break up "triangle strip", "traingle fan", "line strip" and "line loop" into multiple ones.
+Starts from 1. Specifying value 0 or below can be used to break up "triangle strip", "triangle fan", "line strip" and "line loop" into multiple ones.
 
 ---
 ```scratch
@@ -369,7 +370,7 @@ set [my mesh] positions XY [listX v] [listY v] :: sensing
 set [my mesh] positions XYZ [listX v] [listY v] [listZ v] :: sensing
 ```
 Used to upload vertex positions into the mesh.
-**The only mandatory list for mesh to become drawable.**
+**The only mandatory list for a mesh to become drawable.**
 
 ---
 ```scratch
@@ -385,18 +386,18 @@ set [my mesh] texture coordinates UV [listU v] [listV v] :: sensing
 set [my mesh] texture coordinates UVW [listU v] [listV v] [listW v] :: sensing
 ```
 Used to upload texture coordinates into the mesh.
-The 2 component one is used for 2D textures. Specifies 2D coordinates on a texture, which go from 0 to 1. But values outside of those bounds are also valid and useful.
-The 3 component one is used for cube textures (cubemaps). Specifies 3D direction from the center, which will be intersected with the cube around it.
-If texture coordinates are specified, but texture is not, the default texture is used.
+The block with 2 components is used for 2D textures. Specifies 2D coordinates on a texture, which go from 0 to 1. But values outside of those bounds are also valid and useful.
+The block with 3 components is used for cube textures (cubemaps). Specifies 3D direction from the center, which will be intersected with the cube around it.
+If texture coordinates are specified, but a texture is not, the default texture is used.
 
 ---
 ```scratch
 set [my mesh] texture () [clamp to edge v] [pixelated v] :: sensing
 set [my mesh] cube texture (X+ v) () [clamp to edge v] [pixelated v] :: sensing
 ```
-Used to upload texture into the mesh.
-Calling this block depending on the type of texture used either uploads texture instantly (e.g. empty or text) or schedules texture to be uploaded into the mesh some time in the future (e.g. load from url or from costume).
-**So if for example you upload texture from a costume and immediately try to draw this mesh once, you will not see it. It takes time to load!**
+Used to upload a texture into the mesh.
+Depending on the type of texture used, calling the block will either upload the texture instantly (e.g. empty or text) or schedules the texture to be uploaded into the mesh some time in the future (e.g. load from url or from costume).
+**So if for example you upload a texture from a costume and immediately try to draw this mesh once, you will not see it. It will take some time to load!**
 
 Use the block below to check if the texture has finished loading.
 ```scratch
@@ -549,9 +550,8 @@ Decodes a 3D model file and uploads it into a mesh. Block continues instantly, b
 > This block is designed as a more of a shortcut for quick testing, rather than the main way of loading 3D models. For anything more complex, make your own 3D model parser.
 
 File formats:
- - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) is a very common and well known 3D model file format. It supports UV texture coordinates, materials with colors and textures. However it does not have a standartized way to do vertex colors. This block implements a non-standart but widely supported way to represent vertex colors as 4th - 7th elements of `v`. The OBJ and MTL specification describes a lot of features, only some of which are currently (or even can be) supported by this importer. In particular, there is currently no way to import models which use multiple textures as this extensions only supports 1 texture per mesh. Normals and anything lighting related isn't and can't be supported. **In case both OBJ and MTL files need to be imported, combine them all into 1 list sequentially, first all of the MTL files and then the OBJ file.**
- - [off](https://en.wikipedia.org/wiki/OFF_(file_format)) is a not that well known, but very simple file format. Is is quite neat for the use in scratch in general, as it's simpler than OBJ and unlike it, natively supports both vertex and face colors. It does not support textures or texture coordinates. You can read more about it and find a lot of example models [here](http://web.archive.org/web/20230331211230/https://people.sc.fsu.edu/~jburkardt/data/off/off.html).
-
+ - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) is a very common and well known 3D model file format. It supports UV texture coordinates, materials with colors and textures. However it does not have a standardized way to do vertex colors. This block implements a non-standard but widely supported way to represent vertex colors as 4th - 7th elements of `v`. The OBJ and MTL specification describes a lot of features, only some of which are currently (or even can be) supported by this importer. In particular, there is currently no way to import models which use multiple textures as this extensions only supports 1 texture per mesh. Normals and anything lighting related isn't and can't be supported. **In case both OBJ and MTL files need to be imported, combine them all into 1 list sequentially, first all of the MTL files and then the OBJ file.**
+ - [off](https://en.wikipedia.org/wiki/OFF_(file_format)) is a not that well known, but very simple file format. Is is quite neat for the use in scratch in general, as it's simpler than OBJ and unlike it, natively supports both vertex and face colors. It does not support textures or texture coordinates. You can read more about it and find a lot of example models [here](http://web.archive.org/web/20230331211230/https://people.sc.fsu.edu/~jburkardt/data/off/off.html). Since the format is so simple, this importer supports all features of it.
 Imported model is affected by transformation set with:
 ```scratch
 configure [importing from file v] transformation :: sensing
