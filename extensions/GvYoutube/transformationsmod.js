@@ -2,8 +2,7 @@
 // ID: gvyoutubetransformations
 // Description: Allows sprites to move with transformations (Rotation, reflection, translation).
 // By: GvYoutube <https://scratch.mit.edu/users/GvYoutube/>
-// License: MPL-2.0
-// Is-ampmod: true
+// License: MIT
 // Tags: math graphics new
 
 (function (Scratch) {
