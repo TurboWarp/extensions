@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.2.0.3
+// Version V.2.0.31
 
 (function (Scratch) {
   "use strict";
@@ -296,6 +296,8 @@ void main() {
       programInfo,
       bufferInfo,
       projection,
+      ratioX: 1,
+      ratioY: 1,
       emitters: Object.create(null),
       interpolate: false,
       paused: false,
@@ -720,7 +722,7 @@ void main() {
           {
             opcode: "emitterExist",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("does emitter [NAME] in [TARGET] exist?"),
+            text: Scratch.translate("emitter [NAME] in [TARGET] exists?"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -1085,10 +1087,17 @@ void main() {
     setCanvasSize(args) {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
-        const canvas = target[engineTag].canvas;
+        const engine = target[engineTag]
+        const canvas = engine.canvas;
+        const ogScale = [canvas.width, canvas.height];
         canvas.width = Math.min(5000, Math.max(1, Cast.toNumber(args.w)));
         canvas.height = Math.min(5000, Math.max(1, Cast.toNumber(args.h)));
-        target[engineTag].projection = twgl.m4.ortho(
+        if (ogScale[0] === canvas.width && ogScale[1] === canvas.height) {
+          // unchanged
+          return;
+        }
+
+        engine.projection = twgl.m4.ortho(
           0,
           canvas.width,
           canvas.height,
@@ -1096,6 +1105,18 @@ void main() {
           -1,
           1
         );
+
+        // update position of all emitters
+        engine.ratioX = canvas.width === runtime.stageWidth ? 1
+          : canvas.width / ogScale[0]
+        engine.ratioY = canvas.height === runtime.stageHeight ? 1
+          : canvas.height / ogScale[1];
+
+        const emitters = Object.values(engine.emitters);
+        for (const emitter of emitters) {
+          emitter.pos[0] *= engine.ratioX;
+          emitter.pos[1] *= engine.ratioY;
+        }
       }
     }
 
@@ -1183,8 +1204,8 @@ void main() {
         const engine = target[engineTag];
         if (engine.emitters[args.NAME])
           engine.emitters[args.NAME].pos = [
-            Cast.toNumber(args.x),
-            Cast.toNumber(args.y) * -1,
+            Cast.toNumber(args.x) * engine.ratioX,
+            Cast.toNumber(args.y) * -1 * engine.ratioY,
           ];
       }
     }
