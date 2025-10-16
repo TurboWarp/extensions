@@ -1087,7 +1087,7 @@ void main() {
     setCanvasSize(args) {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
-        const engine = target[engineTag]
+        const engine = target[engineTag];
         const canvas = engine.canvas;
         const ogScale = [canvas.width, canvas.height];
         canvas.width = Math.min(5000, Math.max(1, Cast.toNumber(args.w)));
@@ -1107,10 +1107,12 @@ void main() {
         );
 
         // update position of all emitters
-        engine.ratioX = canvas.width === runtime.stageWidth ? 1
-          : canvas.width / ogScale[0]
-        engine.ratioY = canvas.height === runtime.stageHeight ? 1
-          : canvas.height / ogScale[1];
+        engine.ratioX =
+          canvas.width === runtime.stageWidth ? 1 : canvas.width / ogScale[0];
+        engine.ratioY =
+          canvas.height === runtime.stageHeight
+            ? 1
+            : canvas.height / ogScale[1];
 
         const emitters = Object.values(engine.emitters);
         for (const emitter of emitters) {
