@@ -1,6 +1,6 @@
 // Name: ShareSheet
 // ID: gamercreepernoobssharesheetextension
-// Description: It allows to share things.
+// Description: Share data from your browser.
 // By: GamerCreeper12 <https://scratch.mit.edu/users/GamerCreeper12/>
 // License: MPL-2.0
 
