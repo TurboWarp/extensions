@@ -172,7 +172,7 @@
 
     // blocks
     issupported() {
-      return Cast.toBool(this.isShareSheetSupported());
+      return Cast.toBoolean(this.isShareSheetSupported());
     }
 
     settitleandtextto({ TITLE: title }) {
