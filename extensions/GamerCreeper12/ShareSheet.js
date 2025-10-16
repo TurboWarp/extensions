@@ -11,6 +11,8 @@
     throw new Error("Share Sheet must run unsandboxed");
   }
 
+  const Cast = Scratch.Cast;
+
   class GamerCreeperNoobsShareSheetExtension {
     constructor() {
       this.dataType = "text";
@@ -24,63 +26,63 @@
     getInfo() {
       return {
         id: "gamercreepernoobssharesheetextension",
-        name: "ShareSheet",
+        name: Scratch.translate("ShareSheet"),
         color1: "#742DEB",
         color3: "#a176e8",
         blocks: [
           {
             opcode: "issupported",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is share sheet supported?",
+            text: Scratch.translate("is share sheet supported?"),
           },
           {
             opcode: "settitleandtextto",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set title [TITLE]",
+            text: Scratch.translate("set title [TITLE]"),
             arguments: {
               TITLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Check out this file!",
+                defaultValue: Scratch.translate("Check out this file!"),
               },
             },
           },
           {
             opcode: "setdatatotxt",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set data to text [TXT]",
+            text: Scratch.translate("set data to text [TXT]"),
             arguments: {
               TXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, World!",
+                defaultValue: Scratch.translate("Hello, World!"),
               },
             },
           },
           {
             opcode: "setdatatourl",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set data to url [URL]",
+            text: Scratch.translate("set data to url [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://example.com",
+                defaultValue: Scratch.translate("https://example.com"),
               },
             },
           },
           {
             opcode: "setdatatoimageurl",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set data to image url [URL]",
+            text: Scratch.translate("set data to image url [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "https://example.com/myimage/",
+                defaultValue: Scratch.translate("https://example.com/myimage/"),
               },
             },
           },
           {
             opcode: "setdatatocostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set data to costume [COSTUME]",
+            text: Scratch.translate("set data to costume [COSTUME]"),
             arguments: {
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
@@ -90,27 +92,27 @@
           {
             opcode: "share",
             blockType: Scratch.BlockType.COMMAND,
-            text: "data share",
+            text: Scratch.translate("share data"),
           },
           {
             opcode: "isdatatosharesupported",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is last data to share supported?",
+            text: Scratch.translate("is last data to share supported?"),
           },
           {
             opcode: "iscancelled",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is sharing cancelled?",
+            text: Scratch.translate("is sharing cancelled?"),
           },
           {
             opcode: "gotaerrortwhilesharing",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "got a error while sharing?",
+            text: Scratch.translate("got a error while sharing?"),
           },
           {
             opcode: "lasterrormsg",
             blockType: Scratch.BlockType.REPORTER,
-            text: "last error message",
+            text: Scratch.translate("last error message"),
           },
         ],
       };
@@ -170,21 +172,21 @@
 
     // blocks
     issupported() {
-      return this.isShareSheetSupported();
+      return Cast.toBool(this.isShareSheetSupported();
     }
 
     settitleandtextto({ TITLE: title }) {
-      this.title = title || "Share";
+      this.title = Cast.toString(title) || "Share";
     }
 
     setdatatotxt({ TXT: text }) {
       this.dataType = "text";
-      this.data = text;
+      this.data = Cast.toString(text);
     }
 
     setdatatourl({ URL: url }) {
       this.dataType = "url";
-      this.data = url;
+      this.data = Cast.toString(url);
     }
 
     async setdatatoimageurl({ URL: url }) {
