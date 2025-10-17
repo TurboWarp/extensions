@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version 1.3.0
+// Version 1.3.1
 
 (function (Scratch) {
   "use strict";
@@ -23,6 +23,7 @@
     constructor() {
       this.isRecording = false;
       this.recording = "";
+      this.recordCache_ = null;
       this.audioContext = new (window.AudioContext ||
         window.webkitAudioContext)();
       this.mediaStream = null;
@@ -101,17 +102,6 @@
               },
             },
           },
-          {
-            opcode: "saveRecording2",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("download recording named [NAME]"),
-            arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Recording-1",
-              },
-            },
-          },
         ],
         menus: {
           TARGETS: { acceptReporters: true, items: "_getTargets" },
@@ -169,6 +159,7 @@
                 if (e.data.size > 0) this.audioChunks.push(e.data);
               };
               this.audioRecorder.onstop = () => {
+                this.recordCache_ = null;
                 this.recording = new Blob(this.audioChunks, {
                   type: "audio/wav",
                 });
@@ -236,13 +227,18 @@
 
     clearRecording2() {
       this.recording = "";
+      this.recordCache_ = null;
       this.audioChunks = [];
     }
 
     recordedAudio(args) {
-      return this.recording
-        ? this.blob2Base64(this.recording)
-        : "Nothing has been Recorded!";
+      if (this.recordCache_) return this.recordCache_;
+      else if (this.recording) {
+        this.recordCache_ = this.blob2Base64(this.recording)
+        return this.recordCache_;
+      } else {
+        return "";
+      }
     }
 
     averageLoudness() {
@@ -263,34 +259,24 @@
         if (target === "Stage") target = runtime.getTargetForStage().id;
         else target = runtime.getSpriteTargetByName(target).id;
         if (!target) return;
-        Scratch.fetch(await this.blob2Base64(this.recording))
-          .then((r) => r.arrayBuffer())
-          .then((arrayBuffer) => {
-            const storage = runtime.storage;
-            const asset = new storage.Asset(
-              storage.AssetType.Sound,
-              null,
-              storage.DataFormat.MP3,
-              new Uint8Array(arrayBuffer),
-              true
-            );
-            vm.addSound(
-              {
-                md5: `${asset.assetId}.${asset.dataFormat}`,
-                asset: asset,
-                name: Scratch.Cast.toString(args.NAME),
-              },
-              target
-            );
-          });
-      }
-    }
 
-    async saveRecording2(args) {
-      if (this.recording) {
-        Scratch.download(
-          await this.blob2Base64(this.recording),
-          `${Scratch.Cast.toString(args.NAME)}.wav`
+        const arrayBuffer = await this.recording.arrayBuffer();
+
+        const storage = runtime.storage;
+        const asset = new storage.Asset(
+          storage.AssetType.Sound,
+          null,
+          storage.DataFormat.MP3,
+          new Uint8Array(arrayBuffer),
+          true
+        );
+        vm.addSound(
+          {
+            md5: `${asset.assetId}.${asset.dataFormat}`,
+            asset: asset,
+            name: Scratch.Cast.toString(args.NAME),
+          },
+          target
         );
       }
     }
