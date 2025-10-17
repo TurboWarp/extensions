@@ -94,6 +94,8 @@ Static resources such as example resources used by extensions go in the `website
 ### In block text
 Make sure to use `Scratch.translate()` on any user-facing text in your extension, unless there is a good reason not to.
 
+For more information on how to use `Scratch.translate()`, read the [assorted APIs documentation](https://docs.turbowarp.org/development/extensions/assorted-apis).
+
 ### In your extension's image
 You should avoid putting any important text in your extension's image, because TurboWarp does not know how to translate it.
 
