@@ -234,7 +234,7 @@
     recordedAudio(args) {
       if (this.recordCache_) return this.recordCache_;
       else if (this.recording) {
-        this.recordCache_ = this.blob2Base64(this.recording)
+        this.recordCache_ = this.blob2Base64(this.recording);
         return this.recordCache_;
       } else {
         return "";
