@@ -21,7 +21,7 @@ Strictly, nothing is banned, but the following are *highly* discouraged:
  - One-use personal extensions (load the extension as a local file instead)
  - Extensions whose primary purpose is monetization (not in the spirit of an open source project)
  - Joke extensions (they aren't funny when they cause us to get bug reports)
- - Extensions that were written mostly or entirely by a large language model (ChatGPT, Gemini, Perplexity, Claude, Grok, etc.)
+ - Extensions that were written mostly or entirely by a large language model (ChatGPT, Gemini, Perplexity, Claude, Grok, DeepSeek, etc.)
 
 Some extensions were added before these rules existed. That doesn't mean you will be exempted too.
 
@@ -47,7 +47,11 @@ As a rule of thumb, any extension is unlikely to be accepted if:
  - It would not fulfill its primary goals without the portions which were written by an LLM
  - The person submitting the extension does not appear to understand the LLM-generated code to a reasonable extent
  - The person submitting the extension has written the entire extension with an LLM
- - The LLM produced faulty code or "hallucinated" things that do not exist in the present context
+
+Some other points to consider:
+ - Visibly faulty code is almost never allowed in new extensions, no matter if an LLM wrote it or a human did
+ - The extension reviewers have the final say on what's okay and what's not, regardless of what these guidelines say
+ - If you spam us with LLM-generated slop and then make something that's really amazing and useful, you might get ignored ([remind you of something?](https://en.wikipedia.org/wiki/The_Boy_Who_Cried_Wolf))
 
 ### Image generation models
 While there are no rules explicitly prohibiting the use of machine learning models to produce the images used in an extension or to write the extension's description, it does not make you favorable with many of the extension reviewers.
