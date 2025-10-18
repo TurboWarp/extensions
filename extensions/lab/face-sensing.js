@@ -38,14 +38,6 @@
         await Scratch.importDependency.asDataURL(
           "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.wasm"
         ),
-      "face_detection_solution_wasm_bin.js":
-        await Scratch.importDependency.asDataURL(
-          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_wasm_bin.js"
-        ),
-      "face_detection_solution_wasm_bin.wasm":
-        await Scratch.importDependency.asDataURL(
-          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_wasm_bin.wasm"
-        ),
     };
 
     return faceDetection.createDetector(
@@ -57,6 +49,9 @@
          * @returns {string} fetch()-able URL to get it from
          */
         locateFile: (path) => {
+          if (path === 'face_detection_solution_wasm_bin.js' || path === 'face_detection_solution_wasm_bin.wasm') {
+            throw new Error('Browser does not support WASM SIMD');
+          }
           if (!Object.prototype.hasOwnProperty.call(fileMap, path)) {
             throw new Error(`Missing file: ${path}`);
           }
@@ -222,8 +217,13 @@
   const videoDevice = Scratch.vm.runtime.ioDevices.video;
   const renderer = Scratch.vm.renderer;
 
-  const detector = await initializeDetector();
-  estimationLoop();
+  let detector = null;
+  try {
+    detector = await initializeDetector();
+    estimationLoop();
+  } catch (e) {
+    console.error('Face sensing detector could not load', e);
+  }
 
   /**
    * @param {unknown} part Part from Scratch blocks

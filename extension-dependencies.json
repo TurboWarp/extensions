@@ -31,14 +31,6 @@
     "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.wasm": {
       "sha256": "ed927313be5ead0002008a7bc18177ecd342c60fd75795e4611fb44e19c4745b",
       "contentType": "application/wasm"
-    },
-    "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_wasm_bin.js": {
-      "sha256": "ef3dd51abb4309f8428d32b23a9e89d4105e2eb83444620ae56599a4d2728433",
-      "contentType": "application/javascript; charset=utf-8"
-    },
-    "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_wasm_bin.wasm": {
-      "sha256": "7b69c41171c1cfedacc614c5dfdbb9df7e99356bf857d81de835e99414abd8d3",
-      "contentType": "application/wasm"
     }
   }
 }
