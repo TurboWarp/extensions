@@ -8,19 +8,22 @@
   "use strict";
 
   const initializeDetector = async () => {
-    await Scratch.importDependency.asModule(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js"
+    await Scratch.importDependency.asEval(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js",
+      "null"
     );
-    await Scratch.importDependency.asModule(
-      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js"
+    await Scratch.importDependency.asEval(
+      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js",
+      "null"
     );
-    await Scratch.importDependency.asModule(
-      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"
+    await Scratch.importDependency.asEval(
+      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js",
+      "null"
     );
-    await Scratch.importDependency.asModule(
-      "https://cdn.jsdelivr.net/npm/@turbowarp/tensorflow-models-face-detection@1.0.3-tw1/dist/face-detection.min.js"
+    await Scratch.importDependency.asEval(
+      "https://cdn.jsdelivr.net/npm/@turbowarp/tensorflow-models-face-detection@1.0.3-tw1/dist/face-detection.min.js",
+      "null"
     );
-    const faceDetection = window.faceDetection;
 
     const fileMap = {
       "face_detection_short.binarypb": await Scratch.importDependency.asDataURL(
@@ -40,6 +43,7 @@
         ),
     };
 
+    const faceDetection = window.faceDetection;
     return faceDetection.createDetector(
       faceDetection.SupportedModels.MediaPipeFaceDetector,
       {
