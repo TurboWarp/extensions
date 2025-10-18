@@ -5,10 +5,10 @@ const outputDirectory = pathUtil.join(import.meta.dirname, "../build");
 const l10nOutput = pathUtil.join(import.meta.dirname, "../build-l10n");
 
 const builder = new Builder("production");
-const build = builder.build();
+const build = await builder.build();
 
-build.export(outputDirectory);
+await build.export(outputDirectory);
 console.log(`Built to ${outputDirectory}`);
 
-build.exportL10N(l10nOutput);
+await build.exportL10N(l10nOutput);
 console.log(`Exported L10N to ${l10nOutput}`);
