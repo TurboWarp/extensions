@@ -190,6 +190,9 @@ All images in this folder are licensed under the [GNU General Public License ver
  - File icons based on https://icon-icons.com/icon/file-pdf/153412 under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
  - Background based on https://bgjar.com/contour-line under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
+## Startoto1007/browser-bridge.svg
+ - Created by [@Startoto1007](https://scrtach.mit.edu/users/Startoto1007/)
+
 ## battery.svg
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1586143227
  - Based on image created by [@Martinelplayz](https://scratch.mit.edu/users/MARTINELPLAYZ/) in https://github.com/TurboWarp/extensions/pull/504#issuecomment-1574243161
