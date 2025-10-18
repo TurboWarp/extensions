@@ -8,28 +8,60 @@
   "use strict";
 
   const initializeDetector = async () => {
-    // TODO: this is awful
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@mediapipe/face_detection@0.4.1646425229/face_detection.js"
+    await Scratch.importDependency.asModule(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js"
     );
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js"
+    await Scratch.importDependency.asModule(
+      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js"
     );
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"
+    await Scratch.importDependency.asModule(
+      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"
     );
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow-models/face-detection@1.0.3/dist/face-detection.min.js"
+    await Scratch.importDependency.asModule(
+      "https://cdn.jsdelivr.net/npm/@turbowarp/tensorflow-models-face-detection@1.0.3-tw1/dist/face-detection.min.js"
     );
     const faceDetection = window.faceDetection;
+
+    const fileMap = {
+      "face_detection_short.binarypb": await Scratch.importDependency.asDataURL(
+        "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_short.binarypb"
+      ),
+      "face_detection_short_range.tflite":
+        await Scratch.importDependency.asDataURL(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_short_range.tflite"
+        ),
+      "face_detection_solution_simd_wasm_bin.js":
+        await Scratch.importDependency.asDataURL(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.js"
+        ),
+      "face_detection_solution_simd_wasm_bin.wasm":
+        await Scratch.importDependency.asDataURL(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.wasm"
+        ),
+      "face_detection_solution_wasm_bin.js":
+        await Scratch.importDependency.asDataURL(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_wasm_bin.js"
+        ),
+      "face_detection_solution_wasm_bin.wasm":
+        await Scratch.importDependency.asDataURL(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_wasm_bin.wasm"
+        ),
+    };
 
     return faceDetection.createDetector(
       faceDetection.SupportedModels.MediaPipeFaceDetector,
       {
         runtime: "mediapipe",
-        // TODO: this is also awful
-        solutionPath:
-          "https://packagerdata.turbowarp.org/facesensing00/@mediapipe/face_detection@0.4.1646425229",
+        /**
+         * @param {string} path Name of file to get
+         * @returns {string} fetch()-able URL to get it from
+         */
+        locateFile: (path) => {
+          if (!Object.prototype.hasOwnProperty.call(fileMap, path)) {
+            throw new Error(`Missing file: ${path}`);
+          }
+          return fileMap[path];
+        },
       }
     );
   };
