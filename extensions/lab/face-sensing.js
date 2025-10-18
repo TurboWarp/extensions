@@ -277,6 +277,13 @@
         name: Scratch.translate("Face Sensing"),
 
         blocks: [
+          ...(detector ? [] : [
+            {
+              blockType: Scratch.BlockType.LABEL,
+              text: Scratch.translate("Error loading model")
+            }
+          ]),
+
           {
             opcode: "goToPart",
             blockType: Scratch.BlockType.COMMAND,
