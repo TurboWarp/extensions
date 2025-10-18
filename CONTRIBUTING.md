@@ -49,9 +49,10 @@ As a rule of thumb, any extension is unlikely to be accepted if:
  - The person submitting the extension has written the entire extension with an LLM
 
 Some other points to consider:
- - Visibly faulty code is almost never allowed in new extensions, no matter if an LLM wrote it or a human did
+ - Visibly faulty code is almost never allowed in new extensions, no matter if an LLM or a human being wrote it
  - The extension reviewers have the final say on what's okay and what's not, regardless of what these guidelines say
- - If you spam us with LLM-generated slop and then make something that's really amazing and useful, you might get ignored ([remind you of something?](https://en.wikipedia.org/wiki/The_Boy_Who_Cried_Wolf))
+ - If you spam us with LLM-generated slop and then make something that's really amazing and useful, you might get ignored ([remind you of anything?](https://en.wikipedia.org/wiki/The_Boy_Who_Cried_Wolf))
+ - You do NOT need to write in perfect English when submitting an extension (though this is preferred); worst case, a contributor can edit your post for clarity
 
 ### Image generation models
 While there are no rules explicitly prohibiting the use of machine learning models to produce the images used in an extension or to write the extension's description, it does not make you favorable with many of the extension reviewers.
