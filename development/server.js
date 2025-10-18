@@ -9,7 +9,7 @@ await builder.startWatcher(async (newBuild) => {
   try {
     await newBuild.checkForNewImports();
   } catch (e) {
-    console.error('Error checking for new imports', e);
+    console.error("Error checking for new imports", e);
   }
 });
 

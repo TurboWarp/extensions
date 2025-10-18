@@ -1,5 +1,5 @@
 /**
- * @param {import('acorn').Node} node 
+ * @param {import('acorn').Node} node
  * @returns {unknown}
  */
 const evaluateAST = (node) => {

@@ -49,10 +49,7 @@ const addDependency = async (url) => {
   }
 
   const text = Buffer.from(await res.arrayBuffer());
-  const sha256 = nodeCrypto
-    .createHash("sha256")
-    .update(text)
-    .digest("hex");
+  const sha256 = nodeCrypto.createHash("sha256").update(text).digest("hex");
 
   dependencies[url] = {
     sha256,
@@ -199,19 +196,25 @@ const getAllImportDependencyCalls = (js) => {
   const ast = espree.parse(js, {
     ecmaVersion: 2022,
   });
-  const selector = esquery.parse('CallExpression[callee.object.object.name=Scratch][callee.object.property.name=importDependency]');
+  const selector = esquery.parse(
+    "CallExpression[callee.object.object.name=Scratch][callee.object.property.name=importDependency]"
+  );
   const selectorMatches = esquery.match(ast, selector);
 
   for (const match of selectorMatches) {
     const type = match.callee.property.name;
-    if (typeof type !== 'string') {
-      throw new Error(`importDependency call with unknown type: ${JSON.stringify(match.callee.property)}`);
+    if (typeof type !== "string") {
+      throw new Error(
+        `importDependency call with unknown type: ${JSON.stringify(match.callee.property)}`
+      );
     }
 
-    const args = match.arguments.map(node => evaluateAST(node));
+    const args = match.arguments.map((node) => evaluateAST(node));
     for (const arg of args) {
-      if (typeof arg !== 'string') {
-        throw new Error(`importDependency call with non-string argument: ${arg}`);
+      if (typeof arg !== "string") {
+        throw new Error(
+          `importDependency call with non-string argument: ${arg}`
+        );
       }
     }
 
@@ -219,17 +222,17 @@ const getAllImportDependencyCalls = (js) => {
       type,
       start: match.start,
       end: match.end,
-      url: args[0]
+      url: args[0],
     };
 
     if (
-      type === 'asModule' ||
-      type === 'asFetch' ||
-      type === 'asDataURL' ||
-      type === 'asScriptTag'
+      type === "asModule" ||
+      type === "asFetch" ||
+      type === "asDataURL" ||
+      type === "asScriptTag"
     ) {
       // No extra properties
-    } else if (type === 'asEval') {
+    } else if (type === "asEval") {
       jsImport.returnExpression = args[1];
     } else {
       throw new Error(`importDependency call with unknown type: ${type}`);
@@ -251,10 +254,12 @@ export const parseExtensionDependencies = (js) => {
   const urls = [];
   for (const jsImport of imports) {
     const parsedURL = new URL(jsImport.url);
-    if (parsedURL.protocol === 'https:') {
+    if (parsedURL.protocol === "https:") {
       urls.push(jsImport.url);
     } else {
-      throw new Error(`Imports from protocol ${parsedURL.protocol} not supported`);
+      throw new Error(
+        `Imports from protocol ${parsedURL.protocol} not supported`
+      );
     }
   }
 
@@ -265,30 +270,32 @@ export const parseExtensionDependencies = (js) => {
  * @param {JSImport} jsImport
  * @returns {string}
  */
-const generateNewJS = jsImport => {
+const generateNewJS = (jsImport) => {
   if (!isKnownDependency(jsImport.url)) {
-    throw new Error(`Dependency metadata missing: ${jsImport.url}. Run the development server at least once ('npm start') to update the metadata.`);
+    throw new Error(
+      `Dependency metadata missing: ${jsImport.url}. Run the development server at least once ('npm start') to update the metadata.`
+    );
   }
 
   const dependencyContent = getDependencyContent(jsImport.url);
 
-  if (jsImport.type === 'asModule') {
-    return `import("data:text/javascript;base64,${dependencyContent.toString('base64')}")`;
+  if (jsImport.type === "asModule") {
+    return `import("data:text/javascript;base64,${dependencyContent.toString("base64")}")`;
   }
 
-  if (jsImport.type === 'asDataURL') {
-    return `"data:application/octet-stream;base64,${dependencyContent.toString('base64')}"`;
+  if (jsImport.type === "asDataURL") {
+    return `"data:application/octet-stream;base64,${dependencyContent.toString("base64")}"`;
   }
 
-  if (jsImport.type === 'asFetch') {
-    return `fetch("data:application/octet-stream;base64,${dependencyContent.toString('base64')})")`;
+  if (jsImport.type === "asFetch") {
+    return `fetch("data:application/octet-stream;base64,${dependencyContent.toString("base64")})")`;
   }
 
-  if (jsImport.type === 'asScriptTag') {
-    return `Scratch.importDependency.asScriptTag("data:text/javascript;base64,${dependencyContent.toString('base64')}")`;
+  if (jsImport.type === "asScriptTag") {
+    return `Scratch.importDependency.asScriptTag("data:text/javascript;base64,${dependencyContent.toString("base64")}")`;
   }
 
-  if (jsImport.type === 'asEval') {
+  if (jsImport.type === "asEval") {
     return `(function(){${dependencyContent};return ${jsImport.returnExpression};}())`;
   }
 
@@ -305,7 +312,7 @@ export const rewriteImportsToInlineURLs = (js) => {
     return js;
   }
 
-  let newJS = '';
+  let newJS = "";
   for (let i = 0; i < imports.length; i++) {
     const jsImport = imports[i];
     const endOfPreviousImport = i === 0 ? 0 : imports[i - 1].end;
