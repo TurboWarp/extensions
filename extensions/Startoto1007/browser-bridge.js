@@ -5,76 +5,94 @@
 // License: MPL-2.0
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   class BrowserBridge {
     getInfo() {
       return {
-        id: 'browserBridge',
-        name: Scratch.translate('Browser Bridge'),
-        color1: '#4b9de2',
-        color2: '#2d7cc5',
+        id: "browserBridge",
+        name: Scratch.translate("Browser Bridge"),
+        color1: "#4b9de2",
+        color2: "#2d7cc5",
         unsandboxed: true,
         blocks: [
           {
-            opcode: 'lsSet',
+            opcode: "lsSet",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('set localStorage key [KEY] to [VALUE]'),
+            text: Scratch.translate("set localStorage key [KEY] to [VALUE]"),
             arguments: {
-              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'myKey' },
-              VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello' }
-            }
+              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "myKey" },
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello",
+              },
+            },
           },
           {
-            opcode: 'lsGet',
+            opcode: "lsGet",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('localStorage value for [KEY]'),
+            text: Scratch.translate("localStorage value for [KEY]"),
             arguments: {
-              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'myKey' }
-            }
+              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "myKey" },
+            },
           },
           {
-            opcode: 'consoleLog',
+            opcode: "consoleLog",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('console.log [MSG]'),
+            text: Scratch.translate("console.log [MSG]"),
             arguments: {
-              MSG: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello world' }
-            }
+              MSG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello world",
+              },
+            },
           },
           {
-            opcode: 'alertMsg',
+            opcode: "alertMsg",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('alert [MSG]'),
+            text: Scratch.translate("alert [MSG]"),
             arguments: {
-              MSG: { type: Scratch.ArgumentType.STRING, defaultValue: 'This is an alert' }
-            }
+              MSG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "This is an alert",
+              },
+            },
           },
           {
-            opcode: 'confirmDialog',
+            opcode: "confirmDialog",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate('confirm [MSG]'),
+            text: Scratch.translate("confirm [MSG]"),
             arguments: {
-              MSG: { type: Scratch.ArgumentType.STRING, defaultValue: 'Are you sure?' }
-            }
+              MSG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Are you sure?",
+              },
+            },
           },
           {
-            opcode: 'promptDialog',
+            opcode: "promptDialog",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('prompt [MSG] default [DEF]'),
+            text: Scratch.translate("prompt [MSG] default [DEF]"),
             arguments: {
-              MSG: { type: Scratch.ArgumentType.STRING, defaultValue: 'Enter text' },
-              DEF: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
-            }
+              MSG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Enter text",
+              },
+              DEF: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+            },
           },
           {
-            opcode: 'openUrl',
+            opcode: "openUrl",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('open url [URL]'),
+            text: Scratch.translate("open url [URL]"),
             arguments: {
-              URL: { type: Scratch.ArgumentType.STRING, defaultValue: 'https://turbowarp.org' }
-            }
-          }
-        ]
+              URL: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "https://turbowarp.org",
+              },
+            },
+          },
+        ],
       };
     }
 
@@ -82,16 +100,16 @@
       try {
         localStorage.setItem(KEY, VALUE);
       } catch (e) {
-        console.error('localStorage set error:', e);
+        console.error("localStorage set error:", e);
       }
     }
 
     lsGet({ KEY }) {
       try {
-        return localStorage.getItem(KEY) || '';
+        return localStorage.getItem(KEY) || "";
       } catch (e) {
-        console.error('localStorage get error:', e);
-        return '';
+        console.error("localStorage get error:", e);
+        return "";
       }
     }
 
@@ -108,14 +126,14 @@
     }
 
     promptDialog({ MSG, DEF }) {
-      return window.prompt(MSG, DEF) || '';
+      return window.prompt(MSG, DEF) || "";
     }
 
     openUrl({ URL }) {
       try {
         Scratch.openWindow(URL);
       } catch (e) {
-        console.error('openUrl error:', e);
+        console.error("openUrl error:", e);
       }
     }
   }
