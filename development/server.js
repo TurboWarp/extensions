@@ -3,8 +3,14 @@ import Builder from "./builder.js";
 
 let mostRecentBuild = null;
 const builder = new Builder("development");
-await builder.startWatcher((newBuild) => {
+await builder.startWatcher(async (newBuild) => {
   mostRecentBuild = newBuild;
+
+  try {
+    await newBuild.checkForNewImports();
+  } catch (e) {
+    console.error('Error checking for new imports', e);
+  }
 });
 
 const app = express();
