@@ -16,7 +16,7 @@ const cacheDir = pathUtil.join(
 );
 
 /**
- * @type {Record<string, {sha256: string}>}
+ * @type {Record<string, {contentType: string; sha256: string}>}
  */
 let dependencies = {};
 
@@ -33,9 +33,11 @@ const isKnownDependency = (url) => Object.hasOwn(dependencies, url);
 
 /**
  * @param {string} url
- * @returns {Buffer}
  */
-const getDependencyContent = (url) => cachedContent[url];
+const getDependencyContent = (url) => ({
+  buffer: cachedContent[url],
+  contentType: dependencies[url].contentType
+});
 
 /**
  * @param {string} url
@@ -53,6 +55,7 @@ const addDependency = async (url) => {
 
   dependencies[url] = {
     sha256,
+    contentType: res.headers.get('content-type')
   };
 };
 
@@ -277,26 +280,26 @@ const generateNewJS = (jsImport) => {
     );
   }
 
-  const dependencyContent = getDependencyContent(jsImport.url);
+  const {buffer, contentType} = getDependencyContent(jsImport.url);
 
   if (jsImport.type === "asModule") {
-    return `import("data:text/javascript;base64,${dependencyContent.toString("base64")}")`;
+    return `import("data:${contentType};base64,${buffer.toString("base64")}")`;
   }
 
   if (jsImport.type === "asDataURL") {
-    return `"data:application/octet-stream;base64,${dependencyContent.toString("base64")}"`;
+    return `"data:${contentType};base64,${buffer.toString("base64")}"`;
   }
 
   if (jsImport.type === "asFetch") {
-    return `fetch("data:application/octet-stream;base64,${dependencyContent.toString("base64")})")`;
+    return `fetch("data:${contentType};base64,${buffer.toString("base64")})")`;
   }
 
   if (jsImport.type === "asScriptTag") {
-    return `Scratch.importDependency.asScriptTag("data:text/javascript;base64,${dependencyContent.toString("base64")}")`;
+    return `Scratch.importDependency.asScriptTag("data:${contentType};base64,${buffer.toString("base64")}")`;
   }
 
   if (jsImport.type === "asEval") {
-    return `(function(){${dependencyContent};return ${jsImport.returnExpression};}())`;
+    return `(function(){${buffer};return ${jsImport.returnExpression};}())`;
   }
 
   throw new Error(`Do not know how to inline ${jsImport.type}`);
