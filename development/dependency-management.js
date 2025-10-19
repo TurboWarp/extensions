@@ -87,11 +87,18 @@ const loadFromManifest = async () => {
  * @returns {Promise<void>}
  */
 const saveToManifest = async () => {
+  // Save with the URLs in alphabetical order instead of the newest dependency always
+  // being at the very end.
+  const exportedDependencies = {};
+  for (const key of Object.keys(dependencies).sort()) {
+    exportedDependencies[key] = dependencies[key];
+  }
+
   await fsPromises.writeFile(
     manifestPath,
     JSON.stringify(
       {
-        dependencies,
+        dependencies: exportedDependencies,
       },
       null,
       2
