@@ -31,6 +31,10 @@
     "https://cdn.jsdelivr.net/npm/@turbowarp/tensorflow-models-face-detection@1.0.3-tw1/dist/face-detection.min.js": {
       "sha256": "3faf18f98df4270e0a945f2ad67d5ab6f43d6e625e0b3f2c3bcfcd1e6330ab57",
       "contentType": "application/javascript; charset=utf-8"
+    },
+    "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js": {
+      "sha256": "95f4d1cbf099f57161b664bc048426ec3df92637801a4c79116e83315aa787e7",
+      "contentType": "application/javascript; charset=utf-8"
     }
   }
 }
