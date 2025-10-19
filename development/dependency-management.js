@@ -280,7 +280,7 @@ const toDataURLJS = (buffer, contentType) => {
   const url = `data:${contentType};base64,${buffer.toString("base64")}`;
 
   if (buffer.byteLength < 100000) {
-    // Short enough that we can afford to just inline it directly.
+    // Short enough that we can just inline it directly.
     return `"${url}"`;
   }
 
@@ -288,16 +288,41 @@ const toDataURLJS = (buffer, contentType) => {
 
   const admZip = new AdmZip();
   admZip.addFile("u", Buffer.from(url, "utf-8"));
-  const zipBuffer = admZip.toBuffer();
-  const encodedZip = base85encode(zipBuffer);
-  const byteLengthNextMultipleOf4 = Math.ceil(zipBuffer.byteLength / 4) * 4;
+  const compressedZip = admZip.toBuffer();
+  const encodedZip = base85encode(compressedZip);
+  const byteLengthNextMultipleOf4 = Math.ceil(compressedZip.byteLength / 4) * 4;
 
   return `(async function() {
     ${defineBase85Decode}
     const decodeBuffer = new ArrayBuffer(${byteLengthNextMultipleOf4});
     base85decode("${encodedZip}", decodeBuffer, 0);
-    const zip = await Scratch.vm.exports.JSZip.loadAsync(new Uint8Array(decodeBuffer, 0, ${zipBuffer.byteLength}));
-    return "data:${contentType};base64," + await zip.file("u").async("base64");
+    const zip = await Scratch.vm.exports.JSZip.loadAsync(new Uint8Array(decodeBuffer, 0, ${compressedZip.byteLength}));
+    const buffer = await zip.file("u").async("arraybuffer");
+    return new TextDecoder().decode(buffer);
+  }())`;
+};
+
+/**
+ * @param {Buffer} buffer
+ * @returns {string} JS code that will return a Promise<ArrayBuffer> for the buffer.
+ */
+const toArrayBufferJS = buffer => {
+  if (buffer.byteLength < 100000) {
+    return `Promise.resolve(new Uint8Array([${buffer.join(',')}]).buffer)`;
+  }
+
+  const admZip = new AdmZip();
+  admZip.addFile("u", buffer);
+  const compressedZip = admZip.toBuffer();
+  const encodedData = base85encode(compressedZip);
+  const byteLengthNextMultipleOf4 = Math.ceil(compressedZip.byteLength / 4) * 4;
+
+  return `(async function() {
+    ${defineBase85Decode}
+    const decodeBuffer = new ArrayBuffer(${byteLengthNextMultipleOf4});
+    base85decode("${encodedData}", decodeBuffer, 0);
+    const zip = await Scratch.vm.exports.JSZip.loadAsync(new Uint8Array(decodeBuffer, 0, ${compressedZip.byteLength}));
+    return zip.file("u").async("arraybuffer");
   }())`;
 };
 
@@ -319,7 +344,8 @@ const generateNewJS = (jsImport) => {
   }
 
   if (jsImport.type === "asDataURL") {
-    return toDataURLJS(buffer, contentType);
+    // return toDataURLJS(buffer, contentType);
+    return `URL.createObjectURL(new Blob([await ${toArrayBufferJS(buffer)}], {type: "${contentType}"}))`;
   }
 
   if (jsImport.type === "asFetch") {
@@ -352,9 +378,8 @@ export const rewriteImportsToInlineURLs = (js) => {
     const jsImport = imports[i];
     const endOfPreviousImport = i === 0 ? 0 : imports[i - 1].end;
     const jsBefore = js.substring(endOfPreviousImport, jsImport.start - 1);
-    const jsToReplace = js.substring(jsImport.start, jsImport.end);
     const generatedJS = generateNewJS(jsImport);
-    newJS += `${jsBefore}/* -- generated inline dependency -- ${jsToReplace}*/${generatedJS}`;
+    newJS += `${jsBefore}/* generated dependency */${generatedJS}/* end generated dependency */`;
   }
 
   const endOfLastImport = imports[imports.length - 1].end;
