@@ -1,7 +1,7 @@
 // This is based on what we do in the packager:
 // https://github.com/TurboWarp/packager/blob/master/src/packager/base85.js
 // It's worked pretty well over there.
-// We've just changed the character set a bit to accomodate us being in JS context instead of HTML context.
+// We've just changed the character set a bit to accomodate us being in a JS context instead of an HTML context.
 
 // This implements a custom base85 encoding for improved efficiency compared to base64.
 // The character set used is 0x2a - 0x7e of ASCII. Little endian.
@@ -14,11 +14,11 @@ const getBase85EncodeCharacter = (n) => {
 };
 
 /**
- * @param {Uint8Array} uint8 The data to encode. No assumptions made about backing buffer.
+ * @param {Uint8Array} uint8array The data to encode. No assumptions made about backing buffer.
  * @returns {string} Base 85 encoding
  */
-export const base85encode = (uint8) => {
-  const originalLength = uint8.length;
+const base85encode = (uint8array) => {
+  const originalLength = uint8array.length;
 
   // Data length needs to be a multiple of 4 so we can use getUint32.
   // If it's not, we'll have to make a copy and pad with zeros.
@@ -26,11 +26,15 @@ export const base85encode = (uint8) => {
   if (originalLength % 4 !== 0) {
     const newUint8 = new Uint8Array(Math.ceil(originalLength / 4) * 4);
     for (let i = 0; i < originalLength; i++) {
-      newUint8[i] = uint8[i];
+      newUint8[i] = uint8array[i];
     }
     dataView = new DataView(newUint8.buffer);
   } else {
-    dataView = new DataView(uint8.buffer, uint8.byteOffset, uint8.byteLength);
+    dataView = new DataView(
+      uint8array.buffer,
+      uint8array.byteOffset,
+      uint8array.byteLength
+    );
   }
 
   // Pre-allocating buffer and using TextDecoder at the end is faster than string concatenation
@@ -54,21 +58,4 @@ export const base85encode = (uint8) => {
   return new TextDecoder().decode(result);
 };
 
-export const defineBase85Decode = `
-const getBase85DecodeValue = (code) => {
-  if (code === 0x28) code = 0x5c;
-  return code - 0x2a;
-};
-const base85decode = (str, outBuffer, outOffset) => {
-  const view = new DataView(outBuffer, outOffset, Math.floor(str.length / 5 * 4));
-  for (let i = 0, j = 0; i < str.length; i += 5, j += 4) {
-    view.setUint32(j, (
-      getBase85DecodeValue(str.charCodeAt(i + 4)) * 85 * 85 * 85 * 85 +
-      getBase85DecodeValue(str.charCodeAt(i + 3)) * 85 * 85 * 85 +
-      getBase85DecodeValue(str.charCodeAt(i + 2)) * 85 * 85 +
-      getBase85DecodeValue(str.charCodeAt(i + 1)) * 85 +
-      getBase85DecodeValue(str.charCodeAt(i))
-    ), true);
-  }
-};
-`;
+export default base85encode;

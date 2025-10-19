@@ -1,12 +1,17 @@
-import * as fsPromises from "node:fs/promises";
-import * as pathUtil from "node:path";
-import * as nodeCrypto from "node:crypto";
+import fsPromises from "node:fs/promises";
+import pathUtil from "node:path";
+import nodeCrypto from "node:crypto";
+import zlib from "node:zlib";
 import * as espree from "espree";
 import esquery from "esquery";
-import AdmZip from "adm-zip";
 import { mkdirp } from "./fs-utils.js";
 import evaluateAST from "./evaluate-ast.js";
-import { base85encode, defineBase85Decode } from "./base85.js";
+import base85encode from "./base85encode.js";
+import { __internal } from "./build-snippets.js";
+
+/**
+ * @fileoverview Implements build-time part of Scratch.external.
+ */
 
 const manifestPath = pathUtil.join(
   import.meta.dirname,
@@ -272,56 +277,54 @@ export const parseExtensionDependencies = (js) => {
 };
 
 /**
+ * @typedef JSWithInternalDependenceis
+ * @property {string} js
+ * @property {import("./build-snippets.js").SnippetName[]} snippets
+ */
+
+/**
  * @param {Buffer} buffer
- * @returns {string} JS code returning Promise<ArrayBuffer>
+ * @returns {JSWithInternalDependenceis} JS code returning ArrayBuffer
  */
 const toArrayBufferJS = (buffer) => {
   if (buffer.byteLength < 100000) {
     // Not large enough to justify doing anything complicated
-    return `Promise.resolve(new Uint8Array([${buffer.join(",")}]).buffer)`;
+    return {
+      js: `new Uint8Array([${buffer.join(",")}]).buffer`,
+      snippets: [],
+    };
   }
 
   // The buffer is pretty large, so it's worthwhile for us to compress it down ahead of time to make the JS
-  // bundles smaller.
-  // We use a zip since the VM already includes JSZip, so we won't have to bring in any inflation logic.
-
-  const admZip = new AdmZip();
-  admZip.addFile("u", buffer);
-  const compressedZip = admZip.toBuffer();
-  const encodedData = base85encode(compressedZip);
-  const byteLengthNextMultipleOf4 = Math.ceil(compressedZip.byteLength / 4) * 4;
-
-  return `(async function() {
-    ${defineBase85Decode}
-    const decodeBuffer = new ArrayBuffer(${byteLengthNextMultipleOf4});
-    base85decode("${encodedData}", decodeBuffer, 0);
-    const zip = await Scratch.vm.exports.JSZip.loadAsync(new Uint8Array(decodeBuffer, 0, ${compressedZip.byteLength}));
-    return zip.file("u").async("arraybuffer");
-  }())`;
+  // bundles smaller. Even after accounting for the extra space used by the snippets, we come out ahead.
+  const zstdData = zlib.zstdCompressSync(buffer, {
+    params: {
+      [zlib.constants.ZSTD_c_compressionLevel]: 20,
+    },
+  });
+  const base85data = base85encode(zstdData);
+  return {
+    js: `${__internal}.fzstd.decompress(${__internal}.base85decode("${base85data}", ${zstdData.byteLength}))`,
+    snippets: ["base85decode", "fzstd"],
+  };
 };
 
 /**
  * @param {Buffer} buffer
  * @param {string} contentType
- * @returns {string} JS code returning Promise<Blob>
+ * @returns {JSWithInternalDependenceis} JS code returning Blob
  */
 const toBlobJS = (buffer, contentType) => {
-  return `${toArrayBufferJS(buffer)}.then(buffer => new Blob([buffer], {type: ${JSON.stringify(contentType)}}))`;
-};
-
-/**
- * @param {Buffer} buffer
- * @param {string} contentType JS code returning Promise<string>
- */
-const toDataURLJS = (buffer, contentType) => {
-  // TODO: this could be more efficient probably
-  const dataURL = `data:${contentType};base64,${buffer.toString("base64")}`;
-  return `${toArrayBufferJS(Buffer.from(dataURL, "utf-8"))}.then(buffer => new TextDecoder().decode(buffer))`;
+  const toBuffer = toArrayBufferJS(buffer);
+  return {
+    js: `new Blob([${toBuffer.js}], {type: ${JSON.stringify(contentType)}})`,
+    snippets: toBuffer.snippets,
+  };
 };
 
 /**
  * @param {JSImport} jsImport
- * @returns {string}
+ * @returns {JSWithInternalDependenceis}
  */
 const generateNewJS = (jsImport) => {
   if (!isKnownDependency(jsImport.url)) {
@@ -333,26 +336,46 @@ const generateNewJS = (jsImport) => {
   const { buffer, contentType } = getDependencyContent(jsImport.url);
 
   if (jsImport.type === "importModule") {
-    return `${toBlobJS(buffer, contentType)}.then(blob => import(URL.createObjectURL(blob)))`;
+    const toBlob = toBlobJS(buffer, contentType);
+    return {
+      js: `import(URL.createObjectURL(${toBlob.js}))`,
+      snippets: toBlob.snippets,
+    };
   }
 
   if (jsImport.type === "fetch") {
-    return `${toArrayBufferJS(buffer)}.then(buffer => new Response(buffer, {headers: {"content-type": ${JSON.stringify(contentType)}}}))`;
+    const toBuffer = toArrayBufferJS(buffer);
+    return {
+      js: `Promise.resolve(new Response(${toBuffer.js}, {headers: {"content-type": ${JSON.stringify(contentType)}}))`,
+      snippets: toBuffer.snippets,
+    };
   }
 
   if (jsImport.type === "dataURL") {
-    return toDataURLJS(buffer, contentType);
+    const dataURL = `data:${contentType};base64,${buffer.toString("base64")}`;
+    const toBuffer = toArrayBufferJS(Buffer.from(dataURL, "utf-8"));
+    return {
+      js: `Promise.resolve(new TextDecoder().decode(${toBuffer.js}))`,
+      snippets: toBuffer.snippets,
+    };
   }
 
   if (jsImport.type === "blob") {
-    return toBlobJS(buffer, contentType);
+    const toBlob = toBlobJS(buffer, contentType);
+    return {
+      js: `Promise.resolve(${toBlob.js})`,
+      snippets: toBlob.snippets,
+    };
   }
 
   if (jsImport.type === "evalAndReturn") {
     // This ends up using more space than the fancier encoding methods, but this way the code including any
-    // licenses are plainly visible in the code. It also helps the JS engine run a bit faster since it can
-    // parse all the code ahead of time instead of getting surprised later with yet more code to compile.
-    return `Promise.resolve(function(){${buffer};return ${jsImport.returnExpression};}())`;
+    // licenses are plainly visible. It also helps the JS engine run a bit faster since it can parse all the
+    // code ahead of time instead of getting surprised later with yet more code to compile.
+    return {
+      js: `Promise.resolve(function(){${buffer.toString("utf-8")};return ${jsImport.returnExpression};}())`,
+      snippets: [],
+    };
   }
 
   throw new Error(`Scratch.external call with unknown type: ${jsImport.type}`);
@@ -360,26 +383,42 @@ const generateNewJS = (jsImport) => {
 
 /**
  * @param {string} js
- * @returns {string}
+ * @returns {{js: string; snippets: Set<import("./build-snippets.js").SnippetName>}}}
  */
-export const rewriteImportsToInlineURLs = (js) => {
+export const rewriteExternalToInline = (js) => {
   const imports = getAllImportDependencyCalls(js);
   if (imports.length === 0) {
-    return js;
+    return {
+      js: js,
+      snippets: new Set(),
+    };
   }
 
   let newJS = "";
+  /** @type {Set<import("./build-snippets.js").SnippetName>} */
+  const snippets = new Set();
+
   for (let i = 0; i < imports.length; i++) {
     const jsImport = imports[i];
+
     const endOfPreviousImport = i === 0 ? 0 : imports[i - 1].end;
-    const jsBefore = js.substring(endOfPreviousImport, jsImport.start - 1);
+    const precedingJS = js.substring(endOfPreviousImport, jsImport.start - 1);
+    const oldJS = js.substring(jsImport.start, jsImport.end);
+
     const generatedJS = generateNewJS(jsImport);
-    newJS += `${jsBefore}/* generated dependency */${generatedJS}/* end generated dependency */`;
+    // Keeping the old JS still here but commented helps keep stack traces slightly more in tact.
+    newJS += `${precedingJS}/* generated dependency -- ${oldJS} */${generatedJS.js}/* end generated dependency */`;
+    for (const snippet of generatedJS.snippets) {
+      snippets.add(snippet);
+    }
   }
 
   const endOfLastImport = imports[imports.length - 1].end;
   const endingJS = js.substring(endOfLastImport);
   newJS += endingJS;
 
-  return newJS;
+  return {
+    js: newJS,
+    snippets,
+  };
 };

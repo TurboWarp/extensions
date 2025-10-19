@@ -16,9 +16,10 @@ import { mkdirp, recursiveReadDirectory } from "./fs-utils.js";
 import {
   fetchAllDependencies,
   parseExtensionDependencies,
-  rewriteImportsToInlineURLs,
+  rewriteExternalToInline,
   synchronizeDependencyList,
 } from "./dependency-management.js";
+import generateBuildSnippetJS from "./build-snippets.js";
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -178,20 +179,34 @@ class ExtensionFile extends BuildFile {
     let data = await fsPromises.readFile(this.sourcePath, "utf-8");
 
     if (this.mode !== "development") {
+      const dependenciesJS = rewriteExternalToInline(data);
+      data = dependenciesJS.js;
+
+      let prefixJS = "";
+      let suffixJS = "";
+
       const translations = filterTranslationsByPrefix(
         this.allTranslations,
         `${this.slug}@`
       );
       if (translations !== null) {
-        data = insertAfterCommentsBeforeCode(
-          data,
-          `/* generated l10n code */Scratch.translate.setup(${JSON.stringify(
-            translations
-          )});/* end generated l10n code */`
-        );
+        prefixJS += `/* generated l10n code */Scratch.translate.setup(${JSON.stringify(
+          translations
+        )});/* end generated l10n code */`;
       }
 
-      data = rewriteImportsToInlineURLs(data);
+      if (dependenciesJS.snippets.size > 0) {
+        const snippetJS = generateBuildSnippetJS(dependenciesJS.snippets);
+        prefixJS += snippetJS.prefix;
+        suffixJS += snippetJS.suffix;
+      }
+
+      if (prefixJS) {
+        data = insertAfterCommentsBeforeCode(data, prefixJS);
+      }
+      if (suffixJS) {
+        data = data + suffixJS;
+      }
     }
 
     return data;
