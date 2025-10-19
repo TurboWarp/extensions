@@ -294,7 +294,11 @@
             : [
                 {
                   blockType: Scratch.BlockType.LABEL,
-                  text: Scratch.translate("Error loading model"),
+                  text: Scratch.translate({
+                    default: "Could not load face detection",
+                    description:
+                      "Error message that appears when using unsupported browser",
+                  }),
                 },
               ]),
 
