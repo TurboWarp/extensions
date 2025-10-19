@@ -8,21 +8,17 @@
   "use strict";
 
   const initializeDetector = async () => {
-    await Scratch.external.evalAndReturn(
-      "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js",
-      "null"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js"
     );
-    await Scratch.external.evalAndReturn(
-      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js",
-      "null"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js"
     );
-    await Scratch.external.evalAndReturn(
-      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js",
-      "null"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"
     );
-    await Scratch.external.evalAndReturn(
-      "https://cdn.jsdelivr.net/npm/@turbowarp/tensorflow-models-face-detection@1.0.3-tw1/dist/face-detection.min.js",
-      "null"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@turbowarp/tensorflow-models-face-detection@1.0.3-tw1/dist/face-detection.min.js"
     );
 
     const fileMap = {

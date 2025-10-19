@@ -287,7 +287,7 @@ export const parseExtensionDependencies = (js) => {
  * @returns {JSWithInternalDependenceis} JS code returning ArrayBuffer
  */
 const toArrayBufferJS = (buffer) => {
-  if (buffer.byteLength < 100000) {
+  if (buffer.byteLength < 50000) {
     // Not large enough to justify doing anything complicated
     return {
       js: `new Uint8Array([${buffer.join(",")}]).buffer`,
