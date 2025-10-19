@@ -66,13 +66,6 @@
               },
               {
                 text: Scratch.translate({
-                  default: "Uint8Array",
-                  description: "An array of bytes.",
-                }),
-                value: "Unit8Array",
-              },
-              {
-                text: Scratch.translate({
                   default: "UTF16",
                   description:
                     "A type of unicode encoding. For almost all languages this translates to just 'UTF16'",
