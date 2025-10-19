@@ -7,8 +7,8 @@
   "use strict";
 
   const LZString = await Scratch.external.evalAndReturn(
-    'https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js',
-    'LZString'
+    "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js",
+    "LZString"
   );
 
   class lzcompress {
