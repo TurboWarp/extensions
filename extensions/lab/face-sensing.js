@@ -8,39 +8,44 @@
   "use strict";
 
   const initializeDetector = async () => {
-    await Scratch.importDependency.asEval(
+    await Scratch.external.evalAndReturn(
       "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js",
       "null"
     );
-    await Scratch.importDependency.asEval(
+    await Scratch.external.evalAndReturn(
       "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js",
       "null"
     );
-    await Scratch.importDependency.asEval(
+    await Scratch.external.evalAndReturn(
       "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js",
       "null"
     );
-    await Scratch.importDependency.asEval(
+    await Scratch.external.evalAndReturn(
       "https://cdn.jsdelivr.net/npm/@turbowarp/tensorflow-models-face-detection@1.0.3-tw1/dist/face-detection.min.js",
       "null"
     );
 
     const fileMap = {
-      "face_detection_short.binarypb": await Scratch.importDependency.asDataURL(
-        "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_short.binarypb"
+      "face_detection_short.binarypb": URL.createObjectURL(
+        await Scratch.external.blob(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_short.binarypb"
+        )
       ),
-      "face_detection_short_range.tflite":
-        await Scratch.importDependency.asDataURL(
+      "face_detection_short_range.tflite": URL.createObjectURL(
+        await Scratch.external.blob(
           "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_short_range.tflite"
-        ),
-      "face_detection_solution_simd_wasm_bin.js":
-        await Scratch.importDependency.asDataURL(
+        )
+      ),
+      "face_detection_solution_simd_wasm_bin.js": URL.createObjectURL(
+        await Scratch.external.blob(
           "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.js"
-        ),
-      "face_detection_solution_simd_wasm_bin.wasm":
-        await Scratch.importDependency.asDataURL(
+        )
+      ),
+      "face_detection_solution_simd_wasm_bin.wasm": URL.createObjectURL(
+        await Scratch.external.blob(
           "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.wasm"
-        ),
+        )
+      ),
     };
 
     const faceDetection = window.faceDetection;

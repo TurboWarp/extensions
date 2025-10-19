@@ -167,11 +167,11 @@ export const fetchAllDependencies = async () => {
 };
 
 /**
- * @typedef {'asModule'|'asFetch'|'asDataURL'|'asScriptTag'|'asEval'} JSImportType
+ * @typedef {'importModule'|'fetch'|'dataURL'|'blob'|'evalAndReturn'} JSImportType
  */
 
 /**
- * @typedef JSImport A call to Scratch.importDependency.* inside an extension.
+ * @typedef JSImport A call to Scratch.external.* inside an extension.
  * @property {JSImportType} type
  * @property {number} start
  * @property {number} end
@@ -184,7 +184,7 @@ export const fetchAllDependencies = async () => {
  * @param {string} js
  * @returns {boolean} true if the extension clearly does not have any imports
  */
-const canIgnoreExtension = (js) => !js.includes("Scratch.importDependency");
+const canIgnoreExtension = (js) => !js.includes("Scratch.external");
 
 /**
  * @param {string} js
@@ -202,7 +202,7 @@ const getAllImportDependencyCalls = (js) => {
     ecmaVersion: 2022,
   });
   const selector = esquery.parse(
-    "CallExpression[callee.object.object.name=Scratch][callee.object.property.name=importDependency]"
+    "CallExpression[callee.object.object.name=Scratch][callee.object.property.name=external]"
   );
   const selectorMatches = esquery.match(ast, selector);
 
@@ -210,7 +210,7 @@ const getAllImportDependencyCalls = (js) => {
     const type = match.callee.property.name;
     if (typeof type !== "string") {
       throw new Error(
-        `importDependency call with unknown type: ${JSON.stringify(match.callee.property)}`
+        `Scratch.external call with unknown type: ${JSON.stringify(match.callee.property)}`
       );
     }
 
@@ -218,7 +218,7 @@ const getAllImportDependencyCalls = (js) => {
     for (const arg of args) {
       if (typeof arg !== "string") {
         throw new Error(
-          `importDependency call with non-string argument: ${arg}`
+          `Scratch.external call with non-string argument: ${arg}`
         );
       }
     }
@@ -231,16 +231,16 @@ const getAllImportDependencyCalls = (js) => {
     };
 
     if (
-      type === "asModule" ||
-      type === "asFetch" ||
-      type === "asDataURL" ||
-      type === "asScriptTag"
+      type === "importModule" ||
+      type === "fetch" ||
+      type === "dataURL" ||
+      type === "blob"
     ) {
       // No extra properties
-    } else if (type === "asEval") {
+    } else if (type === "evalAndReturn") {
       jsImport.returnExpression = args[1];
     } else {
-      throw new Error(`importDependency call with unknown type: ${type}`);
+      throw new Error(`Scratch.external call with unknown type: ${type}`);
     }
 
     jsImports.push(jsImport);
@@ -273,43 +273,17 @@ export const parseExtensionDependencies = (js) => {
 
 /**
  * @param {Buffer} buffer
- * @param {string} contentType
- * @returns {string} JS code that will return a data: URL for the buffer.
+ * @returns {string} JS code returning Promise<ArrayBuffer>
  */
-const toDataURLJS = (buffer, contentType) => {
-  const url = `data:${contentType};base64,${buffer.toString("base64")}`;
-
+const toArrayBufferJS = (buffer) => {
   if (buffer.byteLength < 100000) {
-    // Short enough that we can just inline it directly.
-    return `"${url}"`;
+    // Not large enough to justify doing anything complicated
+    return `Promise.resolve(new Uint8Array([${buffer.join(",")}]).buffer)`;
   }
 
-  // The resource is large enough that we should encode it in a more efficient format.
-
-  const admZip = new AdmZip();
-  admZip.addFile("u", Buffer.from(url, "utf-8"));
-  const compressedZip = admZip.toBuffer();
-  const encodedZip = base85encode(compressedZip);
-  const byteLengthNextMultipleOf4 = Math.ceil(compressedZip.byteLength / 4) * 4;
-
-  return `(async function() {
-    ${defineBase85Decode}
-    const decodeBuffer = new ArrayBuffer(${byteLengthNextMultipleOf4});
-    base85decode("${encodedZip}", decodeBuffer, 0);
-    const zip = await Scratch.vm.exports.JSZip.loadAsync(new Uint8Array(decodeBuffer, 0, ${compressedZip.byteLength}));
-    const buffer = await zip.file("u").async("arraybuffer");
-    return new TextDecoder().decode(buffer);
-  }())`;
-};
-
-/**
- * @param {Buffer} buffer
- * @returns {string} JS code that will return a Promise<ArrayBuffer> for the buffer.
- */
-const toArrayBufferJS = buffer => {
-  if (buffer.byteLength < 100000) {
-    return `Promise.resolve(new Uint8Array([${buffer.join(',')}]).buffer)`;
-  }
+  // The buffer is pretty large, so it's worthwhile for us to compress it down ahead of time to make the JS
+  // bundles smaller.
+  // We use a zip since the VM already includes JSZip, so we won't have to bring in any inflation logic.
 
   const admZip = new AdmZip();
   admZip.addFile("u", buffer);
@@ -327,6 +301,25 @@ const toArrayBufferJS = buffer => {
 };
 
 /**
+ * @param {Buffer} buffer
+ * @param {string} contentType
+ * @returns {string} JS code returning Promise<Blob>
+ */
+const toBlobJS = (buffer, contentType) => {
+  return `${toArrayBufferJS(buffer)}.then(buffer => new Blob([buffer], {type: ${JSON.stringify(contentType)}}))`;
+};
+
+/**
+ * @param {Buffer} buffer
+ * @param {string} contentType JS code returning Promise<string>
+ */
+const toDataURLJS = (buffer, contentType) => {
+  // TODO: this could be more efficient probably
+  const dataURL = `data:${contentType};base64,${buffer.toString("base64")}`;
+  return `${toArrayBufferJS(Buffer.from(dataURL, "utf-8"))}.then(buffer => new TextDecoder().decode(buffer))`;
+};
+
+/**
  * @param {JSImport} jsImport
  * @returns {string}
  */
@@ -339,28 +332,30 @@ const generateNewJS = (jsImport) => {
 
   const { buffer, contentType } = getDependencyContent(jsImport.url);
 
-  if (jsImport.type === "asModule") {
-    return `import(${toDataURLJS(buffer, contentType)})`;
+  if (jsImport.type === "importModule") {
+    return `${toBlobJS(buffer, contentType)}.then(blob => import(URL.createObjectURL(blob)))`;
   }
 
-  if (jsImport.type === "asDataURL") {
-    // return toDataURLJS(buffer, contentType);
-    return `URL.createObjectURL(new Blob([await ${toArrayBufferJS(buffer)}], {type: "${contentType}"}))`;
+  if (jsImport.type === "fetch") {
+    return `${toArrayBufferJS(buffer)}.then(buffer => new Response(buffer, {headers: {"content-type": ${JSON.stringify(contentType)}}}))`;
   }
 
-  if (jsImport.type === "asFetch") {
-    return `fetch(${toDataURLJS(buffer, contentType)})`;
+  if (jsImport.type === "dataURL") {
+    return toDataURLJS(buffer, contentType);
   }
 
-  if (jsImport.type === "asScriptTag") {
-    return `Scratch.importDependency.asScriptTag(${toDataURLJS(buffer, contentType)})`;
+  if (jsImport.type === "blob") {
+    return toBlobJS(buffer, contentType);
   }
 
-  if (jsImport.type === "asEval") {
-    return `(function(){${buffer};return ${jsImport.returnExpression};}())`;
+  if (jsImport.type === "evalAndReturn") {
+    // This ends up using more space than the fancier encoding methods, but this way the code including any
+    // licenses are plainly visible in the code. It also helps the JS engine run a bit faster since it can
+    // parse all the code ahead of time instead of getting surprised later with yet more code to compile.
+    return `Promise.resolve(function(){${buffer};return ${jsImport.returnExpression};}())`;
   }
 
-  throw new Error(`Do not know how to inline ${jsImport.type}`);
+  throw new Error(`Scratch.external call with unknown type: ${jsImport.type}`);
 };
 
 /**
