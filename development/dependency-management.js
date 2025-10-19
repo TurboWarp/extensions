@@ -3,8 +3,10 @@ import * as pathUtil from "node:path";
 import * as nodeCrypto from "node:crypto";
 import * as espree from "espree";
 import esquery from "esquery";
+import AdmZip from "adm-zip";
 import { mkdirp } from "./fs-utils.js";
 import evaluateAST from "./evaluate-ast.js";
+import { base85encode, defineBase85Decode } from "./base85.js";
 
 const manifestPath = pathUtil.join(
   import.meta.dirname,
@@ -270,6 +272,36 @@ export const parseExtensionDependencies = (js) => {
 };
 
 /**
+ * @param {Buffer} buffer
+ * @param {string} contentType
+ * @returns {string} JS code that will return a data: URL for the buffer.
+ */
+const toDataURLJS = (buffer, contentType) => {
+  const url = `data:${contentType};base64,${buffer.toString('base64')}`;
+
+  if (buffer.byteLength < 100000) {
+    // Short enough that we can afford to just inline it directly.
+    return `"${url}"`;
+  }
+
+  // The resource is large enough that we should encode it in a more efficient format.
+
+  const admZip = new AdmZip();
+  admZip.addFile("u", Buffer.from(url, "utf-8"));
+  const zipBuffer = admZip.toBuffer();
+  const encodedZip = base85encode(zipBuffer);
+  const byteLengthNextMultipleOf4 = Math.ceil(zipBuffer.byteLength / 4) * 4;
+
+  return `(async function() {
+    ${defineBase85Decode}
+    const decodeBuffer = new ArrayBuffer(${byteLengthNextMultipleOf4});
+    base85decode("${encodedZip}", decodeBuffer, 0);
+    const zip = await JSZip.loadAsync(new Uint8Array(decodeBuffer, 0, ${zipBuffer.byteLength}));
+    return "data:${contentType};base64," + await zip.file("u").async("base64");
+  }())`;
+};
+
+/**
  * @param {JSImport} jsImport
  * @returns {string}
  */
@@ -283,19 +315,19 @@ const generateNewJS = (jsImport) => {
   const {buffer, contentType} = getDependencyContent(jsImport.url);
 
   if (jsImport.type === "asModule") {
-    return `import("data:${contentType};base64,${buffer.toString("base64")}")`;
+    return `import(${toDataURLJS(buffer, contentType)})`;
   }
 
   if (jsImport.type === "asDataURL") {
-    return `"data:${contentType};base64,${buffer.toString("base64")}"`;
+    return toDataURLJS(buffer, contentType);
   }
 
   if (jsImport.type === "asFetch") {
-    return `fetch("data:${contentType};base64,${buffer.toString("base64")})")`;
+    return `fetch(${toDataURLJS(buffer, contentType)})`;
   }
 
   if (jsImport.type === "asScriptTag") {
-    return `Scratch.importDependency.asScriptTag("data:${contentType};base64,${buffer.toString("base64")}")`;
+    return `Scratch.importDependency.asScriptTag(${toDataURLJS(buffer, contentType)})`;
   }
 
   if (jsImport.type === "asEval") {
