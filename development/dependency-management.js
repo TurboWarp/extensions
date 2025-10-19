@@ -296,7 +296,7 @@ const toDataURLJS = (buffer, contentType) => {
     ${defineBase85Decode}
     const decodeBuffer = new ArrayBuffer(${byteLengthNextMultipleOf4});
     base85decode("${encodedZip}", decodeBuffer, 0);
-    const zip = await JSZip.loadAsync(new Uint8Array(decodeBuffer, 0, ${zipBuffer.byteLength}));
+    const zip = await Scratch.vm.exports.JSZip.loadAsync(new Uint8Array(decodeBuffer, 0, ${zipBuffer.byteLength}));
     return "data:${contentType};base64," + await zip.file("u").async("base64");
   }())`;
 };
