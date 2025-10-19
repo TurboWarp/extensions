@@ -79,8 +79,16 @@ const removeDependency = (url) => {
  */
 const loadFromManifest = async () => {
   const text = await fsPromises.readFile(manifestPath, "utf-8");
-  const json = JSON.parse(text);
-  dependencies = json.dependencies;
+  try {
+    const json = JSON.parse(text);
+    if (typeof json.dependencies !== 'object' || !json.dependencies) {
+      throw new Error(`.dependencies is not an object`);
+    }
+    dependencies = json.dependencies;
+  } catch (e) {
+    console.error('Failed to read dependencies - resetting to blank slate:', e);
+    dependencies = {};
+  }
 };
 
 /**
