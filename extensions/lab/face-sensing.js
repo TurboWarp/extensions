@@ -53,8 +53,11 @@
          * @returns {string} fetch()-able URL to get it from
          */
         locateFile: (path) => {
-          if (path === 'face_detection_solution_wasm_bin.js' || path === 'face_detection_solution_wasm_bin.wasm') {
-            throw new Error('Browser does not support WASM SIMD');
+          if (
+            path === "face_detection_solution_wasm_bin.js" ||
+            path === "face_detection_solution_wasm_bin.wasm"
+          ) {
+            throw new Error("Browser does not support WASM SIMD");
           }
           if (!Object.prototype.hasOwnProperty.call(fileMap, path)) {
             throw new Error(`Missing file: ${path}`);
@@ -226,7 +229,7 @@
     detector = await initializeDetector();
     estimationLoop();
   } catch (e) {
-    console.error('Face sensing detector could not load', e);
+    console.error("Face sensing detector could not load", e);
   }
 
   /**
@@ -281,12 +284,14 @@
         name: Scratch.translate("Face Sensing"),
 
         blocks: [
-          ...(detector ? [] : [
-            {
-              blockType: Scratch.BlockType.LABEL,
-              text: Scratch.translate("Error loading model")
-            }
-          ]),
+          ...(detector
+            ? []
+            : [
+                {
+                  blockType: Scratch.BlockType.LABEL,
+                  text: Scratch.translate("Error loading model"),
+                },
+              ]),
 
           {
             opcode: "goToPart",

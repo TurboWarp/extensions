@@ -38,7 +38,7 @@ const isKnownDependency = (url) => Object.hasOwn(dependencies, url);
  */
 const getDependencyContent = (url) => ({
   buffer: cachedContent[url],
-  contentType: dependencies[url].contentType
+  contentType: dependencies[url].contentType,
 });
 
 /**
@@ -57,7 +57,7 @@ const addDependency = async (url) => {
 
   dependencies[url] = {
     sha256,
-    contentType: res.headers.get('content-type')
+    contentType: res.headers.get("content-type"),
   };
 };
 
@@ -277,7 +277,7 @@ export const parseExtensionDependencies = (js) => {
  * @returns {string} JS code that will return a data: URL for the buffer.
  */
 const toDataURLJS = (buffer, contentType) => {
-  const url = `data:${contentType};base64,${buffer.toString('base64')}`;
+  const url = `data:${contentType};base64,${buffer.toString("base64")}`;
 
   if (buffer.byteLength < 100000) {
     // Short enough that we can afford to just inline it directly.
@@ -312,7 +312,7 @@ const generateNewJS = (jsImport) => {
     );
   }
 
-  const {buffer, contentType} = getDependencyContent(jsImport.url);
+  const { buffer, contentType } = getDependencyContent(jsImport.url);
 
   if (jsImport.type === "asModule") {
     return `import(${toDataURLJS(buffer, contentType)})`;
