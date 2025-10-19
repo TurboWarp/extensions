@@ -8,28 +8,63 @@
   "use strict";
 
   const initializeDetector = async () => {
-    // TODO: this is awful
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@mediapipe/face_detection@0.4.1646425229/face_detection.js"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js"
     );
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js"
     );
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"
     );
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow-models/face-detection@1.0.3/dist/face-detection.min.js"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@turbowarp/tensorflow-models-face-detection@1.0.3-tw1/dist/face-detection.min.js"
     );
-    const faceDetection = window.faceDetection;
 
+    const fileMap = {
+      "face_detection_short.binarypb": URL.createObjectURL(
+        await Scratch.external.blob(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_short.binarypb"
+        )
+      ),
+      "face_detection_short_range.tflite": URL.createObjectURL(
+        await Scratch.external.blob(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_short_range.tflite"
+        )
+      ),
+      "face_detection_solution_simd_wasm_bin.js": URL.createObjectURL(
+        await Scratch.external.blob(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.js"
+        )
+      ),
+      "face_detection_solution_simd_wasm_bin.wasm": URL.createObjectURL(
+        await Scratch.external.blob(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.wasm"
+        )
+      ),
+    };
+
+    const faceDetection = window.faceDetection;
     return faceDetection.createDetector(
       faceDetection.SupportedModels.MediaPipeFaceDetector,
       {
         runtime: "mediapipe",
-        // TODO: this is also awful
-        solutionPath:
-          "https://packagerdata.turbowarp.org/facesensing00/@mediapipe/face_detection@0.4.1646425229",
+        /**
+         * @param {string} path Name of file to get
+         * @returns {string} fetch()-able URL to get it from
+         */
+        locateFile: (path) => {
+          if (
+            path === "face_detection_solution_wasm_bin.js" ||
+            path === "face_detection_solution_wasm_bin.wasm"
+          ) {
+            throw new Error("Browser does not support WASM SIMD");
+          }
+          if (!Object.prototype.hasOwnProperty.call(fileMap, path)) {
+            throw new Error(`Missing file: ${path}`);
+          }
+          return fileMap[path];
+        },
       }
     );
   };
@@ -190,8 +225,13 @@
   const videoDevice = Scratch.vm.runtime.ioDevices.video;
   const renderer = Scratch.vm.renderer;
 
-  const detector = await initializeDetector();
-  estimationLoop();
+  let detector = null;
+  try {
+    detector = await initializeDetector();
+    estimationLoop();
+  } catch (e) {
+    console.error("Face sensing detector could not load", e);
+  }
 
   /**
    * @param {unknown} part Part from Scratch blocks
@@ -245,6 +285,19 @@
         name: Scratch.translate("Face Sensing"),
 
         blocks: [
+          ...(detector
+            ? []
+            : [
+                {
+                  blockType: Scratch.BlockType.LABEL,
+                  text: Scratch.translate({
+                    default: "Could not load face detection",
+                    description:
+                      "Error message that appears when using unsupported browser",
+                  }),
+                },
+              ]),
+
           {
             opcode: "goToPart",
             blockType: Scratch.BlockType.COMMAND,
