@@ -35,6 +35,10 @@
     "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js": {
       "sha256": "95f4d1cbf099f57161b664bc048426ec3df92637801a4c79116e83315aa787e7",
       "contentType": "application/javascript; charset=utf-8"
+    },
+    "https://raw.githubusercontent.com/PsychoGoldfishNG/NewgroundsIO-JS/b0383337ef72d42dac12b7a4d7a24dfbc4105eb3/dist/NewgroundsIO.js": {
+      "sha256": "b6f68cf85f59b17d6489d1dde4b499827b0cc29f58472832643abaa8b9352ae8",
+      "contentType": "text/plain; charset=utf-8"
     }
   }
 }
