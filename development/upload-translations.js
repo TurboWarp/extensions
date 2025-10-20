@@ -52,7 +52,7 @@ const uploadMetadataStrings = async (strings) => {
 const run = async () => {
   console.log("Building...");
   const builder = new Builder();
-  const build = builder.build();
+  const build = await builder.build();
 
   console.log("Generating strings...");
   const l10n = build.generateL10N();
