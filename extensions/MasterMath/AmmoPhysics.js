@@ -63,6 +63,8 @@
     .then(function (Ammo) {
       "use strict";
 
+      console.log(Ammo);
+
       const Cast = Scratch.Cast;
 
       function quaternionToEuler(q) {
@@ -185,6 +187,7 @@
         return points;
       }
 
+      // TODO: it's not working
       function createTriangleMesh(points, faceList) {
         const mesh = new Ammo.btTriangleMesh();
 
@@ -362,6 +365,27 @@
                 text: Scratch.translate("step simulation"),
               },
               {
+                opcode: "stepWith",
+                type: Scratch.BlockType.COMMAND,
+                text: Scratch.translate(
+                  "step simulation with delta time: [dt] max substeps: [maxSubsteps] fixed time step: [fixedTimeStep]"
+                ),
+                arguments: {
+                  dt: {
+                    type: Scratch.ArgumentType.NUMBER,
+                    defaultValue: 0.016,
+                  },
+                  maxSubsteps: {
+                    type: Scratch.ArgumentType.NUMBER,
+                    defaultValue: 10,
+                  },
+                  fixedTimeStep: {
+                    type: Scratch.ArgumentType.NUMBER,
+                    defaultValue: 0.016,
+                  },
+                },
+              },
+              {
                 opcode: "setMaxSubSteps",
                 blockType: Scratch.BlockType.COMMAND,
                 text: Scratch.translate("set max substeps to [value]"),
@@ -390,6 +414,22 @@
                     defaultValue: 0,
                   },
                 },
+              },
+              {
+                opcode: "getGravity",
+                blockType: Scratch.BlockType.REPORTER,
+                text: Scratch.translate("gravity [xyz]"),
+                arguments: {
+                  xyz: {
+                    type: Scratch.ArgumentType.STRING,
+                    menu: "xyzMenu",
+                  },
+                },
+              },
+              {
+                opcode: "getMaxSubSteps",
+                blockType: Scratch.BlockType.REPORTER,
+                text: Scratch.translate("max substeps"),
               },
               "---",
               {
@@ -1407,6 +1447,22 @@
               },
             ],
             menus: {
+              xyzMenu: {
+                items: [
+                  {
+                    text: Scratch.translate("x"),
+                    value: "x",
+                  },
+                  {
+                    text: Scratch.translate("y"),
+                    value: "y",
+                  },
+                  {
+                    text: Scratch.translate("z"),
+                    value: "z",
+                  },
+                ],
+              },
               meshMenu: {
                 items: [
                   {
@@ -1638,12 +1694,64 @@
           }
         }
 
+        stepWith({ dt, maxSubSteps, fixedTimeStep }) {
+          for (const key in bodies) {
+            bodies[key].collisions = [];
+          }
+
+          if (!dt === 0 && !fixedTimeStep === 0) {
+            world.stepSimulation(dt, maxSubSteps, fixedTimeStep);
+          } else {
+            if (!runtime.frameLoop.framerate === 0) {
+              world.stepSimulation(
+                deltaTime,
+                maxSubSteps,
+                1 / runtime.frameLoop.framerate
+              );
+            } else {
+              world.stepSimulation(deltaTime, maxSubSteps);
+            }
+          }
+
+          const dispatcher = world.getDispatcher();
+          const numManifolds = dispatcher.getNumManifolds();
+
+          for (let i = 0; i < numManifolds; i++) {
+            const contactManifold = dispatcher.getManifoldByIndexInternal(i);
+            const body0 = Ammo.castObject(
+              contactManifold.getBody0(),
+              Ammo.btRigidBody
+            );
+            const body1 = Ammo.castObject(
+              contactManifold.getBody1(),
+              Ammo.btRigidBody
+            );
+
+            if (contactManifold.getNumContacts() > 0) {
+              const name0 = body0.userData;
+              const name1 = body1.userData;
+              if (bodies[name0] && bodies[name1]) {
+                bodies[name0].collisions.push(name1);
+                bodies[name1].collisions.push(name0);
+              }
+            }
+          }
+        }
+
         setMaxSubSteps({ value }) {
           maxSubSteps = Cast.toNumber(value);
         }
 
         setGravity({ x, y, z }) {
           world.setGravity(new Ammo.btVector3(x, y, z));
+        }
+
+        getGravity({ xyz }) {
+          return world.getGravity()[xyz]();
+        }
+
+        getMaxSubSteps() {
+          return maxSubSteps;
         }
 
         allBodies() {
@@ -2445,11 +2553,11 @@
           y2 = Cast.toNumber(y2);
           z2 = Cast.toNumber(z2);
           if (bodies[name]) {
-            force = new Ammo.btVector3(x, y, z);
+            const forceVector = new Ammo.btVector3(x, y, z);
             const offset = new Ammo.btVector3(x2, y2, z2);
-            bodies[name][force](force, offset);
+            bodies[name][force](forceVector, offset);
             bodies[name].activate(true);
-            Ammo.destroy(force);
+            Ammo.destroy(forceVector);
             Ammo.destroy(offset);
           } else {
             console.warn(
@@ -2464,10 +2572,10 @@
           y = Cast.toNumber(y);
           z = Cast.toNumber(z);
           if (bodies[name]) {
-            force = new Ammo.btVector3(x, y, z);
-            bodies[name][force](force);
+            const forceVector = new Ammo.btVector3(x, y, z);
+            bodies[name][force](forceVector);
             bodies[name].activate(true);
-            Ammo.destroy(force);
+            Ammo.destroy(forceVector);
           } else {
             console.warn(
               `Attempted to apply force on nonexistent body "${name}" in ${target.isStage ? "Stage" : `Sprite "${target.sprite.name}"`}`
@@ -2481,10 +2589,10 @@
           y = Cast.toNumber(y);
           z = Cast.toNumber(z);
           if (bodies[name]) {
-            torque = new Ammo.btVector3(x, y, z);
-            bodies[name][torque](torque);
+            const torqueVector = new Ammo.btVector3(x, y, z);
+            bodies[name][torque](torqueVector);
             bodies[name].activate(true);
-            Ammo.destroy(torque);
+            Ammo.destroy(torqueVector);
           } else {
             console.warn(
               `Attempted to apply force on nonexistent body "${name}" in ${target.isStage ? "Stage" : `Sprite "${target.sprite.name}"`}`
