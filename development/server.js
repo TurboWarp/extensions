@@ -3,8 +3,14 @@ import Builder from "./builder.js";
 
 let mostRecentBuild = null;
 const builder = new Builder("development");
-builder.startWatcher((newBuild) => {
+await builder.startWatcher(async (newBuild) => {
   mostRecentBuild = newBuild;
+
+  try {
+    await newBuild.checkForNewImports();
+  } catch (e) {
+    console.error("Error checking for new imports", e);
+  }
 });
 
 const app = express();
@@ -36,10 +42,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", (req, res, next) => {
+app.use("/", async (req, res, next) => {
   if (req.method !== "GET") {
-    next();
-    return;
+    return next();
   }
 
   if (!mostRecentBuild) {
@@ -55,7 +60,7 @@ app.use("/", (req, res, next) => {
   }
 
   res.contentType(fileInBuild.getType());
-  res.send(fileInBuild.read());
+  res.send(await fileInBuild.read());
 });
 
 app.use((req, res) => {

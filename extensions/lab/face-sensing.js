@@ -8,28 +8,63 @@
   "use strict";
 
   const initializeDetector = async () => {
-    // TODO: this is awful
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@mediapipe/face_detection@0.4.1646425229/face_detection.js"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js"
     );
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core@4.22.0/dist/tf-core.min.js"
     );
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl@4.22.0/dist/tf-backend-webgl.min.js"
     );
-    await import(
-      "https://packagerdata.turbowarp.org/facesensing00/@tensorflow-models/face-detection@1.0.3/dist/face-detection.min.js"
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/@turbowarp/tensorflow-models-face-detection@1.0.3-tw1/dist/face-detection.min.js"
     );
-    const faceDetection = window.faceDetection;
 
+    const fileMap = {
+      "face_detection_short.binarypb": URL.createObjectURL(
+        await Scratch.external.blob(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_short.binarypb"
+        )
+      ),
+      "face_detection_short_range.tflite": URL.createObjectURL(
+        await Scratch.external.blob(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_short_range.tflite"
+        )
+      ),
+      "face_detection_solution_simd_wasm_bin.js": URL.createObjectURL(
+        await Scratch.external.blob(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.js"
+        )
+      ),
+      "face_detection_solution_simd_wasm_bin.wasm": URL.createObjectURL(
+        await Scratch.external.blob(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.wasm"
+        )
+      ),
+    };
+
+    const faceDetection = window.faceDetection;
     return faceDetection.createDetector(
       faceDetection.SupportedModels.MediaPipeFaceDetector,
       {
         runtime: "mediapipe",
-        // TODO: this is also awful
-        solutionPath:
-          "https://packagerdata.turbowarp.org/facesensing00/@mediapipe/face_detection@0.4.1646425229",
+        /**
+         * @param {string} path Name of file to get
+         * @returns {string} fetch()-able URL to get it from
+         */
+        locateFile: (path) => {
+          if (
+            path === "face_detection_solution_wasm_bin.js" ||
+            path === "face_detection_solution_wasm_bin.wasm"
+          ) {
+            throw new Error("Browser does not support WASM SIMD");
+          }
+          if (!Object.prototype.hasOwnProperty.call(fileMap, path)) {
+            throw new Error(`Missing file: ${path}`);
+          }
+          return fileMap[path];
+        },
       }
     );
   };
@@ -190,8 +225,13 @@
   const videoDevice = Scratch.vm.runtime.ioDevices.video;
   const renderer = Scratch.vm.renderer;
 
-  const detector = await initializeDetector();
-  estimationLoop();
+  let detector = null;
+  try {
+    detector = await initializeDetector();
+    estimationLoop();
+  } catch (e) {
+    console.error("Face sensing detector could not load", e);
+  }
 
   /**
    * @param {unknown} part Part from Scratch blocks
@@ -238,13 +278,46 @@
 
   checkIfShouldTurnOnVideoForFirstRun();
 
+  // made by https://scratch.mit.edu/users/man-o-valor/
+  const blockIconURI = `data:image/svg+xml;,${encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="79.639" height="79.771">
+      <g stroke-miterlimit="10"><path fill="none" stroke="#0b8e69" stroke-width="9.5" d="M18.691 39.915c0-11.668 9.46-21.128 21.128-21.128 11.67 0 21.129 9.46 21.129 21.128 0 11.67-9.46 21.129-21.129 21.129-11.668 0-21.128-9.46-21.128-21.129z"/>
+      <path fill="none" stroke="#0b8e69" stroke-linecap="round" stroke-width="10" d="M16.204 53.288s-1.038 5.33-2.207 6.997c-1.161 1.657-4.782 2.973-4.782 2.973M23.234 63.258s-3.62-1.316-4.782-2.973c-1.168-1.667-2.207-6.997-2.207-6.997M9.215 63.317s3.621 1.316 4.782 2.973c1.169 1.667 2.207 6.997 2.207 6.997"/>
+      <path fill="none" stroke="#0b8e69" stroke-linecap="round" stroke-width="10" d="M16.245 73.037s1.04-5.33 2.207-6.997c1.162-1.657 4.782-2.973 4.782-2.973"/>
+      <path fill="none" stroke="#ffbf00" stroke-linecap="round" stroke-width="5" d="M16.204 53.499s-1.038 5.33-2.207 6.997c-1.161 1.656-4.782 2.973-4.782 2.973M23.234 63.47s-3.62-1.318-4.782-2.974c-1.168-1.667-2.207-6.997-2.207-6.997M9.215 63.528s3.621 1.316 4.782 2.973c1.169 1.667 2.207 6.997 2.207 6.997"/>
+      <path fill="none" stroke="#ffbf00" stroke-linecap="round" stroke-width="5" d="M16.245 73.287s1.04-5.33 2.207-6.997c1.162-1.657 4.782-2.973 4.782-2.973"/>
+      <path fill="#ffbf00" d="m11.406 63.608 4.84-6.904 4.839 6.904-4.84 6.904z"/>
+      <g fill="none" stroke="#0b8e69" stroke-linecap="round" stroke-width="5">
+      <path d="M2.537 2.56h16.92M2.5 19.59V2.67"/></g><g fill="none" stroke="#0b8e69" stroke-linecap="round" stroke-width="5">
+      <path d="M77.102 77.271h-16.92M77.139 60.241v16.92"/></g><path fill="#0b8e69" stroke="#fff" stroke-width="5" d="M18.691 39.915c0-11.668 9.46-21.128 21.128-21.128 11.67 0 21.129 9.46 21.129 21.128 0 11.67-9.46 21.129-21.129 21.129-11.668 0-21.128-9.46-21.128-21.129z"/>
+      <path fill="none" stroke="#fff" stroke-linecap="round" stroke-width="5" d="M48.47 45.217s-3.828 4.746-8.744 4.65c-5.376-.104-8.185-4.65-8.185-4.65M31.646 34.323v1.418M47.993 35.741v-1.418"/>
+      <path fill="none" stroke="#0b8e69" stroke-linecap="round" stroke-width="10" d="M62.56 5s-1.428 7.165-3.032 9.405c-1.595 2.227-6.568 3.997-6.568 3.997M72.214 18.402s-4.972-1.77-6.567-3.997C64.042 12.165 62.615 5 62.615 5M52.96 18.48s4.973 1.77 6.568 3.997c1.604 2.24 3.031 9.405 3.031 9.405M62.615 31.882s1.427-7.165 3.032-9.405c1.595-2.227 6.567-3.997 6.567-3.997"/>
+      <path fill="none" stroke="#ffbf00" stroke-linecap="round" stroke-width="5" d="M62.56 5s-1.428 7.165-3.032 9.405c-1.595 2.227-6.568 3.997-6.568 3.997M72.214 18.402s-4.972-1.77-6.567-3.997C64.042 12.165 62.615 5 62.615 5M52.96 18.48s4.973 1.77 6.568 3.997c1.604 2.24 3.031 9.405 3.031 9.405M62.615 31.882s1.427-7.165 3.032-9.405c1.595-2.227 6.567-3.997 6.567-3.997"/>
+      <path fill="#ffbf00" d="m55.968 18.872 6.647-9.28 6.647 9.28-6.647 9.28z"/>
+    </g>
+  </svg>`)}`;
+
   class FaceSensing {
     getInfo() {
       return {
         id: "faceSensing",
         name: Scratch.translate("Face Sensing"),
+        blockIconURI,
 
         blocks: [
+          ...(detector
+            ? []
+            : [
+                {
+                  blockType: Scratch.BlockType.LABEL,
+                  text: Scratch.translate({
+                    default: "Could not load face detection",
+                    description:
+                      "Error message that appears when using unsupported browser",
+                  }),
+                },
+              ]),
+
           {
             opcode: "goToPart",
             blockType: Scratch.BlockType.COMMAND,
