@@ -140,6 +140,21 @@
             },
           },
           {
+            opcode: "splitJSON",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("[STRING] split by [SPLIT] as array"),
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "apple",
+              },
+              SPLIT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "p",
+              },
+            },
+          },
+          {
             opcode: "count",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
@@ -296,10 +311,11 @@
             },
           },
           {
-            opcode: "countRegex",
+            opcode: "matchRegexJSON",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
-              default: "count regex /[REGEX]/[FLAGS] in [STRING]",
+              default:
+                "[STRING] matched by regex /[REGEX]/[FLAGS] as array",
               description:
                 "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
             }),
@@ -310,11 +326,11 @@
               },
               REGEX: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "[AEIOU]",
+                defaultValue: "(.) (.{2})",
               },
               FLAGS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "i",
+                defaultValue: "g",
               },
             },
           },
@@ -341,6 +357,30 @@
               },
             },
           },
+          {
+            opcode: "countRegex",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              default: "count regex /[REGEX]/[FLAGS] in [STRING]",
+              description:
+                "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
+            }),
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello world!",
+              },
+              REGEX: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "[AEIOU]",
+              },
+              FLAGS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "i",
+              },
+            },
+          },
+          
 
           "---",
 
@@ -547,6 +587,29 @@
       }
       return splitCache.arr[item - 1] || "";
     }
+    splitJSON(args, util) { // Split, but it returns an array
+      const string = Scratch.Cast.toString(args.STRING);
+      const split = Scratch.Cast.toString(args.SPLIT);
+      const item = Scratch.Cast.toNumber(args.ITEM);
+
+      // Cache the last split
+      if (
+        !(
+          splitCache &&
+          splitCache.string === string &&
+          splitCache.split === split
+        )
+      ) {
+        const regex = this._caseInsensitiveRegex(split);
+
+        splitCache = {
+          string,
+          split,
+          arr: string.split(regex),
+        };
+      }
+      return JSON.stringify(splitCache.arr) || "[]";
+    }
 
     count(args, util) {
       // Fill cache
@@ -632,6 +695,38 @@
           };
         }
         return matchCache.arr[item - 1] || "";
+      } catch (e) {
+        console.error(e);
+        return "";
+      }
+    }
+    matchRegexJSON(args, util) { // matchRegex but it returns an array
+      try {
+        const string = Scratch.Cast.toString(args.STRING);
+        const uncleanRegex = Scratch.Cast.toString(args.REGEX);
+        const flags = Scratch.Cast.toString(args.FLAGS);
+        const item = Scratch.Cast.toNumber(args.ITEM);
+
+        // Cache the last matched string
+        if (
+          !(
+            matchCache &&
+            matchCache.string === string &&
+            matchCache.regex === uncleanRegex &&
+            matchCache.flags === flags
+          )
+        ) {
+          const newFlags = flags.includes("g") ? flags : flags + "g";
+          const regex = new RegExp(uncleanRegex, newFlags);
+
+          matchCache = {
+            string,
+            regex: uncleanRegex,
+            flags,
+            arr: string.match(regex) || [],
+          };
+        }
+        return JSON.stringify(matchCache.arr) || "[]";
       } catch (e) {
         console.error(e);
         return "";
