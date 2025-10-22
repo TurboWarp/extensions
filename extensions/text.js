@@ -314,8 +314,7 @@
             opcode: "matchRegexJSON",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
-              default:
-                "[STRING] matched by regex /[REGEX]/[FLAGS] as array",
+              default: "[STRING] matched by regex /[REGEX]/[FLAGS] as array",
               description:
                 "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
             }),
@@ -380,7 +379,6 @@
               },
             },
           },
-          
 
           "---",
 
@@ -587,10 +585,10 @@
       }
       return splitCache.arr[item - 1] || "";
     }
-    splitJSON(args, util) { // Split, but it returns an array
+    splitJSON(args, util) {
+      // split but it returns an array
       const string = Scratch.Cast.toString(args.STRING);
       const split = Scratch.Cast.toString(args.SPLIT);
-      const item = Scratch.Cast.toNumber(args.ITEM);
 
       // Cache the last split
       if (
@@ -700,12 +698,12 @@
         return "";
       }
     }
-    matchRegexJSON(args, util) { // matchRegex but it returns an array
+    matchRegexJSON(args, util) {
+      // matchRegex but it returns an array
       try {
         const string = Scratch.Cast.toString(args.STRING);
         const uncleanRegex = Scratch.Cast.toString(args.REGEX);
         const flags = Scratch.Cast.toString(args.FLAGS);
-        const item = Scratch.Cast.toNumber(args.ITEM);
 
         // Cache the last matched string
         if (
