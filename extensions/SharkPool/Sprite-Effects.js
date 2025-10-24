@@ -1,4 +1,4 @@
-// Name: Sprite Effects
+// Name: Sprite Effects V2
 // ID: SPspriteEffectsV2
 // Description: Apply SVG Filters to images and the canvas.
 // By: SharkPool
@@ -129,7 +129,6 @@
   };
 
   let compatMode = true;
-  let canvas = getCanvas();
   let canvasFilterString = "";
   let canvasFilters = new Map();
 
@@ -182,7 +181,7 @@
     getInfo() {
       return {
         id: "SPspriteEffectsV2",
-        name: Scratch.translate("Sprite Effects"),
+        name: Scratch.translate("Sprite Effects V2"),
         color1: "#9966FF",
         color2: "#774DCB",
         menuIconURI,
@@ -255,7 +254,7 @@
           {
             opcode: "expandViewBox",
             blockType: Scratch.BlockType.REPORTER,
-            text: "expand viewbox of [SRC] by x [x] y [y]",
+            text: Scratch.translate("expand viewbox of [SRC] by x [x] y [y]"),
             arguments: {
               SRC: { type: Scratch.ArgumentType.STRING, defaultValue: "</svg>" },
               x: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
@@ -1145,7 +1144,6 @@
       const svg = this._handleSVG(args.SRC);
       const x = Cast.toNumber(args.x);
       const y = Cast.toNumber(args.y) * -1;
-      const amt = Cast.toNumber(args.NUM) / 2;
       const colors = [
         Cast.toString(args.COL1),
         Cast.toString(args.COL2),
