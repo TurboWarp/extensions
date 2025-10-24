@@ -870,7 +870,6 @@
     toggleCompat(args) {
       this.removeAllFilters();
       compatMode = args.ON_OFF === "on";
-      canvas = getCanvas();
     }
 
     /* Basic Filters */
