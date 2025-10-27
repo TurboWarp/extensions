@@ -1,6 +1,6 @@
-// Name: Iframe
-// ID: iframe
-// Description: Display webpages or HTML over the stage.
+// Name: Iframe+
+// ID: iframeplus
+// Description: Display and manage multiple webpages or HTML elements over the stage.
 // Context: "iframe" is an HTML element that lets websites embed other websites.
 // License: MIT AND MPL-2.0
 
