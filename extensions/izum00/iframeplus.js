@@ -4,6 +4,7 @@
 // Context: "iframe" is an HTML element that lets websites embed other websites.
 // License: MIT AND MPL-2.0
 
+// From https://extensions.turbowarp.org/iframe.js
 // Edited by izum00
 
 (function (Scratch) {
