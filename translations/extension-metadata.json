@@ -211,6 +211,7 @@
         "DNin/wake-lock@name": "Pidä hereillä",
         "DT/cameracontrols@description": "Liikuta esiintymislavan näkyvää osaa.",
         "DT/cameracontrols@name": "Kamera V1",
+        "DogeisCut/FormatNumbers@name": "Muotoile numeroita",
         "JeremyGamer13/tween@description": "Sujuvampien animaatioiden tekemistä helpottavia menetelmiä.",
         "JeremyGamer13/tween@name": "Interpolointi",
         "Lily/AllMenus@description": "Erityiskategoria, jossa ovat kaikki valikot jokaisesta Scratchin kategoriasta ja laajennuksesta lohkoina.",
