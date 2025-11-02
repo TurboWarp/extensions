@@ -587,8 +587,8 @@
       const modeSwitchBlock = {
         opcode: "switchMode",
         blockType: Scratch.BlockType.BUTTON,
-        text: !useNewBlocks 
-          ? Scratch.translate("Switch to Old Blocks [▶]") 
+        text: !useNewBlocks
+          ? Scratch.translate("Switch to Old Blocks [▶]")
           : Scratch.translate("Switch to New Blocks [▶]"),
         func: "switchMode",
       };
@@ -596,12 +596,7 @@
       return {
         name: Scratch.translate("Iframe+"),
         id: "iframeplus",
-        blocks: [
-          modeSwitchBlock,
-          "---",
-          ...oldBlocks,
-          ...newBlocks,
-        ],
+        blocks: [modeSwitchBlock, "---", ...oldBlocks, ...newBlocks],
         menus: {
           getMenu: {
             acceptReporters: true,
