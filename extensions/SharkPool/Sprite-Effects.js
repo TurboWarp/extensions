@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.0
+// Version V.1.0.01
 
 (function (Scratch) {
   "use strict";
@@ -194,7 +194,7 @@
     cssString = cssString.trim();
 
     const oldCssString = canvas.style.filter;
-    if (oldCssString.includes(cssString)) {
+    if (oldCssString.includes(canvasFilterString)) {
       canvas.style.filter = oldCssString.replace(canvasFilterString, cssString);
     } else {
       canvas.style.filter += cssString;
