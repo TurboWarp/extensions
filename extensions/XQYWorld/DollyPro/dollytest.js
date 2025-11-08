@@ -1,3 +1,9 @@
+// Name: DollyPro
+// ID: dollyPro
+// Description: Manager Clones with more quick
+// By: XQYWorld
+// Original: Witcat
+// License: MPL-2.0
 /* eslint-disable class-methods-use-this */
 /* eslint no-param-reassign: [
   "error", {
