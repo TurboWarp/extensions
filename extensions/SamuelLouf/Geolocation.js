@@ -89,7 +89,7 @@
             opcode: "isWatchingPos",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate(
-              "is TurboWarp watching the users position?"
+              "is TurboWarp watching the user's position?"
             ),
           },
           "---",
