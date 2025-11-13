@@ -36,7 +36,45 @@
         blocks: [
           {
             opcode: "now",
-            text: Scratch.translate("present timestamp"),
+            text: Scratch.translate("current timestamp"),
+            blockType: Scratch.BlockType.REPORTER,
+          },
+          {
+            opcode: "timestamp",
+            text: Scratch.translate(
+              "timestamp of date: [YYYY]-[MM]-[DD] time: [HH]:[MIN]:[SS]"
+            ),
+            blockType: Scratch.BlockType.REPORTER,
+            arguments: {
+              YYYY: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "2020",
+              },
+              MM: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "06",
+              },
+              DD: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "08",
+              },
+              HH: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "00",
+              },
+              MIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "00",
+              },
+              SS: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "00",
+              },
+            },
+          },
+          {
+            opcode: "timezone",
+            text: Scratch.translate("timezone"),
             blockType: Scratch.BlockType.REPORTER,
           },
         ],
@@ -44,7 +82,22 @@
     }
 
     now(args, util) {
-      return Temporal.Now.zonedDateTimeISO().toString();
+      return Temporal.Now.plainDateTimeISO().toString();
+    }
+
+    timestamp(args, util) {
+      return new Temporal.PlainDateTime(
+        args.YYYY,
+        args.MM,
+        args.DD,
+        args.HH,
+        args.MIN,
+        args.SS
+      );
+    }
+
+    timezone(args, util) {
+      return Temporal.Now.timeZoneId();
     }
   }
 
