@@ -35,6 +35,10 @@
     "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js": {
       "sha256": "95f4d1cbf099f57161b664bc048426ec3df92637801a4c79116e83315aa787e7",
       "contentType": "application/javascript; charset=utf-8"
+    },
+    "https://cdn.jsdelivr.net/npm/temporal-polyfill@0.3.0/global.min.js": {
+      "sha256": "719ec13d7f412157f9dd59456a0aaf97f755f15d8e848edddbb28e391b3ca3f6",
+      "contentType": "application/javascript; charset=utf-8"
     }
   }
 }
