@@ -5,6 +5,7 @@
 // License: MPL-2.0
 
 // @ts-nocheck
+/* eslint-disable no-undef */
 
 (async function (Scratch) {
   "use strict";
@@ -13,9 +14,8 @@
     throw new Error("Temporal extension must run unsandboxed");
   }
 
-  let Temporal = window.Temporal ?? undefined;
   if (typeof window.Temporal === "undefined") {
-    Temporal = await Scratch.external.evalAndReturn(
+    await Scratch.external.evalAndReturn(
       "https://cdn.jsdelivr.net/npm/temporal-polyfill@0.3.0/global.min.js",
       "Temporal"
     );
