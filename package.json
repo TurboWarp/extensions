@@ -5,6 +5,7 @@
   "exports": {
     "./builder": "./development/builder.js"
   },
+  "type": "module",
   "scripts": {
     "start": "node development/server.js",
     "dev": "node development/server.js",
@@ -32,16 +33,16 @@
     "adm-zip": "^0.5.16",
     "chokidar": "^4.0.3",
     "ejs": "^3.1.10",
-    "express": "^4.21.2",
+    "eslint": "^9.39.1",
+    "espree": "^9.6.1",
+    "esquery": "^1.6.0",
+    "express": "^5.1.0",
     "image-size": "^2.0.2",
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
     "@transifex/api": "^7.1.4",
-    "eslint": "^9.34.0",
-    "espree": "^9.6.1",
-    "esquery": "^1.6.0",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.0",
     "spdx-expression-parse": "^4.0.0"
   },
   "private": true

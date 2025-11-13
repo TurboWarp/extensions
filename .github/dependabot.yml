@@ -4,3 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      # Prettier updates that result in style changes result in cascading format validation
+      # errors until all pull requests get rebased. It's not worth the effort to follow
+      # every update. We'll do this manually when there's some change we want.
+      - dependency-name: prettier
