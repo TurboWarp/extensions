@@ -151,7 +151,7 @@
       const id = Scratch.Cast.toString(args.ID);
       return magnitudes[id] !== undefined
         ? magnitudes[id]
-        : Scratch.translate("null");
+        : "";
     }
 
     vectorDelete(args) {
