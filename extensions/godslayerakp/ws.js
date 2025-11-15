@@ -115,7 +115,7 @@
             arguments: {
               URL: {
                 type: ArgumentType.STRING,
-                defaultValue: "wss://echoserver.redman13.repl.co",
+                defaultValue: "wss://echo.websocket.org/",
               },
             },
             text: Scratch.translate("connect to [URL]"),
