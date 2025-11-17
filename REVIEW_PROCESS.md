@@ -9,7 +9,9 @@ The requirements for merging a pull request are:
 
 **That's it. If everything is green, go ahead and merge it.** The rest of this document will try to define what an approval means.
 
-Having to copy and paste the templates might seem a bit silly. But this way, it's clear to everyone what the expectations are (contributors won't read CONTRIBUTING.md but they will read review comments). If it becomes an issue, we'll have a bot automatically discard approvals if the template is not used and fully checked. If you just use the templates then we don't need to worry about that.
+I'm not expecting you to review things to the same standard I tried to. That would be hopeless. Just make a good effort. You will miss things. That's fine. I missed a lot too.
+
+Having to copy and paste the templates might seem a bit silly, but this way it's clear to everyone what the expectations are (no one reads CONTRIBUTING.md but people do read review comments). You can add anything else before or after. If reviewers keep not using the templates, we'll have a bot automatically discard approvals that don't use the template. If you just use the templates then we won't need to bother writing that.
 
 ## New extensions
 
