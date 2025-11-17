@@ -451,7 +451,6 @@ const isImmutableURL = (url) =>
   /^https:\/\/cdn\.jsdelivr\.net\/npm\/(?:[\w-]+|@[\w-]+\/[\w-]+)@\d+\.\d+\.\d+[^/]*\//.test(
     url
   ) ||
-
   // Raw GitHub URL, pinned to an exact commit.
   // GitHub allows you to modify a tag after pushing, so those are not immutable. Need the full commit hash.
   // Examples:
