@@ -139,4 +139,4 @@ npm run check-format
 
 ## Review process
 
-See [REVIEW_PROCESS.MD](./REVIEW_PROCESS.md)
+See [REVIEW_PROCESS.MD](./REVIEW_PROCESS.md).
