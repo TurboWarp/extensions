@@ -18,6 +18,7 @@ import {
   parseExtensionDependencies,
   rewriteExternalToInline,
   synchronizeDependencyList,
+  validateImports,
 } from "./dependency-management.js";
 import generateBuildSnippetJS from "./build-snippets.js";
 
@@ -217,12 +218,13 @@ class ExtensionFile extends BuildFile {
     return parseMetadata(data);
   }
 
-  validate() {
+  async validate() {
     if (!this.featured) {
       return;
     }
 
-    const metadata = this.getMetadata();
+    const js = await fsPromises.readFile(this.sourcePath, "utf-8");
+    const metadata = parseMetadata(js);
 
     if (!metadata.id) {
       throw new Error("Missing // ID:");
@@ -254,7 +256,7 @@ class ExtensionFile extends BuildFile {
     }
 
     try {
-      // Don't care about the result -- just see if it parses.
+      // Don't care about the result for now -- just see if it parses.
       spdxParser(metadata.license);
     } catch (e) {
       throw new Error(
@@ -275,6 +277,8 @@ class ExtensionFile extends BuildFile {
         );
       }
     }
+
+    validateImports(js);
   }
 
   getStrings() {
