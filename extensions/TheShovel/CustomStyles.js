@@ -728,8 +728,8 @@
                 value: "ask prompt button image",
               },
               {
-                text: Scratch.translate("list scroll rule"),
-                value: "list scroll rule",
+                text: Scratch.translate("list scrolling"),
+                value: "list scrolling",
               },
             ],
           },
@@ -915,11 +915,17 @@
         return askInputRoundness;
       } else if (args.ITEM === "ask prompt button image") {
         return askButtonImage;
-      } else if (args.ITEM === "list scrolling") {
-        if (allowScrolling === "auto") {
-          return "enabled";
-        } else {
+      } else if (
+        args.ITEM === "list scrolling" ||
+        // Old version of this extension had "list scroll rule" in the menu so
+        // we'll support either.
+        // https://github.com/TurboWarp/extensions/pull/2262
+        args.ITEM === "list scroll rule"
+      ) {
+        if (allowScrolling === "hidden") {
           return "disabled";
+        } else {
+          return "enabled";
         }
       }
       return "";
