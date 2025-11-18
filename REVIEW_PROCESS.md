@@ -39,6 +39,17 @@ When you review an extension change, copy and paste this into the review comment
  - [ ] I have no additional concerns.
 ```
 
+## Trivial no-code changes
+
+For trivial changes such as new extension images or fixing a typo that don't require any testing:
+
+```
+ - [ ] This is a trivial change that doesn't require testing.
+ - [ ] I have no additional concerns.
+```
+
+Any logic change inside a JavaScript file, even the most trivial one, means that you shouldn't use this template.
+
 ## Other things
 
 Ping GarboMuffin early and often.
