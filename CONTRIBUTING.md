@@ -78,11 +78,47 @@ You must use line comments; block comments `/* */` will not work. These fields a
 
 `By` allows you to credit yourself. `Original` is used if the extension is based on another person's work. They both use the same format of `Name` or `Name <https://scratch.mit.edu/users/username>`. Links to places other than Scratch are not allowed at this time. You can repeat both of these as many times as needed, just add another `// By: ...` comment.
 
+## Translations
+
+Extensions should support being translated into any language. The development server and [volunteer translators](https://docs.turbowarp.org/translate) will handle the hard part. The developer's job is to use `Scratch.translate()` for any string that should be translated, such as block text or labels. Here's some examples to explain the idea:
+
+```js
+// For simple strings that can be understood without additional context,
+// call Scratch.translate with your string directly:
+Scratch.translate("stage width")
+
+// The translation system handles block inputs properly, so use the same process:
+Scratch.translate("move [STEPS] steps")
+
+// If your string needs some context to understand properly, call
+// Scratch.translate with an object:
+Scratch.translate({
+  default: "map",
+  description: "A map in the computer science sense. Maps keys to values. Sometimes called a dictionary."
+})
+
+// If your string needs to fill in a value that isn't known until runtime,
+// use a placeholder. Don't try to concatenate strings yourself as that is
+// confusing and not all languages have the same grammar structure.
+Scratch.translate({
+  default: "Hello, {name}!",
+  description: "{name} is replaced with the user's name"
+}, {
+  name: "world"
+})
+```
+
+All translators will see is the extension's name and description, the English text, and any description you add.
+
+## Third-party libraries
+
+First, try to avoid using third-party libraries if you can. If you must, we have a custom dependency system for extensions called `Scratch.external`. It's somewhat in flux but the type definitions should make it clear enough how to use.
+
 ## Adding your extension to the library
 
 Add your extension's path (without `extensions/` and without `.js`) to `extensions/extensions.json`. The order of that list determines the order of the library. Try to put it next to related related extensions if possible.
 
-New extensions do not need an image for the library, but they are encouraged. Put any image in the `images` folder with the same folder name and file name but different file extension as the extension's JavaScript. For example, if your extension's code is in `extensions/TestMuffin/fetch.js`, the image would be `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will find this file automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Add attribution to `images/README.md` for yourself and anything not made by you. Images submitted to this repository must be licensed under the [GNU General Public License version 3](licenses/GPL-3.0.txt).
+New extensions do not need an image for the library, but they are encouraged. Put any image in the `images` folder with the same folder name and file name but different file extension as the extension's JavaScript. For example, if your extension's code is in `extensions/TestMuffin/fetch.js`, the image would be `images/TestMuffin/fetch.svg` or `images/TestMuffin/fetch.png`. The homepage generator will find this file automatically. Images are displayed in a 2:1 aspect ratio. SVG (preferred), PNG, or JPG are accepted. PNG or JPG should be 600x300 in resolution. Add attribution to `images/README.md` for yourself and anything not made by you. Images submitted to this repository must be licensed under the [GNU General Public License version 3](licenses/GPL-3.0.txt). Avoid text if possible since these images can't be translated.
 
 Most extensions shouldn't need external documentation -- it should be obvious what to do just by looking at the blocks. That said, some do need more explanation. Documentation is written in markdown and placed in the `docs` folder with a similar layout to images. For example, documentation for `extensions/TestMuffin/fetch.js` would be `docs/TestMuffin/fetch.md`. Our version of markdown is extended to allow rendering [scratchblocks](https://scratchblocks.github.io/). Just look at the existing documentation for syntax examples. It's not a perfect experience: block colors have to be manually copied, and icons aren't supported, but it's better than what we had before. Once you put your markdown there, you can set a `docsURI` like `https://extensions.turbowarp.org/TestMuffin/fetch`.
 
