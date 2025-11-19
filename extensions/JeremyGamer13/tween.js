@@ -2,6 +2,7 @@
 // ID: jeremygamerTweening
 // Description: Easing methods for smooth animations.
 // By: JeremyGamer13 <https://scratch.mit.edu/users/JeremyGamer13/>
+// By: Fath11 <https://scratch.mit.edu/users/Fath11/>
 // License: MIT
 
 (function (Scratch) {
@@ -250,8 +251,6 @@
     bounce,
   };
 
-  const now = () => Scratch.vm.runtime.currentMSecs;
-
   class Tween {
     getInfo() {
       return {
@@ -478,12 +477,11 @@
 
     getVariables() {
       const variables =
-        // @ts-expect-error
         typeof Blockly === "undefined"
           ? []
-          : // @ts-expect-error
-            Blockly.getMainWorkspace()
+          : Blockly.getMainWorkspace()
               .getVariableMap()
+              // @ts-expect-error
               .getVariablesOfType("")
               .map((model) => ({
                 text: model.name,
@@ -523,7 +521,12 @@
         // First run, need to start timer
         util.yield();
 
-        const durationMS = Cast.toNumber(args.SEC) * 1000;
+        // If multiple values being tweened in same block, only start timer stack timer once.
+        if (util.stackTimerNeedsInit()) {
+          const durationMS = Math.max(0, 1000 * Cast.toNumber(args.SEC));
+          util.startStackTimer(durationMS);
+        }
+
         const easeMethod = Cast.toString(args.MODE);
         const easeDirection = Cast.toString(args.DIRECTION);
         const start = currentValue;
@@ -537,8 +540,6 @@
         }
 
         util.stackFrame[id] = {
-          startTimeMS: now(),
-          durationMS,
           easingFunction,
           easeDirection,
           start,
@@ -546,14 +547,15 @@
         };
 
         return start;
-      } else if (now() - state.startTimeMS >= state.durationMS) {
+      } else if (util.stackTimerFinished()) {
         // Done
         return util.stackFrame[id].end;
       } else {
         // Still running
         util.yield();
 
-        const progress = (now() - state.startTimeMS) / state.durationMS;
+        const progress =
+          util.stackFrame.timer.timeElapsed() / util.stackFrame.duration;
         const tweened = state.easingFunction(progress, state.easeDirection);
         return interpolate(tweened, state.start, state.end);
       }

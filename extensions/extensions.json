@@ -1,6 +1,7 @@
 [
   // This file supports comments
   "lab/text",
+  "lab/face-sensing",
   "stretch",
   "gamepad",
   "box2d",
@@ -56,6 +57,7 @@
   "true-fantom/math",
   "true-fantom/regexp",
   "true-fantom/couplers",
+  "DogeisCut/FormatNumbers",
   "Lily/AllMenus",
   "Lily/HackedBlocks",
   "Lily/Cast",
@@ -70,6 +72,7 @@
   "mbw/xml",
   "numerical-encoding-2",
   "cs2627883/numericalencoding",
+  "SharkPool/Camera",
   "DT/cameracontrols",
   "TheShovel/CanvasEffects",
   "Longboost/color_channels",

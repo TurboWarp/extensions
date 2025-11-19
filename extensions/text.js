@@ -1,7 +1,9 @@
 // Name: Text
 // ID: strings
 // Description: Manipulate characters and text.
-// Original: CST1229 <https://scratch.mit.edu/users/CST1229/>
+// By: CST1229 <https://scratch.mit.edu/users/CST1229/>
+// By: BludIsAnLemon <https://scratch.mit.edu/users/BludIsAnLemon/>
+// By: Man-o-Valor <https://scratch.mit.edu/users/man-o-valor/>
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {
@@ -13,6 +15,9 @@
     MIXEDCASE: "mixedcase",
     TITLECASE: "titlecase",
     EXACTTITLECASE: "exacttitlecase",
+    RANDOMCASE: "randomcase",
+    SENTENCECASE: "sentencecase",
+    CAMELCASE: "camelcase",
   };
 
   let splitCache;
@@ -39,6 +44,14 @@
         },
         {
           text: Scratch.translate({
+            default: "Sentence case",
+            description:
+              "Starts words after ., !, and ? with captialized letters",
+          }),
+          value: CaseParam.SENTENCECASE,
+        },
+        {
+          text: Scratch.translate({
             default: "Title Case",
             description:
               "If your language has Title Case, style it accordingly. 'Abc' is title case and exactly title case but 'ABC' is only title case.",
@@ -60,6 +73,22 @@
               "If your language has mixed case, style it accordingly",
           }),
           value: CaseParam.MIXEDCASE,
+        },
+        {
+          text: Scratch.translate({
+            default: "RAndoMCaSe",
+            description:
+              "If your language has randomcase, style it accordingly",
+          }),
+          value: CaseParam.RANDOMCASE,
+        },
+        {
+          text: Scratch.translate({
+            default: "camelCase",
+            description:
+              "Removes all spaces and capitalizes all words after the first",
+          }),
+          value: CaseParam.CAMELCASE,
         },
       ];
     }
@@ -372,11 +401,98 @@
               },
             },
           },
+
+          "---",
+          {
+            opcode: "posWith",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate({
+              default: "[STRING] [POSITION] with [SUBSTRING]?",
+              description:
+                "[POSITION] is a dropdown with 'starts' and 'ends'. The block then takes the form '[STRING] starts with [SUBSTRING]?' or '[STRING] ends with [SUBSTRING]?'",
+            }),
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "turbowarp",
+              },
+              POSITION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "positions",
+              },
+              SUBSTRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "turbo",
+              },
+            },
+          },
+
+          "---",
+
+          {
+            opcode: "reverse",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("reverse text [STRING]"),
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("apple"),
+              },
+            },
+          },
+
+          "---",
+
+          {
+            opcode: "trim",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("trim whitespace [STRING] from [METHOD]"),
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: `    ${Scratch.translate("apple")}    `,
+              },
+              METHOD: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "trimMethod",
+              },
+            },
+          },
         ],
         menus: {
           textCase: {
             acceptReporters: true,
             items: this._initCaseMenu(),
+          },
+          positions: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("starts"),
+                value: "starts",
+              },
+              {
+                text: Scratch.translate("ends"),
+                value: "ends",
+              },
+            ],
+          },
+          trimMethod: {
+            acceptReporters: true,
+            items: [
+              {
+                text: Scratch.translate("both sides"),
+                value: "both",
+              },
+              {
+                text: Scratch.translate("the end"),
+                value: "end",
+              },
+              {
+                text: Scratch.translate("the start"),
+                value: "start",
+              },
+            ],
           },
         },
       };
@@ -389,7 +505,7 @@
     }
 
     unicodeof(args, util) {
-      const chars = Array.from(args.STRING.toString());
+      const chars = Array.from(Scratch.Cast.toString(args.STRING));
       return chars.map((char) => char.charCodeAt(0)).join(" ");
     }
 
@@ -398,10 +514,10 @@
     }
 
     letters_of(args, util) {
-      args.STRING = args.STRING.toString();
-      args.LETTER1 = Number(args.LETTER1) || 0;
-      args.LETTER2 = Number(args.LETTER2) || 0;
-      return args.STRING.substring(args.LETTER1 - 1, args.LETTER2);
+      const string = Scratch.Cast.toString(args.STRING);
+      const letter1 = Scratch.Cast.toNumber(args.LETTER1);
+      const letter2 = Scratch.Cast.toNumber(args.LETTER2);
+      return string.substring(letter1 - 1, letter2);
     }
 
     _caseInsensitiveRegex(str) {
@@ -409,27 +525,27 @@
     }
 
     split(args, util) {
-      args.STRING = (args.STRING ?? "").toString();
-      args.SPLIT = (args.SPLIT ?? "").toString();
-      args.ITEM = Number(args.ITEM) || 0;
+      const string = Scratch.Cast.toString(args.STRING);
+      const split = Scratch.Cast.toString(args.SPLIT);
+      const item = Scratch.Cast.toNumber(args.ITEM);
 
       // Cache the last split
       if (
         !(
           splitCache &&
-          splitCache.string === args.STRING &&
-          splitCache.split === args.SPLIT
+          splitCache.string === string &&
+          splitCache.split === split
         )
       ) {
-        const regex = this._caseInsensitiveRegex(args.SPLIT);
+        const regex = this._caseInsensitiveRegex(split);
 
         splitCache = {
-          string: args.STRING,
-          split: args.SPLIT,
-          arr: args.STRING.split(regex),
+          string,
+          split,
+          arr: string.split(regex),
         };
       }
-      return splitCache.arr[args.ITEM - 1] || "";
+      return splitCache.arr[item - 1] || "";
     }
 
     count(args, util) {
@@ -446,47 +562,43 @@
     }
 
     replace(args, util) {
-      args.STRING = args.STRING.toString();
-      args.SUBSTRING = args.SUBSTRING.toString();
+      const string = Scratch.Cast.toString(args.STRING);
+      const substring = Scratch.Cast.toString(args.SUBSTRING);
+      const replace = Scratch.Cast.toString(args.REPLACE);
 
-      args.REPLACE = args.REPLACE.toString();
+      const regex = this._caseInsensitiveRegex(substring);
 
-      const regex = this._caseInsensitiveRegex(args.SUBSTRING);
-
-      return args.STRING.replace(regex, args.REPLACE);
+      return string.replace(regex, replace);
     }
 
     indexof(args, util) {
       // .toLowerCase() for case insensitivity
-      args.STRING = (args.STRING ?? "").toString().toLowerCase();
-      args.SUBSTRING = (args.SUBSTRING ?? "").toString().toLowerCase();
+      const string = Scratch.Cast.toString(args.STRING).toLowerCase();
+      const substring = Scratch.Cast.toString(args.SUBSTRING).toLowerCase();
 
       // Since both arguments are casted to strings beforehand,
       // we don't have to worry about type differences
       // like in the item number of in list block
-      const found = args.STRING.indexOf(args.SUBSTRING);
+      const found = string.indexOf(substring);
 
       // indexOf returns -1 when no matches are found, we can just +1
       return found + 1;
     }
 
     repeat(args, util) {
-      args.STRING = args.STRING.toString();
-      args.REPEAT = Number(args.REPEAT) || 0;
-      return args.STRING.repeat(args.REPEAT);
+      const string = Scratch.Cast.toString(args.STRING);
+      const repeat = Scratch.Cast.toNumber(args.REPEAT);
+      return string.repeat(repeat);
     }
 
     replaceRegex(args, util) {
       try {
-        args.STRING = args.STRING.toString();
-        args.REPLACE = args.REPLACE.toString();
-        args.REGEX = args.REGEX.toString();
-        args.FLAGS = args.FLAGS.toString();
+        const string = Scratch.Cast.toString(args.STRING);
+        const replacer = Scratch.Cast.toString(args.REPLACE);
+        const regex = Scratch.Cast.toString(args.REGEX);
+        const flags = Scratch.Cast.toString(args.FLAGS);
 
-        return args.STRING.replace(
-          new RegExp(args.REGEX, args.FLAGS),
-          args.REPLACE
-        );
+        return string.replace(new RegExp(regex, flags), replacer);
       } catch (e) {
         console.error(e);
         return "";
@@ -495,33 +607,31 @@
 
     matchRegex(args, util) {
       try {
-        args.STRING = (args.STRING ?? "").toString();
-        args.REGEX = (args.REGEX ?? "").toString();
-        args.FLAGS = (args.FLAGS ?? "").toString();
-        args.ITEM = Number(args.ITEM) || 0;
+        const string = Scratch.Cast.toString(args.STRING);
+        const uncleanRegex = Scratch.Cast.toString(args.REGEX);
+        const flags = Scratch.Cast.toString(args.FLAGS);
+        const item = Scratch.Cast.toNumber(args.ITEM);
 
         // Cache the last matched string
         if (
           !(
             matchCache &&
-            matchCache.string === args.STRING &&
-            matchCache.regex === args.REGEX &&
-            matchCache.flags === args.FLAGS
+            matchCache.string === string &&
+            matchCache.regex === uncleanRegex &&
+            matchCache.flags === flags
           )
         ) {
-          const newFlags = args.FLAGS.includes("g")
-            ? args.FLAGS
-            : args.FLAGS + "g";
-          const regex = new RegExp(args.REGEX, newFlags);
+          const newFlags = flags.includes("g") ? flags : flags + "g";
+          const regex = new RegExp(uncleanRegex, newFlags);
 
           matchCache = {
-            string: args.STRING,
-            regex: args.REGEX,
-            flags: args.FLAGS,
-            arr: args.STRING.match(regex) || [],
+            string,
+            regex: uncleanRegex,
+            flags,
+            arr: string.match(regex) || [],
           };
         }
-        return matchCache.arr[args.ITEM - 1] || "";
+        return matchCache.arr[item - 1] || "";
       } catch (e) {
         console.error(e);
         return "";
@@ -538,11 +648,11 @@
 
     testRegex(args, util) {
       try {
-        args.STRING = args.STRING.toString();
-        args.REGEX = args.REGEX.toString();
-        args.FLAGS = args.FLAGS.toString();
+        const string = Scratch.Cast.toString(args.STRING);
+        const regex = Scratch.Cast.toString(args.REGEX);
+        const flags = Scratch.Cast.toString(args.FLAGS);
 
-        return new RegExp(args.REGEX, args.FLAGS).test(args.STRING);
+        return new RegExp(regex, flags).test(string);
       } catch (e) {
         console.error(e);
         return false;
@@ -550,8 +660,8 @@
     }
 
     isCase(args, util) {
-      const string = args.STRING.toString();
-      const textCase = args.TEXTCASE.toString();
+      const string = Scratch.Cast.toString(args.STRING);
+      const textCase = Scratch.Cast.toString(args.TEXTCASE);
       switch (textCase) {
         case CaseParam.LOWERCASE:
           return string.toLowerCase() === string;
@@ -574,14 +684,22 @@
               word[0].toUpperCase() + word.substring(1).toLowerCase();
             return word === titleCased;
           });
+        case CaseParam.CAMELCASE:
+          return /^[^A-Z\s][^\s]*$/.test(string);
+        case CaseParam.RANDOMCASE:
+          return true;
+        case CaseParam.SENTENCECASE:
+          return /^[A-Z][^?.!]*(?:[?.!]\s+[A-Z][^?.!]*)*$/.test(string);
         default:
           return false;
       }
     }
 
     toCase(args, util) {
-      const string = args.STRING.toString();
-      const textCase = args.TEXTCASE.toString();
+      const string = Scratch.Cast.toString(args.STRING);
+      const textCase = Scratch.Cast.toString(args.TEXTCASE);
+      let workingText = "";
+      let sentenceCapitalFlag = false;
       switch (textCase) {
         case CaseParam.LOWERCASE:
           return string.toLowerCase();
@@ -609,8 +727,66 @@
               return word[0].toUpperCase() + word.substring(1).toLowerCase();
             })
             .join("");
+        case CaseParam.SENTENCECASE:
+          for (let i = 0; i < string.length; i++) {
+            if (
+              /^\s*$/.test(string[i - 1] ?? " ") &&
+              !sentenceCapitalFlag &&
+              string[i].toUpperCase() != string[i].toLowerCase()
+            ) {
+              workingText += string[i].toUpperCase();
+              sentenceCapitalFlag = true;
+            } else {
+              if (string[i] == "." || string[i] == "!" || string[i] == "?") {
+                sentenceCapitalFlag = false;
+              }
+              workingText += string[i].toLowerCase();
+            }
+          }
+          return workingText;
+        case CaseParam.RANDOMCASE:
+          for (let i = 0; i < string.length; i++) {
+            if (Math.random() > 0.5) {
+              workingText += string[i].toUpperCase();
+            } else {
+              workingText += string[i].toLowerCase();
+            }
+          }
+          return workingText;
+        case CaseParam.CAMELCASE:
+          for (let i = 0; i < string.length; i++) {
+            if (/^\s*$/.test(string[i - 1] ?? "x")) {
+              workingText += string[i].toUpperCase();
+            } else {
+              workingText += string[i].toLowerCase();
+            }
+          }
+          return workingText.replace(/\s/g, "");
         default:
           return string;
+      }
+    }
+    posWith(args) {
+      const STRING = Scratch.Cast.toString(args.STRING);
+      const SUBSTRING = Scratch.Cast.toString(args.SUBSTRING);
+      if (Scratch.Cast.toString(args.POSITION) === "starts") {
+        return STRING.startsWith(SUBSTRING);
+      }
+      return STRING.endsWith(SUBSTRING);
+    }
+    reverse(args) {
+      return Array.from(Scratch.Cast.toString(args.STRING)).reverse().join("");
+    }
+    trim(args) {
+      const STRING = Scratch.Cast.toString(args.STRING);
+      switch (Scratch.Cast.toString(args.METHOD)) {
+        case "start":
+          return STRING.trimStart();
+        case "end":
+          return STRING.trimEnd();
+        case "both":
+        default:
+          return STRING.trim();
       }
     }
   }

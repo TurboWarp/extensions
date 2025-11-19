@@ -443,7 +443,7 @@
             arguments: {
               string: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: btoa("apple"), // don't translate because btoa() will error in Chinese ...
+                defaultValue: this._btoa("apple"),
               },
               code: {
                 type: Scratch.ArgumentType.STRING,
@@ -572,7 +572,7 @@
       string = Scratch.Cast.toString(string);
       switch (code) {
         case "Base64":
-          return btoa(string);
+          return this._btoa(string);
         case "URL":
           return encodeURIComponent(string);
       }
@@ -583,7 +583,7 @@
       switch (code) {
         case "Base64":
           try {
-            return atob(string);
+            return this._atob(string);
           } catch (error) {
             console.error("invalid base 64", error);
             return "";
@@ -635,6 +635,18 @@
         string += t.charAt(Math.floor(Math.random() * a));
       }
       return string;
+    }
+    _btoa(unicode) {
+      let bytes = new TextEncoder().encode(unicode);
+      let binString = Array.from(bytes, (byte) =>
+        String.fromCodePoint(byte)
+      ).join("");
+      return btoa(binString);
+    }
+    _atob(base64) {
+      let binString = atob(base64);
+      let bytes = Uint8Array.from(binString, (m) => m.codePointAt(0));
+      return new TextDecoder().decode(bytes);
     }
   }
   Scratch.extensions.register(new Encoding());

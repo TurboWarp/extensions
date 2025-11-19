@@ -74,10 +74,29 @@
             extensions: ["colours_control"],
           },
           {
+            opcode: "createCloneOfMyselfWithVar",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "create clone of myself with [INPUTA] set to [INPUTB]"
+            ),
+            filter: [Scratch.TargetType.SPRITE],
+            arguments: {
+              INPUTA: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "variablesMenu",
+              },
+              INPUTB: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "1",
+              },
+            },
+            extensions: ["colours_control"],
+          },
+          {
             opcode: "createCloneWithVar",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "create clone with [INPUTA] set to [INPUTB]"
+              "create clone of original with [INPUTA] set to [INPUTB]"
             ),
             filter: [Scratch.TargetType.SPRITE],
             arguments: {
@@ -439,6 +458,20 @@
       return false;
     }
 
+    createCloneOfMyselfWithVar(args, util) {
+      // @ts-expect-error - not typed yet
+      Scratch.vm.runtime.ext_scratch3_control._createClone(
+        "_myself_",
+        util.target
+      );
+      const clones = util.target.sprite.clones;
+      const cloneNum = clones.length - 1;
+      const cloneVariable = clones[cloneNum].lookupVariableById(args.INPUTA);
+      if (cloneVariable) {
+        cloneVariable.value = args.INPUTB;
+      }
+    }
+
     createCloneWithVar(args, util) {
       // @ts-expect-error - not typed yet
       Scratch.vm.runtime.ext_scratch3_control._createClone(
@@ -643,11 +676,11 @@
     getSprites() {
       let spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
-      const myself = Scratch.vm.runtime.getEditingTarget().sprite.name;
+      const editingTarget = Scratch.vm.runtime.getEditingTarget();
       for (let index = 1; index < targets.length; index++) {
-        const curTarget = targets[index].sprite;
-        let display = curTarget.name;
-        if (myself === curTarget.name) {
+        const curTarget = targets[index];
+        let display = curTarget.getName();
+        if (editingTarget === curTarget) {
           display = Scratch.translate({
             default: "myself",
             description: "Item in a dropdown that refers to the current sprite",
@@ -656,7 +689,7 @@
         if (targets[index].isOriginal) {
           const jsonOBJ = {
             text: display,
-            value: curTarget.name,
+            value: curTarget.getName(),
           };
           spriteNames.push(jsonOBJ);
         }

@@ -32,13 +32,38 @@
   const runtime = vm.runtime;
   const renderer = vm.renderer;
   const _drawThese = renderer._drawThese;
-  const gl = renderer._gl;
+  const gl = renderer.gl;
   const canvas = renderer.canvas;
+  let Drawable = renderer.exports.Drawable;
   let width = 0;
   let height = 0;
   let scratchUnitWidth = 480;
   let scratchUnitHeight = 360;
   let penDirty = false;
+  const publicApi =
+    runtime.ext_clippingblendingapi ?? (runtime.ext_clippingblendingapi = {});
+  if (!publicApi.mainFramebuffer) publicApi.mainFramebuffer = null;
+  if (!publicApi.setActive)
+    publicApi.setActive = (value) => {
+      active = value;
+    };
+
+  // prettier-ignore
+  const Blendings = Object.assign(Object.create(null), {
+    "default": [gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
+    "default behind": [gl.ONE_MINUS_DST_ALPHA, gl.ONE, gl.ONE_MINUS_DST_ALPHA, gl.ONE, gl.FUNC_ADD],
+    "additive": [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
+    "additive with alpha": [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_ADD],
+    "additive legacy": [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_ADD],
+    "subtract": [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
+    "subtract with alpha": [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
+    "subtract legacy": [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
+    "multiply": [gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
+    "invert": [gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.ZERO, gl.ONE, gl.FUNC_ADD],
+    "invert legacy": [gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR, gl.FUNC_ADD],
+    "mask": [gl.ZERO, gl.SRC_ALPHA, gl.ZERO, gl.SRC_ALPHA, gl.FUNC_ADD],
+    "erase": [gl.ZERO, gl.ONE_MINUS_SRC_ALPHA, gl.ZERO, gl.ONE_MINUS_SRC_ALPHA, gl.FUNC_ADD],
+  });
 
   renderer._drawThese = function (drawables, drawMode, projection, opts) {
     active = true;
@@ -51,13 +76,15 @@
 
   const bfb = gl.bindFramebuffer;
   gl.bindFramebuffer = function (target, framebuffer) {
+    let toCanvas = false;
     if (target == gl.FRAMEBUFFER) {
-      if (framebuffer == null) {
+      if (framebuffer == publicApi.mainFramebuffer) {
+        toCanvas = true;
         toCorrectThing = true;
         flipY = false;
         width = canvas.width;
         height = canvas.height;
-      } else if (renderer._penSkinId) {
+      } else if (renderer._penSkinId !== null) {
         const fbInfo = renderer._allSkins[renderer._penSkinId]._framebuffer;
         if (framebuffer == fbInfo.framebuffer) {
           toCorrectThing = true;
@@ -71,13 +98,17 @@
         toCorrectThing = false;
       }
     }
+    if (toCanvas === true) {
+      Blendings["subtract legacy"][2] = gl.ZERO;
+      Blendings["invert legacy"][2] = gl.ZERO;
+      Blendings["invert legacy"][3] = gl.ONE;
+    } else {
+      Blendings["subtract legacy"][2] = gl.ONE;
+      Blendings["invert legacy"][2] = gl.ONE_MINUS_DST_COLOR;
+      Blendings["invert legacy"][3] = gl.ONE_MINUS_SRC_COLOR;
+    }
     bfb.call(this, target, framebuffer);
   };
-
-  // Getting Drawable
-  const dr = renderer.createDrawable("background");
-  const DrawableProto = renderer._allDrawables[dr].__proto__;
-  renderer.destroyDrawable(dr, "background");
 
   function setupModes(clipbox, blendMode, flipY) {
     if (clipbox) {
@@ -95,41 +126,23 @@
     } else {
       gl.disable(gl.SCISSOR_TEST);
     }
-    switch (blendMode) {
-      case "additive":
-        gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFunc(gl.ONE, gl.ONE);
-        break;
-      case "subtract":
-        gl.blendEquation(gl.FUNC_REVERSE_SUBTRACT);
-        gl.blendFunc(gl.ONE, gl.ONE);
-        break;
-      case "multiply":
-        gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFunc(gl.DST_COLOR, gl.ONE_MINUS_SRC_ALPHA);
-        break;
-      case "invert":
-        gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ONE_MINUS_SRC_COLOR);
-        break;
-      default:
-        gl.blendEquation(gl.FUNC_ADD);
-        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    }
+    const blend = Blendings[blendMode] ?? Blendings.default;
+    gl.blendEquation(blend[4]);
+    gl.blendFuncSeparate(blend[0], blend[1], blend[2], blend[3]);
   }
 
   // Modifying and expanding Drawable
-  const gu = DrawableProto.getUniforms;
-  DrawableProto.getUniforms = function () {
+  const gu = Drawable.prototype.getUniforms;
+  Drawable.prototype.getUniforms = function () {
     if (active && toCorrectThing) {
       setupModes(this.clipbox, this.blendMode, flipY);
     }
     return gu.call(this);
   };
-  DrawableProto.updateClipBox = function (clipbox) {
+  Drawable.prototype.updateClipBox = function (clipbox) {
     this.clipbox = clipbox;
   };
-  DrawableProto.updateBlendMode = function (blendMode) {
+  Drawable.prototype.updateBlendMode = function (blendMode) {
     this.blendMode = blendMode;
   };
 
@@ -220,7 +233,8 @@
             clipbox.x_max != lastClipbox.x_max ||
             clipbox.y_max != lastClipbox.y_max))
       ) {
-        if (skin.a_lineColorIndex) {
+        if (skin.attribute_index || skin.a_lineColorIndex) {
+          // Supporting both before and after https://github.com/TurboWarp/scratch-render/pull/11
           skin._flushLines();
         }
         lastTarget = target;
@@ -291,6 +305,11 @@
         menuIconURI: icon,
         blocks: [
           {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Stage selected: no blocks"),
+            filter: [Scratch.TargetType.STAGE],
+          },
+          {
             opcode: "setClipbox",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
@@ -340,9 +359,23 @@
           },
           "---",
           {
-            opcode: "setBlend",
+            opcode: "setBlend2",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("use [BLENDMODE] blending"),
+            arguments: {
+              BLENDMODE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "default",
+                menu: "blends2",
+              },
+            },
+            filter: [Scratch.TargetType.SPRITE],
+            extensions: ["colours_looks"],
+          },
+          {
+            opcode: "setBlend",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("use [BLENDMODE] blending (old)"),
             arguments: {
               BLENDMODE: {
                 type: Scratch.ArgumentType.STRING,
@@ -351,6 +384,7 @@
               },
             },
             filter: [Scratch.TargetType.SPRITE],
+            hideFromPalette: true,
             extensions: ["colours_looks"],
           },
           {
@@ -399,10 +433,34 @@
             acceptReporters: true,
             items: [
               { text: Scratch.translate("default"), value: "default" },
+              { text: Scratch.translate("additive"), value: "additive" }, // -> additive legacy
+              { text: Scratch.translate("subtract"), value: "subtract" }, // -> subtract legacy
+              { text: Scratch.translate("multiply"), value: "multiply" },
+              { text: Scratch.translate("invert"), value: "invert" }, // -> invert legacy
+            ],
+          },
+          blends2: {
+            acceptReporters: true,
+            items: [
+              { text: Scratch.translate("default"), value: "default" },
+              {
+                text: Scratch.translate("default behind"),
+                value: "default behind",
+              },
               { text: Scratch.translate("additive"), value: "additive" },
+              {
+                text: Scratch.translate("additive with alpha"),
+                value: "additive with alpha",
+              },
               { text: Scratch.translate("subtract"), value: "subtract" },
+              {
+                text: Scratch.translate("subtract with alpha"),
+                value: "subtract with alpha",
+              },
               { text: Scratch.translate("multiply"), value: "multiply" },
               { text: Scratch.translate("invert"), value: "invert" },
+              { text: Scratch.translate("mask"), value: "mask" },
+              { text: Scratch.translate("erase"), value: "erase" },
             ],
           },
           props: {
@@ -478,18 +536,45 @@
     }
 
     setBlend({ BLENDMODE }, { target }) {
-      let newValue = null;
       switch (BLENDMODE) {
-        case "default":
         case "additive":
+          this._setBlend("additive legacy", target);
+          return;
         case "subtract":
-        case "multiply":
+          this._setBlend("subtract legacy", target);
+          return;
         case "invert":
-          newValue = BLENDMODE;
-          break;
+          this._setBlend("invert legacy", target);
+          return;
+        case "default":
+        case "multiply":
+          this._setBlend(BLENDMODE, target);
+          return;
         default:
           return;
       }
+    }
+
+    setBlend2({ BLENDMODE }, { target }) {
+      switch (BLENDMODE) {
+        case "default":
+        case "default behind":
+        case "additive":
+        case "additive with alpha":
+        case "subtract":
+        case "subtract with alpha":
+        case "multiply":
+        case "invert":
+        case "mask":
+        case "erase":
+          this._setBlend(BLENDMODE, target);
+          return;
+        default:
+          return;
+      }
+    }
+
+    _setBlend(newValue, target) {
       if (target.isStage) return;
       penDirty = true;
       target.blendMode = newValue;
@@ -507,16 +592,32 @@
     }
 
     getBlend(args, { target }) {
-      return target.blendMode ?? "default";
+      switch (target.blendMode) {
+        case "additive legacy":
+          return "additive";
+        case "subtract legacy":
+          return "subtract";
+        case "invert legacy":
+          return "invert";
+        default:
+          return target.blendMode ?? "default";
+      }
     }
 
-    setAdditiveBlend({ STATE }, util) {
-      if (STATE === "on") this.setBlend({ BLENDMODE: "additive" }, util);
-      if (STATE === "off") this.setBlend({ BLENDMODE: "default" }, util);
+    setAdditiveBlend({ STATE }, { target }) {
+      if (STATE === "on") this._setBlend("additive legacy", target);
+      if (STATE === "off") this._setBlend("default", target);
     }
 
     getAdditiveBlend(args, { target }) {
-      return target.blendMode === "additive";
+      switch (target.blendMode) {
+        case "additive":
+        case "additive legacy":
+        case "additive with alpha":
+          return true;
+        default:
+          return false;
+      }
     }
   }
 

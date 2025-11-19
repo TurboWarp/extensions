@@ -20,6 +20,7 @@
 7. [Integration with other extensions](#ext-integration)
 7.1. [Augmented Reality extension](#ar-integration)
 
+
 ## What is this <a name="description"></a>
 **Simple 3D** is an extension by [Vadik1](https://scratch.mit.edu/users/Vadik1) meant to enable creation of GPU accelerated 3D projects. It is not designed for making graphically complex 3D projects (for that, see [Pen+ v7](https://github.com/TurboWarp/extensions/pull/1377) and [WebGL2](https://github.com/TurboWarp/extensions/discussions/378) extensions, both with programmable shaders) and instead it's main focus is allowing people to create 3D projects easily and quickly. Nevertheless, despite lack of programmable shaders, it is still quite powerful. It covers the wide range of usages from something as high level as making an [AR project in less than 20 blocks](#ar-example) with models loaded from OBJ files, to something more low level like doing all the calculations on CPU and streaming transformed polygons every frame (like [Pen+](https://extensions.turbowarp.org/obviousAlexC/penPlus.js)). And of course everything in-between.
 
@@ -41,6 +42,10 @@ So in short, **this extension does not have any kind of scenes, objects, cameras
 3D models consist of vertices which together form primitives (points, lines, triangles). Each vertex has either 2D (XY) or 3D (XYZ) location described with 2 or 3 numbers respectively. Before drawing the mesh, you would usually set up transformation, which tells how to take those initial locations and transform them to correct location on your 2D screen. The typical way to do it, is to chain multiple simple transformations together. Simple transformations can be translation (offsetting), rotation, scaling, mirroring, skewing, etc.
 
 ## Drawing things <a name="simple-drawing"></a>
+
+> [!TIP]
+> For a more complete tutorial, see [here](https://xeltalliv.github.io/simple3d-extension/examples/) (external link).
+
 For now let's not worry about transformations and just draw something as is.
 First step would be to clear the screen:
 ```scratch
@@ -450,11 +455,12 @@ Length of supplied indices and weights lists have to match and be divisible by "
 ---
 ```scratch
 set [my mesh] [original v] transforms [listTransforms v] :: sensing
+set [my mesh] [current v] transforms [listTransforms v] :: sensing
 ```
 Used for setting original and current transforms of each bone.
 Transforms on how to get from original to current will be calculated and applied to vertices based on their bone indices and weights.
 Supplied list of transforms must have length divisible by 16. If not, operation fails.
-When setting one of the transforms, while the other one is not defined or has different length, the one being set will be set to both.
+Setting original transforms is optional. Missing original transforms are treated as empty transforms.
 
 ---
 ```scratch
@@ -530,7 +536,7 @@ This only affects vertex related data. It does not affect uploading texture pixe
 
 **This is one of 2 properties that is not inherited.** This is done for performance reasons and to reduce chances of misuse.
 
-Deafult for mesh is "rarely".
+Default for mesh is "rarely".
 
 ---
 ```scratch
@@ -539,7 +545,8 @@ set [my mesh] from [off v] [list v] :: sensing
 ```
 Decodes a 3D model file and uploads it into a mesh. Block continues instantly, but the model loading is performed in a separate thread, and it finishes with a delay. Currently, only one thread is used, so everything is queued and processed one by one. In the future, multiple threads might be used.
 
-**Note: This block is designed as a more of a shortcut for quick testing, rather than the main way of loading 3D models. For anything more complex make your own 3D model parser.**
+> [!IMPORTANT]
+> This block is designed as a more of a shortcut for quick testing, rather than the main way of loading 3D models. For anything more complex, make your own 3D model parser.
 
 File formats:
  - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) is a very common and well known 3D model file format. It supports UV texture coordinates, materials with colors and textures. However it does not have a standartized way to do vertex colors. This block implements a non-standart but widely supported way to represent vertex colors as 4th - 7th elements of `v`. The OBJ and MTL specification describes a lot of features, only some of which are currently (or even can be) supported by this importer. In particular, there is currently no way to import models which use multiple textures as this extensions only supports 1 texture per mesh. Normals and anything lighting related isn't and can't be supported. **In case both OBJ and MTL files need to be imported, combine them all into 1 list sequentially, first all of the MTL files and then the OBJ file.**
@@ -668,7 +675,19 @@ Use partial updates to add any extra polygons after the range that is being draw
 To remove polygons, move the ones from the end of the drawing range to location of the remove one and then shring the drawing
 range at the end.
 
-Deafult for mesh is not set. Once set, cannot be undone.
+Default for mesh is not set. Once set, cannot be undone.
+
+---
+```scratch
+set [my mesh] instance draw limit (10) :: sensing
+```
+Normally, how many instances are drawn is determined by the length of supplied lists.
+This block can be used to limit the amount of instances drawn to an even lower number.
+This can be useful together with partial list updates to be able to dynamically change amount of drawn instances without having to reupload the entire list. That is, preallocating space for some amount of instances in advance, but drawing less. When new instance needs to be added, using partial updates to update the instance data of the next unused instance and then increasing the limit by 1. To remove an instance, the last instance can be moved in it's place and then the limit reduced by 1.
+
+Setting to any value below 1 is equivalent to setting it to Infinity.
+
+Default for mesh is Infinity.
 
 ---
 ```scratch
@@ -698,8 +717,11 @@ This block may cause stutter when drawing something for the first time, as it wi
 ```
 Creates texture from image at specified URL.
 Will show a prompt if URL is not approved.
-If an image fails to load, you can usually open browser console and see what the error is. (F12 or Ctrl+Shift+I)
-**Note that websites cannot access any data from any other websites unless those other sites explicetly allow it. The correct term for it is CORS (Cross Origin Resource Sharing). You can use some CORS proxy to bypass it.**
+If an image fails to load, you can usually open browser console and see what the error is (F12 or Ctrl+Shift+I).
+
+> [!WARNING]
+> Websites cannot access any data from any other websites unless those other sites explicetly allow it. The correct term for it is CORS (Cross Origin Resource Sharing). You can use some CORS proxy to bypass it.
+
 🐢 Texture gets loaded with a delay.
 
 ---
@@ -902,6 +924,37 @@ Internally extension stores everything with premultiplied alpha. When reading th
 (render target [width v] :: sensing)
 ```
 Allows reading properties of the current render target.
+
+---
+```scratch
+set [viewport box v] to X1:(0) Y1:(0) X2:(100) Y2:(100) :: sensing
+set [clipping box v] to X1:(0) Y1:(0) X2:(100) Y2:(100) :: sensing
+set [readback box v] to X1:(0) Y1:(0) X2:(100) Y2:(100) :: sensing
+```
+Configures custom rectangular areas for different purposes for the currently active render target.
+Viewport box specifies the area to which the rendered image will be stretched to cover from it's normal -1 to 1 range.
+Clipping box specifies the area in which pixels are allowed to be modified.
+Readback box specifies the area from which reading to list and reading to data URI blocks will read the pixels.
+
+Note: coordinates are specified in **real pixels** starting from the bottom left corner, **not scratch units**. You can get the size of the Simple3D layer in pixels from either:
+```scratch
+(stage width :: sensing)
+(stage height :: sensing)
+
+(render target [width v] :: sensing)
+(render target [height v] :: sensing)
+```
+And while it may match scratch units while the high quality pen is disabled, when **high quality pen is on**, the resolution will often be higher. Your projects need to account for that.
+
+Note: Those custom areas can either be set or not set. When they aren't set, they use X1:`0` Y1:`0` X2:`render target width` Y2:`render target height` and automatically update with resolution changes. If you set them to custom values, you need to handle rescaling manually.
+
+---
+```scratch
+clear [viewport box v] :: sensing
+clear [clipping box v] :: sensing
+clear [readback box v] :: sensing
+```
+Removes the custom rectangular areas configured by the block described above.
 
 
 ### Tinting and fog <a name="blocks-tinting-fog"></a>

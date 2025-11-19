@@ -120,7 +120,7 @@
     // We assume all values are sanitized when they are set, so then we can just use them as-is here.
 
     if (monitorText) {
-      css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorText}; }`;
+      css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorText} !important; }`;
     }
     if (monitorBackgroundColor) {
       css += `${monitorRoot}, ${monitorRowsInner} { background: ${monitorBackgroundColor}; }`;
@@ -138,7 +138,7 @@
       css += `${monitorValue}, ${monitorValueLarge} { background: ${variableValueBackground} !important; }`;
     }
     if (variableValueTextColor) {
-      css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor}; }`;
+      css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor} !important; }`;
     }
     if (variableValueRoundness >= 0) {
       css += `${monitorValue} { border-radius: ${variableValueRoundness}px; }`;
@@ -153,7 +153,7 @@
       css += `${monitorRowValueOuter} { background: ${listValueBackground} !important; }`;
     }
     if (listValueText) {
-      css += `${monitorRowValueOuter} { color: ${listValueText}; }`;
+      css += `${monitorRowValueOuter} { color: ${listValueText} !important; }`;
     }
     if (listValueRoundness >= 0) {
       css += `${monitorRowValueOuter} { border-radius: ${listValueRoundness}px; }`;
@@ -728,8 +728,8 @@
                 value: "ask prompt button image",
               },
               {
-                text: Scratch.translate("list scroll rule"),
-                value: "list scroll rule",
+                text: Scratch.translate("list scrolling"),
+                value: "list scrolling",
               },
             ],
           },
@@ -915,11 +915,17 @@
         return askInputRoundness;
       } else if (args.ITEM === "ask prompt button image") {
         return askButtonImage;
-      } else if (args.ITEM === "list scrolling") {
-        if (allowScrolling === "auto") {
-          return "enabled";
-        } else {
+      } else if (
+        args.ITEM === "list scrolling" ||
+        // Old version of this extension had "list scroll rule" in the menu so
+        // we'll support either.
+        // https://github.com/TurboWarp/extensions/pull/2262
+        args.ITEM === "list scroll rule"
+      ) {
+        if (allowScrolling === "hidden") {
           return "disabled";
+        } else {
+          return "enabled";
         }
       }
       return "";

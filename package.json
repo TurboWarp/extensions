@@ -2,6 +2,10 @@
   "name": "@turbowarp/extensions",
   "version": "0.0.1",
   "description": "Unsandboxed extensions for TurboWarp",
+  "exports": {
+    "./builder": "./development/builder.js"
+  },
+  "type": "module",
   "scripts": {
     "start": "node development/server.js",
     "dev": "node development/server.js",
@@ -9,7 +13,9 @@
     "validate": "node development/validate.js",
     "lint": "eslint development extensions --max-warnings=0",
     "format": "prettier . --write",
-    "check-format": "prettier . --check"
+    "check-format": "prettier . --check",
+    "upload-translations": "node development/upload-translations.js",
+    "download-translations": "node development/download-translations.js"
   },
   "repository": {
     "type": "git",
@@ -22,20 +28,21 @@
   "homepage": "https://github.com/TurboWarp/extensions#readme",
   "dependencies": {
     "@turbowarp/json": "^0.1.2",
-    "@turbowarp/scratchblocks": "^3.6.5",
+    "@turbowarp/scratchblocks": "^3.6.7",
     "@turbowarp/types": "git+https://github.com/TurboWarp/types-tw.git#tw",
-    "adm-zip": "^0.5.14",
-    "chokidar": "^3.6.0",
+    "adm-zip": "^0.5.16",
+    "chokidar": "^4.0.3",
     "ejs": "^3.1.10",
-    "express": "^4.19.2",
-    "image-size": "^1.1.1",
+    "eslint": "^9.39.1",
+    "espree": "^9.6.1",
+    "esquery": "^1.6.0",
+    "express": "^5.1.0",
+    "image-size": "^2.0.2",
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "eslint": "^9.8.0",
-    "espree": "^9.6.1",
-    "esquery": "^1.6.0",
-    "prettier": "^3.3.3",
+    "@transifex/api": "^7.1.4",
+    "prettier": "^3.6.0",
     "spdx-expression-parse": "^4.0.0"
   },
   "private": true

@@ -103,6 +103,7 @@
     getInfo() {
       return {
         id: "gsaWebsocket",
+        // eslint-disable-next-line extension/should-translate
         name: "WebSocket",
         docsURI: "https://extensions.turbowarp.org/godslayerakp/ws",
         color1: "#307eff",
@@ -114,7 +115,7 @@
             arguments: {
               URL: {
                 type: ArgumentType.STRING,
-                defaultValue: "wss://echoserver.redman13.repl.co",
+                defaultValue: "wss://echo.websocket.org/",
               },
             },
             text: Scratch.translate("connect to [URL]"),
@@ -293,7 +294,7 @@
               }
 
               // canFetch() checked above
-              // eslint-disable-next-line no-restricted-syntax
+              // eslint-disable-next-line extension/check-can-fetch
               const websocket = new WebSocket(url);
               instance.websocket = websocket;
 

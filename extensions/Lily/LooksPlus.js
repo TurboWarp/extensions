@@ -33,6 +33,8 @@
     return util.runtime.getSpriteTargetByName(nameString);
   };
 
+  const renderer = Scratch.vm.runtime.renderer;
+
   class LooksPlus {
     getInfo() {
       return {
@@ -380,7 +382,7 @@
       const drawableID = target.drawableID;
       const layerOrder = target.getLayerOrder();
       const newLayer = args.LAYER - layerOrder;
-      target.renderer.setDrawableOrder(drawableID, newLayer, "sprite", true);
+      renderer.setDrawableOrder(drawableID, newLayer, "sprite", true);
     }
 
     spriteLayerNumber(args, util) {
@@ -442,7 +444,7 @@
 
     snapshotStage(args, util) {
       return new Promise((resolve) => {
-        Scratch.vm.runtime.renderer.requestSnapshot((uri) => {
+        renderer.requestSnapshot((uri) => {
           resolve(uri);
         });
       });
@@ -467,15 +469,18 @@
       const contentType = args.TYPE;
       const content = args.CONTENT;
       if (contentType === "SVG") {
-        Scratch.vm.runtime.renderer.updateSVGSkin(
-          costume.skinId,
-          Scratch.Cast.toString(content)
-        );
+        try {
+          renderer.updateSVGSkin(
+            costume.skinId,
+            Scratch.Cast.toString(content)
+          );
+          renderer._allSkins[costume.skinId].differsFromAsset = true;
+        } catch (e) {
+          console.error(e);
+        }
       } else {
         console.error("Options other than SVG are currently unavailable");
-        return;
       }
-      Scratch.vm.emitTargetsUpdate();
     }
 
     restoreCostumeContent(args, util) {
@@ -490,21 +495,30 @@
         return;
       }
 
-      //This is here to ensure no changes are made to bitmap costumes, as changes are irreversible
-      //Check will be removed when it's possible to edit bitmap skins
+      // This is here to ensure no changes are made to bitmap costumes, as changes are irreversible
+      // Check will be removed when it's possible to edit bitmap skins
       const format = costume.asset.assetType.runtimeFormat;
       if (format !== "svg") {
         console.error("Costume is not vector");
         return;
       }
 
-      const content = costume.asset.decodeText();
-      const rotationCenterX = costume.rotationCenterX;
-      const rotationCenterY = costume.rotationCenterY;
-      util.target.renderer.updateSVGSkin(costume.skinId, content, [
-        rotationCenterX,
-        rotationCenterY,
-      ]);
+      if (!renderer._allSkins[costume.skinId].differsFromAsset) {
+        return;
+      }
+
+      try {
+        const content = costume.asset.decodeText();
+        const rotationCenterX = costume.rotationCenterX;
+        const rotationCenterY = costume.rotationCenterY;
+        renderer.updateSVGSkin(costume.skinId, content, [
+          rotationCenterX,
+          rotationCenterY,
+        ]);
+        renderer._allSkins[costume.skinId].differsFromAsset = false;
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     costumeContent(args, util) {
@@ -569,12 +583,12 @@
     getSprites() {
       const spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
-      const myself = Scratch.vm.runtime.getEditingTarget().getName();
+      const editingTarget = Scratch.vm.runtime.getEditingTarget();
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) {
           const targetName = target.getName();
-          if (targetName === myself) {
+          if (target === editingTarget) {
             spriteNames.unshift({
               text: "this sprite",
               value: targetName,

@@ -30,7 +30,7 @@
     mouse._clientX = x;
     mouse._scratchX = mouse.runtime.stageWidth * (x / width - 0.5);
     mouse._clientY = y;
-    mouse._scratchY = mouse.runtime.stageWidth * (y / height - 0.5);
+    mouse._scratchY = mouse.runtime.stageHeight * (y / height - 0.5);
     if (typeof isDown === "boolean") {
       const data = {
         button: e.button,

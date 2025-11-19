@@ -1,0 +1,36 @@
+name: Upload translations
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: "upload-translations"
+  cancel-in-progress: true
+
+jobs:
+  upload-translations:
+    runs-on: ubuntu-latest
+
+    # This workflow is not useful to forks without setting up Transifex and modifying the
+    # workflow to use your organization, project, resources, API token, ...
+    if: ${{ github.repository == 'TurboWarp/extensions' && github.ref == 'refs/heads/master' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm ci
+      - name: Upload translations
+        run: npm run upload-translations
+        env:
+          TRANSIFEX_TOKEN: "${{ secrets.TRANSIFEX_TOKEN }}"
+          TRANSIFEX_ORGANIZATION: "turbowarp"
+          TRANSIFEX_PROJECT: "turbowarp"
+          TRANSIFEX_RUNTIME_RESOURCE: "extensions"
+          TRANSIFEX_METADATA_RESOURCE: "extension-metadata"

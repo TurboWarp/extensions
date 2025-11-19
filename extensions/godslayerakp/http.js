@@ -239,6 +239,7 @@
     getInfo() {
       return {
         id: extensionId,
+        // eslint-disable-next-line extension/should-translate
         name: "HTTP",
         color1: "#307eff",
         color2: "#2c5eb0",
@@ -277,7 +278,7 @@
             opcode: "getHeaderJSON",
             blockType: BlockType.REPORTER,
             disableMonitor: true,
-            text: Scratch.translate("headers as json"),
+            text: Scratch.translate("response headers as json"),
           },
           {
             opcode: "getHeaderValue",
@@ -288,7 +289,7 @@
                 defaultValue: "name",
               },
             },
-            text: Scratch.translate("[name] from header"),
+            text: Scratch.translate("[name] from response headers"),
           },
           "---",
           {
@@ -333,7 +334,7 @@
                 defaultValue: this.request.mimeType,
               },
             },
-            text: Scratch.translate("set content type to [type]"),
+            text: Scratch.translate("set request content type to [type]"),
           },
           {
             opcode: "setRequestmethod",
@@ -360,7 +361,7 @@
                 defaultValue: this.request.mimeType,
               },
             },
-            text: Scratch.translate("in header set [name] to [value]"),
+            text: Scratch.translate("in request headers set [name] to [value]"),
           },
           {
             opcode: "setHeaderJSON",
@@ -371,7 +372,7 @@
                 defaultValue: `{"Content-Type": "${this.request.mimeType}"}`,
               },
             },
-            text: Scratch.translate("set headers to json [json]"),
+            text: Scratch.translate("set request headers to json [json]"),
           },
           {
             opcode: "setBody",
@@ -388,7 +389,7 @@
           {
             opcode: "setBodyToForm",
             blockType: BlockType.COMMAND,
-            text: Scratch.translate("set request body to a form"),
+            text: Scratch.translate("set request body to multipart form"),
           },
           {
             opcode: "getFormProperty",
@@ -399,7 +400,7 @@
                 defaultValue: "name",
               },
             },
-            text: Scratch.translate("[name] in request form"),
+            text: Scratch.translate("[name] in multipart form"),
           },
           {
             opcode: "setFormProperty",
@@ -414,7 +415,7 @@
                 defaultValue: "value",
               },
             },
-            text: Scratch.translate("set [name] to [value] in request form"),
+            text: Scratch.translate("set [name] to [value] in multipart form"),
           },
           {
             opcode: "deleteFormProperty",
@@ -425,7 +426,7 @@
                 defaultValue: "name",
               },
             },
-            text: Scratch.translate("delete [name] from request form"),
+            text: Scratch.translate("delete [name] from multipart form"),
           },
           "---",
           {
@@ -520,10 +521,11 @@
           },
           mimeType: {
             items: [
+              "application/json",
+              "application/x-www-form-urlencoded",
               "application/javascript",
               "application/ogg",
               "application/pdf",
-              "application/json",
               "application/ld+json",
               "application/xml",
               "application/zip",

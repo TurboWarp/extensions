@@ -13,21 +13,12 @@
 
 //if you are looking for extension settings search up /* EXTENSION SETTINGS */
 
-//7.1.5 patch notes
+//7.1.8 patch notes
 
 /*
-  * -- Added -- *
-  * Extension settings
-  * Added a patch for mods with different or "Unique" urls Suggested on discord
-  * This little patch notes section
-
-  ? -- Changed -- ?
-  ? Added a fix for render textures not removing themselves politely.
-  ? General bug fixes
-  ? Fixed CSS bugs
-
-  ! -- Removed -- !
-  ! Herobrine?
+  ? -- Changes -- ?
+    ? Bug Fixes
+    ? Standardized naming
 */
 
 (function (Scratch) {
@@ -149,112 +140,111 @@
     untextured: {
       Shaders: {
         vert: `
-                    attribute highp vec4 a_position;
-                    attribute highp vec4 a_color;
-                    varying highp vec4 v_color;
-
-                    uniform highp mat4 u_transform;
-
-                    highp vec4 rotation(highp vec4 invec4) {
-                      return vec4(
-                        (invec4.y) * u_transform[1][0] + (invec4.x) * u_transform[1][1],
-                        (invec4.y) * u_transform[1][1] - (invec4.x) * u_transform[1][0],
-                        invec4.zw
-                      );
-                    }
-
-                    void main()
-                    {
-                        v_color = a_color;
-                        gl_Position = (rotation(a_position) + vec4(u_transform[0][2],u_transform[0][3],0,0)) * vec4(a_position.w * u_transform[0][0],a_position.w * u_transform[0][1],1,1) - vec4(0,0,1,0);
-                    }
-                `,
-        frag: `
-                    varying highp vec4 v_color;
-
-                    void main()
-                    {
-                      gl_FragColor = v_color;
-                      gl_FragColor.rgb *= gl_FragColor.a;
-                      if (gl_FragColor.a == 0.0) {
-                        discard;
+                      attribute highp vec4 a_position;
+                      attribute highp vec4 a_color;
+                      varying highp vec4 v_color;
+  
+                      uniform highp mat4 u_transform;
+  
+                      highp vec4 rotation(highp vec4 invec4) {
+                        return vec4(
+                          (invec4.y) * u_transform[1][0] + (invec4.x) * u_transform[1][1],
+                          (invec4.y) * u_transform[1][1] - (invec4.x) * u_transform[1][0],
+                          invec4.zw
+                        );
                       }
-                    }
-                `,
+  
+                      void main()
+                      {
+                          v_color = a_color;
+                          gl_Position = (rotation(a_position) + vec4(u_transform[0][2],u_transform[0][3],0,0)) * vec4(a_position.w * u_transform[0][0],a_position.w * u_transform[0][1],1,1) - vec4(0,0,1,0);
+                      }
+                  `,
+        frag: `
+                      varying highp vec4 v_color;
+  
+                      void main()
+                      {
+                        gl_FragColor = v_color;
+                        gl_FragColor.rgb *= gl_FragColor.a;
+                        if (gl_FragColor.a == 0.0) {
+                          discard;
+                        }
+                      }
+                  `,
       },
       ProgramInf: null,
     },
     textured: {
       Shaders: {
         vert: `
-                    attribute highp vec4 a_position;
-                    attribute highp vec4 a_color;
-                    attribute highp vec2 a_texCoord;
-
-                    varying highp vec4 v_color;
-                    varying highp vec2 v_texCoord;
-
-                    uniform highp mat4 u_transform;
-
-                    highp vec4 rotation(highp vec4 invec4) {
-                      return vec4(
-                        (invec4.y) * u_transform[1][0] + (invec4.x) * u_transform[1][1],
-                        (invec4.y) * u_transform[1][1] - (invec4.x) * u_transform[1][0],
-                        invec4.zw
-                      );
-                    }
-
-                    void main()
-                    {
-                        v_color = a_color;
-                        v_texCoord = a_texCoord;
-                        gl_Position = (rotation(a_position) + vec4(u_transform[0][2],u_transform[0][3],0,0)) * vec4(a_position.w * u_transform[0][0],a_position.w * u_transform[0][1],1,1) - vec4(0,0,1,0);
-                    }
-                `,
+                      attribute highp vec4 a_position;
+                      attribute highp vec4 a_color;
+                      attribute highp vec2 a_texCoord;
+  
+                      varying highp vec4 v_color;
+                      varying highp vec2 v_texCoord;
+  
+                      uniform highp mat4 u_transform;
+  
+                      highp vec4 rotation(highp vec4 invec4) {
+                        return vec4(
+                          (invec4.y) * u_transform[1][0] + (invec4.x) * u_transform[1][1],
+                          (invec4.y) * u_transform[1][1] - (invec4.x) * u_transform[1][0],
+                          invec4.zw
+                        );
+                      }
+  
+                      void main()
+                      {
+                          v_color = a_color;
+                          v_texCoord = a_texCoord;
+                          gl_Position = (rotation(a_position) + vec4(u_transform[0][2],u_transform[0][3],0,0)) * vec4(a_position.w * u_transform[0][0],a_position.w * u_transform[0][1],1,1) - vec4(0,0,1,0);
+                      }
+                  `,
         frag: `
-                    uniform sampler2D u_texture;
-
-                    varying highp vec2 v_texCoord;
-                    varying highp vec4 v_color;
-
-                    void main()
-                    {
-                        gl_FragColor = texture2D(u_texture, mod(v_texCoord,1.0)) * v_color;
-                        gl_FragColor.rgb *= gl_FragColor.a;
-                        if (gl_FragColor.a == 0.0) {
-                          discard;
-                        }
-                    }
-                `,
+                      uniform sampler2D u_texture;
+  
+                      varying highp vec2 v_texCoord;
+                      varying highp vec4 v_color;
+  
+                      void main()
+                      {
+                          gl_FragColor = texture2D(u_texture, mod(v_texCoord,1.0)) * v_color;
+                          gl_FragColor.rgb *= gl_FragColor.a;
+                          if (gl_FragColor.a == 0.0) {
+                            discard;
+                          }
+                      }
+                  `,
       },
       ProgramInf: null,
     },
     draw: {
       Shaders: {
         vert: `
-                    attribute highp vec4 a_position;
-
-                    varying highp vec2 v_texCoord;
-                    attribute highp vec2 a_texCoord;
-
-                    void main()
-                    {
-                        gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
-                        v_texCoord = (a_position.xy / 2.0) + vec2(0.5,0.5);
-                    }
-                `,
+                      attribute highp vec4 a_position;
+  
+                      varying highp vec2 v_texCoord;
+                      attribute highp vec2 a_texCoord;
+  
+                      void main()
+                      {
+                          gl_Position = a_position * vec4(a_position.w,a_position.w,0,1);
+                          v_texCoord = (a_position.xy / 2.0) + vec2(0.5,0.5);
+                      }
+                  `,
         frag: `
-                    varying highp vec2 v_texCoord;
-
-                    uniform sampler2D u_drawTex;
-
-                    void main()
-                    {
-                      gl_FragColor = texture2D(u_drawTex, v_texCoord);
-                      gl_FragColor.rgb = clamp(gl_FragColor.rgb / (gl_FragColor.a + 1e-3), 0.0, 1.0);
-                      gl_FragColor.rgb *= gl_FragColor.a;
-                    }
-                `,
+                      varying highp vec2 v_texCoord;
+  
+                      uniform sampler2D u_drawTex;
+  
+                      void main()
+                      {
+                        gl_FragColor = texture2D(u_drawTex, v_texCoord);
+                        gl_FragColor.rgb = clamp(gl_FragColor.rgb / (gl_FragColor.a + 1e-3), 0.0, 1.0);
+                      }
+                  `,
       },
       ProgramInf: null,
     },
@@ -357,27 +347,27 @@
   //Just for our eyes sakes
   // prettier-ignore
   let reRenderInfo = twgl.createBufferInfoFromArrays(gl, {
-    a_position: {
-      numComponents: 4, data: [
-        -1, -1, 0, 1,
-        1, -1, 0, 1,
-        1, 1, 0, 1,
-        -1, -1, 0, 1,
-        1, 1, 0, 1,
-        -1, 1, 0, 1
-      ]
-    },
-    a_texCoord: {
-      numComponents: 2, data: [
-        0, 1,
-        0, 0,
-        1, 0,
-        0, 1,
-        0, 0,
-        1, 0
-      ]
-    }
-  });
+      a_position: {
+        numComponents: 4, data: [
+          -1, -1, 0, 1,
+          1, -1, 0, 1,
+          1, 1, 0, 1,
+          -1, -1, 0, 1,
+          1, 1, 0, 1,
+          -1, 1, 0, 1
+        ]
+      },
+      a_texCoord: {
+        numComponents: 2, data: [
+          0, 1,
+          0, 0,
+          1, 0,
+          0, 1,
+          0, 0,
+          1, 0
+        ]
+      }
+    });
 
   twgl.setBuffersAndAttributes(
     gl,
@@ -441,7 +431,7 @@
       },
     };
 
-    extensionVersion = "7.1.7";
+    extensionVersion = "7.1.8";
 
     //?Stores our attributes
     triangleAttributesOfAllSprites = {};
@@ -547,32 +537,32 @@
           //Just for our eyes sakes
           // prettier-ignore
           inputInfo = {
-            a_position: new Float32Array([
-              x1, y1, triAttribs[5], triAttribs[6],
-              x2, y2, triAttribs[13], triAttribs[14],
-              x3, y3, triAttribs[21], triAttribs[22]
-            ]),
-            a_color: new Float32Array([
-              penColor[0] * triAttribs[2], penColor[1] * triAttribs[3], penColor[2] * triAttribs[4], penColor[3] * triAttribs[7],
-              penColor[0] * triAttribs[10], penColor[1] * triAttribs[11], penColor[2] * triAttribs[12], penColor[3] * triAttribs[15],
-              penColor[0] * triAttribs[18], penColor[1] * triAttribs[19], penColor[2] * triAttribs[20], penColor[3] * triAttribs[23]
-            ])
-          };
+              a_position: new Float32Array([
+                x1, y1, triAttribs[5], triAttribs[6],
+                x2, y2, triAttribs[13], triAttribs[14],
+                x3, y3, triAttribs[21], triAttribs[22]
+              ]),
+              a_color: new Float32Array([
+                penColor[0] * triAttribs[2], penColor[1] * triAttribs[3], penColor[2] * triAttribs[4], penColor[3] * triAttribs[7],
+                penColor[0] * triAttribs[10], penColor[1] * triAttribs[11], penColor[2] * triAttribs[12], penColor[3] * triAttribs[15],
+                penColor[0] * triAttribs[18], penColor[1] * triAttribs[19], penColor[2] * triAttribs[20], penColor[3] * triAttribs[23]
+              ])
+            };
         } else {
           //Just for our eyes sakes
           // prettier-ignore
           inputInfo = {
-            a_position: new Float32Array([
-              x1, y1, 1, 1,
-              x2, y2, 1, 1,
-              x3, y3, 1, 1
-            ]),
-            a_color: new Float32Array([
-              penColor[0], penColor[1], penColor[2], penColor[3],
-              penColor[0], penColor[1], penColor[2], penColor[3],
-              penColor[0], penColor[1], penColor[2], penColor[3]
-            ])
-          };
+              a_position: new Float32Array([
+                x1, y1, 1, 1,
+                x2, y2, 1, 1,
+                x3, y3, 1, 1
+              ]),
+              a_color: new Float32Array([
+                penColor[0], penColor[1], penColor[2], penColor[3],
+                penColor[0], penColor[1], penColor[2], penColor[3],
+                penColor[0], penColor[1], penColor[2], penColor[3]
+              ])
+            };
         }
 
         bufferInfo.numElements = 3;
@@ -614,42 +604,42 @@
           //Just for our eyes sakes
           // prettier-ignore
           inputInfo = {
-            a_position: new Float32Array([
-              x1, y1, triAttribs[5], triAttribs[6],
-              x2, y2, triAttribs[13], triAttribs[14],
-              x3, y3, triAttribs[21], triAttribs[22]
-            ]),
-            a_color: new Float32Array([
-              triAttribs[2], triAttribs[3], triAttribs[4], triAttribs[7],
-              triAttribs[10], triAttribs[11], triAttribs[12], triAttribs[15],
-              triAttribs[18], triAttribs[19], triAttribs[20], triAttribs[23]
-            ]),
-            a_texCoord: new Float32Array([
-              triAttribs[0], triAttribs[1],
-              triAttribs[8], triAttribs[9],
-              triAttribs[16], triAttribs[17]
-            ])
-          };
+              a_position: new Float32Array([
+                x1, y1, triAttribs[5], triAttribs[6],
+                x2, y2, triAttribs[13], triAttribs[14],
+                x3, y3, triAttribs[21], triAttribs[22]
+              ]),
+              a_color: new Float32Array([
+                triAttribs[2], triAttribs[3], triAttribs[4], triAttribs[7],
+                triAttribs[10], triAttribs[11], triAttribs[12], triAttribs[15],
+                triAttribs[18], triAttribs[19], triAttribs[20], triAttribs[23]
+              ]),
+              a_texCoord: new Float32Array([
+                triAttribs[0], triAttribs[1],
+                triAttribs[8], triAttribs[9],
+                triAttribs[16], triAttribs[17]
+              ])
+            };
         } else {
           //Just for our eyes sakes
           // prettier-ignore
           inputInfo = {
-            a_position: new Float32Array([
-              x1, y1, 1, 1,
-              x2, y2, 1, 1,
-              x3, y3, 1, 1
-            ]),
-            a_color: new Float32Array([
-              1, 1, 1, 1,
-              1, 1, 1, 1,
-              1, 1, 1, 1
-            ]),
-            a_texCoord: new Float32Array([
-              0, 0,
-              0, 1,
-              1, 1
-            ])
-          };
+              a_position: new Float32Array([
+                x1, y1, 1, 1,
+                x2, y2, 1, 1,
+                x3, y3, 1, 1
+              ]),
+              a_color: new Float32Array([
+                1, 1, 1, 1,
+                1, 1, 1, 1,
+                1, 1, 1, 1
+              ]),
+              a_texCoord: new Float32Array([
+                0, 0,
+                0, 1,
+                1, 1
+              ])
+            };
         }
 
         bufferInfo.numElements = 3;
@@ -771,13 +761,13 @@
         );
 
         /*gl.bindFramebuffer(gl.FRAMEBUFFER, triFrameBuffer);
-
-        gl.bindFramebuffer(
-          gl.FRAMEBUFFER,
-          renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
-        );
-
-        gl.useProgram(penPlusShaders.pen.program);*/
+  
+          gl.bindFramebuffer(
+            gl.FRAMEBUFFER,
+            renderer._allSkins[renderer._penSkinId]._framebuffer.framebuffer
+          );
+  
+          gl.useProgram(penPlusShaders.pen.program);*/
       },
     };
 
@@ -887,7 +877,7 @@
               return;
             }
             // Permission is checked earlier.
-            // eslint-disable-next-line no-restricted-syntax
+            // eslint-disable-next-line extension/check-can-fetch
             const image = new Image();
             image.onload = function () {
               gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -2886,7 +2876,7 @@
                 value: "brightness",
               },
               {
-                text: Scratch.translate("transparency"),
+                text: Scratch.translate("opacity"),
                 value: "transparency",
               },
               {
@@ -2902,17 +2892,17 @@
           },
           stampSquare: {
             items: [
-              { text: Scratch.translate("Width"), value: "0" },
-              { text: Scratch.translate("Height"), value: "1" },
-              { text: Scratch.translate("Rotation"), value: "2" },
+              { text: Scratch.translate("width"), value: "0" },
+              { text: Scratch.translate("height"), value: "1" },
+              { text: Scratch.translate("rotation"), value: "2" },
               { text: Scratch.translate("U-Multiplier"), value: "3" },
               { text: Scratch.translate("U-Offset"), value: "4" },
               { text: Scratch.translate("V-Multiplier"), value: "5" },
               { text: Scratch.translate("V-Offset"), value: "6" },
-              { text: Scratch.translate("Red Tint"), value: "7" },
-              { text: Scratch.translate("Green Tint"), value: "8" },
-              { text: Scratch.translate("Blue Tint"), value: "9" },
-              { text: Scratch.translate("Transparency"), value: "10" },
+              { text: Scratch.translate("red Tint"), value: "7" },
+              { text: Scratch.translate("green Tint"), value: "8" },
+              { text: Scratch.translate("blue Tint"), value: "9" },
+              { text: Scratch.translate("opacity"), value: "10" },
               { text: Scratch.translate("depth value"), value: "11" },
             ],
             acceptReporters: true,
@@ -2924,7 +2914,7 @@
               { text: Scratch.translate("red tint"), value: "2" },
               { text: Scratch.translate("green tint"), value: "3" },
               { text: Scratch.translate("blue tint"), value: "4" },
-              { text: Scratch.translate("transparency"), value: "7" },
+              { text: Scratch.translate("opacity"), value: "7" },
               { text: Scratch.translate("corner pinch"), value: "6" },
               { text: Scratch.translate("depth value"), value: "5" },
             ],
@@ -2935,23 +2925,23 @@
               { text: Scratch.translate("red tint"), value: "2" },
               { text: Scratch.translate("green tint"), value: "3" },
               { text: Scratch.translate("blue tint"), value: "4" },
-              { text: Scratch.translate("transparency"), value: "7" },
+              { text: Scratch.translate("opacity"), value: "7" },
               { text: Scratch.translate("depth value"), value: "5" },
             ],
             acceptReporters: true,
           },
           filterType: {
             items: [
-              { text: Scratch.translate("Closest"), value: "9728" },
-              { text: Scratch.translate("Linear"), value: "9729" },
+              { text: Scratch.translate("closest"), value: "9728" },
+              { text: Scratch.translate("linear"), value: "9729" },
             ],
             acceptReporters: true,
           },
           wrapType: {
             items: [
-              { text: Scratch.translate("Clamp"), value: "33071" },
-              { text: Scratch.translate("Repeat"), value: "10497" },
-              { text: Scratch.translate("Mirrored"), value: "33648" },
+              { text: Scratch.translate("clamp"), value: "33071" },
+              { text: Scratch.translate("repeat"), value: "10497" },
+              { text: Scratch.translate("mirrored"), value: "33648" },
             ],
             acceptReporters: true,
           },
@@ -3917,9 +3907,6 @@
 
       //?Renderer Freaks out if we don't do this so do it.
 
-      //trying my best to reduce memory usage
-      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-
       //Paratheses because I know some obscure browser will screw this up.
       x1 = Scratch.Cast.toNumber(x1);
       x2 = Scratch.Cast.toNumber(x2);
@@ -3956,9 +3943,6 @@
         : renderer._nativeSize;
 
       //?Renderer Freaks out if we don't do this so do it.
-
-      //trying my best to reduce memory usage
-      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
 
       //Paratheses because I know some obscure browser will screw this up.
       x1 = Scratch.Cast.toNumber(x1);
@@ -4077,7 +4061,7 @@
       if (costIndex >= 0) {
         const curCostume =
           curTarget.sprite.costumes[costIndex].asset.encodeDataURI();
-        return curCostume;
+        return curCostume || 0;
       }
     }
 
@@ -4085,7 +4069,7 @@
       //Just a simple thing to allow for pen drawing
       const costIndex = this.penPlusCostumeLibrary[costume];
       if (costIndex) {
-        return costIndex[dimension];
+        return costIndex[dimension] || "";
       }
     }
 
@@ -4142,11 +4126,13 @@
           y = Math.floor(y - 1);
           const colorIndex = (y * curCostume.width + x) * 4;
           if (textureData[colorIndex] && x < curCostume.width && x >= 0) {
-            return this.colorLib.rgbtoSColor({
-              R: textureData[colorIndex] / 2.55,
-              G: textureData[colorIndex + 1] / 2.55,
-              B: textureData[colorIndex + 2] / 2.55,
-            });
+            return (
+              this.colorLib.rgbtoSColor({
+                R: textureData[colorIndex] / 2.55,
+                G: textureData[colorIndex + 1] / 2.55,
+                B: textureData[colorIndex + 2] / 2.55,
+              }) || "0"
+            );
           }
           return this.colorLib.rgbtoSColor({ R: 100, G: 100, B: 100 });
         }
@@ -4162,7 +4148,7 @@
           curCostume.height
         );
         if (textureData) {
-          return textureData;
+          return textureData || "";
         }
         return "";
       }
@@ -4341,8 +4327,6 @@
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
 
-      gl.viewport(0, 0, nativeSize[0], nativeSize[1]);
-
       //Safe to assume they have a buffer;
       const buffer = this.programs[shader].buffer;
 
@@ -4366,54 +4350,54 @@
         //Just for our eyes sakes
         // prettier-ignore
         inputInfo.a_position = {
-          data: [
-            x1, -y1, triAttribs[5], triAttribs[6],
-            x2, -y2, triAttribs[13], triAttribs[14],
-            x3, -y3, triAttribs[21], triAttribs[22]
-          ]
-        }
+            data: [
+              x1, -y1, triAttribs[5], triAttribs[6],
+              x2, -y2, triAttribs[13], triAttribs[14],
+              x3, -y3, triAttribs[21], triAttribs[22]
+            ]
+          }
         // prettier-ignore
         inputInfo.a_color = {
-          data: [
-            triAttribs[2], triAttribs[3], triAttribs[4], triAttribs[7],
-            triAttribs[10], triAttribs[11], triAttribs[12], triAttribs[15],
-            triAttribs[18], triAttribs[19], triAttribs[20], triAttribs[23]
-          ]
-        }
+            data: [
+              triAttribs[2], triAttribs[3], triAttribs[4], triAttribs[7],
+              triAttribs[10], triAttribs[11], triAttribs[12], triAttribs[15],
+              triAttribs[18], triAttribs[19], triAttribs[20], triAttribs[23]
+            ]
+          }
         // prettier-ignore
         inputInfo.a_texCoord = {
-          data: [
-            triAttribs[0], triAttribs[1],
-            triAttribs[8], triAttribs[9],
-            triAttribs[16], triAttribs[17]
-          ]
-        }
+            data: [
+              triAttribs[0], triAttribs[1],
+              triAttribs[8], triAttribs[9],
+              triAttribs[16], triAttribs[17]
+            ]
+          }
       } else {
         //Just for our eyes sakes
         // prettier-ignore
         inputInfo.a_position = {
-          data: [
-            x1, y1, 1, 1,
-            x2, y2, 1, 1,
-            x3, y3, 1, 1
-          ]
-        }
+            data: [
+              x1, y1, 1, 1,
+              x2, y2, 1, 1,
+              x3, y3, 1, 1
+            ]
+          }
         // prettier-ignore
         inputInfo.a_color = {
-          data: [
-            1, 1, 1, 1,
-            1, 1, 1, 1,
-            1, 1, 1, 1
-          ]
-        }
+            data: [
+              1, 1, 1, 1,
+              1, 1, 1, 1,
+              1, 1, 1, 1
+            ]
+          }
         // prettier-ignore
         inputInfo.a_texCoord = {
-          data: [
-            0, 0,
-            0, 1,
-            1, 1
-          ]
-        }
+            data: [
+              0, 0,
+              0, 1,
+              1, 1
+            ]
+          }
       }
 
       const keys = Object.keys(inputInfo);
@@ -4680,7 +4664,7 @@
         return parseInt(str);
       });
 
-      this.programs[shader][uniformName] = converted;
+      this.programs[shader].uniformDat[uniformName] = converted;
     }
 
     setCubeInShader({ uniformName, shader, cubemap }) {
@@ -5082,39 +5066,39 @@
       document.body.appendChild(bgFade);
 
       /*
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  ⠀⢀⡔⣻⠁⠀⢀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢀⣾⠳⢶⣦⠤⣀⠀⠀⠀⠀⠀⠀⠀⣾⢀⡇⡴⠋⣀⠴⣊⣩⣤⠶⠞⢹⣄⠀⠀⠀
-⠀⠀⠀⠀⢸⠀⠀⢠⠈⠙⠢⣙⠲⢤⠤⠤⠀⠒⠳⡄⣿⢀⠾⠓⢋⠅⠛⠉⠉⠝⠀⠼⠀⠀⠀
-⠀⠀⠀⠀⢸⠀⢰⡀⠁⠀⠀⠈⠑⠦⡀⠀⠀⠀⠀⠈⠺⢿⣂⠀⠉⠐⠲⡤⣄⢉⠝⢸⠀⠀⠀
-⠀⠀⠀⠀⢸⠀⢀⡹⠆⠀⠀⠀⠀⡠⠃⠀⠀⠀⠀⠀⠀⠀⠉⠙⠲⣄⠀⠀⠙⣷⡄⢸⠀⠀⠀
-⠀⠀⠀⠀⢸⡀⠙⠂⢠⠀⠀⡠⠊⠀⠀⠀⠀⢠⠀⠀⠀⠀⠘⠄⠀⠀⠑⢦⣔⠀⢡⡸⠀⠀⠀
-⠀⠀⠀⠀⢀⣧⠀⢀⡧⣴⠯⡀⠀⠀⠀⠀⠀⡎⠀⠀⠀⠀⠀⢸⡠⠔⠈⠁⠙⡗⡤⣷⡀⠀⠀
-⠀⠀⠀⠀⡜⠈⠚⠁⣬⠓⠒⢼⠅⠀⠀⠀⣠⡇⠀⠀⠀⠀⠀⠀⣧⠀⠀⠀⡀⢹⠀⠸⡄⠀⠀
-⠀⠀⠀⡸⠀⠀⠀⠘⢸⢀⠐⢃⠀⠀⠀⡰⠋⡇⠀⠀⠀⢠⠀⠀⡿⣆⠀⠀⣧⡈⡇⠆⢻⠀⠀
-⠀⠀⢰⠃⠀⠀⢀⡇⠼⠉⠀⢸⡤⠤⣶⡖⠒⠺⢄⡀⢀⠎⡆⣸⣥⠬⠧⢴⣿⠉⠁⠸⡀⣇⠀
-⠀⠀⠇⠀⠀⠀⢸⠀⠀⠀⣰⠋⠀⢸⣿⣿⠀⠀⠀⠙⢧⡴⢹⣿⣿⠀⠀⠀⠈⣆⠀⠀⢧⢹⡄
-⠀⣸⠀⢠⠀⠀⢸⡀⠀⠀⢻⡀⠀⢸⣿⣿⠀⠀⠀⠀⡼⣇⢸⣿⣿⠀⠀⠀⢀⠏⠀⠀⢸⠀⠇
-⠀⠓⠈⢃⠀⠀⠀⡇⠀⠀⠀⣗⠦⣀⣿⡇⠀⣀⠤⠊⠀⠈⠺⢿⣃⣀⠤⠔⢸⠀⠀⠀⣼⠑⢼
-⠀⠀⠀⢸⡀⣀⣾⣷⡀⠀⢸⣯⣦⡀⠀⠀⠀⢇⣀⣀⠐⠦⣀⠘⠀⠀⢀⣰⣿⣄⠀⠀⡟⠀⠀
-⠀⠀⠀⠀⠛⠁⣿⣿⣧⠀⣿⣿⣿⣿⣦⣀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣴⣿⣿⡿⠈⠢⣼⡇⠀⠀           Bryunyeuuuuuu
-⠀⠀⠀⠀⠀⠀⠈⠁⠈⠻⠈⢻⡿⠉⣿⠿⠛⡇⠒⠒⢲⠺⢿⣿⣿⠉⠻⡿⠁⠀⠀⠈⠁⠀⠀          Smooth criminal
-⢀⠤⠒⠦⡀⠀⠀⠀⠀⠀⠀⠀⢀⠞⠉⠆⠀⠀⠉⠉⠉⠀⠀⡝⣍⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⡎⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⡰⠋⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⢡⠈⢦⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⡇⠀⠀⠸⠁⠀⠀⠀⠀⢀⠜⠁⠀⠀⠀⡸⠀⠀⠀⠀⠀⠀⠀⠘⡄⠈⢳⡀⠀⠀⠀⠀⠀⠀⠀
-⡇⠀⠀⢠⠀⠀⠀⠀⠠⣯⣀⠀⠀⠀⡰⡇⠀⠀⠀⠀⠀⠀⠀⠀⢣⠀⢀⡦⠤⢄⡀⠀⠀⠀⠀
-⢱⡀⠀⠈⠳⢤⣠⠖⠋⠛⠛⢷⣄⢠⣷⠁⠀⠀⠀⠀⠀⠀⠀⠀⠘⡾⢳⠃⠀⠀⠘⢇⠀⠀⠀
-⠀⠙⢦⡀⠀⢠⠁⠀⠀⠀⠀⠀⠙⣿⣏⣀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣧⡃⠀⠀⠀⠀⣸⠀⠀⠀
-⠀⠀⠀⠈⠉⢺⣄⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣗⣤⣀⣠⡾⠃⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠣⢅⡤⣀⣀⣠⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠉⠉⠉⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠁⠀⠉⣿⣿⣿⣿⣿⡿⠻⣿⣿⣿⣿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⠀⠀⠀⠀⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣟⠀⠀⢠⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⣿⠀⠀⢸⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⡏⠀⠀⢸⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⠀⠀⠀⢺⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠈⠉⠻⣿⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⣿⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀
-      */
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  ⠀⢀⡔⣻⠁⠀⢀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⢀⣾⠳⢶⣦⠤⣀⠀⠀⠀⠀⠀⠀⠀⣾⢀⡇⡴⠋⣀⠴⣊⣩⣤⠶⠞⢹⣄⠀⠀⠀
+  ⠀⠀⠀⠀⢸⠀⠀⢠⠈⠙⠢⣙⠲⢤⠤⠤⠀⠒⠳⡄⣿⢀⠾⠓⢋⠅⠛⠉⠉⠝⠀⠼⠀⠀⠀
+  ⠀⠀⠀⠀⢸⠀⢰⡀⠁⠀⠀⠈⠑⠦⡀⠀⠀⠀⠀⠈⠺⢿⣂⠀⠉⠐⠲⡤⣄⢉⠝⢸⠀⠀⠀
+  ⠀⠀⠀⠀⢸⠀⢀⡹⠆⠀⠀⠀⠀⡠⠃⠀⠀⠀⠀⠀⠀⠀⠉⠙⠲⣄⠀⠀⠙⣷⡄⢸⠀⠀⠀
+  ⠀⠀⠀⠀⢸⡀⠙⠂⢠⠀⠀⡠⠊⠀⠀⠀⠀⢠⠀⠀⠀⠀⠘⠄⠀⠀⠑⢦⣔⠀⢡⡸⠀⠀⠀
+  ⠀⠀⠀⠀⢀⣧⠀⢀⡧⣴⠯⡀⠀⠀⠀⠀⠀⡎⠀⠀⠀⠀⠀⢸⡠⠔⠈⠁⠙⡗⡤⣷⡀⠀⠀
+  ⠀⠀⠀⠀⡜⠈⠚⠁⣬⠓⠒⢼⠅⠀⠀⠀⣠⡇⠀⠀⠀⠀⠀⠀⣧⠀⠀⠀⡀⢹⠀⠸⡄⠀⠀
+  ⠀⠀⠀⡸⠀⠀⠀⠘⢸⢀⠐⢃⠀⠀⠀⡰⠋⡇⠀⠀⠀⢠⠀⠀⡿⣆⠀⠀⣧⡈⡇⠆⢻⠀⠀
+  ⠀⠀⢰⠃⠀⠀⢀⡇⠼⠉⠀⢸⡤⠤⣶⡖⠒⠺⢄⡀⢀⠎⡆⣸⣥⠬⠧⢴⣿⠉⠁⠸⡀⣇⠀
+  ⠀⠀⠇⠀⠀⠀⢸⠀⠀⠀⣰⠋⠀⢸⣿⣿⠀⠀⠀⠙⢧⡴⢹⣿⣿⠀⠀⠀⠈⣆⠀⠀⢧⢹⡄
+  ⠀⣸⠀⢠⠀⠀⢸⡀⠀⠀⢻⡀⠀⢸⣿⣿⠀⠀⠀⠀⡼⣇⢸⣿⣿⠀⠀⠀⢀⠏⠀⠀⢸⠀⠇
+  ⠀⠓⠈⢃⠀⠀⠀⡇⠀⠀⠀⣗⠦⣀⣿⡇⠀⣀⠤⠊⠀⠈⠺⢿⣃⣀⠤⠔⢸⠀⠀⠀⣼⠑⢼
+  ⠀⠀⠀⢸⡀⣀⣾⣷⡀⠀⢸⣯⣦⡀⠀⠀⠀⢇⣀⣀⠐⠦⣀⠘⠀⠀⢀⣰⣿⣄⠀⠀⡟⠀⠀
+  ⠀⠀⠀⠀⠛⠁⣿⣿⣧⠀⣿⣿⣿⣿⣦⣀⠀⠀⠀⠀⠀⠀⠀⣀⣠⣴⣿⣿⡿⠈⠢⣼⡇⠀⠀           Bryunyeuuuuuu
+  ⠀⠀⠀⠀⠀⠀⠈⠁⠈⠻⠈⢻⡿⠉⣿⠿⠛⡇⠒⠒⢲⠺⢿⣿⣿⠉⠻⡿⠁⠀⠀⠈⠁⠀⠀          Smooth criminal
+  ⢀⠤⠒⠦⡀⠀⠀⠀⠀⠀⠀⠀⢀⠞⠉⠆⠀⠀⠉⠉⠉⠀⠀⡝⣍⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⡎⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⡰⠋⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⢡⠈⢦⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⡇⠀⠀⠸⠁⠀⠀⠀⠀⢀⠜⠁⠀⠀⠀⡸⠀⠀⠀⠀⠀⠀⠀⠘⡄⠈⢳⡀⠀⠀⠀⠀⠀⠀⠀
+  ⡇⠀⠀⢠⠀⠀⠀⠀⠠⣯⣀⠀⠀⠀⡰⡇⠀⠀⠀⠀⠀⠀⠀⠀⢣⠀⢀⡦⠤⢄⡀⠀⠀⠀⠀
+  ⢱⡀⠀⠈⠳⢤⣠⠖⠋⠛⠛⢷⣄⢠⣷⠁⠀⠀⠀⠀⠀⠀⠀⠀⠘⡾⢳⠃⠀⠀⠘⢇⠀⠀⠀
+  ⠀⠙⢦⡀⠀⢠⠁⠀⠀⠀⠀⠀⠙⣿⣏⣀⠀⠀⠀⠀⠀⠀⠀⣀⣴⣧⡃⠀⠀⠀⠀⣸⠀⠀⠀
+  ⠀⠀⠀⠈⠉⢺⣄⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣗⣤⣀⣠⡾⠃⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀⠣⢅⡤⣀⣀⣠⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⠉⠉⠉⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠁⠀⠉⣿⣿⣿⣿⣿⡿⠻⣿⣿⣿⣿⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⠀⠀⠀⠀⣿⣿⣿⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⣿⣟⠀⠀⢠⣿⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢰⣿⣿⣿⣿⣿⠀⠀⢸⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣿⣿⡏⠀⠀⢸⣿⣿⣿⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⣿⣿⣿⣿⣿⠀⠀⠀⢺⣿⣿⣿⣿⣿⣿⣷⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⠀⠀⠀⠀⠈⠉⠻⣿⣿⣿⠟⠀⠀⠀⠀⠀⠀⠀⠀
+  ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⢿⣿⣿⣿⠏⠀⠀⠀⠀⠀⠀⠀⠀
+        */
       const shaderManager = document.createElement("div");
 
       //Create our menu modal
@@ -5808,7 +5792,8 @@
       if (!listOBJ) return { successful: false };
       let merged = {};
 
-      if (this.listCache[refinedID].prev != listOBJ) {
+      const stringified = JSON.stringify(listOBJ);
+      if (this.listCache[refinedID].prev != stringified) {
         //Map the list object if we can't find something
         listOBJ.map(function (str) {
           const obj = JSON.parse(str);
@@ -5831,7 +5816,7 @@
         });
 
         this.listCache[refinedID] = {
-          prev: listREF.value,
+          prev: stringified,
           dat: merged,
           keys: keys,
         };
@@ -6002,12 +5987,12 @@
 
       // prettier-ignore
       keys.forEach(key => {
-        //Check to see if the key exists here
-        if (!buffer.attribs[key]) return;
-        //Then use the key in the shader
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer.attribs[key].buffer);
-        gl.bufferData(gl.ARRAY_BUFFER, triData[key], gl.DYNAMIC_DRAW);
-      });
+          //Check to see if the key exists here
+          if (!buffer.attribs[key]) return;
+          //Then use the key in the shader
+          gl.bindBuffer(gl.ARRAY_BUFFER, buffer.attribs[key].buffer);
+          gl.bufferData(gl.ARRAY_BUFFER, triData[key], gl.DYNAMIC_DRAW);
+        });
 
       //? Bind Positional Data
       twgl.setBuffersAndAttributes(gl, this.programs[shader].info, buffer);
@@ -6041,7 +6026,7 @@
 
       //Ignore reductive values
       if (!(id > 0 && id <= 3)) return def;
-      if (!value) return def;
+      if (typeof value == "undefined") return def;
 
       //Parse it
       let parsed = JSON.parse(def);
