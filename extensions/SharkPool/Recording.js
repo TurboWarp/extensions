@@ -1,6 +1,6 @@
 // Name: Recording
 // ID: SPrecording
-// Description: Record your voice while you run your projects!
+// Description: Record audio from the user's microphone.
 // By: SharkPool
 // License: MIT
 
