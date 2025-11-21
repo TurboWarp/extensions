@@ -20,3 +20,44 @@ interface Document {
    */
   webkitFullscreenElement?: Element;
 }
+
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/API/NDEFReader
+ */
+declare class NDEFReader extends EventTarget {
+  constructor();
+  scan(options?: {signal?: AbortSignal}): Promise<void>;
+  onreading?(event: Event & {message: NDEFMessage}): void;
+  onreadingerror?(event: Event): void;
+}
+
+type TypedArray = Uint8Array | Int8Array | Uint16Array | Int16Array | Uint32Array | Int32Array | BigUint64Array | BigInt64Array;
+
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/API/NDEFMessage/NDEFMessage
+ */
+declare class NDEFMessage {
+  constructor(records: Array<{
+    data?: string | ArrayBuffer | TypedArray | DataView | NDEFRecord[],
+    encoding?: string;
+    id?: string;
+    lang?: string;
+    mediaType?: string;
+    recordType?: string;
+  }>);
+  readonly records: NDEFRecord[];
+}
+
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/API/NDEFRecord
+ */
+declare class NDEFRecord {
+  constructor();
+  readonly recordType: string;
+  readonly mediaType: string;
+  readonly id: string;
+  readonly data: DataView;
+  readonly encoding: string | null;
+  readonly lang: string | null;
+  toRecords(): NDEFRecord[];
+}
