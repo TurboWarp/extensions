@@ -74,3 +74,12 @@ interface NetworkInformation {
 interface Navigator {
   connection?: NetworkInformation;
 }
+
+declare namespace Scratch.extensions {
+  /**
+   * Most extensions fail the type checking of @turbowarp/types-tw's default register().
+   * That error generally isn't very useful - so for now we'll just add this overload so
+   * that those errors don't appear.
+   */
+  function register(extensionObj: any): void;
+}
