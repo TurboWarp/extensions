@@ -61,3 +61,16 @@ declare class NDEFRecord {
   readonly lang: string | null;
   toRecords(): NDEFRecord[];
 }
+
+interface NetworkInformation {
+  downlink: number;
+  downlinkMax: number;
+  effectiveType: string;
+  rtt: number;
+  saveData: boolean;
+  type: 'bluetooth' | 'cellular' | 'ethernet' | 'none' | 'wifi' | 'wimax' | 'other' | 'unknown';
+}
+
+interface Navigator {
+  connection?: NetworkInformation;
+}
