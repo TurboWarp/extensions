@@ -1,36 +1,12 @@
-const espree = require("espree");
-const esquery = require("esquery");
-const parseMetadata = require("./parse-extension-metadata");
+import * as espree from "espree";
+import esquery from "esquery";
+import parseMetadata from "./parse-extension-metadata.js";
+import evaluateAST from "./evaluate-ast.js";
 
 /**
  * @fileoverview Parses extension code to find calls to Scratch.translate() and statically
  * evaluate its arguments.
  */
-
-const evaluateAST = (node) => {
-  if (node.type == "Literal") {
-    return node.value;
-  }
-
-  if (node.type === "ObjectExpression") {
-    const object = {};
-    for (const { key, value } of node.properties) {
-      // Normally Identifier refers to a variable, but inside of key we treat it as a string.
-      let evaluatedKey;
-      if (key.type === "Identifier") {
-        evaluatedKey = key.name;
-      } else {
-        evaluatedKey = evaluateAST(key);
-      }
-
-      object[evaluatedKey] = evaluateAST(value);
-    }
-    return object;
-  }
-
-  console.error(`Can't evaluate node:`, node);
-  throw new Error(`Can't evaluate ${node.type} node at build-time`);
-};
 
 /**
  * Generate default ID for a translation that has no explicit ID.
@@ -120,4 +96,4 @@ const parseTranslations = (js) => {
   return result;
 };
 
-module.exports = parseTranslations;
+export default parseTranslations;

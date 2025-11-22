@@ -56,13 +56,13 @@
         "No",
         "Dc",
       ];
-      const unitPrefixes = ["U", "D", "T", "Qa", "Qt", "Sx", "Sp", "O", "N"];
+      const unitPrefixes = ["U", "D", "T", "Qa", "Qn", "Sx", "Sp", "O", "N"];
       const tensPrefixes = [
         "Dc",
         "Vg",
         "Tg",
         "Qd",
-        "Qi",
+        "Qn",
         "Se",
         "St",
         "Og",
@@ -98,7 +98,7 @@
         );
       }
 
-      const illionNumber = Math.floor(Math.log10(Math.abs(number)) / 3);
+      const illionNumber = Math.floor(Math.log10(Math.abs(number)) / 3) - 1;
       let illionString = "";
 
       if (illionNumber <= 999) {
@@ -108,8 +108,8 @@
 
         illionString =
           (hundreds > 0 ? hundredsPrefixes[hundreds - 1] : "") +
-          (tens > 0 ? tensPrefixes[tens - 1] : "") +
-          (units > 0 ? unitPrefixes[units - 1] : "");
+          (units > 0 ? unitPrefixes[units - 1] : "") +
+          (tens > 0 ? tensPrefixes[tens - 1] : "");
       } else {
         const tier2Index = Math.floor(illionNumber / 1000);
         const tier2Remainder = illionNumber % 1000;
