@@ -19,6 +19,7 @@ These categories of extensions are **highly discouraged**:
  - Very niche extensions. You can write the extension for yourself, then import it as a file instead without needing us to review.
  - Extensions whose primary purpose is monetization. It isn't in the spirit of a free and open source project.
  - Joke extensions. Things that are funny to you are not funny to everyone, especially when we get bug reports about it.
+ - Extensions that were written mostly or entirely by a large language model (ChatGPT, Gemini, Perplexity, Claude, Grok, DeepSeek, etc.)
 
 Some extensions were added before these guidelines existed. We're trying to enforce them moving forward.
 
