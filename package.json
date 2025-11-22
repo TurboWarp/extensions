@@ -41,7 +41,7 @@
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "@transifex/api": "^7.1.4",
+    "@transifex/api": "^7.1.5",
     "prettier": "^3.6.0",
     "spdx-expression-parse": "^4.0.0"
   },
