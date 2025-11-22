@@ -39,12 +39,11 @@
           id: "lithiumFS.name",
           default: "Lithium FS",
         }),
+        
         color1: "#d52246",
         color2: "#a61734",
         color3: "#7f1026",
-
-        description:
-          "Advancement of rxFS. Blocks for interacting with an in-memory filesystem with permissions, size limits, and more.",
+        
         /** @type {any} */
         blocks: [
           {
