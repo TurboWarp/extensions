@@ -39,11 +39,11 @@
           id: "lithiumFS.name",
           default: "Lithium FS",
         }),
-        
+
         color1: "#d52246",
         color2: "#a61734",
         color3: "#7f1026",
-        
+
         /** @type {any} */
         blocks: [
           {
