@@ -43,7 +43,8 @@
   "devDependencies": {
     "@transifex/api": "^7.1.5",
     "prettier": "^3.6.0",
-    "spdx-expression-parse": "^4.0.0"
+    "spdx-expression-parse": "^4.0.0",
+    "typescript": "^5.9.3"
   },
   "private": true
 }
