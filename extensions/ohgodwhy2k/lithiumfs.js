@@ -273,7 +273,7 @@ Scratch.translate.setup({
     dateAccessed: "[STR]のアクセス日時",
   },
   ko: {
-    clean: "파일 システム 초기화하기",
+    clean: "파일 시스템 초기화하기",
     del: "[STR] 삭제하기",
     folder: "[STR]을(를) [STR2](으)로 정하기",
     folder_default: "LiFS 최고!",
@@ -556,6 +556,7 @@ Scratch.translate.setup({
 
         description:
           "Advancement of rxFS. Blocks for interacting with an in-memory filesystem with permissions, size limits, and more.",
+        /** @type {any} */
         blocks: [
           {
             opcode: "start",
