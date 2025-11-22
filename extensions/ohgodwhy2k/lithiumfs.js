@@ -1,8 +1,8 @@
 // Name: Lithium FS
 // ID: lithiumFS
 // Description: Advancement of rxFS. Blocks for interacting with an in-memory filesystem with permissions, size limits, and more.
-// By: ohgodwhy2k <https://github.com/ohgodwhy2k>
-// Original: 0832
+// By: ohgodwhy2k <https://scratch.mit.edu/users/ohgodwhy2k/>
+// Original: 0832 <https://scratch.mit.edu/users/0832/>
 // License: MIT
 
 (function (Scratch) {
