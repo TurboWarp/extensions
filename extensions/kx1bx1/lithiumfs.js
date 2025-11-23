@@ -34,18 +34,17 @@
     getInfo() {
       return {
         id: "lithiumFS",
-        name: "Lithium FS",
+        name: Scratch.translate("Lithium FS"),
 
         color1: "#d52246",
         color2: "#a61734",
         color3: "#7f1026",
 
-        /** @type {any} */
         blocks: [
           {
             opcode: "start",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create [STR]",
+            text: Scratch.translate("create [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -56,7 +55,7 @@
           {
             opcode: "folder",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [STR] to [STR2]",
+            text: Scratch.translate("set [STR] to [STR2]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -71,7 +70,7 @@
           {
             opcode: "open",
             blockType: Scratch.BlockType.REPORTER,
-            text: "open [STR]",
+            text: Scratch.translate("open [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -82,7 +81,7 @@
           {
             opcode: "del",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete [STR]",
+            text: Scratch.translate("delete [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -93,7 +92,7 @@
           {
             opcode: "list",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list [TYPE] under [STR]",
+            text: Scratch.translate("list [TYPE] under [STR]"),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -111,7 +110,7 @@
           {
             opcode: "copy",
             blockType: Scratch.BlockType.COMMAND,
-            text: "copy [STR] to [STR2]",
+            text: Scratch.translate("copy [STR] to [STR2]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -126,7 +125,7 @@
           {
             opcode: "sync",
             blockType: Scratch.BlockType.COMMAND,
-            text: "rename [STR] to [STR2]",
+            text: Scratch.translate("rename [STR] to [STR2]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -141,7 +140,7 @@
           {
             opcode: "exists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "does [STR] exist?",
+            text: Scratch.translate("does [STR] exist?"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -152,7 +151,7 @@
           {
             opcode: "isFile",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [STR] a file?",
+            text: Scratch.translate("is [STR] a file?"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -163,7 +162,7 @@
           {
             opcode: "isDir",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is [STR] a directory?",
+            text: Scratch.translate("is [STR] a directory?"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -174,7 +173,7 @@
           {
             opcode: "fileName",
             blockType: Scratch.BlockType.REPORTER,
-            text: "file name of [STR]",
+            text: Scratch.translate("file name of [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -185,7 +184,7 @@
           {
             opcode: "dirName",
             blockType: Scratch.BlockType.REPORTER,
-            text: "directory of [STR]",
+            text: Scratch.translate("directory of [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -197,7 +196,7 @@
           {
             opcode: "dateCreated",
             blockType: Scratch.BlockType.REPORTER,
-            text: "date created of [STR]",
+            text: Scratch.translate("date created of [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -208,7 +207,7 @@
           {
             opcode: "dateModified",
             blockType: Scratch.BlockType.REPORTER,
-            text: "date modified of [STR]",
+            text: Scratch.translate("date modified of [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -219,7 +218,7 @@
           {
             opcode: "dateAccessed",
             blockType: Scratch.BlockType.REPORTER,
-            text: "date accessed of [STR]",
+            text: Scratch.translate("date accessed of [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -232,7 +231,9 @@
           {
             opcode: "setLimit",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set size limit for [DIR] to [BYTES] bytes",
+            text: Scratch.translate(
+              "set size limit for [DIR] to [BYTES] bytes"
+            ),
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
@@ -247,7 +248,7 @@
           {
             opcode: "removeLimit",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove size limit for [DIR]",
+            text: Scratch.translate("remove size limit for [DIR]"),
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
@@ -258,7 +259,7 @@
           {
             opcode: "getLimit",
             blockType: Scratch.BlockType.REPORTER,
-            text: "size limit of [DIR] (bytes)",
+            text: Scratch.translate("size limit of [DIR] (bytes)"),
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
@@ -269,7 +270,7 @@
           {
             opcode: "getSize",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current size of [DIR] (bytes)",
+            text: Scratch.translate("current size of [DIR] (bytes)"),
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
@@ -280,7 +281,7 @@
           {
             opcode: "setPerm",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[ACTION] [PERM] permission for [STR]",
+            text: Scratch.translate("[ACTION] [PERM] permission for [STR]"),
             arguments: {
               ACTION: {
                 type: Scratch.ArgumentType.STRING,
@@ -301,7 +302,7 @@
           {
             opcode: "listPerms",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list permissions for [STR]",
+            text: Scratch.translate("list permissions for [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -314,13 +315,13 @@
           {
             opcode: "clean",
             blockType: Scratch.BlockType.COMMAND,
-            text: "clear the file system",
+            text: Scratch.translate("clear the file system"),
             arguments: {},
           },
           {
             opcode: "in",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import file system from [STR]",
+            text: Scratch.translate("import file system from [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -331,28 +332,28 @@
           {
             opcode: "out",
             blockType: Scratch.BlockType.REPORTER,
-            text: "export file system",
+            text: Scratch.translate("export file system"),
             arguments: {},
           },
           {
             opcode: "wasRead",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "was read?",
+            text: Scratch.translate("was read?"),
           },
           {
             opcode: "wasWritten",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "was written?",
+            text: Scratch.translate("was written?"),
           },
           {
             opcode: "getLastError",
             blockType: Scratch.BlockType.REPORTER,
-            text: "last error",
+            text: Scratch.translate("last error"),
           },
           {
             opcode: "toggleLogging",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn [STATE] console logging",
+            text: Scratch.translate("turn [STATE] console logging"),
             arguments: {
               STATE: {
                 type: Scratch.ArgumentType.STRING,
@@ -364,7 +365,7 @@
           {
             opcode: "getVersion",
             blockType: Scratch.BlockType.REPORTER,
-            text: "version",
+            text: Scratch.translate("version"),
           },
         ],
         menus: {
@@ -744,12 +745,10 @@
       if (isDir) {
         this._log("Renaming directory and children...");
 
-        // CRITICAL FIX: Ensure prefix ends with "/" to avoid matching /data with /database
         const path1Prefix = path1.endsWith("/") ? path1 : path1 + "/";
 
         const toRename = [];
         for (const [key, value] of this.fs.entries()) {
-          // Check if it is the directory itself OR a child (checked via strict prefix)
           if (key === path1 || key.startsWith(path1Prefix)) {
             toRename.push({
               oldKey: key,
@@ -818,11 +817,9 @@
         let totalDeltaSize = 0;
         const path1Length = path1.length;
 
-        // CRITICAL FIX: Ensure prefix ends with "/" to avoid matching /data with /database
         const path1Prefix = path1.endsWith("/") ? path1 : path1 + "/";
 
         for (const [key, value] of this.fs.entries()) {
-          // Check if it is the directory itself OR a child (checked via strict prefix)
           if (key === path1 || key.startsWith(path1Prefix)) {
             if (!this._isPathDir(key)) {
               totalDeltaSize += this._getStringSize(value.content);
@@ -990,13 +987,11 @@
 
       const isDir = this._isPathDir(path);
 
-      // CRITICAL FIX: Ensure prefix ends with "/" to avoid matching /data with /database
       const pathPrefix = path.endsWith("/") ? path : path + "/";
 
       const toDelete = [];
       for (const currentPath of this.fs.keys()) {
         if (isDir) {
-          // Check if it is the directory itself OR a child (checked via strict prefix)
           if (currentPath === path || currentPath.startsWith(pathPrefix)) {
             toDelete.push(currentPath);
           }
@@ -1354,14 +1349,10 @@
       const isDir = this._isPathDir(path);
       const now = Date.now();
 
-      // CRITICAL FIX: Ensure prefix ends with "/" to avoid matching /data with /database
       const pathPrefix = path.endsWith("/") ? path : path + "/";
 
       this._log("Applying changes...");
       for (const [currentPath, entry] of this.fs.entries()) {
-        // Check if it is the directory itself OR a child (checked via strict prefix)
-        // If strict match: currentPath === path
-        // If child match: currentPath.startsWith(pathPrefix)
         if (
           (isDir &&
             (currentPath === path || currentPath.startsWith(pathPrefix))) ||
@@ -1458,7 +1449,6 @@
       this.lastError = "";
       let path = this._normalizePath(DIR);
 
-      // POLISH: Automatically append slash if user forgot it, instead of erroring
       if (!this._isPathDir(path)) {
         path += "/";
       }
@@ -1498,7 +1488,6 @@
       this.lastError = "";
       let path = this._normalizePath(DIR);
 
-      // POLISH: Automatically append slash if user forgot it
       if (!this._isPathDir(path)) {
         path += "/";
       }
@@ -1528,7 +1517,6 @@
     getLimit({ DIR }) {
       let path = this._normalizePath(DIR);
 
-      // POLISH: Automatically append slash if user forgot it
       if (!this._isPathDir(path)) {
         path += "/";
       }
@@ -1556,7 +1544,6 @@
     getSize({ DIR }) {
       let path = this._normalizePath(DIR);
 
-      // POLISH: Automatically append slash if user forgot it
       if (!this._isPathDir(path)) {
         path += "/";
       }
@@ -1633,5 +1620,5 @@
     }
   }
 
-  Scratch.extensions.register(new LiFS());
+  Scratch.extensions.register(/** @type {any} */ (new LiFS()));
 })(Scratch);
