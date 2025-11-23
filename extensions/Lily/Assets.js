@@ -641,9 +641,11 @@
 
       const costume = target.sprite.costumes[costumeIndex];
       switch (attribute) {
-        case "dataURI":
+        case "dataURI": {
           if (!requireNonPackagedRuntime("dataURI of costume")) return "";
-          return costume.asset.encodeDataURI();
+          const base64 = vm.getExportedCostumeBase64(costume);
+          return `data:${costume.asset.assetType.contentType};base64,${base64}`;
+        }
         case "index":
           return costumeIndex + 1;
         case "format":
