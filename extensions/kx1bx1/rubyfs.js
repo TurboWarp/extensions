@@ -1,9 +1,11 @@
-// Name: Lithium FS
-// ID: lithiumFS
-// Description: Advancement of rxFS. Blocks for interacting with an in-memory filesystem with permissions, size limits, and more.
+// Name: RubyFS
+// ID: rubyFS
+// Description: A structured, in-memory file system for Scratch projects. (Previously RubyFS)
 // By: kx1bx1 <https://scratch.mit.edu/users/kx1bx1/>
 // Original: 0832 <https://scratch.mit.edu/users/0832/>
 // License: MIT
+
+// Totally did NOT use Find & Replace...
 
 (function (Scratch) {
   "use strict";
@@ -19,22 +21,22 @@
 
   const extensionVersion = "1.0.5";
 
-  class LiFS {
+  class RubyFS {
     constructor() {
       this.fs = new Map();
-      this.liFSLogEnabled = false;
+      this.RubyFSLogEnabled = false;
       this.lastError = "";
       this.readActivity = false;
       this.writeActivity = false;
 
-      this._log("Initializing LiFS extension...");
+      this._log("Initializing RubyFS...");
       this._internalClean();
     }
 
     getInfo() {
       return {
-        id: "lithiumFS",
-        name: Scratch.translate("Lithium FS"),
+        id: "rubyFS",
+        name: Scratch.translate("RubyFS"),
 
         color1: "#d52246",
         color2: "#a61734",
@@ -48,7 +50,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
             },
           },
@@ -59,11 +61,11 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
               STR2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "LiFS is good!",
+                defaultValue: "RubyFS is good!",
               },
             },
           },
@@ -74,7 +76,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
             },
           },
@@ -85,7 +87,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
             },
           },
@@ -101,7 +103,7 @@
               },
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/",
+                defaultValue: "/RubyFS/",
               },
             },
           },
@@ -114,11 +116,11 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
               STR2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/copy_of_example.txt",
+                defaultValue: "/RubyFS/copy_of_example.txt",
               },
             },
           },
@@ -129,11 +131,11 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
               STR2: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/new_example.txt",
+                defaultValue: "/RubyFS/new_example.txt",
               },
             },
           },
@@ -144,7 +146,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
             },
           },
@@ -155,7 +157,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
             },
           },
@@ -166,7 +168,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/",
+                defaultValue: "/RubyFS/",
               },
             },
           },
@@ -177,7 +179,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
             },
           },
@@ -188,7 +190,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
             },
           },
@@ -200,7 +202,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
             },
           },
@@ -211,7 +213,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
             },
           },
@@ -222,7 +224,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/example.txt",
+                defaultValue: "/RubyFS/example.txt",
               },
             },
           },
@@ -237,7 +239,7 @@
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/",
+                defaultValue: "/RubyFS/",
               },
               BYTES: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -252,7 +254,7 @@
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/",
+                defaultValue: "/RubyFS/",
               },
             },
           },
@@ -263,7 +265,7 @@
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/",
+                defaultValue: "/RubyFS/",
               },
             },
           },
@@ -274,7 +276,7 @@
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/",
+                defaultValue: "/RubyFS/",
               },
             },
           },
@@ -295,7 +297,7 @@
               },
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/",
+                defaultValue: "/RubyFS/",
               },
             },
           },
@@ -306,7 +308,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "/LiFS/",
+                defaultValue: "/RubyFS/",
               },
             },
           },
@@ -446,14 +448,14 @@
     }
 
     _log(message, ...args) {
-      if (this.liFSLogEnabled) {
-        console.log(`[LiFS] ${message}`, ...args);
+      if (this.RubyFSLogEnabled) {
+        console.log(`[RubyFS] ${message}`, ...args);
       }
     }
 
     _warn(message, ...args) {
-      if (this.liFSLogEnabled) {
-        console.warn(`[LiFS] ${message}`, ...args);
+      if (this.RubyFSLogEnabled) {
+        console.warn(`[RubyFS] ${message}`, ...args);
       }
     }
 
@@ -1441,7 +1443,7 @@
     }
 
     toggleLogging({ STATE }) {
-      this.liFSLogEnabled = STATE === "on";
+      this.RubyFSLogEnabled = STATE === "on";
       this._log("Console logging turned", STATE);
     }
 
@@ -1620,5 +1622,5 @@
     }
   }
 
-  Scratch.extensions.register(/** @type {any} */ (new LiFS()));
+  Scratch.extensions.register(/** @type {any} */ (new RubyFS()));
 })(Scratch);
