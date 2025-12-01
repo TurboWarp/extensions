@@ -17,7 +17,7 @@
     control: true,
   };
 
-  const extensionVersion = "1.1.2"; 
+  const extensionVersion = "1.1.2";
 
   class RubyFS {
     constructor() {
@@ -26,8 +26,8 @@
       this.lastError = "";
       this.readActivity = false;
       this.writeActivity = false;
-      this.lastReadPath = ""; 
-      this.lastWritePath = ""; 
+      this.lastReadPath = "";
+      this.lastWritePath = "";
 
       this._log("Initializing RubyFS...");
       this._internalClean();
@@ -42,10 +42,11 @@
         color2: "#a61734",
         color3: "#7f1026",
 
-        description: Scratch.translate("A structured, in-memory file system for Scratch projects (Previously LiFS/Lithium FS). (Use 'turn on console logging' for debugging.)"),
+        description: Scratch.translate(
+          "A structured, in-memory file system for Scratch projects (Previously LiFS/Lithium FS). (Use 'turn on console logging' for debugging.)"
+        ),
 
         blocks: [
-
           {
             blockType: Scratch.BlockType.LABEL,
             text: "Core Operations",
@@ -385,7 +386,7 @@
               },
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "UmVuZUZTIWlzZ29vZCE=", 
+                defaultValue: "UmVuZUZTIWlzZ29vZCE=",
               },
               STR2: {
                 type: Scratch.ArgumentType.STRING,
@@ -555,48 +556,48 @@
 
     _encodeUTF8Base64(str) {
       try {
-
         return btoa(str);
       } catch (e) {
-        this._setError(`Base64 Encode Error: ${e.message}. (Note: Unicode text is not supported for export)`);
+        this._setError(
+          `Base64 Encode Error: ${e.message}. (Note: Unicode text is not supported for export)`
+        );
         return "";
       }
     }
 
     _decodeUTF8Base64(base64) {
-
       return atob(base64);
     }
 
     _getMimeType(path) {
-        const extension = path.split('.').pop().toLowerCase();
-        switch (extension) {
-            case 'txt':
-                return 'text/plain';
-            case 'json':
-                return 'application/json';
-            case 'svg':
-                return 'image/svg+xml';
-            case 'png':
-                return 'image/png';
-            case 'jpg':
-            case 'jpeg':
-                return 'image/jpeg';
-            case 'gif':
-                return 'image/gif';
-            case 'zip':
-                return 'application/zip';
-            case 'sprite3':
-                return 'application/x-zip-compressed'; 
-            case 'sb3':
-                return 'application/x-zip-compressed';
-            case 'wav':
-                return 'audio/wav';
-            case 'mp3':
-                return 'audio/mpeg';
-            default:
-                return 'application/octet-stream'; 
-        }
+      const extension = path.split(".").pop().toLowerCase();
+      switch (extension) {
+        case "txt":
+          return "text/plain";
+        case "json":
+          return "application/json";
+        case "svg":
+          return "image/svg+xml";
+        case "png":
+          return "image/png";
+        case "jpg":
+        case "jpeg":
+          return "image/jpeg";
+        case "gif":
+          return "image/gif";
+        case "zip":
+          return "application/zip";
+        case "sprite3":
+          return "application/x-zip-compressed";
+        case "sb3":
+          return "application/x-zip-compressed";
+        case "wav":
+          return "audio/wav";
+        case "mp3":
+          return "audio/mpeg";
+        default:
+          return "application/octet-stream";
+      }
     }
 
     _normalizePath(path) {
@@ -673,15 +674,14 @@
       for (let i = 0; i < str.length; i++) {
         const charCode = str.charCodeAt(i);
         if (charCode < 0x0080) {
-          length += 1; 
+          length += 1;
         } else if (charCode < 0x0800) {
-          length += 2; 
+          length += 2;
         } else if (charCode < 0xd800 || charCode > 0xdfff) {
-          length += 3; 
+          length += 3;
         } else {
-
-          length += 4; 
-          i++; 
+          length += 4;
+          i++;
         }
       }
       return length;
@@ -855,7 +855,9 @@
       this._log("Block: rename", path1, "to", path2);
 
       if (path1 === "/") {
-        return this._setError("Rename failed: Root directory cannot be renamed");
+        return this._setError(
+          "Rename failed: Root directory cannot be renamed"
+        );
       }
 
       if (!this.hasPermission(path1, "delete")) {
@@ -870,13 +872,17 @@
       }
 
       if (this._isPathDir(path2)) {
-          if (this.fs.has(path2.slice(0, -1))) {
-              return this._setError(`Rename failed: A file with the same name exists at ${path2.slice(0, -1)}`);
-          }
+        if (this.fs.has(path2.slice(0, -1))) {
+          return this._setError(
+            `Rename failed: A file with the same name exists at ${path2.slice(0, -1)}`
+          );
+        }
       } else {
-          if (this.fs.has(path2 + "/")) {
-              return this._setError(`Rename failed: A directory with the same name exists at ${path2 + "/"}`);
-          }
+        if (this.fs.has(path2 + "/")) {
+          return this._setError(
+            `Rename failed: A directory with the same name exists at ${path2 + "/"}`
+          );
+        }
       }
 
       if (!this.hasPermission(path2, "create")) {
@@ -1011,8 +1017,8 @@
               item.value.content === null ? null : "" + item.value.content,
             perms: JSON.parse(JSON.stringify(item.value.perms)),
             limit: item.value.limit,
-            created: now, 
-            modified: now, 
+            created: now,
+            modified: now,
             accessed: now,
           });
           this._log(`Copied ${item.key} to ${newChildPath}`);
@@ -1074,15 +1080,17 @@
       }
 
       if (this._isPathDir(path)) {
-
-          if (this.fs.has(path.slice(0, -1))) {
-              return this._setError(`Create failed: A file with the same name exists at ${path.slice(0, -1)}`);
-          }
+        if (this.fs.has(path.slice(0, -1))) {
+          return this._setError(
+            `Create failed: A file with the same name exists at ${path.slice(0, -1)}`
+          );
+        }
       } else {
-
-          if (this.fs.has(path + "/")) {
-              return this._setError(`Create failed: A directory with the same name exists at ${path + "/"}`);
-          }
+        if (this.fs.has(path + "/")) {
+          return this._setError(
+            `Create failed: A directory with the same name exists at ${path + "/"}`
+          );
+        }
       }
 
       const parentDir = this._internalDirName(path);
@@ -1132,7 +1140,7 @@
     }
 
     open({ STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
       if (!path) {
         this._setError("Invalid path provided.");
@@ -1180,7 +1188,9 @@
       this._log("Block: delete", path);
 
       if (path === "/") {
-        return this._setError("Delete failed: Root directory cannot be deleted");
+        return this._setError(
+          "Delete failed: Root directory cannot be deleted"
+        );
       }
 
       if (!this.hasPermission(path, "delete")) {
@@ -1265,7 +1275,7 @@
     }
 
     list({ TYPE, STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       let path = this._normalizePath(STR);
       if (!path) {
         this._setError("Invalid path provided.");
@@ -1276,7 +1286,7 @@
       }
 
       this._log("Block: list", TYPE, "under", path);
-      const emptyList = "[]"; 
+      const emptyList = "[]";
 
       const entry = this.fs.get(path);
       if (!entry) {
@@ -1328,9 +1338,9 @@
       }
 
       const childrenArray = Array.from(children);
-      childrenArray.sort(); 
+      childrenArray.sort();
       this._log("List result (raw):", childrenArray);
-      return JSON.stringify(childrenArray); 
+      return JSON.stringify(childrenArray);
     }
 
     in({ STR }) {
@@ -1355,35 +1365,41 @@
       try {
         const version = data ? data.version : null;
         if (!version) {
-          return this._setError("Import failed: Data invalid or missing version.");
+          return this._setError(
+            "Import failed: Data invalid or missing version."
+          );
         }
 
         let needsMigration = false;
         let oldData = {};
 
         if (version.startsWith("1.0.") || version.startsWith("1.1.")) {
-
           if (data.fs) {
-
-            if (typeof data.fs !== 'object' || Array.isArray(data.fs)) {
-              return this._setError(`Import failed: v${version} data is corrupt (missing 'fs' object).`);
+            if (typeof data.fs !== "object" || Array.isArray(data.fs)) {
+              return this._setError(
+                `Import failed: v${version} data is corrupt (missing 'fs' object).`
+              );
             }
             oldData = data.fs;
           } else if (data.sy) {
-
             this._log(`Import: Migrating v${version} save...`);
             needsMigration = true;
 
-            if (!Array.isArray(data.sl)) data.sl = new Array(data.sy.length).fill(-1);
+            if (!Array.isArray(data.sl))
+              data.sl = new Array(data.sy.length).fill(-1);
             if (
-              !Array.isArray(data.fi) || !Array.isArray(data.sy) ||
-              !Array.isArray(data.pm) || !Array.isArray(data.sl) ||
+              !Array.isArray(data.fi) ||
+              !Array.isArray(data.sy) ||
+              !Array.isArray(data.pm) ||
+              !Array.isArray(data.sl) ||
               data.fi.length !== data.sy.length ||
               data.fi.length !== data.pm.length ||
               data.fi.length !== data.sl.length ||
               data.sy.indexOf("/") === -1
             ) {
-              return this._setError("Import failed: Old version data arrays are corrupt or mismatched.");
+              return this._setError(
+                "Import failed: Old version data arrays are corrupt or mismatched."
+              );
             }
 
             for (let i = 0; i < data.sy.length; i++) {
@@ -1393,18 +1409,24 @@
                 limit: data.sl[i],
                 created: now,
                 modified: now,
-                accessed: now
+                accessed: now,
               };
             }
           } else {
-             return this._setError(`Import failed: v${version} data is corrupt (missing 'fs' or 'sy' key).`);
+            return this._setError(
+              `Import failed: v${version} data is corrupt (missing 'fs' or 'sy' key).`
+            );
           }
         } else {
-          return this._setError(`Import failed: Incompatible version "${version}".`);
+          return this._setError(
+            `Import failed: Incompatible version "${version}".`
+          );
         }
 
         if (!oldData["/"]) {
-            return this._setError("Import failed: Filesystem is missing root '/'.");
+          return this._setError(
+            "Import failed: Filesystem is missing root '/'."
+          );
         }
 
         if (!oldData["/"].perms || typeof oldData["/"].limit !== "number") {
@@ -1419,27 +1441,45 @@
 
             const fixedPath = this._normalizePath(path);
             if (fixedPath !== path) {
-              return this._setError(`Import failed: Path "${path}" is not normalized (should be "${fixedPath}")`);
+              return this._setError(
+                `Import failed: Path "${path}" is not normalized (should be "${fixedPath}")`
+              );
             }
             if (entry.content === null && !path.endsWith("/")) {
-              return this._setError(`Import failed: Directory "${path}" must end with "/"`);
+              return this._setError(
+                `Import failed: Directory "${path}" must end with "/"`
+              );
             }
             if (entry.content !== null && path.endsWith("/")) {
-              return this._setError(`Import failed: File "${path}" must not end with "/"`);
+              return this._setError(
+                `Import failed: File "${path}" must not end with "/"`
+              );
             }
 
-            if (!entry ||
-                (typeof entry.content !== 'string' && entry.content !== null) ||
-                (typeof entry.perms !== 'object' || entry.perms === null || Array.isArray(entry.perms)) ||
-                (typeof entry.limit !== 'number' || isNaN(entry.limit)) ||
-                (typeof entry.created !== 'number' || isNaN(entry.created)) ||
-                (typeof entry.modified !== 'number' || isNaN(entry.modified)) ||
-                (typeof entry.accessed !== 'number' || isNaN(entry.accessed)) ||
-                typeof entry.perms.create !== 'boolean' || typeof entry.perms.delete !== 'boolean' ||
-                typeof entry.perms.see !== 'boolean' || typeof entry.perms.read !== 'boolean' ||
-                typeof entry.perms.write !== 'boolean' || typeof entry.perms.control !== 'boolean'
+            if (
+              !entry ||
+              (typeof entry.content !== "string" && entry.content !== null) ||
+              typeof entry.perms !== "object" ||
+              entry.perms === null ||
+              Array.isArray(entry.perms) ||
+              typeof entry.limit !== "number" ||
+              isNaN(entry.limit) ||
+              typeof entry.created !== "number" ||
+              isNaN(entry.created) ||
+              typeof entry.modified !== "number" ||
+              isNaN(entry.modified) ||
+              typeof entry.accessed !== "number" ||
+              isNaN(entry.accessed) ||
+              typeof entry.perms.create !== "boolean" ||
+              typeof entry.perms.delete !== "boolean" ||
+              typeof entry.perms.see !== "boolean" ||
+              typeof entry.perms.read !== "boolean" ||
+              typeof entry.perms.write !== "boolean" ||
+              typeof entry.perms.control !== "boolean"
             ) {
-              return this._setError(`Import failed: Corrupt entry for path "${path}".`);
+              return this._setError(
+                `Import failed: Corrupt entry for path "${path}".`
+              );
             }
 
             tempFS.set(path, JSON.parse(JSON.stringify(entry)));
@@ -1450,7 +1490,6 @@
         this.writeActivity = true;
         this.lastWritePath = "/";
         this._log("Import successful");
-
       } catch (e) {
         this._setError(
           `Import failed: An unexpected error occurred. File system was not changed. ${e.message}`
@@ -1459,15 +1498,14 @@
     }
 
     out() {
-      this.lastError = ""; 
+      this.lastError = "";
       this._log("Block: export");
       this.readActivity = true;
       this.lastReadPath = "/";
 
       const fsObject = {};
       for (const [path, entry] of this.fs.entries()) {
-
-          fsObject[path] = JSON.parse(JSON.stringify(entry));
+        fsObject[path] = JSON.parse(JSON.stringify(entry));
       }
 
       const result = JSON.stringify({
@@ -1479,7 +1517,7 @@
     }
 
     exportFileBase64({ STR, FORMAT }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
       if (!path) {
         this._setError("Invalid path provided.");
@@ -1518,18 +1556,21 @@
 
         let result = base64Content;
         if (FORMAT === "data_url") {
-
           const mimeType = this._getMimeType(path);
           result = `data:${mimeType};base64,${base64Content}`;
-          this._log(`Export successful as Data URL (${mimeType}), size:`, result.length);
-
+          this._log(
+            `Export successful as Data URL (${mimeType}), size:`,
+            result.length
+          );
         } else {
           this._log("Export successful as Base64 string, size:", result.length);
         }
 
         return result;
       } catch (e) {
-        this._setError(`Export failed: Base64 encoding error: ${e.message}. (Note: Unicode text is not supported for export)`);
+        this._setError(
+          `Export failed: Base64 encoding error: ${e.message}. (Note: Unicode text is not supported for export)`
+        );
         return "";
       }
     }
@@ -1548,25 +1589,32 @@
       }
 
       try {
-
         if (typeof dataString !== "string" || !dataString.trim()) {
-            return this._setError("Import failed: Input is empty.");
+          return this._setError("Import failed: Input is empty.");
         }
 
         let base64String = dataString;
 
         const match = dataString.match(/^data:.*?,(.*)$/);
         if (match && match[1]) {
-            base64String = match[1];
-            this._log("Import: Stripped Data URL prefix successfully.");
+          base64String = match[1];
+          this._log("Import: Stripped Data URL prefix successfully.");
         }
 
         base64String = base64String.replace(/\s+/g, "");
         if (!base64String) {
-             return this._setError("Import failed: Base64 content is empty after processing.");
+          return this._setError(
+            "Import failed: Base64 content is empty after processing."
+          );
         }
-        if (!/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(base64String)) {
-          return this._setError("Import failed: Input is not a valid Base64 string.");
+        if (
+          !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(
+            base64String
+          )
+        ) {
+          return this._setError(
+            "Import failed: Input is not a valid Base64 string."
+          );
         }
 
         const decodedContent = this._decodeUTF8Base64(base64String);
@@ -1574,20 +1622,18 @@
         this.folder({ STR: path, STR2: decodedContent });
 
         if (!this.lastError) {
-            this.lastWritePath = path;
+          this.lastWritePath = path;
         }
-
       } catch (e) {
-
         this._setError(`Import failed: Base64 decoding error: ${e.message}`);
       }
     }
 
     exists({ STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
       if (!path) {
-        return false; 
+        return false;
       }
       this._log("Block: exists", path);
 
@@ -1610,10 +1656,10 @@
     }
 
     isFile({ STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
       if (!path) {
-        return false; 
+        return false;
       }
       this._log("Block: isFile", path);
 
@@ -1637,10 +1683,10 @@
     }
 
     isDir({ STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
       if (!path) {
-        return false; 
+        return false;
       }
       this._log("Block: isDir", path);
 
@@ -1672,7 +1718,9 @@
       this._log("Block: setPerm", ACTION, PERM, "for", path);
 
       if (path === "/") {
-        return this._setError("setPerm failed: Permissions for root directory cannot be changed");
+        return this._setError(
+          "setPerm failed: Permissions for root directory cannot be changed"
+        );
       }
 
       if (!this.fs.has(path)) {
@@ -1710,10 +1758,10 @@
     }
 
     listPerms({ STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
       if (!path) {
-        return JSON.stringify({}); 
+        return JSON.stringify({});
       }
       this._log("Block: listPerms", path);
 
@@ -1738,10 +1786,10 @@
     }
 
     fileName({ STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
       if (!path) {
-        return ""; 
+        return "";
       }
       this._log("Block: fileName", path);
 
@@ -1775,10 +1823,10 @@
     }
 
     dirName({ STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
       if (!path) {
-        return ""; 
+        return "";
       }
       this._log("Block: dirName", path);
 
@@ -1798,7 +1846,7 @@
     }
 
     toggleLogging({ STATE }) {
-      this.lastError = ""; 
+      this.lastError = "";
       this.RubyFSLogEnabled = STATE === "on";
       this._log("Console logging turned", STATE);
     }
@@ -1811,11 +1859,15 @@
       }
 
       if (path === "/") {
-        return this._setError("setLimit failed: Size limit for root directory cannot be changed");
+        return this._setError(
+          "setLimit failed: Size limit for root directory cannot be changed"
+        );
       }
 
       if (!this._isPathDir(path)) {
-         return this._setError(`setLimit failed: Path ${path} must be a directory (end with /)`);
+        return this._setError(
+          `setLimit failed: Path ${path} must be a directory (end with /)`
+        );
       }
 
       this._log("Block: setLimit", path, "to", BYTES, "bytes");
@@ -1858,11 +1910,15 @@
       }
 
       if (path === "/") {
-        return this._setError("removeLimit failed: Size limit for root directory cannot be changed");
+        return this._setError(
+          "removeLimit failed: Size limit for root directory cannot be changed"
+        );
       }
 
       if (!this._isPathDir(path)) {
-        return this._setError(`removeLimit failed: Path ${path} must be a directory (end with /)`);
+        return this._setError(
+          `removeLimit failed: Path ${path} must be a directory (end with /)`
+        );
       }
 
       this._log("Block: removeLimit", path);
@@ -1874,9 +1930,7 @@
       }
       const entry = this.fs.get(path);
       if (!entry) {
-        return this._setError(
-          `removeLimit failed: Path ${path} not found`
-        );
+        return this._setError(`removeLimit failed: Path ${path} not found`);
       }
 
       const now = Date.now();
@@ -1889,13 +1943,13 @@
     }
 
     getLimit({ DIR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       let path = this._normalizePath(DIR);
       if (!path) {
-        return -1; 
+        return -1;
       }
       if (!this._isPathDir(path)) {
-         path += "/";
+        path += "/";
       }
 
       this._log("Block: getLimit", path);
@@ -1921,10 +1975,10 @@
     }
 
     getSize({ DIR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       let path = this._normalizePath(DIR);
       if (!path) {
-        return 0; 
+        return 0;
       }
       if (!this._isPathDir(path)) {
         path += "/";
@@ -1972,23 +2026,29 @@
     }
 
     dateCreated({ STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
-      if (!path) { return ""; }
+      if (!path) {
+        return "";
+      }
       return this._getTimestamp(path, "created");
     }
 
     dateModified({ STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
-      if (!path) { return ""; }
+      if (!path) {
+        return "";
+      }
       return this._getTimestamp(path, "modified");
     }
 
     dateAccessed({ STR }) {
-      this.lastError = ""; 
+      this.lastError = "";
       const path = this._normalizePath(STR);
-      if (!path) { return ""; }
+      if (!path) {
+        return "";
+      }
       return this._getTimestamp(path, "accessed");
     }
 
@@ -2009,11 +2069,11 @@
     }
 
     getLastReadPath() {
-        return this.lastReadPath;
+      return this.lastReadPath;
     }
 
     getLastWritePath() {
-        return this.lastWritePath;
+      return this.lastWritePath;
     }
 
     getVersion() {
@@ -2023,21 +2083,21 @@
     runIntegrityTest() {
       const oldFS = this.fs;
       const oldLogState = this.RubyFSLogEnabled;
-      this.RubyFSLogEnabled = true; 
+      this.RubyFSLogEnabled = true;
       this._log("--- RFS SELF-TEST STARTING ---");
       this._internalClean();
 
       let testsPassed = 0;
-      const totalTests = 12; 
+      const totalTests = 12;
 
       try {
-
         this.start({ STR: "/test/a.txt" });
         if (!this.fs.has("/test/a.txt")) throw new Error("Create file failed");
         testsPassed++;
 
         this.folder({ STR: "/test/a.txt", STR2: "hello" });
-        if (this.fs.get("/test/a.txt").content !== "hello") throw new Error("Write content failed");
+        if (this.fs.get("/test/a.txt").content !== "hello")
+          throw new Error("Write content failed");
         testsPassed++;
 
         const content = this.open({ STR: "/test/a.txt" });
@@ -2045,22 +2105,26 @@
         testsPassed++;
 
         this.sync({ STR: "/test/a.txt", STR2: "/test/b.txt" });
-        if (this.fs.has("/test/a.txt") || !this.fs.has("/test/b.txt")) throw new Error("Rename failed");
+        if (this.fs.has("/test/a.txt") || !this.fs.has("/test/b.txt"))
+          throw new Error("Rename failed");
         testsPassed++;
 
         this.copy({ STR: "/test/b.txt", STR2: "/copy.txt" });
-        if (this.fs.get("/copy.txt").content !== "hello") throw new Error("Copy failed");
+        if (this.fs.get("/copy.txt").content !== "hello")
+          throw new Error("Copy failed");
         testsPassed++;
 
         this.start({ STR: "/limited/" });
         this.setLimit({ DIR: "/limited/", BYTES: 10 });
-        this.folder({ STR: "/limited/copy.txt", STR2: "hello world" }); 
-        if (this.lastError === "") throw new Error("Size limit did not trigger error");
+        this.folder({ STR: "/limited/copy.txt", STR2: "hello world" });
+        if (this.lastError === "")
+          throw new Error("Size limit did not trigger error");
         testsPassed++;
 
         this.setPerm({ ACTION: "remove", PERM: "write", STR: "/test/b.txt" });
         this.folder({ STR: "/test/b.txt", STR2: "fail" });
-        if (this.lastError === "") throw new Error("Permission block did not trigger error");
+        if (this.lastError === "")
+          throw new Error("Permission block did not trigger error");
         testsPassed++;
 
         this.del({ STR: "/test/b.txt" });
@@ -2068,11 +2132,16 @@
         testsPassed++;
 
         this.del({ STR: "/" });
-        if (this.lastError === "") throw new Error("Root deletion block failed");
+        if (this.lastError === "")
+          throw new Error("Root deletion block failed");
         testsPassed++;
 
         const b64 = this._encodeUTF8Base64("test_data_123");
-        this.importFileBase64({ FORMAT: "base64", STR: b64, STR2: "/ascii.txt" });
+        this.importFileBase64({
+          FORMAT: "base64",
+          STR: b64,
+          STR2: "/ascii.txt",
+        });
         const rt = this.open({ STR: "/ascii.txt" });
         if (rt !== "test_data_123") throw new Error("Base64 roundtrip failed");
         testsPassed++;
@@ -2080,15 +2149,18 @@
         this.start({ STR: "/list_test/" });
         this.start({ STR: "/list_test/file.txt" });
         const listJSON = this.list({ TYPE: "all", STR: "/list_test/" });
-        if (listJSON !== '["file.txt"]') throw new Error(`list() as JSON failed, got: ${listJSON}`);
+        if (listJSON !== '["file.txt"]')
+          throw new Error(`list() as JSON failed, got: ${listJSON}`);
         testsPassed++;
 
-        const dataURL = this.exportFileBase64({ STR: "/ascii.txt", FORMAT: "data_url" });
-        if (!dataURL.startsWith("data:text/plain;base64,")) throw new Error("MIME type export failed");
+        const dataURL = this.exportFileBase64({
+          STR: "/ascii.txt",
+          FORMAT: "data_url",
+        });
+        if (!dataURL.startsWith("data:text/plain;base64,"))
+          throw new Error("MIME type export failed");
         testsPassed++;
-
       } catch (e) {
-
         this.fs = oldFS;
         this.RubyFSLogEnabled = oldLogState;
         this.lastError = "";
@@ -2104,5 +2176,5 @@
     }
   }
 
-  Scratch.extensions.register( (new RubyFS()));
+  Scratch.extensions.register(new RubyFS());
 })(Scratch);
