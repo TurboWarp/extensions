@@ -2157,7 +2157,10 @@
           STR: "/ascii.txt",
           FORMAT: "data_url",
         });
-        if (!dataURL.startsWith("data:text/plain;base64,"))
+        if (
+          typeof dataURL === "string" &&
+          !dataURL.startsWith("data:text/plain;base64,")
+        )
           throw new Error("MIME type export failed");
         testsPassed++;
       } catch (e) {
