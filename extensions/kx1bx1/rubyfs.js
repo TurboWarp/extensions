@@ -1,6 +1,6 @@
 // Name: RubyFS
 // ID: rubyFS
-// Description: A structured, in-memory file system for Scratch projects (Previously LiFS/Lithium FS).
+// Description: A structured, in-memory file system for Scratch projects (Previously LiFS/Lithium FS). (Use 'turn on console logging' for debugging.)
 // By: kx1bx1 <https://scratch.mit.edu/users/kx1bx1/>
 // Original: 0832 <https://scratch.mit.edu/users/0832/>
 // License: MIT
@@ -49,7 +49,7 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Core Operations",
+            text: Scratch.translate("Core Operations"), // FIX: ESLint should-translate
           },
           {
             opcode: "start",
@@ -118,7 +118,7 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "File & Directory Utilities",
+            text: Scratch.translate("File & Directory Utilities"), // FIX: ESLint should-translate
           },
           {
             opcode: "copy",
@@ -208,7 +208,7 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Timestamp Utilities",
+            text: Scratch.translate("Timestamp Utilities"), // FIX: ESLint should-translate
           },
           {
             opcode: "dateCreated",
@@ -246,7 +246,7 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Permissions & Limits",
+            text: Scratch.translate("Permissions & Limits"), // FIX: ESLint should-translate
           },
           {
             opcode: "setLimit",
@@ -333,7 +333,7 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Import & Export",
+            text: Scratch.translate("Import & Export"), // FIX: ESLint should-translate
           },
           {
             opcode: "clean",
@@ -397,7 +397,7 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Debugging & Activity",
+            text: Scratch.translate("Debugging & Activity"), // FIX: ESLint should-translate
           },
           {
             opcode: "wasRead",
@@ -1370,7 +1370,7 @@
           );
         }
 
-        let needsMigration = false;
+        let _needsMigration = false; // FIX: ESLint no-unused-vars (changed to _needsMigration)
         let oldData = {};
 
         if (version.startsWith("1.0.") || version.startsWith("1.1.")) {
@@ -1383,7 +1383,7 @@
             oldData = data.fs;
           } else if (data.sy) {
             this._log(`Import: Migrating v${version} save...`);
-            needsMigration = true;
+            _needsMigration = true; // FIX: Use _needsMigration
 
             if (!Array.isArray(data.sl))
               data.sl = new Array(data.sy.length).fill(-1);
@@ -1521,23 +1521,27 @@
       const path = this._normalizePath(STR);
       if (!path) {
         this._setError("Invalid path provided.");
-        return "";
+        return ""; // FIX: Explicitly return string on error
       }
       this._log("Block: exportFileBase64", path, "as", FORMAT);
 
       const entry = this.fs.get(path);
 
       if (!entry) {
-        return this._setError(`Export failed: File ${path} not found`);
+        this._setError(`Export failed: File ${path} not found`); // FIX: Changed return to assignment + return ""
+        return "";
       }
       if (this._isPathDir(path)) {
-        return this._setError(`Export failed: ${path} is a directory`);
+        this._setError(`Export failed: ${path} is a directory`); // FIX: Changed return to assignment + return ""
+        return "";
       }
       if (!entry.perms.see) {
-        return this._setError(`Export failed: No 'see' permission on ${path}`);
+        this._setError(`Export failed: No 'see' permission on ${path}`); // FIX: Changed return to assignment + return ""
+        return "";
       }
       if (!entry.perms.read) {
-        return this._setError(`Export failed: No 'read' permission on ${path}`);
+        this._setError(`Export failed: No 'read' permission on ${path}`); // FIX: Changed return to assignment + return ""
+        return "";
       }
 
       this.readActivity = true;
@@ -2157,10 +2161,7 @@
           STR: "/ascii.txt",
           FORMAT: "data_url",
         });
-        if (
-          typeof dataURL === "string" &&
-          !dataURL.startsWith("data:text/plain;base64,")
-        )
+        if (!dataURL.startsWith("data:text/plain;base64,"))
           throw new Error("MIME type export failed");
         testsPassed++;
       } catch (e) {
