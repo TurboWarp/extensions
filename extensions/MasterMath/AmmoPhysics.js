@@ -19,11 +19,11 @@
   }
 
   const Ammo = await Scratch.external.evalAndReturn(
-    "https://raw.githubusercontent.com/Brackets-Coder/AmmoPhysics/refs/heads/main/dependencies/ammo.min.js",
+    "https://raw.githubusercontent.com/Brackets-Coder/AmmoPhysics/a363738e17bcb3d197950286e8e92a3c12da5283/dependencies/ammo.min.js",
     "Ammo"
   );
   const Quaternion = await Scratch.external.evalAndReturn(
-    "https://raw.githubusercontent.com/Brackets-Coder/AmmoPhysics/refs/heads/main/dependencies/quaternion.min.js",
+    "https://raw.githubusercontent.com/Brackets-Coder/AmmoPhysics/a363738e17bcb3d197950286e8e92a3c12da5283/dependencies/quaternion.min.js",
     "Quaternion"
   );
 
@@ -382,6 +382,7 @@
                 opcode: "getGravity",
                 blockType: Scratch.BlockType.REPORTER,
                 text: Scratch.translate("gravity [xyz]"),
+                disableMonitor: true,
                 arguments: {
                   xyz: {
                     type: Scratch.ArgumentType.STRING,
