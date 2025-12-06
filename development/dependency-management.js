@@ -437,3 +437,43 @@ export const rewriteExternalToInline = (js) => {
     snippets,
   };
 };
+
+/**
+ * @param {string} url Remote URL
+ * @returns {boolean} true if URL is immutable
+ */
+const isImmutableURL = (url) =>
+  // npm package from jsdelivr, pinned to an exact version.
+  // npm does not allow changing a release after publishing, so these are considered immutable.
+  // Examples:
+  // https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js
+  // https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection_solution_simd_wasm_bin.wasm
+  /^https:\/\/cdn\.jsdelivr\.net\/npm\/(?:[\w-]+|@[\w-]+\/[\w-]+)@\d+\.\d+\.\d+[^/]*\//.test(
+    url
+  ) ||
+  // Raw GitHub URL, pinned to an exact commit.
+  // GitHub allows you to modify a tag after pushing, so those are not immutable. Need the full commit hash.
+  // Examples:
+  // https://raw.githubusercontent.com/TurboWarp/packager/fd233de9b1e8c1d0c2222749b7f8fff4ba83ce00/.browserslistrc
+  /^https:\/\/raw\.githubusercontent\.com\/[\w-]+\/[\w-]+\/[a-f0-9]{40}\//.test(
+    url
+  );
+
+/**
+ * @param {string} js Extension JS
+ * @throws if invalid import is found
+ */
+export const validateImports = (js) => {
+  // Validation that the URL hashes all match is done during the build process.
+  // Here, we just need to make sure that the JS code looks reasonable.
+
+  const imports = getAllImportDependencyCalls(js);
+
+  for (const i of imports) {
+    if (!isImmutableURL(i.url)) {
+      throw new Error(
+        `${i.url} is not a known immutable URL. npm packages need to be pinned to an exact version. Git repositories need to be pinned to an exact commit hash. Extend isImmutableURL() in development/dependency-management.js if this is false positive.`
+      );
+    }
+  }
+};
