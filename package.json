@@ -33,17 +33,18 @@
     "adm-zip": "^0.5.16",
     "chokidar": "^4.0.3",
     "ejs": "^3.1.10",
-    "eslint": "^9.38.0",
-    "espree": "^9.6.1",
+    "eslint": "^9.39.1",
+    "espree": "^11.0.0",
     "esquery": "^1.6.0",
     "express": "^5.1.0",
     "image-size": "^2.0.2",
     "markdown-it": "^14.1.0"
   },
   "devDependencies": {
-    "@transifex/api": "^7.1.4",
+    "@transifex/api": "^7.1.5",
     "prettier": "^3.6.0",
-    "spdx-expression-parse": "^4.0.0"
+    "spdx-expression-parse": "^4.0.0",
+    "typescript": "^5.9.3"
   },
   "private": true
 }

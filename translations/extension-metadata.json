@@ -26,6 +26,8 @@
         "DNin/wake-lock@name": "Bleibe wach",
         "DT/cameracontrols@description": "Bewege den angezeigten Teil der Bühne.",
         "DT/cameracontrols@name": "Kamera V1",
+        "DogeisCut/FormatNumbers@description": "Formatiere große Zahlen mit AD-Standard, kommagetrennter oder wissenschaftlicher Notation.",
+        "DogeisCut/FormatNumbers@name": "Zahlen formatieren",
         "JeremyGamer13/tween@description": "Methoden für sanftere Animationen",
         "Lily/AllMenus@description": "Besondere Kategorie mit jedem Eingabefeld von jeder Scratchkategorie und -erweiterung.",
         "Lily/AllMenus@name": "Alle Menüs",
@@ -124,6 +126,8 @@
         "godslayerakp/ws@description": "Verbinde dich manuell mit Websocket-Servern.",
         "iframe@description": "Zeige Webseiten oder HTML über der Bühne.",
         "itchio@description": "Blöcke, die mit der itch.io-Website interagieren. Inoffiziell.",
+        "lab/face-sensing@description": "Erkenne Gesichter mit der Kamera.",
+        "lab/face-sensing@name": "Gesichtserkennung",
         "lab/text@description": "Eine einfache Art, Text anzuzeigen und zu animieren. Mit dem Animated Text-Experiment in Scratch Lab kompatibel.",
         "lab/text@name": "Animierter Text",
         "local-storage@description": "Speichert Daten für immer. Wie Cookies, aber besser.",
@@ -207,6 +211,7 @@
         "DNin/wake-lock@name": "Pidä hereillä",
         "DT/cameracontrols@description": "Liikuta esiintymislavan näkyvää osaa.",
         "DT/cameracontrols@name": "Kamera V1",
+        "DogeisCut/FormatNumbers@name": "Muotoile numeroita",
         "JeremyGamer13/tween@description": "Sujuvampien animaatioiden tekemistä helpottavia menetelmiä.",
         "JeremyGamer13/tween@name": "Interpolointi",
         "Lily/AllMenus@description": "Erityiskategoria, jossa ovat kaikki valikot jokaisesta Scratchin kategoriasta ja laajennuksesta lohkoina.",
@@ -370,6 +375,8 @@
         "vercte/dictionaries@name": "Sanakirjat"
     },
     "fr": {
+        "-SIPC-/time@name": "Temps",
+        "Clay/htmlEncode@name": "Encodeur HTML",
         "runtime-options@name": "Options d'exécution"
     },
     "he": {

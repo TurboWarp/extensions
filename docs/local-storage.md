@@ -1,10 +1,10 @@
 # Local Storage
 
-The local storage etension allows you to automatically save plain text in a storage space provided by the browser. Forget save codes! With this extension, we can make a game that doesn't require any user interaction to save progress.
+The local storage extension allows you to automatically save plain text in a storage space provided by the browser. Forget save codes! With this extension, we can make a game that doesn't require any user interaction to save progress.
 
 ## Namespaces
 
-A namespace is basically like the file in the browser's storage you want to save your codes in. Every project should use a unique namespace. If two projects use the same namespace, then they will overwrite each other's storage and they'll probably both end up broken :(
+A namespace is basically the file in the browser's storage you want to save your codes in. Every project should use a unique namespace. If two projects use the same namespace, they will overwrite each other's storage and they'll probably both end up broken :(
 
 By default, the extension generates a random namespace for you and saves this inside the project, **so you shouldn't need to worry about managing the namespace yourself**. You should still be aware of what a namespace is since changing it could break your project.
 
@@ -12,7 +12,7 @@ In older versions of the extension, it was necessary to configure the namespace 
 
 ## Basic usage
 
-Think of local storage as providing a special type of variable that automatically persists between sessions. Rather than using the "Make a Variable" button to make a new variable, you just type its name into an input. Unlike normal cloud variables, local storage is not restricted to just numbers.
+Think of local storage as providing a special type of variable that persists between sessions. Rather than using the "Make a Variable" button to make a new variable, you just type its name into an input. Unlike normal cloud variables, local storage is not restricted to just numbers.
 
 To put a value into storage, use this block:
 
@@ -88,7 +88,7 @@ The "correct" behavior to do in this type of scenario is heavily context-depende
 
 ## Read and write all at once
 
-For projects are confident they will only be open in one window at once or that rely on manual saving where indiscriminently overwriting the old save is the expected outcome, the simplest approach is to read all values from storage into regular variables at the start, then your game does all its logic using just the regular variables. To save, your game puts these regular variabels back in storage. Here's what that looks like:
+For projects are confident they will only be open in one window at once, or ones that rely on manual saving where indiscriminently overwriting the old save is the expected outcome, the simplest approach is to read all values from storage into regular variables at the start, then your game does all its logic using just the regular variables. To save, your game puts these regular variabels back in storage. Here's what that looks like:
 
 ```scratch
 when i receive [start v]
@@ -129,7 +129,7 @@ Because changes to storage are always being re-read instead of being stored in a
 Pros:
 
  * Still pretty simple.
- * Avoid unnecessary variable.
+ * Avoids unnecessary variables.
  * Changes to storage are instantly available to all windows at the same time.
 
 Cons:
