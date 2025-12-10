@@ -1,0 +1,24 @@
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# Format is file matching rule (like .gitignore), then a list of users or teams who will be pinged to review.
+# If multiple rules match, only the last one applies. File names are case sensitive.
+
+# Fallback for everything not mentioned
+* @TurboWarp/extension-reviewers
+
+# This file itself
+CODEOWNERS @GarboMuffin
+
+# I want to take a look at these
+/.github @GarboMuffin @TurboWarp/extension-reviewers
+/extension-dependencies.json @GarboMuffin @TurboWarp/extension-reviewers
+/development @GarboMuffin @TurboWarp/extension-reviewers
+/build-snippets @GarboMuffin @TurboWarp/extension-reviewers
+/website @GarboMuffin @TurboWarp/extension-reviewers
+/README.md @GarboMuffin @TurboWarp/extension-reviewers
+/CONTRIBUTING.md @GarboMuffin @TurboWarp/extension-reviewers
+/REVIEW_PROCESS.md @GarboMuffin @TurboWarp/extension-reviewers
+
+# Automated changes that don't need to request review from every reviewer
+/package.json @GarboMuffin
+/package-lock.json @GarboMuffin
+/translations @GarboMuffin
