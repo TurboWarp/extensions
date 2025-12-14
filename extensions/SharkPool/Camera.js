@@ -285,7 +285,7 @@
       this.updateProperties({
         position: this._position,
         direction: this._direction,
-        scale: this.scale
+        scale: this.scale,
       });
     }
     ogUpdateVisible.call(this, isVisible);
