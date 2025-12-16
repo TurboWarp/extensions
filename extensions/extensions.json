@@ -1,6 +1,7 @@
 [
   // This file supports comments
   "lab/text",
+  "lab/face-sensing",
   "stretch",
   "gamepad",
   "box2d",

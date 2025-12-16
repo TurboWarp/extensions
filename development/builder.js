@@ -1,10 +1,26 @@
-const fs = require("fs");
-const AdmZip = require("adm-zip");
-const pathUtil = require("path");
-const ExtendedJSON = require("@turbowarp/json");
-const compatibilityAliases = require("./compatibility-aliases");
-const parseMetadata = require("./parse-extension-metadata");
-const { mkdirp, recursiveReadDirectory } = require("./fs-utils");
+import * as fs from "node:fs";
+import * as fsPromises from "node:fs/promises";
+import * as pathUtil from "node:path";
+import * as urlUtil from "node:url";
+import AdmZip from "adm-zip";
+import chokidar from "chokidar";
+import spdxParser from "spdx-expression-parse";
+import { imageSize } from "image-size";
+import ExtendedJSON from "@turbowarp/json";
+import compatibilityAliases from "./compatibility-aliases.js";
+import parseMetadata from "./parse-extension-metadata.js";
+import parseTranslations from "./parse-extension-translations.js";
+import renderTemplate from "./render-template.js";
+import renderDocs from "./render-docs.js";
+import { mkdirp, recursiveReadDirectory } from "./fs-utils.js";
+import {
+  fetchAllDependencies,
+  parseExtensionDependencies,
+  rewriteExternalToInline,
+  synchronizeDependencyList,
+  validateImports,
+} from "./dependency-management.js";
+import generateBuildSnippetJS from "./build-snippets.js";
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
@@ -115,11 +131,12 @@ class BuildFile {
   }
 
   read() {
-    return fs.readFileSync(this.sourcePath);
+    return fsPromises.readFile(this.sourcePath);
   }
 
   validate() {
     // no-op by default
+    return Promise.resolve();
   }
 
   /**
@@ -128,6 +145,14 @@ class BuildFile {
   getStrings() {
     // no-op by default, to be overridden
     return null;
+  }
+
+  /**
+   * @returns {Promise<string[]>}
+   */
+  getDependencies() {
+    // no-op by default, to be overridden
+    return Promise.resolve([]);
   }
 }
 
@@ -151,21 +176,37 @@ class ExtensionFile extends BuildFile {
     this.mode = mode;
   }
 
-  read() {
-    const data = fs.readFileSync(this.sourcePath, "utf-8");
+  async read() {
+    let data = await fsPromises.readFile(this.sourcePath, "utf-8");
 
     if (this.mode !== "development") {
+      const dependenciesJS = rewriteExternalToInline(data);
+      data = dependenciesJS.js;
+
+      let prefixJS = "";
+      let suffixJS = "";
+
       const translations = filterTranslationsByPrefix(
         this.allTranslations,
         `${this.slug}@`
       );
       if (translations !== null) {
-        return insertAfterCommentsBeforeCode(
-          data,
-          `/* generated l10n code */Scratch.translate.setup(${JSON.stringify(
-            translations
-          )});/* end generated l10n code */`
-        );
+        prefixJS += `/* generated l10n code */Scratch.translate.setup(${JSON.stringify(
+          translations
+        )});/* end generated l10n code */`;
+      }
+
+      if (dependenciesJS.snippets.size > 0) {
+        const snippetJS = generateBuildSnippetJS(dependenciesJS.snippets);
+        prefixJS += snippetJS.prefix;
+        suffixJS += snippetJS.suffix;
+      }
+
+      if (prefixJS) {
+        data = insertAfterCommentsBeforeCode(data, prefixJS);
+      }
+      if (suffixJS) {
+        data = data + suffixJS;
       }
     }
 
@@ -177,12 +218,13 @@ class ExtensionFile extends BuildFile {
     return parseMetadata(data);
   }
 
-  validate() {
+  async validate() {
     if (!this.featured) {
       return;
     }
 
-    const metadata = this.getMetadata();
+    const js = await fsPromises.readFile(this.sourcePath, "utf-8");
+    const metadata = parseMetadata(js);
 
     if (!metadata.id) {
       throw new Error("Missing // ID:");
@@ -213,9 +255,8 @@ class ExtensionFile extends BuildFile {
       );
     }
 
-    const spdxParser = require("spdx-expression-parse");
     try {
-      // Don't care about the result -- just see if it parses.
+      // Don't care about the result for now -- just see if it parses.
       spdxParser(metadata.license);
     } catch (e) {
       throw new Error(
@@ -236,6 +277,8 @@ class ExtensionFile extends BuildFile {
         );
       }
     }
+
+    validateImports(js);
   }
 
   getStrings() {
@@ -264,7 +307,6 @@ class ExtensionFile extends BuildFile {
       },
     };
 
-    const parseTranslations = require("./parse-extension-translations");
     const jsCode = fs.readFileSync(this.sourcePath, "utf-8");
     const unprefixedRuntimeStrings = parseTranslations(jsCode);
     const runtimeStrings = Object.fromEntries(
@@ -279,6 +321,12 @@ class ExtensionFile extends BuildFile {
       "extension-runtime": runtimeStrings,
     };
   }
+
+  async getDependencies() {
+    return parseExtensionDependencies(
+      await fsPromises.readFile(this.sourcePath, "utf-8")
+    );
+  }
 }
 
 class HomepageFile extends BuildFile {
@@ -290,7 +338,7 @@ class HomepageFile extends BuildFile {
     samples,
     mode
   ) {
-    super(pathUtil.join(__dirname, "homepage-template.ejs"));
+    super(pathUtil.join(import.meta.dirname, "homepage-template.ejs"));
 
     /** @type {Record<string, ExtensionFile>} */
     this.extensionFiles = extensionFiles;
@@ -344,8 +392,6 @@ class HomepageFile extends BuildFile {
   }
 
   read() {
-    const renderTemplate = require("./render-template");
-
     const mostRecentExtensions = Object.entries(this.extensionFiles)
       .sort((a, b) => b[1].getLastModified() - a[1].getLastModified())
       .slice(0, 5)
@@ -472,9 +518,8 @@ class JSONMetadataFile extends BuildFile {
 }
 
 class ImageFile extends BuildFile {
-  validate() {
-    const { imageSize } = require("image-size");
-    const contents = this.read();
+  async validate() {
+    const contents = await this.read();
     const { width, height } = imageSize(contents);
     const aspectRatio = width / height;
     if (aspectRatio !== 2) {
@@ -488,15 +533,15 @@ class ImageFile extends BuildFile {
 }
 
 class SVGFile extends ImageFile {
-  validate() {
-    const contents = this.read();
+  async validate() {
+    const contents = await this.read();
     if (contents.includes("<text")) {
       throw new Error(
         "SVG must not contain <text> elements -- please convert the text to a path. This ensures it will display correctly on all devices."
       );
     }
 
-    super.validate();
+    await super.validate();
   }
 }
 
@@ -543,9 +588,8 @@ class DocsFile extends BuildFile {
     this.extensionSlug = extensionSlug;
   }
 
-  read() {
-    const renderDocs = require("./render-docs");
-    const markdown = super.read().toString("utf-8");
+  async read() {
+    const markdown = (await super.read()).toString("utf-8");
     return renderDocs(markdown, this.extensionSlug);
   }
 
@@ -607,15 +651,16 @@ class Build {
     );
   }
 
-  export(root) {
+  async export(root) {
     mkdirp(root);
 
     for (const [relativePath, file] of Object.entries(this.files)) {
       const directoryName = pathUtil.dirname(relativePath);
-      fs.mkdirSync(pathUtil.join(root, directoryName), {
-        recursive: true,
-      });
-      fs.writeFileSync(pathUtil.join(root, relativePath), file.read());
+      await mkdirp(pathUtil.join(root, directoryName));
+      await fsPromises.writeFile(
+        pathUtil.join(root, relativePath),
+        await file.read()
+      );
     }
   }
 
@@ -661,14 +706,26 @@ class Build {
   /**
    * @param {string} root
    */
-  exportL10N(root) {
-    mkdirp(root);
+  async exportL10N(root) {
+    await mkdirp(root);
 
     const groups = this.generateL10N();
     for (const [name, strings] of Object.entries(groups)) {
       const filename = pathUtil.join(root, `exported-${name}.json`);
-      fs.writeFileSync(filename, JSON.stringify(strings, null, 2));
+      await fsPromises.writeFile(filename, JSON.stringify(strings, null, 2));
     }
+  }
+
+  async checkForNewImports() {
+    const allImports = new Set();
+    for (const file of Object.values(this.files)) {
+      const fileImports = await file.getDependencies();
+      for (const imp of fileImports) {
+        allImports.add(imp);
+      }
+    }
+
+    await synchronizeDependencyList(allImports);
   }
 }
 
@@ -688,19 +745,26 @@ class Builder {
       this.mode = mode;
     }
 
-    this.extensionsRoot = pathUtil.join(__dirname, "../extensions");
-    this.websiteRoot = pathUtil.join(__dirname, "../website");
-    this.imagesRoot = pathUtil.join(__dirname, "../images");
-    this.docsRoot = pathUtil.join(__dirname, "../docs");
-    this.samplesRoot = pathUtil.join(__dirname, "../samples");
-    this.translationsRoot = pathUtil.join(__dirname, "../translations");
+    this.extensionsRoot = pathUtil.join(import.meta.dirname, "../extensions");
+    this.websiteRoot = pathUtil.join(import.meta.dirname, "../website");
+    this.imagesRoot = pathUtil.join(import.meta.dirname, "../images");
+    this.docsRoot = pathUtil.join(import.meta.dirname, "../docs");
+    this.samplesRoot = pathUtil.join(import.meta.dirname, "../samples");
+    this.translationsRoot = pathUtil.join(
+      import.meta.dirname,
+      "../translations"
+    );
   }
 
-  build() {
+  async build() {
     const build = new Build(this.mode);
 
+    if (this.mode !== "development") {
+      await fetchAllDependencies();
+    }
+
     const featuredExtensionSlugs = ExtendedJSON.parse(
-      fs.readFileSync(
+      await fsPromises.readFile(
         pathUtil.join(this.extensionsRoot, "extensions.json"),
         "utf-8"
       )
@@ -711,20 +775,20 @@ class Builder {
      * @type {Record<string, Record<string, Record<string, string>>>}
      */
     const translations = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.translationsRoot
     )) {
       if (!filename.endsWith(".json")) {
         continue;
       }
       const group = filename.split(".")[0];
-      const data = JSON.parse(fs.readFileSync(absolutePath, "utf-8"));
+      const data = JSON.parse(await fsPromises.readFile(absolutePath, "utf-8"));
       translations[group] = data;
     }
 
     /** @type {Record<string, ExtensionFile>} */
     const extensionFiles = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.extensionsRoot
     )) {
       if (!filename.endsWith(".js")) {
@@ -745,7 +809,7 @@ class Builder {
 
     /** @type {Record<string, ImageFile>} */
     const extensionImages = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.imagesRoot
     )) {
       const extension = pathUtil.extname(filename);
@@ -765,7 +829,7 @@ class Builder {
 
     /** @type {Map<string, SampleFile[]>} */
     const samples = new Map();
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.samplesRoot
     )) {
       if (!filename.endsWith(".sb3")) {
@@ -784,13 +848,13 @@ class Builder {
       build.files[`/samples/${filename}`] = file;
     }
 
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.websiteRoot
     )) {
       build.files[`/${filename}`] = new BuildFile(absolutePath);
     }
 
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.docsRoot
     )) {
       if (!filename.endsWith(".md")) {
@@ -804,7 +868,9 @@ class Builder {
 
     // Don't rely on node_modules being stored in a specific location or having a specific structure
     // so that this works when we are a dependency in a bigger npm tree.
-    const scratchblocksPath = require.resolve("@turbowarp/scratchblocks");
+    const scratchblocksPath = urlUtil.fileURLToPath(
+      import.meta.resolve("@turbowarp/scratchblocks")
+    );
     build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
       scratchblocksPath
     );
@@ -836,12 +902,12 @@ class Builder {
     return build;
   }
 
-  tryBuild(...args) {
+  async tryBuild(...args) {
     const start = new Date();
     process.stdout.write(`[${start.toLocaleTimeString()}] Building... `);
 
     try {
-      const build = this.build(...args);
+      const build = await this.build(...args);
       const time = Date.now() - start.getTime();
       console.log(`done in ${time}ms`);
       return build;
@@ -853,10 +919,14 @@ class Builder {
     return null;
   }
 
-  startWatcher(callback) {
-    // Load chokidar lazily.
-    const chokidar = require("chokidar");
-    callback(this.tryBuild());
+  async startWatcher(callback) {
+    // Call for initial build.
+    await callback(await this.tryBuild());
+
+    // Make a watcher for all future builds.
+    let isBuildInProgress = false;
+    let wasBuildRequestDuringBuild = false;
+
     chokidar
       .watch(
         [
@@ -871,20 +941,32 @@ class Builder {
           ignoreInitial: true,
         }
       )
-      .on("all", () => {
-        callback(this.tryBuild());
+      .on("all", async () => {
+        if (isBuildInProgress) {
+          wasBuildRequestDuringBuild = true;
+        } else {
+          isBuildInProgress = true;
+
+          do {
+            wasBuildRequestDuringBuild = false;
+            await callback(await this.tryBuild());
+          } while (wasBuildRequestDuringBuild);
+
+          isBuildInProgress = false;
+        }
       });
   }
 
-  validate() {
+  async validate() {
     const errors = [];
-    const build = this.build();
-    for (const [fileName, file] of Object.entries(build.files)) {
+    const build = await this.build();
+    for (const [outputFileName, file] of Object.entries(build.files)) {
       try {
-        file.validate();
+        await file.validate();
       } catch (e) {
         errors.push({
-          fileName,
+          outputFileName,
+          inputFilePath: file.sourcePath,
           error: e,
         });
       }
@@ -893,4 +975,4 @@ class Builder {
   }
 }
 
-module.exports = Builder;
+export default Builder;
