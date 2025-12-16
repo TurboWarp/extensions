@@ -55,6 +55,7 @@
         name: Scratch.translate("Geolocation"),
         color1: "#036e15",
         color2: "#00A11B",
+        color3: "#04C825",
         menuIconURI: icon,
         blocks: [
           {
