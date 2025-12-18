@@ -1,6 +1,6 @@
 // Name: RubyFS
 // ID: rubyFS
-// Description: A structured, in-memory file system for Scratch projects. (Consolidated Version)
+// Description: A structured, in-memory file system for Scratch projects, now with RAM, trash, and tags.
 // By: kx1bx1 <https://scratch.mit.edu/users/kx1bx1/>
 // Original: 0832 <https://scratch.mit.edu/users/0832/>
 // License: MIT
@@ -64,9 +64,6 @@
         color1: "#d52246",
         color2: "#a61734",
         color3: "#7f1026",
-        description: Scratch.translate(
-          "A structured, in-memory file system. Use /RAM/ for volatile storage."
-        ),
         blocks: [
           // --- Main Operations ---
           {
