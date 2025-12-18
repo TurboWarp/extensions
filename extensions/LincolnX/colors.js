@@ -13,10 +13,10 @@ const clamp = (n, mi, ma) => Math.min(Math.max(n, mi), ma);
 const fixHex = (hex) => limitHex(hex, 0, 255).padStart(2, '0');
 const toFixHex = (dec) => fixHex(dec.toString(16));
 const lerp = (a, b, t) => a + (b - a) * t;
-function interpolateHexColorsHsv(color1, color2, factor) {
-    const hsv1 = hexToHsv(color1);
-    const hsv2 = hexToHsv(color2);
-    factor = Math.min(1, Math.max(0, factor));
+function interpolateHexColorsHsv(hex1, hex2, t) {
+    const hsv1 = hexToHsv(hex1);
+    const hsv2 = hexToHsv(hex2);
+    t = clamp(t, 0, 1)
     // Handle hue interpolation for the shortest path around the color wheel
     let h1 = hsv1.h;
     let h2 = hsv2.h;
@@ -27,23 +27,11 @@ function interpolateHexColorsHsv(color1, color2, factor) {
         h2 += 360;
     }
 
-    const h = h1 + factor * (h2 - h1);
-    const s = hsv1.s + factor * (hsv2.s - hsv1.s);
-    const v = hsv1.v + factor * (hsv2.v - hsv1.v);
-
-    const interpolatedRgb = hsvToRgb({ h, s, v });
-    return rgbToHex(interpolatedRgb);
-}
-function overlayHex(hex1, hex2) {
-  let a = toDec(hex1) / 255;
-  let b = toDec(hex2) / 255;
-  let overlay;
-  if (a < 0.5) {
-    overlay = 2 * a * b;
-  } else {
-    overlay = 1 - (2 * (1 - a) * (1 - b));
-  }
-  return toFixHex(overlay * 255)
+    const h = h1 + t * (h2 - h1);
+    const s = hsv1.s + t * (hsv2.s - hsv1.s);
+    const v = hsv1.v + t * (hsv2.v - hsv1.v);
+    
+    return hsvToHex({ h, s, v });
 }
 
 function hexToRgb(hex) {
@@ -171,7 +159,7 @@ function contrastRatio(hex1, hex2) {
 
 
 
-function distanceBetweenHex(hex1, hex2) {
+function distanceBetweenHexColorsDeltaE2000(hex1, hex2) {
     // convert Hex to RGB
     const rgb1 = hexToRgb(hex1);
     const rgb2 = hexToRgb(hex2);
@@ -904,10 +892,10 @@ function deltaE2000(lab1, lab2) {
       return '#' + toFixHex(white) + toFixHex(white) + toFixHex(white);
     }
     distanceBetweenColors(args) {
-      return distanceBetweenHex(args.COL1, args.COL2);
+      return distanceBetweenHexColorsDeltaE2000(args.COL1, args.COL2);
     }
     nearEqualColors(args) {
-      return distanceBetweenHex(args.COL1, args.COL2) <= args.THR;
+      return distanceBetweenHexColorsDeltaE2000(args.COL1, args.COL2) <= args.THR;
     }
     contrastRatioOfColors(args) {
       return round(contrastRatio(args.COL1, args.COL2) * 100) / 100;
