@@ -5,13 +5,9 @@
 // Original: 0832 <https://scratch.mit.edu/users/0832/>
 // License: MIT
 
-// Version: 1.4.9
-// - Fixed TypeScript validation errors (Base64 encoding types, missing arguments)
-// - Implemented missing 'list' method
-// - Renamed 'folder' to 'setContent' for clarity
-
-// "Can't wait to push this code! I sure hope it has no major bugs!"
-// The humble code examiner:
+// Version: 1.5.0
+// - Fixed linting errors (translations, case scope, unused vars)
+// Big update, huh?
 
 (function (Scratch) {
   "use strict";
@@ -25,7 +21,7 @@
     control: true,
   };
 
-  const extensionVersion = "1.4.9";
+  const extensionVersion = "1.5.0";
 
   class RubyFS {
     constructor() {
@@ -44,10 +40,13 @@
       this.lastReadPath = "";
       this.lastWritePath = "";
 
+      // Hat Block Flag (Transient)
+      this._eventTriggerPath = null;
+
       // VM Hook
       this.runtime = Scratch.vm ? Scratch.vm.runtime : null;
 
-      this._log("Initializing RubyFS v1.4.9...");
+      this._log("Initializing RubyFS v1.5.0...");
       this._internalClean();
 
       if (this.runtime) {
@@ -70,11 +69,14 @@
         ),
         blocks: [
           // --- Main Operations ---
-          { blockType: Scratch.BlockType.LABEL, text: "File Operations" },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("File Operations"),
+          },
           {
             opcode: "fsManage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[ACTION] [STR] [STR2]",
+            text: Scratch.translate("[ACTION] [STR] [STR2]"),
             arguments: {
               ACTION: {
                 type: Scratch.ArgumentType.STRING,
@@ -93,7 +95,7 @@
           {
             opcode: "open",
             blockType: Scratch.BlockType.REPORTER,
-            text: "read content of [STR]",
+            text: Scratch.translate("read content of [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -104,7 +106,7 @@
           {
             opcode: "list",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list [TYPE] under [STR] as JSON",
+            text: Scratch.translate("list [TYPE] under [STR] as JSON"),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -120,7 +122,9 @@
           {
             opcode: "listGlob",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list [TYPE] matching [PATTERN] in [DIR] as JSON",
+            text: Scratch.translate(
+              "list [TYPE] matching [PATTERN] in [DIR] as JSON"
+            ),
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -140,18 +144,21 @@
           {
             opcode: "fsClear",
             blockType: Scratch.BlockType.COMMAND,
-            text: "clear [TARGET]",
+            text: Scratch.translate("clear [TARGET]"),
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "CLEAR_MENU" },
             },
           },
 
           // --- Information & Checks ---
-          { blockType: Scratch.BlockType.LABEL, text: "Info & Checks" },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Info & Checks"),
+          },
           {
             opcode: "fsCheck",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "check if [STR] [CONDITION]",
+            text: Scratch.translate("check if [STR] [CONDITION]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -166,7 +173,7 @@
           {
             opcode: "fsGet",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get [ATTRIBUTE] of [STR]",
+            text: Scratch.translate("get [ATTRIBUTE] of [STR]"),
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -180,11 +187,14 @@
           },
 
           // --- Metadata (Tags) ---
-          { blockType: Scratch.BlockType.LABEL, text: "Metadata (Tags)" },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Metadata (Tags)"),
+          },
           {
             opcode: "setTag",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set tag [KEY] to [VALUE] for [PATH]",
+            text: Scratch.translate("set tag [KEY] to [VALUE] for [PATH]"),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
@@ -200,7 +210,7 @@
           {
             opcode: "getTag",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get tag [KEY] of [PATH]",
+            text: Scratch.translate("get tag [KEY] of [PATH]"),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
@@ -215,7 +225,7 @@
           {
             opcode: "deleteTag",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete tag [KEY] of [PATH]",
+            text: Scratch.translate("delete tag [KEY] of [PATH]"),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
@@ -229,11 +239,14 @@
           },
 
           // --- Permissions ---
-          { blockType: Scratch.BlockType.LABEL, text: "Permissions" },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Permissions"),
+          },
           {
             opcode: "setPerm",
             blockType: Scratch.BlockType.COMMAND,
-            text: "[ACTION] [PERM] permission for [STR]",
+            text: Scratch.translate("[ACTION] [PERM] permission for [STR]"),
             arguments: {
               ACTION: {
                 type: Scratch.ArgumentType.STRING,
@@ -254,7 +267,7 @@
           {
             opcode: "listPerms",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list permissions for [STR]",
+            text: Scratch.translate("list permissions for [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -265,7 +278,9 @@
           {
             opcode: "setLimit",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set size limit for [DIR] to [BYTES] bytes",
+            text: Scratch.translate(
+              "set size limit for [DIR] to [BYTES] bytes"
+            ),
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
@@ -277,7 +292,7 @@
           {
             opcode: "removeLimit",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove size limit for [DIR]",
+            text: Scratch.translate("remove size limit for [DIR]"),
             arguments: {
               DIR: {
                 type: Scratch.ArgumentType.STRING,
@@ -287,27 +302,30 @@
           },
 
           // --- Import/Export ---
-          { blockType: Scratch.BlockType.LABEL, text: "Import & Export" },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Import & Export"),
+          },
           {
             opcode: "in",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import file system from [STR]",
+            text: Scratch.translate("import file system from [STR]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"version":"1.4.9","fs":{}}',
+                defaultValue: '{"version":"1.5.0","fs":{}}',
               },
             },
           },
           {
             opcode: "out",
             blockType: Scratch.BlockType.REPORTER,
-            text: "export file system",
+            text: Scratch.translate("export file system"),
           },
           {
             opcode: "exportFileBase64",
             blockType: Scratch.BlockType.REPORTER,
-            text: "export file [STR] as [FORMAT]",
+            text: Scratch.translate("export file [STR] as [FORMAT]"),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -323,7 +341,7 @@
           {
             opcode: "importFileBase64",
             blockType: Scratch.BlockType.COMMAND,
-            text: "import [FORMAT] [STR] to file [STR2]",
+            text: Scratch.translate("import [FORMAT] [STR] to file [STR2]"),
             arguments: {
               FORMAT: {
                 type: Scratch.ArgumentType.STRING,
@@ -338,12 +356,27 @@
             },
           },
 
-          // --- Debugging ---
-          { blockType: Scratch.BlockType.LABEL, text: "Debugging" },
+          // --- Events & Debugging ---
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Events & Debug"),
+          },
+          {
+            opcode: "whenFileChanged",
+            blockType: Scratch.BlockType.HAT,
+            func: "whenFileChanged",
+            text: Scratch.translate("when file at [PATH] changes"),
+            arguments: {
+              PATH: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "/RubyFS/example.txt",
+              },
+            },
+          },
           {
             opcode: "toggleLogging",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn [STATE] console logging",
+            text: Scratch.translate("turn [STATE] console logging"),
             arguments: {
               STATE: {
                 type: Scratch.ArgumentType.STRING,
@@ -355,7 +388,7 @@
           {
             opcode: "runIntegrityTest",
             blockType: Scratch.BlockType.REPORTER,
-            text: "run integrity test",
+            text: Scratch.translate("run integrity test"),
           },
         ],
         menus: {
@@ -466,14 +499,16 @@
           return this._isFile(path);
         case "directory":
           return this._isDir(path);
-        case "read":
+        case "read": {
           const r = this.readActivity;
           this.readActivity = false;
           return r;
-        case "written":
+        }
+        case "written": {
           const w = this.writeActivity;
           this.writeActivity = false;
           return w;
+        }
         default:
           return false;
       }
@@ -525,6 +560,21 @@
       this.lastError = message;
     }
 
+    _triggerChange(path) {
+      if (this.runtime) {
+        this._eventTriggerPath = this._normalizePath(path);
+        this.runtime.startHats("rubyFS_whenFileChanged");
+        this._eventTriggerPath = null;
+      }
+    }
+
+    whenFileChanged(args) {
+      if (!this._eventTriggerPath) return false;
+      if (!args.PATH) return false;
+      const targetPath = this._normalizePath(args.PATH);
+      return targetPath === this._eventTriggerPath;
+    }
+
     _getStore(path) {
       if (path.startsWith("/RAM/"))
         return { fs: this.ramfs, index: this.ramIndex, isRam: true };
@@ -533,7 +583,7 @@
 
     _addToIndex(path) {
       const parent = this._internalDirName(path);
-      const store = this._getStore(path);
+      // const store = this._getStore(path); // Unused
       const parentStore = this._getStore(parent);
 
       // Virtual entry for /RAM/ in Main Root index
@@ -687,6 +737,7 @@
       this._addToIndex(path);
       this.writeActivity = true;
       this.lastWritePath = path;
+      this._triggerChange(path);
       return true;
     }
 
@@ -938,6 +989,7 @@
       }
       this.writeActivity = true;
       this.lastWritePath = path;
+      this._triggerChange(path);
     }
 
     emptyTrash() {
@@ -992,6 +1044,7 @@
       entry.accessed = Date.now();
       this.writeActivity = true;
       this.lastWritePath = path;
+      this._triggerChange(path);
     }
 
     // RESTORED 'list' method
@@ -1118,6 +1171,7 @@
       }
       this.writeActivity = true;
       this.lastWritePath = path2;
+      this._triggerChange(path2);
     }
 
     copy({ STR, STR2 }) {
@@ -1190,6 +1244,7 @@
       }
       this.writeActivity = true;
       this.lastWritePath = path2;
+      this._triggerChange(path2);
     }
 
     _getTimestamp(path, type) {
@@ -1358,7 +1413,7 @@
       tempIndex.get("/").add("/RAM/");
 
       try {
-        const version = data.version || "";
+        // const version = data.version || ""; // REMOVED unused var
         let oldData = {};
         if (data.fs) oldData = data.fs;
         else if (data.sy) {
