@@ -19,7 +19,7 @@
   function setupStorage() {
     if (!runtime.extensionStorage["cubesterWebhooks"]) {
       runtime.extensionStorage["cubesterWebhooks"] = {
-        webhooks: {},
+        webhooks: Object.create(null),
       };
     }
     webhooks = runtime.extensionStorage["cubesterWebhooks"].webhooks;
@@ -183,7 +183,7 @@
           );
         }
       } while (!isURLValid(URL));
-      webhooks[name] = { URL, DATA: {}, TYPE: "application/json" };
+      webhooks[name] = { URL, DATA: Object.create(null), TYPE: "application/json" };
       hideFromPalette = false;
       Scratch.vm.extensionManager.refreshBlocks("cubesterWebhooks");
     }
