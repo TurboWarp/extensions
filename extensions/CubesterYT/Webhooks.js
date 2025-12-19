@@ -183,7 +183,11 @@
           );
         }
       } while (!isURLValid(URL));
-      webhooks[name] = { URL, DATA: Object.create(null), TYPE: "application/json" };
+      webhooks[name] = {
+        URL,
+        DATA: Object.create(null),
+        TYPE: "application/json",
+      };
       hideFromPalette = false;
       Scratch.vm.extensionManager.refreshBlocks("cubesterWebhooks");
     }
