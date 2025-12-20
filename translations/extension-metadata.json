@@ -1894,6 +1894,8 @@
         "veggiecan/mobilekeyboard@name": "触屏键盘",
         "vercte/dictionaries@description": "在你的作品使用键值对。",
         "vercte/dictionaries@name": "键值对"
+        "MarkSkecher/miscblocks@description": "一些不同种类的实用积木块"
+        "MarkSkecher/miscblocks@name": "杂类积木"
     },
     "zh-tw": {
         "runtime-options@name": "運行選項"
