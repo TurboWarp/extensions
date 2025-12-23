@@ -61,6 +61,7 @@
       return {
         id: "rubyFS",
         name: Scratch.translate("RubyFS"),
+        docsURI: "https://extensions.turbowarp.org/kx1bx1/rubyfs",
         color1: "#d52246",
         color2: "#a61734",
         color3: "#7f1026",
