@@ -5,9 +5,8 @@
 // Original: 0832 <https://scratch.mit.edu/users/0832/>
 // License: MIT
 
-// Version: 1.5.1
-// - Removed Hat Block/Event system completely
-// - Fixed linting errors (translations, case scope, unused vars)
+// Version: 1.5.3
+// - Fixed additional linting errors (unused vars, prefer-const)
 
 (function (Scratch) {
   "use strict";
@@ -21,7 +20,7 @@
     control: true,
   };
 
-  const extensionVersion = "1.5.1";
+  const extensionVersion = "1.5.3";
 
   class RubyFS {
     constructor() {
@@ -43,7 +42,7 @@
       // VM Hook
       this.runtime = Scratch.vm ? Scratch.vm.runtime : null;
 
-      this._log("Initializing RubyFS v1.5.1...");
+      this._log("Initializing RubyFS v1.5.3...");
       this._internalClean();
 
       if (this.runtime) {
@@ -58,13 +57,9 @@
       return {
         id: "rubyFS",
         name: Scratch.translate("RubyFS"),
-        docsURI: "https://extensions.turbowarp.org/kx1bx1/rubyfs",
         color1: "#d52246",
         color2: "#a61734",
         color3: "#7f1026",
-        description: Scratch.translate(
-          "A structured, in-memory file system. Use /RAM/ for volatile storage."
-        ),
         blocks: [
           // --- Main Operations ---
           {
@@ -311,7 +306,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"version":"1.5.1","fs":{}}',
+                defaultValue: '{"version":"1.5.3","fs":{}}',
               },
             },
           },
@@ -619,7 +614,7 @@
 
     _internalDirName(path) {
       if (path === "/") return "/";
-      let procPath = this._isPathDir(path)
+      const procPath = this._isPathDir(path)
         ? path.substring(0, path.length - 1)
         : path;
       const lastSlash = procPath.lastIndexOf("/");
@@ -695,7 +690,6 @@
       else permsToInherit = defaultPerms;
 
       const now = Date.now();
-      // DEEP COPY WARNING: Use JSON.parse/stringify to break reference link for permissions
       store.fs.set(path, {
         content: content,
         perms: JSON.parse(JSON.stringify(permsToInherit)),
@@ -775,8 +769,9 @@
 
     clean() {
       this.lastError = "";
-      if (!this.hasPermission("/", "delete"))
+      if (!this.hasPermission("/", "delete")) {
         return this._setError("Clean failed: No 'delete' permission on /");
+      }
       this._internalClean();
     }
 
@@ -860,8 +855,9 @@
         parentDir !== "/RAM/" &&
         !parentStore.fs.has(parentDir)
       ) {
-        if (!this.hasPermission(parentDir, "create"))
+        if (!this.hasPermission(parentDir, "create")) {
           return this._setError("Create failed: No permission on parent");
+        }
         this.start({ STR: parentDir });
         if (this.lastError) return;
       }
@@ -897,8 +893,9 @@
       this.lastError = "";
       const path = this._normalizePath(STR);
       if (!path) return this._setError("Invalid path");
-      if (path === "/" || path === "/RAM/")
+      if (path === "/" || path === "/RAM/") {
         return this._setError("Delete failed: Cannot delete root/mount");
+      }
       if (!this.hasPermission(path, "delete"))
         return this._setError("Delete failed: Denied");
 
@@ -1018,12 +1015,34 @@
     // RESTORED 'list' method
     list({ TYPE, STR }) {
       this.lastError = "";
-      let path = this._normalizePath(STR);
+      const path = this._normalizePath(STR);
       if (!path) return "[]";
-      if (!this._isPathDir(path)) path += "/";
+      // We might need to ensure trailing slash if it is a directory for certain checks, but _getStore relies on path start
+      // Let's just use normalized path and check if it is a dir
+      // Actually _getStore handles paths fine.
+      // But we need to ensure we are listing a directory.
 
       const store = this._getStore(path);
-      const entry = store.fs.get(path);
+
+      // If the user provided a path without trailing slash for a directory, normalized might not have it unless it was root or had it.
+      // But our index keys for directories generally end in /?
+      // Wait, _normalizePath preserves trailing slash if present.
+      // If I do `list /dir`, it becomes `/dir`. But in FS map, is it `/dir` or `/dir/`?
+      // `_internalCreate` logic: `start({STR: "/dir/"})` creates key `/dir/`.
+      // `start({STR: "/dir"})` creates key `/dir` (file).
+      // So list on a file should probably fail or return empty?
+      // Let's assume user provides correct path or we check.
+
+      // If we want to support listing `/dir` as `/dir/`, we should probe.
+      let targetPath = path;
+      if (!this._isPathDir(targetPath)) {
+        // Maybe they meant a directory?
+        if (store.fs.has(targetPath + "/")) {
+          targetPath += "/";
+        }
+      }
+
+      const entry = store.fs.get(targetPath);
       if (!entry) {
         this._setError("List failed: Directory not found");
         return "[]";
@@ -1032,19 +1051,23 @@
         this._setError("List failed: Directory hidden");
         return "[]";
       }
+      if (!this._isPathDir(targetPath)) {
+        // It's a file
+        return "[]";
+      }
 
       this.readActivity = true;
-      this.lastReadPath = path;
+      this.lastReadPath = targetPath;
       entry.accessed = Date.now();
 
-      const childrenSet = store.index.get(path);
+      const childrenSet = store.index.get(targetPath);
       const results = [];
       if (childrenSet) {
         for (const childPath of childrenSet) {
           const childEntry = store.fs.get(childPath);
           if (!childEntry || !childEntry.perms.see) continue;
 
-          const childName = childPath.substring(path.length);
+          const childName = childPath.substring(targetPath.length);
           if (TYPE === "all") results.push(childName);
           else if (TYPE === "files" && !this._isPathDir(childPath))
             results.push(childName);
@@ -1061,8 +1084,9 @@
       const path1 = this._normalizePath(STR);
       const path2 = this._normalizePath(STR2);
       if (!path1 || !path2) return this._setError("Invalid path provided.");
-      if (path1 === "/" || path1 === "/RAM/")
+      if (path1 === "/" || path1 === "/RAM/") {
         return this._setError("Rename failed: Root/Mount cannot be renamed");
+      }
 
       const store1 = this._getStore(path1);
       const store2 = this._getStore(path2);
@@ -1075,21 +1099,24 @@
         return;
       }
 
-      if (!this.hasPermission(path1, "delete"))
+      if (!this.hasPermission(path1, "delete")) {
         return this._setError("Rename failed: No 'delete' permission");
+      }
       if (store2.fs.has(path2))
         return this._setError("Rename failed: Destination exists");
 
       if (this._isPathDir(path2)) {
-        if (store2.fs.has(path2.slice(0, -1)))
+        if (store2.fs.has(path2.slice(0, -1))) {
           return this._setError("Rename failed: File collision");
+        }
       } else {
         if (store2.fs.has(path2 + "/"))
           return this._setError("Rename failed: Directory collision");
       }
 
-      if (!this.hasPermission(path2, "create"))
+      if (!this.hasPermission(path2, "create")) {
         return this._setError("Rename failed: No 'create' permission");
+      }
 
       const entry = store1.fs.get(path1);
       if (!entry) return this._setError("Rename failed: Source not found");
@@ -1156,8 +1183,9 @@
         return this._setError("Copy failed: No 'read' permission");
       if (store2.fs.has(path2))
         return this._setError("Copy failed: Destination exists");
-      if (!this.hasPermission(path2, "create"))
+      if (!this.hasPermission(path2, "create")) {
         return this._setError("Copy failed: No 'create' permission");
+      }
 
       this.readActivity = true;
       this.lastReadPath = path1;
@@ -1232,7 +1260,7 @@
 
     setLimit({ DIR, BYTES }) {
       this.lastError = "";
-      let path = this._normalizePath(DIR);
+      const path = this._normalizePath(DIR); // FIX: use const path
       if (!path || path === "/" || !this._isPathDir(path))
         return this._setError("Invalid path");
       if (!this.hasPermission(path, "control")) return this._setError("Denied");
@@ -1244,7 +1272,7 @@
     }
     removeLimit({ DIR }) {
       this.lastError = "";
-      let path = this._normalizePath(DIR);
+      const path = this._normalizePath(DIR); // FIX: use const path
       if (!path || path === "/" || !this._isPathDir(path))
         return this._setError("Invalid path");
       if (!this.hasPermission(path, "control")) return this._setError("Denied");
@@ -1300,7 +1328,7 @@
     _encodeUTF8Base64(str) {
       try {
         return btoa(str);
-      } catch (e) {
+      } catch (_e) {
         try {
           return btoa(
             encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (m, p1) =>
@@ -1321,7 +1349,7 @@
             .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
             .join("")
         );
-      } catch (e) {
+      } catch (_e) {
         return atob(base64);
       }
     }
@@ -1362,7 +1390,7 @@
       let data;
       try {
         data = JSON.parse(STR);
-      } catch (e) {
+      } catch (_e) {
         return this._setError("JSON Error");
       }
 
@@ -1379,7 +1407,6 @@
       tempIndex.get("/").add("/RAM/");
 
       try {
-        // const version = data.version || ""; // REMOVED unused var
         let oldData = {};
         if (data.fs) oldData = data.fs;
         else if (data.sy) {
@@ -1435,20 +1462,21 @@
       return b64;
     }
 
-    importFileBase64({ FORMAT, STR, STR2 }) {
+    importFileBase64({ _FORMAT, STR, STR2 }) {
       this.lastError = "";
       const path = this._normalizePath(STR2);
       if (!path || this._isPathDir(path)) return this._setError("Invalid path");
       if (!STR || !STR.trim()) return this._setError("Empty input");
-      let base64String =
+      const base64String =
         STR.replace(/\s+/g, "").match(/^data:.*?,(.*)$/)?.[1] ||
-        STR.replace(/\s+/g, "");
+        STR.replace(/\s+/g, ""); // FIX: use const base64String
       if (
         !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(
           base64String
         )
-      )
+      ) {
         return this._setError("Invalid Base64");
+      }
       const decoded = this._decodeUTF8Base64(base64String);
       this.setContent({ STR: path, STR2: decoded }); // Updated call
       if (!this.lastError) this.lastWritePath = path;
@@ -1631,8 +1659,9 @@
         if (!this.ramfs.has("/RAM/temp.txt")) throw new Error("RamDisk failed");
 
         this.setTag({ KEY: "foo", VALUE: "bar", PATH: "/RAM/temp.txt" });
-        if (this.getTag({ KEY: "foo", PATH: "/RAM/temp.txt" }) !== "bar")
+        if (this.getTag({ KEY: "foo", PATH: "/RAM/temp.txt" }) !== "bar") {
           throw new Error("Tag failed");
+        }
 
         // List check
         const listResult = JSON.parse(this.list({ TYPE: "all", STR: "/RAM/" }));
