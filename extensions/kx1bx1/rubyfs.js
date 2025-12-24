@@ -1,13 +1,13 @@
 // Name: RubyFS
 // ID: rubyFS
-// Description: A structured, in-memory file system for Scratch projects, now with RAM, trash, and tags.
+// Description: A structured, in-memory file system for Scratch projects. (Consolidated Version)
 // By: kx1bx1 <https://scratch.mit.edu/users/kx1bx1/>
 // Original: 0832 <https://scratch.mit.edu/users/0832/>
 // License: MIT
 
-// Version: 1.5.0
+// Version: 1.5.1
+// - Removed Hat Block/Event system completely
 // - Fixed linting errors (translations, case scope, unused vars)
-// Big update, huh?
 
 (function (Scratch) {
   "use strict";
@@ -21,7 +21,7 @@
     control: true,
   };
 
-  const extensionVersion = "1.5.0";
+  const extensionVersion = "1.5.1";
 
   class RubyFS {
     constructor() {
@@ -40,13 +40,10 @@
       this.lastReadPath = "";
       this.lastWritePath = "";
 
-      // Hat Block Flag (Transient)
-      this._eventTriggerPath = null;
-
       // VM Hook
       this.runtime = Scratch.vm ? Scratch.vm.runtime : null;
 
-      this._log("Initializing RubyFS v1.5.0...");
+      this._log("Initializing RubyFS v1.5.1...");
       this._internalClean();
 
       if (this.runtime) {
@@ -61,10 +58,12 @@
       return {
         id: "rubyFS",
         name: Scratch.translate("RubyFS"),
-        docsURI: "https://extensions.turbowarp.org/kx1bx1/rubyfs",
         color1: "#d52246",
         color2: "#a61734",
         color3: "#7f1026",
+        description: Scratch.translate(
+          "A structured, in-memory file system. Use /RAM/ for volatile storage."
+        ),
         blocks: [
           // --- Main Operations ---
           {
@@ -311,7 +310,7 @@
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '{"version":"1.5.0","fs":{}}',
+                defaultValue: '{"version":"1.5.1","fs":{}}',
               },
             },
           },
@@ -354,22 +353,10 @@
             },
           },
 
-          // --- Events & Debugging ---
+          // --- Debugging ---
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Events & Debug"),
-          },
-          {
-            opcode: "whenFileChanged",
-            blockType: Scratch.BlockType.HAT,
-            func: "whenFileChanged",
-            text: Scratch.translate("when file at [PATH] changes"),
-            arguments: {
-              PATH: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "/RubyFS/example.txt",
-              },
-            },
+            text: Scratch.translate("Debugging"),
           },
           {
             opcode: "toggleLogging",
@@ -558,21 +545,6 @@
       this.lastError = message;
     }
 
-    _triggerChange(path) {
-      if (this.runtime) {
-        this._eventTriggerPath = this._normalizePath(path);
-        this.runtime.startHats("rubyFS_whenFileChanged");
-        this._eventTriggerPath = null;
-      }
-    }
-
-    whenFileChanged(args) {
-      if (!this._eventTriggerPath) return false;
-      if (!args.PATH) return false;
-      const targetPath = this._normalizePath(args.PATH);
-      return targetPath === this._eventTriggerPath;
-    }
-
     _getStore(path) {
       if (path.startsWith("/RAM/"))
         return { fs: this.ramfs, index: this.ramIndex, isRam: true };
@@ -581,7 +553,6 @@
 
     _addToIndex(path) {
       const parent = this._internalDirName(path);
-      // const store = this._getStore(path); // Unused
       const parentStore = this._getStore(parent);
 
       // Virtual entry for /RAM/ in Main Root index
@@ -723,6 +694,7 @@
       else permsToInherit = defaultPerms;
 
       const now = Date.now();
+      // DEEP COPY WARNING: Use JSON.parse/stringify to break reference link for permissions
       store.fs.set(path, {
         content: content,
         perms: JSON.parse(JSON.stringify(permsToInherit)),
@@ -735,7 +707,6 @@
       this._addToIndex(path);
       this.writeActivity = true;
       this.lastWritePath = path;
-      this._triggerChange(path);
       return true;
     }
 
@@ -987,7 +958,6 @@
       }
       this.writeActivity = true;
       this.lastWritePath = path;
-      this._triggerChange(path);
     }
 
     emptyTrash() {
@@ -1042,7 +1012,6 @@
       entry.accessed = Date.now();
       this.writeActivity = true;
       this.lastWritePath = path;
-      this._triggerChange(path);
     }
 
     // RESTORED 'list' method
@@ -1169,7 +1138,6 @@
       }
       this.writeActivity = true;
       this.lastWritePath = path2;
-      this._triggerChange(path2);
     }
 
     copy({ STR, STR2 }) {
@@ -1242,7 +1210,6 @@
       }
       this.writeActivity = true;
       this.lastWritePath = path2;
-      this._triggerChange(path2);
     }
 
     _getTimestamp(path, type) {
@@ -1649,7 +1616,6 @@
         if (this.fsCheck({ STR: "/a.txt", CONDITION: "exists" }))
           throw new Error("Delete failed");
 
-        // Check Last Error before assuming undefined trash
         if (this.lastError)
           throw new Error("Manage op failed: " + this.lastError);
 
