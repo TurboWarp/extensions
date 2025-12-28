@@ -120,7 +120,7 @@
   });
 
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
-    generateRandomNamespace();
+    setNamespace(generateRandomNamespace());
   });
 
   prepareInitialNamespace();
