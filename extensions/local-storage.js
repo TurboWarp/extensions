@@ -20,8 +20,12 @@
     Scratch.vm.runtime.extensionStorage["localstorage"] = {
       namespace: newNamespace,
     };
-    Scratch.vm.extensionManager.refreshBlocks("localstorage");
     readFromStorage();
+
+    // We can generate namespace before we have fully loaded
+    if (Scratch.vm.extensionManager.isExtensionLoaded("localstorage")) {
+      Scratch.vm.extensionManager.refreshBlocks("localstorage");
+    }
   };
 
   const STORAGE_PREFIX = "extensions.turbowarp.org/local-storage:";
