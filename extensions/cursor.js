@@ -155,7 +155,9 @@
     );
 
   const ALL_ALLOWED_CURSORS = [
+    // This list includes "none" while the dropdown's list does not
     "none",
+
     "default",
     "pointer",
     "move",
@@ -559,7 +561,7 @@
     setCur(args) {
       const newCursor = Scratch.Cast.toString(args.cur);
       // Prevent setting cursor to "url(...), default" from causing fetch.
-      if (ALL_ALLOWED_CURSORS.includes(newCursor) || newCursor === "none") {
+      if (ALL_ALLOWED_CURSORS.includes(newCursor)) {
         nativeCursor = newCursor;
         customCursorImageName = null;
         currentCanvasCursor = newCursor;
