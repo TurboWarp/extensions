@@ -154,42 +154,42 @@
       { size }
     );
 
-  const cursors = [
-    { text: Scratch.translate("(1) default"), value: "default" },
-    { text: Scratch.translate("(2) pointer"), value: "pointer" },
-    { text: Scratch.translate("(3) move"), value: "move" },
-    { text: Scratch.translate("(4) grab"), value: "grab" },
-    { text: Scratch.translate("(5) grabbing"), value: "grabbing" },
-    { text: Scratch.translate("(6) text"), value: "text" },
-    { text: Scratch.translate("(7) vertical-text"), value: "vertical-text" },
-    { text: Scratch.translate("(8) wait"), value: "wait" },
-    { text: Scratch.translate("(9) progress"), value: "progress" },
-    { text: Scratch.translate("(10) help"), value: "help" },
-    { text: Scratch.translate("(11) context-menu"), value: "context-menu" },
-    { text: Scratch.translate("(12) zoom-in"), value: "zoom-in" },
-    { text: Scratch.translate("(13) zoom-out"), value: "zoom-ou" },
-    { text: Scratch.translate("(14) crosshair"), value: "crosshair" },
-    { text: Scratch.translate("(15) cell"), value: "cell" },
-    { text: Scratch.translate("(16) not-allowed"), value: "not-allowed" },
-    { text: Scratch.translate("(17) copy"), value: "copy" },
-    { text: Scratch.translate("(18) alias"), value: "alias" },
-    { text: Scratch.translate("(19) no-drop"), value: "no-drop" },
-    { text: Scratch.translate("(20) all-scroll"), value: "all-scroll" },
-    { text: Scratch.translate("(21) column-resize"), value: "col-resize" },
-    { text: Scratch.translate("(22) row-resize"), value: "row-resize" },
-    { text: Scratch.translate("(23) n-resize"), value: "n-resize" },
-    { text: Scratch.translate("(24) e-resize"), value: "e-resize" },
-    { text: Scratch.translate("(25) s-resize"), value: "s-resize" },
-    { text: Scratch.translate("(26) w-resize"), value: "w-resize" },
-    { text: Scratch.translate("(27) ne-resize"), value: "ne-resize" },
-    { text: Scratch.translate("(28) nw-resize"), value: "nw-resize" },
-    { text: Scratch.translate("(29) se-resize"), value: "se-resize" },
-    { text: Scratch.translate("(30) sw-resize"), value: "sw-resize" },
-    { text: Scratch.translate("(31) ew-resize"), value: "ew-resize" },
-    { text: Scratch.translate("(32) ns-resize"), value: "ns-resize" },
-    { text: Scratch.translate("(33) nesw-resize"), value: "nesw-resize" },
-    { text: Scratch.translate("(34) nwse-resize"), value: "nwse-resize" },
-    { text: Scratch.translate("(35) none"), value: "none" },
+  const ALL_ALLOWED_CURSORS = [
+    "none",
+    "default",
+    "pointer",
+    "move",
+    "grab",
+    "grabbing",
+    "text",
+    "vertical-text",
+    "wait",
+    "progress",
+    "help",
+    "context-menu",
+    "zoom-in",
+    "zoom-out",
+    "crosshair",
+    "cell",
+    "not-allowed",
+    "copy",
+    "alias",
+    "no-drop",
+    "all-scroll",
+    "col-resize",
+    "row-resize",
+    "n-resize",
+    "e-resize",
+    "s-resize",
+    "w-resize",
+    "ne-resize",
+    "nw-resize",
+    "se-resize",
+    "sw-resize",
+    "ew-resize",
+    "ns-resize",
+    "nesw-resize",
+    "nwse-resize",
   ];
 
   class MouseCursor {
@@ -250,7 +250,144 @@
         menus: {
           cursors: {
             acceptReporters: true,
-            items: cursors,
+            items: [
+              {
+                text: Scratch.translate("default"),
+                value: "default",
+              },
+              {
+                text: Scratch.translate("pointer"),
+                value: "pointer",
+              },
+              {
+                text: Scratch.translate("move"),
+                value: "move",
+              },
+              {
+                text: Scratch.translate("grab"),
+                value: "grab",
+              },
+              {
+                text: Scratch.translate("grabbing"),
+                value: "grabbing",
+              },
+              {
+                text: Scratch.translate("text"),
+                value: "text",
+              },
+              {
+                text: Scratch.translate("vertical-text"),
+                value: "vertical-text",
+              },
+              {
+                text: Scratch.translate("wait"),
+                value: "wait",
+              },
+              {
+                text: Scratch.translate("progress"),
+                value: "progress",
+              },
+              {
+                text: Scratch.translate("help"),
+                value: "help",
+              },
+              {
+                text: Scratch.translate("context-menu"),
+                value: "context-menu",
+              },
+              {
+                text: Scratch.translate("zoom-in"),
+                value: "zoom-in",
+              },
+              {
+                text: Scratch.translate("zoom-out"),
+                value: "zoom-out",
+              },
+              {
+                text: Scratch.translate("crosshair"),
+                value: "crosshair",
+              },
+              {
+                text: Scratch.translate("cell"),
+                value: "cell",
+              },
+              {
+                text: Scratch.translate("not allowed"),
+                value: "not-allowed",
+              },
+              {
+                text: Scratch.translate("copy"),
+                value: "copy",
+              },
+              {
+                text: Scratch.translate("alias"),
+                value: "alias",
+              },
+              {
+                text: Scratch.translate("no drop"),
+                value: "no-drop",
+              },
+              {
+                text: Scratch.translate("all-scroll"),
+                value: "all-scroll",
+              },
+              {
+                text: Scratch.translate("col-resize"),
+                value: "col-resize",
+              },
+              {
+                text: Scratch.translate("row-resize"),
+                value: "row-resize",
+              },
+              {
+                text: Scratch.translate("n-resize"),
+                value: "n-resize",
+              },
+              {
+                text: Scratch.translate("e-resize"),
+                value: "e-resize",
+              },
+              {
+                text: Scratch.translate("s-resize"),
+                value: "s-resize",
+              },
+              {
+                text: Scratch.translate("w-resize"),
+                value: "w-resize",
+              },
+              {
+                text: Scratch.translate("ne-resize"),
+                value: "ne-resize",
+              },
+              {
+                text: Scratch.translate("nw-resize"),
+                value: "nw-resize",
+              },
+              {
+                text: Scratch.translate("se-resize"),
+                value: "se-resize",
+              },
+              {
+                text: Scratch.translate("sw-resize"),
+                value: "sw-resize",
+              },
+              {
+                text: Scratch.translate("ew-resize"),
+                value: "ew-resize",
+              },
+              {
+                text: Scratch.translate("ns-resize"),
+                value: "ns-resize",
+              },
+              {
+                text: Scratch.translate("nesw-resize"),
+                value: "nesw-resize",
+              },
+              {
+                text: Scratch.translate("nwse-resize"),
+                value: "nwse-resize",
+              }
+            ],
           },
           imagePositions: {
             acceptReporters: true,
@@ -283,39 +420,15 @@
       };
     }
 
-    // This implements the https://surv-is-a-dev.github.io/static/0001tt.txt format for translatable menus and alike.
-    _asCursor(cursor) {
-      cursor = cursor.toLowerCase().trim();
-      if (cursor === "(0) none" || cursor === "0" || cursor === "none")
-        return "none";
-      if (cursor.startsWith("(")) {
-        const closeIndex = cursor.indexOf(")");
-        if (closeIndex > -1 && closeIndex < 4) {
-          const maybe = (
-            cursors[parseInt(cursor.slice(1, closeIndex), 10) - 1] || {}
-          ).value;
-          if (!maybe) {
-            cursor = cursor.slice(closeIndex);
-            if (cursors.some((cur) => cur.value === cursor)) return cursor;
-            return "none";
-          }
-          return maybe;
-        }
-      }
-      if (isNaN(cursor))
-        return cursors.some((cur) => cur.value === cursor) ? cursor : "none";
-      cursor = parseInt(cursor, 10);
-      if (cursor > cursors.length || cursor < 1) return "none";
-      return cursors[cursor - 1].value;
-    }
-
     setCur(args) {
-      const newCursor = this._asCursor(Scratch.Cast.toString(args.cur));
+      const newCursor = Scratch.Cast.toString(args.cur);
       // Prevent setting cursor to "url(...), default" from causing fetch.
-      nativeCursor = newCursor;
-      customCursorImageName = null;
-      currentCanvasCursor = newCursor;
-      updateCanvasCursor();
+      if (ALL_ALLOWED_CURSORS.includes(newCursor) || newCursor === "none") {
+        nativeCursor = newCursor;
+        customCursorImageName = null;
+        currentCanvasCursor = newCursor;
+        updateCanvasCursor();
+      }
     }
 
     setCursorImage(args, util) {
