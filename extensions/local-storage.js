@@ -103,21 +103,23 @@
     return id;
   };
 
-  const generateRandomNamespaceIfMissing = () => {
-    if (!getNamespace()) {
+  const prepareInitialNamespace = () => {
+    if (getNamespace()) {
+      readFromStorage();
+    } else {
       setNamespace(generateRandomNamespace());
     }
   };
 
   Scratch.vm.runtime.on("PROJECT_LOADED", () => {
-    generateRandomNamespaceIfMissing();
+    prepareInitialNamespace();
   });
 
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
     generateRandomNamespace();
   });
 
-  generateRandomNamespaceIfMissing();
+  prepareInitialNamespace();
 
   let lastNamespaceWarning = 0;
   const validNamespace = () => {
