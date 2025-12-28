@@ -120,7 +120,8 @@
   });
 
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
-    setNamespace(generateRandomNamespace());
+    // Will always be followed by a PROJECT_LOADED event later
+    namespaceValues = Object.create(null);
   });
 
   prepareInitialNamespace();
