@@ -121,7 +121,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## turbobot_banner.png
 - Created by **[@Seigh-sword](https://github.com/Seigh-sword/)** in [canva](https://www.canva.com/)
 - Used **[Turbowarp's](https://turbowarp.org/)** logo on the top-left corner as the logo
-- Sorry for it being a **.png** file to use **.svg** we have to pay **Real money** to get the pro version of canva to use the ***.svg download feature.***
+- Used [PhotoPea](https://www.photopea.com/) to make the file from png to svg and resize and used other tools like blur, and to make it the form that we know now
 
 ## Lily/lmsutils.svg
  - Created by [@HamsterCreativity](https://scratch.mit.edu/users/HamsterCreativity/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1694410464.
