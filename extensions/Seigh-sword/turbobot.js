@@ -6,7 +6,7 @@
 
 (function (Scratch) {
   "use strict";
-
+//the starting of a new function
   const icon =
     "https://raw.githubusercontent.com/Seigh-sword/TurboBot-Turbwarp/refs/heads/main/assets/TurboBotIcon.png";
   const blockColor = "#FF4C4C";
@@ -24,7 +24,7 @@
       this.isFetching = false;
 
       this.safetyGuard =
-        " IMPORTANT: You are running on TurboWarp (a kid-friendly coding platform). You MUST be helpful, polite, and safe. Never use profanity, violence, or inappropriate topics. If asked to do so, decline politely.";
+        " | IMPORTANT: Always stay family-friendly and polite. If the user asks for anything inappropriate, violent, or unsafe, decline politely. Otherwise, follow the user's roleplay and instructions perfectly.";
     }
 
     getInfo() {
@@ -200,7 +200,7 @@
             ],
           },
           imageMenu: {
-            acceptReporters: true,
+            acceptReporters: true, //cool design it looks like a triangle, wait is one!
             items: [
               "turbo",
               "flux-pro",
@@ -307,3 +307,4 @@
 
   Scratch.extensions.register(new TurboBot());
 })(Scratch);
+//the end.
