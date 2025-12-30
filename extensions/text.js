@@ -571,29 +571,6 @@
       }
       return splitCache.arr[item - 1] || "";
     }
-    splitJSON(args, util) {
-      // split but it returns an array
-      const string = Scratch.Cast.toString(args.STRING);
-      const split = Scratch.Cast.toString(args.SPLIT);
-
-      // Cache the last split
-      if (
-        !(
-          splitCache &&
-          splitCache.string === string &&
-          splitCache.split === split
-        )
-      ) {
-        const regex = this._caseInsensitiveRegex(split);
-
-        splitCache = {
-          string,
-          split,
-          arr: string.split(regex),
-        };
-      }
-      return JSON.stringify(splitCache.arr) || "[]";
-    }
 
     count(args, util) {
       // Fill cache
