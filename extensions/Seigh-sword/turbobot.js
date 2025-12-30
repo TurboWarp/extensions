@@ -26,7 +26,7 @@
     getInfo() {
       return {
         id: "TurboBotEngine",
-        name: "Turbo Bot",
+        name: Scratch.translate("Turbo Bot"),
         menuIconURI: icon,
         blockIconURI: icon,
         color1: blockColor,
@@ -35,28 +35,28 @@
           {
             opcode: "isReady",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "AI ready?",
+            text: Scratch.translate("AI ready?"),
           },
           {
             opcode: "getCurrentModel",
             blockType: Scratch.BlockType.REPORTER,
-            text: "model?",
+            text: Scratch.translate("model?"),
           },
           {
             opcode: "getBotName",
             blockType: Scratch.BlockType.REPORTER,
-            text: "bot?",
+            text: Scratch.translate("bot?"),
           },
           {
             opcode: "getMemory",
             blockType: Scratch.BlockType.REPORTER,
-            text: "memory",
+            text: Scratch.translate("memory"),
           },
           "---",
           {
             opcode: "createBot",
             blockType: Scratch.BlockType.COMMAND,
-            text: "create bot named [NAME]",
+            text: Scratch.translate("create bot named [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -67,7 +67,7 @@
           {
             opcode: "deleteBot",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete bot named [NAME]",
+            text: Scratch.translate("delete bot named [NAME]"),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -78,7 +78,7 @@
           {
             opcode: "renameBot",
             blockType: Scratch.BlockType.COMMAND,
-            text: "rename bot [OLD] to [NEW]",
+            text: Scratch.translate("rename bot [OLD] to [NEW]"),
             arguments: {
               OLD: { type: Scratch.ArgumentType.STRING, defaultValue: "Bot1" },
               NEW: {
@@ -91,7 +91,7 @@
           {
             opcode: "setTextModel",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set text model [MOD]",
+            text: Scratch.translate("set text model [MOD]"),
             arguments: {
               MOD: { type: Scratch.ArgumentType.STRING, menu: "textMenu" },
             },
@@ -99,7 +99,7 @@
           {
             opcode: "setImageModel",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set image model [MOD]",
+            text: Scratch.translate("set image model [MOD]"),
             arguments: {
               MOD: { type: Scratch.ArgumentType.STRING, menu: "imageMenu" },
             },
@@ -108,7 +108,7 @@
           {
             opcode: "simplePrompt",
             blockType: Scratch.BlockType.REPORTER,
-            text: "prompt [TEXT]",
+            text: Scratch.translate("prompt [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -119,7 +119,7 @@
           {
             opcode: "getImageUrl",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get url for image prompt [TEXT]",
+            text: Scratch.translate("get url for image prompt [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -130,7 +130,7 @@
           {
             opcode: "attachFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "attach file url [URL]",
+            text: Scratch.translate("attach file url [URL]"),
             arguments: {
               URL: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
             },
@@ -139,7 +139,7 @@
           {
             opcode: "setSystem",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set system log [LOG]",
+            text: Scratch.translate("set system log [LOG]"),
             arguments: {
               LOG: {
                 type: Scratch.ArgumentType.STRING,
@@ -150,7 +150,7 @@
           {
             opcode: "setContextText",
             blockType: Scratch.BlockType.REPORTER,
-            text: "set context [CTX] and prompt [TEXT]",
+            text: Scratch.translate("set context [CTX] and prompt [TEXT]"),
             arguments: {
               CTX: {
                 type: Scratch.ArgumentType.STRING,
@@ -165,7 +165,7 @@
           {
             opcode: "setContextImage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "set context [CTX] and get url of image prompt [TEXT]",
+            text: Scratch.translate("set context [CTX] and get url of image prompt [TEXT]"),
             arguments: {
               CTX: { type: Scratch.ArgumentType.STRING, defaultValue: "Anime" },
               TEXT: {
@@ -178,7 +178,7 @@
           {
             opcode: "setTemp",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set temperature [N]",
+            text: Scratch.translate("set temperature [N]"),
             arguments: {
               N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1.0 },
             },
@@ -186,7 +186,7 @@
           {
             opcode: "setSeed",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set seed [N]",
+            text: Scratch.translate("set seed [N]"),
             arguments: {
               N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 12345 },
             },
@@ -194,12 +194,12 @@
           {
             opcode: "getSeed",
             blockType: Scratch.BlockType.REPORTER,
-            text: "seed",
+            text: Scratch.translate("seed"),
           },
           {
             opcode: "getTemp",
             blockType: Scratch.BlockType.REPORTER,
-            text: "temperature",
+            text: Scratch.translate("temperature"),
           },
         ],
         menus: {
@@ -283,7 +283,8 @@
     async simplePrompt({ TEXT }) {
       try {
         const url = `https://text.pollinations.ai/${encodeURIComponent(TEXT)}?model=${this.textModel}&system=${encodeURIComponent(this.systemLog)}&seed=${this.seed}&temperature=${this.temp}`;
-        const r = await fetch(url);
+        // CHANGED TO SCRATCH.FETCH
+        const r = await Scratch.fetch(url);
         if (!r.ok) return "Network error!! AI is sleeping?";
         const res = await r.text();
 
