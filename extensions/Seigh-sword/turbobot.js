@@ -19,8 +19,12 @@
       this.imageModel = "turbo";
       this.temp = 1;
       this.seed = Math.floor(Math.random() * 999999);
-      this.systemLog = "You are a helpful AI, who helps users";
+      this.systemLog = "You are a helpful assistant."; 
       this.attachedFile = "";
+      this.isFetching = false;
+
+ 
+      this.safetyGuard = " IMPORTANT: You are running on TurboWarp (a kid-friendly coding platform). You MUST be helpful, polite, and safe. Never use profanity, violence, or inappropriate topics. If asked to do so, decline politely.";
     }
 
     getInfo() {
@@ -36,6 +40,11 @@
             opcode: "isReady",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("AI ready?"),
+          },
+          {
+            opcode: "isThinking",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("is bot thinking?"),
           },
           {
             opcode: "getCurrentModel",
@@ -58,10 +67,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("create bot named [NAME]"),
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "TurboBot",
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "TurboBot" },
             },
           },
           {
@@ -69,22 +75,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete bot named [NAME]"),
             arguments: {
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "TurboBot",
-              },
-            },
-          },
-          {
-            opcode: "renameBot",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("rename bot [OLD] to [NEW]"),
-            arguments: {
-              OLD: { type: Scratch.ArgumentType.STRING, defaultValue: "Bot1" },
-              NEW: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "TurboBot",
-              },
+              NAME: { type: Scratch.ArgumentType.STRING, defaultValue: "TurboBot" },
             },
           },
           "---",
@@ -110,10 +101,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("prompt [TEXT]"),
             arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello!",
-              },
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "Hello!" },
             },
           },
           {
@@ -121,10 +109,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("get url for image prompt [TEXT]"),
             arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "a racecar in a race going so fast",
-              },
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "a racecar" },
             },
           },
           {
@@ -141,10 +126,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set system log [LOG]"),
             arguments: {
-              LOG: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "You are a helpful assistant.",
-              },
+              LOG: { type: Scratch.ArgumentType.STRING, defaultValue: "You are a helpful assistant." },
             },
           },
           {
@@ -152,28 +134,8 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("set context [CTX] and prompt [TEXT]"),
             arguments: {
-              CTX: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Persona",
-              },
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello!",
-              },
-            },
-          },
-          {
-            opcode: "setContextImage",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "set context [CTX] and get url of image prompt [TEXT]"
-            ),
-            arguments: {
-              CTX: { type: Scratch.ArgumentType.STRING, defaultValue: "Anime" },
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "racecar",
-              },
+              CTX: { type: Scratch.ArgumentType.STRING, defaultValue: "Persona" },
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "Hello!" },
             },
           },
           "---",
@@ -207,88 +169,49 @@
         menus: {
           textMenu: {
             acceptReporters: true,
-            items: [
-              "openai",
-              "mistral",
-              "gemini",
-              "deepseek-r1",
-              "p1",
-              "llama",
-            ],
+            items: ["openai", "mistral", "gemini", "deepseek-r1", "p1", "llama"],
           },
           imageMenu: {
             acceptReporters: true,
-            items: [
-              "turbo",
-              "flux-pro",
-              "flux-realism",
-              "flux-anime",
-              "flux-3d",
-              "flux",
-              "any",
-            ],
+            items: ["turbo", "flux-pro", "flux-realism", "flux-anime", "flux-3d", "flux", "any"],
           },
         },
       };
     }
 
-    isReady() {
-      return true;
-    }
-    getCurrentModel() {
-      return `T:${this.textModel} | I:${this.imageModel}`;
-    }
-    getBotName() {
-      return Object.keys(this.bots)[0] || "None";
-    }
-    getMemory() {
-      return JSON.stringify(this.bots);
-    }
-    getSeed() {
-      return this.seed;
-    }
-    getTemp() {
-      return this.temp;
-    }
+    isReady() { return true; }
+    isThinking() { return this.isFetching; }
+    getCurrentModel() { return `T:${this.textModel} | I:${this.imageModel}`; }
+    getBotName() { return Object.keys(this.bots)[0] || "None"; }
+    getMemory() { return JSON.stringify(this.bots); }
+    getSeed() { return this.seed; }
+    getTemp() { return this.temp; }
 
-    createBot({ NAME }) {
-      if (!this.bots[NAME]) this.bots[NAME] = [];
-    }
-    deleteBot({ NAME }) {
-      delete this.bots[NAME];
-    }
-    renameBot({ OLD, NEW }) {
-      if (this.bots[OLD]) {
-        this.bots[NEW] = this.bots[OLD];
-        delete this.bots[OLD];
-      }
-    }
-    setTextModel({ MOD }) {
-      this.textModel = MOD;
-    }
-    setImageModel({ MOD }) {
-      this.imageModel = MOD;
-    }
-    setTemp({ N }) {
-      this.temp = N;
-    }
-    setSeed({ N }) {
-      this.seed = N;
-    }
-    setSystem({ LOG }) {
-      this.systemLog = LOG;
-    }
-    attachFile({ URL }) {
-      this.attachedFile = URL;
-    }
+    createBot({ NAME }) { if (!this.bots[NAME]) this.bots[NAME] = []; }
+    deleteBot({ NAME }) { delete this.bots[NAME]; }
+    setTextModel({ MOD }) { this.textModel = MOD; }
+    setImageModel({ MOD }) { this.imageModel = MOD; }
+    setTemp({ N }) { this.temp = N; }
+    setSeed({ N }) { this.seed = N; }
+    setSystem({ LOG }) { this.systemLog = LOG; }
+    attachFile({ URL }) { this.attachedFile = URL; }
 
     async simplePrompt({ TEXT }) {
+      this.isFetching = true;
       try {
-        const url = `https://text.pollinations.ai/${encodeURIComponent(TEXT)}?model=${this.textModel}&system=${encodeURIComponent(this.systemLog)}&seed=${this.seed}&temperature=${this.temp}`;
-        // CHANGED TO SCRATCH.FETCH
+
+        const fullSystem = this.systemLog + this.safetyGuard;
+        
+        const url = `https://text.pollinations.ai/${encodeURIComponent(TEXT)}?model=${this.textModel}&system=${encodeURIComponent(fullSystem)}&seed=${this.seed}&temperature=${this.temp}`;
+        
         const r = await Scratch.fetch(url);
-        if (!r.ok) return "Network error!! AI is sleeping?";
+        if (!r.ok) {
+          this.isFetching = false;
+          return "Network error!! AI is sleeping?";
+        }
+        
         const res = await r.text();
+        this.isFetching = false;
 
         const botNames = Object.keys(this.bots);
         if (botNames.length > 0) {
@@ -296,6 +219,7 @@
         }
         return res;
       } catch (e) {
+        this.isFetching = false;
         return "Error connecting to AI... try again later!!";
       }
     }
@@ -303,8 +227,7 @@
     getImageUrl({ TEXT }) {
       try {
         let url = `https://image.pollinations.ai/prompt/${encodeURIComponent(TEXT)}?model=${this.imageModel}&seed=${this.seed}&nologo=true`;
-        if (this.attachedFile)
-          url += `&feed=${encodeURIComponent(this.attachedFile)}`;
+        if (this.attachedFile) url += `&feed=${encodeURIComponent(this.attachedFile)}`;
         return url;
       } catch (err) {
         return "url_error_check_prompt";
@@ -313,10 +236,6 @@
 
     async setContextText({ CTX, TEXT }) {
       return await this.simplePrompt({ TEXT: `[Context: ${CTX}] ${TEXT}` });
-    }
-
-    setContextImage({ CTX, TEXT }) {
-      return this.getImageUrl({ TEXT: `${CTX}, ${TEXT}` });
     }
   }
 
