@@ -11,6 +11,7 @@
   "runtime-options",
   "fetch",
   "text",
+  "TurboBot",
   "local-storage",
   "true-fantom/base",
   "bitwise",
