@@ -314,7 +314,7 @@
             opcode: "matchRegexJSON",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
-              default: "[STRING] matched by regex /[REGEX]/[FLAGS] as array",
+              default: "matches of [STRING] using regex /[REGEX]/[FLAGS] as array",
               description:
                 "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
             }),
