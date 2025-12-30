@@ -165,7 +165,9 @@
           {
             opcode: "setContextImage",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("set context [CTX] and get url of image prompt [TEXT]"),
+            text: Scratch.translate(
+              "set context [CTX] and get url of image prompt [TEXT]"
+            ),
             arguments: {
               CTX: { type: Scratch.ArgumentType.STRING, defaultValue: "Anime" },
               TEXT: {
