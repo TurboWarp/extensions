@@ -140,21 +140,6 @@
             },
           },
           {
-            opcode: "splitJSON",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[STRING] split by [SPLIT] as array"),
-            arguments: {
-              STRING: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "apple",
-              },
-              SPLIT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "p",
-              },
-            },
-          },
-          {
             opcode: "count",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
