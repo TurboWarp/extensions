@@ -89,7 +89,7 @@
       const topic = args.TOPIC;
       const message = args.MESSAGE;
 
-      fetch(`https://ntfy.sh/${topic}`, {
+      Scratch.fetch(`https://ntfy.sh/${topic}`, {
         method: 'POST',
         body: message
       }).catch((err) => {
@@ -106,7 +106,7 @@
         tags: args.TAGS.split(',').map((tag) => tag.trim())
       };
 
-      fetch('https://ntfy.sh/', {
+      Scratch.fetch('https://ntfy.sh/', {
         method: 'POST',
         body: JSON.stringify(bodyData),
         headers: {
@@ -120,7 +120,7 @@
     _openUrl(url) {
       Scratch.canOpenWindow(url).then((allowed) => {
         if (allowed) {
-          window.open(url, '_blank');
+          Scratch.openWindow(url, '_blank');
         }
       });
     }
