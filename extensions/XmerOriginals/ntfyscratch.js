@@ -4,7 +4,7 @@
 // By: XmerOriginals <https://scratch.mit.edu/users/XmerOriginals/>
 // License: MPL-2.0
 
-(function(Scratch) {
+(function (Scratch) {
   'use strict';
 
   class ntfyScratch {
@@ -20,12 +20,12 @@
             blockType: Scratch.BlockType.BUTTON,
             text: 'Documentation'
           },
-		  {
+          {
             func: 'openDocNtfy',
             blockType: Scratch.BlockType.BUTTON,
             text: 'ntfy.sh Documentation'
           },
-		  '---',
+          '---',
           {
             opcode: 'sendSimpleNotification',
             blockType: Scratch.BlockType.COMMAND,
@@ -92,7 +92,9 @@
       fetch(`https://ntfy.sh/${topic}`, {
         method: 'POST',
         body: message
-      }).catch(() => {});
+      }).catch((err) => {
+        console.warn('ntfyScratch: Failed to send simple notification', err);
+      });
     }
 
     sendFullNotification(args) {
@@ -101,7 +103,7 @@
         title: args.TITLE,
         message: args.MESSAGE,
         priority: parseInt(args.PRIORITY),
-        tags: args.TAGS.split(',').map(tag => tag.trim())
+        tags: args.TAGS.split(',').map((tag) => tag.trim())
       };
 
       fetch('https://ntfy.sh/', {
@@ -110,23 +112,25 @@
         headers: {
           'Content-Type': 'application/json'
         }
-      }).catch(() => {});
+      }).catch((err) => {
+        console.warn('ntfyScratch: Failed to send full notification', err);
+      });
+    }
+
+    _openUrl(url) {
+      Scratch.canOpenWindow(url).then((allowed) => {
+        if (allowed) {
+          window.open(url, '_blank');
+        }
+      });
     }
 
     openDoc() {
-      Scratch.canOpenWindow('http://xelabs.xmeroriginals.com/docs/ntfyScratch/').then((allowed) => {
-        if (allowed) {
-          window.open('http://xelabs.xmeroriginals.com/docs/ntfyScratch/', '_blank');
-        }
-      });
+      this._openUrl('http://xelabs.xmeroriginals.com/docs/ntfyScratch/');
     }
-	
-	openDocNtfy() {
-      Scratch.canOpenWindow('https://ntfy.sh/docs/').then((allowed) => {
-        if (allowed) {
-          window.open('https://ntfy.sh/docs/', '_blank');
-        }
-      });
+
+    openDocNtfy() {
+      this._openUrl('https://ntfy.sh/docs/');
     }
   }
 
