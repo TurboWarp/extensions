@@ -4621,6 +4621,7 @@
         "text@_item [ITEM] of [STRING] split by [SPLIT]": "elemento [ITEM] di [STRING] spezzata da [SPLIT]",
         "text@_letters [LETTER1] to [LETTER2] of [STRING]": "lettere da [LETTER1] a [LETTER2] di [STRING]",
         "text@_lowercase": "minuscolo",
+        "text@_matches of [STRING] using regex /[REGEX]/[FLAGS] as array": "corrispondenze di [STRING] usando regex /[REGEX]/[FLAGS] come array",
         "text@_repeat [STRING] [REPEAT] times": "ripeti [STRING] [REPEAT] volte",
         "text@_replace [SUBSTRING] in [STRING] with [REPLACE]": "sostituisci [SUBSTRING] con [REPLACE]in [STRING]",
         "text@_replace regex /[REGEX]/[FLAGS] in [STRING] with [REPLACE]": "sostituisci regex /[REGEX]/[FLAGS] in [STRING] con [REPLACE]",
