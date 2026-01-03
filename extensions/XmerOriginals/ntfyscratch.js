@@ -1,4 +1,3 @@
-// !format
 // Name: ntfyScratch
 // ID: ntfyScratch
 // Description: Send notifications from your Scratch project to your phone, tablet, or computer using ntfy.sh. Instantly receive messages, alerts, and status updates from your project in real time.
