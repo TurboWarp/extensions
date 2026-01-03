@@ -5,83 +5,85 @@
 // License: MPL-2.0
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   class ntfyScratch {
     getInfo() {
       return {
-        id: 'ntfyScratch',
+        id: "ntfyScratch",
         name: Scratch.translate("ntfyScratch"),
-        color1: '#55bba6',
-        color2: '#358876',
+        color1: "#55bba6",
+        color2: "#358876",
         blocks: [
           {
-            func: 'openDoc',
+            func: "openDoc",
             blockType: Scratch.BlockType.BUTTON,
-            text: Scratch.translate("Documentation")
+            text: Scratch.translate("Documentation"),
           },
           {
-            func: 'openDocNtfy',
+            func: "openDocNtfy",
             blockType: Scratch.BlockType.BUTTON,
-            text: Scratch.translate("ntfy.sh Documentation")
+            text: Scratch.translate("ntfy.sh Documentation"),
           },
-          '---',
+          "---",
           {
-            opcode: 'sendSimpleNotification',
+            opcode: "sendSimpleNotification",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("send message [MESSAGE] to topic [TOPIC]"),
             arguments: {
               TOPIC: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'mytopic'
+                defaultValue: "mytopic",
               },
               MESSAGE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Hello from TurboWarp!'
-              }
-            }
+                defaultValue: "Hello from TurboWarp!",
+              },
+            },
           },
           {
-            opcode: 'sendFullNotification',
+            opcode: "sendFullNotification",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("send notification to [TOPIC] title [TITLE] message [MESSAGE] priority [PRIORITY] tags [TAGS]"),
+            text: Scratch.translate(
+              "send notification to [TOPIC] title [TITLE] message [MESSAGE] priority [PRIORITY] tags [TAGS]"
+            ),
             arguments: {
               TOPIC: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'mytopic'
+                defaultValue: "mytopic",
               },
               TITLE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Alert'
+                defaultValue: "Alert",
               },
               MESSAGE: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'Project is running'
+                defaultValue: "Project is running",
               },
               PRIORITY: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 3,
-                menu: 'priorityMenu'
+                menu: "priorityMenu",
               },
               TAGS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'star,computer'
-              }
-            }
-          }
+                defaultValue: "star,computer",
+              },
+            },
+          },
         ],
         menus: {
           priorityMenu: {
             acceptReporters: true,
             items: [
-              { text: 'Max (5)', value: '5' },
-              { text: 'High (4)', value: '4' },
-              { text: 'Default (3)', value: '3' },
-              { text: 'Low (2)', value: '2' },
-              { text: 'Min (1)', value: '1' }
-            ]
-          }
-        }
+              { text: "Max (5)", value: "5" },
+              { text: "High (4)", value: "4" },
+              { text: "Default (3)", value: "3" },
+              { text: "Low (2)", value: "2" },
+              { text: "Min (1)", value: "1" },
+            ],
+          },
+        },
       };
     }
 
@@ -90,10 +92,10 @@
       const message = args.MESSAGE;
 
       Scratch.fetch(`https://ntfy.sh/${topic}`, {
-        method: 'POST',
-        body: message
+        method: "POST",
+        body: message,
       }).catch((err) => {
-        console.warn('ntfyScratch: Failed to send simple notification', err);
+        console.warn("ntfyScratch: Failed to send simple notification", err);
       });
     }
 
@@ -103,34 +105,34 @@
         title: args.TITLE,
         message: args.MESSAGE,
         priority: parseInt(args.PRIORITY),
-        tags: args.TAGS.split(',').map((tag) => tag.trim())
+        tags: args.TAGS.split(",").map((tag) => tag.trim()),
       };
 
-      Scratch.fetch('https://ntfy.sh/', {
-        method: 'POST',
+      Scratch.fetch("https://ntfy.sh/", {
+        method: "POST",
         body: JSON.stringify(bodyData),
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       }).catch((err) => {
-        console.warn('ntfyScratch: Failed to send full notification', err);
+        console.warn("ntfyScratch: Failed to send full notification", err);
       });
     }
 
     _openUrl(url) {
       Scratch.canOpenWindow(url).then((allowed) => {
         if (allowed) {
-          Scratch.openWindow(url, '_blank');
+          Scratch.openWindow(url, "_blank");
         }
       });
     }
 
     openDoc() {
-      this._openUrl('http://xelabs.xmeroriginals.com/docs/ntfyScratch/');
+      this._openUrl("http://xelabs.xmeroriginals.com/docs/ntfyScratch/");
     }
 
     openDocNtfy() {
-      this._openUrl('https://ntfy.sh/docs/');
+      this._openUrl("https://ntfy.sh/docs/");
     }
   }
 
