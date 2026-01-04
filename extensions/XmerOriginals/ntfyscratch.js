@@ -1,6 +1,6 @@
 // Name: ntfyScratch
 // ID: ntfyScratch
-// Description: Send notifications from your Scratch project to your phone, tablet, or computer using ntfy.sh. Instantly receive messages, alerts, and status updates from your project in real time.
+// Description: Send notifications from your Scratch project to your phone, tablet, or computer using ntfy.sh. Includes support for attachments, emails, click actions, and scheduling.
 // By: XmerOriginals <https://scratch.mit.edu/users/XmerOriginals/>
 // License: MPL-2.0
 
@@ -41,11 +41,12 @@
               },
             },
           },
+          "---",
           {
-            opcode: "sendFullNotification",
+            opcode: "sendAdvancedNotification",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "send notification to [TOPIC] title [TITLE] message [MESSAGE] priority [PRIORITY] tags [TAGS]"
+              "send instant to [TOPIC] title [TITLE] message [MESSAGE] priority [PRIORITY] tags [TAGS] click [CLICK] attach url [ATTACH] filename [FILENAME] email [EMAIL]"
             ),
             arguments: {
               TOPIC: {
@@ -69,6 +70,50 @@
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "star,computer",
               },
+              CLICK: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "https://scratch.mit.edu",
+              },
+              ATTACH: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+              FILENAME: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+              EMAIL: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+            },
+          },
+          {
+            opcode: "sendScheduledNotification",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "send scheduled to [TOPIC] title [TITLE] message [MESSAGE] priority [PRIORITY] tags [TAGS] click [CLICK] attach url [ATTACH] filename [FILENAME] delay [DELAY]"
+            ),
+            arguments: {
+              TOPIC: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "mytopic",
+              },
+              TITLE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Scheduled Alert",
+              },
+              MESSAGE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "See you later!",
+              },
+              PRIORITY: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 3,
+                menu: "priorityMenu",
+              },
+              TAGS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "clock,calendar",
+              },
+              CLICK: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "https://xelabs.xmeroriginals.com",
+              },
+              ATTACH: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+              FILENAME: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+              DELAY: { type: Scratch.ArgumentType.STRING, defaultValue: "10s" },
             },
           },
         ],
@@ -99,14 +144,25 @@
       });
     }
 
-    sendFullNotification(args) {
+    _sendComplexNtfy(args, isScheduled) {
       const bodyData = {
         topic: args.TOPIC,
         title: args.TITLE,
         message: args.MESSAGE,
         priority: parseInt(args.PRIORITY),
-        tags: args.TAGS.split(",").map((tag) => tag.trim()),
+        tags: args.TAGS ? args.TAGS.split(",").map((tag) => tag.trim()) : [],
       };
+
+      if (args.CLICK && args.CLICK.length > 0) bodyData.click = args.CLICK;
+      if (args.ATTACH && args.ATTACH.length > 0) bodyData.attach = args.ATTACH;
+      if (args.FILENAME && args.FILENAME.length > 0)
+        bodyData.filename = args.FILENAME;
+
+      if (isScheduled) {
+        if (args.DELAY && args.DELAY.length > 0) bodyData.delay = args.DELAY;
+      } else {
+        if (args.EMAIL && args.EMAIL.length > 0) bodyData.email = args.EMAIL;
+      }
 
       Scratch.fetch("https://ntfy.sh/", {
         method: "POST",
@@ -115,8 +171,16 @@
           "Content-Type": "application/json",
         },
       }).catch((err) => {
-        console.warn("ntfyScratch: Failed to send full notification", err);
+        console.warn("ntfyScratch: Failed to send notification", err);
       });
+    }
+
+    sendAdvancedNotification(args) {
+      this._sendComplexNtfy(args, false);
+    }
+
+    sendScheduledNotification(args) {
+      this._sendComplexNtfy(args, true);
     }
 
     _openUrl(url) {
@@ -128,7 +192,7 @@
     }
 
     openDoc() {
-      this._openUrl("http://xelabs.xmeroriginals.com/docs/ntfyScratch/");
+      this._openUrl("https://xelabs.xmeroriginals.com/docs/ntfyScratch/");
     }
 
     openDocNtfy() {
