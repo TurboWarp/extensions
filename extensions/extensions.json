@@ -51,6 +51,7 @@
   "Lily/SoundExpanded",
   "Lily/TempVariables2",
   "Lily/MoreTimers",
+  "SimonShiki/scopeVar",
   "clouddata-ping",
   "cloudlink",
   "true-fantom/network",
