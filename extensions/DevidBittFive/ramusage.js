@@ -13,62 +13,60 @@
  */
 
 (function (Scratch) {
-    'use strict';
+  "use strict";
 
-    // Cache once outside the class
-    const mem =
-        (globalThis.performance && globalThis.performance.memory)
-            ? globalThis.performance.memory
-            : null;
+  // Cache once outside the class
+  const mem =
+    globalThis.performance && globalThis.performance.memory
+      ? globalThis.performance.memory
+      : null;
 
-    class RamUsageExtension {
-        getInfo() {
-            return {
-                id: 'bitterRamUsage',
-                name: Scratch.translate('RAM Monitor'),
-                blocks: [
-                                        {
-                        blockType: Scratch.BlockType.XML,
-                        xml: (
-                            mem
-                                ? ''
-                                : `
+  class RamUsageExtension {
+    getInfo() {
+      return {
+        id: "bitterRamUsage",
+        name: Scratch.translate("RAM Monitor"),
+        blocks: [
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: mem
+              ? ""
+              : `
                                       <sep gap="-12" />
-                                      <label text="${Scratch.translate('Your browser does not')}" /><sep gap="-12" />
-                                      <label text="${Scratch.translate('support the &quot;performance.memory&quot;')}" /><sep gap="-12" />
-                                      <label text="${Scratch.translate('API')}" />
-                                  `
-                        )
-                    },
-                    {
-                        opcode: 'getRamUsageMB',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: Scratch.translate('get RAM usage in MB')
-                    },
-                    {
-                        opcode: 'getRamUsagePercent',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: Scratch.translate('get RAM usage percent')
-                    }
-                ]
-            };
-        }
-
-        getRamUsageMB() {
-            // Check the cached mem variable directly
-            if (!mem) return NaN;
-
-            return mem.usedJSHeapSize / 1024 / 1024;
-        }
-
-        getRamUsagePercent() {
-            // Simplified check
-            if (!mem) return NaN;
-
-            // Calculate percentage as a raw number
-            return (mem.usedJSHeapSize / mem.jsHeapSizeLimit) * 100;
-        }
+                                      <label text="${Scratch.translate("Your browser does not")}" /><sep gap="-12" />
+                                      <label text="${Scratch.translate("support the &quot;performance.memory&quot;")}" /><sep gap="-12" />
+                                      <label text="${Scratch.translate("API")}" />
+                                  `,
+          },
+          {
+            opcode: "getRamUsageMB",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get RAM usage in MB"),
+          },
+          {
+            opcode: "getRamUsagePercent",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get RAM usage percent"),
+          },
+        ],
+      };
     }
 
-    Scratch.extensions.register(new RamUsageExtension());
+    getRamUsageMB() {
+      // Check the cached mem variable directly
+      if (!mem) return NaN;
+
+      return mem.usedJSHeapSize / 1024 / 1024;
+    }
+
+    getRamUsagePercent() {
+      // Simplified check
+      if (!mem) return NaN;
+
+      // Calculate percentage as a raw number
+      return (mem.usedJSHeapSize / mem.jsHeapSizeLimit) * 100;
+    }
+  }
+
+  Scratch.extensions.register(new RamUsageExtension());
 })(Scratch);
