@@ -2,11 +2,11 @@
 // ID: bitterRamUsage
 // Description: Monitors current RAM usage and percentage.
 // By: DevidBittFive <https://scratch.mit.edu/users/Bitter_160/>
-// License: EPL-2.0
+// License: EPL-2.0 OR GPL-2.0-or-later
 
 /**!
- * @license EPL-2.0
- * All code contained in this extension is licensed exclusively under the Eclipse Public License v2.0.
+ * @license EPL-2.0 OR GPL-2.0-or-later
+ * All code contained in this extension is licensed under the Eclipse Public License v2.0.
  *
  * If you have not received a copy of this license, you may access it
  * at the following link: https://www.eclipse.org/legal/epl-2.0/
