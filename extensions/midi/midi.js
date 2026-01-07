@@ -1737,7 +1737,7 @@
             arguments: {
               EVENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Eb4 beats=1/4",
+                defaultValue: "note Eb4 beats=1/4",
               },
               DEVICE: {
                 type: Scratch.ArgumentType.STRING,
