@@ -2290,7 +2290,7 @@
 
       if (!event) {
         if (EVENT) {
-          console.debug('Unable to parse output text', EVENT);
+          console.debug("Unable to parse output text", EVENT);
         }
         return;
       }
