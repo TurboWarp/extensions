@@ -2288,6 +2288,12 @@
       const text = Scratch.Cast.toString(EVENT);
       const event = stringToMidi(text);
 
+      if (!event) {
+        if (EVENT) {
+          console.debug('Unable to parse output text', EVENT);
+        }
+        return;
+      }
       if (DEVICE) {
         event.device = this._getDeviceIndex(DEVICE, "output");
       }
