@@ -27,11 +27,13 @@
     "Quaternion"
   );
 
+  // @ts-ignore
   Ammo()
     .then(function (Ammo) {
       const Cast = Scratch.Cast;
 
       function quaternionToEuler(q) {
+        // @ts-ignore
         const quaternion = new Quaternion(q.w(), q.x(), q.y(), q.z());
         const euler = quaternion.toEuler("XYZ");
         return {
@@ -42,6 +44,7 @@
       }
 
       function eulerToQuaternion(x, y, z) {
+        // @ts-ignore
         let quaternion = Quaternion.fromEuler(
           x * (Math.PI / 180),
           y * (Math.PI / 180),
@@ -1764,10 +1767,10 @@
             bodies[key].collisions = [];
           }
 
-          if (!dt === 0 && !fixedTimeStep === 0) {
+          if (dt != 0 && fixedTimeStep != 0) {
             world.stepSimulation(dt, maxSubSteps, fixedTimeStep);
           } else {
-            if (!runtime.frameLoop.framerate === 0) {
+            if (runtime.frameLoop.framerate != 0) {
               world.stepSimulation(
                 deltaTime,
                 maxSubSteps,
