@@ -29,16 +29,16 @@
 - Torque: newtons multiplied by meters (n•m)
 - Rotation: degrees
 
-Some Scratch-based 3D engines use large unitless values for scale, but because Ammo.js library uses single-precision floats, **large values can cause loss of precision, instability, or solver issues**, like jittery or innacurate collisions or instability (objects tunnelling through each other).
+Some Scratch-based 3D engines use large unitless values for scale, but because the Ammo.js library uses single-precision floats, **large values can cause loss of precision, instability, or solver issues**, like jittery or inaccurate collisions, or objects tunnelling through each other.
 
 Generally speaking, **values in between 0.01-1000 are safe**. If you must scale outside SI units, make sure to scale units proportionally and consistently to avoid unexpected behavior.
 
 ## Optimization <a name="optimization"></a>
 
-Ammo Physics is designed to be scalable, but especially large or complex physics scenes may cause performance degredation or meet memory limitations. Ammo Physics will automatically scale the allocated memory to meed the needs of your scene, but without proper memory management you can cause your browser to crash. 
+Ammo Physics is designed to be scalable, but especially large or complex physics scenes may cause performance degradation or hit memory limitations. Ammo Physics will automatically scale the allocated memory to meet the needs of your scene, but without proper memory management, you can cause your browser to crash. 
 
->[!IMPORTANT]
-> You should **ALWAYS** delete rays and bodies when you're done with them to free up memory. 
+>[!CAUTION]
+> You should **ALWAYS** delete rays and bodies when you're done with them to free up memory. Not doing so may cause an overflow of extra memory that can crash the page or browser.
 
 Extremely large quantities of rigid bodies or extremely complex rigid bodies may cause drops in framerate. As a general rule, use the bare minimum required for your project. If you don't need dynamic concave triangle meshes, use convex hulls instead. If you do need dynamic triangle meshes, simplify the mesh complexity and reduce triangle count to make the computation workload easier on Ammo Physics. 
 
@@ -53,7 +53,7 @@ This block removes all rigid bodies, rays, and constraints from the world and re
 step simulation :: #0fbd8c
 ```
 
-This block increases the physics simulation by one step forward in time. You should put it in your game loop or tick event. It implicitly takes the deltatime, max sub steps, and current target framerate. Generally speaking, the higher the framerate, the higher quality your physics simulation will be.
+This block increases the physics simulation by one step forward in time. You should put it in your game loop or tick event. It implicitly takes the deltatime, max substeps, and current target framerate. Generally speaking, the higher the framerate, the higher the quality of your physics simulation will be.
 
 If Turbowarp's runtime framerate is set to 0, Ammo Physics will implicitly use your screen's refresh rate, just like Turbowarp will. 
 
@@ -61,12 +61,12 @@ If Turbowarp's runtime framerate is set to 0, Ammo Physics will implicitly use y
 set max substeps (10) :: #0fbd8c
 ```
 
-This block sets the max substeps of the physics simulation. This can help in complicated simulations as it computes extra physics steps per frame **if necessary**. By default, the physics world loads with 10 max sub steps. 
+This block sets the max substeps of the physics simulation. This can help in complicated simulations as it computes extra physics steps per frame **if necessary**. By default, the physics world loads with 10 max substeps. 
 If your project's deltatime is higher than your target framerate, simulation substeps are used to account for the loss in quality. For example: 
 - Your project's target framerate is 60 FPS.
 - Your project is lagging a bit, so your delta time might be running at 33ms instead of 16ms, so you need at least 2 substeps per frame to account for the loss in simulation quality.
 
-Note the term "max" sub steps: It will automatically compute the substeps necessary without exceeding that value. In most scenarios, increasing max substeps will not provide a noticable increase in quality, it only helps when your delta time is higher than your FPS (e.g., you're lagging).
+Note the term "max" sub steps: It automatically computes the necessary substeps without exceeding that value. In most scenarios, increasing max substeps will not provide a noticable increase in quality, it only helps when your delta time is longer than your frame interval (e.g., you're lagging).
 
 ```scratch
 set gravity to x: (0) y: (-9.81) z: (0) :: #0fbd8c
@@ -96,17 +96,17 @@ Creates a sphere-shaped body with the specified name, mass, and radius in meters
 ```scratch
 create cylinder body with name: [body] mass: (5) radius: (0.5) height: (1) :: #0fbd8c
 ```
-Creates a cylinder body with the specified, name, mass, radius, and height.
+Creates a cylinder body with the specified name, mass, radius, and height.
 
 ```scratch
 create cone body with name: [body] mass: (5) radius: (0.5) height: (1) :: #0fbd8c
 ```
-Creates a cone body with the specified, name, mass, radius, and height.
+Creates a cone body with the specified name, mass, radius, and height.
 
 ```scratch
 create capsule body with name: [body] mass: (5) radius: (0.5) height: (1) :: #0fbd8c
 ```
-Creates a capsule body with the specified, name, mass, radius, and height. This body is great for using as your player's hitbox!
+Creates a capsule body with the specified name, mass, radius, and height. This body is great for using as your player's hitbox!
 
 >[!TIP]
 > Bodies support **safe replacement**, meaning that when you create a new object with the same name as an already existing object, it will override the new object safely. This can be strategically used to change a body's properties later, but don't do this too frequently and beware of optimization.
@@ -130,7 +130,7 @@ The list of vertices must be in a specific format: each list item should contain
 ```
 ... and so on. Of course, this list has been generated, but your vertex positions might look simpler.
 
-**For convex hulls, the vertex arrangement doesn't matter since it generates the hull from the mesh automatically.**
+**For convex hulls, the vertex arrangement doesn't matter, as it automatically generates the hull from the mesh.**
 
 ```scratch
 create [static v] mesh body with name: [body] mass: (5) from vertices: [select a list v] faces: [select a list v] :: #0fbd8c
@@ -142,7 +142,7 @@ It requires:
 2. A space-delimited list of vertex indices for triangulated faces.
 
 Before importing your meshes into lists, you must triangulate the mesh so that there are only three vertices per face. Attempting to load a non-triangulated mesh will fail and log an error.
-For example, the corresponding face list to the Suzzane vertex list above looks like this:
+For example, the corresponding face list to the Suzanne vertex list above looks like this:
 ```
 47 3 45
 4 48 46
@@ -150,17 +150,17 @@ For example, the corresponding face list to the Suzzane vertex list above looks 
 6 46 44
 3 7 5
 ```
-**Notice two crucial facts about this list**:
+**Note two crucial facts about this list**:
 1. There are no more than three values per item. This means that there are only three vertices per face.
-2. These values aren't coordinates; they correspond to the items in the vertex list that form a triangle (they're vertex indicies).
+2. These values aren't coordinates; they correspond to the items in the vertex list that form a triangle (they're vertex indices).
 
-Incorrect face data will reference incorrect vertex indicies, leading the solver to parse the mesh incorrectly. **You must be careful**. 
+Incorrect face data will reference incorrect vertex indices, leading the solver to parse the mesh incorrectly. **You must be careful**. 
 
 Additionally, you may notice there are **two types of triangle meshes**:
 1. Static
 2. Dynamic
 
-Static triangle meshes can't move and are bounding-volume-heirarchy accelerated. This means they are much more performant for static geometry like your level terrain or map, but they can't move or react to forces. **It does not support triangle-triangle interaction,** but is significantly faster for raycasting and convex hulls. Therefore, dynamic triangle meshes won't be able to collide triangle-to-triangle with BVH static meshes.
+Static triangle meshes can't move and are bounding-volume-heirarchy accelerated. This means they are much more performant for static geometry like your level terrain or map, but they can't move or react to forces. **It does not support triangle-triangle interaction,** but is significantly faster for raycasting and convex hulls. Therefore, dynamic triangle meshes won't be able to collide triangle-to-triangle collisions with BVH static meshes.
 
 Dynamic triangle meshes are special: they support **deformable and/or moving concave meshes**. They also support **triangle-to-triangle collision with other dynamic triangle meshes**. However:
 
@@ -228,7 +228,7 @@ This block allows you to control whether a body responds to collision forces. By
 ```scratch
 <is body [body] touching body [body 2]? :: #0fbd8c>
 ```
-Fairly self-explanatory. If a the specified body is touching another specified body, the reporter returns true.
+Fairly self-explanatory. If the specified body is touching another specified body, the reporter returns true.
 
 ```scratch
 <is body [body] touching any body? :: #0fbd8c>
@@ -282,7 +282,7 @@ Before we get started, let's define a few terms:
 **Impulse**: A force applied to a body immediately, such as the firing of a bullet or the jumping of a character.
 **Torque**: A rotational force that applies pure rotational force around the center of mass.
 
-Forces have a meter offset from the body's origin and so can apply rotational velocity **from that point**. If the offset is zero, no rotational velocity will result. For example, if you push an object at it's top while the bottom stays stationary, it will rotate to account for that motion. Generally speaking, higher offset values result in more rotational velocity.
+Forces have a meter offset from the body's origin and so can apply rotational velocity **from that point**. If the offset is zero, no rotational velocity will result. For example, if you push an object at its top while the bottom stays stationary, it will rotate to account for that motion. Generally speaking, higher offset values result in more rotational velocity.
 
 ```scratch
 push body [body] with [force v] x: (1) y: (1) z: (1) newtons with offset x: (0) y: (0.25) z: (0) meters :: #0fbd8c
@@ -306,3 +306,5 @@ Pushes the specified body with the given XYZ rotational torque in newton-meters.
 If you want to report a bug or suggest a new feature, please give feedback to me on my <a href="https://scratch.mit.edu/users/-MasterMath-">Scratch profile comments.</a>
 
 Sample projects coming soon.
+
+[^1]: Footnote for first asterisk
