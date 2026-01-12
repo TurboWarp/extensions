@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.01
+// Version V.1.0.02
 
 (function (Scratch) {
   "use strict";
@@ -160,7 +160,7 @@
     */
     filterString =
       `<svg xmlns="http://www.w3.org/2000/svg">` +
-      `<filter xmlns:xlink="http://www.w3.org/1999/xlink" id="${id}">` +
+      `<filter xmlns:xlink="http://www.w3.org/1999/xlink" id="${id}" color-interpolation-filters="sRGB">` +
       filterString +
       `</filter></svg>`;
 
