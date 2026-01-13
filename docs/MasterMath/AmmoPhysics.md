@@ -306,5 +306,3 @@ Pushes the specified body with the given XYZ rotational torque in newton-meters.
 If you want to report a bug or suggest a new feature, please give feedback to me on my <a href="https://scratch.mit.edu/users/-MasterMath-">Scratch profile comments.</a>
 
 Sample projects coming soon.
-
-[^1]: Footnote for first asterisk
