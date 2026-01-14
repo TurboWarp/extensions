@@ -367,7 +367,9 @@
               {
                 opcode: "toggleAutoReset",
                 blockType: Scratch.BlockType.COMMAND,
-                text: Scratch.translate("[toggle] auto world reset"),
+                text: Scratch.translate(
+                  "[toggle] auto world reset on project start"
+                ),
                 hideFromPalette: !this.folders.simControl,
                 arguments: {
                   toggle: {
@@ -1040,6 +1042,18 @@
                 blockType: Scratch.BlockType.BOOLEAN,
                 text: Scratch.translate("is any body active?"),
                 hideFromPalette: !this.folders.bodies,
+              },
+              {
+                opcode: "activateBody",
+                blockType: Scratch.BlockType.COMMAND,
+                text: Scratch.translate("activate body [name]"),
+                hideFromPalette: !this.folders.bodies,
+                arguments: {
+                  name: {
+                    type: Scratch.ArgumentType.STRING,
+                    defaultValue: "body",
+                  },
+                },
               },
               {
                 opcode: "deleteBody",
@@ -1834,7 +1848,7 @@
         }
 
         allBodies() {
-          return Cast.toString(Object.keys(bodies));
+          return JSON.stringify(Object.keys(bodies));
         }
 
         createBoxBody({ name, mass, x, y, z }) {
@@ -2310,6 +2324,17 @@
             if (bodies[key]?.isActive()) return true;
           }
           return false;
+        }
+
+        activateBody({ name }, { target }) {
+          name = Cast.toString(name);
+          if (bodies[name]) {
+            bodies[name].activate(true);
+          } else {
+            console.warn(
+              `Attempted to activate nonexistent body "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
+            );
+          }
         }
 
         deleteBody({ name }, { target }) {
