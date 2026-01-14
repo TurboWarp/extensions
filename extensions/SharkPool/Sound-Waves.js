@@ -8,26 +8,37 @@
 
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed) throw new Error("Sound Waves must run unsandboxed");
+  if (!Scratch.extensions.unsandboxed)
+    throw new Error("Sound Waves must run unsandboxed");
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTAuODgyIiBoZWlnaHQ9IjExMC44ODIiIHZpZXdCb3g9IjAgMCAxMTAuODgyIDExMC44ODIiPjxwYXRoIGQ9Ik0wIDU1LjQ0MUMwIDI0LjgyMSAyNC44MjEgMCA1NS40NCAwYzMwLjYyIDAgNTUuNDQxIDI0LjgyMSA1NS40NDEgNTUuNDQgMCAzMC42Mi0yNC44MjEgNTUuNDQxLTU1LjQ0IDU1LjQ0MUMyNC44MjEgMTEwLjg4MSAwIDg2LjA2IDAgNTUuNDQxIiBmaWxsPSIjMmJiMzlhIi8+PHBhdGggZD0ibTEyLjg2MiA2Mi41MyA5LjAzLTE0LjU2NkwzNy42MjMgNzUuOTNsMTcuNDc5LTQxLjY1OCAxNy43NyA0MS4wNzUgMTMuNjkyLTI3LjA5Mkw5Ny4zNDMgNjIuNTMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI3LjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==";
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTAuODgyIiBoZWlnaHQ9IjExMC44ODIiIHZpZXdCb3g9IjAgMCAxMTAuODgyIDExMC44ODIiPjxwYXRoIGQ9Ik0wIDU1LjQ0MUMwIDI0LjgyMSAyNC44MjEgMCA1NS40NCAwYzMwLjYyIDAgNTUuNDQxIDI0LjgyMSA1NS40NDEgNTUuNDQgMCAzMC42Mi0yNC44MjEgNTUuNDQxLTU1LjQ0IDU1LjQ0MUMyNC44MjEgMTEwLjg4MSAwIDg2LjA2IDAgNTUuNDQxIiBmaWxsPSIjMmJiMzlhIi8+PHBhdGggZD0ibTEyLjg2MiA2Mi41MyA5LjAzLTE0LjU2NkwzNy42MjMgNzUuOTNsMTcuNDc5LTQxLjY1OCAxNy43NyA0MS4wNzUgMTMuNjkyLTI3LjA5Mkw5Ny4zNDMgNjIuNTMiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI3LjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==";
   const blockIconURI =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTEuNDI5IiBoZWlnaHQ9Ijc4IiB2aWV3Qm94PSIwIDAgMTExLjQyOSA3OCI+PHBhdGggZD0iTTI2Ny4xNiAyMTloLTI2LjQ2NGE2LjI3IDYuMjcgMCAwIDEtNi4yNjctNi4yNjh2LTYwLjU5aC0xNi43MTV2MjcuMTYyYTYuMjcgNi4yNyAwIDAgMS02LjI2OCA2LjI2N2gtMjQuMzc1YTIuNzg2IDIuNzg2IDAgMCAxLTIuNzg1LTIuNzg1di01LjU3MmEyLjc4NiAyLjc4NiAwIDAgMSAyLjc4NS0yLjc4NWgxOS41di0yNy4xNjFBNi4yNyA2LjI3IDAgMCAxIDIxMi44NCAxNDFoMjYuNDY1YTYuMjcgNi4yNyAwIDAgMSA2LjI2NyA2LjI2OHY2MC41OWgxNi43MTV2LTI3LjE2MmE2LjI3IDYuMjcgMCAwIDEgNi4yNjgtNi4yNjdoMjQuMzc1YTIuNzg2IDIuNzg2IDAgMCAxIDIuNzg1IDIuNzg1djUuNTcyYTIuNzg2IDIuNzg2IDAgMCAxLTIuNzg1IDIuNzg1aC0xOS41djI3LjE2MWE2LjI3IDYuMjcgMCAwIDEtNi4yNyA2LjI2OCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4NC4yODYgLTE0MSkiIGZpbGw9IiNmZmYiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTpub3JtYWwiLz48L3N2Zz4=";
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMTEuNDI5IiBoZWlnaHQ9Ijc4IiB2aWV3Qm94PSIwIDAgMTExLjQyOSA3OCI+PHBhdGggZD0iTTI2Ny4xNiAyMTloLTI2LjQ2NGE2LjI3IDYuMjcgMCAwIDEtNi4yNjctNi4yNjh2LTYwLjU5aC0xNi43MTV2MjcuMTYyYTYuMjcgNi4yNyAwIDAgMS02LjI2OCA2LjI2N2gtMjQuMzc1YTIuNzg2IDIuNzg2IDAgMCAxLTIuNzg1LTIuNzg1di01LjU3MmEyLjc4NiAyLjc4NiAwIDAgMSAyLjc4NS0yLjc4NWgxOS41di0yNy4xNjFBNi4yNyA2LjI3IDAgMCAxIDIxMi44NCAxNDFoMjYuNDY1YTYuMjcgNi4yNyAwIDAgMSA2LjI2NyA2LjI2OHY2MC41OWgxNi43MTV2LTI3LjE2MmE2LjI3IDYuMjcgMCAwIDEgNi4yNjgtNi4yNjdoMjQuMzc1YTIuNzg2IDIuNzg2IDAgMCAxIDIuNzg1IDIuNzg1djUuNTcyYTIuNzg2IDIuNzg2IDAgMCAxLTIuNzg1IDIuNzg1aC0xOS41djI3LjE2MWE2LjI3IDYuMjcgMCAwIDEtNi4yNyA2LjI2OCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE4NC4yODYgLTE0MSkiIGZpbGw9IiNmZmYiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTpub3JtYWwiLz48L3N2Zz4=";
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
 
   const waves = ["triangle", "sine", "square", "sawtooth"];
   const notes = [
-    "C", "C#", "D", "D#", "E", "F",
-    "F#", "G", "G#", "A", "A#", "B"
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#",
+    "A",
+    "A#",
+    "B",
   ];
   const normalVolumeMap = {
     sine: 1.0,
     triangle: 1.2,
     square: 0.5,
-    sawtooth: 0.4
+    sawtooth: 0.4,
   };
 
   class SPsoundWaves {
@@ -62,19 +73,19 @@
             arguments: {
               WAVE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "WAVES"
+                menu: "WAVES",
               },
               NOTE: {
                 type: Scratch.ArgumentType.NOTE,
-                defaultValue: 60
+                defaultValue: 60,
               },
               DURATION: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0.5
+                defaultValue: 0.5,
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
+                defaultValue: 1,
               },
             },
           },
@@ -85,15 +96,15 @@
             arguments: {
               WAVE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "WAVES"
+                menu: "WAVES",
               },
               NOTE: {
                 type: Scratch.ArgumentType.NOTE,
-                defaultValue: 60
+                defaultValue: 60,
               },
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
+                defaultValue: 1,
               },
             },
           },
@@ -104,14 +115,14 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
+                defaultValue: 1,
               },
             },
           },
           {
             opcode: "stopNote",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop all notes"
+            text: "stop all notes",
           },
           { blockType: Scratch.BlockType.LABEL, text: "Volume" },
           {
@@ -121,11 +132,11 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
+                defaultValue: 1,
               },
               VOLUME: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100
+                defaultValue: 100,
               },
             },
           },
@@ -136,7 +147,7 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
+                defaultValue: 1,
               },
             },
           },
@@ -147,7 +158,7 @@
             arguments: {
               VOLUME: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100
+                defaultValue: 100,
               },
             },
           },
@@ -159,11 +170,11 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
+                defaultValue: 1,
               },
               PITCH: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: 0,
               },
             },
           },
@@ -174,7 +185,7 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
+                defaultValue: 1,
               },
             },
           },
@@ -185,7 +196,7 @@
             arguments: {
               PITCH: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 0
+                defaultValue: 0,
               },
             },
           },
@@ -197,18 +208,18 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 1
+                defaultValue: 1,
               },
             },
           },
           {
             opcode: "convertPressedKeyToNote",
             blockType: Scratch.BlockType.REPORTER,
-            text: "pressed key to note"
+            text: "pressed key to note",
           },
         ],
         menus: {
-          WAVES: { acceptReporters: true, items: waves }
+          WAVES: { acceptReporters: true, items: waves },
         },
       };
     }
@@ -234,7 +245,10 @@
       const oscillator = this.audioContext.createOscillator();
       const gainNode = this.audioContext.createGain();
       oscillator.type = waves.includes(waveform) ? waveform : "square";
-      oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(
+        frequency,
+        this.audioContext.currentTime
+      );
       gainNode.gain.setValueAtTime(
         normalVolumeMap[waveform] ?? 1,
         this.audioContext.currentTime
@@ -261,16 +275,43 @@
 
     convertAndReportNoteFromKeyPressed(key) {
       const keysToNotes = {
-        Z: 48, X: 50, C: 52, V: 53,
-        B: 55, N: 57, M: 59, ",": 60,
-        A: 49, S: 51, D: 53, F: 54,
-        G: 56, H: 58, J: 60, K: 62,
-        L: 64, Q: 60, W: 62, E: 64,
-        R: 65, T: 67, Y: 69, U: 71,
-        I: 72, P: 72, 1: 62, 2: 64,
-        3: 65, 4: 67, 5: 69, 6: 71,
-        7: 72, 8: 74, 9: 76, 0: this.currentNote,
-        O: this.currentNote
+        Z: 48,
+        X: 50,
+        C: 52,
+        V: 53,
+        B: 55,
+        N: 57,
+        M: 59,
+        ",": 60,
+        A: 49,
+        S: 51,
+        D: 53,
+        F: 54,
+        G: 56,
+        H: 58,
+        J: 60,
+        K: 62,
+        L: 64,
+        Q: 60,
+        W: 62,
+        E: 64,
+        R: 65,
+        T: 67,
+        Y: 69,
+        U: 71,
+        I: 72,
+        P: 72,
+        1: 62,
+        2: 64,
+        3: 65,
+        4: 67,
+        5: 69,
+        6: 71,
+        7: 72,
+        8: 74,
+        9: 76,
+        0: this.currentNote,
+        O: this.currentNote,
       };
       const note = keysToNotes[key.toUpperCase()] || 0;
       this.currentNote = note;
@@ -278,7 +319,9 @@
     }
 
     // Block Funcs
-    playNoteV2(args) { this.playNote(args) }
+    playNoteV2(args) {
+      this.playNote(args);
+    }
     playNote({ WAVE, NOTE, DURATION, ID }) {
       this.stopID({ ID });
       const realNote = this.convertScratchNoteToRealNote(Math.round(NOTE));
@@ -286,7 +329,9 @@
       this.playSound(frequency, DURATION, WAVE, ID);
     }
 
-    playNoteContinuouslyV2(args) { this.playNoteContinuously(args) }
+    playNoteContinuouslyV2(args) {
+      this.playNoteContinuously(args);
+    }
     playNoteContinuously({ WAVE, NOTE, ID }) {
       this.stopID({ ID });
       const realNote = this.convertScratchNoteToRealNote(Math.round(NOTE));
@@ -306,7 +351,9 @@
     }
 
     stopNote() {
-      this.oscillators.forEach((oscillator) => { oscillator.stop() });
+      this.oscillators.forEach((oscillator) => {
+        oscillator.stop();
+      });
       this.oscillators.clear();
       this.playingNote = false;
       this.playingStatus.forEach((value, key) => {
@@ -324,7 +371,8 @@
       const gainNode = this.gainNodes.get(ID);
       if (gainNode) {
         gainNode.gain.setValueAtTime(
-          VOLUME / 100, this.audioContext.currentTime
+          VOLUME / 100,
+          this.audioContext.currentTime
         );
       }
     }
@@ -335,7 +383,8 @@
         gainNode = this.gainNodes.get(key);
         if (gainNode) {
           gainNode.gain.setValueAtTime(
-            VOLUME / 100, this.audioContext.currentTime
+            VOLUME / 100,
+            this.audioContext.currentTime
           );
         }
       });
@@ -346,7 +395,10 @@
       if (oscillator) {
         const pitchFactor = Math.pow(2, PITCH / 12);
         const newFrequency = 440 * pitchFactor;
-        oscillator.frequency.setValueAtTime(newFrequency, this.audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(
+          newFrequency,
+          this.audioContext.currentTime
+        );
       }
     }
 
@@ -354,7 +406,10 @@
       const pitchFactor = Math.pow(2, PITCH / 12);
       this.oscillators.forEach((oscillator, ID) => {
         const newFrequency = 440 * pitchFactor;
-        oscillator.frequency.setValueAtTime(newFrequency, this.audioContext.currentTime);
+        oscillator.frequency.setValueAtTime(
+          newFrequency,
+          this.audioContext.currentTime
+        );
       });
     }
 
@@ -368,9 +423,15 @@
       return 0;
     }
 
-    isPlaying({ ID }) { return this.playingStatus.get(ID) !== undefined && this.playingStatus.get(ID) }
+    isPlaying({ ID }) {
+      return (
+        this.playingStatus.get(ID) !== undefined && this.playingStatus.get(ID)
+      );
+    }
 
-    convertPressedKeyToNote() { return this.keyPressed ? this.currentNote : 0 }
+    convertPressedKeyToNote() {
+      return this.keyPressed ? this.currentNote : 0;
+    }
   }
 
   Scratch.extensions.register(new SPsoundWaves());
