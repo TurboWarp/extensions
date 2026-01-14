@@ -365,9 +365,7 @@
               {
                 opcode: "toggleAutoReset",
                 blockType: Scratch.BlockType.COMMAND,
-                text: Scratch.translate(
-                  "[toggle] auto world reset"
-                ),
+                text: Scratch.translate("[toggle] auto world reset"),
                 hideFromPalette: !this.folders.simControl,
                 arguments: {
                   toggle: {
