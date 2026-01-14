@@ -1,13 +1,13 @@
 # Ammo Physics
 
-## Table of contents
+## Table of Contents
 1. [What Is Ammo Physics?](#description)
 2. [Units of Measurement](#units)
 3. [Optimization](#optimization)
 4. [The Blocks](#the-blocks)
 4.1. [Simulation Control](#sim-control)
 4.2. [Bodies](#bodies)
-4.3. [More Complex Bodies](#complex-bodies)
+4.3. [Complex Bodies](#complex-bodies)
 4.4 [Transformations](#transformations)
 4.5 [Collisions](#collisions)
 4.6 [Raycasting](#raycasting)
@@ -15,7 +15,7 @@
 5. [More Resources](#more-resources)
  
 ## What is Ammo Physics? <a name="description"></a>
-**Ammo Physics** is a high-level 3D rigid body physics extension based on [Ammo.js](https://github.com/kripken/ammo.js), a JavaScript port of the well-known Bullet Physics SDK for C++. It brings high-quality realtime physics to Turbowarp. 
+**Ammo Physics** is a rigid body physics extension based on [Ammo.js](https://github.com/kripken/ammo.js), a JavaScript port of the well-known Bullet Physics SDK for C++. It brings high-quality realtime 3D physics to TurboWarp. 
 
 ## Units of Measurement <a name="units"></a>
 >[!IMPORTANT]
@@ -50,12 +50,24 @@ reset world :: #0fbd8c
 This block removes all rigid bodies, rays, and constraints from the world and resets the gravity. This function is automatically called when pressing the green flag.
 
 ```scratch
+[enable v] auto world reset :: #0fbd8c
+```
+
+This block enables or disables the automatic resetting of the world when the project is started or stopped. You may find this useful if you rely on project data persisting even after pressing the green flag. 
+
+```scratch
 step simulation :: #0fbd8c
 ```
 
 This block increases the physics simulation by one step forward in time. You should put it in your game loop or tick event. It implicitly takes the deltatime, max substeps, and current target framerate. Generally speaking, the higher the framerate, the higher the quality of your physics simulation will be.
 
-If Turbowarp's runtime framerate is set to 0, Ammo Physics will implicitly use your screen's refresh rate, just like Turbowarp will. 
+If TurboWarp's runtime framerate is set to 0, Ammo Physics will implicitly use your screen's refresh rate, just like TurboWarp will. 
+
+```scratch
+step simulation with delta time: (0.016) max substeps: (10) fixed time step: (0.016) ::#0fbd8c
+```
+
+This block is exactly like the one above, but instead of implying parameters, it does exactly what you want. Decreasing fixed time step will result in increased quality and increasing fixed time step will result in increased performance at the cost of quality. The default fixed time step is 60 steps per second. Generally speaking, the fixed time step should be your project's target framerate, or TurboWarp's runtime frame rate.
 
 ```scratch
 set max substeps (10) :: #0fbd8c
@@ -66,7 +78,13 @@ If your project's deltatime is higher than your target framerate, simulation sub
 - Your project's target framerate is 60 FPS.
 - Your project is lagging a bit, so your delta time might be running at 33ms instead of 16ms, so you need at least 2 substeps per frame to account for the loss in simulation quality.
 
-Note the term "max" sub steps: It automatically computes the necessary substeps without exceeding that value. In most scenarios, increasing max substeps will not provide a noticable increase in quality, it only helps when your delta time is longer than your frame interval (e.g., you're lagging).
+Note the term "max" substeps: It automatically computes the necessary substeps without exceeding that value. In most scenarios, increasing max substeps will not provide a noticable increase in quality, it only helps when your delta time is longer than your frame interval (e.g., you're lagging).
+
+```scratch
+(max substeps :: #0fbd8c)
+```
+
+This block returns the number of maximum substeps allowed.
 
 ```scratch
 set gravity to x: (0) y: (-9.81) z: (0) :: #0fbd8c
@@ -74,9 +92,15 @@ set gravity to x: (0) y: (-9.81) z: (0) :: #0fbd8c
 
 This sets the world's gravity in meters per second squared. By default, it matches earth's approximate gravity.
 
+```scratch
+(gravity [x v] :: #0fbd8c)
+```
+
+This block the world gravity's X, Y, or Z value. 
+
 ### Bodies <a name="bodies"></a>
 >[!TIP]
-> You can set the mass of any body to 0 to make it static, or not reacting to any forces (including gravity), while retaining collision. This is useful for things like the ground or your level geometry (game map).
+> You can set the mass of any body to 0 to make it static—not reacting to any forces (including gravity)—while retaining collision. This is useful for things like the ground or your level geometry (game map).
 
 ```scratch
 (all bodies :: #0fbd8c)
@@ -118,7 +142,7 @@ create convex hull body with name: [body] mass: (5) from vertices: [select a lis
 ```
 This block is special. It will generate a convex hull body from a list of vertices.
 
-Convex hulls are great when you want a triangle mesh to have more detailed collision than a box or sphere but prioritize performance. They don't have concave collisions and encapsulate the set of vertices in the simplest possible shape that covers the volume of the object without concave faces.
+Convex hulls are great when you want a triangle mesh to have more detailed collision than a box or sphere but prioritize performance. They don't have concave collisions, and they enclose the object's vertices with the simplest convex shape possible.
 
 The list of vertices must be in a specific format: each list item should contain one vertex, or three space-delimited coordinates. For example, the starting lines for a Suzanne monkey might look like this:
 ```
@@ -168,6 +192,12 @@ Dynamic triangle meshes are special: they support **deformable and/or moving con
 > Dynamic triangle meshes are computationally expensive and should only be used where necessary. As a fallback, consider using a static BVH mesh or convex hull if concave dynamic triangle collision isn't absolutely required for your simulation.
 
 ```scratch
+create [convex hull v] mesh body with name: [name] mass: [mass] from OBJ: [select a list v] :: #0fbd8c
+```
+
+If you found the above blocks intimidating, don't worry. Ammo Physics has a block specially designed to load OBJ files directly, and this is the block you will likely be using most for meshes. Simply right click your list and upload your OBJ file. Select that list in the block's dropdown and Ammo Physics will handle the rest for you—no need to worry about debugging vertex indices!
+
+```scratch
 create compound shape with name: [shape] :: #0fbd8c
 ```
 
@@ -193,6 +223,18 @@ By default bounciness (elasticity/restitution) is 0, so if you want a body to be
 set gravity of body [body] to x: (0) y: (0) z: (0) :: #0fbd8c
 ```
 This block is interesting because it lets you specify custom gravity for each body. It overrides the world's gravity only for the specified body. It's especially useful for unique gameplay scenarios.
+
+```scratch
+<is body [body] active? :: #0fbd8c>
+```
+
+By default, Ammo Physics will make very slow-moving or inactive bodies "fall asleep" to stop computing unnecessary physics. You can detect if a body is active or not, and this block makes it really easy to see if a body has stopped moving. 
+
+```scratch
+<is any body active? :: #0fbd8c>
+```
+
+This block is similar to the one above, except it returns true if any one of the bodies in the world is active and false if none of the bodies in the world are active.
 
 ```scratch
 delete body [body] :: #0fbd8c
@@ -223,7 +265,7 @@ Returns the X, Y, or Z position or rotation of the specified body. Most commonly
 ```scratch
 [enable v] collision response for body [body] :: #0fbd8c
 ```
-This block allows you to control whether a body responds to collision forces. By default, all bodies have collision, but you can disable it. Bodies won't collide with others, but they'll react to external forces like gravity and manual pushes and retain collision detection. This opens up endless possibilities. For instance, you could create an invisible block that doesn't collide with other bodies solely for collision detection, like a “trigger volume” in other game engines, for example when a player enters a certain area.
+This block controls whether a body responds to collision forces. By default, all bodies participate in collisions, but this can be disabled. When disabled, a body will no longer physically collide with others, while still responding to external forces such as gravity or manual impulses and still reporting collision events. This enables patterns like invisible, zero-mass bodies used purely for detection, similar to trigger volumes in other game engines that detect when a player enters a defined area.
 
 ```scratch
 <is body [body] touching body [body 2]? :: #0fbd8c>
