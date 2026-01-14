@@ -339,7 +339,9 @@
 
           this.refreshPalette = () => {
             if (Scratch.vm.extensionManager)
-              Scratch.vm.extensionManager.refreshBlocks("masterMathAmmoPhysics");
+              Scratch.vm.extensionManager.refreshBlocks(
+                "masterMathAmmoPhysics"
+              );
           };
         }
 
