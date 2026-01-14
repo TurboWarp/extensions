@@ -12,7 +12,8 @@
 4.5 [Collisions](#collisions)
 4.6 [Raycasting](#raycasting)
 4.7 [Forces](#forces)
-5. [More Resources](#more-resources)
+5. [Debugging](#debugging)
+6. [More Resources](#more-resources)
  
 ## What is Ammo Physics? <a name="description"></a>
 **Ammo Physics** is a rigid body physics extension based on [Ammo.js](https://github.com/kripken/ammo.js), a JavaScript port of the well-known Bullet Physics SDK for C++. It brings high-quality realtime 3D physics to TurboWarp. 
@@ -342,6 +343,10 @@ Pushes the specified body with a force or impulse with the given XYZ strength in
 push body [body] with torque x: (1) y: (1) z: (1) :: #0fbd8c
 ```
 Pushes the specified body with the given XYZ rotational torque in newton-meters. Only results in rotational velocity.
+
+## Debugging <a name="debugging"></a>
+
+Ammo Physics will report errors that have occured. To see these errors, open the developer inspector (ctrl + shift + I on Windows, cmd + option + I on Mac) and select the "Console" tab at the top of the window. Here, you can see errors that have occured and in which sprite they have occured. While this system will not catch every issue, it can certainly narrow down issues such as referencing a body or a ray that does not exist or improperly formatted object lists.
 
 ## More Resources <a name="more-resources"></a>
 
