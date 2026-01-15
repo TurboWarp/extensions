@@ -1,6 +1,6 @@
 // Name: Webhooks
 // ID: cubesterWebhooks
-// Description: A modern, very capable, Webhook extension.
+// Description: A modern, very capable Webhook extension.
 // By: CubesterYT <https://scratch.mit.edu/users/CubesterYT/>
 // License: MPL-2.0
 
