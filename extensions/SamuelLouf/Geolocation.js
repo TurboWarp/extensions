@@ -229,8 +229,15 @@
         this.watcherID = navigator.geolocation.watchPosition(
           (pos) => {
             var coords = pos.toJSON().coords;
-            if (!(this.lastCoords == null)){ // last coords are entered
-              if ((Math.abs(this.lastCoords.latitude - coords.latitude) < 5*10**-5) && (Math.abs(this.lastCoords.longitude - coords.longitude) < 5*10**-5)){ // Change smaller than a few meters
+            if (!(this.lastCoords == null)) {
+              // last coords are entered
+              if (
+                Math.abs(this.lastCoords.latitude - coords.latitude) <
+                  5 * 10 ** -5 &&
+                Math.abs(this.lastCoords.longitude - coords.longitude) <
+                  5 * 10 ** -5
+              ) {
+                // Change smaller than a few meters
                 return; // Cancel
               }
             }
