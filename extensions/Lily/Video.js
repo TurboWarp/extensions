@@ -42,6 +42,13 @@
       /** @type {string} */
       this.videoSrc = videoSrc;
 
+      /**
+       * Base volume as set by the scripts in the project, from 0 to 1.
+       * Does not account for eg. the project being muted.
+       * @type {number}
+       */
+      this.videoVolume = 1;
+
       this.videoError = false;
 
       this.readyPromise = new Promise((resolve) => {
@@ -109,6 +116,12 @@
       this.emitWasAltered();
     }
 
+    updateVolume() {
+      const projectVolume = runtime.audioEngine.inputNode.gain.value;
+      const trueVolume = this.videoVolume * projectVolume;
+      this.videoElement.volume = trueVolume;
+    }
+
     get size() {
       if (this.videoDirty) {
         this.reuploadVideo();
@@ -140,8 +153,11 @@
 
       runtime.on("BEFORE_EXECUTE", () => {
         for (const skin of renderer._allSkins) {
-          if (skin instanceof VideoSkin && !skin.videoElement.paused) {
-            skin.markVideoDirty();
+          if (skin instanceof VideoSkin) {
+            skin.updateVolume();
+            if (!skin.videoElement.paused) {
+              skin.markVideoDirty();
+            }
           }
         }
       });
@@ -598,7 +614,7 @@
         case "duration":
           return videoSkin.videoElement.duration;
         case "volume":
-          return videoSkin.videoElement.volume * 100;
+          return videoSkin.videoVolume * 100;
         case "width":
           return videoSkin.size[0];
         case "height":
@@ -682,7 +698,8 @@
       if (!videoSkin) return;
 
       const value = Cast.toNumber(args.VALUE);
-      videoSkin.videoElement.volume = Math.min(1, Math.max(0, value / 100));
+      videoSkin.videoVolume = Math.min(1, Math.max(0, value / 100));
+      videoSkin.updateVolume();
     }
 
     setPlaybackRate(args) {

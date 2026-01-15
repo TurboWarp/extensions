@@ -22,8 +22,6 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable */
-
 (function (Scratch) {
   "use strict";
 
@@ -32,8 +30,10 @@
   }
 
   // First we need to load the Box2D physics library that this extension uses.
-  // It's not currently advised to load more scripts in custom extensions, so we copied and pasted
-  // the source code below. Yes, this is really ugly.
+  // Scratch.external needs the library to have an established external presence that isn't going away but this
+  // library is very old and seems to be abandoned. We might have to give it a home ourselves.
+
+  /* eslint-disable */
 
   /*!
    * Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
@@ -12489,6 +12489,8 @@
       bodies[bodyID].SetAwake(true);
     }
   };
+
+  /* eslint-enable */
 
   let tickRate = 30;
 

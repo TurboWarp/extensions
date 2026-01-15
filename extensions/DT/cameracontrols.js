@@ -74,7 +74,7 @@
   // tell resize to update camera as well
   vm.runtime.on("STAGE_SIZE_CHANGED", (_) => updateCamera());
 
-  vm.runtime.on("RUNTIME_DISPOSED", (_) => {
+  vm.runtime.on("RUNTIME_DISPOSED", () => {
     cameraX = 0;
     cameraY = 0;
     cameraZoom = 100;

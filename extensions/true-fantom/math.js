@@ -385,6 +385,18 @@
           },
           "---",
           {
+            opcode: "sign_of",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("sign of [A]"),
+            arguments: {
+              A: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0.1,
+              },
+            },
+            extensions: ["colours_operators"],
+          },
+          {
             opcode: "clamp_block",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("clamp [A] between [B] and [C]"),
@@ -645,6 +657,9 @@
     }
     exactly_cont_block({ A, B }) {
       return cast.toString(A).includes(cast.toString(B));
+    }
+    sign_of({ A }) {
+      return Math.sign(cast.toNumber(A));
     }
     clamp_block({ A, B, C }) {
       if (cast.compare(A, B) < 0) {
