@@ -30,13 +30,13 @@
   const radToDeg = 180 / Math.PI;
   const degToRad = Math.PI / 180;
 
+  // @ts-ignore
   Ammo()
     .then(function (Ammo) {
-      console.log(Ammo);
-
       const Cast = Scratch.Cast;
 
       function quaternionToEuler(q) {
+        // @ts-ignore
         const quaternion = new Quaternion(q.w(), q.x(), q.y(), q.z());
         const euler = quaternion.toEuler("XYZ");
         return {
@@ -47,6 +47,7 @@
       }
 
       function eulerToQuaternion(x, y, z) {
+        // @ts-ignore
         let quaternion = Quaternion.fromEuler(
           x * degToRad,
           y * degToRad,
