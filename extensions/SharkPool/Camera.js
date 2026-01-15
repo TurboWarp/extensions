@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.09
+// Version V.1.0.11
 
 (function (Scratch) {
   "use strict";
@@ -272,6 +272,26 @@
       this._skinScaleDirty = true;
       this.setTransformDirty();
     }
+  };
+
+  const ogUpdateVisible = render.exports.Drawable.prototype.updateVisible;
+  render.exports.Drawable.prototype.updateVisible = function (isVisible) {
+    if (!this[cameraSymbol]) setupState(this);
+    if (isVisible && this._visible !== isVisible) {
+      const camSystem = this[cameraSymbol];
+      const safeOgSZ = camSystem.ogSZ !== 0 ? camSystem.ogSZ : 1e-10;
+      const updatedScale = [this.scale[0] / safeOgSZ, this.scale[1] / safeOgSZ];
+
+      // save some renderer calls, packing this all into one
+      // while running only when isVisible is true combines this
+      // into a single renderer call
+      this.updateProperties({
+        position: translatePosition(this._position, true, camSystem),
+        direction: this._direction + camSystem.ogDir,
+        scale: updatedScale,
+      });
+    }
+    ogUpdateVisible.call(this, isVisible);
   };
 
   // Clones should inherit the parents camera
