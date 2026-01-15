@@ -2,7 +2,7 @@
 // ID: samuelloufgeolocation
 // Description: Get the user's geolocation.
 // By: SamuelLouf <https://scratch.mit.edu/users/samuellouf/>
-// License: MPL-2.0
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -47,6 +47,7 @@
 
       this.isWatching = false;
       this.watcherID = null;
+      this.lastCoords = null;
     }
 
     getInfo() {
@@ -207,6 +208,7 @@
       var coordinates =
         util.thread._coordinates || (await getGeolocation(this.options));
       if (coordinates.success == true) {
+        this.lastCoords = coordinates;
         return coordinates[args.WHAT];
       } else {
         return "";
@@ -226,11 +228,17 @@
       if (args.VALUE == "start") {
         this.watcherID = navigator.geolocation.watchPosition(
           (pos) => {
+            var coords = pos.toJSON().coords;
+            if (!(this.lastCoords == null)){ // last coords are entered
+              if ((Math.abs(this.lastCoords.latitude - coords.latitude) < 5*10**-5) && (Math.abs(this.lastCoords.longitude - coords.longitude) < 5*10**-5)){ // Change smaller than a few meters
+                return; // Cancel
+              }
+            }
+            this.lastCoords = coords;
             var threads = Scratch.vm.runtime.startHats(
               "samuelloufgeolocation_onUserMove"
             );
             for (var thread of threads) {
-              var coords = pos.toJSON().coords;
               coords.success = true;
               // @ts-ignore
               thread._coordinates = coords;
