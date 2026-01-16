@@ -23,17 +23,17 @@
           {
             opcode: 'scanScreen',
             blockType: Scratch.BlockType.COMMAND,
-            text: 'scan screen for QR code'
+            text: Scratch.translate('scan screen for QR code')
           },
           {
             opcode: 'isDetected',
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is a QR code detected?'
+            text: Scratch.translate('is a QR code detected?')
           },
           {
             opcode: 'getData',
             blockType: Scratch.BlockType.REPORTER,
-            text: 'QR code data'
+            text: Scratch.translate('QR code data')
           }
         ]
       };
