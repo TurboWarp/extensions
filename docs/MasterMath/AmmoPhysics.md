@@ -27,10 +27,10 @@
 - Mass: kilograms
 - Time: seconds
 - Force: newtons
-- Torque: newtons multiplied by meters (n•m)
+- Torque: newton-meters (n•m)
 - Rotation: degrees
 
-Some Scratch-based 3D engines use large unitless values for scale, but because the Ammo.js library uses single-precision floats, **large values can cause loss of precision, instability, or solver issues**, like jittery or inaccurate collisions, or objects tunnelling through each other.
+While most users will likely be using Simple3D, some Scratch-based 3D engines use large unitless values for scale, but because the Ammo.js library uses single-precision floats, **large values can cause loss of precision, instability, or solver issues**, like jittery or inaccurate collisions, or objects tunnelling through each other.
 
 Generally speaking, **values in between 0.01-1000 are safe**. If you must scale outside SI units, make sure to scale units proportionally and consistently to avoid unexpected behavior.
 
@@ -41,7 +41,7 @@ Ammo Physics is designed to be scalable, but especially large or complex physics
 >[!CAUTION]
 > You should **ALWAYS** delete rays and bodies when you're done with them to free up memory. Not doing so may cause an overflow of extra memory that can crash the page or browser.
 
-Extremely large quantities of rigid bodies or extremely complex rigid bodies may cause drops in framerate. As a general rule, use the bare minimum required for your project. If you don't need dynamic concave triangle meshes, use convex hulls instead. If you do need dynamic triangle meshes, simplify the mesh complexity and reduce triangle count to make the computation workload easier on Ammo Physics. 
+Extremely large quantities of rigid bodies or extremely complex rigid bodies may cause drops in frame rate. As a general rule, use the bare minimum required for your project. If you don't need dynamic concave triangle meshes, use convex hulls instead. If you do need dynamic triangle meshes, simplify the mesh complexity and reduce triangle count to make the computation workload easier on Ammo Physics. 
 
 ## The Blocks <a name="the-blocks"></a>
 ### Simulation Control <a name="sim-control"></a>
@@ -60,23 +60,23 @@ This block enables or disables the automatic resetting of the world when the pro
 step simulation :: #0fbd8c
 ```
 
-This block increases the physics simulation by one step forward in time. You should put it in your game loop or tick event. It implicitly takes the deltatime, max substeps, and current target framerate. Generally speaking, the higher the framerate, the higher the quality of your physics simulation will be.
+This block increases the physics simulation by one step forward in time. You should put it in your game loop or tick event. It implicitly takes the delta time, max substeps, and current target frame rate. Generally speaking, the higher the frame rate, the higher the quality your physics simulation will be.
 
-If TurboWarp's runtime framerate is set to 0, Ammo Physics will implicitly use your screen's refresh rate, just like TurboWarp will. 
+If TurboWarp's runtime frame rate is set to 0, Ammo Physics will use your screen's refresh rate, just like TurboWarp will. 
 
 ```scratch
 step simulation with delta time: (0.016) max substeps: (10) fixed time step: (0.016) ::#0fbd8c
 ```
 
-This block is exactly like the one above, but instead of implying parameters, it does exactly what you want. Decreasing fixed time step will result in increased quality and increasing fixed time step will result in increased performance at the cost of quality. The default fixed time step is 60 steps per second. Generally speaking, the fixed time step should be your project's target framerate, or TurboWarp's runtime frame rate.
+This block is exactly like the one above, but instead of implying parameters, it does exactly what you want. Decreasing fixed time step will result in increased quality and increasing fixed time step will result in increased performance at the cost of quality. The default fixed time step is 60 steps per second. Generally speaking, the fixed time step should be your project's target frame rate, or TurboWarp's runtime frame rate.
 
 ```scratch
 set max substeps (10) :: #0fbd8c
 ```
 
 This block sets the max substeps of the physics simulation. This can help in complicated simulations as it computes extra physics steps per frame **if necessary**. By default, the physics world loads with 10 max substeps. 
-If your project's deltatime is higher than your target framerate, simulation substeps are used to account for the loss in quality. For example: 
-- Your project's target framerate is 60 FPS.
+If your project's delta time is higher than your target frame rate, simulation substeps are used to account for the loss in quality. For example: 
+- Your project's target frame rate is 60 FPS.
 - Your project is lagging a bit, so your delta time might be running at 33ms instead of 16ms, so you need at least 2 substeps per frame to account for the loss in simulation quality.
 
 Note the term "max" substeps: It automatically computes the necessary substeps without exceeding that value. In most scenarios, increasing max substeps will not provide a noticable increase in quality, it only helps when your delta time is longer than your frame interval (e.g., you're lagging).
@@ -97,7 +97,7 @@ This sets the world's gravity in meters per second squared. By default, it match
 (gravity [x v] :: #0fbd8c)
 ```
 
-This block the world gravity's X, Y, or Z value. 
+This block returns the world gravity's X, Y, or Z value. 
 
 ### Bodies <a name="bodies"></a>
 >[!TIP]
@@ -106,7 +106,7 @@ This block the world gravity's X, Y, or Z value.
 ```scratch
 (all bodies :: #0fbd8c)
 ```
-This block returns the name of every existing body in a comma-delimited list.
+This block returns the name of every existing body in a list.
 
 ```scratch
 create box body with name: [body] mass: (5) size: (1) (1) (1) :: #0fbd8c
@@ -161,12 +161,14 @@ The list of vertices must be in a specific format: each list item should contain
 create [static v] mesh body with name: [body] mass: (5) from vertices: [select a list v] faces: [select a list v] :: #0fbd8c
 ```
 This block is more special: it allows you to have **fully concave triangle mesh bodies**.
+
 It requires:
 
 1. A space-delimited list of vertex coordinates as demonstrated above, but in a specific order.
 2. A space-delimited list of vertex indices for triangulated faces.
 
 Before importing your meshes into lists, you must triangulate the mesh so that there are only three vertices per face. Attempting to load a non-triangulated mesh will fail and log an error.
+
 For example, the corresponding face list to the Suzanne vertex list above looks like this:
 ```
 47 3 45
@@ -221,20 +223,38 @@ Friction 0 means entirely frictionless (for example, something like ice should h
 By default bounciness (elasticity/restitution) is 0, so if you want a body to be bouncy you have to increase it. You might wonder why your body isn't more bouncy after you increase it:  **you also have to increase the bounciness of the of the reacting/colliding object (for example the ground) to see an effect.**
 
 ```scratch
+set [linear v] factor of body [body] to x: [1] y: [1] z: [1] :: #0fbd8c
+```
+This block sets the linear or angular factor of a body. This is essentially a motion multiplier from 0-1. It can amplify or reduce linear or angular motion on a particular axis. For example, setting the angular factor of a body to (0, 0, 0) will limit rotation entirely, preventing any rotational motion.
+
+```scratch
+set [linear v] velocity of body [body] to x: [1] y: [1] z: [1] :: #0fbd8c
+```
+This block, unlike forces, overrites a body's velocity. Effects are immediate. A good example is using this block to make a character jump by setting its vertical (y-axis) velocity. 
+
+```scratch
+set linear damping of body [body] to [0.01] and angular damping to [0.01] :: #0fbd8c
+```
+This block controls how fast a body loses its momentum. You can think of it like air resistance—especially large values will make your body feel like it's floating in molasess, and a value of 0 will result in no damping (like in a vacuum or outer space).
+
+```scratch
 set gravity of body [body] to x: (0) y: (0) z: (0) :: #0fbd8c
 ```
 This block is interesting because it lets you specify custom gravity for each body. It overrides the world's gravity only for the specified body. It's especially useful for unique gameplay scenarios.
 
 ```scratch
+activate body [body] :: #0fbd8c
+```
+By default, Ammo Physics will make very slow-moving or inactive bodies "fall asleep" to stop computing unnecessary physics. This block essentially "wakes" a body back up, enabling it to move again, although collision with other bodies and push forces will automatically wake a body up. 
+
+```scratch
 <is body [body] active? :: #0fbd8c>
 ```
-
-By default, Ammo Physics will make very slow-moving or inactive bodies "fall asleep" to stop computing unnecessary physics. You can detect if a body is active or not, and this block makes it really easy to see if a body has stopped moving. 
+You can detect if a body is active or not, and this block makes it really easy to see if a body has stopped moving. 
 
 ```scratch
 <is any body active? :: #0fbd8c>
 ```
-
 This block is similar to the one above, except it returns true if any one of the bodies in the world is active and false if none of the bodies in the world are active.
 
 ```scratch
@@ -321,9 +341,10 @@ This block removes a ray from the world.
 Forces are interesting and helpful as they allow you to control a body's movement manually and realistically without simply setting transformations.
 
 Before we get started, let's define a few terms:
-**Force**: A force applied to a body over a period of time (every simulation step). E.g., an aircraft's thrust.
-**Impulse**: A force applied to a body immediately, such as the firing of a bullet or the jumping of a character.
-**Torque**: A rotational force that applies pure rotational force around the center of mass.
+
+1. **Force**: A force applied to a body over a period of time (every simulation step). E.g., an aircraft's thrust.
+2. **Impulse**: A force applied to a body immediately, such as the firing of a bullet or the jumping of a character.
+3. **Torque**: A rotational force that applies pure rotational force around the center of mass.
 
 Forces have a meter offset from the body's origin and so can apply rotational velocity **from that point**. If the offset is zero, no rotational velocity will result. For example, if you push an object at its top while the bottom stays stationary, it will rotate to account for that motion. Generally speaking, higher offset values result in more rotational velocity.
 

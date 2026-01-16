@@ -2710,7 +2710,7 @@
         }
 
         allBodiesTouchingBody({ body }) {
-          return bodies[Cast.toString(body)]?.collisions;
+          return JSON.stringify(bodies[Cast.toString(body)]?.collisions);
         }
 
         rayCast({ name, x, y, z, x2, y2, z2 }) {
