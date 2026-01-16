@@ -1459,6 +1459,19 @@
                 },
               },
               {
+                opcode: "getBodyTouchingRay",
+                blockType: Scratch.BlockType.REPORTER,
+                text: Scratch.translate("body touching ray [name]"),
+                hideFromPalette: !this.folders.raycasting,
+                blockIconURI: raycastIcon,
+                arguments: {
+                  name: {
+                    type: Scratch.ArgumentType.STRING,
+                    defaultValue: "ray",
+                  },
+                },
+              },
+              {
                 opcode: "getRayTouching",
                 blockType: Scratch.BlockType.BOOLEAN,
                 text: Scratch.translate("ray [name] is touching body [body]?"),
@@ -1472,6 +1485,19 @@
                   body: {
                     type: Scratch.ArgumentType.STRING,
                     defaultValue: "body",
+                  },
+                },
+              },
+              {
+                opcode: "rayTouchingAny",
+                blockType: Scratch.BlockType.BOOLEAN,
+                text: Scratch.translate("is ray [name] touching any body?"),
+                hideFromPalette: !this.folders.raycasting,
+                blockIconURI: raycastIcon,
+                arguments: {
+                  name: {
+                    type: Scratch.ArgumentType.STRING,
+                    defaultValue: "ray",
                   },
                 },
               },
@@ -2819,6 +2845,23 @@
           }
         }
 
+        getBodyTouchingRay({ name, body }, { target }) {
+          name = Cast.toString(name);
+          body = Cast.toString(body);
+          if (rays[name]?.hasHit()) {
+            return Cast.toString(
+              Ammo.castObject(
+                rays[name]?.get_m_collisionObject(),
+                Ammo.btRigidBody
+              ).userData
+            );
+          } else {
+            console.warn(
+              `Attempted to get body touching nonexistent ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
+            );
+          }
+        }
+
         getRayTouching({ name, body }, { target }) {
           name = Cast.toString(name);
           body = Cast.toString(body);
@@ -2838,6 +2881,17 @@
           } else {
             console.warn(
               `Attempted to get body touching nonexistent ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
+            );
+          }
+        }
+
+        rayTouchingAny({ name }, { target }) {
+          name = Cast.toString(name);
+          if (rays[name]) {
+            return rays[name]?.hasHit();
+          } else {
+            console.warn(
+              `Attempted to get properties of nonexistent ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
             );
           }
         }
@@ -2880,9 +2934,9 @@
 
         pushCentralForce({ name, force, x, y, z }, { target }) {
           name = Cast.toString(name);
-          x = Cast.toNumber(x);
-          y = Cast.toNumber(y);
-          z = Cast.toNumber(z);
+          // x = Cast.toNumber(x);
+          // y = Cast.toNumber(y);
+          // z = Cast.toNumber(z);
           if (bodies[name]) {
             const forceVector = new Ammo.btVector3(x, y, z);
             bodies[name][force](forceVector);
