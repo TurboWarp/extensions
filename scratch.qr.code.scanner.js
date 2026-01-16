@@ -15,7 +15,7 @@
 
     getInfo() {
       return {
-        id: 'qrcodescanner',
+        id: 'sweetsebiQR',
         name: 'QR Scanner',
         color1: '#4C97FF',
         color2: '#3373CC',
