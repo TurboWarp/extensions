@@ -3,8 +3,7 @@ name: Deploy
 on:
   workflow_dispatch:
   push:
-  # Current extension being tested
-    branches: [Locale] 
+    branches: [master] 
 
 concurrency:
   group: "deploy"
@@ -16,7 +15,7 @@ jobs:
 
     # If you are forking and want to set up your own website, adjust the repository and branch
     # below to match your repository or remove the condition entirely.
-    if: ${{ github.repository == 'ScratchFakemon/extensions' && github.ref == 'refs/heads/master' }}
+    if: ${{ github.repository == 'TurboWarp/extensions' && github.ref == 'refs/heads/master' }}
 
     steps:
       - name: Checkout
