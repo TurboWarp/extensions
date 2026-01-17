@@ -21,14 +21,19 @@
   const { Drawable, Skin, twgl } = render.exports;
   const engineTag = Symbol("particleEngine");
 
-  const shapeStartString = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI";
+  const shapeStartString =
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI";
   const PRESET_SHAPES = Object.assign(Object.create(null), {
-    square: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBkPSJNMCA1MC41VjBoNTB2NTAuNXoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
-    circle: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDQ5LjUgNDkuNSI+PHBhdGggZD0iTTAgMjQuNTVDMCAxMC45OTIgMTAuOTkyIDAgMjQuNTUgMFM0OS4xIDEwLjk5MiA0OS4xIDI0LjU1IDM4LjEwOCA0OS4xIDI0LjU1IDQ5LjEgMCAzOC4xMDggMCAyNC41NSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
-    triangle: "0OS4wOTgiIGhlaWdodD0iNDIuNTIiIHZpZXdCb3g9IjAgMCA0OS4wOTggNDIuNTIiPjxwYXRoIGQ9Ik0wIDQyLjUyIDI0LjU1IDAgNDkuMSA0Mi41MnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
+    square:
+      "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBkPSJNMCA1MC41VjBoNTB2NTAuNXoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
+    circle:
+      "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDQ5LjUgNDkuNSI+PHBhdGggZD0iTTAgMjQuNTVDMCAxMC45OTIgMTAuOTkyIDAgMjQuNTUgMFM0OS4xIDEwLjk5MiA0OS4xIDI0LjU1IDM4LjEwOCA0OS4xIDI0LjU1IDQ5LjEgMCAzOC4xMDggMCAyNC41NSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
+    triangle:
+      "0OS4wOTgiIGhlaWdodD0iNDIuNTIiIHZpZXdCb3g9IjAgMCA0OS4wOTggNDIuNTIiPjxwYXRoIGQ9Ik0wIDQyLjUyIDI0LjU1IDAgNDkuMSA0Mi41MnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
     star: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDEuNSAxLjUiPjxwYXRoIGQ9Ik0xLjM3NS42MTNBLjA2LjA2IDAgMCAwIDEuMzIzLjU3TC45NjcuNTIxLjgwNS4yMmEuMDYzLjA2MyAwIDAgMC0uMTEgMEwuNTM2LjUyMS4xOC41N2EuMDYuMDYgMCAwIDAtLjA1MS4wNDMuMDYuMDYgMCAwIDAgLjAxOC4wNjNsLjI1Ni4yMzMtLjA2My4zMjhhLjA2My4wNjMgMCAwIDAgLjA5MS4wN2wuMzE5LS4xNTguMzIuMTU4YS4xLjEgMCAwIDAgLjAyOC4wMDYuMDYzLjA2MyAwIDAgMCAuMDYzLS4wNzRMMS4wOTguOTExbC4yNTYtLjIzM2EuMDYuMDYgMCAwIDAgLjAyMS0uMDY1IiBmaWxsPSIjZmZmIi8+PC9zdmc+",
   });
-  for (const key in PRESET_SHAPES) PRESET_SHAPES[key] = shapeStartString + PRESET_SHAPES[key];
+  for (const key in PRESET_SHAPES)
+    PRESET_SHAPES[key] = shapeStartString + PRESET_SHAPES[key];
 
   const DEFAULT_BEHAVIOURS = {
     maxP: { val: 50, inf: 0 },
@@ -344,7 +349,7 @@ void main() {
     // update engine position
     const drawable = render._allDrawables[engine.drawableId];
     drawable.updatePosition([engine.target.x, engine.target.y]);
-    
+
     // Clear canvas
     twgl.bindFramebufferInfo(gl, null);
     gl.viewport(0, 0, width, height);
@@ -724,7 +729,9 @@ void main() {
           {
             opcode: "deleteEmitterWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete emitter [NAME] from [TARGET] and wait"),
+            text: Scratch.translate(
+              "delete emitter [NAME] from [TARGET] and wait"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -1226,7 +1233,7 @@ void main() {
         }
       } else {
         target = this.getSprite(args.TARGET);
-        if (!target || !target[engineTag]) return
+        if (!target || !target[engineTag]) return;
 
         emitter = target[engineTag].emitters[args.NAME];
         if (!emitter) return;
@@ -1251,9 +1258,7 @@ void main() {
         const engine = target[engineTag];
         const emitter = engine.emitters[args.NAME];
         if (emitter) {
-          emitter.rawPos = [
-            Cast.toNumber(args.x), Cast.toNumber(args.y) 
-          ];
+          emitter.rawPos = [Cast.toNumber(args.x), Cast.toNumber(args.y)];
           emitter.pos = [
             emitter.rawPos[0] * engine.ratioX,
             emitter.rawPos[1] * engine.ratioY * -1,
