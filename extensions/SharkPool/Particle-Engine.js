@@ -2,7 +2,7 @@
 // ID: SPpartEngine
 // Description: Create powerful particle engines without clones.
 // By: SharkPool
-// Licence: MIT
+// License: MIT
 
 // Version V.2.0.4
 
