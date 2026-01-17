@@ -19,6 +19,13 @@ You can import "Tune Shark" sounds via URL/URI using this block. It is important
 Alternatively, you can import "Tune Shark" sounds from pre-existing sounds from the "Sounds" tab in the editor.
 
 ```scratch
+⚙️ duplicate sound [MySound] as [MySound2] ::#666666
+```
+
+This block simply creates a copy of the first inputted sound and gives it the name of the second inputted sound.
+Granted, you could just use the `import sound from url` block, but this block removes the wait time to import.
+
+```scratch
 ⚙️ [bind v] sound [MySound] and sound [MySound2] ::#666666
 ```
 
@@ -36,7 +43,7 @@ Similar to Scratch, this will start a sound from the beginning.
 🎵 start sound [MySound] at time (5) ::#666666
 ```
 
-You can also start sounds at certain points in the track using this block. This is measured in seconds.
+You can also start sounds at certain times (in seconds) in the track using this block.
 
 ```scratch
 🎵 start sound [MySound] at time (0) and stop at (2) ::#666666
@@ -176,6 +183,18 @@ Selecting **"tone"** will return the outputted pitch of a sound at a specific po
 
 The channel input selects which [sound channel](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Audio_concepts) to extract the output data from.
 Typically, if there are 2 channels, channel 1 is "Left Ear" and channel 2 is "Right Ear".
+
+```scratch
+(⚙️ crop sound [MySound] at time (0) to (1) ::#666666)
+```
+
+This block will crop the inputted sound at the selected time parameters (in seconds). It returns a new WAV file data.uri.
+
+```scratch
+(⚙️ join sound [MySound] and [MySound2] ::#666666)
+```
+
+This block will concatenate 2 loaded sounds and return a WAV file data.uri.
 
 ## Audio Effects
 
