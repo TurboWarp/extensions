@@ -1089,8 +1089,10 @@
       engine.connect(bank.analyser);
 
       engine.on("stop", () => {
-        bank.currentTime = engine.loop && bank.loopParm[1]
-          ? bank.loopParm[1] : engine.sourceNode.buffer.duration;
+        bank.currentTime =
+          engine.loop && bank.loopParm[1]
+            ? bank.loopParm[1]
+            : engine.sourceNode.buffer.duration;
       });
     }
 
@@ -1131,7 +1133,11 @@
       for (let i = 0; i < numFrames; i++) {
         for (let channel = 0; channel < numberOfChannels; channel++) {
           const sample = clamp(-1, 1, buffer.getChannelData(channel)[i]);
-          dataView.setInt16(offset, sample < 0 ? sample * 32768 : sample * 32767, true);
+          dataView.setInt16(
+            offset,
+            sample < 0 ? sample * 32768 : sample * 32767,
+            true
+          );
           offset += 2;
         }
       }
@@ -1142,7 +1148,7 @@
     importURL(args) {
       const url = Cast.toString(args.URL);
       if (!url) return;
-    
+
       return new Promise((resolve) => {
         this.deleteSound(args);
 
@@ -1197,7 +1203,7 @@
           source: "buffer",
           options: {
             buffer: sound.context.sourceNode.buffer,
-            attack: 0
+            attack: 0,
           },
         });
         this.initSound(engine, args.NAME2, sound.src, sound.isVanilla);
@@ -1265,10 +1271,10 @@
 
     ctrlSounds(args) {
       const controlFuncs = {
-        "start": (sound) => this.playSound(sound.context, 0, sound),
-        "pause": (sound) => this.audioControlDo(sound, "pause"),
-        "unpause": (sound) => this.audioControlDo(sound, "unpause"),
-        "stop": (sound) => {
+        start: (sound) => this.playSound(sound.context, 0, sound),
+        pause: (sound) => this.audioControlDo(sound, "pause"),
+        unpause: (sound) => this.audioControlDo(sound, "unpause"),
+        stop: (sound) => {
           if (sound.context.playing) sound.context.stop();
         },
       };
@@ -1431,9 +1437,7 @@
         case "pan":
           return sound.effects[prop.toUpperCase()]?.options.pan * 100 || 0;
         case "distortion":
-          return (
-            sound.effects[prop.toUpperCase()]?.options.gain * 100 || 0
-          );
+          return sound.effects[prop.toUpperCase()]?.options.gain * 100 || 0;
         case "attack":
           return sound.attack * 100;
         case "release":
@@ -1543,7 +1547,8 @@
         buffer.sampleRate
       );
       for (let i = 0; i < buffer.numberOfChannels; i++) {
-        croppedBuffer.getChannelData(i)
+        croppedBuffer
+          .getChannelData(i)
           .set(buffer.getChannelData(i).subarray(startSample, endSample));
       }
 
@@ -1568,7 +1573,9 @@
         buffer1.sampleRate !== buffer2.sampleRate ||
         buffer1.numberOfChannels !== buffer2.numberOfChannels
       ) {
-        console.warn("Cannot join sounds! Sample rate or channel count doesnt match.");
+        console.warn(
+          "Cannot join sounds! Sample rate or channel count doesnt match."
+        );
         return "";
       }
 
@@ -1643,14 +1650,10 @@
       else if (args.TYPE === "attack") sound.attack = Math.max(0, value);
       else if (args.TYPE === "release") sound.release = Math.max(0, value);
       else if (args.TYPE === "pan") {
-        this.handleEffect(
-          sound, "PAN", args, { pan: clamp(-1, 1, value) }
-        );
+        this.handleEffect(sound, "PAN", args, { pan: clamp(-1, 1, value) });
         return;
       } else if (args.TYPE === "distortion") {
-        this.handleEffect(
-          sound, "DISTORTION", args, { gain: value }
-        );
+        this.handleEffect(sound, "DISTORTION", args, { gain: value });
         return;
       }
       sound.rate = sound.pitch * sound.speed * Math.pow(2, sound.detune / 1200);
@@ -1660,85 +1663,67 @@
     setReverb(args) {
       const sound = soundBank[args.NAME];
       if (sound) {
-        this.handleEffect(
-          sound, "REVERB", args,
-          {
-            time: Cast.toNumber(args.TIME) / 10,
-            decay: Cast.toNumber(args.DECAY) / 10,
-            mix: Cast.toNumber(args.MIX) / 100,
-          }
-        );
+        this.handleEffect(sound, "REVERB", args, {
+          time: Cast.toNumber(args.TIME) / 10,
+          decay: Cast.toNumber(args.DECAY) / 10,
+          mix: Cast.toNumber(args.MIX) / 100,
+        });
       }
     }
 
     setDelay(args) {
       const sound = soundBank[args.NAME];
       if (sound) {
-        this.handleEffect(
-          sound, "DELAY", args,
-          {
-            time: clamp(0, 1, Cast.toNumber(args.TIME) / 100),
-            decay: Cast.toNumber(args.FEED) / 100,
-            mix: Cast.toNumber(args.MIX) / 100,
-          }
-        );
+        this.handleEffect(sound, "DELAY", args, {
+          time: clamp(0, 1, Cast.toNumber(args.TIME) / 100),
+          decay: Cast.toNumber(args.FEED) / 100,
+          mix: Cast.toNumber(args.MIX) / 100,
+        });
       }
     }
 
     setFuzz(args) {
       const sound = soundBank[args.NAME];
       if (sound) {
-        this.handleEffect(
-          sound, "FUZZ", args,
-          {
-            lowGain: clamp(0, 1, Cast.toNumber(args.LOW) / 100),
-            midLowGain: clamp(0, 1, Cast.toNumber(args.MED1) / 100),
-            midHighGain: clamp(0, 1, Cast.toNumber(args.MED2) / 100),
-            highGain: clamp(0, 1, Cast.toNumber(args.HIGH) / 100),
-            mix: Cast.toNumber(args.MIX) / 100,
-          }
-        );
+        this.handleEffect(sound, "FUZZ", args, {
+          lowGain: clamp(0, 1, Cast.toNumber(args.LOW) / 100),
+          midLowGain: clamp(0, 1, Cast.toNumber(args.MED1) / 100),
+          midHighGain: clamp(0, 1, Cast.toNumber(args.MED2) / 100),
+          highGain: clamp(0, 1, Cast.toNumber(args.HIGH) / 100),
+          mix: Cast.toNumber(args.MIX) / 100,
+        });
       }
     }
 
     setBitcrush(args) {
       const sound = soundBank[args.NAME];
       if (sound) {
-        this.handleEffect(
-          sound, "BITCRUSH", args,
-          {
-            bits: Math.max(10, Cast.toNumber(args.BITS)) / 10,
-            frequency: Math.max(30000, Cast.toNumber(args.FREQ)),
-          }
-        );
+        this.handleEffect(sound, "BITCRUSH", args, {
+          bits: Math.max(10, Cast.toNumber(args.BITS)) / 10,
+          frequency: Math.max(30000, Cast.toNumber(args.FREQ)),
+        });
       }
     }
 
     setPan3D(args) {
       const sound = soundBank[args.NAME];
       if (sound) {
-        this.handleEffect(
-          sound, "PAN3D", args,
-          {
-            x: Cast.toNumber(args.X),
-            y: Cast.toNumber(args.Y),
-            z: Cast.toNumber(args.Z) - 1,
-          }
-        );  
+        this.handleEffect(sound, "PAN3D", args, {
+          x: Cast.toNumber(args.X),
+          y: Cast.toNumber(args.Y),
+          z: Cast.toNumber(args.Z) - 1,
+        });
       }
     }
 
     setTremolo(args) {
       const sound = soundBank[args.NAME];
       if (sound) {
-        this.handleEffect(
-          sound, "TREMOLO", args,
-          {
-            speed: Cast.toNumber(args.SPEED) / 5,
-            depth: clamp(0, 1, Cast.toNumber(args.DEPTH) / 100),
-            mix: Cast.toNumber(args.MIX) / 100,
-          }
-        );
+        this.handleEffect(sound, "TREMOLO", args, {
+          speed: Cast.toNumber(args.SPEED) / 5,
+          depth: clamp(0, 1, Cast.toNumber(args.DEPTH) / 100),
+          mix: Cast.toNumber(args.MIX) / 100,
+        });
       }
     }
 
@@ -1760,48 +1745,39 @@
     setFlanger(args) {
       const sound = soundBank[args.NAME];
       if (sound) {
-        this.handleEffect(
-          sound, "FLANGER", args,
-          {
-            time: Cast.toNumber(args.TIME) / 100,
-            speed: Cast.toNumber(args.SPEED) / 100,
-            depth: Cast.toNumber(args.DEPTH) / 100,
-            feedback: Cast.toNumber(args.FEED) / 100,
-            mix: Cast.toNumber(args.MIX) / 100,
-          }
-        );
+        this.handleEffect(sound, "FLANGER", args, {
+          time: Cast.toNumber(args.TIME) / 100,
+          speed: Cast.toNumber(args.SPEED) / 100,
+          depth: Cast.toNumber(args.DEPTH) / 100,
+          feedback: Cast.toNumber(args.FEED) / 100,
+          mix: Cast.toNumber(args.MIX) / 100,
+        });
       }
     }
 
     setCompress(args) {
       const sound = soundBank[args.NAME];
       if (sound) {
-        this.handleEffect(
-          sound, "COMPRESSOR", args,
-          {
-            threshold: clamp(-100, 0, Cast.toNumber(args.THRESH) * -1),
-            ratio: Cast.toNumber(args.RATIO) / 5,
-            attack: clamp(0, 1, Cast.toNumber(args.ATTACK) / 100),
-            release: clamp(0, 1, Cast.toNumber(args.RELEASE) / 100),
-            knee: Cast.toNumber(args.KNEE) / 2.5,
-          }
-        );
+        this.handleEffect(sound, "COMPRESSOR", args, {
+          threshold: clamp(-100, 0, Cast.toNumber(args.THRESH) * -1),
+          ratio: Cast.toNumber(args.RATIO) / 5,
+          attack: clamp(0, 1, Cast.toNumber(args.ATTACK) / 100),
+          release: clamp(0, 1, Cast.toNumber(args.RELEASE) / 100),
+          knee: Cast.toNumber(args.KNEE) / 2.5,
+        });
       }
     }
 
     setEqualize(args) {
       const sound = soundBank[args.NAME];
       if (sound) {
-        this.handleEffect(
-          sound, "EQUALIZER", args,
-          {
-            cutoff_frequency_high: 120 * (Cast.toNumber(args.CUT_HIGH) + 100),
-            cutoff_frequency_low: 120 * (Cast.toNumber(args.CUT_LOW) + 100),
-            low_band_gain: Cast.toNumber(args.LOW) / 10,
-            mid_band_gain: Cast.toNumber(args.MID) / 10,
-            high_band_gain: Cast.toNumber(args.HIGH) / 10,
-          }
-        );
+        this.handleEffect(sound, "EQUALIZER", args, {
+          cutoff_frequency_high: 120 * (Cast.toNumber(args.CUT_HIGH) + 100),
+          cutoff_frequency_low: 120 * (Cast.toNumber(args.CUT_LOW) + 100),
+          low_band_gain: Cast.toNumber(args.LOW) / 10,
+          mid_band_gain: Cast.toNumber(args.MID) / 10,
+          high_band_gain: Cast.toNumber(args.HIGH) / 10,
+        });
       }
     }
   }
