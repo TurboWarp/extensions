@@ -1038,7 +1038,7 @@
                 arguments: {
                   linearAngular: {
                     type: Scratch.ArgumentType.STRING,
-                    menu: "linearAngularMenu",
+                    menu: "setLinearAngularMenu",
                   },
                   name: {
                     type: Scratch.ArgumentType.STRING,
@@ -1055,6 +1055,28 @@
                   z: {
                     type: Scratch.ArgumentType.NUMBER,
                     defaultValue: 0,
+                  },
+                },
+              },
+              {
+                opcode: "getVelocity",
+                blockType: Scratch.BlockType.REPORTER,
+                text: Scratch.translate(
+                  "[xyz] [linearAngular] velocity of body [name]"
+                ),
+                hideFromPalette: !this.folders.bodies,
+                arguments: {
+                  xyz: {
+                    type: Scratch.ArgumentType.STRING,
+                    menu: "xyzMenu",
+                  },
+                  linearAngular: {
+                    type: Scratch.ArgumentType.STRING,
+                    menu: "getLinearAngularMenu",
+                  },
+                  name: {
+                    type: Scratch.ArgumentType.STRING,
+                    defaultValue: "body",
                   },
                 },
               },
@@ -1222,7 +1244,7 @@
                 arguments: {
                   xyz: {
                     type: Scratch.ArgumentType.STRING,
-                    menu: "xyz",
+                    menu: "xyzMenu",
                   },
                   transform: {
                     type: Scratch.ArgumentType.STRING,
@@ -1446,7 +1468,7 @@
                   },
                   xyz: {
                     type: Scratch.ArgumentType.STRING,
-                    menu: "xyz",
+                    menu: "xyzMenu",
                   },
                   property: {
                     type: Scratch.ArgumentType.STRING,
@@ -1639,20 +1661,7 @@
             ],
             menus: {
               xyzMenu: {
-                items: [
-                  {
-                    text: Scratch.translate("x"),
-                    value: "x",
-                  },
-                  {
-                    text: Scratch.translate("y"),
-                    value: "y",
-                  },
-                  {
-                    text: Scratch.translate("z"),
-                    value: "z",
-                  },
-                ],
+                items: ["x", "y", "z"],
               },
               meshMenu: {
                 items: [
@@ -1706,22 +1715,6 @@
                   },
                 ],
               },
-              xyz: {
-                items: [
-                  {
-                    text: Scratch.translate("x"),
-                    value: "x",
-                  },
-                  {
-                    text: Scratch.translate("y"),
-                    value: "y",
-                  },
-                  {
-                    text: Scratch.translate("z"),
-                    value: "z",
-                  },
-                ],
-              },
               factorsMenu: {
                 items: [
                   {
@@ -1734,7 +1727,7 @@
                   },
                 ],
               },
-              linearAngularMenu: {
+              setLinearAngularMenu: {
                 items: [
                   {
                     text: Scratch.translate("linear"),
@@ -1743,6 +1736,18 @@
                   {
                     text: Scratch.translate("angular"),
                     value: "setAngularVelocity",
+                  },
+                ],
+              },
+              getLinearAngularMenu: {
+                items: [
+                  {
+                    text: Scratch.translate("linear"),
+                    value: "getLinearVelocity",
+                  },
+                  {
+                    text: Scratch.translate("angular"),
+                    value: "getAngularVelocity",
                   },
                 ],
               },
@@ -2520,6 +2525,18 @@
             console.warn(
               `Attempted to set velocity of nonexistent body "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
             );
+          }
+        }
+
+        getVelocity({ xyz, linearAngular, name }, { target }) {
+          name = Cast.toString(name);
+          if (bodies[name]) {
+            return bodies[name][Cast.toString(linearAngular)]()[Cast.toString(xyz)]();
+          } else {
+            console.warn(
+              `Attempted to get velocity of nonexistent body "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
+            );
+            return 0;
           }
         }
 
