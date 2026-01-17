@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.2.0.31
+// Version V.2.0.4
 
 (function (Scratch) {
   "use strict";
@@ -14,17 +14,6 @@
   const menuIconURI =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5Mi4zNjciIGhlaWdodD0iOTIuMzY3IiB2aWV3Qm94PSIwIDAgOTIuMzY3IDkyLjM2NyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IHgxPSIyMTEuNDYxIiB5MT0iMTUxLjQ2MSIgeDI9IjI2OC41MzkiIHkyPSIyMDguNTM5IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgaWQ9ImEiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzAwOTBmZiIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzAwNzJmZiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxwYXRoIGQ9Ik0wIDQ2LjE4M0MwIDIwLjY3NyAyMC42NzcgMCA0Ni4xODMgMHM0Ni4xODMgMjAuNjc3IDQ2LjE4MyA0Ni4xODMtMjAuNjc3IDQ2LjE4My00Ni4xODMgNDYuMTgzUzAgNzEuNjg5IDAgNDYuMTgzIiBmaWxsPSIjMTk1M2ZmIi8+PHBhdGggZD0iTTIxMS40NiAyMDguNTRjLTE1Ljc2MS0xNS43NjItMTUuNzYxLTQxLjMxNyAwLTU3LjA4IDE1Ljc2My0xNS43NjEgNDEuMzE4LTE1Ljc2MSA1Ny4wOCAwIDE1Ljc2MSAxNS43NjMgMTUuNzYxIDQxLjMxOCAwIDU3LjA4LTE1Ljc2MiAxNS43NjEtNDEuMzE3IDE1Ljc2MS01Ny4wOCAwIiBmaWxsPSJ1cmwoI2EpIiB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTkzLjgxNyAtMTMzLjgxNykiLz48cGF0aCBkPSJNMjguODQ4IDU1LjYyOWE1Ljc3IDUuNzcgMCAwIDAgNC4xNDQtNC4wMTNsMS4yOS00LjUwNWMuNjEyLTIuMTMgMy42NDctMi4wOCA0LjE4Ny4wNjhsMS4xNDcgNC41NDRhNS43NyA1Ljc3IDAgMCAwIDQuMDEgNC4xNDVsNC41MDQgMS4yOWMyLjEzLjYxMiAyLjA4MSAzLjY0Ny0uMDY3IDQuMTlsLTQuNTQ1IDEuMTQ0YTUuNzcgNS43NyAwIDAgMC00LjE0MSA0LjAxbC0xLjI5MyA0LjUwNGMtLjYxIDIuMTMtMy42NDQgMi4wODEtNC4xODctLjA2N2wtMS4xNDQtNC41NDVhNS43NyA1Ljc3IDAgMCAwLTQuMDEzLTQuMTQxbC00LjUwNS0xLjI5Yy0yLjEzLS42MTItMi4wOC0zLjY0Ny4wNjgtNC4xOXptMjkuNjk4LTE2LjMyM2E0LjAyIDQuMDIgMCAwIDAgMi45MDMtMi43OGwuOTE2LTMuMTMzYy40MzUtMS40ODEgMi41NS0xLjQzNSAyLjkxNy4wNjNsLjc4MSAzLjE3MWE0LjAyIDQuMDIgMCAwIDAgMi43NzcgMi45MDNsMy4xMzQuOTE2YzEuNDgyLjQzNSAxLjQzNiAyLjU1LS4wNjMgMi45MmwtMy4xNy43NzhhNC4wMiA0LjAyIDAgMCAwLTIuOTAyIDIuNzc4bC0uOTE4IDMuMTMzYy0uNDMzIDEuNDgyLTIuNTQ3IDEuNDM2LTIuOTE3LS4wNjNsLS43NzktMy4xN2E0LjAyIDQuMDIgMCAwIDAtMi43OC0yLjkwMmwtMy4xMzMtLjkxNmMtMS40ODItLjQzNS0xLjQzNi0yLjU0OS4wNjMtMi45MTl6bS0yMC4xNzEtOC4xNjhhNC4xOCA0LjE4IDAgMCAwLTIuODkzLTMuMDE3bC0zLjI1OS0uOTVjLTEuNTQtLjQ1MS0xLjQ5NS0yLjY1LjA2NC0zLjAzM2wzLjI5Ni0uODE1YTQuMTggNC4xOCAwIDAgMCAzLjAxNi0yLjg5bC45NS0zLjI1OWMuNDUxLTEuNTQgMi42NS0xLjQ5NCAzLjAzNi4wNjRsLjgxMiAzLjI5NmE0LjE4IDQuMTggMCAwIDAgMi44OSAzLjAxNGwzLjI2Ljk1M2MxLjU0LjQ0OCAxLjQ5NCAyLjY0Ni0uMDY0IDMuMDMybC0zLjI5Ny44MTNhNC4xOCA0LjE4IDAgMCAwLTMuMDE0IDIuODkybC0uOTUgMy4yNmMtLjQ1IDEuNTQtMi42NDkgMS40OTQtMy4wMzUtLjA2NHoiIGZpbGw9IiNmZmYiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPjwvc3ZnPg==";
 
-  const shapes = {
-    sqr: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBkPSJNMCA1MC41VjBoNTB2NTAuNXoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
-    circ: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDQ5LjUgNDkuNSI+PHBhdGggZD0iTTAgMjQuNTVDMCAxMC45OTIgMTAuOTkyIDAgMjQuNTUgMFM0OS4xIDEwLjk5MiA0OS4xIDI0LjU1IDM4LjEwOCA0OS4xIDI0LjU1IDQ5LjEgMCAzOC4xMDggMCAyNC41NSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
-    tri: "0OS4wOTgiIGhlaWdodD0iNDIuNTIiIHZpZXdCb3g9IjAgMCA0OS4wOTggNDIuNTIiPjxwYXRoIGQ9Ik0wIDQyLjUyIDI0LjU1IDAgNDkuMSA0Mi41MnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
-    star: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDEuNSAxLjUiPjxwYXRoIGQ9Ik0xLjM3NS42MTNBLjA2LjA2IDAgMCAwIDEuMzIzLjU3TC45NjcuNTIxLjgwNS4yMmEuMDYzLjA2MyAwIDAgMC0uMTEgMEwuNTM2LjUyMS4xOC41N2EuMDYuMDYgMCAwIDAtLjA1MS4wNDMuMDYuMDYgMCAwIDAgLjAxOC4wNjNsLjI1Ni4yMzMtLjA2My4zMjhhLjA2My4wNjMgMCAwIDAgLjA5MS4wN2wuMzE5LS4xNTguMzIuMTU4YS4xLjEgMCAwIDAgLjAyOC4wMDYuMDYzLjA2MyAwIDAgMCAuMDYzLS4wNzRMMS4wOTguOTExbC4yNTYtLjIzM2EuMDYuMDYgMCAwIDAgLjAyMS0uMDY1IiBmaWxsPSIjZmZmIi8+PC9zdmc+",
-  };
-  for (const key in shapes)
-    shapes[key] =
-      "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI" +
-      shapes[key];
-
   const vm = Scratch.vm;
   const Cast = Scratch.Cast;
   const runtime = vm.runtime;
@@ -32,7 +21,16 @@
   const { Drawable, Skin, twgl } = render.exports;
   const engineTag = Symbol("particleEngine");
 
-  const optionList = {
+  const shapeStartString = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI";
+  const PRESET_SHAPES = Object.assign(Object.create(null), {
+    square: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBkPSJNMCA1MC41VjBoNTB2NTAuNXoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
+    circle: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDQ5LjUgNDkuNSI+PHBhdGggZD0iTTAgMjQuNTVDMCAxMC45OTIgMTAuOTkyIDAgMjQuNTUgMFM0OS4xIDEwLjk5MiA0OS4xIDI0LjU1IDM4LjEwOCA0OS4xIDI0LjU1IDQ5LjEgMCAzOC4xMDggMCAyNC41NSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
+    triangle: "0OS4wOTgiIGhlaWdodD0iNDIuNTIiIHZpZXdCb3g9IjAgMCA0OS4wOTggNDIuNTIiPjxwYXRoIGQ9Ik0wIDQyLjUyIDI0LjU1IDAgNDkuMSA0Mi41MnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
+    star: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDEuNSAxLjUiPjxwYXRoIGQ9Ik0xLjM3NS42MTNBLjA2LjA2IDAgMCAwIDEuMzIzLjU3TC45NjcuNTIxLjgwNS4yMmEuMDYzLjA2MyAwIDAgMC0uMTEgMEwuNTM2LjUyMS4xOC41N2EuMDYuMDYgMCAwIDAtLjA1MS4wNDMuMDYuMDYgMCAwIDAgLjAxOC4wNjNsLjI1Ni4yMzMtLjA2My4zMjhhLjA2My4wNjMgMCAwIDAgLjA5MS4wN2wuMzE5LS4xNTguMzIuMTU4YS4xLjEgMCAwIDAgLjAyOC4wMDYuMDYzLjA2MyAwIDAgMCAuMDYzLS4wNzRMMS4wOTguOTExbC4yNTYtLjIzM2EuMDYuMDYgMCAwIDAgLjAyMS0uMDY1IiBmaWxsPSIjZmZmIi8+PC9zdmc+",
+  });
+  for (const key in PRESET_SHAPES) PRESET_SHAPES[key] = shapeStartString + PRESET_SHAPES[key];
+
+  const DEFAULT_BEHAVIOURS = {
     maxP: { val: 50, inf: 0 },
     emission: { val: 1, inf: 0 },
     time: { val: 0.4, inf: 0.1 },
@@ -343,6 +341,10 @@ void main() {
     const { width, height } = canvas;
     const lifeRate = 0.01 * delta;
 
+    // update engine position
+    const drawable = render._allDrawables[engine.drawableId];
+    drawable.updatePosition([engine.target.x, engine.target.y]);
+    
     // Clear canvas
     twgl.bindFramebufferInfo(gl, null);
     gl.viewport(0, 0, width, height);
@@ -720,6 +722,18 @@ void main() {
             },
           },
           {
+            opcode: "deleteEmitterWait",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("delete emitter [NAME] from [TARGET] and wait"),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("emit-1"),
+              },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+            },
+          },
+          {
             opcode: "emitterExist",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("emitter [NAME] in [TARGET] exists?"),
@@ -1019,12 +1033,14 @@ void main() {
     checkEngineContexts() {
       // its fair to trust that the user knows what theyre doing if they ingore this
       if (engineCount > ENGINE_CAP) {
-        const warningText =
-          "WARNING: Particle Engine -- reached unstable number of engines!";
+        const warningText = Scratch.translate(
+          "WARNING: Particle Engine -- reached unstable number of engines!"
+        );
         if (typeof scaffolding === "undefined") {
           /* global ReduxStore */
           const state = ReduxStore.getState().scratchGui;
           if (!state.mode.isPlayerOnly && !state.mode.isFullScreen) {
+            // only alert in the editor
             alert(warningText);
             return;
           }
@@ -1072,16 +1088,18 @@ void main() {
         });
         return;
       }
-      if (target && target[engineTag])
+      if (target && target[engineTag]) {
         target[engineTag].drawable.updateVisible(args.TYPE === "show");
+      }
     }
 
     setEngineSize(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag])
+      if (target && target[engineTag]) {
         target[engineTag].drawable.updateScale(
           new Float32Array([Cast.toNumber(args.x), Cast.toNumber(args.y)])
         );
+      }
     }
 
     setCanvasSize(args) {
@@ -1138,8 +1156,9 @@ void main() {
 
     getLayer(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag])
+      if (target && target[engineTag]) {
         return render.getDrawableOrder(target[engineTag].drawableId);
+      }
       return "";
     }
 
@@ -1166,8 +1185,9 @@ void main() {
     setEngineBlend(args) {
       const target = this.getSprite(args.TARGET);
       const engine = target?.[engineTag];
-      if (target && engine)
+      if (target && engine) {
         engine.drawable[engineTag] = Cast.toString(args.TYPE);
+      }
     }
 
     createEmitter(args) {
@@ -1176,12 +1196,13 @@ void main() {
       const engine = target[engineTag];
       engine.emitters[args.NAME] = {
         pos: [0, 0],
-        opts: structuredClone(optionList),
+        rawPos: [0, 0],
+        opts: structuredClone(DEFAULT_BEHAVIOURS),
         frameCnt: 0,
         tintCache: new Map(),
         data: new Set(),
       };
-      newTexture(shapes.sqr, engine.gl, (t) => {
+      newTexture(PRESET_SHAPES["square"], engine.gl, (t) => {
         engine.emitters[args.NAME].texture = t;
       });
       runtime.requestRedraw();
@@ -1189,14 +1210,38 @@ void main() {
 
     deleteEmitter(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag])
+      if (target && target[engineTag]) {
         delete target[engineTag].emitters[args.NAME];
+      }
+    }
+
+    deleteEmitterWait(args, util) {
+      let target, emitter;
+      if (util.stackFrame.emitterCallback) {
+        [target, emitter] = util.stackFrame.emitterCallback;
+        if (emitter.data.size > 0) {
+          util.yield();
+        } else {
+          delete target[engineTag].emitters[args.NAME];
+        }
+      } else {
+        target = this.getSprite(args.TARGET);
+        if (!target || !target[engineTag]) return
+
+        emitter = target[engineTag].emitters[args.NAME];
+        if (!emitter) return;
+
+        emitter.opts.emission = { val: 0, inf: 0 };
+        util.stackFrame.emitterCallback = [target, emitter];
+        util.yield();
+      }
     }
 
     emitterExist(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag])
+      if (target && target[engineTag]) {
         return target[engineTag].emitters[args.NAME] !== undefined;
+      }
       return false;
     }
 
@@ -1204,11 +1249,16 @@ void main() {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
         const engine = target[engineTag];
-        if (engine.emitters[args.NAME])
-          engine.emitters[args.NAME].pos = [
-            Cast.toNumber(args.x) * engine.ratioX,
-            Cast.toNumber(args.y) * -1 * engine.ratioY,
+        const emitter = engine.emitters[args.NAME];
+        if (emitter) {
+          emitter.rawPos = [
+            Cast.toNumber(args.x), Cast.toNumber(args.y) 
           ];
+          emitter.pos = [
+            emitter.rawPos[0] * engine.ratioX,
+            emitter.rawPos[1] * engine.ratioY * -1,
+          ];
+        }
       }
     }
 
@@ -1216,8 +1266,10 @@ void main() {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
         const engine = target[engineTag];
-        if (engine.emitters[args.NAME])
-          return engine.emitters[args.NAME].pos[args.TYPE === "x" ? 0 : 1];
+        const emitter = engine.emitters[args.NAME];
+        if (emitter) {
+          return emitter.rawPos[args.TYPE === "x" ? 0 : 1];
+        }
       }
       return "";
     }
@@ -1237,18 +1289,7 @@ void main() {
     }
 
     defaultTexture(args) {
-      switch (args.TYPE) {
-        case "circle":
-          return shapes.circ;
-        case "square":
-          return shapes.sqr;
-        case "triangle":
-          return shapes.tri;
-        case "star":
-          return shapes.star;
-        default:
-          return "";
-      }
+      return PRESET_SHAPES[Cast.toString(args.TYPE)] || "";
     }
 
     setEmitColor(args) {
@@ -1355,8 +1396,9 @@ void main() {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
         const engine = target[engineTag];
-        if (engine.emitters[args.NAME])
+        if (engine.emitters[args.NAME]) {
           return JSON.stringify(engine.emitters[args.NAME].opts);
+        }
       }
       return "{}";
     }
