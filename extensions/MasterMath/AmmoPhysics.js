@@ -1492,7 +1492,7 @@
               {
                 opcode: "getRayTouching",
                 blockType: Scratch.BlockType.BOOLEAN,
-                text: Scratch.translate("ray [name] is touching body [body]?"),
+                text: Scratch.translate("is ray [name] touching body [body]?"),
                 hideFromPalette: !this.folders.raycasting,
                 blockIconURI: raycastIcon,
                 arguments: {
@@ -2808,7 +2808,6 @@
           Ammo.destroy(to);
         }
 
-        // TODO: I don't think this is working either
         rayCastTowards({ name, x, y, z, x2, y2, z2, distance }) {
           name = Cast.toString(name);
           x = Cast.toNumber(x);
@@ -2817,10 +2816,12 @@
           x2 = Cast.toNumber(x2);
           y2 = Cast.toNumber(y2);
           z2 = Cast.toNumber(z2);
+
           if (rays[name]) {
             Ammo.destroy(rays[name]);
             delete rays[name];
           }
+
           const from = new Ammo.btVector3(x, y, z);
           const dir = new Ammo.btVector3(x2 - x, y2 - y, z2 - z);
           dir.normalize();
@@ -2868,13 +2869,15 @@
         getBodyTouchingRay({ name, body }, { target }) {
           name = Cast.toString(name);
           body = Cast.toString(body);
-          if (rays[name]?.hasHit()) {
-            return Cast.toString(
-              Ammo.castObject(
-                rays[name]?.get_m_collisionObject(),
-                Ammo.btRigidBody
-              ).userData
-            );
+          if (rays[name]) {
+            return rays[name]?.hasHit()
+              ? Cast.toString(
+                  Ammo.castObject(
+                    rays[name]?.get_m_collisionObject(),
+                    Ammo.btRigidBody
+                  ).userData
+                )
+              : "";
           } else {
             console.warn(
               `Attempted to get body touching nonexistent ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
