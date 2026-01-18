@@ -1041,7 +1041,7 @@ void main() {
       // its fair to trust that the user knows what theyre doing if they ingore this
       if (engineCount > ENGINE_CAP) {
         const warningText = Scratch.translate(
-          "WARNING: Particle Engine -- reached unstable number of engines!"
+          "WARNING: Particle Engine - reached unstable number of engines!"
         );
         if (typeof scaffolding === "undefined") {
           /* global ReduxStore */
@@ -1070,6 +1070,7 @@ void main() {
       const target = this.getSprite(args.TARGET);
       if (target === "_all_") {
         allEngines.forEach((engine) => disposeEngine(engine.target));
+        engineCount = 0;
         return;
       }
       if (target && target[engineTag] !== undefined) {
