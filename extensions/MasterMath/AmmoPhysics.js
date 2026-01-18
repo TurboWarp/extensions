@@ -1373,7 +1373,7 @@
                 opcode: "rayCastDirection",
                 blockType: Scratch.BlockType.COMMAND,
                 text: Scratch.translate(
-                  "cast ray with name [name] from x: [x] y: [y] z: [z] with rotation x: [rotX] y: [rotY] z: [rotZ] distance: [distance]"
+                  "cast ray with name [name] from x: [x] y: [y] z: [z] with pitch: [pitch] yaw: [yaw] distance: [distance]"
                 ),
                 hideFromPalette: !this.folders.raycasting,
                 blockIconURI: raycastIcon,
@@ -1394,17 +1394,13 @@
                     type: Scratch.ArgumentType.NUMBER,
                     defaultValue: 0,
                   },
-                  rotX: {
-                    type: Scratch.ArgumentType.ANGLE,
-                    defaultValue: 7,
+                  pitch: {
+                    type: Scratch.ArgumentType.NUMBER,
+                    defaultValue: 45,
                   },
-                  rotY: {
-                    type: Scratch.ArgumentType.ANGLE,
-                    defaultValue: 15,
-                  },
-                  rotZ: {
-                    type: Scratch.ArgumentType.ANGLE,
-                    defaultValue: 12,
+                  yaw: {
+                    type: Scratch.ArgumentType.NUMBER,
+                    defaultValue: 45,
                   },
                   distance: {
                     type: Scratch.ArgumentType.NUMBER,
@@ -2778,39 +2774,41 @@
           rays[name].endpoint = to;
         }
 
-        // TODO: rotZ never used...
-        rayCastDirection({ name, x, y, z, rotX, rotY, rotZ, distance }) {
+        rayCastDirection({ name, x, y, z, pitch, yaw, distance }) {
           name = Cast.toString(name);
+          x = Cast.toNumber(x);
+          y = Cast.toNumber(y);
+          z = Cast.toNumber(z);
+          pitch = Cast.toNumber(pitch);
+          yaw = Cast.toNumber(yaw);
+          distance = Cast.toNumber(distance);
+
           if (rays[name]) {
             Ammo.destroy(rays[name]);
             delete rays[name];
           }
-          const pitch = (Cast.toNumber(rotX) * Math.PI) / 180;
-          const yaw = (Cast.toNumber(rotY) * Math.PI) / 180;
-          const dir = new Ammo.btVector3(
-            Math.cos(yaw) * Math.cos(pitch),
-            Math.sin(pitch),
-            Math.sin(yaw) * Math.cos(pitch)
-          );
-          dir.op_mul(distance);
 
-          const from = new Ammo.btVector3(
-            Cast.toNumber(x),
-            Cast.toNumber(y),
-            Cast.toNumber(z)
-          );
+          const from = new Ammo.btVector3(x, y, z);
+          const pitchRad = Cast.toNumber(pitch) * degToRad;
+          const yawRad = Cast.toNumber(yaw) * degToRad;
+
           const to = new Ammo.btVector3(
-            from.x() + dir.x(),
-            from.y() + dir.y(),
-            from.z() + dir.z()
+            x + distance * Math.cos(pitchRad) * Math.sin(yawRad),
+            y + distance * Math.sin(pitchRad),
+            z - distance * Math.cos(pitchRad) * Math.cos(yawRad)
           );
 
-          const rayCallback = new Ammo.AllHitsRayResultCallback(from, to);
+          const rayCallback = new Ammo.ClosestRayResultCallback(from, to);
           world.rayTest(from, to, rayCallback);
+
           rays[name] = rayCallback;
           rays[name].endpoint = to;
+
+          Ammo.destroy(from);
+          Ammo.destroy(to);
         }
 
+        // TODO: I don't think this is working either
         rayCastTowards({ name, x, y, z, x2, y2, z2, distance }) {
           name = Cast.toString(name);
           x = Cast.toNumber(x);
@@ -2833,10 +2831,13 @@
             from.z() + dir.z()
           );
 
-          const rayCallback = new Ammo.AllHitsRayResultCallback(from, to);
+          const rayCallback = new Ammo.ClosestRayResultCallback(from, to);
           world.rayTest(from, to, rayCallback);
           rays[name] = rayCallback;
           rays[name].endpoint = to;
+          Ammo.destroy(dir);
+          Ammo.destroy(from);
+          Ammo.destroy(to);
         }
 
         getRay({ xyz, property, name }, { target }) {
