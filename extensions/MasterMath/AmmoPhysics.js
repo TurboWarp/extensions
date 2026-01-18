@@ -2531,7 +2531,9 @@
         getVelocity({ xyz, linearAngular, name }, { target }) {
           name = Cast.toString(name);
           if (bodies[name]) {
-            return bodies[name][Cast.toString(linearAngular)]()[Cast.toString(xyz)]();
+            return bodies[name][Cast.toString(linearAngular)]()[
+              Cast.toString(xyz)
+            ]();
           } else {
             console.warn(
               `Attempted to get velocity of nonexistent body "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
