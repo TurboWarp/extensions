@@ -230,7 +230,10 @@ This block sets the linear or angular factor of a body. This is essentially a mo
 ```scratch
 set [linear v] velocity of body [body] to x: [1] y: [1] z: [1] :: #0fbd8c
 ```
-This block, unlike forces, overrites a body's velocity. Effects are immediate. A good example is using this block to make a character jump by setting its vertical (y-axis) velocity. 
+This block, unlike forces, overrites a body's velocity. Effects are immediate.
+
+>[!TIP]
+> Using this velocity block with a capsule body that has an angular factor of 0 is a great way to set up basic player movement!
 
 ```scratch
 ([x] [linear v] velocity of body [body] :: #0fbd8c)
@@ -371,8 +374,6 @@ Pushes the specified body with a force or impulse of the given XYZ strength in n
 push body [body] with central [force v] x: (1) y: (1) z: (1) newtons :: #0fbd8c
 ```
 Pushes the specified body with a force or impulse with the given XYZ strength in newtons. Only results in linear velocity. 
->[!TIP]
-> Using this push central force block with a capsule body is a great way to set up basic player movement!
 
 ```scratch
 push body [body] with torque x: (1) y: (1) z: (1) :: #0fbd8c
