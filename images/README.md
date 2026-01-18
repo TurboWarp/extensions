@@ -324,3 +324,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## DogeisCut/FormatNumbers.png
  - Created by [@Dillon](https://github.com/DillonRGaming)
+
+## Fakemon/Locale.svg
+ - Created by [@Scratch_Fakemon](https://scratch.mit.edu/users/Scratch_Fakemon) in https://github.com/TurboWarp/extensions/pull/2389
