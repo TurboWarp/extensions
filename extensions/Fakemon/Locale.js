@@ -111,12 +111,10 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("get global translation information"),
           },
-           {
+          {
             opcode: "supportedLanguages",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "all languages that can be translated to"
-            ),
+            text: Scratch.translate("all languages that can be translated to"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
@@ -278,25 +276,28 @@
       } else {
         // @ts-ignore
         // eslint-disable-next-line no-undef
-        return JSON.stringify([ReduxStore?.getState().locales.locale, ...navigator.languages]);
+        return JSON.stringify([
+          ReduxStore?.getState().locales.locale,
+          ...navigator.languages,
+        ]);
       }
     }
     isLanguagePreferred(args) {
-      return JSON.parse(this.getLanguageArray()).includes(args.LANG)
+      return JSON.parse(this.getLanguageArray()).includes(args.LANG);
     }
     supportedLanguages() {
-      return JSON.stringify(Object.keys(localeObject))
+      return JSON.stringify(Object.keys(localeObject));
     }
-  supportedPreferredLanguages() {
-    const languageArray = JSON.parse(this.getLanguageArray())
-    const matchedLanguages = []
-      JSON.parse(this.supportedLanguages()).forEach((value) => { 
-if (languageArray.includes(value)) {
-  matchedLanguages.push(value)
-}
-      })
-return JSON.stringify(matchedLanguages)
-  }
+    supportedPreferredLanguages() {
+      const languageArray = JSON.parse(this.getLanguageArray());
+      const matchedLanguages = [];
+      JSON.parse(this.supportedLanguages()).forEach((value) => {
+        if (languageArray.includes(value)) {
+          matchedLanguages.push(value);
+        }
+      });
+      return JSON.stringify(matchedLanguages);
+    }
     _updateLocaleInfo() {
       // @ts-ignore since extension storage IS a thing
       Scratch.vm.runtime.extensionStorage["fakemonLocale"] = {
