@@ -274,10 +274,9 @@
       if (navigator.languages.includes(ReduxStore?.getState().locales.locale)) {
         return JSON.stringify(navigator.languages);
       } else {
-        
         return JSON.stringify([
           // @ts-ignore
-        // eslint-disable-next-line no-undef
+          // eslint-disable-next-line no-undef
           ReduxStore?.getState().locales.locale,
           ...navigator.languages,
         ]);
