@@ -233,6 +233,11 @@ set [linear v] velocity of body [body] to x: [1] y: [1] z: [1] :: #0fbd8c
 This block, unlike forces, overrites a body's velocity. Effects are immediate. A good example is using this block to make a character jump by setting its vertical (y-axis) velocity. 
 
 ```scratch
+([x] [linear v] velocity of body [body] :: #0fbd8c)
+```
+This block returns the linear or angular body of the specified body on the specified axis. 
+
+```scratch
 set linear damping of body [body] to [0.01] and angular damping to [0.01] :: #0fbd8c
 ```
 This block controls how fast a body loses its momentum. You can think of it like air resistance—especially large values will make your body feel like it's floating in molasess, and a value of 0 will result in no damping (like in a vacuum or outer space).
@@ -310,9 +315,9 @@ cast ray with name [ray] from x: (0) y: (0) z: (0) to x: (7) y: (15) z: (12) :: 
 This block fires a ray with the specified name from point A to point B.
 
 ```scratch
-cast ray with name [ray] from x: (0) y: (0) z: (0) with rotation x: (7) y: (15) z: (12) distance: (5) :: #0fbd8c
+cast ray with name [ray] from x: (0) y: (0) z: (0) with pitch: (45) yaw: (45) distance: (5) :: #0fbd8c
 ```
-This block fires a ray with the specified name. Unlike the block above, it accepts a starting point and a **rotation in degrees**, and will move along that rotation until it hits a body or reaches the max distance.
+This block fires a ray with the specified name. Unlike the block above, it accepts a starting point and pitch/yaw **in degrees**, and will move along that rotation until it hits a body or reaches the max distance. Roll (or z-rotation) is unnacounted for since it does not affect the direction of the ray. **_This block assumes facing -Z is forward._**
 
 ```scratch
 cast ray with name [ray] from x: (0) y: (0) z: (0) towards coordinate x: (7) y: (15) z: (12) distance: (5) :: #0fbd8c
@@ -326,11 +331,20 @@ If the specified ray has hit a body, then position returns the X, Y, or Z hit po
 
 If the specified ray has _not_ hit a body, then position returns the X, Y, or Z end point of the ray and normal returns null.
 
+```scratch
+(body touching ray [ray] :: #0fbd8c)
+```
+Returns the body the specified ray has hit. If the ray has not hit any body, this block returns an empty string.
 
 ```scratch
-<ray [ray] is touching body [body]? :: #0fbd8c>
+<is ray [ray] touching body [body]? :: #0fbd8c>
 ```
 Returns whether the specified ray is touching the specified body.
+
+```scratch
+<is ray [ray] touching any body? :: #0fbd8c>
+```
+Returns whether the specified ray has hit any body. 
 
 ```scratch
 delete ray [ray] :: #0fbd8c
