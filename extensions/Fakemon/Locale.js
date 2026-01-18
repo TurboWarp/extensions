@@ -28,6 +28,59 @@
         menuIconURI: menuExtensionIcon,
         blocks: [
           {
+            opcode: "translate",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("translate [TEXT] to language code [LANG]"),
+            arguments: {
+              LANG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "es",
+              },
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello, world!",
+              },
+            },
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Preferred Languages"),
+          },
+          {
+            opcode: "getLanguageCode",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get user's most preferred language code"),
+          },
+          {
+            opcode: "getLanguageArray",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get user's preferred language array"),
+          },
+          {
+            opcode: "isLanguagePreferred",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate(
+              "does the user prefer language code [LANG]?"
+            ),
+            arguments: {
+              LANG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "es",
+              },
+            },
+          },
+          {
+            opcode: "supportedPreferredLanguages",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "preferred languages that can be translated to"
+            ),
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("All Translations"),
+          },
+          {
             opcode: "setFullLocaleJSON",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
@@ -58,7 +111,17 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("get global translation information"),
           },
-          "---",
+           {
+            opcode: "supportedLanguages",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "all languages that can be translated to"
+            ),
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Per-Language Translations"),
+          },
           {
             opcode: "setPerLangLocaleJSON",
             blockType: Scratch.BlockType.COMMAND,
@@ -106,7 +169,10 @@
               },
             },
           },
-          "---",
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Per-Word Translations"),
+          },
           {
             opcode: "setPerWordTranslation",
             blockType: Scratch.BlockType.COMMAND,
@@ -125,22 +191,6 @@
               TEXTOUT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "¡Hola, mundo!",
-              },
-            },
-          },
-          "---",
-          {
-            opcode: "translate",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("translate [TEXT] to language code [LANG]"),
-            arguments: {
-              LANG: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "es",
-              },
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, world!",
               },
             },
           },
@@ -174,7 +224,7 @@
       // @ts-ignore
       this._updateLocaleInfo();
     }
-    getFullLocaleJSON(args) {
+    getFullLocaleJSON() {
       return JSON.stringify(localeObject) || "{}";
     }
     setPerLangLocaleJSON(args) {
@@ -209,15 +259,46 @@
       return JSON.stringify(localeObject[args.LANG]) || "{}";
     }
     translate(args) {
-      // Alternate ID: getPerWordTranslation
       try {
         return localeObject[args.LANG][args.TEXT];
       } catch {
         return args.TEXT;
       } // Fallback to default language
     }
-    _updateLocaleInfo() {
+    getLanguageCode() {
       // @ts-ignore
+      // eslint-disable-next-line no-undef
+      return ReduxStore?.getState().locales.locale || navigator.languages[0];
+    }
+    getLanguageArray() {
+      // @ts-ignore
+      // eslint-disable-next-line no-undef
+      if (navigator.languages.includes(ReduxStore?.getState().locales.locale)) {
+        return JSON.stringify(navigator.languages);
+      } else {
+        // @ts-ignore
+        // eslint-disable-next-line no-undef
+        return JSON.stringify([ReduxStore?.getState().locales.locale, ...navigator.languages]);
+      }
+    }
+    isLanguagePreferred(args) {
+      return JSON.parse(this.getLanguageArray()).includes(args.LANG)
+    }
+    supportedLanguages() {
+      return JSON.stringify(Object.keys(localeObject))
+    }
+  supportedPreferredLanguages() {
+    const languageArray = JSON.parse(this.getLanguageArray())
+    const matchedLanguages = []
+      JSON.parse(this.supportedLanguages()).forEach((value) => { 
+if (languageArray.includes(value)) {
+  matchedLanguages.push(value)
+}
+      })
+return JSON.stringify(matchedLanguages)
+  }
+    _updateLocaleInfo() {
+      // @ts-ignore since extension storage IS a thing
       Scratch.vm.runtime.extensionStorage["fakemonLocale"] = {
         // @ts-ignore
         ...Scratch.vm.runtime.extensionStorage["fakemonLocale"],
@@ -225,6 +306,5 @@
       };
     }
   }
-  //@ts-ignore; this is because of the '---'
   Scratch.extensions.register(new Locale());
 })(Scratch);
