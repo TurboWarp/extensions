@@ -10,7 +10,11 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("The Locale extension must run unsandboxed!");
   }
-
+  const languageNameAndCodeLookupTable = [
+    // TODO: Add more languages, possibly from an existing table
+    { name: Scratch.translate("English"), code: "en" },
+    { name: Scratch.translate("Spanish"), code: "es" },
+  ];
   let localeObject =
     // @ts-ignore
     Scratch.vm.runtime.extensionStorage["fakemonLocale"]?.localeObject || {};
@@ -192,12 +196,43 @@
               },
             },
           },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Language Code <=> Name Conversions"),
+          },
+          {
+            opcode: "nameFromCode",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("name of language with code [CODE]"),
+            arguments: {
+              CODE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "LANG_CODE",
+                defaultValue: "es",
+              },
+            },
+          },
+          {
+            opcode: "codeFromName",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("code of language with name [NAME]"),
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "LANG_NAME",
+                defaultValue: Scratch.translate("Spanish"),
+              },
+            },
+          },
         ],
         menus: {
-          NAME: {
-            // In case menus are ever needed
+          LANG_CODE: {
             acceptReporters: true,
-            items: [{ text: Scratch.translate("NAME"), value: "NAME" }],
+            items: this._getLanguageCodes(),
+          },
+          LANG_NAME: {
+            acceptReporters: true,
+            items: this._makeLanguageNameMenu(),
           },
         },
       };
@@ -298,6 +333,33 @@
       });
       return JSON.stringify(matchedLanguages);
     }
+    nameFromCode(args) {
+      let codeIndex = this._getLanguageCodes().indexOf(args.CODE);
+      if (codeIndex != -1) {
+        return this._getLanguageNames()[codeIndex];
+      } else {
+        return "";
+      }
+    }
+    codeFromName(args) {
+      if (this._getLanguageCodes().includes(args.NAME)) {
+        // The menu allows any reporter to be inserted, including those that don't match a menu. Remember, args.NAME will return the *value* of the menu, which, in this case, is the language code.
+        return args.NAME;
+      } else {
+        if (this._getLanguageNames().includes(args.NAME)) {
+          // This is to ensure the actual name value can be used via inputs. TODO: Like the Translate extension, allow the name of a language in ANY language to be used, not just the user's current. (No clue how it does that)
+          let nameIndex = this._getLanguageNames().indexOf(args.NAME);
+          if (nameIndex != -1) {
+            return this._getLanguageCodes()[nameIndex];
+          } else {
+            return "";
+          }
+        } else {
+          return "";
+        }
+      }
+    }
+    // Internal functions
     _updateLocaleInfo() {
       // @ts-ignore since extension storage IS a thing
       Scratch.vm.runtime.extensionStorage["fakemonLocale"] = {
@@ -306,6 +368,30 @@
         ...{ localeObject: localeObject },
       };
     }
+    _filterArray(array, matchKey) {
+      return array.map((value) => {
+        if (Object.prototype.hasOwnProperty.call(value, matchKey)) {
+          return value[matchKey];
+        }
+      });
+    }
+    _getLanguageNames() {
+      return this._filterArray(languageNameAndCodeLookupTable, "name");
+    }
+    _getLanguageCodes() {
+      return this._filterArray(languageNameAndCodeLookupTable, "code");
+    }
+    _makeLanguageNameMenu() {
+      // Since the language names are being translated, we need a consistent way to refer to them.
+      const names = this._getLanguageNames();
+      const codes = this._getLanguageCodes();
+      let menuThusFar = [];
+      for (let i = 0; i < names.length; i++) {
+        menuThusFar.push({ text: names[i], value: codes[i] });
+      }
+      return menuThusFar;
+    }
   }
+  // @ts-ignore
   Scratch.extensions.register(new Locale());
 })(Scratch);
