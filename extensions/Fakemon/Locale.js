@@ -3,6 +3,7 @@
 // Description: Blocks for manually registering translations of text.
 // By: Scratch_Fakemon <https://scratch.mit.edu/users/Scratch_Fakemon/>
 // License: MPL-2.0
+
 (async function (Scratch) {
   // Has to be async for fetching the lookup table
   "use strict";
@@ -375,8 +376,17 @@
         // The menu allows any reporter to be inserted, including those that don't match a menu. Remember, args.NAME will return the *value* of the menu, which, in this case, is the language code.
         return args.NAME;
       } else {
-        if (this._getLanguageNames().includes(args.NAME)) {
-          // This is to ensure the actual name value can be used via inputs. TODO: Like the Translate extension, allow the name of a language in ANY language to be used, not just the user's current. (No clue how it does that)
+        args.NAME = args.NAME.toString().trim().toLowerCase();
+        if (
+          Object.prototype.hasOwnProperty.call(
+            languageNameAndCodeLookupTableGLOBALIZED.nameMap,
+            args.NAME
+          )
+        ) {
+          // This is to ensure the actual name value can be used via inputs. This implementation is inspired by the Translate extension's.
+          return languageNameAndCodeLookupTableGLOBALIZED.nameMap[args.NAME];
+        } else if (this._getLanguageNames().includes(args.NAME)) {
+          // This is to ensure the actual name value can be used via inputs.
           let nameIndex = this._getLanguageNames().indexOf(args.NAME);
           if (nameIndex != -1) {
             return this._getLanguageCodes()[nameIndex];
