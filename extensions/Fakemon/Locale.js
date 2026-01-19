@@ -401,13 +401,15 @@
     }
     // Internal functions
     _updateLocaleInfo() {
-      try {// @ts-ignore since extension storage IS a thing
-      Scratch.vm.runtime.extensionStorage["fakemonLocale"] = {
-        // @ts-ignore
-        ...Scratch.vm.runtime.extensionStorage["fakemonLocale"],
-        ...{ localeObject: localeObject },
-      };} catch(error) {
-        console.warn(error)
+      try {
+        // @ts-ignore since extension storage IS a thing
+        Scratch.vm.runtime.extensionStorage["fakemonLocale"] = {
+          // @ts-ignore
+          ...Scratch.vm.runtime.extensionStorage["fakemonLocale"],
+          ...{ localeObject: localeObject },
+        };
+      } catch (error) {
+        console.warn(error);
       }
     }
     _filterArray(array, matchKey) {
