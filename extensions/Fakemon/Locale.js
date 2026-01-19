@@ -61,6 +61,7 @@
         color1: "#2a5fa0", // TurboWarp will automatically generate colors 2 and 3 based on color 1.
         blockIconURI: blockExtensionIcon,
         menuIconURI: menuExtensionIcon,
+        docsURI: "https://extensions.turbowarp.org/Fakemon/Locale",
         blocks: [
           {
             opcode: "translate",
@@ -400,12 +401,14 @@
     }
     // Internal functions
     _updateLocaleInfo() {
-      // @ts-ignore since extension storage IS a thing
+      try {// @ts-ignore since extension storage IS a thing
       Scratch.vm.runtime.extensionStorage["fakemonLocale"] = {
         // @ts-ignore
         ...Scratch.vm.runtime.extensionStorage["fakemonLocale"],
         ...{ localeObject: localeObject },
-      };
+      };} catch(error) {
+        console.warn(error)
+      }
     }
     _filterArray(array, matchKey) {
       if (array != []) {
