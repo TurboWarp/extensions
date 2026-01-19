@@ -331,7 +331,7 @@ void main() {
     runtime.requestRedraw();
 
     engine.gl.deleteProgram(engine.programInfo.program);
-    const glExtension = engine.gl.getExtension('WEBGL_lose_context');
+    const glExtension = engine.gl.getExtension("WEBGL_lose_context");
     if (glExtension) glExtension.loseContext();
     engine.canvas.remove();
     target[engineTag] = undefined;
