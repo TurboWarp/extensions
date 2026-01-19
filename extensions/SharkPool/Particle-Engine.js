@@ -329,6 +329,11 @@ void main() {
     render.destroyDrawable(engine.drawableId, "sprite");
     render.destroySkin(engine.skinId);
     runtime.requestRedraw();
+
+    engine.gl.deleteProgram(engine.programInfo.program);
+    const glExtension = engine.gl.getExtension('WEBGL_lose_context');
+    if (glExtension) glExtension.loseContext();
+    engine.canvas.remove();
     target[engineTag] = undefined;
     allEngines.delete(target.getName());
   };
