@@ -31,24 +31,27 @@
   class Locale {
     constructor() {
       let arrayThusFar = [];
-        // @ts-ignore
-        languageNameAndCodeLookupTableGLOBALIZED.menuMap[
-          this._matchLanguages(JSON.parse(this.getLanguageArray()), Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap))[0] || "en"
-        ].forEach((entry) => {
-          // Heavily inspired by https://github.com/TurboWarp/scratch-vm/blob/develop/src/extensions/scratch3_translate/index.js
-          const obj = { name: entry.name, code: entry.code };
+      // @ts-ignore
+      languageNameAndCodeLookupTableGLOBALIZED.menuMap[
+        this._matchLanguages(
+          JSON.parse(this.getLanguageArray()),
+          Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap)
+        )[0] || "en"
+      ].forEach((entry) => {
+        // Heavily inspired by https://github.com/TurboWarp/scratch-vm/blob/develop/src/extensions/scratch3_translate/index.js
+        const obj = { name: entry.name, code: entry.code };
 
-          try {
-            if (obj) {
-              if (!this._filterArray(arrayThusFar, "code").includes(obj.code)) {
-                arrayThusFar.push(obj);
-              }
+        try {
+          if (obj) {
+            if (!this._filterArray(arrayThusFar, "code").includes(obj.code)) {
+              arrayThusFar.push(obj);
             }
-          } catch (error) {
-            console.warn(error);
           }
-        });
-        languageNameAndCodeLookupTable = arrayThusFar
+        } catch (error) {
+          console.warn(error);
+        }
+      });
+      languageNameAndCodeLookupTable = arrayThusFar;
     }
     getInfo() {
       return {
@@ -325,7 +328,8 @@
         return args.TEXT;
       } // Fallback to default language
     }
-    getLanguageCode() { // This block prefers the UI language stored in ReduxStore.
+    getLanguageCode() {
+      // This block prefers the UI language stored in ReduxStore.
       // @ts-ignore
       // eslint-disable-next-line no-undef
       return ReduxStore?.getState().locales.locale || navigator.languages[0];
@@ -351,7 +355,12 @@
       return JSON.stringify(Object.keys(localeObject));
     }
     supportedPreferredLanguages() {
-      return JSON.stringify(this._matchLanguages(JSON.parse(this.getLanguageArray()), JSON.parse(this.supportedLanguages())))
+      return JSON.stringify(
+        this._matchLanguages(
+          JSON.parse(this.getLanguageArray()),
+          JSON.parse(this.supportedLanguages())
+        )
+      );
     }
     nameFromCode(args) {
       let codeIndex = this._getLanguageCodes().indexOf(args.CODE);
