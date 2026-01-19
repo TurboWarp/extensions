@@ -1,20 +1,26 @@
 // Name: Locale
 // ID: fakemonLocale
-// Description: Blocks for manual l10n translations.
+// Description: Blocks for manually registering translations of text.
 // By: Scratch_Fakemon <https://scratch.mit.edu/users/Scratch_Fakemon/>
 // License: MPL-2.0
-
-(function (Scratch) {
+(async function (Scratch) {
+  // Has to be async for fetching the lookup table
   "use strict";
+  let languageNameAndCodeLookupTableGLOBALIZED;
+  async function getLanguageNameAndCodeLookupTableGLOBALIZED() {
+    const fetchResult = await Scratch.fetch(
+      "https://raw.githubusercontent.com/TurboWarp/scratch-translate-extension-languages-mirror/main/package/languages.json" // TurboWarp's mirror of the supported Translate extension languages.
+    );
+    return JSON.parse(await fetchResult.text());
+  }
+  languageNameAndCodeLookupTableGLOBALIZED =
+    await getLanguageNameAndCodeLookupTableGLOBALIZED();
+
+  let languageNameAndCodeLookupTable;
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("The Locale extension must run unsandboxed!");
   }
-  const languageNameAndCodeLookupTable = [
-    // TODO: Add more languages, possibly from an existing table
-    { name: Scratch.translate("English"), code: "en" },
-    { name: Scratch.translate("Spanish"), code: "es" },
-  ];
   let localeObject =
     // @ts-ignore
     Scratch.vm.runtime.extensionStorage["fakemonLocale"]?.localeObject || {};
@@ -23,6 +29,27 @@
   let menuExtensionIcon =
     "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUyIiBoZWlnaHQ9IjE1MiIgdmlld0JveD0iMCAwIDE1MiAxNTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGNsaXAtcGF0aD0idXJsKCNjbGlwMF8xMzFfNDgpIj4KPGNpcmNsZSBjeD0iNzYiIGN5PSI3NiIgcj0iNzYiIGZpbGw9IiMyNDVDQTAiLz4KPGNpcmNsZSBjeD0iNzYiIGN5PSI3NiIgcj0iNzMuNSIgc3Ryb2tlPSJibGFjayIgc3Ryb2tlLW9wYWNpdHk9IjAuMTUiIHN0cm9rZS13aWR0aD0iNSIvPgo8ZyBmaWx0ZXI9InVybCgjZmlsdGVyMF9pXzEzMV80OCkiPgo8cGF0aCBkPSJNMTAwLjQzOSA0MC4zMzU5QzEwMy43NTMgNDAuMzM2MSAxMDYuNDM5IDQzLjAyMzMgMTA2LjQzOSA0Ni4zMzY5VjEwNy41MTRDMTA2LjQzOSAxMTAuODI3IDEwMy43NTMgMTEzLjUxNCAxMDAuNDM5IDExMy41MTRINDEuMzkzNkwzMS45MDYyIDEyM0wyMi4zODk2IDExMy40ODNDMTkuMzYyNiAxMTMuMTc4IDE3IDExMC42MjEgMTcgMTA3LjUxNFY0Ni4zMzY5QzE3IDQzLjAyMzIgMTkuNjg2MyA0MC4zMzU5IDIzIDQwLjMzNTlIMTAwLjQzOVoiIGZpbGw9IndoaXRlIi8+CjwvZz4KPHBhdGggZD0iTTEwMC40MzkgNDAuMzM1OUwxMDAuNDQgMzcuODM1OUgxMDAuNDM5VjQwLjMzNTlaTTEwMC40MzkgMTEzLjUxNFYxMTYuMDE0SDEwMC40NEwxMDAuNDM5IDExMy41MTRaTTQxLjM5MzYgMTEzLjUxNFYxMTEuMDE0SDQwLjM1ODFMMzkuNjI1OSAxMTEuNzQ2TDQxLjM5MzYgMTEzLjUxNFpNMzEuOTA2MiAxMjNMMzAuMTM4NSAxMjQuNzY4TDMxLjkwNjIgMTI2LjUzNUwzMy42NzM5IDEyNC43NjhMMzEuOTA2MiAxMjNaTTIyLjM4OTYgMTEzLjQ4M0wyNC4xNTc0IDExMS43MTZMMjMuNTI3NCAxMTEuMDg2TDIyLjY0MDkgMTEwLjk5NkwyMi4zODk2IDExMy40ODNaTTEwMC40MzkgNDAuMzM1OUwxMDAuNDM5IDQyLjgzNTlDMTAyLjM3MiA0Mi44MzYgMTAzLjkzOSA0NC40MDM2IDEwMy45MzkgNDYuMzM2OUgxMDYuNDM5SDEwOC45MzlDMTA4LjkzOSA0MS42NDMgMTA1LjEzNCAzNy44MzYyIDEwMC40NCAzNy44MzU5TDEwMC40MzkgNDAuMzM1OVpNMTA2LjQzOSA0Ni4zMzY5SDEwMy45MzlWMTA3LjUxNEgxMDYuNDM5SDEwOC45MzlWNDYuMzM2OUgxMDYuNDM5Wk0xMDYuNDM5IDEwNy41MTRIMTAzLjkzOUMxMDMuOTM5IDEwOS40NDYgMTAyLjM3MiAxMTEuMDE0IDEwMC40MzkgMTExLjAxNEwxMDAuNDM5IDExMy41MTRMMTAwLjQ0IDExNi4wMTRDMTA1LjEzNCAxMTYuMDEzIDEwOC45MzkgMTEyLjIwOCAxMDguOTM5IDEwNy41MTRIMTA2LjQzOVpNMTAwLjQzOSAxMTMuNTE0VjExMS4wMTRINDEuMzkzNlYxMTMuNTE0VjExNi4wMTRIMTAwLjQzOVYxMTMuNTE0Wk00MS4zOTM2IDExMy41MTRMMzkuNjI1OSAxMTEuNzQ2TDMwLjEzODYgMTIxLjIzMkwzMS45MDYyIDEyM0wzMy42NzM5IDEyNC43NjhMNDMuMTYxMiAxMTUuMjgyTDQxLjM5MzYgMTEzLjUxNFpNMzEuOTA2MiAxMjNMMzMuNjc0IDEyMS4yMzJMMjQuMTU3NCAxMTEuNzE2TDIyLjM4OTYgMTEzLjQ4M0wyMC42MjE5IDExNS4yNTFMMzAuMTM4NSAxMjQuNzY4TDMxLjkwNjIgMTIzWk0yMi4zODk2IDExMy40ODNMMjIuNjQwOSAxMTAuOTk2QzIwLjg3ODEgMTEwLjgxOCAxOS41IDEwOS4zMjUgMTkuNSAxMDcuNTE0SDE3SDE0LjVDMTQuNSAxMTEuOTE4IDE3Ljg0NzIgMTE1LjUzNyAyMi4xMzg0IDExNS45NzFMMjIuMzg5NiAxMTMuNDgzWk0xNyAxMDcuNTE0SDE5LjVWNDYuMzM2OUgxN0gxNC41VjEwNy41MTRIMTdaTTE3IDQ2LjMzNjlIMTkuNUMxOS41IDQ0LjQwMzQgMjEuMDY3NSA0Mi44MzU5IDIzIDQyLjgzNTlWNDAuMzM1OVYzNy44MzU5QzE4LjMwNSAzNy44MzU5IDE0LjUgNDEuNjQzIDE0LjUgNDYuMzM2OUgxN1pNMjMgNDAuMzM1OVY0Mi44MzU5SDEwMC40MzlWNDAuMzM1OVYzNy44MzU5SDIzVjQwLjMzNTlaIiBmaWxsPSJibGFjayIgZmlsbC1vcGFjaXR5PSIwLjE1Ii8+CjxnIGZpbHRlcj0idXJsKCNmaWx0ZXIxX2RfMTMxXzQ4KSI+CjxwYXRoIGQ9Ik0xMjguMTk2IDI4QzEzMS41MSAyOC4wMDAxIDEzNC4xOTYgMzAuNjg2MyAxMzQuMTk2IDM0Vjk1LjE3NzdDMTM0LjE5NiA5OC40OTEzIDEzMS41MSAxMDEuMTc4IDEyOC4xOTYgMTAxLjE3OEg2OS4xNDk0TDU5LjY2MzEgMTEwLjY2NEw1MC4xNDY1IDEwMS4xNDZDNDcuMTE5NiAxMDAuODQxIDQ0Ljc1NyA5OC4yODUyIDQ0Ljc1NjggOTUuMTc3N1YzNEM0NC43NTY4IDMwLjY4NjQgNDcuNDQzMiAyOC4wMDAxIDUwLjc1NjggMjhIMTI4LjE5NloiIGZpbGw9IiM0MzhGRUIiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyIvPgo8cGF0aCBkPSJNMTI4LjE5NiAyOEwxMjguMTk2IDI1LjVIMTI4LjE5NlYyOFpNMTM0LjE5NiA5NS4xNzc3TDEzNi42OTYgOTUuMTc3OFY5NS4xNzc3SDEzNC4xOTZaTTEyOC4xOTYgMTAxLjE3OFYxMDMuNjc4SDEyOC4xOTZMMTI4LjE5NiAxMDEuMTc4Wk02OS4xNDk0IDEwMS4xNzhWOTguNjc3N0g2OC4xMTM5TDY3LjM4MTYgOTkuNDFMNjkuMTQ5NCAxMDEuMTc4Wk01OS42NjMxIDExMC42NjRMNTcuODk1MiAxMTIuNDMyTDU5LjY2MyAxMTQuMkw2MS40MzA5IDExMi40MzJMNTkuNjYzMSAxMTAuNjY0Wk01MC4xNDY1IDEwMS4xNDZMNTEuOTE0MyA5OS4zNzg4TDUxLjI4NDMgOTguNzQ4N0w1MC4zOTc5IDk4LjY1OTJMNTAuMTQ2NSAxMDEuMTQ2Wk00NC43NTY4IDk1LjE3NzdINDIuMjU2OFY5NS4xNzc4TDQ0Ljc1NjggOTUuMTc3N1pNNDQuNzU2OCAzNEw0Mi4yNTY4IDM0VjM0SDQ0Ljc1NjhaTTUwLjc1NjggMjhWMjUuNUg1MC43NTY4TDUwLjc1NjggMjhaTTEyOC4xOTYgMjhMMTI4LjE5NiAzMC41QzEzMC4xMjkgMzAuNSAxMzEuNjk2IDMyLjA2NzEgMTMxLjY5NiAzNEgxMzQuMTk2SDEzNi42OTZDMTM2LjY5NiAyOS4zMDU2IDEzMi44OTEgMjUuNTAwMSAxMjguMTk2IDI1LjVMMTI4LjE5NiAyOFpNMTM0LjE5NiAzNEgxMzEuNjk2Vjk1LjE3NzdIMTM0LjE5NkgxMzYuNjk2VjM0SDEzNC4xOTZaTTEzNC4xOTYgOTUuMTc3N0wxMzEuNjk2IDk1LjE3NzZDMTMxLjY5NiA5Ny4xMTA2IDEzMC4xMjkgOTguNjc3NyAxMjguMTk2IDk4LjY3NzdMMTI4LjE5NiAxMDEuMTc4TDEyOC4xOTYgMTAzLjY3OEMxMzIuODkxIDEwMy42NzggMTM2LjY5NiA5OS44NzIgMTM2LjY5NiA5NS4xNzc4TDEzNC4xOTYgOTUuMTc3N1pNMTI4LjE5NiAxMDEuMTc4Vjk4LjY3NzdINjkuMTQ5NFYxMDEuMTc4VjEwMy42NzhIMTI4LjE5NlYxMDEuMTc4Wk02OS4xNDk0IDEwMS4xNzhMNjcuMzgxNiA5OS40MUw1Ny44OTUzIDEwOC44OTZMNTkuNjYzMSAxMTAuNjY0TDYxLjQzMDkgMTEyLjQzMkw3MC45MTcyIDEwMi45NDZMNjkuMTQ5NCAxMDEuMTc4Wk01OS42NjMxIDExMC42NjRMNjEuNDMwOSAxMDguODk2TDUxLjkxNDMgOTkuMzc4OEw1MC4xNDY1IDEwMS4xNDZMNDguMzc4NiAxMDIuOTE0TDU3Ljg5NTIgMTEyLjQzMkw1OS42NjMxIDExMC42NjRaTTUwLjE0NjUgMTAxLjE0Nkw1MC4zOTc5IDk4LjY1OTJDNDguNjM0NiA5OC40ODA5IDQ3LjI1NjkgOTYuOTg4NSA0Ny4yNTY4IDk1LjE3NzZMNDQuNzU2OCA5NS4xNzc3TDQyLjI1NjggOTUuMTc3OEM0Mi4yNTcgOTkuNTgxOSA0NS42MDQ3IDEwMy4yIDQ5Ljg5NTEgMTAzLjYzNEw1MC4xNDY1IDEwMS4xNDZaTTQ0Ljc1NjggOTUuMTc3N0g0Ny4yNTY4VjM0SDQ0Ljc1NjhINDIuMjU2OFY5NS4xNzc3SDQ0Ljc1NjhaTTQ0Ljc1NjggMzRMNDcuMjU2OCAzNEM0Ny4yNTY4IDMyLjA2NzEgNDguODIzOSAzMC41MDAxIDUwLjc1NjkgMzAuNUw1MC43NTY4IDI4TDUwLjc1NjggMjUuNUM0Ni4wNjI2IDI1LjUwMDEgNDIuMjU2OCAyOS4zMDU2IDQyLjI1NjggMzRMNDQuNzU2OCAzNFpNNTAuNzU2OCAyOFYzMC41SDEyOC4xOTZWMjhWMjUuNUg1MC43NTY4VjI4WiIgZmlsbD0iYmxhY2siIGZpbGwtb3BhY2l0eT0iMC4xNSIvPgo8L2c+CjwvZz4KPGRlZnM+CjxmaWx0ZXIgaWQ9ImZpbHRlcjBfaV8xMzFfNDgiIHg9IjE0LjUiIHk9IjM3LjgzNTkiIHdpZHRoPSI5NC40Mzk1IiBoZWlnaHQ9IjkyLjY5OTUiIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQmxlbmQgbW9kZT0ibm9ybWFsIiBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0ic2hhcGUiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiIHJlc3VsdD0iaGFyZEFscGhhIi8+CjxmZU9mZnNldCBkeT0iNCIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyIi8+CjxmZUNvbXBvc2l0ZSBpbjI9ImhhcmRBbHBoYSIgb3BlcmF0b3I9ImFyaXRobWV0aWMiIGsyPSItMSIgazM9IjEiLz4KPGZlQ29sb3JNYXRyaXggdHlwZT0ibWF0cml4IiB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAuMjUgMCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluMj0ic2hhcGUiIHJlc3VsdD0iZWZmZWN0MV9pbm5lclNoYWRvd18xMzFfNDgiLz4KPC9maWx0ZXI+CjxmaWx0ZXIgaWQ9ImZpbHRlcjFfZF8xMzFfNDgiIHg9IjM4LjI1NjgiIHk9IjI1LjUiIHdpZHRoPSIxMDIuNDM5IiBoZWlnaHQ9Ijk2LjY5OTciIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj4KPGZlRmxvb2QgZmxvb2Qtb3BhY2l0eT0iMCIgcmVzdWx0PSJCYWNrZ3JvdW5kSW1hZ2VGaXgiLz4KPGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMTI3IDAiIHJlc3VsdD0iaGFyZEFscGhhIi8+CjxmZU9mZnNldCBkeT0iNCIvPgo8ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyIi8+CjxmZUNvbXBvc2l0ZSBpbjI9ImhhcmRBbHBoYSIgb3BlcmF0b3I9Im91dCIvPgo8ZmVDb2xvck1hdHJpeCB0eXBlPSJtYXRyaXgiIHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMC4yNSAwIi8+CjxmZUJsZW5kIG1vZGU9Im5vcm1hbCIgaW4yPSJCYWNrZ3JvdW5kSW1hZ2VGaXgiIHJlc3VsdD0iZWZmZWN0MV9kcm9wU2hhZG93XzEzMV80OCIvPgo8ZmVCbGVuZCBtb2RlPSJub3JtYWwiIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9ImVmZmVjdDFfZHJvcFNoYWRvd18xMzFfNDgiIHJlc3VsdD0ic2hhcGUiLz4KPC9maWx0ZXI+CjxjbGlwUGF0aCBpZD0iY2xpcDBfMTMxXzQ4Ij4KPHJlY3Qgd2lkdGg9IjE1MiIgaGVpZ2h0PSIxNTIiIGZpbGw9IndoaXRlIi8+CjwvY2xpcFBhdGg+CjwvZGVmcz4KPC9zdmc+Cg==";
   class Locale {
+    constructor() {
+      let arrayThusFar = [];
+        // @ts-ignore
+        languageNameAndCodeLookupTableGLOBALIZED.menuMap[
+          this._matchLanguages(JSON.parse(this.getLanguageArray()), Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap))[0] || "en"
+        ].forEach((entry) => {
+          // Heavily inspired by https://github.com/TurboWarp/scratch-vm/blob/develop/src/extensions/scratch3_translate/index.js
+          const obj = { name: entry.name, code: entry.code };
+
+          try {
+            if (obj) {
+              if (!this._filterArray(arrayThusFar, "code").includes(obj.code)) {
+                arrayThusFar.push(obj);
+              }
+            }
+          } catch (error) {
+            console.warn(error);
+          }
+        });
+        languageNameAndCodeLookupTable = arrayThusFar
+    }
     getInfo() {
       return {
         id: "fakemonLocale",
@@ -53,7 +80,7 @@
           {
             opcode: "getLanguageCode",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get user's most preferred language code"),
+            text: Scratch.translate("get user's current language code"),
           },
           {
             opcode: "getLanguageArray",
@@ -220,7 +247,7 @@
               NAME: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "LANG_NAME",
-                defaultValue: Scratch.translate("Spanish"),
+                defaultValue: "es",
               },
             },
           },
@@ -298,7 +325,7 @@
         return args.TEXT;
       } // Fallback to default language
     }
-    getLanguageCode() {
+    getLanguageCode() { // This block prefers the UI language stored in ReduxStore.
       // @ts-ignore
       // eslint-disable-next-line no-undef
       return ReduxStore?.getState().locales.locale || navigator.languages[0];
@@ -324,14 +351,7 @@
       return JSON.stringify(Object.keys(localeObject));
     }
     supportedPreferredLanguages() {
-      const languageArray = JSON.parse(this.getLanguageArray());
-      const matchedLanguages = [];
-      JSON.parse(this.supportedLanguages()).forEach((value) => {
-        if (languageArray.includes(value)) {
-          matchedLanguages.push(value);
-        }
-      });
-      return JSON.stringify(matchedLanguages);
+      return JSON.stringify(this._matchLanguages(JSON.parse(this.getLanguageArray()), JSON.parse(this.supportedLanguages())))
     }
     nameFromCode(args) {
       let codeIndex = this._getLanguageCodes().indexOf(args.CODE);
@@ -369,11 +389,30 @@
       };
     }
     _filterArray(array, matchKey) {
-      return array.map((value) => {
-        if (Object.prototype.hasOwnProperty.call(value, matchKey)) {
-          return value[matchKey];
+      if (array != []) {
+        return array.map((value) => {
+          try {
+            if (value) {
+              if (Object.prototype.hasOwnProperty.call(value, matchKey)) {
+                if (value[matchKey]) {
+                  return value[matchKey];
+                }
+              }
+            }
+          } catch (error) {
+            console.warn(error);
+          }
+        });
+      }
+    }
+    _matchLanguages(languageArray, supportedLanguages) {
+      const matchedLanguages = [];
+      supportedLanguages.forEach((value) => {
+        if (languageArray.includes(value)) {
+          matchedLanguages.push(value);
         }
       });
+      return matchedLanguages;
     }
     _getLanguageNames() {
       return this._filterArray(languageNameAndCodeLookupTable, "name");
@@ -387,7 +426,9 @@
       const codes = this._getLanguageCodes();
       let menuThusFar = [];
       for (let i = 0; i < names.length; i++) {
-        menuThusFar.push({ text: names[i], value: codes[i] });
+        if (names[i] && codes[i]) {
+          menuThusFar.push({ text: names[i], value: codes[i] });
+        }
       }
       return menuThusFar;
     }
