@@ -9,17 +9,17 @@ The first step in setting up your particle engine is to create an engine.
 ```scratch
 create engine for (Stage v) ::#2474ff
 ```
-This block will initialize a new engine in the specified sprite.
+This block will initialize a new engine in the stage or the specified sprite.
 
 ```scratch
 remove engine from (Stage v) ::#2474ff
 ```
-This block will remove the engine from the specified sprite. Additionally, there is an option to remove all engines.
+This block will remove the engine from the stage, specified sprite, or all possible targets at once.
 
 ```scratch
 <is (Stage v) engine (created v)? ::#2474ff>
 ```
-If `created` is selected, this block will return whether the engine from the specified sprite exists.
+If `created` is selected, this block will return whether the specified engine exists.
 
 
 If `visible` is selected, it will return whether the specified engine is showing.
@@ -89,8 +89,8 @@ delete emitter  [emit-1] from (Stage v) and wait ::#2474ff
 
 These blocks will delete the specified emitter from the specified engine.
 
-The first block is instantaneous, meaning all currently emitted particles will disappear.
-However the second block will wait until all particles disappear before deleting.
+The first block is instantaneous, meaning all currently emitted particles will disappear immediately.
+However, the second block will wait until all particles disappear before deleting.
 
 ```scratch
 <emitter [emit-1] in (Stage v) exists? ::#2474ff>
