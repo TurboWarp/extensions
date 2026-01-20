@@ -64,57 +64,8 @@
         docsURI: "https://extensions.turbowarp.org/Fakemon/Locale",
         blocks: [
           {
-            opcode: "translate",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("translate [TEXT] to language code [LANG]"),
-            arguments: {
-              LANG: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "es",
-              },
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, world!",
-              },
-            },
-          },
-          {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Preferred Languages"),
-          },
-          {
-            opcode: "getLanguageCode",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get user's current language code"),
-          },
-          {
-            opcode: "getLanguageArray",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get user's preferred language array"),
-          },
-          {
-            opcode: "isLanguagePreferred",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate(
-              "does the user prefer language code [LANG]?"
-            ),
-            arguments: {
-              LANG: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "es",
-              },
-            },
-          },
-          {
-            opcode: "supportedPreferredLanguages",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "preferred languages that can be translated to"
-            ),
-          },
-          {
-            blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("All Translations"),
+            text: Scratch.translate("Global Translations"),
           },
           {
             opcode: "setFullLocaleJSON",
@@ -230,6 +181,40 @@
           },
           {
             blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Preferred Languages"),
+          },
+          {
+            opcode: "getLanguageCode",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get user's current language code"),
+          },
+          {
+            opcode: "getLanguageArray",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get user's preferred language array"),
+          },
+          {
+            opcode: "isLanguagePreferred",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate(
+              "does the user prefer language code [LANG]?"
+            ),
+            arguments: {
+              LANG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "es",
+              },
+            },
+          },
+          {
+            opcode: "supportedPreferredLanguages",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "preferred languages that can be translated to"
+            ),
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
             text: Scratch.translate("Language Code <=> Name Conversions"),
           },
           {
@@ -253,6 +238,25 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "LANG_NAME",
                 defaultValue: "es",
+              },
+            },
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Translating Text"),
+          },
+          {
+            opcode: "translate",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("translate [TEXT] to language code [LANG]"),
+            arguments: {
+              LANG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "es",
+              },
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello, world!",
               },
             },
           },
