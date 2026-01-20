@@ -552,6 +552,11 @@ void main() {
   runtime.on("PROJECT_LOADED", () =>
     allEngines.forEach((engine) => disposeEngine(engine.target))
   );
+  runtime.on("INTERPOLATION_CHANGED", (isEnabled) => {
+    allEngines.forEach((engine) => {
+      engine.interpolate = isEnabled;
+    });
+  });
 
   // update non-interpolated engines
   runtime.on("AFTER_EXECUTE", () => {
@@ -926,10 +931,6 @@ void main() {
             { text: Scratch.translate("hide"), value: "hide" },
           ],
           ENGINE_OPS: [
-            {
-              text: Scratch.translate("interpolation"),
-              value: "interpolation",
-            },
             { text: Scratch.translate("freeze"), value: "freeze" },
             { text: Scratch.translate("particle trails"), value: "trails" },
           ],
@@ -1181,10 +1182,6 @@ void main() {
       if (target && engine) {
         const toggle = args.TYPE === "on";
         switch (args.OPT) {
-          case "interpolation":
-            if (toggle) runtime.setInterpolation(true);
-            engine.interpolate = toggle;
-            break;
           case "freeze":
             engine.paused = toggle;
             break;
