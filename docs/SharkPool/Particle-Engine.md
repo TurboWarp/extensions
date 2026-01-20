@@ -60,7 +60,6 @@ This block will toggle various settings in the specified engine:
 
 | Option | Description |
 | ------ | ----------- |
-|  Interpolation  | Makes particle motion smoother by interpolating positions between frames. This will automatically turn on the '_interpolation_' runtime option |
 |      Freeze     | Pauses the engine if enabled |
 | Particle Trails | If enabled, particles will leave a permanent trail when they move |
 
