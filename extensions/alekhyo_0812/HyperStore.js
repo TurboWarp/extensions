@@ -1,0 +1,635 @@
+// Name: HyperStore
+// ID: hyperstore
+// Description: High-performance multidimensional arrays and tensor math.
+// By: alekhyo_0812 <https://scratch.mit.edu/users/alekhyo_0812/>
+// License: MIT
+
+/*
+MIT License
+
+Copyright (c) 2026 Alekhyo Biswas
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+(function(Scratch) {
+    'use strict';
+
+    class HyperStore {
+        constructor() {
+            this.stores = {};
+            this.meta = {
+                version: '1.2.0',
+                authors: ['alekhyo_0812'],
+                lastError: 'None',
+                lastAccessed: ''
+            };
+        }
+
+        getInfo() {
+            return {
+                id: 'hyperstore',
+                name: 'HyperStore',
+                color1: '#ff4c4c',
+                color2: '#cc3333',
+                color3: '#992626',
+                docsURI: 'https://alekhyo-biswas.github.io/hyperstore-docs/', 
+                blocks: [
+                    // --- CATEGORY: FOR THE DEVELOPER ---
+                    {
+                        blockType: Scratch.BlockType.LABEL,
+                        text: 'For The Developer'
+                    },
+                    
+                    {
+                        opcode: 'getMetaInfo',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'extension [FIELD]',
+                        arguments: {
+                            FIELD: { type: Scratch.ArgumentType.STRING, menu: 'metaFields' }
+                        }
+                    },
+                    {
+                        opcode: 'logStore',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'debug: log [ID] to JS console',
+                        arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' } }
+                    },
+                    {
+                        opcode: 'logAll',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'debug: log all stores to console'
+                    },
+                    {
+                        opcode: 'getLastError',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'debug: last error message'
+                    },
+                    {
+                        opcode: 'clearError',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'debug: clear error log'
+                    },
+                    {
+                        opcode: 'getStoreCount',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'debug: active store count'
+                    },
+                    {
+                        opcode: 'getTotalMemory',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'debug: approx memory usage (items)'
+                    },
+                    {
+                        opcode: 'getLastAccessed',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'debug: last accessed ID'
+                    },
+                    {
+                        opcode: 'getStoreType',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'debug: type of [ID] (Fixed/Dynamic)',
+                        arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' } }
+                    },
+                    {
+                        opcode: 'isStoreEmpty',
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: 'debug: is [ID] empty/zeroed?',
+                        arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' } }
+                    },
+                    {
+                        opcode: 'pruneStores',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'debug: delete all empty stores'
+                    },
+                    {
+                        opcode: 'setSafeMode',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'debug: set safe mode [BOOL]',
+                        arguments: { BOOL: { type: Scratch.ArgumentType.STRING, menu: 'booleans' } }
+                    },
+                    {
+                        opcode: 'simulateLag',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'debug: simulate lag [MS]ms',
+                        arguments: { MS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } }
+                    },
+                    {
+                        opcode: 'getDevelopers',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'list of developers (JSON)'
+                    },
+
+                    // --- CATEGORY: MANAGEMENT ---
+                    {
+                        blockType: Scratch.BlockType.LABEL,
+                        text: 'Storage Management'
+                    },
+                    {
+                        opcode: 'createFixed',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'create fixed [ID] shape [SHAPE] (Clipped)',
+                        arguments: {
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' },
+                            SHAPE: { type: Scratch.ArgumentType.STRING, defaultValue: '10,10' }
+                        }
+                    },
+                    {
+                        opcode: 'createDynamic',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'create dynamic [ID] with [DIMS] dimensions (Infinite)',
+                        arguments: {
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' },
+                            DIMS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 }
+                        }
+                    },
+                    {
+                        opcode: 'deleteStore',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'delete storage [ID]',
+                        arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' } }
+                    },
+                    {
+                        opcode: 'deleteAll',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'delete all storage'
+                    },
+                    {
+                        opcode: 'storeExists',
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: 'storage [ID] exists?',
+                        arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' } }
+                    },
+                    {
+                        opcode: 'getShape',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'shape of [ID]',
+                        arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' } }
+                    },
+
+                    // --- CATEGORY: DATA ACCESS ---
+                    {
+                        blockType: Scratch.BlockType.LABEL,
+                        text: 'Data Access'
+                    },
+                    {
+                        opcode: 'setValue',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'set value at [COORDS] in [ID] to [VAL]',
+                        arguments: {
+                            COORDS: { type: Scratch.ArgumentType.STRING, defaultValue: '0,0' },
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' },
+                            VAL: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello' }
+                        }
+                    },
+                    {
+                        opcode: 'getValue',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'get value at [COORDS] from [ID]',
+                        arguments: {
+                            COORDS: { type: Scratch.ArgumentType.STRING, defaultValue: '0,0' },
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' }
+                        }
+                    },
+                    {
+                        opcode: 'fillStore',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'fill [ID] with [VAL]',
+                        arguments: {
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' },
+                            VAL: { type: Scratch.ArgumentType.STRING, defaultValue: '0' }
+                        }
+                    },
+
+                    // --- CATEGORY: STRUCTURE ---
+                    {
+                        blockType: Scratch.BlockType.LABEL,
+                        text: 'Structure & Math'
+                    },
+                    {
+                        opcode: 'reshapeStore',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'reshape [ID] to [SHAPE]',
+                        arguments: {
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' },
+                            SHAPE: { type: Scratch.ArgumentType.STRING, defaultValue: '100,1' }
+                        }
+                    },
+                    {
+                        opcode: 'flattenStore',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'flatten [ID] into new storage [NEWID]',
+                        arguments: {
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' },
+                            NEWID: { type: Scratch.ArgumentType.STRING, defaultValue: 'flat1' }
+                        }
+                    },
+                    {
+                        opcode: 'applyOp',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'apply [OP] to all in [ID] with value [N]',
+                        arguments: {
+                            OP: { type: Scratch.ArgumentType.STRING, menu: 'mathOps' },
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' },
+                            N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 }
+                        }
+                    },
+
+                    // --- CATEGORY: I/O ---
+                    {
+                        blockType: Scratch.BlockType.LABEL,
+                        text: 'I/O & Lists'
+                    },
+                    {
+                        opcode: 'exportJSON',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'export [ID] as JSON',
+                        arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' } }
+                    },
+                    {
+                        opcode: 'importJSON',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'import JSON [JSON] into [ID]',
+                        arguments: {
+                            JSON: { type: Scratch.ArgumentType.STRING, defaultValue: '{}' },
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' }
+                        }
+                    },
+                    {
+                        opcode: 'dumpToList',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'dump [ID] to Scratch List [LIST]',
+                        arguments: {
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' },
+                            LIST: { type: Scratch.ArgumentType.STRING, menu: 'projectLists' }
+                        }
+                    },
+                    {
+                        opcode: 'loadFromList',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'load [ID] from Scratch List [LIST] shape [SHAPE]',
+                        arguments: {
+                            ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'grid1' },
+                            LIST: { type: Scratch.ArgumentType.STRING, menu: 'projectLists' },
+                            SHAPE: { type: Scratch.ArgumentType.STRING, defaultValue: '10,10' }
+                        }
+                    }
+                ],
+                menus: {
+                    mathOps: { 
+                        acceptReporters: true,
+                        items: ['Add', 'Subtract', 'Multiply', 'Divide', 'Modulo', 'Power'] 
+                    },
+                    metaFields: {
+                        acceptReporters: true,
+                        items: ['Version', 'Author', 'Platform']
+                    },
+                    booleans: {
+                        acceptReporters: true,
+                        items: ['true', 'false']
+                    },
+                    projectLists: {
+                        acceptReporters: true,
+                        items: 'getProjectLists'
+                    }
+                }
+            };
+        }
+
+        // --- UTILS ---
+
+        _parseShape(str) { return String(str).split(',').map(n => parseInt(n) || 1); }
+        _parseCoords(str) { return String(str).split(',').map(n => parseInt(n) || 0); }
+        _setError(msg) { this.meta.lastError = msg; }
+
+        _getFlatIndex(coords, shape) {
+            let index = 0;
+            let stride = 1;
+            for (let i = shape.length - 1; i >= 0; i--) {
+                const c = coords[i] || 0;
+                if (c < 0 || c >= shape[i]) return -1;
+                index += c * stride;
+                stride *= shape[i];
+            }
+            return index;
+        }
+
+        _indexToCoords(index, shape) {
+            let coords = new Array(shape.length);
+            let s = 1;
+            let strides = new Array(shape.length);
+            for (let i = shape.length - 1; i >= 0; i--) { strides[i] = s; s *= shape[i]; }
+            for (let i = 0; i < shape.length; i++) {
+                coords[i] = Math.floor(index / strides[i]);
+                index %= strides[i];
+            }
+            return coords.join(',');
+        }
+
+        _expandStore(store, targetCoords) {
+            // Logic to resize a Dynamic store to fit targetCoords
+            let newShape = [...store.shape];
+            let changed = false;
+            
+            for(let i=0; i<targetCoords.length; i++) {
+                if (targetCoords[i] >= newShape[i]) {
+                    newShape[i] = targetCoords[i] + 1; // +1 to fit index
+                    changed = true;
+                }
+            }
+
+            if (!changed) return;
+
+            // Perform Resize
+            const newSize = newShape.reduce((a, b) => a * b, 1);
+            const newData = new Array(newSize).fill(0);
+            
+            // We must copy data. To do this generally for N-dims is complex.
+            // Simplified approach: Flatten old, calculate coords, place in new.
+            // For performance, this is heavy, but "Superior Control" requires it.
+            
+            // 1. Iterate old data
+            for(let i=0; i<store.data.length; i++) {
+                // Get coords in old shape
+                let coords = this._indexToCoords(i, store.shape).split(',').map(Number);
+                // Get flat index in NEW shape
+                let newIdx = this._getFlatIndex(coords, newShape);
+                newData[newIdx] = store.data[i];
+            }
+
+            store.shape = newShape;
+            store.data = newData;
+        }
+
+        // --- MENU HANDLER ---
+
+        getProjectLists() {
+            const lists = [];
+            // Access VM runtime targets (Stage and Sprites)
+            if (Scratch.vm && Scratch.vm.runtime) {
+                const targets = Scratch.vm.runtime.targets;
+                for (const target of targets) {
+                    const targetLists = Object.values(target.variables).filter(v => v.type === 'list');
+                    for (const list of targetLists) {
+                        lists.push({
+                            text: `${target.isStage ? 'Stage' : target.getName()}: ${list.name}`,
+                            value: list.name // We use name to look it up later
+                        });
+                    }
+                }
+            }
+            return lists.length > 0 ? lists : [{text: '(No Lists Found)', value: ''}];
+        }
+
+    
+
+        // --- DEVELOPER BLOCKS ---
+
+        getMetaInfo(args) {
+            if (args.FIELD === 'Version') return this.meta.version;
+            if (args.FIELD === 'Author') return this.meta.authors.join(', ');
+            if (args.FIELD === 'Platform') return 'TurboWarp/JS';
+            return '';
+        }
+
+        logStore(args) {
+            const s = this.stores[args.ID];
+            console.log(`[HyperStore Debug] ${args.ID}:`, s ? s : 'Not Found');
+        }
+
+        logAll() { console.log('[HyperStore Dump]', this.stores); }
+        getLastError() { return this.meta.lastError; }
+        clearError() { this.meta.lastError = 'None'; }
+        getStoreCount() { return Object.keys(this.stores).length; }
+        
+        getTotalMemory() {
+            let count = 0;
+            Object.values(this.stores).forEach(s => count += s.data.length);
+            return count;
+        }
+        
+        getLastAccessed() { return this.meta.lastAccessed; }
+        
+        getStoreType(args) {
+            const s = this.stores[args.ID];
+            if (!s) return 'None';
+            return s.mode === 'dynamic' ? 'Dynamic' : 'Fixed';
+        }
+
+        isStoreEmpty(args) {
+            const s = this.stores[args.ID];
+            if (!s) return true;
+            return s.data.every(v => v == 0);
+        }
+
+        pruneStores() {
+            for (const key in this.stores) {
+                if (this.stores[key].data.every(v => v == 0)) {
+                    delete this.stores[key];
+                }
+            }
+        }
+
+        setSafeMode(args) { this.meta.safeMode = (args.BOOL === 'true'); }
+        
+        simulateLag(args) {
+            const start = Date.now();
+            while (Date.now() - start < args.MS) {}
+        }
+
+        getDevelopers() { return JSON.stringify(this.meta.authors); }
+
+        // --- CORE IMPL ---
+
+        createFixed(args) {
+            const shape = this._parseShape(args.SHAPE);
+            const size = shape.reduce((a, b) => a * b, 1);
+            this.stores[args.ID] = { 
+                mode: 'fixed',
+                shape: shape, 
+                data: new Array(size).fill(0) 
+            };
+            this.meta.lastAccessed = args.ID;
+        }
+
+        createDynamic(args) {
+            const dims = parseInt(args.DIMS) || 2;
+            const initialShape = new Array(dims).fill(1);
+            this.stores[args.ID] = {
+                mode: 'dynamic',
+                shape: initialShape, // Starts tiny
+                data: [0]
+            };
+            this.meta.lastAccessed = args.ID;
+        }
+
+        deleteStore(args) { delete this.stores[args.ID]; }
+        deleteAll() { this.stores = {}; }
+        storeExists(args) { return !!this.stores[args.ID]; }
+        
+        getShape(args) {
+            const s = this.stores[args.ID];
+            this.meta.lastAccessed = args.ID;
+            return s ? s.shape.join(',') : '';
+        }
+
+        setValue(args) {
+            const id = args.ID;
+            const s = this.stores[id];
+            this.meta.lastAccessed = id;
+            if (!s) {
+                this._setError(`Store ${id} not found`);
+                return;
+            }
+
+            const coords = this._parseCoords(args.COORDS);
+
+            // Validation for dimension count
+            if (coords.length !== s.shape.length) {
+                this._setError(`Dimension mismatch. Store is ${s.shape.length}D, coords are ${coords.length}D`);
+                return;
+            }
+
+            // Fixed Mode: Check Bounds
+            if (s.mode === 'fixed') {
+                const idx = this._getFlatIndex(coords, s.shape);
+                if (idx === -1) return; // Clipped/Ignored
+                s.data[idx] = args.VAL;
+            } 
+            // Dynamic Mode: Expand
+            else if (s.mode === 'dynamic') {
+                // Check if expansion needed
+                let needsExpansion = false;
+                for(let i=0; i<coords.length; i++) {
+                    if (coords[i] >= s.shape[i]) needsExpansion = true;
+                }
+
+                if (needsExpansion) {
+                    this._expandStore(s, coords);
+                }
+
+                const idx = this._getFlatIndex(coords, s.shape);
+                s.data[idx] = args.VAL;
+            }
+        }
+
+        getValue(args) {
+            const s = this.stores[args.ID];
+            this.meta.lastAccessed = args.ID;
+            if (!s) return '';
+            
+            const coords = this._parseCoords(args.COORDS);
+            const idx = this._getFlatIndex(coords, s.shape);
+            
+            if (idx === -1 || idx >= s.data.length) return '';
+            return s.data[idx];
+        }
+
+        fillStore(args) {
+            const s = this.stores[args.ID];
+            if (s) s.data.fill(args.VAL);
+        }
+
+        reshapeStore(args) {
+            const s = this.stores[args.ID];
+            if (!s) return;
+            const newShape = this._parseShape(args.SHAPE);
+            const newSize = newShape.reduce((a, b) => a * b, 1);
+            if (newSize === s.data.length) s.shape = newShape;
+            else this._setError('Reshape failed: Total element count must match');
+        }
+
+        flattenStore(args) {
+            const s = this.stores[args.ID];
+            if (!s) return;
+            this.stores[args.NEWID] = {
+                mode: 'fixed',
+                shape: [s.data.length],
+                data: [...s.data]
+            };
+        }
+
+        applyOp(args) {
+            const s = this.stores[args.ID];
+            if (!s) return;
+            const n = Number(args.N);
+            for (let i = 0; i < s.data.length; i++) {
+                let v = Number(s.data[i]);
+                if (args.OP === 'Add') v += n;
+                else if (args.OP === 'Subtract') v -= n;
+                else if (args.OP === 'Multiply') v *= n;
+                else if (args.OP === 'Divide') v /= n;
+                else if (args.OP === 'Modulo') v %= n;
+                else if (args.OP === 'Power') v = Math.pow(v, n);
+                s.data[i] = v;
+            }
+        }
+
+        // --- I/O IMPL ---
+
+        exportJSON(args) {
+            const s = this.stores[args.ID];
+            return s ? JSON.stringify(s) : '{}';
+        }
+
+        importJSON(args) {
+            try {
+                const obj = JSON.parse(args.JSON);
+                if (obj.shape && obj.data) this.stores[args.ID] = obj;
+            } catch (e) {
+                this._setError('JSON Import Failed');
+            }
+        }
+
+        dumpToList(args, util) {
+            const s = this.stores[args.ID];
+            if (!s) return;
+            const listVar = util.target.lookupVariableByNameAndType(args.LIST, 'list');
+            if (listVar) {
+                listVar.value = [...s.data];
+            } else {
+                this._setError('Target List not found');
+            }
+        }
+
+        loadFromList(args, util) {
+            const listVar = util.target.lookupVariableByNameAndType(args.LIST, 'list');
+            if (!listVar) {
+                this._setError('Target List not found');
+                return;
+            }
+            const shape = this._parseShape(args.SHAPE);
+            const size = shape.reduce((a, b) => a * b, 1);
+            
+            // Auto-pad or clip to fit strict shape
+            const newData = new Array(size).fill(0);
+            for(let i=0; i<size && i<listVar.value.length; i++) {
+                newData[i] = listVar.value[i];
+            }
+
+            this.stores[args.ID] = {
+                mode: 'fixed',
+                shape: shape,
+                data: newData
+            };
+        }
+    }
+
+    Scratch.extensions.register(new HyperStore());
+})(Scratch);
