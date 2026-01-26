@@ -1,7 +1,7 @@
 // Name: HyperStore
 // ID: hyperstore
 // Description: High-performance multidimensional arrays and tensor math.
-// By: alekhyo_0812 <https://scratch.mit.edu/users/alekhyo_0812/>
+// By: Alekhyo Biswas <https://scratch.mit.edu/users/alekhyo_0812/>
 // License: MIT
 
 /*
