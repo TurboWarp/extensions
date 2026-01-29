@@ -241,3 +241,15 @@ Returns the current random seed being used.
 Returns the current creativity level (temperature).
 
 ---
+
+# Join us 
+
+* Join our discord **[here.](https://discord.com/invite/DJ9EWXhnNC)**
+* Contact via mail
+  Use **turbobot.contact@atomicmail.io**.
+* subscribe to our **[youtube channel.](https://www.youtube.com/channel/UCde3077jwsLsBb8HIjgZUiQ)**
+
+***
+Made by **[Seigh sword](https://github.com/Seigh-sword/)** with **Time & effort**
+
+***
