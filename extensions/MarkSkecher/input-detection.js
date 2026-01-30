@@ -1,6 +1,6 @@
 // Name: Advanced Input
 // ID: markskecherinput
-// Description: Advanced input detection including mouse wheel, mouse buttons, keyboard combinations, and input events.
+// Description: 高级输入检测扩展，支持鼠标滚轮、鼠标按键、键盘组合键和输入事件检测。
 // By: MarkSkecher
 // License: MIT
 
