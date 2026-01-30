@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <!-- 背景 -->
+  <rect width="24" height="24" fill="#4C97FF" rx="2"/>
+  
+  <!-- 鼠标 -->
+  <rect x="8" y="4" width="8" height="12" rx="2" stroke="#FFFFFF" stroke-width="1" fill="none"/>
+  <rect x="10" y="6" width="4" height="2" rx="1" fill="#FFFFFF"/>
+  <circle cx="12" cy="10" r="1" fill="#FFFFFF"/>
+  <circle cx="12" cy="12" r="1" fill="#FFFFFF"/>
+  <circle cx="12" cy="14" r="1" fill="#FFFFFF"/>
+  
+  <!-- 键盘按键 -->
+  <rect x="2" y="18" width="3" height="3" rx="0.5" fill="#FFFFFF" stroke="#3373CC" stroke-width="0.5"/>
+  <rect x="6" y="18" width="3" height="3" rx="0.5" fill="#FFFFFF" stroke="#3373CC" stroke-width="0.5"/>
+  <rect x="10" y="18" width="3" height="3" rx="0.5" fill="#FFFFFF" stroke="#3373CC" stroke-width="0.5"/>
+  <rect x="14" y="18" width="3" height="3" rx="0.5" fill="#FFFFFF" stroke="#3373CC" stroke-width="0.5"/>
+  <rect x="18" y="18" width="3" height="3" rx="0.5" fill="#FFFFFF" stroke="#3373CC" stroke-width="0.5"/>
+  
+  <!-- 滚轮指示箭头 -->
+  <path d="M12 2 L14 4 L13 4 L13 6 L11 6 L11 4 L10 4 Z" fill="#FFFFFF"/>
+</svg>
