@@ -99,5 +99,6 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
+  "MarkSkecher/input-detection",
   "Lily/McUtils" // McUtils should always be the last item.
 ]
