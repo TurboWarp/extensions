@@ -164,7 +164,6 @@
             },
           },
           "---",
-          "---",
           {
             opcode: "addLanguage",
             blockType: Scratch.BlockType.COMMAND,
