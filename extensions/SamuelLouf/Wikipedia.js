@@ -56,7 +56,7 @@
       value: "pl",
     },
     {
-      text: Scratch.translate("Egypt"),
+      text: Scratch.translate("Egyptian"),
       value: "arz",
     },
     {
