@@ -99,6 +99,22 @@
     }
   }
 
+  function fetchWikipedia(language, name) {
+    return Scratch.fetch(
+      `https://${language}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(name)}&explaintext=1&exsectionformat=plain&format=json&origin=*`
+    )
+      .then((response) => {
+        if (response.ok == true) {
+          return response.json();
+        } else {
+          return "";
+        }
+      })
+      .catch((error) => {
+        return "";
+      });
+  }
+
   class Wikipedia {
     constructor() {
       this.wikipediaLanguages = "en";
@@ -124,9 +140,9 @@
             },
           },
           {
-            opcode: "fetchShortPhrase",
+            opcode: "fetchShortSentence",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("short phrase about [NAME]"),
+            text: Scratch.translate("short sentence about [NAME]"),
             disableMonitor: true,
             arguments: {
               NAME: {
@@ -207,77 +223,50 @@
       };
     }
 
-    fetchFirstParagraph(args) {
-      return Scratch.fetch(
-        `https://${this.wikipediaLanguages}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(args.NAME)}&explaintext=1&exsectionformat=plain&format=json&origin=*`
-      )
-        .then((response) => {
-          if (response.ok == true) {
-            return response.json();
-          } else {
-            return "";
-          }
-        })
-        .then((data) => {
-          const pageId = Object.keys(data.query.pages)[0];
-          let extract = data.query.pages[pageId].extract;
-          extract = extract.replace(/\s{2,}/g, " ");
-          var paragraph = extract.split("\n")[0];
-          var split_paragraph = paragraph.split(".");
-          var result = "";
-          for (var i in split_paragraph) {
-            // @ts-ignore
-            if (i != split_paragraph.length - 1) {
-              result = result + split_paragraph[i] + ".";
-            }
-          }
-          return result;
-        });
+    async fetchFirstParagraph(args) {
+      var data = await fetchWikipedia(
+        this.wikipediaLanguages,
+        encodeURIComponent(args.NAME)
+      );
+      if (data == "") return "";
+      const pageId = Object.keys(data.query.pages)[0];
+      let extract = data.query.pages[pageId].extract;
+      extract = extract.replace(/\s{2,}/g, " ");
+      var paragraph = extract.split("\n")[0];
+      var split_paragraph = paragraph.split(".");
+      var result = "";
+      for (var i in split_paragraph) {
+        // @ts-ignore
+        if (i != split_paragraph.length - 1) {
+          result = result + split_paragraph[i] + ".";
+        }
+      }
+      return result;
     }
 
-    fetchShortPhrase(args) {
-      return Scratch.fetch(
-        `https://${this.wikipediaLanguages}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(args.NAME)}&explaintext=1&exsectionformat=plain&format=json&origin=*`
-      )
-        .then((response) => {
-          if (response.ok == true) {
-            return response.json();
-          } else {
-            return "";
-          }
-        })
-        .then((data) => {
-          const pageId = Object.keys(data.query.pages)[0];
-          let extract = data.query.pages[pageId].extract;
-          extract = extract.replace(/\s{2,}/g, " ");
-          return extract.split(".").slice(0, 2).join(".") + ".";
-        })
-        .catch((error) => {
-          return "";
-        });
+    async fetchShortSentence(args) {
+      var data = await fetchWikipedia(
+        this.wikipediaLanguages,
+        encodeURIComponent(args.NAME)
+      );
+      if (data == "") return "";
+      const pageId = Object.keys(data.query.pages)[0];
+      let extract = data.query.pages[pageId].extract;
+      extract = extract.replace(/\s{2,}/g, " ");
+      return extract.split(".").slice(0, 2).join(".") + ".";
     }
 
     getPageURL(args) {
       return `https://${this.wikipediaLanguages}.wikipedia.org/wiki/${args.NAME.replace(/\s/g, "_")}`;
     }
 
-    doesPageExists(args) {
-      return Scratch.fetch(
-        `https://${this.wikipediaLanguages}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(args.NAME)}&explaintext=1&exsectionformat=plain&format=json&origin=*`
-      )
-        .then((response) => {
-          if (response.ok == true) {
-            return response.json();
-          } else {
-            return "";
-          }
-        })
-        .then((data) => {
-          return !!data.query.pages[0];
-        })
-        .catch((error) => {
-          return "";
-        });
+    async doesPageExists(args) {
+      var data = await fetchWikipedia(
+        this.wikipediaLanguages,
+        encodeURIComponent(args.NAME)
+      );
+      if (data == "") return "";
+      return !!data.query.pages[0];
     }
 
     // ---
