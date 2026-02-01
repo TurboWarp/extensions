@@ -103,7 +103,6 @@
     mask: [gl.ZERO, gl.SRC_ALPHA, gl.ZERO, gl.SRC_ALPHA, gl.FUNC_ADD],
   });
 
-  let engineCount = 0;
   let deltaTime = 0;
   let prevTime = 0;
 
@@ -1121,7 +1120,6 @@ void main() {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag] === undefined) {
         makeEngine(target);
-        engineCount++;
       }
     }
 
@@ -1129,12 +1127,10 @@ void main() {
       const target = this.getSprite(args.TARGET);
       if (target === "_all_") {
         allEngines.forEach((engine) => disposeEngine(engine.target));
-        engineCount = 0;
         return;
       }
       if (target && target[engineTag] !== undefined) {
         disposeEngine(target);
-        engineCount--;
       }
     }
 
