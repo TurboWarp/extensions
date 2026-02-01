@@ -118,16 +118,23 @@
         mag: gl.NEAREST,
         wrap: gl.CLAMP_TO_EDGE,
         width: width,
-        height: height
+        height: height,
       });
       this._size = [width, height];
       this._rotationCenter = [width / 2, height / 2];
 
       // Create framebuffer
-      this._framebuffer = twgl.createFramebufferInfo(gl, [{
-        format: gl.RGBA,
-        attachment: this._texture
-      }], width, height);
+      this._framebuffer = twgl.createFramebufferInfo(
+        gl,
+        [
+          {
+            format: gl.RGBA,
+            attachment: this._texture,
+          },
+        ],
+        width,
+        height
+      );
     }
     dispose() {
       const gl = this._renderer.gl;
@@ -150,20 +157,28 @@
 
       // Recreate texture and framebuffer
       if (this._texture) gl.deleteTexture(this._texture);
-      if (this._framebuffer) gl.deleteFramebuffer(this._framebuffer.framebuffer);
+      if (this._framebuffer)
+        gl.deleteFramebuffer(this._framebuffer.framebuffer);
 
       this._texture = twgl.createTexture(gl, {
         mag: gl.NEAREST,
         min: gl.NEAREST,
         wrap: gl.CLAMP_TO_EDGE,
         width: value[0],
-        height: value[1]
+        height: value[1],
       });
 
-      this._framebuffer = twgl.createFramebufferInfo(gl, [{
-        format: gl.RGBA,
-        attachment: this._texture
-      }], value[0], value[1]);
+      this._framebuffer = twgl.createFramebufferInfo(
+        gl,
+        [
+          {
+            format: gl.RGBA,
+            attachment: this._texture,
+          },
+        ],
+        value[0],
+        value[1]
+      );
     }
     get size() {
       return this._size;
@@ -226,12 +241,12 @@
         console.error("Error loading texture:", e);
       };
       img.onload = () => {
-        const texture = twgl.createTexture(gl, { 
-          src: img, 
+        const texture = twgl.createTexture(gl, {
+          src: img,
           flipY: true,
           min: gl.LINEAR,
           mag: gl.LINEAR,
-          wrap: gl.CLAMP_TO_EDGE
+          wrap: gl.CLAMP_TO_EDGE,
         });
 
         callback({
@@ -300,22 +315,10 @@ void main() {
     const drawableId = render.createDrawable("sprite");
     const drawable = render._allDrawables[drawableId];
     const skinId = render._nextSkinId++;
-    const skin = new particleSkin(
-      skinId,
-      render,
-      width * 2,
-      height * 2
-    );
+    const skin = new particleSkin(skinId, render, width * 2, height * 2);
     render._allSkins[skinId] = skin;
 
-    const projection = twgl.m4.ortho(
-      0,
-      width,
-      height,
-      0,
-      -1,
-      1
-    );
+    const projection = twgl.m4.ortho(0, width, height, 0, -1, 1);
 
     const engine = {
       drawableId,
@@ -352,14 +355,7 @@ void main() {
       engine.stageHeight = size[1];
       engine.renderWidth = size[0];
       engine.renderHeight = size[1];
-      engine.projection = twgl.m4.ortho(
-        0,
-        size[0],
-        size[1],
-        0,
-        -1,
-        1
-      );
+      engine.projection = twgl.m4.ortho(0, size[0], size[1], 0, -1, 1);
     }).bind(this);
     render.on("NativeSizeChanged", drawable.onStageSZChange);
     runtime.requestRedraw();
@@ -378,14 +374,8 @@ void main() {
   };
 
   const updateEngine = (engine, delta) => {
-    const {
-      skin,
-      programInfo,
-      bufferInfo,
-      projection,
-      emitters,
-      noTrails,
-    } = engine;
+    const { skin, programInfo, bufferInfo, projection, emitters, noTrails } =
+      engine;
     const width = engine.stageWidth;
     const height = engine.stageHeight;
     const lifeRate = 0.01 * delta;
@@ -591,7 +581,7 @@ void main() {
     engine.renderHeight = engine.stageHeight * quality;
     engine.skin.size = [engine.renderWidth, engine.renderHeight];
 
-    const inverse = (1 / quality);
+    const inverse = 1 / quality;
     engine.drawable.updateScale([
       engine.drawableScale[0] * inverse,
       engine.drawableScale[1] * inverse,
@@ -628,9 +618,7 @@ void main() {
     wasHighQualityEnabled = isEnabled;
 
     const quality = isEnabled ? 5 : 1;
-    allEngines.forEach((engine) =>
-      applyEngineQuality(engine, quality)
-    );
+    allEngines.forEach((engine) => applyEngineQuality(engine, quality));
   });
 
   // update non-interpolated engines
@@ -1160,10 +1148,7 @@ void main() {
       const target = this.getSprite(args.TARGET);
       const engine = target[engineTag];
       if (target && engine) {
-        const scale = [
-          Cast.toNumber(args.x),
-          Cast.toNumber(args.y) * -1,
-        ];
+        const scale = [Cast.toNumber(args.x), Cast.toNumber(args.y) * -1];
         engine.drawableScale = scale;
         applyEngineQuality(engine, engine.quality);
       }
@@ -1306,10 +1291,7 @@ void main() {
         const emitter = engine.emitters[args.NAME];
         if (emitter) {
           emitter.rawPos = [Cast.toNumber(args.x), Cast.toNumber(args.y)];
-          emitter.pos = [
-            emitter.rawPos[0],
-            emitter.rawPos[1] * -1,
-          ];
+          emitter.pos = [emitter.rawPos[0], emitter.rawPos[1] * -1];
         }
       }
     }
