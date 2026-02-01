@@ -36,11 +36,9 @@ This block sets the size (scale) of the specified engine.
 **This does not change the amount of drawable space**
 
 ```scratch
-set stage size of (Stage v) engine to width (480) height (360) ::#2474ff
+set quality of (Stage v) engine to (50) ::#2474ff
 ```
-This block sets the amount of drawable space of the specified engine.
-**Engines will scale up or down to fit within the stage**
-
+This block sets the quality of the specified engine.
 
 You can use this block to increase the quality of your particles, however do note this might
 affect performance on low-end devices.
