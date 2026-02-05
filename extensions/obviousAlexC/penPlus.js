@@ -2,7 +2,7 @@
 // ID: penP
 // Description: Advanced rendering capabilities.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
-// By: Pen-Group https://pen-group.github.io/ (Maintainers)
+// By: Pen-Group
 // License: MIT
 
 // With permission from Sharkpool-SP to use his pen layer data uri block!
