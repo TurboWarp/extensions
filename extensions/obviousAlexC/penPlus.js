@@ -5819,8 +5819,8 @@
       if (!listOBJ) return { successful: false };
       let merged = {};
 
-      if (this.listCache[refinedID].prev != JSON.stringify(listOBJ)) {
-        console.log("reparse");
+      const stringified = JSON.stringify(listOBJ);
+      if (this.listCache[refinedID].prev != stringified) {
         //Map the list object if we can't find something
         listOBJ.map(function (str) {
           const obj = JSON.parse(str);
@@ -5843,7 +5843,7 @@
         });
 
         this.listCache[refinedID] = {
-          prev: JSON.stringify([...listREF.value]),
+          prev: stringified,
           dat: merged,
           keys: keys,
         };
