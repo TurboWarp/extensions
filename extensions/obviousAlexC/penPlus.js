@@ -2,6 +2,7 @@
 // ID: penP
 // Description: Advanced rendering capabilities.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+// By: Pen-Group https://pen-group.github.io/ (Maintainers)
 // License: MIT
 
 // With permission from Sharkpool-SP to use his pen layer data uri block!
@@ -872,7 +873,7 @@
               return;
             }
             // Permission is checked earlier.
-            // eslint-disable-next-line extension/check-can-fetch  extension/check-can-fetch
+            // eslint-disable-next-line extension/check-can-fetch
             const image = new Image();
             image.onload = function () {
               gl.bindTexture(gl.TEXTURE_2D, texture);
