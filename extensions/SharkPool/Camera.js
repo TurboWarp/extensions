@@ -4,13 +4,13 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.11
+// Version V.1.0.12
 
 (function (Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed)
-    throw new Error("Camera must run unsandboxed!");
+    throw new Error("Camera V2 must run unsandboxed!");
 
   const menuIconURI =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MSIgaGVpZ2h0PSI0MSIgdmlld0JveD0iMCAwIDQxIDQxIj48ZyBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTAgMjAuNUMwIDkuMTc4IDkuMTc4IDAgMjAuNSAwUzQxIDkuMTc4IDQxIDIwLjUgMzEuODIyIDQxIDIwLjUgNDEgMCAzMS44MjIgMCAyMC41IiBmaWxsPSIjMjg1MWM5Ii8+PHBhdGggZD0iTTIuMzc4IDIwLjVjMC0xMC4wMDkgOC4xMTMtMTguMTIyIDE4LjEyMi0xOC4xMjJTMzguNjIyIDEwLjQ5MSAzOC42MjIgMjAuNSAzMC41MDkgMzguNjIyIDIwLjUgMzguNjIyIDIuMzc4IDMwLjUwOSAyLjM3OCAyMC41IiBmaWxsPSIjNTE3YWY1Ii8+PHBhdGggZD0iTTMxLjg3MSAxNS4wMDdjLjA3My4xNDkuMTI5LjI4LjEyOS4yNDN2MTAuM2MwIC4yODMtLjIzMy41LS41LjVhLjMuMyAwIDAgMS0uMTQ2LS4wNTRsLS4wOTctLjA3NUwyNSAyMi4xNjd2Mi4yODNjMCAxLjk0Ny0xLjU5OCAzLjYtMy41IDMuNmgtOC45Yy0yLjAxNS0uMDg4LTMuNi0xLjY3My0zLjYtMy42di03LjljMC0yLjAyNCAxLjU3Ni0zLjYgMy42LTMuNmg4LjljMS45MzcgMCAzLjUgMS41OSAzLjUgMy42djIuMzJsNi4xNzItNGMuMjctLjE2Mi41NTQtLjEwNS43LjEzN3oiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
@@ -53,27 +53,60 @@
   }
 
   // camera utils
-  const radianConstant = Math.PI / 180;
-  const epsilon = 1e-12;
-  const applyEpsilon = (value) => (Math.abs(value) < epsilon ? 0 : value);
+  const DEG_TO_RADIAN = Math.PI / 180;
+  const EPSILON = 1e-10;
+
+  const applyEpsilon = (value) => (Math.abs(value) < EPSILON ? 0 : value);
+
+  const intsChanged = (a, b) => {
+    if (
+      a === b || Math.abs(a - b) < EPSILON
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  function isDirty(oldValue, newValue) {
+    if (Array.isArray(oldValue)) {
+      return !oldValue.every((value, index) =>
+        !intsChanged(value, newValue[index] ?? 0)
+      );
+    } else {
+      return intsChanged(oldValue, newValue);
+    }
+  }
 
   function setupState(drawable) {
     drawable[cameraSymbol] = {
       name: "default",
+      cam: allCameras["default"],
       needsRefresh: false,
       ogXY: [0, 0],
       ogSZ: 1,
       ogDir: 0,
+      unalteredPosition: [
+        drawable._position[0],
+        drawable._position[1]
+      ],
+      unalteredScale: {
+        // must be an object to prevent mutability
+        x: drawable._scale[0],
+        y: drawable._scale[1]
+      },
     };
   }
 
   function translatePosition(xy, invert, camData) {
     if (invert) {
-      const invRads = camData.ogDir * radianConstant;
-      const invSin = Math.sin(invRads),
-        invCos = Math.cos(invRads);
-      const scaledX = xy[0] / camData.ogSZ;
-      const scaledY = xy[1] / camData.ogSZ;
+      const invRads = camData.ogDir * DEG_TO_RADIAN;
+      const invSin = Math.sin(invRads);
+      const invCos = Math.cos(invRads);
+
+      const scaledX = xy[0] / applyEpsilon(camData.ogSZ);
+      const scaledY = xy[1] / applyEpsilon(camData.ogSZ);
+
       const invOffX = scaledX * invCos + scaledY * invSin;
       const invOffY = -scaledX * invSin + scaledY * invCos;
       return [
@@ -81,9 +114,10 @@
         applyEpsilon(invOffY - camData.ogXY[1]),
       ];
     } else {
-      const rads = camData.dir * radianConstant;
-      const sin = Math.sin(rads),
-        cos = Math.cos(rads);
+      const rads = camData.dir * DEG_TO_RADIAN;
+      const sin = Math.sin(rads);
+      const cos = Math.cos(rads);
+
       const offX = xy[0] + camData.xy[0];
       const offY = xy[1] + camData.xy[1];
       return [
@@ -98,25 +132,24 @@
     const camSystem = drawable[cameraSymbol];
     if (camSystem.name === camera) return;
 
-    // invert camera transformations
-    const fixedPos = translatePosition(drawable._position, true, camSystem);
-    const fixedDir = drawable._direction + camSystem.ogDir;
-    const fixedScale = [
-      drawable._scale[0] / camSystem.ogSZ,
-      drawable._scale[1] / camSystem.ogSZ,
-    ];
-
     drawable[cameraSymbol] = {
       name: camera,
+      cam: allCameras[camera],
+      needsRefresh: false,
       ogXY: [0, 0],
       ogSZ: 1,
       ogDir: 0,
+      unalteredPosition: camSystem.unalteredPosition,
+      unalteredScale: camSystem.unalteredScale,
     };
 
-    const id = drawable._id;
-    render.updateDrawablePosition(id, fixedPos);
-    render.updateDrawableDirection(id, fixedDir);
-    render.updateDrawableScale(id, fixedScale);
+    // invert camera transformations
+    render.updateDrawablePosition(id, camSystem.unalteredPosition);
+    render.updateDrawableDirection(id, drawable._direction + camSystem.ogDir);
+    render.updateDrawableScale(id, [
+      camSystem.unalteredScale.x,
+      camSystem.unalteredScale.y,
+    ]);
   }
 
   function updateCamera(camera) {
@@ -129,12 +162,17 @@
       const camSystem = drawable[cameraSymbol];
       if (camSystem.name === camera) {
         camSystem.needsRefresh = true;
-        drawable.updatePosition(drawable._position);
+        drawable.updateScale([
+          camSystem.unalteredScale.x,
+          camSystem.unalteredScale.y
+        ]);
+        drawable.updatePosition(camSystem.unalteredPosition);
         drawable.updateDirection(drawable._direction);
-        drawable.updateScale(drawable._scale);
+
         camSystem.needsRefresh = false;
       }
     }
+
     runtime.requestRedraw();
   }
 
@@ -199,17 +237,26 @@
   render.exports.Drawable.prototype.updatePosition = function (position) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
-    const thisCam = allCameras[camSystem.name];
+    const thisCam = camSystem.cam;
     let shouldEmit = false;
     if (camSystem.needsRefresh) {
       // invert camera transformations
-      position = translatePosition(position, true, camSystem);
+      position[0] = camSystem.unalteredPosition[0];
+      position[1] = camSystem.unalteredPosition[1];
+    } else {
+      camSystem.unalteredPosition[0] = position[0];
+      camSystem.unalteredPosition[1] = position[1];
     }
 
-    shouldEmit =
+    if (
       camSystem.ogXY[0] !== thisCam.xy[0] ||
-      camSystem.ogXY[1] !== thisCam.xy[1];
-    camSystem.ogXY = [...thisCam.xy];
+      camSystem.ogXY[1] !== thisCam.xy[1]
+    ) {
+      camSystem.ogXY[0] = thisCam.xy[0];
+      camSystem.ogXY[1] = thisCam.xy[1];
+      shouldEmit = true;
+    }
+
     position = translatePosition(position, false, thisCam);
     if (camSystem.needsRefresh) {
       if (
@@ -232,7 +279,7 @@
   render.exports.Drawable.prototype.updateDirection = function (direction) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
-    const thisCam = allCameras[camSystem.name];
+    const thisCam = camSystem.cam;
     if (camSystem.needsRefresh) {
       // invert camera transformations
       direction += camSystem.ogDir;
@@ -247,23 +294,26 @@
   render.exports.Drawable.prototype.updateScale = function (scale) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
-    const thisCam = allCameras[camSystem.name];
+    const thisCam = camSystem.cam;
     let shouldEmit = false;
     if (camSystem.needsRefresh) {
       // invert camera transformations
-      const safeOgSZ = camSystem.ogSZ !== 0 ? camSystem.ogSZ : 1e-10;
-      scale[0] /= safeOgSZ;
-      scale[1] /= safeOgSZ;
-      shouldEmit = safeOgSZ !== thisCam.zoom;
+      scale[0] = camSystem.unalteredScale.x;
+      scale[1] = camSystem.unalteredScale.y;
+
+      shouldEmit = camSystem.ogSZ !== thisCam.zoom;
+    } else {
+      camSystem.unalteredScale.x = scale[0];
+      camSystem.unalteredScale.y = scale[1];
     }
 
     // avoid dividing 0 by 0
-    camSystem.ogSZ = thisCam.zoom || 1e-10;
-    const safeZoom = thisCam.zoom || 1e-10;
+    camSystem.ogSZ = thisCam.zoom;
+    const safeZoom = thisCam.zoom || EPSILON;
     scale[0] *= safeZoom;
     scale[1] *= safeZoom;
-    if (scale[0] === 0) scale[0] = 1e-10 * Math.sign(safeZoom);
-    if (scale[1] === 0) scale[1] = 1e-10 * Math.sign(safeZoom);
+    if (scale[0] === 0) scale[0] = EPSILON * Math.sign(safeZoom);
+    if (scale[1] === 0) scale[1] = EPSILON * Math.sign(safeZoom);
 
     ogUpdateScale.call(this, scale);
     if (shouldEmit) {
@@ -279,16 +329,17 @@
     if (!this[cameraSymbol]) setupState(this);
     if (isVisible && this._visible !== isVisible) {
       const camSystem = this[cameraSymbol];
-      const safeOgSZ = camSystem.ogSZ !== 0 ? camSystem.ogSZ : 1e-10;
-      const updatedScale = [this.scale[0] / safeOgSZ, this.scale[1] / safeOgSZ];
 
       // save some renderer calls, packing this all into one
       // while running only when isVisible is true combines this
       // into a single renderer call
       this.updateProperties({
-        position: translatePosition(this._position, true, camSystem),
+        position: camSystem.unalteredPosition,
         direction: this._direction + camSystem.ogDir,
-        scale: updatedScale,
+        scale: [
+          camSystem.unalteredScale.x,
+          camSystem.unalteredScale.y,
+        ],
       });
     }
     ogUpdateVisible.call(this, isVisible);
@@ -311,7 +362,7 @@
   // Turbowarp Extension Storage
   runtime.on("PROJECT_LOADED", () => {
     const stored = runtime.extensionStorage["SPcamera"];
-    if (stored)
+    if (stored) {
       stored.cams.forEach((cam) => {
         allCameras[cam] = {
           xy: [0, 0],
@@ -320,6 +371,7 @@
           binds: cam === "default" ? undefined : [],
         };
       });
+    }
   });
 
   class SPcamera {
@@ -743,22 +795,23 @@
       const penLayer = runtime.ext_pen?._penDrawableId;
       const videoLayer = runtime.ioDevices.video._drawable;
 
-      if (name === "_pen_")
+      if (name === "_pen_") {
         return penLayer > -1 ? { drawableID: penLayer } : undefined;
-      else if (name === "_video_")
+      } else if (name === "_video_") {
         return videoLayer > -1 ? { drawableID: videoLayer } : undefined;
-      else if (name.includes("=SP-custLayer")) {
+      } else if (name.includes("=SP-custLayer")) {
         const drawableID = parseInt(name);
-        if (render._allDrawables[drawableID]?.customDrawableName !== undefined)
+        if (render._allDrawables[drawableID]?.customDrawableName !== undefined) {
           return {
             drawableID,
           };
+        }
       }
       return runtime.getSpriteTargetByName(name);
     }
 
     translateAngledMovement(xy, steps, direction) {
-      const radians = direction * radianConstant;
+      const radians = direction * DEG_TO_RADIAN;
       return [
         applyEpsilon(xy[0] + steps * Math.cos(radians)),
         applyEpsilon(xy[1] + steps * Math.sin(radians)),
@@ -811,61 +864,100 @@
       const rgb = render._backgroundColor3b;
       let decimal = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
       if (decimal < 0) decimal += 0xffffff + 1;
+
       const hex = Number(decimal).toString(16);
       return `#${"000000".substr(0, 6 - hex.length)}${hex}`;
     }
 
     setXY(args) {
-      if (!allCameras[args.CAMERA]) return;
-      allCameras[args.CAMERA].xy = [
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const position = [
         Cast.toNumber(args.X) * -1,
-        Cast.toNumber(args.Y) * -1,
+        Cast.toNumber(args.Y) * -1
       ];
-      updateCamera(args.CAMERA);
+      if (isDirty(camera.xy, position)) {
+        camera.xy = position;
+        updateCamera(args.CAMERA);
+      }
     }
 
     moveSteps(args) {
-      if (!allCameras[args.CAMERA]) return;
-      const cam = allCameras[args.CAMERA];
-      const steps = Cast.toNumber(args.NUM) * -1;
-      cam.xy = this.translateAngledMovement(cam.xy, steps, cam.dir);
-      updateCamera(args.CAMERA);
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const vector = this.translateAngledMovement(
+        camera.xy,
+        Cast.toNumber(args.NUM) * -1,
+        camera.dir
+      );
+      if (isDirty(camera.xy, vector)) {
+        camera.xy = vector;
+        updateCamera(args.CAMERA);
+      }
     }
 
     setX(args) {
-      if (!allCameras[args.CAMERA]) return;
-      allCameras[args.CAMERA].xy[0] = Cast.toNumber(args.NUM) * -1;
-      updateCamera(args.CAMERA);
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const x = Cast.toNumber(args.NUM) * -1;
+      if (isDirty(camera.xy[0], x)) {
+        camera.xy[0] = x;
+        updateCamera(args.CAMERA);
+      }
     }
 
     changeX(args) {
-      if (!allCameras[args.CAMERA]) return;
-      const cam = allCameras[args.CAMERA];
-      const steps = Cast.toNumber(args.NUM) * -1;
-      cam.xy = this.translateAngledMovement(cam.xy, steps, 0);
-      updateCamera(args.CAMERA);
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const vector = this.translateAngledMovement(
+        camera.xy,
+        Cast.toNumber(args.NUM) * -1,
+        0
+      );
+      if (isDirty(camera.xy, vector)) {
+        camera.xy = vector;
+        updateCamera(args.CAMERA);
+      }
     }
 
     setY(args) {
-      if (!allCameras[args.CAMERA]) return;
-      allCameras[args.CAMERA].xy[1] = Cast.toNumber(args.NUM) * -1;
-      updateCamera(args.CAMERA);
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const y = Cast.toNumber(args.NUM) * -1;
+      if (isDirty(camera.xy[1], y)) {
+        camera.xy[1] = y;
+        updateCamera(args.CAMERA);
+      }
     }
 
     changeY(args) {
-      if (!allCameras[args.CAMERA]) return;
-      const cam = allCameras[args.CAMERA];
-      const steps = Cast.toNumber(args.NUM) * -1;
-      cam.xy = this.translateAngledMovement(cam.xy, steps, 90);
-      updateCamera(args.CAMERA);
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const vector = this.translateAngledMovement(
+        camera.xy,
+        Cast.toNumber(args.NUM) * -1,
+        90
+      );
+      if (isDirty(camera.xy, vector)) {
+        camera.xy = vector;
+        updateCamera(args.CAMERA);
+      }
     }
 
     goToObject(args, util) {
-      if (!allCameras[args.CAMERA]) return;
       const target = this.getTarget(args.TARGET, util);
       if (target) {
-        allCameras[args.CAMERA].xy = [target.x * -1, target.y * -1];
-        updateCamera(args.CAMERA);
+        this.setXY({
+          CAMERA: args.CAMERA,
+          X: target.x,
+          Y: target.y
+        });
       }
     }
 
@@ -880,34 +972,51 @@
     }
 
     setDirectionNew(args) {
-      if (!allCameras[args.CAMERA]) return;
-      allCameras[args.CAMERA].dir = 90 - Cast.toNumber(args.NUM);
-      updateCamera(args.CAMERA);
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const dir = 90 - Cast.toNumber(args.NUM);
+      if (isDirty(camera.dir, dir)) {
+        camera.dir = dir;
+        updateCamera(args.CAMERA);
+      }
     }
     setDirection(args) {
+      /* Deprecated, leave as is */
       if (!allCameras[args.CAMERA]) return;
       allCameras[args.CAMERA].dir = Cast.toNumber(args.NUM) - 90;
       updateCamera(args.CAMERA);
     }
 
     turnCamRight(args) {
-      if (!allCameras[args.CAMERA]) return;
-      allCameras[args.CAMERA].dir -= Cast.toNumber(args.NUM);
-      updateCamera(args.CAMERA);
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const amt = Cast.toNumber(args.NUM);
+      if (amt) {
+        camera.dir -= Cast.toNumber(args.NUM);
+        updateCamera(args.CAMERA);
+      }
     }
 
     turnCamLeft(args) {
-      if (!allCameras[args.CAMERA]) return;
-      allCameras[args.CAMERA].dir += Cast.toNumber(args.NUM);
-      updateCamera(args.CAMERA);
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const amt = Cast.toNumber(args.NUM);
+      if (amt) {
+        camera.dir += Cast.toNumber(args.NUM);
+        updateCamera(args.CAMERA);
+      }
     }
 
     pointCamera(args, util) {
-      if (!allCameras[args.CAMERA]) return;
       const target = this.getTarget(args.TARGET, util);
       if (target) {
-        allCameras[args.CAMERA].dir = target.direction - 90;
-        updateCamera(args.CAMERA);
+        this.setDirectionNew({
+          CAMERA: args.CAMERA,
+          NUM: target.direction
+        });
       }
     }
 
@@ -916,20 +1025,31 @@
       return 90 - allCameras[args.CAMERA].dir;
     }
     getDirection(args) {
+      /* Deprecated leave as is */
       if (!allCameras[args.CAMERA]) return 0;
       return allCameras[args.CAMERA].dir + 90;
     }
 
     setZoom(args) {
-      if (!allCameras[args.CAMERA]) return;
-      allCameras[args.CAMERA].zoom = Cast.toNumber(args.NUM) / 100;
-      updateCamera(args.CAMERA);
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const zoom = Cast.toNumber(args.NUM) / 100;
+      if (isDirty(camera.zoom, zoom)) {
+        camera.zoom = zoom;
+        updateCamera(args.CAMERA);
+      }
     }
 
     changeZoom(args) {
-      if (!allCameras[args.CAMERA]) return;
-      allCameras[args.CAMERA].zoom += Cast.toNumber(args.NUM) / 100;
-      updateCamera(args.CAMERA);
+      const camera = allCameras[args.CAMERA];
+      if (!camera) return;
+
+      const zoom = Cast.toNumber(args.NUM) / 100;
+      if (zoom) {
+        camera.zoom += zoom;
+        updateCamera(args.CAMERA);
+      }
     }
 
     getZoom(args) {
