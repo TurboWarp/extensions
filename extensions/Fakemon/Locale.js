@@ -15539,13 +15539,18 @@ This is most important for adding new blocks, but should also be done for changi
     },
   };
   async function getLanguageNameAndCodeLookupTableGLOBALIZED() {
-    const fetchResult = await Scratch.fetch(
-      "https://raw.githubusercontent.com/TurboWarp/scratch-translate-extension-languages-mirror/main/package/languages.json" // TurboWarp's mirror of the supported Translate extension languages.
-    );
-
+    let fetchResult;
     try {
-      return JSON.parse(await fetchResult.text());
+      fetchResult = await Scratch.fetch(
+        "https://raw.githubusercontent.com/TurboWarp/scratch-translate-extension-languages-mirror/main/package/languages.json" // TurboWarp's mirror of the supported Translate extension languages.
+      );
     } catch {
+      fetchResult = null;
+    }
+
+    if (fetchResult) {
+      return JSON.parse(await fetchResult.text());
+    } else {
       return backupTable;
     }
   }
