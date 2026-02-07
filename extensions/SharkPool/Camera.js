@@ -59,9 +59,7 @@
   const applyEpsilon = (value) => (Math.abs(value) < EPSILON ? 0 : value);
 
   const intsChanged = (a, b) => {
-    if (
-      a === b || Math.abs(a - b) < EPSILON
-    ) {
+    if (a === b || Math.abs(a - b) < EPSILON) {
       return false;
     } else {
       return true;
@@ -70,8 +68,8 @@
 
   function isDirty(oldValue, newValue) {
     if (Array.isArray(oldValue)) {
-      return !oldValue.every((value, index) =>
-        !intsChanged(value, newValue[index] ?? 0)
+      return !oldValue.every(
+        (value, index) => !intsChanged(value, newValue[index] ?? 0)
       );
     } else {
       return intsChanged(oldValue, newValue);
@@ -86,14 +84,11 @@
       ogXY: [0, 0],
       ogSZ: 1,
       ogDir: 0,
-      unalteredPosition: [
-        drawable._position[0],
-        drawable._position[1]
-      ],
+      unalteredPosition: [drawable._position[0], drawable._position[1]],
       unalteredScale: {
         // must be an object to prevent mutability
         x: drawable._scale[0],
-        y: drawable._scale[1]
+        y: drawable._scale[1],
       },
     };
   }
@@ -164,7 +159,7 @@
         camSystem.needsRefresh = true;
         drawable.updateScale([
           camSystem.unalteredScale.x,
-          camSystem.unalteredScale.y
+          camSystem.unalteredScale.y,
         ]);
         drawable.updatePosition(camSystem.unalteredPosition);
         drawable.updateDirection(drawable._direction);
@@ -336,10 +331,7 @@
       this.updateProperties({
         position: camSystem.unalteredPosition,
         direction: this._direction + camSystem.ogDir,
-        scale: [
-          camSystem.unalteredScale.x,
-          camSystem.unalteredScale.y,
-        ],
+        scale: [camSystem.unalteredScale.x, camSystem.unalteredScale.y],
       });
     }
     ogUpdateVisible.call(this, isVisible);
@@ -801,7 +793,9 @@
         return videoLayer > -1 ? { drawableID: videoLayer } : undefined;
       } else if (name.includes("=SP-custLayer")) {
         const drawableID = parseInt(name);
-        if (render._allDrawables[drawableID]?.customDrawableName !== undefined) {
+        if (
+          render._allDrawables[drawableID]?.customDrawableName !== undefined
+        ) {
           return {
             drawableID,
           };
@@ -873,10 +867,7 @@
       const camera = allCameras[args.CAMERA];
       if (!camera) return;
 
-      const position = [
-        Cast.toNumber(args.X) * -1,
-        Cast.toNumber(args.Y) * -1
-      ];
+      const position = [Cast.toNumber(args.X) * -1, Cast.toNumber(args.Y) * -1];
       if (isDirty(camera.xy, position)) {
         camera.xy = position;
         updateCamera(args.CAMERA);
@@ -956,7 +947,7 @@
         this.setXY({
           CAMERA: args.CAMERA,
           X: target.x,
-          Y: target.y
+          Y: target.y,
         });
       }
     }
@@ -1015,7 +1006,7 @@
       if (target) {
         this.setDirectionNew({
           CAMERA: args.CAMERA,
-          NUM: target.direction
+          NUM: target.direction,
         });
       }
     }
