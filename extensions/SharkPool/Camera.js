@@ -144,12 +144,12 @@
     };
 
     // invert camera transformations
-    render.updateDrawablePosition(id, camSystem.unalteredPosition);
-    render.updateDrawableDirection(id, drawable._direction + camSystem.ogDir);
-    render.updateDrawableScale(id, [
+    drawable.updateScale([
       camSystem.unalteredScale.x,
       camSystem.unalteredScale.y,
     ]);
+    drawable.updatePosition(camSystem.unalteredPosition);
+    drawable.updateDirection(drawable._direction + camSystem.ogDir);
   }
 
   function updateCamera(camera) {
