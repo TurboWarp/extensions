@@ -330,7 +330,10 @@
     }
 
     letters({ STRING, START, END }) {
-      return STRING.slice(Math.max(1, START) - 1, Math.min(STRING.length, END));
+      return Scratch.Cast.toString(STRING).slice(
+        Math.max(1, START) - 1,
+        Math.min(STRING.length, END)
+      );
     }
 
     clamp({ INPUT, MIN, MAX }) {
@@ -367,7 +370,14 @@
         } catch (e) {
           return e.message;
         }
-        path.forEach((prop) => (json = json[prop]));
+
+        for (const prop of path) {
+          if (!Object.prototype.hasOwnProperty.call(json, prop)) {
+            return "";
+          }
+          json = json[prop];
+        }
+
         if (json === null) return "null";
         else if (json === undefined) return "";
         else if (typeof json === "object") return JSON.stringify(json);

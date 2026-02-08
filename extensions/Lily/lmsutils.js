@@ -1358,6 +1358,10 @@
       vars["variables"] = {};
     }
 
+    listVariables() {
+      return JSON.stringify(Object.keys(vars["variables"]));
+    }
+
     greenFlag(args, util) {
       util.runtime.greenFlag();
     }

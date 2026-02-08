@@ -1,6 +1,6 @@
-const js = require("@eslint/js");
-const globals = require("globals");
-const esquery = require("esquery");
+import js from "@eslint/js";
+import globals from "globals";
+import esquery from "esquery";
 
 const reportQueryMatches = (context, ast, selector, message) => {
   const parsedSelector = esquery.parse(selector);
@@ -27,7 +27,7 @@ const createQueryRule = (rules) => ({
   }),
 });
 
-module.exports = [
+export default [
   // Base on eslint recommended
   js.configs.recommended,
 
@@ -35,7 +35,6 @@ module.exports = [
   {
     languageOptions: {
       ecmaVersion: 2022,
-      sourceType: "commonjs",
     },
     rules: {
       // Unused variables commonly indicate logic errors
@@ -101,6 +100,7 @@ module.exports = [
         ...globals.commonjs,
         ...globals.node,
       },
+      sourceType: "module",
     },
   },
 
@@ -116,6 +116,7 @@ module.exports = [
         ScratchExtensions: "readonly",
         scaffolding: "readonly",
       },
+      sourceType: "script",
     },
     plugins: {
       extension: {

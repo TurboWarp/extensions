@@ -53,6 +53,8 @@
   let height = -1; // negative means default
   let interactive = true;
   let resizeBehavior = "scale";
+  /** @type {string|number|boolean} */
+  let latestMessage = "";
 
   const updateFrameAttributes = () => {
     if (!iframe) {
@@ -120,6 +122,18 @@
       overlay = null;
     }
   };
+
+  window.addEventListener("message", (e) => {
+    if (iframe && iframe.contentWindow && e.source === iframe.contentWindow) {
+      latestMessage =
+        typeof e.data === "string" ||
+        typeof e.data === "number" ||
+        typeof e.data === "boolean"
+          ? e.data
+          : JSON.stringify(e.data);
+      Scratch.vm.runtime.startHats("iframe_whenMessage");
+    }
+  });
 
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateFrameAttributes);
 
@@ -246,6 +260,29 @@
                 menu: "resizeMenu",
               },
             },
+          },
+          "---",
+          {
+            opcode: "sendMessage",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("send message [MESSAGE] to iframe"),
+            arguments: {
+              MESSAGE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello",
+              },
+            },
+          },
+          {
+            opcode: "whenMessage",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when message received from iframe"),
+            isEdgeActivated: false,
+          },
+          {
+            opcode: "iframeMessage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("iframe message"),
           },
         ],
         menus: {
@@ -378,6 +415,16 @@
           updateFrameAttributes();
         }
       }
+    }
+
+    sendMessage({ MESSAGE }) {
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage(MESSAGE, "*");
+      }
+    }
+
+    iframeMessage() {
+      return latestMessage;
     }
   }
 

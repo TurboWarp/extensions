@@ -1,4 +1,4 @@
-const extensions = {
+const aliases = {
   // maps old path to new path
   "/LukeManiaStudios/ClonesPlus.js": "/Lily/ClonesPlus.js",
   "/LukeManiaStudios/CommentBlocks.js": "/Lily/CommentBlocks.js",
@@ -10,4 +10,4 @@ const extensions = {
   "/LukeManiaStudios/TempVariables2.js": "/Lily/TempVariables2.js",
 };
 
-module.exports = extensions;
+export default aliases;
