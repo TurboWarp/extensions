@@ -248,6 +248,7 @@ Returns the current creativity level (temperature).
 * Contact via mail
   Use **turbobot.contact@atomicmail.io**.
 * subscribe to our **[youtube channel.](https://www.youtube.com/channel/UCde3077jwsLsBb8HIjgZUiQ)**
+* join our telegram **[here.](https://t.me/+StlI46K855JiMTk1)**
 
 ***
 Made by **[Seigh sword](https://github.com/Seigh-sword/)** with **Time & effort**
