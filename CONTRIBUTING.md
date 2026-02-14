@@ -20,7 +20,7 @@ Like any tool, AI has good uses and bad uses. Follow these guidelines to avoid w
  - **Reviewers are volunteers**. They are free to weigh your usage of AI in deciding whether or when to review your change.
 
 ### Agentic LLMs
-Code by agentic LLMs will not be accepted and any pull requests purporting to be written by one will be closed immediately.
+Code by agentic LLMs will not be knowingly accepted and any pull requests purporting to be written by one will be closed immediately.
 
 ## Acceptance criteria
 
