@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.5.21
+// Version V.3.5.22
 
 (async function (Scratch) {
   "use strict";
@@ -992,60 +992,64 @@
       }
     }
 
-    playSound(sound, atTime, con) {
+    playSound(sound, atTime) {
+      const context = sound.context;
       try {
-        if (sound.playing && con.overlap) {
+        if (context.playing && sound.overlap) {
           // Clone context to soundBank for 'audioControlDo'
-          const clone = sound.clone();
-          const newName = `${con.name}_COPY_${Math.random()}`;
+          const clone = context.clone();
+          const newName = `${sound.name}_COPY_${Math.random()}`;
           soundBank[newName] = {
             ...sound,
             context: clone,
             name: newName,
             loopParm: [0, 0],
+            currentTime: 0,
             overlap: false,
             overlays: [],
             isBind: false,
             binds: {},
           };
           clone.play(0, atTime);
-          clone.sourceNode.playbackRate.value = con.pitch;
-          clone.sourceNode.gainSuccessor.gain.value = con.gain;
-          const overlayIndex = con.overlays.length;
-          con.overlays.push(clone);
+          clone.sourceNode.playbackRate.value = sound.pitch;
+          clone.sourceNode.gainSuccessor.gain.value = sound.gain;
+
+          const overlayIndex = sound.overlays.length;
+          sound.overlays.push(clone);
           clone.on("end", () => {
             clone.sourceNode.disconnect();
             clone.disconnect();
 
-            con.overlays.splice(overlayIndex, 1);
+            sound.overlays.splice(overlayIndex, 1);
             delete soundBank[newName];
           });
         } else {
-          if (!sound.playing) con.currentTime = atTime;
-          sound.play(0, atTime);
-          const srcNode = sound.sourceNode;
-          this.updateAudioNodes(srcNode, con);
-          if (Object.keys(con.binds).length > 0) {
-            Object.keys(con.binds).forEach((key) => {
-              const thisSound = con.binds[key];
-              const context = thisSound.context;
-              if (!context.playing) thisSound.currentTime = atTime;
-              context.play(0, atTime);
-              this.updateAudioNodes(context.sourceNode, thisSound);
+          if (!context.playing) sound.currentTime = atTime;
+          context.play(0, atTime);
+          const srcNode = context.sourceNode;
+          this.updateAudioNodes(srcNode, sound);
+
+          const binders = Object.values(sound.binds);
+          if (binders.length) {
+            binders.forEach((bindedSound) => {
+              const bindedContext = bindedSound.context;
+              if (!bindedContext.playing) bindedSound.currentTime = atTime;
+              bindedContext.play(0, atTime);
+              this.updateAudioNodes(bindedContext.sourceNode, bindedSound);
             });
           }
-          if (sound.loop) {
+          if (context.loop) {
             this.loopParams({
-              NAME: con.name,
-              START: con.loopParm[0],
-              END: con.loopParm[1],
+              NAME: sound.name,
+              START: sound.loopParm[0],
+              END: sound.loopParm[1],
             });
           }
         }
-        this.startDataHats({ name: con.name, type: "starts" });
+        this.startDataHats({ name: sound.name, type: "starts" });
       } catch {
         console.warn(Scratch.translate("Audio has not loaded yet!"));
-        sound.stop(); // Reset
+        context.stop(); // Reset
       }
     }
 
@@ -1066,7 +1070,6 @@
         }
         this.startDataHats({ name: sound.name, type: "stops" });
       } else if (type === "unpause") {
-        // unpause route
         this.startDataHats({ name: sound.name, type: "starts" });
         if (!ctx.paused) return;
         const lastTime = sound.currentTime;
@@ -1149,31 +1152,30 @@
       if (!url) return;
 
       return new Promise((resolve) => {
-        Scratch.canFetch(url).then((canFetch) => {
-          if (!canFetch) resolve();
+        this.deleteSound(args);
 
-          this.deleteSound(args);
-          try {
-            const engine = new Pizzicato.Sound(
-              {
-                source: "file",
-                options: { path: url, attack: 0 },
-              },
-              () => {
-                this.initSound(engine, args.NAME, url, false);
-                resolve();
-              }
-            );
-          } catch (e) {
-            console.error("Sound load error:", e);
-            alert(
-              Scratch.translate(
-                "Tune Shark V3 can't import this sound, file may be corrupted or non-existent."
-              )
-            );
-            resolve();
+        const engine = new Pizzicato.Sound(
+          {
+            source: "file",
+            options: { path: url, attack: 0 },
+          },
+          () => {
+            try {
+              // try catch placed here since 'new Pizzicato.Sound' doesnt error, however
+              // if the url is invalid, functions called within 'initSound' will error
+              this.initSound(engine, args.NAME, url, false);
+              resolve();
+            } catch (e) {
+              console.error("Sound load error:", e);
+              alert(
+                Scratch.translate(
+                  "Tune Shark V3 can't import this sound, file may be corrupted or non-existent."
+                )
+              );
+              resolve();
+            }
           }
-        });
+        );
       });
     }
 
@@ -1234,13 +1236,13 @@
 
     startSound(args) {
       const sound = soundBank[args.NAME];
-      if (sound !== undefined) this.playSound(sound.context, 0, sound);
+      if (sound !== undefined) this.playSound(sound, 0);
     }
 
     startSoundAt(args) {
       const sound = soundBank[args.NAME];
       const time = Cast.toNumber(args.TIME);
-      if (sound !== undefined) this.playSound(sound.context, time, sound);
+      if (sound !== undefined) this.playSound(sound, time);
     }
 
     playAndStop(args, util) {
@@ -1248,7 +1250,7 @@
       if (sound === undefined) return;
       if (util.stackFrame.awaitingSound === undefined) {
         util.stackFrame.awaitingSound = true;
-        this.playSound(sound.context, Cast.toNumber(args.TIME), sound);
+        this.playSound(sound, Cast.toNumber(args.TIME));
         util.yield();
       } else if (util.stackFrame.awaitingSound) {
         if (sound.currentTime >= Cast.toNumber(args.MAX))
@@ -1271,7 +1273,7 @@
 
     ctrlSounds(args) {
       const controlFuncs = {
-        start: (sound) => this.playSound(sound.context, 0, sound),
+        start: (sound) => this.playSound(sound, 0),
         pause: (sound) => this.audioControlDo(sound, "pause"),
         unpause: (sound) => this.audioControlDo(sound, "unpause"),
         stop: (sound) => {
