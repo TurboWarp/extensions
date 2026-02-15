@@ -1152,30 +1152,31 @@
       if (!url) return;
 
       return new Promise((resolve) => {
-        this.deleteSound(args);
+        Scratch.canFetch(url).then((canFetch) => {
+          if (!canFetch) resolve();
 
-        const engine = new Pizzicato.Sound(
-          {
-            source: "file",
-            options: { path: url, attack: 0 },
-          },
-          () => {
-            try {
-              // try catch placed here since 'new Pizzicato.Sound' doesnt error, however
-              // if the url is invalid, functions called within 'initSound' will error
-              this.initSound(engine, args.NAME, url, false);
-              resolve();
-            } catch (e) {
-              console.error("Sound load error:", e);
-              alert(
-                Scratch.translate(
-                  "Tune Shark V3 can't import this sound, file may be corrupted or non-existent."
-                )
-              );
-              resolve();
-            }
+          this.deleteSound(args);
+          try {
+            const engine = new Pizzicato.Sound(
+              {
+                source: "file",
+                options: { path: url, attack: 0 },
+              },
+              () => {
+                this.initSound(engine, args.NAME, url, false);
+                resolve();
+              }
+            );
+          } catch (e) {
+            console.error("Sound load error:", e);
+            alert(
+              Scratch.translate(
+                "Tune Shark V3 can't import this sound, file may be corrupted or non-existent."
+              )
+            );
+            resolve();
           }
-        );
+        });
       });
     }
 
