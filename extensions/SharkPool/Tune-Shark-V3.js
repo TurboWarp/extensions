@@ -545,7 +545,7 @@
           },
           "---",
           {
-            opcode: "setThingNew",
+            opcode: "setBasicSoundEffect",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set [TYPE] of sound [NAME] to [VALUE]"),
             blockIconURI: extraIcons.nob,
@@ -556,7 +556,7 @@
               },
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "singleEffectNew",
+                menu: "basicEffects",
               },
               VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
@@ -772,7 +772,7 @@
             { text: Scratch.translate("highpass"), value: "highpass" },
             { text: Scratch.translate("lowpass"), value: "lowpass" },
           ],
-          singleEffectNew: { acceptReporters: true, items: simpleEffects },
+          basicEffects: { acceptReporters: true, items: simpleEffects },
           soundProps: {
             acceptReporters: true,
             items: [
@@ -1638,7 +1638,7 @@
       this.updateAudioNodes(ctx.sourceNode, sound);
     }
 
-    setThingNew(args) {
+    setBasicSoundEffect(args) {
       const sound = soundBank[args.NAME];
       if (sound === undefined) return;
       const ctx = sound.context;
