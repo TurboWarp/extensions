@@ -1922,7 +1922,6 @@ void main() {
   let currentCulling;
   let currentCullingProps;
   let lastTextMeasurement;
-  let transformCache;
   let canvasNativeSize;
   let canvasResolution;
   let canvasUseNearest;
@@ -1978,11 +1977,6 @@ void main() {
     currentCulling = 0;
     currentCullingProps = [null, null];
     lastTextMeasurement = null;
-    transformCache = {
-      from: m4.identity(),
-      to: m4.identity(),
-      matrix: m4.identity(),
-    };
     canvasDirty = true;
     renderer.dirty = true;
     runtime.requestRedraw();
@@ -4522,15 +4516,6 @@ void main() {
           transformed = vec;
           return;
         }
-        if (
-          lookup2[from] === transformCache.from &&
-          lookup2[to] === transformCache.to
-        ) {
-          transformed = m4.multiplyVec(transformCache.matrix, vec);
-          return;
-        }
-        transformCache.from = lookup2[from];
-        transformCache.to = lookup2[to];
         let swapped = false;
         if (from > to) {
           [from, to] = [to, from];
@@ -4541,7 +4526,6 @@ void main() {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
         if (swapped) totalMat = m4.inverse(totalMat);
-        transformCache.matrix = totalMat;
         transformed = m4.multiplyVec(totalMat, vec);
         if (TO == "projected (scratch units)") {
           transformed[0] =
@@ -4599,15 +4583,6 @@ void main() {
           transformed = vec;
           return;
         }
-        if (
-          lookup2[from] === transformCache.from &&
-          lookup2[to] === transformCache.to
-        ) {
-          transformed = m4.multiplyVec(transformCache.matrix, vec);
-          return;
-        }
-        transformCache.from = lookup2[from];
-        transformCache.to = lookup2[to];
         let swapped = false;
         if (from > to) {
           [from, to] = [to, from];
@@ -4618,7 +4593,6 @@ void main() {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
         if (swapped) totalMat = m4.inverse(totalMat);
-        transformCache.matrix = totalMat;
         transformed = m4.multiplyVec(totalMat, vec);
       },
     },
