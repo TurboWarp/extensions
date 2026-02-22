@@ -15559,8 +15559,9 @@ This is most important for adding new blocks, but should also be done for changi
 
   let languageNameAndCodeLookupTable;
 
-  let showRecreatableBlocks = true;
-  let hasToggledRecreatableBlocks = false;
+  // SharkPool mentioned that many blocks in Locale can be recreated by other extensions (most notably JSON).
+  let showRecreatableBlocks = true; // Whether or not to show blocks that can be recreated with other extensions
+  let hasToggledRecreatableBlocks = false; // Whether or not the previous variable has been toggled before (so the explanation only shows once)
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("The Locale extension must run unsandboxed!");
@@ -15578,14 +15579,13 @@ This is most important for adding new blocks, but should also be done for changi
       // @ts-ignore
       if (languageNameAndCodeLookupTableGLOBALIZED.menuMap) {
         languageNameAndCodeLookupTableGLOBALIZED.menuMap[
-          this._matchLanguages(
-            JSON.parse(this.getLanguageArray()),
-            Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap)
+          this._matchLanguages( // YOU ARE HERE
+            Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap),
+            JSON.parse(this.getLanguageArray())
           )[0] || "en"
         ].forEach((entry) => {
           // Heavily inspired by https://github.com/TurboWarp/scratch-vm/blob/develop/src/extensions/scratch3_translate/index.js
           const obj = { name: entry.name, code: entry.code };
-
           try {
             if (obj) {
               if (!this._filterArray(arrayThusFar, "code").includes(obj.code)) {
@@ -15607,7 +15607,7 @@ This is most important for adding new blocks, but should also be done for changi
       return {
         id: "fakemonLocale",
         name: Scratch.translate("Locale"),
-        color1: "#2a5fa0", // TurboWarp will automatically generate colors 2 and 3 based on color 1.
+        color1: "#2a5fa0",
         blockIconURI: blockExtensionIcon,
         menuIconURI: menuExtensionIcon,
         docsURI: "https://extensions.turbowarp.org/Fakemon/Locale",
@@ -15634,7 +15634,7 @@ This is most important for adding new blocks, but should also be done for changi
             arguments: {
               JSON: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: `{"en":{"Hello, world!":"Hello, world!"},"es":{"Hello, world!":"¡Hola, mundo!"}}`,
+                defaultValue: `{"en":{${Scratch.translate("Hello, world!")}:"Hello, world!"},"es":{${Scratch.translate("Hello, world!")}:"¡Hola, mundo!"}}`,
               },
             },
           },
@@ -15648,7 +15648,7 @@ This is most important for adding new blocks, but should also be done for changi
             arguments: {
               JSON: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: `{"en":{"Hello, world!":"Hello, world!"},"es":{"Hello, world!":"¡Hola, mundo!"}}`,
+                defaultValue: `{"en":{${Scratch.translate("Hello, world!")}:"Hello, world!"},"es":{${Scratch.translate("Hello, world!")}:"¡Hola, mundo!"}}`,
               },
             },
           },
@@ -15683,7 +15683,7 @@ This is most important for adding new blocks, but should also be done for changi
               },
               JSON: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: `{"Hello, world!":"¡Hola, mundo!"}`,
+                defaultValue: `{${Scratch.translate("Hello, world!")}:"¡Hola, mundo!"}`,
               },
             },
           },
@@ -15701,7 +15701,7 @@ This is most important for adding new blocks, but should also be done for changi
               },
               JSON: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: `{"Hello, world!":"¡Hola, mundo!"}`,
+                defaultValue: `{${Scratch.translate("Hello, world!")}:"¡Hola, mundo!"}`,
               },
             },
           },
@@ -15738,7 +15738,7 @@ This is most important for adding new blocks, but should also be done for changi
               },
               TEXTIN: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, world!",
+                defaultValue: Scratch.translate("Hello, world!"),
               },
               TEXTOUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -15783,7 +15783,7 @@ This is most important for adding new blocks, but should also be done for changi
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Language Code <=> Name Conversions"),
+            text: Scratch.translate("Language Code ⇆ Name Conversions"),
           },
           {
             opcode: "nameFromCode",
@@ -15826,7 +15826,7 @@ This is most important for adding new blocks, but should also be done for changi
               },
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, world!",
+                defaultValue: Scratch.translate("Hello, world!"),
               },
             },
           },
@@ -15874,11 +15874,15 @@ This is most important for adding new blocks, but should also be done for changi
       if (!hasToggledRecreatableBlocks) {
         // If the user hasn't used this button before, tell them what it does
         alert(
-          `This button will ${showRecreatableBlocks ? "hide" : "show"} blocks that can be recreated with other extensions or require values set by these blocks.`
+          Scratch.translate(
+            `This button will ${showRecreatableBlocks ? "hide" : "show"} blocks that can be recreated with other extensions or require values set by these blocks.`
+          )
         ); // Explain what the button does
         if (
           confirm(
-            "Existing blocks in the project will not be affected, and you can undo this at any time. Is this okay?"
+            Scratch.translate(
+              "Existing blocks in the project will not be affected, and you can undo this at any time. Is this okay?"
+            )
           )
         ) {
           // Ask for user consent, just in case
@@ -16007,7 +16011,7 @@ This is most important for adding new blocks, but should also be done for changi
           // This is to ensure the actual name value can be used via inputs. This implementation is inspired by the Translate extension's.
           return languageNameAndCodeLookupTableGLOBALIZED.nameMap[args.NAME];
         } else if (this._getLanguageNames().includes(args.NAME)) {
-          // This is to ensure the actual name value can be used via inputs.
+          // Fallback
           let nameIndex = this._getLanguageNames().indexOf(args.NAME);
           if (nameIndex != -1) {
             return this._getLanguageCodes()[nameIndex];
