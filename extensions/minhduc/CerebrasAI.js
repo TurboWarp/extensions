@@ -1,5 +1,5 @@
-(function(Scratch) {
-  'use strict';
+(function (Scratch) {
+  "use strict";
 
   class CerebrasStreamPro {
     constructor() {
@@ -11,59 +11,71 @@
 
     getInfo() {
       return {
-        id: 'cerebrasStreamPro',
-        name: 'Cerebras AI (Real-time)',
-        color1: '#0ea5e9', // Professional Blue
-        color2: '#0284c7',
+        id: "cerebrasStreamPro",
+        name: "Cerebras AI (Real-time)",
+        color1: "#0ea5e9", // Professional Blue
+        color2: "#0284c7",
         blocks: [
           {
-            opcode: 'setSystem',
+            opcode: "setSystem",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Setup System: [SYS]',
+            text: "Setup System: [SYS]",
             arguments: {
-              SYS: { type: Scratch.ArgumentType.STRING, defaultValue: 'You are a helpful assistant.' }
-            }
+              SYS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "You are a helpful assistant.",
+              },
+            },
           },
           {
-            opcode: 'streamChat',
+            opcode: "streamChat",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Ask Model [MODEL] Key [KEY]: [MSG]',
+            text: "Ask Model [MODEL] Key [KEY]: [MSG]",
             arguments: {
-              MODEL: { type: Scratch.ArgumentType.STRING, defaultValue: 'llama3.1-8b' },
-              MSG: { type: Scratch.ArgumentType.STRING, defaultValue: 'Write a long story about a robot.' },
-              KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'your-api-key' }
-            }
+              MODEL: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "llama3.1-8b",
+              },
+              MSG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Write a long story about a robot.",
+              },
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "your-api-key",
+              },
+            },
           },
           {
-            opcode: 'getResponse',
+            opcode: "getResponse",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Live Response'
+            text: "Live Response",
           },
           {
-            opcode: 'isThinking',
+            opcode: "isThinking",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: 'is AI thinking?'
+            text: "is AI thinking?",
           },
           "--- History Management ---",
           {
-            opcode: 'getHistoryJSON',
+            opcode: "getHistoryJSON",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'Chat History (JSON)'
+            text: "Chat History (JSON)",
           },
           {
-            opcode: 'importHistory',
+            opcode: "importHistory",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Import History [JSON]',
+            text: "Import History [JSON]",
             arguments: {
-              JSON: { type: Scratch.ArgumentType.STRING, defaultValue: '[]' }
-            }
+              JSON: { type: Scratch.ArgumentType.STRING, defaultValue: "[]" },
+            },
           },
           {
-            opcode: 'clearChat',
+            opcode: "clearChat",
             blockType: Scratch.BlockType.COMMAND,
-            text: 'Clear All Memory'
-          }
-        ]
+            text: "Clear All Memory",
+          },
+        ],
       };
     }
 
@@ -75,27 +87,30 @@
       const { MODEL, KEY, MSG } = args;
       this.status = "Thinking";
       this.currentResponse = ""; // Reset for new stream
-      
+
       this.chatHistory.push({ role: "user", content: MSG });
 
       const messages = [
         { role: "system", content: this.systemPrompt },
-        ...this.chatHistory
+        ...this.chatHistory,
       ];
 
       try {
-        const response = await Scratch.fetch("https://api.cerebras.ai/v1/chat/completions", {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${KEY}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            model: MODEL,
-            messages: messages,
-            stream: true // CRITICAL: Enable streaming
-          })
-        });
+        const response = await Scratch.fetch(
+          "https://api.cerebras.ai/v1/chat/completions",
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${KEY}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: MODEL,
+              messages: messages,
+              stream: true, // CRITICAL: Enable streaming
+            }),
+          }
+        );
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
@@ -106,11 +121,11 @@
           if (done) break;
 
           const chunk = decoder.decode(value);
-          const lines = chunk.split('\n').filter(line => line.trim() !== '');
+          const lines = chunk.split("\n").filter((line) => line.trim() !== "");
 
           for (const line of lines) {
-            const message = line.replace(/^data: /, '');
-            if (message === '[DONE]') break;
+            const message = line.replace(/^data: /, "");
+            if (message === "[DONE]") break;
 
             try {
               const parsed = JSON.parse(message);
@@ -133,12 +148,23 @@
       }
     }
 
-    getResponse() { return this.currentResponse; }
-    isThinking() { return this.status === "Thinking"; }
-    getHistoryJSON() { return JSON.stringify(this.chatHistory); }
-    clearChat() { this.chatHistory = []; this.currentResponse = ""; }
+    getResponse() {
+      return this.currentResponse;
+    }
+    isThinking() {
+      return this.status === "Thinking";
+    }
+    getHistoryJSON() {
+      return JSON.stringify(this.chatHistory);
+    }
+    clearChat() {
+      this.chatHistory = [];
+      this.currentResponse = "";
+    }
     importHistory(args) {
-      try { this.chatHistory = JSON.parse(args.JSON); } catch(e) {}
+      try {
+        this.chatHistory = JSON.parse(args.JSON);
+      } catch (e) {}
     }
   }
 
