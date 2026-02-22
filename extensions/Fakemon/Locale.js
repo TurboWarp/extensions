@@ -15579,7 +15579,8 @@ This is most important for adding new blocks, but should also be done for changi
       // @ts-ignore
       if (languageNameAndCodeLookupTableGLOBALIZED.menuMap) {
         languageNameAndCodeLookupTableGLOBALIZED.menuMap[
-          this._matchLanguages( // YOU ARE HERE
+          this._matchLanguages(
+            // YOU ARE HERE
             Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap),
             JSON.parse(this.getLanguageArray())
           )[0] || "en"
