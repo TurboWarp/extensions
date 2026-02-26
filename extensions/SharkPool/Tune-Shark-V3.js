@@ -54,7 +54,7 @@
     CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   */
   const PzInitializer = await Scratch.external.evalAndReturn(
-    "https://raw.githubusercontent.com/SharkPool-SP/pizzicato/bcf8c452bf25b8d34b13f745a35d77d23279d2b8/distr/Pizzicato.min.js",
+    "https://raw.githubusercontent.com/SharkPool-SP/pizzicato/5c6ef4e1caa37ca4a3e579d6444188617460e214/distr/Pizzicato.min.js",
     "Pizzicato"
   );
 
