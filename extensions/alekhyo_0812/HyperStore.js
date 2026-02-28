@@ -525,7 +525,10 @@
 
     simulateLag(args) {
       const start = Date.now();
-      while (Date.now() - start < args.MS) {}
+            while (Date.now() - start < args.MS) {
+        // Intentionally empty loop to simulate lag
+      }
+
     }
 
     getDevelopers() {
