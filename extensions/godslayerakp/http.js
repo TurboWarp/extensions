@@ -259,6 +259,11 @@
             text: Scratch.translate("response"),
           },
           {
+            opcode: "resDataUrl",
+            blockType: BlockType.REPORTER,
+            text: Scratch.translate("response as data:URL"),
+          },
+          {
             opcode: "error",
             blockType: BlockType.REPORTER,
             text: Scratch.translate("error"),
@@ -566,6 +571,19 @@
     resData() {
       return this.response.text;
     }
+    resDataUrl() {
+      return new Promise((resolve) => {
+        const blob = this.response.blob
+        if (blob) {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = () => resolve('');
+            reader.readAsDataURL(blob);
+        } else {
+          return resolve('');
+        }
+      });
+    }
 
     error() {
       return this.response.error;
@@ -693,7 +711,8 @@
           this.response.text = JSON.stringify(json);
           return;
         }
-        const body = await res.text();
+        this.response.blob = await res.blob();
+        const body = await this.response.blob.text();
         this.response.text = body;
       } catch (err) {
         this.response.error = String(err);
