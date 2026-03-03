@@ -470,6 +470,7 @@
             opcode: "unbindTarget",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("unbind [TARGET] from camera [CAMERA]"),
+            hideFromPalette: true, // deprecated, needed for compatibility
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "OBJECTS" },
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
@@ -933,17 +934,18 @@
     }
 
     unbindTarget(args, util) {
-      if (!allCameras[args.CAMERA]) return;
-      const target = this.getTarget(args.TARGET, util);
-      if (!target) return;
-      if (target === "_all_") {
-        render._allDrawables.forEach((drawable) => {
-          bindDrawable(drawable, "default");
-        });
-      } else {
-        const drawable = render._allDrawables[target.drawableID];
-        bindDrawable(drawable, "default");
-      }
+      /* Deprecated, leave as is */
+      /*
+        We cant unbind a target from the default camera,
+        so this just becomes a duplicate bind block
+      */
+      this.bindTarget(
+        {
+          ...args,
+          CAMERA: "default",
+        },
+        util
+      );
     }
 
     targetCamera(args, util) {
