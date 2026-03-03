@@ -572,17 +572,20 @@
       return this.response.text;
     }
     resDataUrl() {
-      return new Promise((resolve) => {
-        const blob = this.response.blob;
-        if (blob) {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result);
-          reader.onerror = () => resolve("");
-          reader.readAsDataURL(blob);
-        } else {
-          return resolve("");
-        }
-      });
+      if (!this.response.dataUrl) {
+        this.response.dataUrl = new Promise((resolve) => {
+          const blob = this.response.blob;
+          if (blob) {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = () => resolve("");
+            reader.readAsDataURL(blob);
+          } else {
+            resolve("");
+          }
+        });
+      }
+      return this.response.dataUrl;
     }
 
     error() {
