@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.12
+// Version V.1.0.2
 
 (function (Scratch) {
   "use strict";
@@ -31,6 +31,7 @@
       zoom: 1,
       dir: 0,
       binds: undefined,
+      precisionMode: false,
     },
   };
 
@@ -337,6 +338,74 @@
     ogUpdateVisible.call(this, isVisible);
   };
 
+  // For certain projects that heavily rely on collisions, different camera zooms
+  // and transforms will cause buggy behaviour. Fix this with 'precisionMode'
+  const ogTouchingDrawables = render.isTouchingDrawables;
+  render.isTouchingDrawables = function (targetId, candidateIds) {
+    const target = this._allDrawables[targetId];
+    if (!target) {
+      return ogTouchingDrawables.call(this, targetId, candidateIds);
+    }
+
+    const camSystem = target[cameraSymbol];
+    if (!camSystem || !camSystem.cam?.precisionMode) {
+      return ogTouchingDrawables.call(this, targetId, candidateIds);
+    }
+
+    const modified = [];
+
+    // Normalize all requested drawables to a default state
+    const normalize = (drawable) => {
+      const cam = drawable[cameraSymbol];
+      if (!cam) return;
+
+      modified.push({
+        drawable,
+        x: drawable._position[0],
+        y: drawable._position[1],
+        dir: drawable._direction,
+        sx: drawable._scale[0],
+        sy: drawable._scale[1]
+      });
+
+      drawable._position[0] = cam.unalteredPosition[0];
+      drawable._position[1] = cam.unalteredPosition[1];
+      drawable._direction += cam.ogDir;
+      drawable._scale[0] = cam.unalteredScale.x;
+      drawable._scale[1] = cam.unalteredScale.y;
+
+      drawable._skinScaleDirty = true;
+      drawable._rotationCenterDirty = true;
+      drawable._calculateTransform();
+    }
+
+    normalize(target);
+    for (let i = 0; i < candidateIds.length; i++) {
+      const d = this._allDrawables[candidateIds[i]];
+      if (d && d[cameraSymbol]) normalize(d);
+    }
+
+    const result = ogTouchingDrawables.call(this, targetId, candidateIds);
+
+    // Restore requested drawables back to their camera states
+    for (let i = 0; i < modified.length; i++) {
+      const m = modified[i];
+      const d = m.drawable;
+
+      d._position[0] = m.x;
+      d._position[1] = m.y;
+      d._direction = m.dir;
+      d._scale[0] = m.sx;
+      d._scale[1] = m.sy;
+
+      d._skinScaleDirty = true;
+      d._rotationCenterDirty = true;
+      d._calculateTransform();
+    }
+
+    return result;
+  };
+
   // Clones should inherit the parents camera
   const ogInitDrawable = vm.exports.RenderedTarget.prototype.initDrawable;
   vm.exports.RenderedTarget.prototype.initDrawable = function (layerGroup) {
@@ -361,6 +430,7 @@
           zoom: 1,
           dir: 0,
           binds: cam === "default" ? undefined : [],
+          precisionMode: false,
         };
       });
     }
@@ -660,6 +730,28 @@
               },
             },
           },
+          "---",
+          {
+            opcode: "togglePrecision",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("[TOGGLE] touch precision in camera [CAMERA]"),
+            arguments: {
+              TOGGLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "TOGGLER",
+              },
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+            },
+          },
+          {
+            opcode: "isPreciseMode",
+            blockType: Scratch.BlockType.BOOLEAN,
+            disableMonitor: true,
+            text: Scratch.translate("touch precision in camera [CAMERA] enabled?"),
+            arguments: {
+              CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
+            },
+          },
         ],
         menus: {
           CAMERAS: { acceptReporters: false, items: "getCameras" },
@@ -676,6 +768,13 @@
               { text: Scratch.translate("unbind"), value: "unbind" },
             ],
           },
+          TOGGLER: {
+            acceptReporters: false,
+            items: [
+              { text: Scratch.translate("enable"), value: "enable" },
+              { text: Scratch.translate("disable"), value: "disable" },
+            ]
+          }
         },
       };
     }
@@ -742,9 +841,10 @@
     getCameras() {
       const cameraNames = Object.keys(allCameras);
       return cameraNames.map((i) => {
-        if (i === "default")
+        if (i === "default") {
           return { text: Scratch.translate("default"), value: "default" };
-        else return { text: i, value: i };
+        }
+        return { text: i, value: i };
       });
     }
 
@@ -763,6 +863,7 @@
             zoom: 1,
             dir: 0,
             binds: [],
+            precisionMode: false,
           };
           this.refreshBlocks();
         }
@@ -1086,6 +1187,18 @@
       if (!target) return "";
       const drawable = render._allDrawables[target.drawableID];
       return drawable._position[1];
+    }
+
+    togglePrecision(args) {
+      const camera = allCameras[args.CAMERA];
+      if (camera) {
+        camera.precisionMode = args.TOGGLE === "enable";
+      }
+    }
+
+    isPreciseMode(args) {
+      const camera = allCameras[args.CAMERA];
+      return camera && camera.precisionMode;
     }
   }
 
