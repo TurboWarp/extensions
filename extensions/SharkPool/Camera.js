@@ -365,7 +365,7 @@
         y: drawable._position[1],
         dir: drawable._direction,
         sx: drawable._scale[0],
-        sy: drawable._scale[1]
+        sy: drawable._scale[1],
       });
 
       drawable._position[0] = cam.unalteredPosition[0];
@@ -377,7 +377,7 @@
       drawable._skinScaleDirty = true;
       drawable._rotationCenterDirty = true;
       drawable._calculateTransform();
-    }
+    };
 
     normalize(target);
     for (let i = 0; i < candidateIds.length; i++) {
@@ -734,7 +734,9 @@
           {
             opcode: "togglePrecision",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("[TOGGLE] touch precision in camera [CAMERA]"),
+            text: Scratch.translate(
+              "[TOGGLE] touch precision in camera [CAMERA]"
+            ),
             arguments: {
               TOGGLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -747,7 +749,9 @@
             opcode: "isPreciseMode",
             blockType: Scratch.BlockType.BOOLEAN,
             disableMonitor: true,
-            text: Scratch.translate("touch precision in camera [CAMERA] enabled?"),
+            text: Scratch.translate(
+              "touch precision in camera [CAMERA] enabled?"
+            ),
             arguments: {
               CAMERA: { type: Scratch.ArgumentType.STRING, menu: "CAMERAS" },
             },
@@ -773,8 +777,8 @@
             items: [
               { text: Scratch.translate("enable"), value: "enable" },
               { text: Scratch.translate("disable"), value: "disable" },
-            ]
-          }
+            ],
+          },
         },
       };
     }
