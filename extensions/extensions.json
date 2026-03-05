@@ -9,6 +9,7 @@
   "pointerlock",
   "cursor",
   "runtime-options",
+  "juanluber/stage-ui",
   "fetch",
   "text",
   "local-storage",
