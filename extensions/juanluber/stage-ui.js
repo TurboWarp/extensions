@@ -7,7 +7,9 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error(Scratch.translate("This extension must be run unsandboxed."));
+    throw new Error(
+      Scratch.translate("This extension must be run unsandboxed.")
+    );
   }
 
   const runtime = Scratch.vm.runtime;
@@ -116,19 +118,17 @@
   (function repositionLoop() {
     for (const [id, item] of ctrls.entries()) {
       const { x, y, w, h } = item.meta || {};
-      if (typeof x === "number" && typeof y === "number" && typeof w === "number" && typeof h === "number") {
+      if (
+        typeof x === "number" &&
+        typeof y === "number" &&
+        typeof w === "number" &&
+        typeof h === "number"
+      ) {
         setWrapRect(id, x, y, w, h);
       }
     }
     requestAnimationFrame(repositionLoop);
   })();
-
-  function clearWrap(id) {
-    const item = ctrls.get(String(id));
-    if (!item) return;
-    item.wrap.innerHTML = "";
-    item.el = null;
-  }
 
   function createInput({ id, x, y, w, h, placeholder, value, fontSize }) {
     id = String(id);
@@ -146,7 +146,8 @@
 
     wrap.appendChild(el);
     const item = ctrls.get(id);
-    item.el = el; item.kind = "input";
+    item.el = el;
+    item.kind = "input";
     registerCommonWrapMeta(id, x, y, w, h);
   }
 
@@ -166,7 +167,8 @@
 
     wrap.appendChild(el);
     const item = ctrls.get(id);
-    item.el = el; item.kind = "textarea";
+    item.el = el;
+    item.kind = "textarea";
     registerCommonWrapMeta(id, x, y, w, h);
   }
 
@@ -180,7 +182,7 @@
 
     const parts = String(optionsCsv ?? "")
       .split(",")
-      .map(s => s.trim())
+      .map((s) => s.trim())
       .filter(Boolean);
 
     for (const p of parts) {
@@ -196,7 +198,8 @@
 
     wrap.appendChild(el);
     const item = ctrls.get(id);
-    item.el = el; item.kind = "select";
+    item.el = el;
+    item.kind = "select";
     registerCommonWrapMeta(id, x, y, w, h);
   }
 
@@ -215,7 +218,8 @@
 
     wrap.appendChild(el);
     const item = ctrls.get(id);
-    item.el = el; item.kind = "button";
+    item.el = el;
+    item.kind = "button";
     registerCommonWrapMeta(id, x, y, w, h);
   }
 
@@ -235,7 +239,8 @@
     container.style.borderRadius = "10px";
     container.style.padding = "10px 12px";
     container.style.background = "rgba(255,255,255,.92)";
-    container.style.fontSize = (Number(fontSize) > 0 ? Number(fontSize) : 16) + "px";
+    container.style.fontSize =
+      (Number(fontSize) > 0 ? Number(fontSize) : 16) + "px";
 
     const el = document.createElement("input");
     el.type = "checkbox";
@@ -251,7 +256,8 @@
     wrap.appendChild(container);
 
     const item = ctrls.get(id);
-    item.el = el; item.kind = "checkbox";
+    item.el = el;
+    item.kind = "checkbox";
     registerCommonWrapMeta(id, x, y, w, h);
   }
 
@@ -276,12 +282,12 @@
 
     const parts = String(optionsCsv ?? "")
       .split(",")
-      .map(s => s.trim())
+      .map((s) => s.trim())
       .filter(Boolean);
 
     const name = `domui_radio_${id}_${Math.random().toString(16).slice(2)}`;
 
-    let current = (value != null ? String(value) : "");
+    let current = value != null ? String(value) : "";
     for (const p of parts) {
       const row = document.createElement("label");
       row.style.display = "flex";
@@ -292,7 +298,7 @@
       r.type = "radio";
       r.name = name;
       r.value = p;
-      r.checked = (p === current);
+      r.checked = p === current;
 
       const t = document.createElement("span");
       t.textContent = p;
@@ -308,7 +314,8 @@
 
     wrap.appendChild(box);
     const item = ctrls.get(id);
-    item.el = box; item.kind = "radio";
+    item.el = box;
+    item.kind = "radio";
     item.meta.radioName = name;
     registerCommonWrapMeta(id, x, y, w, h);
   }
@@ -318,16 +325,22 @@
     const item = ctrls.get(id);
     if (!item) return;
 
-    if (item.kind === "input" || item.kind === "textarea" || item.kind === "select") {
+    if (
+      item.kind === "input" ||
+      item.kind === "textarea" ||
+      item.kind === "select"
+    ) {
       if (item.el) item.el.value = String(value ?? "");
     } else if (item.kind === "checkbox") {
-      if (item.el) item.el.checked = String(value) === "1" || String(value).toLowerCase() === "true";
+      if (item.el)
+        item.el.checked =
+          String(value) === "1" || String(value).toLowerCase() === "true";
     } else if (item.kind === "radio") {
       // value = opción
       const wrap = item.wrap;
       const inputs = wrap.querySelectorAll(`input[type="radio"]`);
       for (const r of inputs) {
-        r.checked = (r.value === String(value));
+        r.checked = r.value === String(value);
       }
     } else if (item.kind === "button") {
       // no aplica
@@ -339,7 +352,11 @@
     const item = ctrls.get(id);
     if (!item) return "";
 
-    if (item.kind === "input" || item.kind === "textarea" || item.kind === "select") {
+    if (
+      item.kind === "input" ||
+      item.kind === "textarea" ||
+      item.kind === "select"
+    ) {
       return item.el ? String(item.el.value ?? "") : "";
     }
     if (item.kind === "checkbox") {
@@ -404,7 +421,11 @@
         name: Scratch.translate("Stage UI"),
         blocks: [
           // Eventos
-          { blockType: Scratch.BlockType.EVENT, opcode: "whenAnyChanged", text: Scratch.translate("when any UI changes") },
+          {
+            blockType: Scratch.BlockType.EVENT,
+            opcode: "whenAnyChanged",
+            text: Scratch.translate("when any UI changes"),
+          },
           {
             blockType: Scratch.BlockType.HAT,
             opcode: "whenIdChanged",
@@ -419,14 +440,19 @@
           {
             opcode: "createInput",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("input [ID] x [X] y [Y] w [W] h [H] ph [PH] val [VAL] fs [FS]"),
+            text: Scratch.translate(
+              "input [ID] x [X] y [Y] w [W] h [H] ph [PH] val [VAL] fs [FS]"
+            ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 20 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 20 },
               W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 260 },
               H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 44 },
-              PH: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("Type...") },
+              PH: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("Type..."),
+              },
               VAL: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
               FS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 16 },
             },
@@ -434,14 +460,19 @@
           {
             opcode: "createTextarea",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("textarea [ID] x [X] y [Y] w [W] h [H] ph [PH] val [VAL] fs [FS]"),
+            text: Scratch.translate(
+              "textarea [ID] x [X] y [Y] w [W] h [H] ph [PH] val [VAL] fs [FS]"
+            ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "note" },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 20 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 80 },
               W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 360 },
               H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 120 },
-              PH: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("Text...") },
+              PH: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("Text..."),
+              },
               VAL: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
               FS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 16 },
             },
@@ -449,14 +480,19 @@
           {
             opcode: "createSelect",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("select [ID] x [X] y [Y] w [W] h [H] opts [OPT] val [VAL] fs [FS]"),
+            text: Scratch.translate(
+              "select [ID] x [X] y [Y] w [W] h [H] opts [OPT] val [VAL] fs [FS]"
+            ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "color" },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 20 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 220 },
               W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 220 },
               H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 44 },
-              OPT: { type: Scratch.ArgumentType.STRING, defaultValue: "Red,Green,Blue" },
+              OPT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Red,Green,Blue",
+              },
               VAL: { type: Scratch.ArgumentType.STRING, defaultValue: "Green" },
               FS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 16 },
             },
@@ -464,7 +500,9 @@
           {
             opcode: "createButton",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("button [ID] x [X] y [Y] w [W] h [H] text [TXT] fs [FS]"),
+            text: Scratch.translate(
+              "button [ID] x [X] y [Y] w [W] h [H] text [TXT] fs [FS]"
+            ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "ok" },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 260 },
@@ -478,14 +516,19 @@
           {
             opcode: "createCheckbox",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("checkbox [ID] x [X] y [Y] w [W] h [H] text [TXT] on? [CHK] fs [FS]"),
+            text: Scratch.translate(
+              "checkbox [ID] x [X] y [Y] w [W] h [H] text [TXT] on? [CHK] fs [FS]"
+            ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "agree" },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 20 },
               Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 280 },
               W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 260 },
               H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 44 },
-              TXT: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("I agree") },
+              TXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate("I agree"),
+              },
               CHK: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               FS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 16 },
             },
@@ -493,7 +536,9 @@
           {
             opcode: "createRadio",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("radio [ID] x [X] y [Y] w [W] h [H] opts [OPT] val [VAL] fs [FS]"),
+            text: Scratch.translate(
+              "radio [ID] x [X] y [Y] w [W] h [H] opts [OPT] val [VAL] fs [FS]"
+            ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "mode" },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 300 },
@@ -519,29 +564,79 @@
               H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 44 },
             },
           },
-          { opcode: "show", blockType: Scratch.BlockType.COMMAND, text: Scratch.translate("show [ID]"),
-            arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" } } },
-          { opcode: "hide", blockType: Scratch.BlockType.COMMAND, text: Scratch.translate("hide [ID]"),
-            arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" } } },
-          { opcode: "remove", blockType: Scratch.BlockType.COMMAND, text: Scratch.translate("remove [ID]"),
-            arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" } } },
-          { opcode: "focus", blockType: Scratch.BlockType.COMMAND, text: Scratch.translate("focus [ID]"),
-            arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" } } },
+          {
+            opcode: "show",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("show [ID]"),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" },
+            },
+          },
+          {
+            opcode: "hide",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("hide [ID]"),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" },
+            },
+          },
+          {
+            opcode: "remove",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("remove [ID]"),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" },
+            },
+          },
+          {
+            opcode: "focus",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("focus [ID]"),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" },
+            },
+          },
 
           // Valores (más fácil)
-          { opcode: "setValue", blockType: Scratch.BlockType.COMMAND, text: Scratch.translate("set [ID] to [VAL]"),
+          {
+            opcode: "setValue",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set [ID] to [VAL]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" },
               VAL: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
-            } },
-          { opcode: "getValue", blockType: Scratch.BlockType.REPORTER, text: Scratch.translate("value of [ID]"),
-            arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" } } },
+            },
+          },
+          {
+            opcode: "getValue",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("value of [ID]"),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "name" },
+            },
+          },
 
-          { opcode: "lastId", blockType: Scratch.BlockType.REPORTER, text: Scratch.translate("last ID") },
-          { opcode: "lastValue", blockType: Scratch.BlockType.REPORTER, text: Scratch.translate("last value") },
+          {
+            opcode: "lastId",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("last ID"),
+          },
+          {
+            opcode: "lastValue",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("last value"),
+          },
 
-          { opcode: "idsCsv", blockType: Scratch.BlockType.REPORTER, text: Scratch.translate("all IDs (CSV)") },
-          { opcode: "valuesJson", blockType: Scratch.BlockType.REPORTER, text: Scratch.translate("all values (JSON)") },
+          {
+            opcode: "idsCsv",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("all IDs (CSV)"),
+          },
+          {
+            opcode: "valuesJson",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("all values (JSON)"),
+          },
         ],
       };
     }
@@ -561,55 +656,112 @@
 
     createInput(args) {
       createInput({
-        id: args.ID, x: args.X, y: args.Y, w: args.W, h: args.H,
-        placeholder: args.PH, value: args.VAL, fontSize: args.FS
+        id: args.ID,
+        x: args.X,
+        y: args.Y,
+        w: args.W,
+        h: args.H,
+        placeholder: args.PH,
+        value: args.VAL,
+        fontSize: args.FS,
       });
     }
     createTextarea(args) {
       createTextarea({
-        id: args.ID, x: args.X, y: args.Y, w: args.W, h: args.H,
-        placeholder: args.PH, value: args.VAL, fontSize: args.FS
+        id: args.ID,
+        x: args.X,
+        y: args.Y,
+        w: args.W,
+        h: args.H,
+        placeholder: args.PH,
+        value: args.VAL,
+        fontSize: args.FS,
       });
     }
     createSelect(args) {
       createSelect({
-        id: args.ID, x: args.X, y: args.Y, w: args.W, h: args.H,
-        optionsCsv: args.OPT, value: args.VAL, fontSize: args.FS
+        id: args.ID,
+        x: args.X,
+        y: args.Y,
+        w: args.W,
+        h: args.H,
+        optionsCsv: args.OPT,
+        value: args.VAL,
+        fontSize: args.FS,
       });
     }
     createButton(args) {
       createButton({
-        id: args.ID, x: args.X, y: args.Y, w: args.W, h: args.H,
-        label: args.TXT, fontSize: args.FS
+        id: args.ID,
+        x: args.X,
+        y: args.Y,
+        w: args.W,
+        h: args.H,
+        label: args.TXT,
+        fontSize: args.FS,
       });
     }
     createCheckbox(args) {
       createCheckbox({
-        id: args.ID, x: args.X, y: args.Y, w: args.W, h: args.H,
-        label: args.TXT, checked: Number(args.CHK) !== 0, fontSize: args.FS
+        id: args.ID,
+        x: args.X,
+        y: args.Y,
+        w: args.W,
+        h: args.H,
+        label: args.TXT,
+        checked: Number(args.CHK) !== 0,
+        fontSize: args.FS,
       });
     }
     createRadio(args) {
       createRadioGroup({
-        id: args.ID, x: args.X, y: args.Y, w: args.W, h: args.H,
-        optionsCsv: args.OPT, value: args.VAL, fontSize: args.FS
+        id: args.ID,
+        x: args.X,
+        y: args.Y,
+        w: args.W,
+        h: args.H,
+        optionsCsv: args.OPT,
+        value: args.VAL,
+        fontSize: args.FS,
       });
     }
 
-    setPos(args) { registerCommonWrapMeta(args.ID, args.X, args.Y, args.W, args.H); }
-    show(args) { show(args.ID); }
-    hide(args) { hide(args.ID); }
-    remove(args) { remove(args.ID); }
-    focus(args) { focus(args.ID); }
+    setPos(args) {
+      registerCommonWrapMeta(args.ID, args.X, args.Y, args.W, args.H);
+    }
+    show(args) {
+      show(args.ID);
+    }
+    hide(args) {
+      hide(args.ID);
+    }
+    remove(args) {
+      remove(args.ID);
+    }
+    focus(args) {
+      focus(args.ID);
+    }
 
-    setValue(args) { setValue(args.ID, args.VAL); }
-    getValue(args) { return getValue(args.ID); }
+    setValue(args) {
+      setValue(args.ID, args.VAL);
+    }
+    getValue(args) {
+      return getValue(args.ID);
+    }
 
-    lastId() { return lastId; }
-    lastValue() { return lastValue; }
+    lastId() {
+      return lastId;
+    }
+    lastValue() {
+      return lastValue;
+    }
 
-    idsCsv() { return idsCsv(); }
-    valuesJson() { return valuesJson(); }
+    idsCsv() {
+      return idsCsv();
+    }
+    valuesJson() {
+      return valuesJson();
+    }
   }
 
   Scratch.extensions.register(new DomUI());
