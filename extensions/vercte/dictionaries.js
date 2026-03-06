@@ -2,8 +2,8 @@
 // ID: verctedictionaries
 // Description: Use the power of dictionaries in your project.
 // By: Vercte <https://scratch.mit.edu/users/lolecksdeehaha/>
-, LSPECTRONIZTAR <https://scratch.mit.edu/users/LSPECTRONIZTAR/>
-// License: MIT
+// By: LSPECTRONIZTAR <https://scratch.mit.edu/users/LSPECTRONIZTAR/>
+// License: MPL-2.0
 
 /* generated l10n code */ Scratch.translate.setup({
   fi: {
