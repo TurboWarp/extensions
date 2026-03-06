@@ -1,5 +1,5 @@
 // Name: Stage UI
-// ID: juanbermudezstageui
+// ID: juanluberstageui
 // Description: Create simple text inputs, buttons, and other UI controls over the stage.
 // License: MPL-2.0
 
@@ -417,7 +417,7 @@
   class DomUI {
     getInfo() {
       return {
-        id: "juanbermudezstageui",
+        id: "juanluberstageui",
         name: Scratch.translate("Stage UI"),
         blocks: [
           // Eventos
