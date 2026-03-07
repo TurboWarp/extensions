@@ -676,7 +676,7 @@
      */
     formatKeyValue(key = "", value = "") {
       const { quote } = kvHelper;
-      // REVIEW this makes sure output is compatible with parse by avoiding " or spaces etc
+      // make sure output is compatible with parse by avoiding " or spaces etc
       key = String(key).trim().replace(/[^\w]/, "");
       value = String(value).trim();
       if (key === "" && value === "") return "";
@@ -1476,8 +1476,6 @@
     NOTE: `${EXT_ID}_whenNoteOnOff`,
     NOTEANY: `${EXT_ID}_whenAnyNoteOnOff`,
     MIDI: `${EXT_ID}_whenMidiEvent`,
-    // not currently implemented
-    // CC: `${EXT_ID}_whenCC`
   };
   /**
    * Block separator constant
@@ -1583,6 +1581,18 @@
               },
             },
           },
+          {
+            opcode: "getDevicesAsJSON",
+            text: Scratch.translate("[DEVICE_TYPE] devices as JSON"),
+            blockType: Scratch.BlockType.REPORTER,
+            arguments: {
+              DEVICE_TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "DEVICE_TYPES",
+                defaultValue: "input",
+              },
+            },
+          },
           SEPARATOR,
           {
             opcode: "whenNoteOnOff",
@@ -1685,7 +1695,14 @@
           {
             opcode: "getActiveNotes",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("Active Notes"),
+            text: Scratch.translate("Active Notes as [FORMAT]"),
+            arguments: {
+              FORMAT: {
+                menu: "OUT_FORMAT",
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "JSON",
+              },
+            },
           },
           {
             opcode: "numActiveNotes",
@@ -2070,6 +2087,19 @@
               },
             ],
           },
+          OUT_FORMAT: {
+            acceptReporters: true,
+            items: [
+              {
+                value: "JSON",
+                text: Scratch.translate("JSON"),
+              },
+              {
+                value: "list",
+                text: Scratch.translate("List"),
+              },
+            ],
+          },
           // taken from /Lily/ListTools.js
           lists: {
             acceptReporters: true,
@@ -2121,10 +2151,6 @@
             vm.runtime.startHats(HATS.NOTE);
             vm.runtime.startHats(HATS.NOTEANY);
             break;
-          // FUTURE - support a "whenCC" block if needed
-          // case "cc":
-          //   vm.runtime.startHats(HATS.CC);
-          //   break;
         }
       });
     }
@@ -2199,6 +2225,19 @@
       if (!device) return "";
       const prop = Scratch.Cast.toString(DEVICE_PROP);
       return device[prop] ?? "";
+    }
+    getDevicesAsJSON({ DEVICE_TYPE }, util) {
+      const deviceType = Scratch.Cast.toString(DEVICE_TYPE).toLowerCase();
+      const deviceList =
+        deviceType === "input" ? this.midi.inputs : this.midi.outputs;
+
+      const output = deviceList.map((device) => ({
+        id: device.id,
+        name: device.name || device.id,
+        state: device.state,
+        manufacturer: device.manufacturer,
+      }));
+      return JSON.stringify(output);
     }
     inputDevicesMenu() {
       const inputList = this.midi.inputs.map((d) => ({
@@ -2290,7 +2329,7 @@
 
       if (!event) {
         if (EVENT) {
-          console.debug('Unable to parse output text', EVENT);
+          console.debug("Unable to parse output text", EVENT);
         }
         return;
       }
@@ -2411,7 +2450,6 @@
       let value2 = Scratch.Cast.toNumber(VALUE2);
       value2 = Math.max(0, Math.min(value2, 127));
 
-      // REVIEW - should OUTPUT_DEVICES be changed to output device index instead of id?
       const device = this._getDeviceIndex(DEVICE, "output");
       // FUTURE this may make sense to get moved out to helper alongside rawMessageToMidi
       /** @type {MidiEvent} */
@@ -2454,10 +2492,13 @@
         );
       }
     }
-    getActiveNotes(args, util) {
+    getActiveNotes({ FORMAT }, util) {
       const notes = Array.from(this.recorder.getActiveNotes());
       setThreadActiveNotes(util.thread, { notes });
-      return notes.map((note) => note._str ?? midiToString(note)).join("\n");
+      const isJSON = Scratch.Cast.toString(FORMAT).toUpperCase() === "JSON";
+      return isJSON
+        ? JSON.stringify(notes.map((evt) => this._cleanEventForJSON(evt)))
+        : notes.map((note) => note._str ?? midiToString(note)).join("\n");
     }
     getActiveNoteByIndex({ INDEX }, util) {
       let active = getThreadActiveNotes(util.thread);
@@ -2512,13 +2553,16 @@
       // NOTE will be null if could not parse
       const event = stringToMidi(raw);
 
-      // REVIEW - remove value1/value2 if already specified by event spec?
+      return JSON.stringify(this._cleanEventForJSON(event));
+    }
+    _cleanEventForJSON(inEvent) {
+      const { _str, ...event } = inEvent;
+      // remove value1/value2 if already specified by event spec b/c will be redundant
       if (event && ("pitch" in event || "value" in event)) {
         delete event.value1;
         delete event.value2;
       }
-      // QUESTION does this need an error handler?
-      return JSON.stringify(event);
+      return event;
     }
     jsonToEvent({ TEXT }, util) {
       const raw = Scratch.Cast.toString(TEXT);
