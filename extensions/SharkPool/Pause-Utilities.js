@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.8.1
+// Version V.1.8.2
 
 (function (Scratch) {
   "use strict";
@@ -25,82 +25,10 @@
 
   // Inject Packager Pause Module (minified)
   // https://github.com/TurboWarp/packager/blob/master/src/addons/pause.js
-  // eslint-disable-next-line
-  const STATUS_PROMISE_WAIT = 1,
-    STATUS_DONE = 4;
-  let paused = !1,
-    pausedThreadState = new WeakMap(),
-    audioContextStateChange = Promise.resolve();
-  const setPaused = (e) => {
-      if ((paused = e)) {
-        for (let t of ((audioContextStateChange = audioContextStateChange.then(
-          () => vm.runtime.audioEngine.audioContext.suspend()
-        )),
-        vm.runtime.ioDevices.clock._paused ||
-          vm.runtime.ioDevices.clock.pause(),
-        vm.runtime.threads))
-          if (!t.updateMonitor && !pausedThreadState.has(t)) {
-            let a = { pauseTime: vm.runtime.currentMSecs, status: t.status };
-            pausedThreadState.set(t, a), (t.status = 1);
-          }
-        vm.runtime.emit("PROJECT_RUN_STOP"), vm.runtime.emit("RUNTIME_PAUSED");
-      } else {
-        (audioContextStateChange = audioContextStateChange.then(() =>
-          vm.runtime.audioEngine.audioContext.resume()
-        )),
-          vm.runtime.ioDevices.clock.resume();
-        let i = Date.now();
-        for (let s of vm.runtime.threads) {
-          let r = pausedThreadState.get(s);
-          if (r) {
-            let n = s.peekStackFrame();
-            if (n && n.executionContext && n.executionContext.timer) {
-              let u = i - r.pauseTime;
-              n.executionContext.timer.startTime += u;
-            }
-            if (
-              (s.compatibilityStackFrame &&
-                s.compatibilityStackFrame.timer &&
-                (s.compatibilityStackFrame.timer.startTime += i - r.pauseTime),
-              s.timer)
-            ) {
-              let o = i - r.pauseTime;
-              s.timer.startTime += o;
-            }
-            s.status = r.status;
-          }
-        }
-        (pausedThreadState = new WeakMap()),
-          vm.runtime.emit("RUNTIME_UNPAUSED");
-      }
-    },
-    ensurePausedThreadIsStillPaused = (e) => {
-      if (4 === e.status) return;
-      let t = pausedThreadState.get(e);
-      t && 1 !== e.status && ((t.status = e.status), (e.status = 1));
-    },
-    originalStepThreads = vm.runtime.sequencer.stepThreads;
-  vm.runtime.sequencer.stepThreads = function () {
-    if (paused)
-      for (let e of this.runtime.threads) ensurePausedThreadIsStillPaused(e);
-    return originalStepThreads.call(this);
-  };
-  const originalGreenFlag = vm.runtime.greenFlag;
-  vm.runtime.greenFlag = function () {
-    return setPaused(!1), originalGreenFlag.call(this);
-  };
-  const originalStartHats = vm.runtime.startHats;
-  vm.runtime.startHats = function (...e) {
-    return paused ? [] : originalStartHats.apply(this, e);
-  };
-  const originalGetMonitorThreadCount = vm.runtime._getMonitorThreadCount;
-  (vm.runtime._getMonitorThreadCount = function (e) {
-    let t = originalGetMonitorThreadCount.call(this, e);
-    if (paused) for (let a of e) pausedThreadState.has(a) && t++;
-    return t;
-  }),
-    (vm.setPaused = setPaused),
-    (vm.isPaused = () => paused);
+  /* eslint-disable */
+  // prettier-ignore
+  const STATUS_PROMISE_WAIT=1,STATUS_DONE=4;let paused=!1,pausedThreadState=new WeakMap,audioContextStateChange=Promise.resolve();const setPaused=e=>{if(paused=e){for(let t of(audioContextStateChange=audioContextStateChange.then(()=>vm.runtime.audioEngine.audioContext.suspend()),vm.runtime.ioDevices.clock._paused||vm.runtime.ioDevices.clock.pause(),vm.runtime.threads))if(!t.updateMonitor&&!pausedThreadState.has(t)){let a={pauseTime:vm.runtime.currentMSecs,status:t.status};pausedThreadState.set(t,a),t.status=1}vm.runtime.emit("PROJECT_RUN_STOP"),vm.runtime.emit("RUNTIME_PAUSED")}else{audioContextStateChange=audioContextStateChange.then(()=>vm.runtime.audioEngine.audioContext.resume()),vm.runtime.ioDevices.clock.resume();let i=Date.now();for(let s of vm.runtime.threads){let r=pausedThreadState.get(s);if(r){let n=s.peekStackFrame();if(n&&n.executionContext&&n.executionContext.timer){let u=i-r.pauseTime;n.executionContext.timer.startTime+=u}if(s.compatibilityStackFrame&&s.compatibilityStackFrame.timer&&(s.compatibilityStackFrame.timer.startTime+=i-r.pauseTime),s.timer){let o=i-r.pauseTime;s.timer.startTime+=o}s.status=r.status}}pausedThreadState=new WeakMap,vm.runtime.emit("RUNTIME_UNPAUSED")}},ensurePausedThreadIsStillPaused=e=>{if(4===e.status)return;let t=pausedThreadState.get(e);t&&1!==e.status&&(t.status=e.status,e.status=1)},originalStepThreads=vm.runtime.sequencer.stepThreads;vm.runtime.sequencer.stepThreads=function(){if(paused)for(let e of this.runtime.threads)ensurePausedThreadIsStillPaused(e);return originalStepThreads.call(this)};const originalGreenFlag=vm.runtime.greenFlag;vm.runtime.greenFlag=function(){return setPaused(!1),originalGreenFlag.call(this)};const originalStartHats=vm.runtime.startHats;vm.runtime.startHats=function(...e){return paused?[]:originalStartHats.apply(this,e)};const originalGetMonitorThreadCount=vm.runtime._getMonitorThreadCount;vm.runtime._getMonitorThreadCount=function(e){let t=originalGetMonitorThreadCount.call(this,e);if(paused)for(let a of e)pausedThreadState.has(a)&&t++;return t},vm.setPaused=setPaused,vm.isPaused=()=>paused;
+  /* eslint-enable */
 
   // check if the pause button exists, we will use that if availiable
   const pauseButton = document.querySelector(
@@ -201,6 +129,11 @@
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
             },
+          },
+          {
+            opcode: "pauseOtherScripts",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("pause other scripts in myself")
           },
           "---",
           {
@@ -306,6 +239,7 @@
         if (target.isOriginal && !target.isStage)
           spriteNames.push(target.getName());
       }
+
       return spriteNames.length > 0 ? spriteNames : [""];
     }
 
@@ -390,6 +324,26 @@
             : runtime.getSpriteTargetByName(args.SPRITE);
       if (!target) return;
       this.searchThreads(target.id, 0);
+    }
+
+    pauseOtherScripts(args, util) {
+      const myThread = util.thread;
+      const myTarget = util.target;
+
+      runtime.threads.forEach(thread => {
+        if (thread.target.id === myTarget.id && thread !== myThread) {
+          const oldData = pausedSprites.get(thread.getId());
+          if (!oldData) {
+            pausedSprites.set(thread.getId(), {
+              thread,
+              ogStatus: thread.status,
+              newStatus: 5
+            });
+          }
+        }
+      });
+
+      runtime.sequencer.stepThreads();
     }
 
     pauseClones(args, util) {
