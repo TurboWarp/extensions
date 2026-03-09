@@ -968,7 +968,7 @@
         }
       }
 
-      const rgb = Cast.toRgbColorList(color).map(c => c / 255);
+      const rgb = Cast.toRgbColorList(color).map((c) => c / 255);
       rgb.push(alpha);
 
       render.setBackgroundColor(...rgb);
