@@ -957,17 +957,40 @@
     }
 
     setSpaceColor(args) {
-      const rgb = Cast.toRgbColorList(args.COLOR);
-      render.setBackgroundColor(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
+      let color = args.COLOR;
+      let alpha = 1;
+
+      // since cast doesnt handle alpha, we do it ourselves.
+      if (typeof color === "string" && color.startsWith("#")) {
+        if (color.length > 7) {
+          alpha = parseInt(color.substring(7), 16) / 255;
+          color = color.substring(0, 7);
+        }
+      }
+
+      const rgb = Cast.toRgbColorList(color).map(c => c / 255);
+      rgb.push(alpha);
+
+      render.setBackgroundColor(...rgb);
     }
 
     spaceColor() {
-      const rgb = render._backgroundColor3b;
-      let decimal = (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
-      if (decimal < 0) decimal += 0xffffff + 1;
+      const rgba = render._backgroundColor4f;
 
-      const hex = Number(decimal).toString(16);
-      return `#${"000000".substr(0, 6 - hex.length)}${hex}`;
+      const r = Math.round(rgba[0] * 255);
+      const g = Math.round(rgba[1] * 255);
+      const b = Math.round(rgba[2] * 255);
+
+      const decimal = (r << 16) + (g << 8) + b;
+      let hex = decimal.toString(16).padStart(6, "0");
+
+      // If alpha is used, add it to the hex
+      if (rgba[3] < 1) {
+        const alpha = Math.round(rgba[3] * 255);
+        hex += alpha.toString(16).padStart(2, "0");
+      }
+
+      return `#${hex}`;
     }
 
     setXY(args) {
