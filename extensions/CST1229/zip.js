@@ -667,14 +667,14 @@
     }
     isStringValid(string, partLength, validchars) {
       if (string.length % partLength !== 0) {
-        return false
+        return false;
       }
       for (let i = 0; i < string.length; i++) {
         if (!validchars.includes(string[i])) {
           return false;
         }
       }
-      return true
+      return true;
     }
     // get a file/folder by path
     getObj(path, zip = this.zip) {
@@ -763,7 +763,6 @@
             break;
           case "hex":
             {
-              
               if (!this.isStringValid(DATA, 2, "0123456789ABCDEF")) return;
               const dataArr = this.splitIntoParts(DATA, 2);
               DATA = Uint8Array.from(dataArr.map((o) => parseInt(o, 16)));
@@ -981,7 +980,8 @@
             break;
           case "hex":
             {
-              if (!this.isStringValid(CONTENT, 2, "0123456789ABCDEF")) return "";
+              if (!this.isStringValid(CONTENT, 2, "0123456789ABCDEF"))
+                return "";
               const dataArr = this.splitIntoParts(CONTENT, 2);
               const data = Uint8Array.from(dataArr.map((o) => parseInt(o, 16)));
               this.zips[this.zip].file(path, data, {
