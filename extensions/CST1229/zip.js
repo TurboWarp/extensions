@@ -665,6 +665,17 @@
       }
       return arr;
     }
+    isStringValid(string, partLength, validchars) {
+      if (string.length % partLength !== 0) {
+        return false;
+      }
+      for (let i = 0; i < string.length; i++) {
+        if (!validchars.includes(string[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
     // get a file/folder by path
     getObj(path, zip = this.zip) {
       // JSZip.prototype.files seems to be a null-prototype object
@@ -752,14 +763,14 @@
             break;
           case "hex":
             {
-              if (!/^(?:[0-9A-F]{2})*$/i.test(DATA)) return;
+              if (!this.isStringValid(DATA, 2, "0123456789ABCDEF")) return;
               const dataArr = this.splitIntoParts(DATA, 2);
               DATA = Uint8Array.from(dataArr.map((o) => parseInt(o, 16)));
             }
             break;
           case "binary":
             {
-              if (!/^(?:[01]{8})*$/i.test(DATA)) return;
+              if (!this.isStringValid(DATA, 8, "01")) return;
               const dataArr = this.splitIntoParts(DATA, 8);
               DATA = Uint8Array.from(dataArr.map((o) => parseInt(o, 2)));
             }
@@ -969,7 +980,8 @@
             break;
           case "hex":
             {
-              if (!/^(?:[0-9A-F]{2})*$/i.test(CONTENT)) return "";
+              if (!this.isStringValid(CONTENT, 2, "0123456789ABCDEF"))
+                return "";
               const dataArr = this.splitIntoParts(CONTENT, 2);
               const data = Uint8Array.from(dataArr.map((o) => parseInt(o, 16)));
               this.zips[this.zip].file(path, data, {
@@ -979,7 +991,7 @@
             break;
           case "binary":
             {
-              if (!/^(?:[01]{8})*$/i.test(CONTENT)) return "";
+              if (!this.isStringValid(CONTENT, 8, "01")) return "";
               const dataArr = this.splitIntoParts(CONTENT, 8);
               const data = Uint8Array.from(dataArr.map((o) => parseInt(o, 2)));
               this.zips[this.zip].file(path, data, {
