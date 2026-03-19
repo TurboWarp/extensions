@@ -98,10 +98,7 @@
 
       if (tier <= 11) {
         const scaledNumber = number / Math.pow(10, tier * 3);
-        return (
-          this.toFixedTrimmed(scaledNumber, decimalPlaces) +
-          kMBd[tier]
-        );
+        return this.toFixedTrimmed(scaledNumber, decimalPlaces) + kMBd[tier];
       }
 
       const illionNumber = Math.floor(Math.log10(Math.abs(number)) / 3) - 1;
@@ -142,9 +139,7 @@
       const scaledNumber =
         number / Math.pow(10, Math.floor(Math.log10(Math.abs(number)) / 3) * 3);
       return (
-        this.toFixedTrimmed(scaledNumber, decimalPlaces) +
-        " " +
-        illionString
+        this.toFixedTrimmed(scaledNumber, decimalPlaces) + " " + illionString
       );
     }
 
