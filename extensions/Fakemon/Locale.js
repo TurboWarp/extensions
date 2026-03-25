@@ -12,6 +12,13 @@ This is most important for adding new blocks, but should also be done for changi
 (async function (Scratch) {
   // Has to be async for fetching the lookup table
   "use strict";
+  let allAttemptedTranslations = [];
+  let allFailedTranslations = [];
+  Scratch.vm.on("PROJECT_START", () => {
+    // Reset translation lists
+    allAttemptedTranslations = [];
+    allFailedTranslations = [];
+  });
   let languageNameAndCodeLookupTableGLOBALIZED;
   const backupTable = {
     // Backup of the lookup table
@@ -15831,6 +15838,18 @@ This is most important for adding new blocks, but should also be done for changi
               },
             },
           },
+          {
+            opcode: "getallAttemptedTranslations",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("all strings with attempted translations"),
+            hideFromPalette: !showRecreatableBlocks,
+          },
+          {
+            opcode: "getAllFailedTranslations",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("all strings with failed translations"),
+            hideFromPalette: !showRecreatableBlocks,
+          },
         ],
         menus: {
           LANG_CODE: {
@@ -15949,9 +15968,15 @@ This is most important for adding new blocks, but should also be done for changi
       return JSON.stringify(localeObject[args.LANG]) || "{}";
     }
     translate(args) {
+      if (!allAttemptedTranslations.includes(args.TEXT)) {
+        allAttemptedTranslations.push(args.TEXT);
+      }
       try {
         return localeObject[args.LANG][args.TEXT];
       } catch {
+        if (!allFailedTranslations.includes(args.TEXT)) {
+          allFailedTranslations.push(args.TEXT);
+        }
         return args.TEXT;
       } // Fallback to default language
     }
@@ -16080,6 +16105,12 @@ This is most important for adding new blocks, but should also be done for changi
         }
       }
       return menuThusFar;
+    }
+    getallAttemptedTranslations() {
+      return JSON.stringify(allAttemptedTranslations);
+    }
+    getAllFailedTranslations() {
+      return JSON.stringify(allFailedTranslations);
     }
   }
   // @ts-ignore
