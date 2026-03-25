@@ -19,7 +19,7 @@ In the input, use JSON in the following format to register translations:
 ```json
 {
     "language-code":{
-        "text-in-your-language":"translation in other language",
+        "text in your language":"translation in other language",
         "more text in your language":"another translation in other language"
     },
     "other-language-code":{
@@ -56,7 +56,7 @@ The JSON follows a similar format to last time, but, since you're defining the l
 
 ```json
 {
-    "text-in-your-language":"translation in other language",
+    "text in your language":"translation in other language",
     "more text in your language":"another translation in other language"
     }
 ```
@@ -110,7 +110,7 @@ This block returns true if the afformentioned preferred language array contains 
 ```
 This block returns an array of language codes that are both preferred by the user and have registered translations.
 
-### Language Code <=> Name Conversions
+### Language Code ⇆ Name Conversions
 
 Sometimes, you might want to get the name from a language code or the code from a name. These blocks support the same languages as the Translate extension.
 
@@ -132,6 +132,18 @@ The last block you should know about is the translate block. It's what actually 
 ```
 
 This block uses the information set by the blocks in the **Working With Translation Information** section of this documentation to actually translate the text. If the specified text has no translation in that language, the input will be used instead. This is to prevent errors and projects with completely blank strings. In this case, an untranslated language is better than none.
+
+```scratchblocks
+(all strings with attempted translations ::#2a5fa0)
+```
+
+This block returns every piece of text that has had a translation block used on it as an array since the most recent green flag click. It's useful for providing translators with all strings that can be translated, including ones that have already been completed.
+
+```scratchblocks
+(all strings with failed translations ::#2a5fa0)
+```
+
+This block returns every translation that has failed since the most recent green flag click. It's useful for providing translators with strings that still need to be translated.
 
 ## Example <!--TODO: Make more examples and/or a sample project (priority: low-medium)-->
 
