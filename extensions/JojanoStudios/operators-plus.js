@@ -1,6 +1,6 @@
 // Name: Operators Plus
 // ID: jojanoOperatorsPlus
-// Description: Allows for some very useful operator functions to be used inside turbowarp.
+// Description: Allows for some very useful operator functions to be used inside TurboWarp.
 // By: JojanoStudios <https://scratch.mit.edu/users/JojanoStudios/>
 // License: MPL-2.0
 
