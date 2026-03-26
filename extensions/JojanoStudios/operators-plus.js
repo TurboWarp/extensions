@@ -31,7 +31,7 @@
             opcode: "replacethebunsinmysandwichwithcatfur",
             blockType: "reporter",
             text: Scratch.translate(
-              "replace all [NEEDLE] in [HAYSTACK] with [REPLACEMENT]",
+              "replace all [NEEDLE] in [HAYSTACK] with [REPLACEMENT]"
             ),
             arguments: {
               NEEDLE: { type: "string", defaultValue: "a" },
