@@ -4,261 +4,259 @@
 // By: JojanoStudios <https://scratch.mit.edu/users/JojanoStudios/>
 // License: MPL-2.0
 
-(function() {
-  'use strict';
+(function () {
+  "use strict";
 
   class OperatorsPlus {
     getInfo() {
       return {
-        id: 'operatorsplus',
-        name: 'Operators+',
-        color1: '#40bf4a',
-        color2: '#38a840',
-        color3: '#2d8f35',
+        id: "operatorsplus",
+        name: "Operators+",
+        color1: "#40bf4a",
+        color2: "#38a840",
+        color3: "#2d8f35",
         blocks: [
-
-          { blockType: 'label', text: 'String' },
-
-          {
-            opcode: 'countamountof',
-            blockType: 'reporter',
-            text: 'amount of [NEEDLE] in [HAYSTACK]',
-            arguments: {
-              NEEDLE:   { type: 'string', defaultValue: 'a' },
-              HAYSTACK: { type: 'string', defaultValue: 'banana' }
-            }
-          },
-          {
-            opcode: 'replacethebunsinmysandwichwithcatfur',
-            blockType: 'reporter',
-            text: 'replace all [NEEDLE] in [HAYSTACK] with [REPLACEMENT]',
-            arguments: {
-              NEEDLE:      { type: 'string', defaultValue: 'a' },
-              HAYSTACK:    { type: 'string', defaultValue: 'banana' },
-              REPLACEMENT: { type: 'string', defaultValue: 'o' }
-            }
-          },
-          {
-            opcode: 'splitwithitem',
-            blockType: 'reporter',
-            text: '[TEXT] split by [SEP] item [N]',
-            arguments: {
-              TEXT: { type: 'string', defaultValue: 'a,b,c' },
-              SEP:  { type: 'string', defaultValue: ',' },
-              N:    { type: 'number', defaultValue: 1 }
-            }
-          },
-          {
-            opcode: 'lengthofsplit',
-            blockType: 'reporter',
-            text: 'length of [TEXT] split by [SEP]',
-            arguments: {
-              TEXT: { type: 'string', defaultValue: 'a,b,c' },
-              SEP:  { type: 'string', defaultValue: ',' }
-            }
-          },
-          {
-            opcode: 'reverse',
-            blockType: 'reporter',
-            text: '[TEXT] reversed',
-            arguments: {
-              TEXT: { type: 'string', defaultValue: 'hello' }
-            }
-          },
-          {
-            opcode: 'trim',
-            blockType: 'reporter',
-            text: '[TEXT] trimmed',
-            arguments: {
-              TEXT: { type: 'string', defaultValue: '  hello  ' }
-            }
-          },
-          {
-            opcode: 'uppercase',
-            blockType: 'reporter',
-            text: '[TEXT] uppercase',
-            arguments: {
-              TEXT: { type: 'string', defaultValue: 'hello' }
-            }
-          },
-          {
-            opcode: 'lowercase',
-            blockType: 'reporter',
-            text: '[TEXT] lowercase',
-            arguments: {
-              TEXT: { type: 'string', defaultValue: 'HELLO' }
-            }
-          },
-          {
-            opcode: 'startswith',
-            blockType: 'Boolean',
-            text: '[TEXT] starts with [PREFIX]',
-            arguments: {
-              TEXT:   { type: 'string', defaultValue: 'hello world' },
-              PREFIX: { type: 'string', defaultValue: 'hello' }
-            }
-          },
-          {
-            opcode: 'endswith',
-            blockType: 'Boolean',
-            text: '[TEXT] ends with [SUFFIX]',
-            arguments: {
-              TEXT:   { type: 'string', defaultValue: 'hello world' },
-              SUFFIX: { type: 'string', defaultValue: 'world' }
-            }
-          },
-          {
-            opcode: 'indexof',
-            blockType: 'reporter',
-            text: 'index of [NEEDLE] in [HAYSTACK]',
-            arguments: {
-              NEEDLE:   { type: 'string', defaultValue: 'l' },
-              HAYSTACK: { type: 'string', defaultValue: 'hello' }
-            }
-          },
-          {
-            opcode: 'repeat',
-            blockType: 'reporter',
-            text: '[TEXT] repeated [N] times',
-            arguments: {
-              TEXT: { type: 'string', defaultValue: 'ab' },
-              N:    { type: 'number', defaultValue: 3 }
-            }
-          },
-          {
-            opcode: 'textstarttoend',
-            blockType: 'reporter',
-            text: '[TEXT] from letter [START] to [END]',
-            arguments: {
-              TEXT:  { type: 'string', defaultValue: 'hello world' },
-              START: { type: 'number', defaultValue: 1 },
-              END:   { type: 'number', defaultValue: 5 }
-            }
-          },
-
-          { blockType: 'label', text: 'Math' },
+          { blockType: "label", text: "String" },
 
           {
-            opcode: 'clampmycheeks',
-            blockType: 'reporter',
-            text: '[N] clamp between [MIN] and [MAX]',
+            opcode: "countamountof",
+            blockType: "reporter",
+            text: "amount of [NEEDLE] in [HAYSTACK]",
             arguments: {
-              N:   { type: 'number', defaultValue: 5 },
-              MIN: { type: 'number', defaultValue: 0 },
-              MAX: { type: 'number', defaultValue: 10 }
-            }
+              NEEDLE: { type: "string", defaultValue: "a" },
+              HAYSTACK: { type: "string", defaultValue: "banana" },
+            },
           },
           {
-            opcode: 'power',
-            blockType: 'reporter',
-            text: '[BASE] to the power of [EXP]',
+            opcode: "replacethebunsinmysandwichwithcatfur",
+            blockType: "reporter",
+            text: "replace all [NEEDLE] in [HAYSTACK] with [REPLACEMENT]",
             arguments: {
-              BASE: { type: 'number', defaultValue: 2 },
-              EXP:  { type: 'number', defaultValue: 8 }
-            }
+              NEEDLE: { type: "string", defaultValue: "a" },
+              HAYSTACK: { type: "string", defaultValue: "banana" },
+              REPLACEMENT: { type: "string", defaultValue: "o" },
+            },
           },
           {
-            opcode: 'numberrootthing',
-            blockType: 'reporter',
-            text: '[N] root of [X]',
+            opcode: "splitwithitem",
+            blockType: "reporter",
+            text: "[TEXT] split by [SEP] item [N]",
             arguments: {
-              N: { type: 'number', defaultValue: 3 },
-              X: { type: 'number', defaultValue: 27 }
-            }
+              TEXT: { type: "string", defaultValue: "a,b,c" },
+              SEP: { type: "string", defaultValue: "," },
+              N: { type: "number", defaultValue: 1 },
+            },
           },
           {
-            opcode: 'logbase',
-            blockType: 'reporter',
-            text: '[X] log base [BASE]',
+            opcode: "lengthofsplit",
+            blockType: "reporter",
+            text: "length of [TEXT] split by [SEP]",
             arguments: {
-              X:    { type: 'number', defaultValue: 100 },
-              BASE: { type: 'number', defaultValue: 10 }
-            }
+              TEXT: { type: "string", defaultValue: "a,b,c" },
+              SEP: { type: "string", defaultValue: "," },
+            },
           },
           {
-            opcode: 'sign',
-            blockType: 'reporter',
-            text: 'sign of [N]',
+            opcode: "reverse",
+            blockType: "reporter",
+            text: "[TEXT] reversed",
             arguments: {
-              N: { type: 'number', defaultValue: -5 }
-            }
+              TEXT: { type: "string", defaultValue: "hello" },
+            },
           },
           {
-            opcode: 'lerpfrom',
-            blockType: 'reporter',
-            text: 'lerp from [A] to [B] by [T]',
+            opcode: "trim",
+            blockType: "reporter",
+            text: "[TEXT] trimmed",
             arguments: {
-              A: { type: 'number', defaultValue: 0 },
-              B: { type: 'number', defaultValue: 100 },
-              T: { type: 'number', defaultValue: 0.5 }
-            }
+              TEXT: { type: "string", defaultValue: "  hello  " },
+            },
           },
           {
-            opcode: 'wrapbetween',
-            blockType: 'reporter',
-            text: '[N] wrap between [MIN] and [MAX]',
+            opcode: "uppercase",
+            blockType: "reporter",
+            text: "[TEXT] uppercase",
             arguments: {
-              N:   { type: 'number', defaultValue: 11 },
-              MIN: { type: 'number', defaultValue: 0 },
-              MAX: { type: 'number', defaultValue: 10 }
-            }
+              TEXT: { type: "string", defaultValue: "hello" },
+            },
           },
           {
-            opcode: 'decimals',
-            blockType: 'reporter',
-            text: '[N] with [D] decimals',
+            opcode: "lowercase",
+            blockType: "reporter",
+            text: "[TEXT] lowercase",
             arguments: {
-              N: { type: 'number', defaultValue: 3.14159 },
-              D: { type: 'number', defaultValue: 2 }
-            }
+              TEXT: { type: "string", defaultValue: "HELLO" },
+            },
+          },
+          {
+            opcode: "startswith",
+            blockType: "Boolean",
+            text: "[TEXT] starts with [PREFIX]",
+            arguments: {
+              TEXT: { type: "string", defaultValue: "hello world" },
+              PREFIX: { type: "string", defaultValue: "hello" },
+            },
+          },
+          {
+            opcode: "endswith",
+            blockType: "Boolean",
+            text: "[TEXT] ends with [SUFFIX]",
+            arguments: {
+              TEXT: { type: "string", defaultValue: "hello world" },
+              SUFFIX: { type: "string", defaultValue: "world" },
+            },
+          },
+          {
+            opcode: "indexof",
+            blockType: "reporter",
+            text: "index of [NEEDLE] in [HAYSTACK]",
+            arguments: {
+              NEEDLE: { type: "string", defaultValue: "l" },
+              HAYSTACK: { type: "string", defaultValue: "hello" },
+            },
+          },
+          {
+            opcode: "repeat",
+            blockType: "reporter",
+            text: "[TEXT] repeated [N] times",
+            arguments: {
+              TEXT: { type: "string", defaultValue: "ab" },
+              N: { type: "number", defaultValue: 3 },
+            },
+          },
+          {
+            opcode: "textstarttoend",
+            blockType: "reporter",
+            text: "[TEXT] from letter [START] to [END]",
+            arguments: {
+              TEXT: { type: "string", defaultValue: "hello world" },
+              START: { type: "number", defaultValue: 1 },
+              END: { type: "number", defaultValue: 5 },
+            },
           },
 
-          { blockType: 'label', text: 'Boolean' },
+          { blockType: "label", text: "Math" },
 
           {
-            opcode: 'between',
-            blockType: 'Boolean',
-            text: '[N] is between [MIN] and [MAX]',
+            opcode: "clampmycheeks",
+            blockType: "reporter",
+            text: "[N] clamp between [MIN] and [MAX]",
             arguments: {
-              N:   { type: 'number', defaultValue: 5 },
-              MIN: { type: 'number', defaultValue: 1 },
-              MAX: { type: 'number', defaultValue: 10 }
-            }
+              N: { type: "number", defaultValue: 5 },
+              MIN: { type: "number", defaultValue: 0 },
+              MAX: { type: "number", defaultValue: 10 },
+            },
           },
           {
-            opcode: 'integer',
-            blockType: 'Boolean',
-            text: '[N] is integer',
+            opcode: "power",
+            blockType: "reporter",
+            text: "[BASE] to the power of [EXP]",
             arguments: {
-              N: { type: 'number', defaultValue: 4 }
-            }
+              BASE: { type: "number", defaultValue: 2 },
+              EXP: { type: "number", defaultValue: 8 },
+            },
           },
           {
-            opcode: 'numeric',
-            blockType: 'Boolean',
-            text: '[TEXT] is numeric',
+            opcode: "numberrootthing",
+            blockType: "reporter",
+            text: "[N] root of [X]",
             arguments: {
-              TEXT: { type: 'string', defaultValue: '123' }
-            }
+              N: { type: "number", defaultValue: 3 },
+              X: { type: "number", defaultValue: 27 },
+            },
           },
           {
-            opcode: 'evensteven',
-            blockType: 'Boolean',
-            text: '[N] is even',
+            opcode: "logbase",
+            blockType: "reporter",
+            text: "[X] log base [BASE]",
             arguments: {
-              N: { type: 'number', defaultValue: 4 }
-            }
+              X: { type: "number", defaultValue: 100 },
+              BASE: { type: "number", defaultValue: 10 },
+            },
           },
           {
-            opcode: 'oddtodd',
-            blockType: 'Boolean',
-            text: '[N] is odd',
+            opcode: "sign",
+            blockType: "reporter",
+            text: "sign of [N]",
             arguments: {
-              N: { type: 'number', defaultValue: 3 }
-            }
-          }
+              N: { type: "number", defaultValue: -5 },
+            },
+          },
+          {
+            opcode: "lerpfrom",
+            blockType: "reporter",
+            text: "lerp from [A] to [B] by [T]",
+            arguments: {
+              A: { type: "number", defaultValue: 0 },
+              B: { type: "number", defaultValue: 100 },
+              T: { type: "number", defaultValue: 0.5 },
+            },
+          },
+          {
+            opcode: "wrapbetween",
+            blockType: "reporter",
+            text: "[N] wrap between [MIN] and [MAX]",
+            arguments: {
+              N: { type: "number", defaultValue: 11 },
+              MIN: { type: "number", defaultValue: 0 },
+              MAX: { type: "number", defaultValue: 10 },
+            },
+          },
+          {
+            opcode: "decimals",
+            blockType: "reporter",
+            text: "[N] with [D] decimals",
+            arguments: {
+              N: { type: "number", defaultValue: 3.14159 },
+              D: { type: "number", defaultValue: 2 },
+            },
+          },
 
-        ]
+          { blockType: "label", text: "Boolean" },
+
+          {
+            opcode: "between",
+            blockType: "Boolean",
+            text: "[N] is between [MIN] and [MAX]",
+            arguments: {
+              N: { type: "number", defaultValue: 5 },
+              MIN: { type: "number", defaultValue: 1 },
+              MAX: { type: "number", defaultValue: 10 },
+            },
+          },
+          {
+            opcode: "integer",
+            blockType: "Boolean",
+            text: "[N] is integer",
+            arguments: {
+              N: { type: "number", defaultValue: 4 },
+            },
+          },
+          {
+            opcode: "numeric",
+            blockType: "Boolean",
+            text: "[TEXT] is numeric",
+            arguments: {
+              TEXT: { type: "string", defaultValue: "123" },
+            },
+          },
+          {
+            opcode: "evensteven",
+            blockType: "Boolean",
+            text: "[N] is even",
+            arguments: {
+              N: { type: "number", defaultValue: 4 },
+            },
+          },
+          {
+            opcode: "oddtodd",
+            blockType: "Boolean",
+            text: "[N] is odd",
+            arguments: {
+              N: { type: "number", defaultValue: 3 },
+            },
+          },
+        ],
       };
     }
 
@@ -286,7 +284,7 @@
     splitwithitem({ TEXT, SEP, N }) {
       const parts = String(TEXT).split(String(SEP));
       const idx = Math.round(Number(N)) - 1;
-      if (idx < 0 || idx >= parts.length) return '';
+      if (idx < 0 || idx >= parts.length) return "";
       return parts[idx];
     }
 
@@ -295,7 +293,7 @@
     }
 
     reverse({ TEXT }) {
-      return String(TEXT).split('').reverse().join('');
+      return String(TEXT).split("").reverse().join("");
     }
 
     trim({ TEXT }) {
@@ -336,7 +334,9 @@
     }
 
     clampmycheeks({ N, MIN, MAX }) {
-      const n = Number(N), min = Number(MIN), max = Number(MAX);
+      const n = Number(N),
+        min = Number(MIN),
+        max = Number(MAX);
       return Math.min(Math.max(n, min), max);
     }
 
@@ -345,13 +345,15 @@
     }
 
     numberrootthing({ N, X }) {
-      const n = Number(N), x = Number(X);
+      const n = Number(N),
+        x = Number(X);
       if (n === 0) return 0;
       return Math.pow(x, 1 / n);
     }
 
     logbase({ X, BASE }) {
-      const x = Number(X), base = Number(BASE);
+      const x = Number(X),
+        base = Number(BASE);
       if (x <= 0 || base <= 0 || base === 1) return 0;
       return Math.log(x) / Math.log(base);
     }
@@ -361,17 +363,21 @@
     }
 
     lerpfrom({ A, B, T }) {
-      const a = Number(A), b = Number(B), t = Number(T);
+      const a = Number(A),
+        b = Number(B),
+        t = Number(T);
       return a + (b - a) * t;
     }
 
     wrapbetween({ N, MIN, MAX }) {
-      const n = Number(N), min = Number(MIN), max = Number(MAX);
+      const n = Number(N),
+        min = Number(MIN),
+        max = Number(MAX);
       const range = max - min;
       if (range === 0) return min;
-      return ((( n - min) % range) + range) % range + min;
+      return ((((n - min) % range) + range) % range) + min;
     }
-    
+
     decimals({ N, D }) {
       const decimals = Math.max(0, Math.round(Number(D)));
       return parseFloat(Number(N).toFixed(decimals));
