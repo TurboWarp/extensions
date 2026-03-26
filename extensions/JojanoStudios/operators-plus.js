@@ -11,17 +11,17 @@
     getInfo() {
       return {
         id: "operatorsplus",
-        name: "Operators+",
+        name: Scratch.translate("Operators+"),
         color1: "#40bf4a",
         color2: "#38a840",
         color3: "#2d8f35",
         blocks: [
-          { blockType: "label", text: "String" },
+          { blockType: "label", text: Scratch.translate("String") },
 
           {
-            opcode: "countamountof",
+            opcode: "amountofmcdonaldscheeseburgershidinginmybasement",
             blockType: "reporter",
-            text: "amount of [NEEDLE] in [HAYSTACK]",
+            text: Scratch.translate("amount of [NEEDLE] in [HAYSTACK]"),
             arguments: {
               NEEDLE: { type: "string", defaultValue: "a" },
               HAYSTACK: { type: "string", defaultValue: "banana" },
@@ -30,7 +30,9 @@
           {
             opcode: "replacethebunsinmysandwichwithcatfur",
             blockType: "reporter",
-            text: "replace all [NEEDLE] in [HAYSTACK] with [REPLACEMENT]",
+            text: Scratch.translate(
+              "replace all [NEEDLE] in [HAYSTACK] with [REPLACEMENT]",
+            ),
             arguments: {
               NEEDLE: { type: "string", defaultValue: "a" },
               HAYSTACK: { type: "string", defaultValue: "banana" },
@@ -40,7 +42,7 @@
           {
             opcode: "splitwithitem",
             blockType: "reporter",
-            text: "[TEXT] split by [SEP] item [N]",
+            text: Scratch.translate("[TEXT] split by [SEP] item [N]"),
             arguments: {
               TEXT: { type: "string", defaultValue: "a,b,c" },
               SEP: { type: "string", defaultValue: "," },
@@ -50,7 +52,7 @@
           {
             opcode: "lengthofsplit",
             blockType: "reporter",
-            text: "length of [TEXT] split by [SEP]",
+            text: Scratch.translate("length of [TEXT] split by [SEP]"),
             arguments: {
               TEXT: { type: "string", defaultValue: "a,b,c" },
               SEP: { type: "string", defaultValue: "," },
@@ -59,7 +61,7 @@
           {
             opcode: "reverse",
             blockType: "reporter",
-            text: "[TEXT] reversed",
+            text: Scratch.translate("[TEXT] reversed"),
             arguments: {
               TEXT: { type: "string", defaultValue: "hello" },
             },
@@ -67,7 +69,7 @@
           {
             opcode: "trim",
             blockType: "reporter",
-            text: "[TEXT] trimmed",
+            text: Scratch.translate("[TEXT] trimmed"),
             arguments: {
               TEXT: { type: "string", defaultValue: "  hello  " },
             },
@@ -75,7 +77,7 @@
           {
             opcode: "uppercase",
             blockType: "reporter",
-            text: "[TEXT] uppercase",
+            text: Scratch.translate("[TEXT] uppercase"),
             arguments: {
               TEXT: { type: "string", defaultValue: "hello" },
             },
@@ -83,7 +85,7 @@
           {
             opcode: "lowercase",
             blockType: "reporter",
-            text: "[TEXT] lowercase",
+            text: Scratch.translate("[TEXT] lowercase"),
             arguments: {
               TEXT: { type: "string", defaultValue: "HELLO" },
             },
@@ -91,7 +93,7 @@
           {
             opcode: "startswith",
             blockType: "Boolean",
-            text: "[TEXT] starts with [PREFIX]",
+            text: Scratch.translate("[TEXT] starts with [PREFIX]"),
             arguments: {
               TEXT: { type: "string", defaultValue: "hello world" },
               PREFIX: { type: "string", defaultValue: "hello" },
@@ -100,7 +102,7 @@
           {
             opcode: "endswith",
             blockType: "Boolean",
-            text: "[TEXT] ends with [SUFFIX]",
+            text: Scratch.translate("[TEXT] ends with [SUFFIX]"),
             arguments: {
               TEXT: { type: "string", defaultValue: "hello world" },
               SUFFIX: { type: "string", defaultValue: "world" },
@@ -109,7 +111,7 @@
           {
             opcode: "indexof",
             blockType: "reporter",
-            text: "index of [NEEDLE] in [HAYSTACK]",
+            text: Scratch.translate("index of [NEEDLE] in [HAYSTACK]"),
             arguments: {
               NEEDLE: { type: "string", defaultValue: "l" },
               HAYSTACK: { type: "string", defaultValue: "hello" },
@@ -118,7 +120,7 @@
           {
             opcode: "repeat",
             blockType: "reporter",
-            text: "[TEXT] repeated [N] times",
+            text: Scratch.translate("[TEXT] repeated [N] times"),
             arguments: {
               TEXT: { type: "string", defaultValue: "ab" },
               N: { type: "number", defaultValue: 3 },
@@ -127,7 +129,7 @@
           {
             opcode: "textstarttoend",
             blockType: "reporter",
-            text: "[TEXT] from letter [START] to [END]",
+            text: Scratch.translate("[TEXT] from letter [START] to [END]"),
             arguments: {
               TEXT: { type: "string", defaultValue: "hello world" },
               START: { type: "number", defaultValue: 1 },
@@ -135,12 +137,12 @@
             },
           },
 
-          { blockType: "label", text: "Math" },
+          { blockType: "label", text: Scratch.translate("Math") },
 
           {
             opcode: "clampmycheeks",
             blockType: "reporter",
-            text: "[N] clamp between [MIN] and [MAX]",
+            text: Scratch.translate("[N] clamp between [MIN] and [MAX]"),
             arguments: {
               N: { type: "number", defaultValue: 5 },
               MIN: { type: "number", defaultValue: 0 },
@@ -150,7 +152,7 @@
           {
             opcode: "power",
             blockType: "reporter",
-            text: "[BASE] to the power of [EXP]",
+            text: Scratch.translate("[BASE] to the power of [EXP]"),
             arguments: {
               BASE: { type: "number", defaultValue: 2 },
               EXP: { type: "number", defaultValue: 8 },
@@ -159,7 +161,7 @@
           {
             opcode: "numberrootthing",
             blockType: "reporter",
-            text: "[N] root of [X]",
+            text: Scratch.translate("[N] root of [X]"),
             arguments: {
               N: { type: "number", defaultValue: 3 },
               X: { type: "number", defaultValue: 27 },
@@ -168,7 +170,7 @@
           {
             opcode: "logbase",
             blockType: "reporter",
-            text: "[X] log base [BASE]",
+            text: Scratch.translate("[X] log base [BASE]"),
             arguments: {
               X: { type: "number", defaultValue: 100 },
               BASE: { type: "number", defaultValue: 10 },
@@ -177,7 +179,7 @@
           {
             opcode: "sign",
             blockType: "reporter",
-            text: "sign of [N]",
+            text: Scratch.translate("sign of [N]"),
             arguments: {
               N: { type: "number", defaultValue: -5 },
             },
@@ -185,7 +187,7 @@
           {
             opcode: "lerpfrom",
             blockType: "reporter",
-            text: "lerp from [A] to [B] by [T]",
+            text: Scratch.translate("lerp from [A] to [B] by [T]"),
             arguments: {
               A: { type: "number", defaultValue: 0 },
               B: { type: "number", defaultValue: 100 },
@@ -195,7 +197,7 @@
           {
             opcode: "wrapbetween",
             blockType: "reporter",
-            text: "[N] wrap between [MIN] and [MAX]",
+            text: Scratch.translate("[N] wrap between [MIN] and [MAX]"),
             arguments: {
               N: { type: "number", defaultValue: 11 },
               MIN: { type: "number", defaultValue: 0 },
@@ -205,19 +207,19 @@
           {
             opcode: "decimals",
             blockType: "reporter",
-            text: "[N] with [D] decimals",
+            text: Scratch.translate("[N] with [D] decimals"),
             arguments: {
               N: { type: "number", defaultValue: 3.14159 },
               D: { type: "number", defaultValue: 2 },
             },
           },
 
-          { blockType: "label", text: "Boolean" },
+          { blockType: "label", text: Scratch.translate("Boolean") },
 
           {
             opcode: "between",
             blockType: "Boolean",
-            text: "[N] is between [MIN] and [MAX]",
+            text: Scratch.translate("[N] is between [MIN] and [MAX]"),
             arguments: {
               N: { type: "number", defaultValue: 5 },
               MIN: { type: "number", defaultValue: 1 },
@@ -227,7 +229,7 @@
           {
             opcode: "integer",
             blockType: "Boolean",
-            text: "[N] is integer",
+            text: Scratch.translate("[N] is integer"),
             arguments: {
               N: { type: "number", defaultValue: 4 },
             },
@@ -235,7 +237,7 @@
           {
             opcode: "numeric",
             blockType: "Boolean",
-            text: "[TEXT] is numeric",
+            text: Scratch.translate("[TEXT] is numeric"),
             arguments: {
               TEXT: { type: "string", defaultValue: "123" },
             },
@@ -243,7 +245,7 @@
           {
             opcode: "evensteven",
             blockType: "Boolean",
-            text: "[N] is even",
+            text: Scratch.translate("[N] is even"),
             arguments: {
               N: { type: "number", defaultValue: 4 },
             },
@@ -251,7 +253,7 @@
           {
             opcode: "oddtodd",
             blockType: "Boolean",
-            text: "[N] is odd",
+            text: Scratch.translate("[N] is odd"),
             arguments: {
               N: { type: "number", defaultValue: 3 },
             },
@@ -260,7 +262,7 @@
       };
     }
 
-    countamountof({ NEEDLE, HAYSTACK }) {
+    amountofmcdonaldscheeseburgershidinginmybasement({ NEEDLE, HAYSTACK }) {
       const needle = String(NEEDLE);
       const haystack = String(HAYSTACK);
       if (needle.length === 0) return 0;
