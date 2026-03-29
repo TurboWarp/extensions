@@ -80,7 +80,6 @@
   function setupState(drawable) {
     drawable[cameraSymbol] = {
       name: "default",
-      cam: allCameras["default"],
       needsRefresh: false,
       ogXY: [0, 0],
       ogSZ: 1,
@@ -130,7 +129,6 @@
 
     drawable[cameraSymbol] = {
       name: camera,
-      cam: allCameras[camera],
       needsRefresh: false,
       ogXY: [0, 0],
       ogSZ: 1,
@@ -233,7 +231,7 @@
   render.exports.Drawable.prototype.updatePosition = function (position) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
-    const thisCam = camSystem.cam;
+    const thisCam = allCameras[camSystem.name];
     let shouldEmit = false;
     if (camSystem.needsRefresh) {
       // invert camera transformations
@@ -275,7 +273,7 @@
   render.exports.Drawable.prototype.updateDirection = function (direction) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
-    const thisCam = camSystem.cam;
+    const thisCam = allCameras[camSystem.name];
     if (camSystem.needsRefresh) {
       // invert camera transformations
       direction += camSystem.ogDir;
@@ -290,7 +288,7 @@
   render.exports.Drawable.prototype.updateScale = function (scale) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
-    const thisCam = camSystem.cam;
+    const thisCam = allCameras[camSystem.name];
     let shouldEmit = false;
     if (camSystem.needsRefresh) {
       // invert camera transformations
@@ -348,7 +346,7 @@
     }
 
     const camSystem = target[cameraSymbol];
-    if (!camSystem || !camSystem.cam?.precisionMode) {
+    if (!camSystem || !allCameras[camSystem.name]?.precisionMode) {
       return ogTouchingDrawables.call(this, targetId, candidateIds);
     }
 
