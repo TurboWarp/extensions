@@ -25,14 +25,13 @@
   const render = vm.renderer;
   const cameraSymbol = Symbol("SPcameraData");
 
-  let allCameras = {
-    default: {
-      xy: [0, 0],
-      zoom: 1,
-      dir: 0,
-      binds: undefined,
-      precisionMode: false,
-    },
+  let allCameras = Object.create(null);
+  allCameras["default"] = {
+    xy: [0, 0],
+    zoom: 1,
+    dir: 0,
+    binds: undefined,
+    precisionMode: false,
   };
 
   // TODO add support for interpolation at some point
@@ -80,7 +79,6 @@
   function setupState(drawable) {
     drawable[cameraSymbol] = {
       name: "default",
-      cam: allCameras["default"],
       needsRefresh: false,
       ogXY: [0, 0],
       ogSZ: 1,
@@ -130,7 +128,6 @@
 
     drawable[cameraSymbol] = {
       name: camera,
-      cam: allCameras[camera],
       needsRefresh: false,
       ogXY: [0, 0],
       ogSZ: 1,
@@ -233,7 +230,7 @@
   render.exports.Drawable.prototype.updatePosition = function (position) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
-    const thisCam = camSystem.cam;
+    const thisCam = allCameras[camSystem.name];
     let shouldEmit = false;
     if (camSystem.needsRefresh) {
       // invert camera transformations
@@ -275,7 +272,7 @@
   render.exports.Drawable.prototype.updateDirection = function (direction) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
-    const thisCam = camSystem.cam;
+    const thisCam = allCameras[camSystem.name];
     if (camSystem.needsRefresh) {
       // invert camera transformations
       direction += camSystem.ogDir;
@@ -290,7 +287,7 @@
   render.exports.Drawable.prototype.updateScale = function (scale) {
     if (!this[cameraSymbol]) setupState(this);
     const camSystem = this[cameraSymbol];
-    const thisCam = camSystem.cam;
+    const thisCam = allCameras[camSystem.name];
     let shouldEmit = false;
     if (camSystem.needsRefresh) {
       // invert camera transformations
@@ -348,7 +345,7 @@
     }
 
     const camSystem = target[cameraSymbol];
-    if (!camSystem || !camSystem.cam?.precisionMode) {
+    if (!camSystem || !allCameras[camSystem.name]?.precisionMode) {
       return ogTouchingDrawables.call(this, targetId, candidateIds);
     }
 
@@ -385,25 +382,25 @@
       if (d && d[cameraSymbol]) normalize(d);
     }
 
-    const result = ogTouchingDrawables.call(this, targetId, candidateIds);
+    try {
+      return ogTouchingDrawables.call(this, targetId, candidateIds);
+    } finally {
+      // Restore requested drawables back to their camera states
+      for (let i = 0; i < modified.length; i++) {
+        const m = modified[i];
+        const d = m.drawable;
 
-    // Restore requested drawables back to their camera states
-    for (let i = 0; i < modified.length; i++) {
-      const m = modified[i];
-      const d = m.drawable;
+        d._position[0] = m.x;
+        d._position[1] = m.y;
+        d._direction = m.dir;
+        d._scale[0] = m.sx;
+        d._scale[1] = m.sy;
 
-      d._position[0] = m.x;
-      d._position[1] = m.y;
-      d._direction = m.dir;
-      d._scale[0] = m.sx;
-      d._scale[1] = m.sy;
-
-      d._skinScaleDirty = true;
-      d._rotationCenterDirty = true;
-      d._calculateTransform();
+        d._skinScaleDirty = true;
+        d._rotationCenterDirty = true;
+        d._calculateTransform();
+      }
     }
-
-    return result;
   };
 
   // Clones should inherit the parents camera
