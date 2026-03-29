@@ -383,25 +383,25 @@
       if (d && d[cameraSymbol]) normalize(d);
     }
 
-    const result = ogTouchingDrawables.call(this, targetId, candidateIds);
+    try {
+      return ogTouchingDrawables.call(this, targetId, candidateIds);
+    } finally {
+      // Restore requested drawables back to their camera states
+      for (let i = 0; i < modified.length; i++) {
+        const m = modified[i];
+        const d = m.drawable;
 
-    // Restore requested drawables back to their camera states
-    for (let i = 0; i < modified.length; i++) {
-      const m = modified[i];
-      const d = m.drawable;
+        d._position[0] = m.x;
+        d._position[1] = m.y;
+        d._direction = m.dir;
+        d._scale[0] = m.sx;
+        d._scale[1] = m.sy;
 
-      d._position[0] = m.x;
-      d._position[1] = m.y;
-      d._direction = m.dir;
-      d._scale[0] = m.sx;
-      d._scale[1] = m.sy;
-
-      d._skinScaleDirty = true;
-      d._rotationCenterDirty = true;
-      d._calculateTransform();
+        d._skinScaleDirty = true;
+        d._rotationCenterDirty = true;
+        d._calculateTransform();
+      }
     }
-
-    return result;
   };
 
   // Clones should inherit the parents camera
