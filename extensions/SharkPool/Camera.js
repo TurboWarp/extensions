@@ -25,14 +25,13 @@
   const render = vm.renderer;
   const cameraSymbol = Symbol("SPcameraData");
 
-  let allCameras = {
-    default: {
-      xy: [0, 0],
-      zoom: 1,
-      dir: 0,
-      binds: undefined,
-      precisionMode: false,
-    },
+  let allCameras = Object.create(null);
+  allCameras["default"] = {
+    xy: [0, 0],
+    zoom: 1,
+    dir: 0,
+    binds: undefined,
+    precisionMode: false,
   };
 
   // TODO add support for interpolation at some point
