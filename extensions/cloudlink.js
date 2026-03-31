@@ -1347,7 +1347,7 @@
             arguments: {
               ROOMS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate('["test"]'),
+                defaultValue: JSON.stringify(["test"]),
               },
             },
           },
@@ -1359,7 +1359,7 @@
             arguments: {
               ROOMS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate('["test"]'),
+                defaultValue: JSON.stringify(["test"]),
               },
             },
           },

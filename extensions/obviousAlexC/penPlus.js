@@ -2,6 +2,7 @@
 // ID: penP
 // Description: Advanced rendering capabilities.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
+// By: Pen-Group
 // License: MIT
 
 // With permission from Sharkpool-SP to use his pen layer data uri block!
@@ -13,12 +14,11 @@
 
 //if you are looking for extension settings search up /* EXTENSION SETTINGS */
 
-//7.1.8 patch notes
+//7.1.9 patch notes
 
 /*
   ? -- Changes -- ?
-    ? Bug Fixes
-    ? Standardized naming
+    ? Bug Fixes (see https://github.com/Pen-Group/extensions/issues/39)
 */
 
 (function (Scratch) {
@@ -91,13 +91,10 @@
     //?Call it to have it consistant
     updateCanvasSize();
 
-    //?Call every frame because I don't know of a way to detect when the stage is resized through window resizing (2/7/24) thought I should clarify
-
+    vm.renderer.on("UseHighQualityRenderChanged", updateCanvasSize);
     window.addEventListener("resize", updateCanvasSize);
     canvas.addEventListener("resize", updateCanvasSize);
-    vm.runtime.on("STAGE_SIZE_CHANGED", () => {
-      updateCanvasSize();
-    });
+    vm.runtime.on("STAGE_SIZE_CHANGED", updateCanvasSize);
 
     let lastCanvasSize = [canvas.clientWidth, canvas.clientHeight];
     vm.runtime.on("BEFORE_EXECUTE", () => {
@@ -242,7 +239,6 @@
                       void main()
                       {
                         gl_FragColor = texture2D(u_drawTex, v_texCoord);
-                        gl_FragColor.rgb = clamp(gl_FragColor.rgb / (gl_FragColor.a + 1e-3), 0.0, 1.0);
                       }
                   `,
       },
@@ -431,7 +427,7 @@
       },
     };
 
-    extensionVersion = "7.1.8";
+    extensionVersion = "7.1.9";
 
     //?Stores our attributes
     triangleAttributesOfAllSprites = {};
@@ -3375,8 +3371,8 @@
       Scratch.vm.renderer.penPoint(
         Scratch.vm.renderer._penSkinId,
         attrib,
-        x,
-        y
+        Scratch.Cast.toNumber(x),
+        Scratch.Cast.toNumber(y)
       );
     }
     drawLine({ x1, y1, x2, y2 }, util) {
@@ -3387,10 +3383,10 @@
       Scratch.vm.renderer.penLine(
         Scratch.vm.renderer._penSkinId,
         attrib,
-        x1,
-        y1,
-        x2,
-        y2
+        Scratch.Cast.toNumber(x1),
+        Scratch.Cast.toNumber(y1),
+        Scratch.Cast.toNumber(x2),
+        Scratch.Cast.toNumber(y2)
       );
     }
     stampSprite({ sprite }) {
@@ -4125,7 +4121,11 @@
           x = Math.floor(x - 1);
           y = Math.floor(y - 1);
           const colorIndex = (y * curCostume.width + x) * 4;
-          if (textureData[colorIndex] && x < curCostume.width && x >= 0) {
+          if (
+            textureData[colorIndex] !== undefined &&
+            x < curCostume.width &&
+            x >= 0
+          ) {
             return (
               this.colorLib.rgbtoSColor({
                 R: textureData[colorIndex] / 2.55,
@@ -4778,7 +4778,7 @@
         item > this.programs[shader].uniformDec[uniformName].arrayLength
       )
         return;
-      item -= (item - 1) * 2;
+      item = (item - 1) * 2;
       this.programs[shader].uniformDat[uniformName][item] = numberX;
       this.programs[shader].uniformDat[uniformName][item + 1] = numberY;
     }
@@ -5712,13 +5712,16 @@
             curCostume.height
           );
 
+          // don't assume the image is square
+          const maxDimension = Math.max(curCostume.width, curCostume.height);
+
           gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[name]);
           gl.texImage2D(
-            cubemapSetup[faceID].texture.side,
+            cubemapSetup[faceID].side,
             0,
             gl.RGBA,
-            curCostume.width,
-            curCostume.height,
+            maxDimension,
+            maxDimension,
             0,
             gl.RGBA,
             gl.UNSIGNED_BYTE,
@@ -5743,17 +5746,42 @@
             //Only used for images we got permission to fetch before. Don't need this.
             // eslint-disable-next-line
             const image = new Image();
-            image.onload = () => {
-              gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[name]);
-              gl.texImage2D(
-                cubemapSetup[faceID].texture.side,
-                0,
-                gl.RGBA,
-                gl.RGBA,
-                gl.UNSIGNED_BYTE,
-                image
-              );
 
+            image.onload = () => {
+              const maxDimension = Math.max(image.width, image.height);
+              if (image.width != image.height) {
+                // I don't know if there's a better way to do this.
+                const canvas = document.createElement("canvas");
+                canvas.width = maxDimension;
+                canvas.height = maxDimension;
+
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(
+                  image,
+                  (maxDimension - image.width) / 2,
+                  (maxDimension - image.height) / 2
+                );
+
+                gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[name]);
+                gl.texImage2D(
+                  cubemapSetup[faceID].side,
+                  0,
+                  gl.RGBA,
+                  gl.RGBA,
+                  gl.UNSIGNED_BYTE,
+                  canvas
+                );
+              } else {
+                gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.penPlusCubemap[name]);
+                gl.texImage2D(
+                  cubemapSetup[faceID].side,
+                  0,
+                  gl.RGBA,
+                  gl.RGBA,
+                  gl.UNSIGNED_BYTE,
+                  image
+                );
+              }
               gl.texParameteri(
                 gl.TEXTURE_CUBE_MAP,
                 gl.TEXTURE_MIN_FILTER,
@@ -6116,12 +6144,19 @@
       //If it is named scratch stage get that stuff out of here
       if (name == "Scratch Stage") return;
 
+      // preserve GL binding
+      if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+      const prevFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+
       //if the render texture exists delete it
       if (this.renderTextures[this.prefixes.renderTextures + name]) {
         this._deleteFramebuffer(
           this.renderTextures[this.prefixes.renderTextures + name]
         );
       }
+
+      // restore GL framebuffer binding
+      gl.bindFramebuffer(gl.FRAMEBUFFER, prevFB);
 
       //Add it
       this.renderTextures[this.prefixes.renderTextures + name] =
@@ -6134,12 +6169,19 @@
       //If it is named scratch stage get that stuff out of here
       if (name == "Scratch Stage") return;
 
+      // preserve GL binding
+      if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
+      const prevFB = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+
       //if the render texture exists delete it
       if (this.renderTextures[this.prefixes.renderTextures + name]) {
         this._deleteFramebuffer(
           this.renderTextures[this.prefixes.renderTextures + name]
         );
       }
+
+      // restore GL framebuffer binding
+      gl.bindFramebuffer(gl.FRAMEBUFFER, prevFB);
 
       //Add it
       this.renderTextures[this.prefixes.renderTextures + name] =

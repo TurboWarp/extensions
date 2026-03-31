@@ -224,12 +224,18 @@ const run = async () => {
   ]);
 
   fs.writeFileSync(
-    pathUtil.join(__dirname, "../translations/extension-runtime.json"),
+    pathUtil.join(
+      import.meta.dirname,
+      "../translations/extension-runtime.json"
+    ),
     JSON.stringify(runtime, null, 4)
   );
 
   fs.writeFileSync(
-    pathUtil.join(__dirname, "../translations/extension-metadata.json"),
+    pathUtil.join(
+      import.meta.dirname,
+      "../translations/extension-metadata.json"
+    ),
     JSON.stringify(metadata, null, 4)
   );
 };

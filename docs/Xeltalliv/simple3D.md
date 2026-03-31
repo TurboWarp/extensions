@@ -536,7 +536,7 @@ This only affects vertex related data. It does not affect uploading texture pixe
 
 **This is one of 2 properties that is not inherited.** This is done for performance reasons and to reduce chances of misuse.
 
-Deafult for mesh is "rarely".
+Default for mesh is "rarely".
 
 ---
 ```scratch

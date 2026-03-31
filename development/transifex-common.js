@@ -1,4 +1,4 @@
-import transifexApi from "@transifex/api";
+import { transifexApi } from "@transifex/api";
 
 const TOKEN = process.env.TRANSIFEX_TOKEN;
 if (!TOKEN) {
