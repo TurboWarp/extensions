@@ -134,7 +134,7 @@
         const array = list;
         if (array) {
           for (let i = 0; i < array.length; i++) {
-            if (array[i] != "") {
+            if (array[i] != "" && array[i].split(" ").length === 3) {
               const item = array[i].split(" ");
               if (item.length !== 3) {
                 return;
@@ -146,6 +146,11 @@
                   Cast.toNumber(item[2])
                 )
               );
+            } else {
+              console.warn(
+                `Attempted to process invalid vertex list "${list}"`
+              );
+              return;
             }
           }
         } else {
@@ -2792,6 +2797,7 @@
           const pitchRad = Cast.toNumber(pitch) * degToRad;
           const yawRad = Cast.toNumber(yaw) * degToRad;
 
+          //* don't change this
           const to = new Ammo.btVector3(
             x + distance * Math.cos(pitchRad) * Math.sin(yawRad),
             y + distance * Math.sin(pitchRad),
