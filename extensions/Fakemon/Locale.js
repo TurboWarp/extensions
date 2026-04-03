@@ -15806,6 +15806,25 @@ This is most important for adding new blocks, but should also be done for changi
             },
           },
           {
+            opcode: "nameFromCodeSpecified",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "name of language with code [CODE] in [NAME]"
+            ),
+            arguments: {
+              CODE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "LANG_CODE",
+                defaultValue: "es",
+              },
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "LANG_NAME",
+                defaultValue: "es",
+              },
+            },
+          },
+          {
             opcode: "codeFromName",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("code of language with name [NAME]"),
@@ -15972,7 +15991,12 @@ This is most important for adding new blocks, but should also be done for changi
         allAttemptedTranslations.push(args.TEXT);
       }
       try {
-        return localeObject[args.LANG][args.TEXT];
+        let translation = localeObject[args.LANG][args.TEXT];
+        if (!translation && !allFailedTranslations.includes(args.TEXT)) {
+          translation = args.TEXT;
+          allFailedTranslations.push(args.TEXT);
+        }
+        return translation;
       } catch {
         if (!allFailedTranslations.includes(args.TEXT)) {
           allFailedTranslations.push(args.TEXT);
@@ -16018,6 +16042,17 @@ This is most important for adding new blocks, but should also be done for changi
       let codeIndex = this._getLanguageCodes().indexOf(args.CODE);
       if (codeIndex != -1) {
         return this._getLanguageNames()[codeIndex];
+      } else {
+        return "";
+      }
+    }
+    nameFromCodeSpecified(args) {
+      let codeIndex = this._filterArray(
+        languageNameAndCodeLookupTableGLOBALIZED.menuMap[args.NAME],
+        "code"
+      ).indexOf(args.CODE); // Language codes are in alphabetical order for the target language, not based on the code or native name.
+      if (codeIndex != -1) {
+        return this._getLanguageNames(args.NAME)[codeIndex];
       } else {
         return "";
       }
@@ -16088,8 +16123,11 @@ This is most important for adding new blocks, but should also be done for changi
       });
       return matchedLanguages;
     }
-    _getLanguageNames() {
-      return this._filterArray(languageNameAndCodeLookupTable, "name");
+    _getLanguageNames(lang = this.getLanguageCode()) {
+      return this._filterArray(
+        languageNameAndCodeLookupTableGLOBALIZED.menuMap[lang],
+        "name"
+      );
     }
     _getLanguageCodes() {
       return this._filterArray(languageNameAndCodeLookupTable, "code");
