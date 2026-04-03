@@ -120,6 +120,11 @@ Sometimes, you might want to get the name from a language code or the code from 
 This block returns the name associated with the language code in the current language.
 
 ```scratchblocks
+(name of language with code [es v] in [Spanish v] ::#2a5fa0)
+```
+This block returns the name associated with the language code in the specified language.
+
+```scratchblocks
 (code of language with name [Spanish v] ::#2a5fa0)
 ```
 This block returns the language code of the specified language. The language's name can be in **any** language supported by the extension, not just the current one or its native name.
