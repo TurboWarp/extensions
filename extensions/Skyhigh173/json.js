@@ -13,6 +13,19 @@
    */
 
   const vm = Scratch.vm;
+  const objectCache = {}
+  function parse(string) {
+    return objectCache[string] ?? JSON.parse(string);
+  }
+  function stringify(object) {
+    const string = JSON.stringify(object);
+    objectCache[string] = object;
+    setTimeout(() => {
+      delete objectCache[string];
+    }, 100); // store it in the cache for 100 ms
+    return string;
+  }
+  
   const hasOwn = (obj, property) =>
     Object.prototype.hasOwnProperty.call(obj, property);
 
@@ -661,7 +674,7 @@
         return false;
       } else {
         try {
-          JSON.parse(json);
+          parse(json);
           return true;
         } catch {
           return false;
@@ -680,7 +693,7 @@
         return json;
       } else {
         try {
-          return JSON.parse(json) ?? "";
+          return parse(json) ?? "";
         } catch {
           return json;
         }
@@ -690,7 +703,7 @@
     json_is({ json, types }) {
       if (!this.json_is_valid({ json: json })) return false;
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         switch (types) {
           case "Object":
             return !Array.isArray(json);
@@ -706,7 +719,7 @@
 
     json_length({ json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         return Object.keys(json).length;
       } catch {
         return " ";
@@ -728,7 +741,7 @@
       try {
         return (
           this._fixInvalidJSONValues(this.json_valid_return(key)) in
-          JSON.parse(json)
+          parse(json)
         );
       } catch {
         return false;
@@ -737,7 +750,7 @@
 
     json_has_value({ json, value }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         value = this.json_valid_return(value);
         return json.includes(value);
       } catch {
@@ -747,8 +760,8 @@
 
     json_equal({ json1, equal, json2 }) {
       try {
-        json1 = JSON.parse(json1);
-        json2 = JSON.parse(json2);
+        json1 = parse(json1);
+        json2 = parse(json2);
 
         const keys1 = Object.keys(json1);
         const keys2 = Object.keys(json2);
@@ -765,16 +778,16 @@
 
     json_get_all({ Stype, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         switch (Stype) {
           case "keys":
-            return JSON.stringify(Object.keys(json).map((key) => key ?? ""));
+            return stringify(Object.keys(json).map((key) => key ?? ""));
           case "values":
-            return JSON.stringify(
+            return stringify(
               Object.keys(json).map((key) => json[key] ?? "")
             );
           case "datas":
-            return JSON.stringify(
+            return stringify(
               Object.keys(json).map((key) => [key, json[key] ?? ""])
             );
           default:
@@ -787,11 +800,11 @@
 
     json_get({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         if (hasOwn(json, item)) {
           const result = json[item] ?? "";
           if (typeof result === "object") {
-            return JSON.stringify(result);
+            return stringify(result);
           } else {
             return result;
           }
@@ -813,11 +826,11 @@
 
     json_set({ item, value, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         value = this.json_valid_return(value);
         value = this._fixInvalidJSONValues(value);
         json[item] = value;
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -825,9 +838,9 @@
 
     json_delete({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         delete json[item];
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -846,7 +859,7 @@
         if (item > 0) {
           item--;
         }
-        json = JSON.parse(json);
+        json = parse(json);
         let result;
         if (item >= 0) {
           result = json[item];
@@ -856,7 +869,7 @@
         }
         result = result ?? "";
         if (typeof result == "object") {
-          return JSON.stringify(result);
+          return stringify(result);
         } else {
           return result;
         }
@@ -867,9 +880,9 @@
 
     json_array_itemH({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        let result = JSON.stringify(json.indexOf(item) + 1);
+        let result = stringify(json.indexOf(item) + 1);
         return result;
       } catch {
         return "";
@@ -878,7 +891,7 @@
 
     json_array_from({ json }) {
       try {
-        return JSON.stringify(Array.from(String(json)));
+        return stringify(Array.from(String(json)));
       } catch {
         return "";
       }
@@ -886,9 +899,9 @@
 
     json_array_concat({ json, json2 }) {
       try {
-        json = JSON.parse(json);
-        json2 = JSON.parse(json2);
-        return JSON.stringify(json.concat(json2));
+        json = parse(json);
+        json2 = parse(json2);
+        return stringify(json.concat(json2));
       } catch {
         return "";
       }
@@ -896,10 +909,10 @@
 
     json_array_push({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
         json.push(item);
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -907,10 +920,10 @@
 
     json_array_insert({ item, pos, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
         json.splice(pos - 1, 0, item);
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -918,11 +931,11 @@
 
     json_array_set({ item, pos, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         json[pos - 1] = this._fixInvalidJSONValues(
           this.json_valid_return(item)
         );
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -930,9 +943,9 @@
 
     json_array_delete({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         json.splice(item - 1, 1);
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -940,7 +953,7 @@
 
     json_array_remove_all({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
         let i = 0;
         while (i < json.length) {
@@ -950,7 +963,7 @@
             ++i;
           }
         }
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -958,7 +971,7 @@
 
     json_array_fromto({ json, item, item2 }) {
       try {
-        return JSON.stringify(JSON.parse(json).slice(item - 1, item2));
+        return stringify(parse(json).slice(item - 1, item2));
       } catch {
         return "";
       }
@@ -966,7 +979,7 @@
 
     json_array_reverse({ json }) {
       try {
-        return JSON.stringify(JSON.parse(json).reverse());
+        return stringify(parse(json).reverse());
       } catch {
         return "";
       }
@@ -974,19 +987,19 @@
 
     json_array_flat({ json, depth }) {
       try {
-        return JSON.stringify(JSON.parse(json).flat(depth));
+        return stringify(parse(json).flat(depth));
       } catch {
         return "";
       }
     }
 
     json_array_create({ text, d }) {
-      return JSON.stringify(String(text).split(d));
+      return stringify(String(text).split(d));
     }
 
     json_array_join({ json, d }) {
       try {
-        return JSON.parse(json).join(d);
+        return parse(json).join(d);
       } catch {
         return "";
       }
@@ -994,8 +1007,8 @@
 
     json_array_filter({ key, json }) {
       try {
-        json = JSON.parse(json);
-        return JSON.stringify(
+        json = parse(json);
+        return stringify(
           json.map((x) => {
             if (hasOwn(x, key)) {
               return x[key];
@@ -1010,9 +1023,9 @@
 
     json_array_setlen({ json, len }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         json.length = len;
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1022,7 +1035,7 @@
       try {
         let listVariable = this.lookupList(list, util);
         if (listVariable) {
-          return JSON.stringify(listVariable.value);
+          return stringify(listVariable.value);
         }
       } catch (e) {
         // ignore
@@ -1033,10 +1046,10 @@
       try {
         let listVariable = this.lookupList(list, util);
         if (listVariable) {
-          const array = JSON.parse(json);
+          const array = parse(json);
           if (Array.isArray(array)) {
             const safeArray = array.map((i) => {
-              if (typeof i === "object") return JSON.stringify(i);
+              if (typeof i === "object") return stringify(i);
               return i ?? "";
             });
             listVariable.value = safeArray;
@@ -1051,7 +1064,7 @@
     json_array_sort(args) {
       let list;
       try {
-        list = JSON.parse(args.list);
+        list = parse(args.list);
       } catch {
         return "";
       }
@@ -1060,12 +1073,12 @@
       }
       list.sort(Scratch.Cast.compare);
       if (args.order === "descending") list.reverse();
-      return JSON.stringify(list);
+      return stringify(list);
     }
     json_array_analysis(args) {
       let list;
       try {
-        list = JSON.parse(args.list);
+        list = parse(args.list);
       } catch {
         return 0;
       }
