@@ -13,7 +13,7 @@
    */
 
   const vm = Scratch.vm;
-  const objectCache = {}
+  const objectCache = {};
   function parse(string) {
     return objectCache[string] ?? JSON.parse(string);
   }
@@ -25,7 +25,7 @@
     }, 100); // store it in the cache for 100 ms
     return string;
   }
-  
+
   const hasOwn = (obj, property) =>
     Object.prototype.hasOwnProperty.call(obj, property);
 
@@ -740,8 +740,7 @@
     json_has_key({ json, key }) {
       try {
         return (
-          this._fixInvalidJSONValues(this.json_valid_return(key)) in
-          parse(json)
+          this._fixInvalidJSONValues(this.json_valid_return(key)) in parse(json)
         );
       } catch {
         return false;
@@ -783,9 +782,7 @@
           case "keys":
             return stringify(Object.keys(json).map((key) => key ?? ""));
           case "values":
-            return stringify(
-              Object.keys(json).map((key) => json[key] ?? "")
-            );
+            return stringify(Object.keys(json).map((key) => json[key] ?? ""));
           case "datas":
             return stringify(
               Object.keys(json).map((key) => [key, json[key] ?? ""])
