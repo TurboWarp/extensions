@@ -409,7 +409,7 @@
   }
 
   // Compare the version string of the server to known compatible variants to configure clVars.linkState.identifiedProtocol.
-  async function setServerVersion(version) {
+  function setServerVersion(version) {
     //console.log(`[CloudLink] Server version: ${String(version)}`);
     clVars.server_version = version;
 
@@ -457,7 +457,7 @@
     if (
       clVars.linkState.identifiedProtocol < 4 &&
       !confirm(
-        `You have connected to an old CloudLink server, running version ${clVars.server_version}.\n\nFor your security and privacy, we recommend you disconnect from this server and connect to an up-to-date server.\n\nClick/tap \"OK\" to stay connected.`
+        `You have connected to an old CloudLink server, running version ${clVars.server_version}.\n\nFor your security and privacy, we recommend you disconnect from this server and connect to an up-to-date server.\n\nClick/tap "OK" to stay connected.`
       )
     ) {
       // Close the connection if they choose "Cancel"
@@ -474,7 +474,7 @@
   }
 
   // CL-specific netcode needed to make the extension work
-  async function handleMessage(data) {
+  function handleMessage(data) {
     // Parse the message JSON
     let packet = {};
     try {
@@ -532,7 +532,7 @@
             // Server 0.1.5 (at least)
             case "vers":
               window.clearTimeout(clVars.handshakeTimeout);
-              await setServerVersion(packet.val.val);
+              setServerVersion(packet.val.val);
               return;
 
             // Server 0.1.7 (at least)
@@ -678,7 +678,7 @@
               clVars.recentlyJoinedUser = packet.val;
               Scratch.vm.runtime.startHats("cloudlink_whenuserconnects");
               break;
-            case "remove":
+          case "remove": {
               let index = -1;
               for (let i = 0; i < clVars.ulist.length; i++) {
                 let user = clVars.ulist[i];
@@ -691,6 +691,7 @@
               clVars.recentlyLeftUser = packet.val;
               Scratch.vm.runtime.startHats("cloudlink_whenuserdisconnects");
               break;
+          }
             default:
               //console.warn(`[CloudLink] Unrecognised userlist mode: \"${packet.mode}\".`);
               break;
@@ -702,7 +703,7 @@
 
       case "server_version":
         window.clearTimeout(clVars.handshakeTimeout);
-        await setServerVersion(packet.val);
+        setServerVersion(packet.val);
         break;
 
       case "client_ip":
@@ -754,6 +755,7 @@
     // Establish a connection to the server
     //console.log("[CloudLink] Connecting to server:", url);
     try {
+      // eslint-disable-next-line extension/check-can-fetch
       clVars.socket = new WebSocket(url);
     } catch (e) {
       //console.warn("[CloudLink] An exception has occurred:", e);
@@ -825,6 +827,7 @@
     getInfo() {
       return {
         id: "cloudlink",
+        // eslint-disable-next-line extension/should-translate
         name: "CloudLink V4",
         blockIconURI: cl_block,
         menuIconURI: cl_icon,
