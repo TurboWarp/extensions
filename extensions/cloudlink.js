@@ -1,4 +1,4 @@
-// Name: Cloudlink V4 Improved
+// Name: Cloudlink V4
 // ID: cloudlink
 // Description: A powerful WebSocket extension for Scratch.
 // By: MikeDEV
