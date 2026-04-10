@@ -15,7 +15,9 @@
   const vm = Scratch.vm;
   const objectCache = {};
   function parse(string) {
-    return objectCache[string] ?? JSON.parse(string);
+    return objectCache[string] ?? (setTimeout(() => {
+      delete objectCache[string];
+    }, 100), objectCache[string] = JSON.parse(string));
   }
   function stringify(object) {
     const string = JSON.stringify(object);
