@@ -13,22 +13,18 @@
    */
 
   const vm = Scratch.vm;
-  const objectCache = {};
+  let objectCache = {};
+  setInterval(100, () => { // clear the cache every 0.1 second
+    objectCache = {};
+  });
   function parse(string) {
     return (
-      objectCache[string] ??
-      (setTimeout(() => {
-        delete objectCache[string];
-      }, 100),
-      (objectCache[string] = JSON.parse(string)))
+      objectCache[string] ?? (objectCache[string] = JSON.parse(string))
     );
   }
   function stringify(object) {
     const string = JSON.stringify(object);
     objectCache[string] = object;
-    setTimeout(() => {
-      delete objectCache[string];
-    }, 100); // store it in the cache for 100 ms
     return string;
   }
 
