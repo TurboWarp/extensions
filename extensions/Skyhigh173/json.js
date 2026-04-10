@@ -14,10 +14,9 @@
 
   const vm = Scratch.vm;
   let objectCache = {};
-  setInterval(100, () => {
-    // clear the cache every 0.1 second
+  setInterval(() => {
     objectCache = {};
-  });
+  }, 100); // clear the cache every 0.1 second
   function parse(string) {
     return objectCache[string] ?? (objectCache[string] = JSON.parse(string));
   }
