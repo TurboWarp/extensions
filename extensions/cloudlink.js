@@ -678,7 +678,7 @@
               clVars.recentlyJoinedUser = packet.val;
               Scratch.vm.runtime.startHats("cloudlink_whenuserconnects");
               break;
-          case "remove": {
+            case "remove": {
               let index = -1;
               for (let i = 0; i < clVars.ulist.length; i++) {
                 let user = clVars.ulist[i];
@@ -691,7 +691,7 @@
               clVars.recentlyLeftUser = packet.val;
               Scratch.vm.runtime.startHats("cloudlink_whenuserdisconnects");
               break;
-          }
+            }
             default:
               //console.warn(`[CloudLink] Unrecognised userlist mode: \"${packet.mode}\".`);
               break;
