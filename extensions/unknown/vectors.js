@@ -31,7 +31,7 @@
             opcode: "vectorCreate",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "create vector with ID [ID], direction [DIRECTION] and magnitude [MAGNITUDE]"
+              "create vector with ID [ID], direction [DIRECTION], and magnitude [MAGNITUDE]"
             ),
             arguments: {
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
@@ -44,6 +44,18 @@
                 defaultValue: 10,
               },
             },
+          },
+          {
+            opcode: "vectorDelete",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("delete vector with [ID]"),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
+            },
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Changing"),
           },
           {
             opcode: "vectorChangeMag",
@@ -78,14 +90,6 @@
             },
           },
           {
-            opcode: "vectorDelete",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("delete vector with [ID]"),
-            arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-            },
-          },
-          {
             opcode: "vectorChangedir",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
@@ -100,12 +104,8 @@
             },
           },
           {
-            opcode: "vectorMag",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("magnitude of vector [ID]"),
-            arguments: {
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
-            },
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Data"),
           },
           {
             opcode: "listOfIDs",
@@ -120,6 +120,40 @@
               ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
             },
           },
+           {
+            opcode: "vectorMag",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("magnitude of vector [ID]"),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
+            },
+          },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Math"),
+          },
+          {
+            opcode: "vectorAddMag",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "add Vector [id1]'s Magitude and Vector [id2]'s Magitude Together"
+            ),
+            arguments: {
+              id1: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
+              id2: { type: Scratch.ArgumentType.STRING, defaultValue: "vec2" }
+            },
+          },
+          {
+            opcode: "vectorAddDir",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "add Vector [id1]'s Direction and Vector [id2]'s Direction Together"
+            ),
+            arguments: {
+              id1: { type: Scratch.ArgumentType.STRING, defaultValue: "vec1" },
+              id2: { type: Scratch.ArgumentType.STRING, defaultValue: "vec2" }
+            },
+          },          
         ],
       };
     }
@@ -146,7 +180,29 @@
       const id = Scratch.Cast.toString(args.ID);
       magnitudes[id] = Scratch.Cast.toNumber(args.MAGNITUDE);
     }
+    
+    vectorAddMag(args) {
+      const mag1 = magnitudes[args.id1]
+      const mag2 = magnitudes[args.id2]
+      return mag1 + mag2 
+    }
 
+     
+   vectorAddDir(args) {
+  const dir1 = directions[args.id1]
+  const dir2 = directions[args.id2]
+
+  const a = dir1 * Math.PI / 180
+  const b = dir2 * Math.PI / 180
+
+  let x = Math.cos(a) + Math.cos(b)
+  let y = Math.sin(a) + Math.sin(b)
+
+  const result = Math.atan2(y, x) * 180 / Math.PI
+
+  return (result + 360) % 360
+}
+    
     vectorMag(args) {
       const id = Scratch.Cast.toString(args.ID);
       return magnitudes[id] !== undefined
