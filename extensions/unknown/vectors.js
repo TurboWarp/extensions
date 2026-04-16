@@ -221,7 +221,7 @@
       const id = Scratch.Cast.toString(args.ID);
       return directions[id] !== undefined
         ? directions[id]
-        : Scratch.translate("null");
+        : "null"
     }
 
     listofIDs() {
