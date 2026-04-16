@@ -219,9 +219,7 @@
 
     vectorDir(args) {
       const id = Scratch.Cast.toString(args.ID);
-      return directions[id] !== undefined
-        ? directions[id]
-        : "null"
+      return directions[id] !== undefined ? directions[id] : "null";
     }
 
     listofIDs() {
