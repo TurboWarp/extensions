@@ -1,5 +1,5 @@
 // Name: Video sprites
-// ID: videosprites
+// ID: videoSprites
 // Description: A TurboWarp extension that lets you use your webcam inside sprites—either filling the whole sprite or replacing specific colors with live camera video, with adjustable zoom and real-time rendering.
 // By: Staevski_G <https://scratch.mit.edu/users/Staevski_G/>
 // Original: Video sprites (from Scratch Lab)
@@ -54,18 +54,18 @@
 
     getInfo() {
       return {
-        id: "videosprites",
+        id: "videoSprites",
         name: "Video Sprites",
         color1: "#4C97FF",
         color2: "#3373CC",
         blocks: [
           {
-            opcode: "fillSpriteWithCamera",
+            opcode: "videoSpriteFillSprite",
             blockType: Scratch.BlockType.COMMAND,
             text: "fill sprite with camera"
           },
           {
-            opcode: "fillColorWithCamera",
+            opcode: "videoSpriteFillColor",
             blockType: Scratch.BlockType.COMMAND,
             text: "fill [COLOR] with camera",
             arguments: {
@@ -76,7 +76,7 @@
             }
           },
           {
-            opcode: "changeZoomBy",
+            opcode: "changeCameraBy",
             blockType: Scratch.BlockType.COMMAND,
             text: "change camera zoom by [AMOUNT]",
             arguments: {
@@ -87,7 +87,7 @@
             }
           },
           {
-            opcode: "setZoomTo",
+            opcode: "scaleCamera",
             blockType: Scratch.BlockType.COMMAND,
             text: "set camera zoom to [AMOUNT] %",
             arguments: {
@@ -98,7 +98,7 @@
             }
           },
           {
-            opcode: "stopFillingWithCamera",
+            opcode: "videoSpriteOff",
             blockType: Scratch.BlockType.COMMAND,
             text: "stop filling with camera"
           },
@@ -127,7 +127,7 @@
       };
     }
 
-    async fillSpriteWithCamera(args, util) {
+    async videoSpriteFillSprite(args, util) {
       const target = this.requireSpriteTarget(util);
       if (!target) {
         return;
@@ -146,7 +146,7 @@
       this.updateTargetSkin(target);
     }
 
-    async fillColorWithCamera(args, util) {
+    async videoSpriteFillColor(args, util) {
       const target = this.requireSpriteTarget(util);
       if (!target) {
         return;
@@ -165,18 +165,18 @@
       this.updateTargetSkin(target);
     }
 
-    changeZoomBy(args) {
+    changeCameraBy(args) {
       const amount = Scratch.Cast.toNumber(args.AMOUNT);
       this.zoom = this.clampZoom(this.zoom + amount);
       this.refreshAllTargets();
     }
 
-    setZoomTo(args) {
+    scaleCamera(args) {
       this.zoom = this.clampZoom(Scratch.Cast.toNumber(args.AMOUNT));
       this.refreshAllTargets();
     }
 
-    stopFillingWithCamera(args, util) {
+    videoSpriteOff(args, util) {
       const target = this.requireSpriteTarget(util);
       if (!target) {
         return;
