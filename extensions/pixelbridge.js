@@ -5,13 +5,13 @@
 // License: MIT
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   // ── Utilities ─────────────────────────────────────────────────────────────────
 
   /** Creates an off-screen canvas of the given size. */
   function createCanvas(w, h) {
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = w;
     canvas.height = h;
     return canvas;
@@ -25,7 +25,7 @@
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => resolve(img);
-      img.onerror = () => reject(new Error('Invalid or corrupt image source.'));
+      img.onerror = () => reject(new Error("Invalid or corrupt image source."));
       img.src = src;
     });
   }
@@ -50,10 +50,10 @@
     if (arr.length < pixelCount) return false;
     for (let i = 0; i < pixelCount; i++) {
       const c = (Number(arr[i]) >>> 0) & 0xffffff;
-      imgData.data[i * 4]     = (c >> 16) & 0xff; // R
-      imgData.data[i * 4 + 1] = (c >>  8) & 0xff; // G
-      imgData.data[i * 4 + 2] =  c        & 0xff; // B
-      imgData.data[i * 4 + 3] = 255;               // A (fully opaque)
+      imgData.data[i * 4] = (c >> 16) & 0xff; // R
+      imgData.data[i * 4 + 1] = (c >> 8) & 0xff; // G
+      imgData.data[i * 4 + 2] = c & 0xff; // B
+      imgData.data[i * 4 + 3] = 255; // A (fully opaque)
     }
     return true;
   }
@@ -63,83 +63,81 @@
   class PixelBridge {
     getInfo() {
       return {
-        id: 'pixelbridge',
-        name: 'PixelBridge',
-        color1: '#5C4FCE',
-        color2: '#3D3491',
-        color3: '#2B2468',
+        id: "pixelbridge",
+        name: Scratch.translate("PixelBridge"),
+        color1: "#5C4FCE",
+        color2: "#3D3491",
+        color3: "#2B2468",
 
         blocks: [
           // Block 1 — PNG Data URL → pixel array
           {
-            opcode: 'pngToArray',
+            opcode: "pngToArray",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'PNG [URL] to pixel array',
+            text: Scratch.translate("PNG [URL] to pixel array"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'data:image/png;base64,...'
-              }
-            }
+                defaultValue: "data:image/png;base64,...",
+              },
+            },
           },
 
           // Block 2 — pixel array → PNG Data URL
           {
-            opcode: 'arrayToPng',
+            opcode: "arrayToPng",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'array [ARRAY] width [W] height [H] to PNG',
+            text: Scratch.translate("array [ARRAY] width [W] height [H] to PNG"),
             arguments: {
               ARRAY: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: '[16711680,65280,255]'
+                defaultValue: "[16711680,65280,255]",
               },
               W: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 3
+                defaultValue: 3,
               },
               H: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1
-              }
-            }
+                defaultValue: 1,
+              },
+            },
           },
 
           // Block 3 — read image dimensions
           {
-            opcode: 'pngDimensions',
+            opcode: "pngDimensions",
             blockType: Scratch.BlockType.REPORTER,
-            text: 'dimensions of PNG [URL]',
+            text: Scratch.translate("dimensions of PNG [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'data:image/png;base64,...'
-              }
-            }
-          }
-        ]
+                defaultValue: "data:image/png;base64,...",
+              },
+            },
+          },
+        ],
       };
     }
 
-    // ── Block implementations ──────────────────────────────────────────────────
-
     /**
      * Decodes a PNG Data URL and returns a JSON array of 24-bit pixel integers.
-     *
      * Output format: ["WxH", pixel0, pixel1, ...]
-     * The first element encodes the image dimensions so the array can be fed
-     * back into [arrayToPng] without specifying width/height manually.
      */
     async pngToArray({ URL }) {
+      // eslint-disable-next-line extension/check-can-fetch
+      if (!(await Scratch.canFetch(URL))) return "[]";
+
       let img;
       try {
         img = await loadImage(URL);
       } catch {
-        return '[]';
+        return "[]";
       }
 
       const { width: w, height: h } = img;
       const canvas = createCanvas(w, h);
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0);
 
       const { data } = ctx.getImageData(0, 0, w, h);
@@ -150,52 +148,53 @@
 
     /**
      * Encodes a JSON array of 24-bit integers into a PNG Data URL.
-     *
-     * Accepts arrays with or without the "WxH" header produced by [pngToArray].
-     * When W and H are both 0, dimensions are read from the header automatically.
+     * Accepts arrays with or without the "WxH" header produced by pngToArray.
      */
     arrayToPng(args) {
       let arr;
       try {
         arr = JSON.parse(args.ARRAY);
       } catch {
-        return '';
+        return "";
       }
-      if (!Array.isArray(arr) || arr.length === 0) return '';
+      if (!Array.isArray(arr) || arr.length === 0) return "";
 
       let w = Math.floor(Number(args.W));
       let h = Math.floor(Number(args.H));
 
       // Auto-detect the optional "WxH" header
-      if (typeof arr[0] === 'string' && /^\d+x\d+$/.test(arr[0])) {
-        const [dw, dh] = arr[0].split('x').map(Number);
+      if (typeof arr[0] === "string" && /^\d+x\d+$/.test(arr[0])) {
+        const [dw, dh] = arr[0].split("x").map(Number);
         if (w <= 0) w = dw;
         if (h <= 0) h = dh;
         arr = arr.slice(1);
       }
 
-      if (w <= 0 || h <= 0) return '';
+      if (w <= 0 || h <= 0) return "";
 
       const canvas = createCanvas(w, h);
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       const imgData = ctx.createImageData(w, h);
 
-      if (!int24ArrayToImageData(arr, imgData, w * h)) return '';
+      if (!int24ArrayToImageData(arr, imgData, w * h)) return "";
 
       ctx.putImageData(imgData, 0, 0);
-      return canvas.toDataURL('image/png');
+      return canvas.toDataURL("image/png");
     }
 
     /**
-     * Returns the width and height of a PNG Data URL as "width height"
-     * (space-separated). Returns "0 0" on error.
+     * Returns the width and height of a PNG Data URL as "width height".
+     * Returns "0 0" on error.
      */
     async pngDimensions({ URL }) {
+      // eslint-disable-next-line extension/check-can-fetch
+      if (!(await Scratch.canFetch(URL))) return "0 0";
+
       try {
         const img = await loadImage(URL);
         return `${img.width} ${img.height}`;
       } catch {
-        return '0 0';
+        return "0 0";
       }
     }
   }
