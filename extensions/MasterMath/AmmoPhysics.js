@@ -9,7 +9,7 @@
 // Development using Cannon.js started December 14, 2024 - discontinued.
 // Development using Ammo.js started January 30, 2025.
 
-// ChatGPT and AI LLMs were used to assist in the learning of Ammo.js due to the apparent lack of documentation. It did not write all of the code for me.
+// ChatGPT and AI LLMs were used to assist in the learning of Ammo.js due to the apparent lack of documentation. They did not write all of the code for me.
 
 (async function (Scratch) {
   "use strict";
