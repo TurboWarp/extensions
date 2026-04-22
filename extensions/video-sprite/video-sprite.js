@@ -315,7 +315,6 @@
 
       return targets;
     }
-//🐱‍💻
     updateSourceFrame() {
       const width = this.video.videoWidth || DEFAULT_CAMERA_WIDTH;
       const height = this.video.videoHeight || DEFAULT_CAMERA_HEIGHT;
@@ -620,4 +619,3 @@
   Scratch.extensions.register(new VideoSprites());
 })(Scratch);
 
-//📷🐈
