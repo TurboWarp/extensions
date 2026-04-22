@@ -87,7 +87,9 @@
           {
             opcode: "arrayToPng",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("array [ARRAY] width [W] height [H] to PNG"),
+            text: Scratch.translate(
+              "array [ARRAY] width [W] height [H] to PNG"
+            ),
             arguments: {
               ARRAY: {
                 type: Scratch.ArgumentType.STRING,
