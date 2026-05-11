@@ -11,7 +11,7 @@ import compatibilityAliases from "./compatibility-aliases.js";
 import parseMetadata from "./parse-extension-metadata.js";
 import parseTranslations from "./parse-extension-translations.js";
 import renderTemplate from "./render-template.js";
-import renderDocs from "./render-docs.js";
+import renderDocs, { validateDocsMarkdown } from "./render-docs.js";
 import { mkdirp, recursiveReadDirectory } from "./fs-utils.js";
 import {
   fetchAllDependencies,
@@ -79,6 +79,21 @@ const filterTranslationsByID = (allTranslations, idFilter) => {
   }
 
   return stringsEmpty ? null : result;
+};
+
+const isScratchUserLink = (link) => {
+  try {
+    const url = new URL(link);
+    return (
+      url.protocol === "https:" &&
+      url.hostname === "scratch.mit.edu" &&
+      /^\/users\/[A-Za-z0-9_-]+\/?$/.test(url.pathname) &&
+      url.search === "" &&
+      url.hash === ""
+    );
+  } catch {
+    return false;
+  }
 };
 
 /**
@@ -268,10 +283,7 @@ class ExtensionFile extends BuildFile {
       if (!person.name) {
         throw new Error("Person is missing name");
       }
-      if (
-        person.link &&
-        !person.link.startsWith("https://scratch.mit.edu/users/")
-      ) {
+      if (person.link && !isScratchUserLink(person.link)) {
         throw new Error(
           `Link for ${person.name} does not point to a Scratch user`
         );
@@ -591,6 +603,10 @@ class DocsFile extends BuildFile {
   async read() {
     const markdown = (await super.read()).toString("utf-8");
     return renderDocs(markdown, this.extensionSlug);
+  }
+
+  async validate() {
+    validateDocsMarkdown((await super.read()).toString("utf-8"));
   }
 
   getType() {

@@ -1,3 +1,11 @@
+const escapeHTML = (value) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
 class Person {
   constructor(name, link) {
     /** @type {string} */
@@ -7,11 +15,11 @@ class Person {
   }
 
   toHTML() {
-    // Don't need to bother escaping here. There's no vulnerability.
+    const escapedName = escapeHTML(this.name);
     if (this.link) {
-      return `<a href="${this.link}">${this.name}</a>`;
+      return `<a href="${escapeHTML(this.link)}">${escapedName}</a>`;
     }
-    return this.name;
+    return escapedName;
   }
 }
 

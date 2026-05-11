@@ -17,6 +17,12 @@ const md = new MarkdownIt({
   breaks: true,
 });
 
+const validationMd = new MarkdownIt({
+  html: true,
+  linkify: true,
+  breaks: true,
+});
+
 md.renderer.rules.fence = function (tokens, idx, options, env, self) {
   const token = tokens[idx];
 
@@ -101,6 +107,44 @@ md.block.ruler.before(
     return true;
   }
 );
+
+const SAFE_HTML_PATTERNS = [
+  /^<a name="[A-Za-z0-9_-]+">$/i,
+  /^<\/a>$/i,
+  /^<br\s*\/?>$/i,
+  /^<br\/><br\/>$/i,
+  /^<sup>$/i,
+  /^<\/sup>$/i,
+  /^<u>$/i,
+  /^<\/u>$/i,
+  /^<div class="alert alert-(note|tip|important|warning|caution)">$/i,
+  /^<\/div>$/i,
+];
+
+const isSafeHTML = (html) =>
+  SAFE_HTML_PATTERNS.some((pattern) => pattern.test(html.trim()));
+
+const validateTokenHTML = (tokens) => {
+  for (const token of tokens) {
+    if (
+      (token.type === "html_inline" || token.type === "html_block") &&
+      !isSafeHTML(token.content)
+    ) {
+      throw new Error(`Unsafe HTML in Markdown docs: ${token.content.trim()}`);
+    }
+    if (token.children) {
+      validateTokenHTML(token.children);
+    }
+  }
+};
+
+/**
+ * @param {string} markdownSource Markdown code
+ */
+export const validateDocsMarkdown = (markdownSource) => {
+  const env = {};
+  validateTokenHTML(validationMd.parse(markdownSource, env));
+};
 
 /**
  * @param {string} markdownSource Markdown code
