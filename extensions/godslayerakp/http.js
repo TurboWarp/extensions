@@ -86,25 +86,30 @@
       }
     }
   };
+  const isUnsafePathSegment = (name) =>
+    name === "__proto__" || name === "constructor" || name === "prototype";
   const getPathArray = (path) => {
     const names = path.split(".");
     for (let index = 0; index < names.length; index++) {
       let name = names[index];
       name = name.replaceAll(/(?<!\\)&dot/g, ".");
+      if (isUnsafePathSegment(name)) return null;
     }
     return names;
   };
   const getValueAtPath = (object, path) => {
+    if (!path) return "";
     for (const name of path) {
       object = object?.[name];
     }
     return setType(object, "string");
   };
   const setValueAtPath = (object, path, value) => {
-    for (const name of path.slice(0, -1)) {
-      object = object[name];
+    if (!path) return;
+    for (let i = 0; i < path.length - 1; i++) {
+      object = object[path[i]];
     }
-    object[path.at(-1)] = value;
+    object[path[path.length - 1]] = value;
   };
 
   const { vm } = Scratch;
@@ -257,6 +262,11 @@
             opcode: "resData",
             blockType: BlockType.REPORTER,
             text: Scratch.translate("response"),
+          },
+          {
+            opcode: "resDataUrl",
+            blockType: BlockType.REPORTER,
+            text: Scratch.translate("response as data:URL"),
           },
           {
             opcode: "error",
@@ -566,6 +576,22 @@
     resData() {
       return this.response.text;
     }
+    resDataUrl() {
+      if (!this.response.dataUrl) {
+        this.response.dataUrl = new Promise((resolve) => {
+          const blob = this.response.blob;
+          if (blob) {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = () => resolve("");
+            reader.readAsDataURL(blob);
+          } else {
+            resolve("");
+          }
+        });
+      }
+      return this.response.dataUrl;
+    }
 
     error() {
       return this.response.error;
@@ -693,7 +719,8 @@
           this.response.text = JSON.stringify(json);
           return;
         }
-        const body = await res.text();
+        this.response.blob = await res.blob();
+        const body = await this.response.blob.text();
         this.response.text = body;
       } catch (err) {
         this.response.error = String(err);
