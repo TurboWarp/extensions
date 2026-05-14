@@ -38,9 +38,9 @@
           {
             opcode: "speak",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Speak [TEXT]"),
+            text: Scratch.translate("speak [WORDS]"),
             arguments: {
-              TEXT: {
+              WORDS: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "Hello",
               },
@@ -53,7 +53,7 @@
     speak(args) {
       return new Promise(function (res, rej) {
         const audioContext = Scratch.vm.runtime.audioEngine.audioContext;
-        const str = Module.stringToNewUTF8(args.TEXT);
+        const str = Module.stringToNewUTF8(args.WORDS);
         const tts = speak(str);
         Module._free(str);
 
