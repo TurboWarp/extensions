@@ -1,8 +1,10 @@
 // Name: DECtalk
 // ID: dectalk
-// Description: Use DECtalk TTS.
+// Description: Use DECtalk.
 // By: NishiOwO
 // License: BSD-3-Clause
+
+// Repository is at https://github.com/dectalk/tw-dectalk
 
 (function (Scratch) {
   "use strict";
