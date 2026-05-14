@@ -1,6 +1,6 @@
 // Name: DECtalk
 // ID: dectalk
-// Description: Use DECtalk.
+// Description: Use DECtalk TTS.
 // By: NishiOwO
 // License: BSD-3-Clause
 
