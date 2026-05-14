@@ -36,7 +36,7 @@
         color1: "#b3353f",
         blocks: [
           {
-            opcode: "speak",
+            opcode: "speakAndWait",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("speak [WORDS]"),
             arguments: {
@@ -50,7 +50,7 @@
       };
     }
 
-    speak(args) {
+    speakAndWait(args) {
       return new Promise(function (res, rej) {
         const audioContext = Scratch.vm.runtime.audioEngine.audioContext;
         const str = Module.stringToNewUTF8(args.WORDS);
