@@ -1,10 +1,12 @@
 // Name: DECtalk
 // ID: dectalk
-// Description: Use DECtalk
+// Description: Use DECtalk.
 // By: NishiOwO <https://github.com/nishiowo>
 // License: BSD-3
 
 (function(Scratch){
+ 	"use strict";
+
 	if(!Scratch.extensions.unsandboxed) {
 		throw new Error("DECtalk must be run unsandboxed");
 	}
