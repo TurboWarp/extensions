@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT AND LGPL-3.0
 
-// Version V.3.5.22
+// Version V.3.5.23
 
 (async function (Scratch) {
   "use strict";
@@ -1152,6 +1152,17 @@
       if (!url) return;
 
       return new Promise((resolve) => {
+        const handleError = (error) => {
+          console.error("Sound load error:", error);
+          alert(
+            Scratch.translate(
+              "Tune Shark V3 can't import this sound, file may be corrupted or non-existent."
+            )
+          );
+
+          resolve();
+        };
+
         Scratch.canFetch(url).then((canFetch) => {
           if (!canFetch) resolve();
 
@@ -1162,19 +1173,18 @@
                 source: "file",
                 options: { path: url, attack: 0 },
               },
-              () => {
+              (errorStatus) => {
+                if (errorStatus) {
+                  handleError(errorStatus);
+                  return;
+                }
+  
                 this.initSound(engine, args.NAME, url, false);
                 resolve();
               }
             );
           } catch (e) {
-            console.error("Sound load error:", e);
-            alert(
-              Scratch.translate(
-                "Tune Shark V3 can't import this sound, file may be corrupted or non-existent."
-              )
-            );
-            resolve();
+            handleError(e);
           }
         });
       });
