@@ -99,8 +99,11 @@
   }
 
   (async function (res) {
-    if(!embedded){
-      const DECtalkMini = await Scratch.external.evalAndReturn(
+    let DTC;
+    if(embedded){
+      DTC = DECtalkMini;
+    } else {
+      DTC = await Scratch.external.evalAndReturn(
         "https://raw.githubusercontent.com/dectalk/tw-dectalk/79a9f2538e7cf712e6fd25d4345fab531c31800b/dtc.js",
         "DECtalkMini"
       );
