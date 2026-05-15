@@ -76,7 +76,7 @@
     speakAndWait(args) {
       return new Promise(function (res, rej) {
         const audioContext = Scratch.vm.runtime.audioEngine.audioContext;
-        const str = Module.stringToNewUTF8(args.WORDS.toString());
+        const str = Module.stringToNewUTF8(Scratch.Cast.toString(args.WORDS));
         const tts = speak(str);
         Module._free(str);
 
