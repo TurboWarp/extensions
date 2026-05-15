@@ -15,6 +15,9 @@
 
   let Module, speak, speak_init;
   let g_buffer = {};
+  let embedded = false;
+
+  /* EMBED DTC.JS HERE */
 
   window.onDECtalkAudioCallback = function (tts, buffer, length, phoneme) {
     let arr_r = new Int16Array(Module.HEAP16.buffer, buffer, length);
@@ -96,10 +99,12 @@
   }
 
   (async function (res) {
-    const DECtalkMini = await Scratch.external.evalAndReturn(
-      "https://raw.githubusercontent.com/dectalk/tw-dectalk/79a9f2538e7cf712e6fd25d4345fab531c31800b/dtc.js",
-      "DECtalkMini"
-    );
+    if(!embedded){
+      const DECtalkMini = await Scratch.external.evalAndReturn(
+        "https://raw.githubusercontent.com/dectalk/tw-dectalk/79a9f2538e7cf712e6fd25d4345fab531c31800b/dtc.js",
+        "DECtalkMini"
+      );
+    }
     Module = await DECtalkMini();
     speak_init = Module.cwrap("speak_init", null, []);
     speak = Module.cwrap("speak", "number", ["number"]);
