@@ -16,6 +16,7 @@
   let Module, speak, speak_init;
   let g_buffer = {};
   let embedded = false;
+  var DECtalkMini;
 
   /* EMBED DTC.JS HERE */
 
@@ -100,7 +101,7 @@
 
   (async function (res) {
     let DTC;
-    if(embedded){
+    if (embedded) {
       DTC = DECtalkMini;
     } else {
       DTC = await Scratch.external.evalAndReturn(
@@ -108,7 +109,7 @@
         "DECtalkMini"
       );
     }
-    Module = await DECtalkMini();
+    Module = await DTC();
     speak_init = Module.cwrap("speak_init", null, []);
     speak = Module.cwrap("speak", "number", ["number"]);
 
