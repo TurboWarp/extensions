@@ -324,3 +324,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## DogeisCut/FormatNumbers.png
  - Created by [@Dillon](https://github.com/DillonRGaming)
+
+## NishiOwO/dectalk.png
+ - Created by [@Dogo6647](https://github.com/Dogo6647)
+ - Used Arimo from Google Fonts.
