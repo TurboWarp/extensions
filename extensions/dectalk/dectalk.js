@@ -6,7 +6,7 @@
 
 // Repository is at https://github.com/dectalk/tw-dectalk
 
-(function (Scratch) {
+(async function (Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
@@ -19,7 +19,18 @@
   let embedded = false;
   var DECtalkMini;
 
+  /* DO NOT REMOVE THE COMMENT BELOW!!! */
   /* EMBED DTC.JS HERE */
+
+  let dtc;
+  if (embedded) {
+    dtc = DECtalkMini;
+  } else {
+    dtc = await Scratch.external.evalAndReturn(
+      "https://raw.githubusercontent.com/dectalk/tw-dectalk/79a9f2538e7cf712e6fd25d4345fab531c31800b/dtc.js",
+      "DECtalkMini"
+    );
+  }
 
   window.onDECtalkAudioCallback = function (tts, buffer, length, phoneme) {
     let arr_r = new Int16Array(Module.HEAP16.buffer, buffer, length);
@@ -115,22 +126,11 @@
     }
   }
 
-  (async function (res) {
-    let DTC;
-    if (embedded) {
-      DTC = DECtalkMini;
-    } else {
-      DTC = await Scratch.external.evalAndReturn(
-        "https://raw.githubusercontent.com/dectalk/tw-dectalk/79a9f2538e7cf712e6fd25d4345fab531c31800b/dtc.js",
-        "DECtalkMini"
-      );
-    }
-    Module = await DTC();
-    speak_init = Module.cwrap("speak_init", null, []);
-    speak = Module.cwrap("speak", "number", ["number"]);
+  Module = await dtc();
+  speak_init = Module.cwrap("speak_init", null, []);
+  speak = Module.cwrap("speak", "number", ["number"]);
 
-    speak_init();
+  speak_init();
 
-    Scratch.extensions.register(new DECtalk());
-  })();
+  Scratch.extensions.register(new DECtalk());
 })(Scratch);
