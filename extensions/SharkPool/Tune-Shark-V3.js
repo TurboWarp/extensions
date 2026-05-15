@@ -1178,7 +1178,7 @@
                   handleError(errorStatus);
                   return;
                 }
-  
+
                 this.initSound(engine, args.NAME, url, false);
                 resolve();
               }
