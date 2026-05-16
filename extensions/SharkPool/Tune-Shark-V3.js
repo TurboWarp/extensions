@@ -1338,16 +1338,31 @@
       this.audioControlDo(sound, "stop");
       sound._cache = { loudness: {}, tone: {} };
 
-      const node = sound.context.sourceNode;
-      const reverseBuffer = (buffer) => {
-        for (let i = 0; i < buffer.numberOfChannels; i++)
-          buffer.getChannelData(i).reverse();
-        return buffer;
-      };
+      const ctx = sound.context;
+      const src = ctx.sourceNode.buffer;
 
-      const bufferSource = node.context.createBufferSource();
-      bufferSource.buffer = reverseBuffer(node.buffer);
-      bufferSource.connect(node.context.destination);
+      // Reverse a private copy -- never mutate the source buffer, it may be
+      // shared with the project's Scratch sound or another Tune Shark sound
+      const reversed = Pizzicato.context.createBuffer(
+        src.numberOfChannels,
+        src.length,
+        src.sampleRate
+      );
+      for (let i = 0; i < src.numberOfChannels; i++) {
+        const channel = reversed.getChannelData(i);
+        channel.set(src.getChannelData(i));
+        channel.reverse();
+      }
+
+      // Pizzicato keeps the buffer in a closure with no setter, so point
+      // its source-node factory at the reversed copy
+      ctx.getRawSourceNode = function () {
+        const node = Pizzicato.context.createBufferSource();
+        node.loop = this.loop;
+        node.buffer = reversed;
+        return node;
+      };
+      ctx.sourceNode = ctx.getSourceNode();
     }
 
     loopParams(args) {
