@@ -1164,7 +1164,10 @@
         };
 
         Scratch.canFetch(url).then((canFetch) => {
-          if (!canFetch) resolve();
+          if (!canFetch) {
+            resolve();
+            return;
+          }
 
           this.deleteSound(args);
           try {
