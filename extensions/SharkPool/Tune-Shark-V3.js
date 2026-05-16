@@ -1014,13 +1014,13 @@
           clone.sourceNode.playbackRate.value = sound.pitch;
           clone.sourceNode.gainSuccessor.gain.value = sound.gain;
 
-          const overlayIndex = sound.overlays.length;
           sound.overlays.push(clone);
           clone.on("end", () => {
             clone.sourceNode.disconnect();
             clone.disconnect();
 
-            sound.overlays.splice(overlayIndex, 1);
+            const overlayIndex = sound.overlays.indexOf(clone);
+            if (overlayIndex !== -1) sound.overlays.splice(overlayIndex, 1);
             delete soundBank[newName];
           });
         } else {
