@@ -17,6 +17,7 @@
   let xmp;
   let g_keepplaying = {};
   let embedded = false;
+  let full_libxmp = false;
   var libxmp;
 
   /* DO NOT REMOVE THE COMMENT BELOW!!! */
@@ -25,10 +26,17 @@
   if (embedded) {
     xmp = libxmp;
   } else {
-    xmp = await Scratch.external.evalAndReturn(
-      "https://raw.githubusercontent.com/NishiOwO/tw-libxmp/5955fe03194d46d321cbb34d5edbbba89c386269/xmp.js",
-      "libxmp"
-    );
+    if (full_libxmp) {
+      xmp = await Scratch.external.evalAndReturn(
+        "https://raw.githubusercontent.com/NishiOwO/tw-libxmp/63101e3cfd7281498b5066f4e79fe8fe09b5797f/xmp.js",
+        "libxmp"
+      );
+    } else {
+      xmp = await Scratch.external.evalAndReturn(
+        "https://raw.githubusercontent.com/NishiOwO/tw-libxmp/63101e3cfd7281498b5066f4e79fe8fe09b5797f/xmp.full.js",
+        "libxmp"
+      );
+    }
   }
 
   Module = await xmp();
