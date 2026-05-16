@@ -238,7 +238,6 @@
       if (!target || target.isStage) {
         return;
       }
-      // @ts-expect-error
       if (typeof ScratchBlocks !== "undefined") {
         if (
           !confirm(
@@ -272,7 +271,6 @@
     }
 
     importProject({ TEXT }) {
-      // @ts-ignore
       if (typeof ScratchBlocks !== "undefined") {
         // We are in the editor. Ask before loading a new project to avoid unrecoverable data loss.
         if (

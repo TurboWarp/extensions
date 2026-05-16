@@ -20,8 +20,12 @@
     Scratch.vm.runtime.extensionStorage["localstorage"] = {
       namespace: newNamespace,
     };
-    Scratch.vm.extensionManager.refreshBlocks("localstorage");
     readFromStorage();
+
+    // We can generate namespace before we have fully loaded
+    if (Scratch.vm.extensionManager.isExtensionLoaded("localstorage")) {
+      Scratch.vm.extensionManager.refreshBlocks("localstorage");
+    }
   };
 
   const STORAGE_PREFIX = "extensions.turbowarp.org/local-storage:";
@@ -103,21 +107,24 @@
     return id;
   };
 
-  const generateRandomNamespaceIfMissing = () => {
-    if (!getNamespace()) {
+  const prepareInitialNamespace = () => {
+    if (getNamespace()) {
+      readFromStorage();
+    } else {
       setNamespace(generateRandomNamespace());
     }
   };
 
   Scratch.vm.runtime.on("PROJECT_LOADED", () => {
-    generateRandomNamespaceIfMissing();
+    prepareInitialNamespace();
   });
 
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
-    generateRandomNamespace();
+    // Will always be followed by a PROJECT_LOADED event later
+    namespaceValues = Object.create(null);
   });
 
-  generateRandomNamespaceIfMissing();
+  prepareInitialNamespace();
 
   let lastNamespaceWarning = 0;
   const validNamespace = () => {

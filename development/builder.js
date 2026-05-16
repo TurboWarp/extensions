@@ -960,12 +960,13 @@ class Builder {
   async validate() {
     const errors = [];
     const build = await this.build();
-    for (const [fileName, file] of Object.entries(build.files)) {
+    for (const [outputFileName, file] of Object.entries(build.files)) {
       try {
         await file.validate();
       } catch (e) {
         errors.push({
-          fileName,
+          outputFileName,
+          inputFilePath: file.sourcePath,
           error: e,
         });
       }

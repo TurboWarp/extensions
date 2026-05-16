@@ -33,7 +33,7 @@
     SOFTWARE.
   */
   const NGIO = await Scratch.external.evalAndReturn(
-    "https://raw.githubusercontent.com/PsychoGoldfishNG/NewgroundsIO-JS/b0383337ef72d42dac12b7a4d7a24dfbc4105eb3/dist/NewgroundsIO.js",
+    "https://raw.githubusercontent.com/PsychoGoldfishNG/NewgroundsIO-JS/b0383337ef72d42dac12b7a4d7a24dfbc4105eb3/dist/NewgroundsIO.min.js",
     "NGIO"
   );
 

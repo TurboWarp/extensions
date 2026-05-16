@@ -13720,7 +13720,7 @@
           }
           break;
         case SPACE_TYPE_OPTIONS.RELATIVE: {
-          _setXY(util.target, util.target.x + x, util.target.x + y);
+          _setXY(util.target, util.target.x + x, util.target.y + y);
           if (body) {
             const pos = body.GetPosition();
             const pos2 = new b2Vec2(pos.x + x / zoom, pos.y + y / zoom);

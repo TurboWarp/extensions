@@ -428,7 +428,7 @@
       const skinId = createdSkins[skinName];
       if (!skins[skinId]) {
         // If the skin doesnt exist in the renderer we should probably just delete it on our end...
-        this.safeDispose(skinId, skinName);
+        this._disposeSafe(skinId, skinName);
         return 0;
       }
 
