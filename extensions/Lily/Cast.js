@@ -13,7 +13,7 @@
     getInfo() {
       return {
         id: "lmsCast",
-        name: "Cast",
+        name: Scratch.translate("Cast"),
         blocks: [
           {
             opcode: "toType",
@@ -86,17 +86,7 @@
     }
 
     typeOf(args) {
-      const input = args.INPUT;
-      switch (typeof input) {
-        case "number":
-          return "number";
-        case "string":
-          return "string";
-        case "boolean":
-          return "boolean";
-        default:
-          return "";
-      }
+      return typeof args.INPUT;
     }
   }
 

@@ -17,7 +17,7 @@
     getInfo() {
       return {
         id: "lbdrawtest",
-        name: "RGB Channels",
+        name: Scratch.translate("RGB Channels"),
         menuIconURI:
           "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzMyIgaGVpZ2h0PSIzMyIgdmlld0JveD0iMCwwLDMzLDMzIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjIzLjUsLTE2My41KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9Im5vbnplcm8iIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjI0LDE4MGMwLC04LjgzNjU2IDcuMTYzNDQsLTE2IDE2LC0xNmM4LjgzNjU2LDAgMTYsNy4xNjM0NCAxNiwxNmMwLDguODM2NTYgLTcuMTYzNDQsMTYgLTE2LDE2Yy04LjgzNjU2LDAgLTE2LC03LjE2MzQ0IC0xNiwtMTZ6IiBmaWxsPSIjYWFhYWFhIiBzdHJva2U9IiM4ODg4ODgiIHN0cm9rZS13aWR0aD0iMSIvPjxwYXRoIGQ9Ik0yMzMuOTAyMDQsMTgxLjQ4NjkyYzAsLTQuNDE4MjggMy41ODE3MiwtOCA4LC04YzQuNDE4MjgsMCA4LDMuNTgxNzIgOCw4YzAsNC40MTgyOCAtMy41ODE3Miw4IC04LDhjLTQuNDE4MjgsMCAtOCwtMy41ODE3MiAtOCwtOHoiIGZpbGw9IiMwMDAwZmYiIHN0cm9rZT0iIzNjMDBmZiIgc3Ryb2tlLXdpZHRoPSIwLjUiLz48cGF0aCBkPSJNMjMxLjk2MjQ1LDE3OS40NDEzNWMwLC00LjQxODI4IDMuNTgxNzIsLTggOCwtOGM0LjQxODI4LDAgOCwzLjU4MTcyIDgsOGMwLDQuNDE4MjggLTMuNTgxNzIsOCAtOCw4Yy00LjQxODI4LDAgLTgsLTMuNTgxNzIgLTgsLTh6IiBmaWxsPSIjMDBmZjAwIiBzdHJva2U9IiMwMGZmM2QiIHN0cm9rZS13aWR0aD0iMSIvPjxwYXRoIGQ9Ik0yMzAuMjI1OSwxNzcuNjIwOThjMCwtNC40MTgyOCAzLjU4MTcyLC04IDgsLThjNC40MTgyOCwwIDgsMy41ODE3MiA4LDhjMCw0LjQxODI4IC0zLjU4MTcyLDggLTgsOGMtNC40MTgyOCwwIC04LC0zLjU4MTcyIC04LC04eiIgZmlsbD0iI2ZmMDAwMCIgc3Ryb2tlPSIjZmYzZDAwIiBzdHJva2Utd2lkdGg9IjEiLz48L2c+PC9nPjwvc3ZnPgo=",
         blockIconURI:
@@ -29,21 +29,21 @@
           {
             opcode: "true",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "true",
+            text: Scratch.translate("true"),
             hideFromPalette: true,
             disableMonitor: true,
           },
           {
             opcode: "false",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "false",
+            text: Scratch.translate("false"),
             hideFromPalette: true,
             disableMonitor: true,
           },
           {
             opcode: "enabledCheck",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[COLOR] channel enabled?",
+            text: Scratch.translate("[COLOR] channel enabled?"),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.STRING,
@@ -54,18 +54,18 @@
           {
             opcode: "drawSelected",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set colors red:[R]green:[G]blue:[B]",
+            text: Scratch.translate("set colors red:[R] green:[G] blue:[B]"),
             arguments: {
               R: {
-                type: Scratch.ArgumentType.MENU,
+                type: Scratch.ArgumentType.STRING,
                 menu: "ENABLED_MENU",
               },
               G: {
-                type: Scratch.ArgumentType.MENU,
+                type: Scratch.ArgumentType.STRING,
                 menu: "ENABLED_MENU",
               },
               B: {
-                type: Scratch.ArgumentType.MENU,
+                type: Scratch.ArgumentType.STRING,
                 menu: "ENABLED_MENU",
               },
             },
@@ -73,7 +73,7 @@
           {
             opcode: "draw",
             blockType: Scratch.BlockType.COMMAND,
-            text: "only draw colors:[R]green:[G]blue:[B]",
+            text: Scratch.translate("only draw colors:[R] green:[G] blue:[B]"),
             hideFromPalette: true,
             arguments: {
               R: {
@@ -90,7 +90,7 @@
           {
             opcode: "drawOneColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "only draw [COLOR]",
+            text: Scratch.translate("only draw [COLOR]"),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.STRING,
@@ -101,7 +101,7 @@
           {
             opcode: "drawDepth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "enable depth mask?[DRAW]",
+            text: Scratch.translate("enable depth mask? [DRAW]"),
             hideFromPalette: true,
             arguments: {
               DRAW: {
@@ -112,23 +112,36 @@
           {
             opcode: "clearEffects",
             blockType: Scratch.BlockType.COMMAND,
-            text: "clear color draw effects",
+            text: Scratch.translate("clear color draw effects"),
           },
         ],
         menus: {
           COLOR_MENU: {
             acceptReporters: true,
-            items: ["red", "green", "blue"],
+            items: [
+              {
+                text: Scratch.translate("red"),
+                value: "red",
+              },
+              {
+                text: Scratch.translate("green"),
+                value: "green",
+              },
+              {
+                text: Scratch.translate("blue"),
+                value: "blue",
+              },
+            ],
           },
           ENABLED_MENU: {
             acceptReporters: true,
             items: [
               {
-                text: "off",
+                text: Scratch.translate("off"),
                 value: "false",
               },
               {
-                text: "on",
+                text: Scratch.translate("on"),
                 value: "true",
               },
             ],

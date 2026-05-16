@@ -1,7 +1,5 @@
-const fs = require("fs");
-const ejs = require("ejs");
-
-// TODO: Investigate the value of removing dependency on `ejs` and possibly writing our own DSL.
+import * as fs from "node:fs";
+import ejs from "ejs";
 
 const renderTemplate = (path, data) => {
   const inputEJS = fs.readFileSync(path, "utf-8");
@@ -9,4 +7,4 @@ const renderTemplate = (path, data) => {
   return outputHTML;
 };
 
-module.exports = renderTemplate;
+export default renderTemplate;

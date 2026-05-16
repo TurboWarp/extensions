@@ -2,11 +2,12 @@
 
 This extension provides a set of blocks that gives you greater control over the Program Window.
 
-**Note: Most of these blocks only work in Electron, Pop Ups/Web Apps containing HTML packaged projects, and normal Web Apps.**
-
-Examples include, but are not limited to: **TurboWarp Desktop App, TurboWarp Web App, Pop Up/Web App windows that contain the HTML packaged project, and plain Electron.**
-
-**Blocks that still work outside of these will be specified.**
+> [!NOTE]
+> **Most of these blocks only work in Electron, Pop Ups/Web Apps containing HTML packaged projects, and normal Web Apps.**
+>
+> Examples include, but are not limited to: **TurboWarp Desktop App, TurboWarp Web App, Pop Up/Web App windows that contain the HTML packaged project, and plain Electron.**
+>
+> **Blocks that still work outside of these will be specified.**
 
 ## Move Window Block
 

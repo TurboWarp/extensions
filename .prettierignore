@@ -2,8 +2,8 @@ build
 images
 licenses
 website
-eslint.config.js
 *.json
 *.yml
 *.md
 extensions/docs-examples
+build-snippets

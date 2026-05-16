@@ -86,25 +86,30 @@
       }
     }
   };
+  const isUnsafePathSegment = (name) =>
+    name === "__proto__" || name === "constructor" || name === "prototype";
   const getPathArray = (path) => {
     const names = path.split(".");
     for (let index = 0; index < names.length; index++) {
       let name = names[index];
       name = name.replaceAll(/(?<!\\)&dot/g, ".");
+      if (isUnsafePathSegment(name)) return null;
     }
     return names;
   };
   const getValueAtPath = (object, path) => {
+    if (!path) return "";
     for (const name of path) {
       object = object?.[name];
     }
     return setType(object, "string");
   };
   const setValueAtPath = (object, path, value) => {
-    for (const name of path.slice(0, -1)) {
-      object = object[name];
+    if (!path) return;
+    for (let i = 0; i < path.length - 1; i++) {
+      object = object[path[i]];
     }
-    object[path.at(-1)] = value;
+    object[path[path.length - 1]] = value;
   };
 
   const { vm } = Scratch;
@@ -239,6 +244,7 @@
     getInfo() {
       return {
         id: extensionId,
+        // eslint-disable-next-line extension/should-translate
         name: "HTTP",
         color1: "#307eff",
         color2: "#2c5eb0",
@@ -246,38 +252,43 @@
           {
             opcode: "clearAll",
             blockType: BlockType.COMMAND,
-            text: "clear current data",
+            text: Scratch.translate("clear current data"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Response",
+            text: Scratch.translate("Response"),
           },
           {
             opcode: "resData",
             blockType: BlockType.REPORTER,
-            text: "response",
+            text: Scratch.translate("response"),
+          },
+          {
+            opcode: "resDataUrl",
+            blockType: BlockType.REPORTER,
+            text: Scratch.translate("response as data:URL"),
           },
           {
             opcode: "error",
             blockType: BlockType.REPORTER,
-            text: "error",
+            text: Scratch.translate("error"),
           },
           {
             opcode: "status",
             blockType: BlockType.REPORTER,
-            text: "status",
+            text: Scratch.translate("status"),
           },
           {
             opcode: "statusText",
             blockType: BlockType.REPORTER,
-            text: "status text",
+            text: Scratch.translate("status text"),
           },
           "---",
           {
             opcode: "getHeaderJSON",
             blockType: BlockType.REPORTER,
             disableMonitor: true,
-            text: "get headers as json",
+            text: Scratch.translate("response headers as json"),
           },
           {
             opcode: "getHeaderValue",
@@ -285,42 +296,43 @@
             arguments: {
               name: {
                 type: ArgumentType.STRING,
+                defaultValue: "name",
               },
             },
-            text: "get [name] from header",
+            text: Scratch.translate("[name] from response headers"),
           },
           "---",
           {
             opcode: "requestComplete",
             blockType: BlockType.BOOLEAN,
-            text: "site responded?",
+            text: Scratch.translate("site responded?"),
           },
           {
             opcode: "requestFail",
             blockType: BlockType.BOOLEAN,
-            text: "request failed?",
+            text: Scratch.translate("request failed?"),
           },
           {
             opcode: "requestSuccess",
             blockType: BlockType.BOOLEAN,
-            text: "request succeeded?",
+            text: Scratch.translate("request succeeded?"),
           },
           "---",
           {
             opcode: "onResponse",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
-            text: "when a site responds",
+            text: Scratch.translate("when a site responds"),
           },
           {
             opcode: "onFail",
             blockType: BlockType.EVENT,
             isEdgeActivated: false,
-            text: "when a request fails",
+            text: Scratch.translate("when a request fails"),
           },
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Request",
+            text: Scratch.translate("Request"),
           },
           {
             opcode: "setMimeType",
@@ -332,7 +344,7 @@
                 defaultValue: this.request.mimeType,
               },
             },
-            text: "set content type to [type]",
+            text: Scratch.translate("set request content type to [type]"),
           },
           {
             opcode: "setRequestmethod",
@@ -344,7 +356,7 @@
                 defaultValue: this.request.method,
               },
             },
-            text: "set request method to [method]",
+            text: Scratch.translate("set request method to [method]"),
           },
           {
             opcode: "setHeaderData",
@@ -359,7 +371,7 @@
                 defaultValue: this.request.mimeType,
               },
             },
-            text: "in header set [name] to [value]",
+            text: Scratch.translate("in request headers set [name] to [value]"),
           },
           {
             opcode: "setHeaderJSON",
@@ -370,7 +382,7 @@
                 defaultValue: `{"Content-Type": "${this.request.mimeType}"}`,
               },
             },
-            text: "set headers to json [json]",
+            text: Scratch.translate("set request headers to json [json]"),
           },
           {
             opcode: "setBody",
@@ -381,13 +393,13 @@
                 default: "Apple!",
               },
             },
-            text: "set request body to [text]",
+            text: Scratch.translate("set request body to [text]"),
           },
           "---",
           {
             opcode: "setBodyToForm",
             blockType: BlockType.COMMAND,
-            text: "set request body to a form",
+            text: Scratch.translate("set request body to multipart form"),
           },
           {
             opcode: "getFormProperty",
@@ -398,7 +410,7 @@
                 defaultValue: "name",
               },
             },
-            text: "get [name] in request form",
+            text: Scratch.translate("[name] in multipart form"),
           },
           {
             opcode: "setFormProperty",
@@ -413,7 +425,7 @@
                 defaultValue: "value",
               },
             },
-            text: "set [name] to [value] in request form",
+            text: Scratch.translate("set [name] to [value] in multipart form"),
           },
           {
             opcode: "deleteFormProperty",
@@ -424,7 +436,7 @@
                 defaultValue: "name",
               },
             },
-            text: "delete [name] from request form",
+            text: Scratch.translate("delete [name] from multipart form"),
           },
           "---",
           {
@@ -436,18 +448,18 @@
                 defaultValue: "https://extensions.turbowarp.org/hello.txt",
               },
             },
-            text: "send request to [url]",
+            text: Scratch.translate("send request to [url]"),
           },
           {
             func: "showExtra",
             blockType: BlockType.BUTTON,
-            text: "Show Extra",
+            text: Scratch.translate("Show Extra"),
             hideFromPalette: this.showingExtra,
           },
           {
             func: "hideExtra",
             blockType: BlockType.BUTTON,
-            text: "Hide Extra",
+            text: Scratch.translate("Hide Extra"),
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -463,7 +475,7 @@
                 defaultValue: "data",
               },
             },
-            text: "set [path] to [value] in request options",
+            text: Scratch.translate("set [path] to [value] in request options"),
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -479,7 +491,9 @@
                 menu: "jsTypes",
               },
             },
-            text: "set [path] to type [type] in request options",
+            text: Scratch.translate(
+              "set [path] to type [type] in request options"
+            ),
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -491,7 +505,7 @@
                 defaultValue: "path.to.item",
               },
             },
-            text: "get [path] in request options",
+            text: Scratch.translate("[path] in request options"),
             hideFromPalette: !this.showingExtra,
           },
           {
@@ -503,7 +517,7 @@
                 defaultValue: "path.to.item",
               },
             },
-            text: "get type of [path] in request options",
+            text: Scratch.translate("type of [path] in request options"),
             hideFromPalette: !this.showingExtra,
           },
         ],
@@ -517,10 +531,11 @@
           },
           mimeType: {
             items: [
+              "application/json",
+              "application/x-www-form-urlencoded",
               "application/javascript",
               "application/ogg",
               "application/pdf",
-              "application/json",
               "application/ld+json",
               "application/xml",
               "application/zip",
@@ -560,6 +575,22 @@
 
     resData() {
       return this.response.text;
+    }
+    resDataUrl() {
+      if (!this.response.dataUrl) {
+        this.response.dataUrl = new Promise((resolve) => {
+          const blob = this.response.blob;
+          if (blob) {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.onerror = () => resolve("");
+            reader.readAsDataURL(blob);
+          } else {
+            resolve("");
+          }
+        });
+      }
+      return this.response.dataUrl;
     }
 
     error() {
@@ -688,7 +719,8 @@
           this.response.text = JSON.stringify(json);
           return;
         }
-        const body = await res.text();
+        this.response.blob = await res.blob();
+        const body = await this.response.blob.text();
         this.response.text = body;
       } catch (err) {
         this.response.error = String(err);

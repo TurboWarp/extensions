@@ -1,0 +1,115 @@
+name: Format pull request
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions: {}
+
+jobs:
+  # This is complicated because the action runs in the context of TurboWarp/extensions, but we
+  # are processing content from a possibly malicious pull request. To keep this safe, we break
+  # this into two stages.
+
+  # The first stage downloads the pull request, formats it, and uploads the new files to an
+  # artifact. This involves running untrusted code, so it has no permissions.
+  comment-format-untrusted:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      contains(github.event.comment.body, '!format') &&
+      (
+        github.event.comment.author_association == 'MEMBER' ||
+        github.event.comment.user.id == github.event.issue.user.id
+      )
+    steps:
+      - name: Checkout upstream
+        uses: actions/checkout@v4
+        with:
+          repository: TurboWarp/extensions
+          persist-credentials: false
+      - name: Checkout pull request
+        run: gh pr checkout "$PR_NUM"
+        env:
+          PR_NUM: "${{ github.event.issue.number }}"
+          GH_TOKEN: "${{ github.token }}"
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: npm ci
+      - name: Format
+        run: npm run format
+      - name: Upload formatted code
+        uses: actions/upload-artifact@v4
+        with:
+          name: comment-format-untrusted-artifact
+          path: extensions/
+          if-no-files-found: error
+          retention-days: 7
+
+  # Second stage downloads the artifact from the first stage, extracts it, and pushes it.
+  # This stage has many more permissions, so it does not run the code from the artifact.
+  comment-push:
+    runs-on: ubuntu-latest
+    needs: comment-format-untrusted
+    permissions:
+      # Needed for the temporary token to have permission to leave comments.
+      pull-requests: write
+    steps:
+      - name: Checkout upstream
+        uses: actions/checkout@v4
+        with:
+          repository: TurboWarp/extensions
+          # Can't use the default workflow token because commits made by it won't cause more
+          # workflows to run, so any commits it pushes get stuck in limbo waiting for workflows
+          # to run that will never run.
+          # Can't use a deploy key because it won't be able to access the fork that the pull
+          # request is coming from.
+          # Thus we use a manually created fine-grained personal access token from a real
+          # GitHub account with write permissions for this repository.
+          token: "${{ secrets.FORMAT_PR_GH_TOKEN }}"
+          # Credentials are needed for pushing changes at the end.
+          # This is already the default, but we'll be explicit about this.
+          persist-credentials: true
+      - name: Checkout pull request
+        run: gh pr checkout "$PR_NUM"
+        env:
+          PR_NUM: "${{ github.event.issue.number }}"
+          GH_TOKEN: "${{ github.token }}"
+      - name: Download formatted code
+        uses: actions/download-artifact@v4
+        with:
+          name: comment-format-untrusted-artifact
+          path: extensions
+      - name: Commit and push
+        run: |
+          # It wouldn't be hard to include the branch name in the comments, but that is untrusted input so it
+          # doesn't seem like a good idea to let anyone get the bot to say anything they want.
+
+          commit_failed() {
+            echo "No changes to commit"
+            gh pr comment "$PR_NUM" -b "The formatting bot didn't find any formatting issues. It currently only checks the extensions folder. The author or a maintainer can run terminal command 'npm run format' manually to format all files."
+            exit 0
+          }
+
+          push_failed() {
+            echo "Failed to push"
+            gh pr comment "$PR_NUM" -b "The formatting bot couldn't push changes. Either maintainer edit permission is disabled or the pull request is from an organization/non-personal account. The author can run terminal command 'npm run format' manually to format all files."
+            exit 0
+          }
+
+          git config --global user.name "$GITHUB_ACTOR"
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git stage .
+          git commit --author "DangoCat[bot] <dangocat@users.noreply.github.com>" -m "[Automated] Format code" || commit_failed
+
+          # Explicitly set push.default to upstream, otherwise by default git might complain about us being on a
+          # branch called "DangoCat/master" but the corresponding branch on remote "DangoCat" is just "master".
+          git config --global push.default upstream
+          git push || push_failed
+        env:
+          PR_NUM: "${{ github.event.issue.number }}"
+          GH_TOKEN: "${{ github.token }}"

@@ -1,5 +1,6 @@
-# npm
+# Dependencies
 node_modules
+cached-extension-dependencies
 
 # Final built website and localizations
 build
@@ -7,11 +8,13 @@ build-l10n
 
 # Various operating system caches
 thumbs.db
+desktop.ini
 .DS_Store
 
 # Popular editors
-.vscode
 .idea
 *.sublime-workspace
+.vscode/*
+!.vscode/*.code-snippets
 
 # Tip: .git/info/exclude is your personal gitignore for things that don't belong here

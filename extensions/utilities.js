@@ -73,6 +73,7 @@
 
             blockType: Scratch.BlockType.BOOLEAN,
 
+            // eslint-disable-next-line extension/should-translate
             text: "[A] <= [B]",
             arguments: {
               A: {
@@ -89,6 +90,7 @@
 
             blockType: Scratch.BlockType.BOOLEAN,
 
+            // eslint-disable-next-line extension/should-translate
             text: "[A] >= [B]",
             arguments: {
               A: {
@@ -123,6 +125,7 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
+            // eslint-disable-next-line extension/should-translate
             text: "[A] ^ [B]",
             arguments: {
               A: {
@@ -214,7 +217,7 @@
 
             blockType: Scratch.BlockType.REPORTER,
 
-            text: Scratch.translate("get content from [URL]"),
+            text: Scratch.translate("content from [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -247,7 +250,7 @@
           {
             opcode: "newline",
             blockType: Scratch.BlockType.REPORTER,
-            text: "newline character",
+            text: Scratch.translate("newline character"),
             disableMonitor: true,
             arguments: {},
           },
@@ -256,6 +259,7 @@
 
             blockType: Scratch.BlockType.BOOLEAN,
 
+            // eslint-disable-next-line extension/should-translate
             text: "[STRING]",
             arguments: {
               STRING: {
@@ -326,7 +330,10 @@
     }
 
     letters({ STRING, START, END }) {
-      return STRING.slice(Math.max(1, START) - 1, Math.min(STRING.length, END));
+      return Scratch.Cast.toString(STRING).slice(
+        Math.max(1, START) - 1,
+        Math.min(STRING.length, END)
+      );
     }
 
     clamp({ INPUT, MIN, MAX }) {
@@ -363,7 +370,14 @@
         } catch (e) {
           return e.message;
         }
-        path.forEach((prop) => (json = json[prop]));
+
+        for (const prop of path) {
+          if (!Object.prototype.hasOwnProperty.call(json, prop)) {
+            return "";
+          }
+          json = json[prop];
+        }
+
         if (json === null) return "null";
         else if (json === undefined) return "";
         else if (typeof json === "object") return JSON.stringify(json);
