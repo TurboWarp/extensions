@@ -58,12 +58,19 @@
         this.mouseY = NaN;
         // this could be problomatic for some projects. it's not great to add another edge case
       });
-      vm.runtime.extensionStorage.legobrainbikerMoreMouseControls = vm.runtime.extensionStorage.legobrainbikerMoreMouseControls ?? {};
-      if (vm.runtime.extensionStorage.legobrainbikerMoreMouseControls.contextMenuDissabled) {
-        this.contextMenuDissabled = true
+      vm.runtime.extensionStorage.legobrainbikerMoreMouseControls =
+        vm.runtime.extensionStorage.legobrainbikerMoreMouseControls ?? {};
+      if (
+        vm.runtime.extensionStorage.legobrainbikerMoreMouseControls
+          .contextMenuDissabled
+      ) {
+        this.contextMenuDissabled = true;
       }
-      if (vm.runtime.extensionStorage.legobrainbikerMoreMouseControls.scrollDissabled) {
-        this.scrollDissabled = true
+      if (
+        vm.runtime.extensionStorage.legobrainbikerMoreMouseControls
+          .scrollDissabled
+      ) {
+        this.scrollDissabled = true;
       }
     }
     getInfo() {
@@ -120,8 +127,8 @@
               TOGGLE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "toggle",
-              }
-            }
+              },
+            },
           },
           {
             opcode: "toggleScroll",
@@ -131,8 +138,8 @@
               TOGGLE: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "toggle",
-              }
-            }
+              },
+            },
           },
           "---",
           {
@@ -170,9 +177,9 @@
         menus: {
           toggle: {
             acceptReporters: true,
-            items: ['enable', 'disable']
+            items: ["enable", "disable"],
           },
-        }
+        },
       };
     }
     onMouseUp(args) {
@@ -185,20 +192,22 @@
       return this.buttons[Scratch.Cast.toNumber(button)] || false;
     }
     toggleContextMenu({ TOGGLE }) {
-      if (TOGGLE === 'enable') {
+      if (TOGGLE === "enable") {
         this.contextMenuDissabled = false;
-      } else if (TOGGLE === 'disable') {
+      } else if (TOGGLE === "disable") {
         this.contextMenuDissabled = true;
       }
-      vm.runtime.extensionStorage.legobrainbikerMoreMouseControls.contextMenuDissabled = this.contextMenuDissabled;
+      vm.runtime.extensionStorage.legobrainbikerMoreMouseControls.contextMenuDissabled =
+        this.contextMenuDissabled;
     }
     toggleScroll({ TOGGLE }) {
-      if (TOGGLE === 'enable') {
+      if (TOGGLE === "enable") {
         this.scrollDissabled = false;
-      } else if (TOGGLE === 'disable') {
+      } else if (TOGGLE === "disable") {
         this.scrollDissabled = true;
       }
-      vm.runtime.extensionStorage.legobrainbikerMoreMouseControls.scrollDissabled = this.scrollDissabled;
+      vm.runtime.extensionStorage.legobrainbikerMoreMouseControls.scrollDissabled =
+        this.scrollDissabled;
     }
     scrollAmount() {
       return -this.mouseWheelDelta;
