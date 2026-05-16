@@ -86,25 +86,30 @@
       }
     }
   };
+  const isUnsafePathSegment = (name) =>
+    name === "__proto__" || name === "constructor" || name === "prototype";
   const getPathArray = (path) => {
     const names = path.split(".");
     for (let index = 0; index < names.length; index++) {
       let name = names[index];
       name = name.replaceAll(/(?<!\\)&dot/g, ".");
+      if (isUnsafePathSegment(name)) return null;
     }
     return names;
   };
   const getValueAtPath = (object, path) => {
+    if (!path) return "";
     for (const name of path) {
       object = object?.[name];
     }
     return setType(object, "string");
   };
   const setValueAtPath = (object, path, value) => {
-    for (const name of path.slice(0, -1)) {
-      object = object[name];
+    if (!path) return;
+    for (let i = 0; i < path.length - 1; i++) {
+      object = object[path[i]];
     }
-    object[path.at(-1)] = value;
+    object[path[path.length - 1]] = value;
   };
 
   const { vm } = Scratch;
