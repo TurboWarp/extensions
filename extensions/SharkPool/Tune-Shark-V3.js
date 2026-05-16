@@ -1267,9 +1267,14 @@
         this.playSound(sound, Cast.toNumber(args.TIME));
         util.yield();
       } else if (util.stackFrame.awaitingSound) {
-        if (sound.currentTime >= Cast.toNumber(args.MAX))
+        const ctx = sound.context;
+        if (
+          sound.currentTime >= Cast.toNumber(args.MAX) ||
+          // If the sound is shorter than MAX, current time will never reach MAX, so we should abort early at that point
+          (!ctx.playing && !ctx.paused)
+        ) {
           this.audioControlDo(sound, "stop");
-        else util.yield();
+        } else util.yield();
       }
     }
 
