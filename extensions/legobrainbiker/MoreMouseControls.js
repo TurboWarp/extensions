@@ -58,6 +58,13 @@
         this.mouseY = NaN;
         // this could be problomatic for some projects. it's not great to add another edge case
       });
+      vm.runtime.extensionStorage.legobrainbikerMoreMouseControls = vm.runtime.extensionStorage.legobrainbikerMoreMouseControls ?? {};
+      if (vm.runtime.extensionStorage.legobrainbikerMoreMouseControls.contextMenuDissabled) {
+        this.contextMenuDissabled = true
+      }
+      if (vm.runtime.extensionStorage.legobrainbikerMoreMouseControls.scrollDissabled) {
+        this.scrollDissabled = true
+      }
     }
     getInfo() {
       return {
@@ -104,16 +111,30 @@
               },
             },
           },
+          "---",
           {
             opcode: "toggleContextMenu",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("toggle context menu"),
+            text: Scratch.translate("[TOGGLE] context menu"),
+            arguments: {
+              TOGGLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "toggle",
+              }
+            }
           },
           {
             opcode: "toggleScroll",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("toggle scrolling and zooming"),
+            text: Scratch.translate("[TOGGLE] scrolling and zooming"),
+            arguments: {
+              TOGGLE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "toggle",
+              }
+            }
           },
+          "---",
           {
             opcode: "onScroll",
             blockType: Scratch.BlockType.EVENT,
@@ -146,6 +167,12 @@
             text: Scratch.translate("mouse global y position"),
           },
         ],
+        menus: {
+          toggle: {
+            acceptReporters: true,
+            items: ['enable', 'disable']
+          },
+        }
       };
     }
     onMouseUp(args) {
@@ -157,11 +184,21 @@
     buttonPressed({ button }) {
       return this.buttons[Scratch.Cast.toNumber(button)] || false;
     }
-    toggleContextMenu() {
-      this.contextMenuDissabled = !this.contextMenuDissabled;
+    toggleContextMenu({ TOGGLE }) {
+      if (TOGGLE === 'enable') {
+        this.contextMenuDissabled = false;
+      } else if (TOGGLE === 'disable') {
+        this.contextMenuDissabled = true;
+      }
+      vm.runtime.extensionStorage.legobrainbikerMoreMouseControls.contextMenuDissabled = this.contextMenuDissabled;
     }
-    toggleScroll() {
-      this.scrollDissabled = !this.scrollDissabled;
+    toggleScroll({ TOGGLE }) {
+      if (TOGGLE === 'enable') {
+        this.scrollDissabled = false;
+      } else if (TOGGLE === 'disable') {
+        this.scrollDissabled = true;
+      }
+      vm.runtime.extensionStorage.legobrainbikerMoreMouseControls.scrollDissabled = this.scrollDissabled;
     }
     scrollAmount() {
       return -this.mouseWheelDelta;
