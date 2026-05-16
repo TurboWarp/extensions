@@ -766,7 +766,7 @@
         const keys2 = Object.keys(json2);
         const result =
           keys1.length === keys2.length &&
-          Object.keys(json1).every((key) => json1[key] === json2[key]);
+          keys1.every((key) => json1[key] === json2[key]);
         if (equal === "=") return result;
         if (equal === "≠") return !result;
       } catch {
@@ -826,7 +826,10 @@
         json = parse(json);
         value = this.json_valid_return(value);
         value = this._fixInvalidJSONValues(value);
-        json[item] = value;
+        json = {
+          ...json,
+          [item]: value,
+        };
         return stringify(json);
       } catch {
         return "";
@@ -835,7 +838,7 @@
 
     json_delete({ item, json }) {
       try {
-        json = parse(json);
+        json = { ...parse(json) };
         delete json[item];
         return stringify(json);
       } catch {
@@ -908,8 +911,7 @@
       try {
         json = parse(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        json.push(item);
-        return stringify(json);
+        return stringify(json.concat(item));
       } catch {
         return "";
       }
@@ -919,7 +921,7 @@
       try {
         json = parse(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        json.splice(pos - 1, 0, item);
+        json = json.toSpliced(pos - 1, 0, item);
         return stringify(json);
       } catch {
         return "";
@@ -929,8 +931,12 @@
     json_array_set({ item, pos, json }) {
       try {
         json = parse(json);
-        json[pos - 1] = this._fixInvalidJSONValues(
-          this.json_valid_return(item)
+        json = json.toSpliced(
+          pos - 1,
+          1,
+          this._fixInvalidJSONValues(
+            this.json_valid_return(item)
+          )
         );
         return stringify(json);
       } catch {
@@ -941,7 +947,7 @@
     json_array_delete({ item, json }) {
       try {
         json = parse(json);
-        json.splice(item - 1, 1);
+        json = json.toSpliced(item - 1, 1);
         return stringify(json);
       } catch {
         return "";
@@ -952,15 +958,7 @@
       try {
         json = parse(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        let i = 0;
-        while (i < json.length) {
-          if (json[i] === item) {
-            json.splice(i, 1);
-          } else {
-            ++i;
-          }
-        }
-        return stringify(json);
+        return stringify(json.filter((v) => (v !==item)));
       } catch {
         return "";
       }
@@ -1020,7 +1018,7 @@
 
     json_array_setlen({ json, len }) {
       try {
-        json = parse(json);
+        json = [...parse(json)];
         json.length = len;
         return stringify(json);
       } catch {
@@ -1068,8 +1066,9 @@
       if (!Array.isArray(list)) {
         return "";
       }
-      list.sort(Scratch.Cast.compare);
-      if (args.order === "descending") list.reverse();
+      list = list.toSorted((value1, value2) => (
+        Scratch.Cast.compare(value1,value2) * ((args.order === "ascending") ? 1 : -1)
+      ));
       return stringify(list);
     }
     json_array_analysis(args) {
