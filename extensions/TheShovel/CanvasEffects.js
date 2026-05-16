@@ -505,7 +505,7 @@
     renderscale({ X, Y }) {
       // The function normally expects a stage size and therefore scales by DPI.
       // However, this block is meant for a fixed pixel size
-      // (usually used in cojunction with the pixelated resize rendering mode).
+      // (usually used in conjunction with the pixelated resize rendering mode).
       // Therefore, scale it back according to the devicePixelRatio.
       const pixelRatio = window.devicePixelRatio || 1;
       Scratch.vm.renderer.resize(X / pixelRatio, Y / pixelRatio);
