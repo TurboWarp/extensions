@@ -296,10 +296,11 @@
             },
           },
           {
-            opcode: "countRegex",
+            opcode: "matchRegexJSON",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
-              default: "count regex /[REGEX]/[FLAGS] in [STRING]",
+              default:
+                "matches of [STRING] using regex /[REGEX]/[FLAGS] as array",
               description:
                 "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
             }),
@@ -310,11 +311,11 @@
               },
               REGEX: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "[AEIOU]",
+                defaultValue: "(.) (.{2})",
               },
               FLAGS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "i",
+                defaultValue: "g",
               },
             },
           },
@@ -334,6 +335,29 @@
               REGEX: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "hello",
+              },
+              FLAGS: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "i",
+              },
+            },
+          },
+          {
+            opcode: "countRegex",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              default: "count regex /[REGEX]/[FLAGS] in [STRING]",
+              description:
+                "/[REGEX]/ is supposed to match the syntax that some actual programming languages used for regular expressions.",
+            }),
+            arguments: {
+              STRING: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Hello world!",
+              },
+              REGEX: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "[AEIOU]",
               },
               FLAGS: {
                 type: Scratch.ArgumentType.STRING,
@@ -406,7 +430,11 @@
           {
             opcode: "posWith",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("[STRING] [POSITION]s with [SUBSTRING]?"),
+            text: Scratch.translate({
+              default: "[STRING] [POSITION] with [SUBSTRING]?",
+              description:
+                "[POSITION] is a dropdown with 'starts' and 'ends'. The block then takes the form '[STRING] starts with [SUBSTRING]?' or '[STRING] ends with [SUBSTRING]?'",
+            }),
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
@@ -464,11 +492,11 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("start"),
+                text: Scratch.translate("starts"),
                 value: "starts",
               },
               {
-                text: Scratch.translate("end"),
+                text: Scratch.translate("ends"),
                 value: "ends",
               },
             ],
@@ -628,6 +656,38 @@
           };
         }
         return matchCache.arr[item - 1] || "";
+      } catch (e) {
+        console.error(e);
+        return "";
+      }
+    }
+    matchRegexJSON(args, util) {
+      // matchRegex but it returns an array
+      try {
+        const string = Scratch.Cast.toString(args.STRING);
+        const uncleanRegex = Scratch.Cast.toString(args.REGEX);
+        const flags = Scratch.Cast.toString(args.FLAGS);
+
+        // Cache the last matched string
+        if (
+          !(
+            matchCache &&
+            matchCache.string === string &&
+            matchCache.regex === uncleanRegex &&
+            matchCache.flags === flags
+          )
+        ) {
+          const newFlags = flags.includes("g") ? flags : flags + "g";
+          const regex = new RegExp(uncleanRegex, newFlags);
+
+          matchCache = {
+            string,
+            regex: uncleanRegex,
+            flags,
+            arr: string.match(regex) || [],
+          };
+        }
+        return JSON.stringify(matchCache.arr) || "[]";
       } catch (e) {
         console.error(e);
         return "";

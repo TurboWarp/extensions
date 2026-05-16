@@ -1347,7 +1347,7 @@
             arguments: {
               ROOMS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate('["test"]'),
+                defaultValue: JSON.stringify(["test"]),
               },
             },
           },
@@ -1359,7 +1359,7 @@
             arguments: {
               ROOMS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate('["test"]'),
+                defaultValue: JSON.stringify(["test"]),
               },
             },
           },
@@ -2177,6 +2177,10 @@
       if (clVars.socket != null) {
         console.warn("[CloudLink] Already connected to a server.");
         return;
+      }
+      // This is the only server that's listed and works.
+      if (Scratch.Cast.toNumber(args.ID) >= 1) {
+        args.ID = 7;
       }
       if (
         !Object.prototype.hasOwnProperty.call(

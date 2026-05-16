@@ -1,7 +1,7 @@
 // Name: HTML Encode
 // ID: clayhtmlencode
 // Description: Escape untrusted text to safely include in HTML.
-// By: ClaytonTDM
+// By: clay.rip
 // License: MIT
 
 (function (Scratch) {
