@@ -36,6 +36,14 @@
       "sha256": "95f4d1cbf099f57161b664bc048426ec3df92637801a4c79116e83315aa787e7",
       "contentType": "application/javascript; charset=utf-8"
     },
+    "https://raw.githubusercontent.com/Brackets-Coder/AmmoPhysics/a363738e17bcb3d197950286e8e92a3c12da5283/dependencies/ammo.min.js": {
+      "sha256": "ae689eb69a298a1ec88e0cfac8bbbe17f4dae6e7f19e4b60f3c7db19fb704707",
+      "contentType": "text/plain; charset=utf-8"
+    },
+    "https://raw.githubusercontent.com/Brackets-Coder/AmmoPhysics/a363738e17bcb3d197950286e8e92a3c12da5283/dependencies/quaternion.min.js": {
+      "sha256": "1977b5b696d5a7e2f5ef2accf36cd4ae73a8d1b0db301f615efac81ebeac7339",
+      "contentType": "text/plain; charset=utf-8"
+    },
     "https://raw.githubusercontent.com/PsychoGoldfishNG/NewgroundsIO-JS/b0383337ef72d42dac12b7a4d7a24dfbc4105eb3/dist/NewgroundsIO.min.js": {
       "sha256": "cc18cf00a76e0bc8a2117b9ac4c7c123131a7377e186576182d2a1552510a86a",
       "contentType": "text/plain; charset=utf-8"
