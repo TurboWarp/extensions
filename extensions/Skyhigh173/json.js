@@ -934,9 +934,7 @@
         json = json.toSpliced(
           pos - 1,
           1,
-          this._fixInvalidJSONValues(
-            this.json_valid_return(item)
-          )
+          this._fixInvalidJSONValues(this.json_valid_return(item))
         );
         return stringify(json);
       } catch {
@@ -958,7 +956,7 @@
       try {
         json = parse(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        return stringify(json.filter((v) => (v !==item)));
+        return stringify(json.filter((v) => v !== item));
       } catch {
         return "";
       }
@@ -1066,9 +1064,11 @@
       if (!Array.isArray(list)) {
         return "";
       }
-      list = list.toSorted((value1, value2) => (
-        Scratch.Cast.compare(value1,value2) * ((args.order === "ascending") ? 1 : -1)
-      ));
+      list = list.toSorted(
+        (value1, value2) =>
+          Scratch.Cast.compare(value1, value2) *
+          (args.order === "ascending" ? 1 : -1)
+      );
       return stringify(list);
     }
     json_array_analysis(args) {
