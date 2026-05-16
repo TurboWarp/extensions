@@ -1485,12 +1485,13 @@
         return 0;
       }
 
+      const cacheKey = `${time}|${chan}`;
       let value = 0;
       if (
         args.TYPE !== "raw noise" &&
-        sound._cache[args.TYPE][`${time}${chan}`] !== undefined
+        sound._cache[args.TYPE]?.[cacheKey] !== undefined
       ) {
-        value = sound._cache[args.TYPE][`${time}${chan}`];
+        value = sound._cache[args.TYPE][cacheKey];
       } else {
         const sampleRate = buffer.sampleRate;
         const channelData = buffer.getChannelData(chan);
@@ -1530,7 +1531,7 @@
           }
 
           value = bestTau > 0 ? sampleRate / bestTau : 0;
-          sound._cache["tone"][`${time}${chan}`] = value;
+          sound._cache["tone"][cacheKey] = value;
           return value;
         } else if (args.TYPE === "loudness") {
           for (let i = startSample; i < endSample; i++) {
@@ -1540,7 +1541,7 @@
           const rms = Math.sqrt(value / (endSample - startSample));
           const dB = 20 * Math.log10(rms);
           value = clamp(0, 1, (dB + 50) / 50) * 100;
-          sound._cache["loudness"][`${time}${chan}`] = value;
+          sound._cache["loudness"][cacheKey] = value;
         } else {
           return "";
         }
