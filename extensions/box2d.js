@@ -12289,7 +12289,7 @@
    * @param {number} hi - Upper bound.
    * @returns {number} v constrained to [lo, hi].
    */
-  const _polyClamp = function (v, lo, hi) {
+  const _clamp = function (v, lo, hi) {
     return v < lo ? lo : v > hi ? hi : v;
   };
 
@@ -12300,7 +12300,7 @@
    * @param {PolyPoint[]} pts - The polygon's vertices, in order.
    * @returns {number} The signed area.
    */
-  const _polySignedArea = function (pts) {
+  const _signedArea = function (pts) {
     let area = 0;
     for (let i = 0, n = pts.length; i < n; i++) {
       const a = pts[i];
@@ -12319,22 +12319,21 @@
    * @param {PolyPoint} c - Third vertex.
    * @returns {number} Twice the signed area of triangle abc.
    */
-  const _polyArea3 = function (a, b, c) {
+  const _area3 = function (a, b, c) {
     return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
   };
 
   /**
-   * Sample a skin's silhouette into a binary opacity grid (1 == opaque pixel).
+   * Sample a skin's silhouette into a binary opacity grid (1 = opaque).
    *
    * The grid carries a 1-cell transparent border on every side, so any contour
    * is a closed loop lying strictly inside the grid and never running off an
-   * edge -- marching squares then needs no special-casing at the boundary.
+   * edge.
    *
    * Opacity is tested with isTouchingLinear (a 2x2 silhouette-pixel lookup),
-   * matching scratch-render's own _getConvexHullPointsForDrawable. The stricter
-   * single-pixel isTouchingNearest misses the costume's anti-aliased edge
-   * fringe and would leave the traced shape visibly inset from the convex hull.
-   * @param {object} skin - A scratch-render Skin, queried for size and opacity.
+   * matching scratch-render _getConvexHullPointsForDrawable.
+   *
+   * @param {import('scratch-render').Skin} skin - A scratch-render Skin, queried for size and opacity.
    * @returns {{ grid: Uint8Array, gx: number, gy: number, gxI: number,
    *   gyI: number, opaqueCount: number }} The padded grid (gx by gy cells
    *   including the border, gxI by gyI interior cells) and the opaque count.
@@ -12347,12 +12346,12 @@
     // Grid resolution scales with costume size, within fixed bounds. gxI/gyI
     // count the real interior cells; gx/gy add the 1-cell border on each side.
     const size = skin.size;
-    const gxI = _polyClamp(
+    const gxI = _clamp(
       Math.round(size[0] / _POLY_GRID_STEP),
       _POLY_GRID_MIN,
       _POLY_GRID_MAX
     );
-    const gyI = _polyClamp(
+    const gyI = _clamp(
       Math.round(size[1] / _POLY_GRID_STEP),
       _POLY_GRID_MIN,
       _POLY_GRID_MAX
@@ -12388,7 +12387,7 @@
    * side, which lets segments chain head-to-tail into closed loops. Codes 0
    * and 15 (fully outside / fully inside) have no crossing; codes 5 and 10 are
    * the ambiguous "saddle" blocks and emit two segments.
-   * @type {Array<?Array<number[]>>}
+   * @type {Array<Array<number[]>|null>}
    */
   const _POLY_MS_TABLE = [
     null,
@@ -12435,7 +12434,8 @@
     };
 
     // Edge midpoints land on half-integer coordinates, so doubling them gives
-    // integers that pack into one number -- a key for exact point matching.
+    // integers; pack the pair into one number, keyed for exact matching. Grid
+    // coordinates stay far below the 100000 multiplier, so they never collide.
     const pointKey = function (p) {
       return Math.round(p.x * 2) * 100000 + Math.round(p.y * 2);
     };
@@ -12530,7 +12530,7 @@
     const groups = [];
     const holes = [];
     for (let i = 0; i < loops.length; i++) {
-      const area = _polySignedArea(loops[i]);
+      const area = _signedArea(loops[i]);
       if (area > _POLY_MIN_AREA) {
         groups.push({ outer: loops[i], area: area, holes: [] });
       } else if (area < -_POLY_MIN_AREA) {
@@ -12682,7 +12682,7 @@
       if (n < 3) return false;
       for (let i = 0; i < n; i++) {
         if (
-          _polyArea3(
+          _area3(
             pts[face[(i - 1 + n) % n]],
             pts[face[i]],
             pts[face[(i + 1) % n]]
@@ -12706,7 +12706,7 @@
         const a0 = A[s];
         const a1 = A[(s + 1) % nA];
         for (let t = 0; t < nB; t++) {
-          // A's edge a0->a1 reversed is B's edge B[t]->B[t+1] (== a1->a0).
+          // A's edge a0->a1 reversed is B's edge B[t]->B[t+1] (= a1->a0).
           if (a0 === B[(t + 1) % nB] && a1 === B[t]) {
             const merged = [];
             // All of A, rotated to run a1 ... a0 (shared edge walked last).
@@ -12783,7 +12783,7 @@
     }
 
     // Reshape the flat index list into triangle faces. _polyMergeConvex assumes
-    // each face is wound positively (_polyArea3 > 0); earcut's output winding
+    // each face is wound positively (_area3 > 0); earcut's output winding
     // follows its input handedness, so normalise every triple here -- this MUST
     // happen before the merge or the merge produces garbage.
     const faces = [];
@@ -12791,7 +12791,7 @@
       let i0 = tris[t];
       const i1 = tris[t + 1];
       let i2 = tris[t + 2];
-      if (_polyArea3(pts[i0], pts[i1], pts[i2]) < 0) {
+      if (_area3(pts[i0], pts[i1], pts[i2]) < 0) {
         const swap = i0;
         i0 = i2;
         i2 = swap;
@@ -12882,11 +12882,12 @@
    * Polygon mode's entry point: trace a drawable's costume into convex polygons
    * expressed in the same coordinate space as the "this costume" convex hull,
    * ready to hand to _definePolyFromHull (each polygon is a closed ring, last
-   * vertex == first).
-   * @param {object} drawable - The scratch-render Drawable being traced,
-   *   queried for its skin, scale, and rotation centre.
-   * @returns {?PolyPoint[][]} The convex pieces as closed rings, or null if the
-   *   costume yields nothing usable -- the caller then falls back to the hull.
+   * vertex = first).
+   * @param {import('scratch-render').Drawable} drawable - The scratch-render
+   *   Drawable being traced, queried for its skin, scale, and rotation centre.
+   * @returns {PolyPoint[][]|null} The convex pieces as closed rings, or null if
+   *   the costume yields nothing usable -- the caller then falls back to the
+   *   hull.
    */
   const _traceCostumePolygon = function (drawable) {
     const skin = drawable && drawable.skin;
@@ -12919,8 +12920,8 @@
       const simplified = _polyRdpLoop(loop, _POLY_RDP_EPSILON);
       for (let s = 0; s < simplified.length; s++) {
         simplified[s] = {
-          x: _polyClamp(simplified[s].x, 1, gxI),
-          y: _polyClamp(simplified[s].y, 1, gyI),
+          x: _clamp(simplified[s].x, 1, gxI),
+          y: _clamp(simplified[s].y, 1, gyI),
         };
       }
       return simplified;
@@ -12950,7 +12951,7 @@
             // transform below reverses winding and _definePolyFromHull
             // reverses it again, so a CCW piece here ends up CCW for Box2D --
             // the same path the "this costume" convex hull already relies on.
-            if (_polySignedArea(piece) < 0) piece = piece.slice().reverse();
+            if (_signedArea(piece) < 0) piece = piece.slice().reverse();
 
             const transformed = [];
             for (let v = 0; v < piece.length; v++) {
@@ -12970,13 +12971,13 @@
             // Discard pieces that dedupe or scaling collapsed to a sliver.
             const cleaned = _polyDedupe(transformed);
             if (cleaned.length < 3) continue;
-            if (Math.abs(_polySignedArea(cleaned)) < 1e-3) continue;
-            // Close the ring: _definePolyFromHull expects last vertex == first.
+            if (Math.abs(_signedArea(cleaned)) < 1e-3) continue;
+            // Close the ring: _definePolyFromHull expects last vertex = first.
             cleaned.push({ x: cleaned[0].x, y: cleaned[0].y });
             result.push(cleaned);
           }
         }
-      } catch {
+      } catch (e) {
         // Skip this region; other groups and the hull fallback still apply.
       }
     }
@@ -13973,7 +13974,10 @@
       return [
         { text: "this costume", value: SHAPE_TYPE_OPTIONS.COSTUME },
         { text: "this circle", value: SHAPE_TYPE_OPTIONS.CIRCLE },
-        { text: "this polygon", value: SHAPE_TYPE_OPTIONS.POLYGON },
+        {
+          text: "this polygon (experimental)",
+          value: SHAPE_TYPE_OPTIONS.POLYGON,
+        },
         { text: "all sprites", value: SHAPE_TYPE_OPTIONS.ALL },
       ];
     }
@@ -14207,7 +14211,7 @@
         let traced = null;
         try {
           traced = _traceCostumePolygon(drawable);
-        } catch {
+        } catch (e) {
           traced = null;
         }
 
