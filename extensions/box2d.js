@@ -12215,7 +12215,7 @@
   const SHAPE_TYPE_OPTIONS = {
     COSTUME: "costume",
     CIRCLE: "circle",
-    SVG_POLYGON: "svg",
+    POLYGON: "polygon",
     ALL: "all",
   };
 
@@ -12238,6 +12238,552 @@
     }
 
     fixDef.shape.SetAsArray(vertices);
+  };
+
+  // === Polygon mode ============================================================
+  // Builds a concave-capable physics shape from a sprite's costume. The renderer
+  // no longer exposes SVG path data, so the costume outline is recovered from its
+  // rasterized silhouette: sample opacity -> marching squares -> simplify (RDP) ->
+  // convex decomposition. Each resulting convex polygon becomes a Box2D fixture.
+
+  const _POLY_GRID_MIN = 16;
+  const _POLY_GRID_MAX = 96;
+  const _POLY_GRID_STEP = 4;
+  const _POLY_RDP_EPSILON = 0.75;
+  const _POLY_MIN_AREA = 2.0;
+  const _POLY_MAX_VERTS = 8;
+  // TEMP: set false / remove once polygon-vs-hull sizing is diagnosed.
+  const _POLY_DEBUG = true;
+
+  const _polyClamp = function (v, lo, hi) {
+    return v < lo ? lo : v > hi ? hi : v;
+  };
+
+  // Signed area of a polygon (positive == counter-clockwise under the y-up
+  // shoelace convention). Tells outer contours from holes and fixes winding.
+  const _polySignedArea = function (pts) {
+    let area = 0;
+    for (let i = 0, n = pts.length; i < n; i++) {
+      const a = pts[i];
+      const b = pts[(i + 1) % n];
+      area += a.x * b.y - b.x * a.y;
+    }
+    return area / 2;
+  };
+
+  // Cross product of (b - a) and (c - a).
+  const _polyArea3 = function (a, b, c) {
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+  };
+
+  // Sample a skin's silhouette into a padded binary opacity grid. A 1-cell
+  // transparent border guarantees every contour is a closed interior loop.
+  // Opacity is tested with isTouchingLinear (a 2x2 silhouette-pixel lookup), the
+  // same test scratch-render's _getConvexHullPointsForDrawable uses; the stricter
+  // single-pixel isTouchingNearest misses the costume's anti-aliased edge fringe
+  // and leaves the traced shape inset from the convex hull (visible as gaps).
+  const _polySampleSilhouette = function (skin) {
+    if (typeof skin.updateSilhouette === "function") {
+      skin.updateSilhouette();
+    }
+    const size = skin.size;
+    const gxI = _polyClamp(
+      Math.round(size[0] / _POLY_GRID_STEP),
+      _POLY_GRID_MIN,
+      _POLY_GRID_MAX
+    );
+    const gyI = _polyClamp(
+      Math.round(size[1] / _POLY_GRID_STEP),
+      _POLY_GRID_MIN,
+      _POLY_GRID_MAX
+    );
+    const gx = gxI + 2;
+    const gy = gyI + 2;
+    const grid = new Uint8Array(gx * gy);
+    const coord = [0, 0];
+    let opaqueCount = 0;
+    for (let j = 0; j < gyI; j++) {
+      coord[1] = j / (gyI - 1);
+      for (let i = 0; i < gxI; i++) {
+        coord[0] = i / (gxI - 1);
+        if (skin.isTouchingLinear(coord)) {
+          grid[(j + 1) * gx + (i + 1)] = 1;
+          opaqueCount++;
+        }
+      }
+    }
+    return { grid, gx, gy, gxI, gyI, opaqueCount };
+  };
+
+  // Marching-squares case table: code -> list of directed [fromEdge, toEdge]
+  // segments. Edges: 0 = top, 1 = right, 2 = bottom, 3 = left. Orientation keeps
+  // the opaque region on a consistent side so segments chain into closed loops.
+  const _POLY_MS_TABLE = [
+    null,
+    [[0, 3]],
+    [[1, 0]],
+    [[1, 3]],
+    [[2, 1]],
+    [
+      [0, 3],
+      [2, 1],
+    ],
+    [[2, 0]],
+    [[2, 3]],
+    [[3, 2]],
+    [[0, 2]],
+    [
+      [1, 0],
+      [3, 2],
+    ],
+    [[1, 2]],
+    [[3, 1]],
+    [[0, 1]],
+    [[3, 0]],
+    null,
+  ];
+
+  // Trace closed contour loops out of a padded binary grid. Returns an array of
+  // loops, each an ordered array of {x, y} points in padded-grid coordinates.
+  const _polyMarchingSquares = function (grid, gx, gy) {
+    const edgePoint = function (ci, cj, edge) {
+      if (edge === 0) return { x: ci + 0.5, y: cj };
+      if (edge === 1) return { x: ci + 1, y: cj + 0.5 };
+      if (edge === 2) return { x: ci + 0.5, y: cj + 1 };
+      return { x: ci, y: cj + 0.5 };
+    };
+    const pointKey = function (p) {
+      return Math.round(p.x * 2) * 100000 + Math.round(p.y * 2);
+    };
+    const segments = [];
+    const startMap = new Map();
+    for (let cj = 0; cj < gy - 1; cj++) {
+      for (let ci = 0; ci < gx - 1; ci++) {
+        const code =
+          grid[cj * gx + ci] |
+          (grid[cj * gx + ci + 1] << 1) |
+          (grid[(cj + 1) * gx + ci + 1] << 2) |
+          (grid[(cj + 1) * gx + ci] << 3);
+        const segs = _POLY_MS_TABLE[code];
+        if (!segs) continue;
+        for (let s = 0; s < segs.length; s++) {
+          const seg = {
+            a: edgePoint(ci, cj, segs[s][0]),
+            b: edgePoint(ci, cj, segs[s][1]),
+            used: false,
+          };
+          segments.push(seg);
+          startMap.set(pointKey(seg.a), seg);
+        }
+      }
+    }
+    const loops = [];
+    for (let i = 0; i < segments.length; i++) {
+      let seg = segments[i];
+      if (seg.used) continue;
+      const loop = [];
+      while (seg && !seg.used) {
+        seg.used = true;
+        loop.push(seg.a);
+        seg = startMap.get(pointKey(seg.b));
+      }
+      if (loop.length >= 3) loops.push(loop);
+    }
+    return loops;
+  };
+
+  // Keep outer contours (positive signed area); drop holes and speckle.
+  const _polyClassifyContours = function (loops) {
+    const outer = [];
+    for (let i = 0; i < loops.length; i++) {
+      if (_polySignedArea(loops[i]) > _POLY_MIN_AREA) {
+        outer.push(loops[i]);
+      }
+    }
+    return outer;
+  };
+
+  // Ramer-Douglas-Peucker for an open polyline; pushes kept interior points.
+  const _polyRdpOpen = function (pts, first, last, epsilon, out) {
+    let maxDist = -1;
+    let index = -1;
+    const a = pts[first];
+    const b = pts[last];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const lenSq = dx * dx + dy * dy;
+    for (let i = first + 1; i < last; i++) {
+      const p = pts[i];
+      let dist;
+      if (lenSq === 0) {
+        dist = (p.x - a.x) * (p.x - a.x) + (p.y - a.y) * (p.y - a.y);
+      } else {
+        const cross = (p.x - a.x) * dy - (p.y - a.y) * dx;
+        dist = (cross * cross) / lenSq;
+      }
+      if (dist > maxDist) {
+        maxDist = dist;
+        index = i;
+      }
+    }
+    if (index !== -1 && maxDist > epsilon * epsilon) {
+      _polyRdpOpen(pts, first, index, epsilon, out);
+      out.push(pts[index]);
+      _polyRdpOpen(pts, index, last, epsilon, out);
+    }
+  };
+
+  // RDP-simplify a closed loop. The ring is split at its two mutually farthest
+  // points so each half can be simplified as an open polyline.
+  const _polyRdpLoop = function (loop, epsilon) {
+    const n = loop.length;
+    if (n <= 4) return loop.slice();
+    let far1 = 0;
+    let best = -1;
+    for (let i = 1; i < n; i++) {
+      const d =
+        (loop[i].x - loop[0].x) * (loop[i].x - loop[0].x) +
+        (loop[i].y - loop[0].y) * (loop[i].y - loop[0].y);
+      if (d > best) {
+        best = d;
+        far1 = i;
+      }
+    }
+    let far2 = 0;
+    best = -1;
+    for (let i = 0; i < n; i++) {
+      const d =
+        (loop[i].x - loop[far1].x) * (loop[i].x - loop[far1].x) +
+        (loop[i].y - loop[far1].y) * (loop[i].y - loop[far1].y);
+      if (d > best) {
+        best = d;
+        far2 = i;
+      }
+    }
+    const lo = Math.min(far1, far2);
+    const hi = Math.max(far1, far2);
+    if (lo === hi) return loop.slice();
+    const out = [];
+    out.push(loop[lo]);
+    _polyRdpOpen(loop, lo, hi, epsilon, out);
+    out.push(loop[hi]);
+    const wrapped = loop.slice(hi).concat(loop.slice(0, lo + 1));
+    _polyRdpOpen(wrapped, 0, wrapped.length - 1, epsilon, out);
+    return out;
+  };
+
+  // True if p lies strictly inside triangle abc (abc positively wound).
+  const _polyPointInTriangle = function (p, a, b, c) {
+    return (
+      _polyArea3(a, b, p) > 0 &&
+      _polyArea3(b, c, p) > 0 &&
+      _polyArea3(c, a, p) > 0
+    );
+  };
+
+  // Ear-clipping triangulation of a simple polygon with positive signed area.
+  // Returns index triples into pts.
+  const _polyTriangulate = function (pts) {
+    const n = pts.length;
+    if (n < 3) return [];
+    if (n === 3) return [[0, 1, 2]];
+    const idx = [];
+    for (let i = 0; i < n; i++) idx.push(i);
+    const triangles = [];
+    let guard = n * n + 16;
+    while (idx.length > 3 && guard-- > 0) {
+      const m = idx.length;
+      let earAt = -1;
+      let fallbackAt = -1;
+      let fallbackArea = 0;
+      for (let ii = 0; ii < m; ii++) {
+        const i0 = idx[(ii - 1 + m) % m];
+        const i1 = idx[ii];
+        const i2 = idx[(ii + 1) % m];
+        const a = pts[i0];
+        const b = pts[i1];
+        const c = pts[i2];
+        const area = _polyArea3(a, b, c);
+        if (area <= 0) continue;
+        if (area > fallbackArea) {
+          fallbackArea = area;
+          fallbackAt = ii;
+        }
+        let clean = true;
+        for (let jj = 0; jj < m; jj++) {
+          const ij = idx[jj];
+          if (ij === i0 || ij === i1 || ij === i2) continue;
+          if (_polyPointInTriangle(pts[ij], a, b, c)) {
+            clean = false;
+            break;
+          }
+        }
+        if (clean) {
+          earAt = ii;
+          break;
+        }
+      }
+      const clipAt = earAt !== -1 ? earAt : fallbackAt;
+      if (clipAt === -1) break;
+      const m2 = idx.length;
+      triangles.push([
+        idx[(clipAt - 1 + m2) % m2],
+        idx[clipAt],
+        idx[(clipAt + 1) % m2],
+      ]);
+      idx.splice(clipAt, 1);
+    }
+    if (idx.length === 3) triangles.push([idx[0], idx[1], idx[2]]);
+    return triangles;
+  };
+
+  // Hertel-Mehlhorn: greedily merge faces across shared edges while each merged
+  // face stays convex and within the vertex budget. Faces are index arrays.
+  const _polyMergeConvex = function (pts, faces, maxVerts) {
+    const isConvexFace = function (face) {
+      const n = face.length;
+      if (n < 3) return false;
+      for (let i = 0; i < n; i++) {
+        if (
+          _polyArea3(
+            pts[face[(i - 1 + n) % n]],
+            pts[face[i]],
+            pts[face[(i + 1) % n]]
+          ) < -1e-9
+        ) {
+          return false;
+        }
+      }
+      return true;
+    };
+    const tryMerge = function (A, B) {
+      const nA = A.length;
+      const nB = B.length;
+      for (let s = 0; s < nA; s++) {
+        const a0 = A[s];
+        const a1 = A[(s + 1) % nA];
+        for (let t = 0; t < nB; t++) {
+          if (a0 === B[(t + 1) % nB] && a1 === B[t]) {
+            const merged = [];
+            for (let k = 0; k < nA; k++) merged.push(A[(s + 1 + k) % nA]);
+            for (let k = 1; k < nB - 1; k++) merged.push(B[(t + 1 + k) % nB]);
+            if (merged.length > maxVerts) return null;
+            if (!isConvexFace(merged)) return null;
+            return merged;
+          }
+        }
+      }
+      return null;
+    };
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (let i = 0; i < faces.length && !changed; i++) {
+        for (let j = i + 1; j < faces.length && !changed; j++) {
+          const merged = tryMerge(faces[i], faces[j]);
+          if (merged) {
+            faces.splice(j, 1);
+            faces[i] = merged;
+            changed = true;
+          }
+        }
+      }
+    }
+    return faces;
+  };
+
+  // Decompose a simple (possibly concave) polygon into convex polygons.
+  const _polyDecompose = function (poly) {
+    if (poly.length < 3) return [];
+    const tris = _polyTriangulate(poly);
+    if (tris.length === 0) return [poly.slice()];
+    const faces = _polyMergeConvex(poly, tris, _POLY_MAX_VERTS);
+    const out = [];
+    for (let i = 0; i < faces.length; i++) {
+      const face = faces[i];
+      const piece = [];
+      for (let k = 0; k < face.length; k++) piece.push(poly[face[k]]);
+      out.push(piece);
+    }
+    return out;
+  };
+
+  // Split a convex polygon with more than maxVerts vertices into a vertex fan.
+  const _polyLimitVertices = function (poly, maxVerts) {
+    const n = poly.length;
+    if (n <= maxVerts) return [poly];
+    const out = [];
+    let i = 1;
+    while (i < n - 1) {
+      const end = Math.min(i + maxVerts - 2, n - 1);
+      const piece = [poly[0]];
+      for (let k = i; k <= end; k++) piece.push(poly[k]);
+      if (piece.length >= 3) out.push(piece);
+      i = end;
+    }
+    return out.length > 0 ? out : [poly];
+  };
+
+  // Drop consecutive (including wrap-around) near-coincident vertices.
+  const _polyDedupe = function (pts) {
+    const eps = 1e-4;
+    const out = [];
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      const prev = out.length > 0 ? out[out.length - 1] : null;
+      if (
+        prev &&
+        Math.abs(prev.x - p.x) < eps &&
+        Math.abs(prev.y - p.y) < eps
+      ) {
+        continue;
+      }
+      out.push(p);
+    }
+    while (out.length >= 2) {
+      const a = out[0];
+      const b = out[out.length - 1];
+      if (Math.abs(a.x - b.x) < eps && Math.abs(a.y - b.y) < eps) {
+        out.pop();
+      } else {
+        break;
+      }
+    }
+    return out;
+  };
+
+  // Trace a drawable's costume into convex polygons expressed in the same
+  // coordinate space as the "this costume" convex hull, ready to be passed to
+  // _definePolyFromHull (each polygon is a closed ring: last vertex == first).
+  // Returns an array of polygons, or null if the costume yields nothing usable
+  // (the caller then falls back to the convex hull).
+  const _traceCostumePolygon = function (drawable) {
+    const skin = drawable && drawable.skin;
+    if (!skin || typeof skin.isTouchingLinear !== "function") return null;
+
+    const sampled = _polySampleSilhouette(skin);
+    if (sampled.opaqueCount === 0) return null;
+
+    const loops = _polyClassifyContours(
+      _polyMarchingSquares(sampled.grid, sampled.gx, sampled.gy)
+    );
+    if (loops.length === 0) return null;
+
+    const size = skin.size;
+    const offset = skin.rotationCenter;
+    const scaleX = drawable.scale[0] / 100;
+    const scaleY = drawable.scale[1] / -100; // Flip Y for hulls
+    const gxI = sampled.gxI;
+    const gyI = sampled.gyI;
+
+    const result = [];
+    for (let l = 0; l < loops.length; l++) {
+      const simplified = _polyRdpLoop(loops[l], _POLY_RDP_EPSILON);
+      if (simplified.length < 3) continue;
+      // Snap the outline back onto the real sample grid (padded indices
+      // 1..gxI / 1..gyI). The 1-cell padding ring is synthetic, so without
+      // this the marching-squares midpoint rule leaves a box-edge-touching
+      // outline half a cell out in the padding -- larger than the convex hull.
+      for (let s = 0; s < simplified.length; s++) {
+        simplified[s] = {
+          x: _polyClamp(simplified[s].x, 1, gxI),
+          y: _polyClamp(simplified[s].y, 1, gyI),
+        };
+      }
+      const pieces = _polyDecompose(simplified);
+      for (let p = 0; p < pieces.length; p++) {
+        const capped = _polyLimitVertices(pieces[p], _POLY_MAX_VERTS);
+        for (let c = 0; c < capped.length; c++) {
+          let piece = capped[c];
+          if (piece.length < 3) continue;
+          // Keep a consistent winding ahead of the Y-flipping transform.
+          if (_polySignedArea(piece) < 0) piece = piece.slice().reverse();
+          const transformed = [];
+          for (let v = 0; v < piece.length; v++) {
+            // padded grid -> texture coord -> skin pixel -> hull space
+            const px = ((piece[v].x - 1) / (gxI - 1)) * size[0];
+            const py = ((piece[v].y - 1) / (gyI - 1)) * size[1];
+            transformed.push({
+              x: (px - offset[0]) * scaleX,
+              y: (py - offset[1]) * scaleY,
+            });
+          }
+          const cleaned = _polyDedupe(transformed);
+          if (cleaned.length < 3) continue;
+          if (Math.abs(_polySignedArea(cleaned)) < 1e-3) continue;
+          // Close the ring: _definePolyFromHull expects last vertex == first.
+          cleaned.push({ x: cleaned[0].x, y: cleaned[0].y });
+          result.push(cleaned);
+        }
+      }
+    }
+    if (_POLY_DEBUG) {
+      // Compare the traced contour (clamped to the costume box, as the fix
+      // above does) against scratch-render's convex hull, both in skin-pixel
+      // space (i.e. before the (p - offset) * scale step).
+      let cMinX = Infinity;
+      let cMinY = Infinity;
+      let cMaxX = -Infinity;
+      let cMaxY = -Infinity;
+      let vTotal = 0;
+      for (let l = 0; l < loops.length; l++) {
+        vTotal += loops[l].length;
+        for (let v = 0; v < loops[l].length; v++) {
+          const px = _polyClamp(
+            ((loops[l][v].x - 1) / (gxI - 1)) * size[0],
+            0,
+            size[0]
+          );
+          const py = _polyClamp(
+            ((loops[l][v].y - 1) / (gyI - 1)) * size[1],
+            0,
+            size[1]
+          );
+          cMinX = Math.min(cMinX, px);
+          cMaxX = Math.max(cMaxX, px);
+          cMinY = Math.min(cMinY, py);
+          cMaxY = Math.max(cMaxY, py);
+        }
+      }
+      const hull = drawable._convexHullPoints || [];
+      let hMinX = Infinity;
+      let hMinY = Infinity;
+      let hMaxX = -Infinity;
+      let hMaxY = -Infinity;
+      for (let h = 0; h < hull.length; h++) {
+        hMinX = Math.min(hMinX, hull[h][0]);
+        hMaxX = Math.max(hMaxX, hull[h][0]);
+        hMinY = Math.min(hMinY, hull[h][1]);
+        hMaxY = Math.max(hMaxY, hull[h][1]);
+      }
+      const r2 = (n) => Math.round(n * 100) / 100;
+      console.log(
+        [
+          `[box2d POLYGON debug] drawable ${drawable._id}`,
+          `  skin.size=[${size[0]}, ${size[1]}] rotationCenter=[${r2(
+            offset[0]
+          )}, ${r2(offset[1])}] scale=[${drawable.scale[0]}, ${
+            drawable.scale[1]
+          }]`,
+          `  grid=${gxI}x${gyI} cell=[${r2(size[0] / (gxI - 1))}, ${r2(
+            size[1] / (gyI - 1)
+          )}]px opaqueCount=${sampled.opaqueCount}`,
+          `  contour: ${loops.length} loop(s), ${vTotal} verts, bbox x:[${r2(
+            cMinX
+          )}, ${r2(cMaxX)}] y:[${r2(cMinY)}, ${r2(cMaxY)}]`,
+          `  hull: ${hull.length} points, bbox x:[${r2(hMinX)}, ${r2(
+            hMaxX
+          )}] y:[${r2(hMinY)}, ${r2(hMaxY)}]`,
+          `  overshoot (contour beyond hull, +ve=traced larger): left=${r2(
+            hMinX - cMinX
+          )} right=${r2(cMaxX - hMaxX)} top=${r2(hMinY - cMinY)} bottom=${r2(
+            cMaxY - hMaxY
+          )}`,
+          `  final fixtures=${result.length}`,
+        ].join("\n")
+      );
+    }
+    return result.length > 0 ? result : null;
   };
 
   const _placeBody = function (id, x, y, dir) {
@@ -13227,7 +13773,7 @@
       return [
         { text: "this costume", value: SHAPE_TYPE_OPTIONS.COSTUME },
         { text: "this circle", value: SHAPE_TYPE_OPTIONS.CIRCLE },
-        // { text: "this polygon", value: SHAPE_TYPE_OPTIONS.SVG_POLYGON },
+        { text: "this polygon", value: SHAPE_TYPE_OPTIONS.POLYGON },
         { text: "all sprites", value: SHAPE_TYPE_OPTIONS.ALL },
       ];
     }
@@ -13456,25 +14002,30 @@
           (size[0] * Math.abs(scaleX) + size[1] * Math.abs(scaleY)) / 4.0 / zoom
         );
         // fixDef.shape.SetRadius((drawable.getBounds().width / 2) / zoom);
-      } else if (shape === SHAPE_TYPE_OPTIONS.SVG_POLYGON) {
-        const svg = drawable._skin._svgRenderer._svgTag;
-
-        // recurse through childNodes of type 'g', looking for type 'path'
-
-        const hullPoints = [];
-        if (svg) {
-          this._fetchPolygonPointsFromSVG(
-            svg,
-            hullPoints,
-            offset[0],
-            offset[1],
-            scaleX,
-            scaleY
-          );
+      } else if (shape === SHAPE_TYPE_OPTIONS.POLYGON) {
+        // Trace the costume silhouette into convex polygons (concave-capable).
+        let traced = null;
+        try {
+          traced = _traceCostumePolygon(drawable);
+        } catch {
+          traced = null;
         }
 
-        _definePolyFromHull(hullPoints[0]);
-        allHulls = hullPoints;
+        if (traced && traced.length > 0) {
+          _definePolyFromHull(traced[0]);
+          allHulls = traced;
+        } else {
+          // Tracing produced nothing usable (empty or degenerate costume):
+          // fall back to the convex hull, same as "this costume" mode.
+          const hullPoints = [];
+          for (const i in points) {
+            hullPoints.push({
+              x: (points[i][0] - offset[0]) * scaleX,
+              y: (points[i][1] - offset[1]) * scaleY,
+            });
+          }
+          _definePolyFromHull(hullPoints);
+        }
       } else {
         const hullPoints = [];
         for (const i in points) {
@@ -13510,60 +14061,6 @@
 
     disablePhysics(args, util) {
       _removeBody(util.target.id);
-    }
-
-    /**
-     *
-     * @param svg the svg element
-     * @param {Array} hullPointsList array of points
-     * @private
-     */
-    _fetchPolygonPointsFromSVG(svg, hullPointsList, ox, oy, scaleX, scaleY) {
-      if (svg.tagName === "g" || svg.tagName === "svg") {
-        if (svg.hasChildNodes()) {
-          for (const node of svg.childNodes) {
-            this._fetchPolygonPointsFromSVG(
-              node,
-              hullPointsList,
-              ox,
-              oy,
-              scaleX,
-              scaleY
-            );
-          }
-        }
-        return;
-      }
-
-      if (svg.tagName !== "path") {
-        return;
-      }
-      // This is it boys! Get that svg data :)
-      // <path xmlns="http://www.w3.org/2000/svg" d="M 1 109.7118 L 1 1.8097 L 60.3049 38.0516 L 117.9625 1.8097 L 117.9625 109.7118 L 59.8931 73.8817 Z "
-      //  data-paper-data="{&quot;origPos&quot;:null}" stroke-width="2" fill="#9966ff"/>
-
-      let fx;
-      let fy;
-
-      const hullPoints = [];
-      hullPointsList.push(hullPoints);
-
-      const tokens = svg.getAttribute("d").split(" ");
-      for (let i = 0; i < tokens.length; ) {
-        const token = tokens[i++];
-        if (token === "M" || token === "L") {
-          const x = Cast.toNumber(tokens[i++]);
-          const y = Cast.toNumber(tokens[i++]);
-          hullPoints.push({ x: (x - ox) * scaleX, y: (y - oy) * scaleY });
-          if (token === "M") {
-            fx = x;
-            fy = y;
-          }
-        }
-        if (token === "Z") {
-          hullPoints.push({ x: (fx - ox) * scaleX, y: (fy - oy) * scaleY });
-        }
-      }
     }
 
     applyForce(args, util) {
