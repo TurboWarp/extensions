@@ -4161,7 +4161,7 @@
     };
     b2Settings.b2Assert = function (a) {
       if (!a) {
-        throw "Assertion Failed";
+        throw new Error("Assertion Failed");
       }
     };
     Box2D.postDefs.push(function () {
