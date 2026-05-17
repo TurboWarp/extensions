@@ -32,6 +32,10 @@
       "sha256": "3faf18f98df4270e0a945f2ad67d5ab6f43d6e625e0b3f2c3bcfcd1e6330ab57",
       "contentType": "application/javascript; charset=utf-8"
     },
+    "https://cdn.jsdelivr.net/npm/earcut@3.0.2/src/earcut.js": {
+      "sha256": "83d5b59bc520601bb2dd7401a2f8382a008d8d95e0e6e0fe45759ae4fda1aa56",
+      "contentType": "application/javascript; charset=utf-8"
+    },
     "https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js": {
       "sha256": "95f4d1cbf099f57161b664bc048426ec3df92637801a4c79116e83315aa787e7",
       "contentType": "application/javascript; charset=utf-8"
