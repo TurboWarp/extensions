@@ -405,7 +405,7 @@
     }
 
     setOutlineColor(color) {
-      if (color !== this.color) {
+      if (color !== this.outlineColor) {
         this.outlineColor = color;
         this._invalidateTexture();
       }
