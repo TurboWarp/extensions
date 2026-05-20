@@ -297,32 +297,6 @@
         reader.readAsDataURL(file);
       });
     }
-
-        async convertAudioFileUrl(args) {
-      try {
-        if (!(await Scratch.canFetch(args.AUDIO_URL))) {
-            console.error("Permission denied to fetch URL:", args.AUDIO_URL);
-            return;
-        }
-        const response = await Scratch.fetch(args.AUDIO_URL);
-        const arrayBuffer = await response.arrayBuffer();
-        const audioCtx = new (
-          window.AudioContext || window.webkitAudioContext
-        )();
-        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-
-        this._processAndDownloadAudioBuffer(
-          audioBuffer,
-          args.FORMAT,
-          args.FILENAME,
-        );
-        audioCtx.close();
-      } catch (pipelineErr) {
-        console.error("Audio asset network URL pipeline failed:", pipelineErr);
-      }
-    }
-
-
     _bufferToWavChannelMatrix(buffer) {
       const numOfChan = buffer.numberOfChannels;
       const sampleRate = buffer.sampleRate;
@@ -394,7 +368,6 @@
             return;
         }
         
-        // eslint-disable-next-line extension/check-can-fetch
         const response = await Scratch.fetch(args.AUDIO_URL);
         const arrayBuffer = await response.arrayBuffer();
         const audioCtx = new (
