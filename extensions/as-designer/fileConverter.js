@@ -3,6 +3,7 @@
 // Description: A collection of tools for processing and converting local and remote files, including audio and image format transformations, microphone capture, and text-based document generation.
 // By: as_designer <https://scratch.mit.edu/users/as_designer/>
 // License: MPL-2.0
+/* eslint-disable prettier/prettier */
 /* eslint-disable extension/check-can-fetch */
 (function (Scratch) {
     "use strict";
