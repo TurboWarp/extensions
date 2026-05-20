@@ -1,11 +1,9 @@
-/* eslint-disable extension/check-can-fetch */
-
 // Name: File Processor and Converter
 // ID: FileProcessorAndConverter
 // Description: A collection of tools for processing and converting local and remote files, including audio and image format transformations, microphone capture, and text-based document generation.
 // By: as_designer <https://scratch.mit.edu/users/as_designer/>
 // License: MPL-2.0
-
+/* eslint-disable extension/check-can-fetch */
 (function (Scratch) {
   "use strict";
 
@@ -294,7 +292,6 @@
       });
     }
 
-        // eslint-disable-next-line extension/check-can-fetch
     uploadAndConvertLocalImage(args) {
       this._triggerLocalFilePicker("image/*", (file) => {
         const reader = new FileReader();
@@ -389,7 +386,6 @@
           console.error("Permission denied to fetch URL:", url);
           return;
         }
-        // eslint-disable-next-line extension/check-can-fetch
         const response = await Scratch.fetch(url);
         const arrayBuffer = await response.arrayBuffer();
         const audioCtx = new (
