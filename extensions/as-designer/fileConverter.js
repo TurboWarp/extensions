@@ -21,9 +21,9 @@
       return {
         id: "FileProcessorAndConverter",
         name: Scratch.translate("File Processor and Converter"),
-        color1: "#0fbd8c", // Primary Theme Emerald
-        color2: "#0da57a", // Deep Accent Emerald
-        color3: "#0b845f", // Dark Shade Emerald
+        color1: "#0fbd8c", 
+        color2: "#0da57a", 
+        color3: "#0b845f", 
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
@@ -300,7 +300,6 @@
 
         async convertAudioFileUrl(args) {
       try {
-        // 1. Verify safety permission before making the request
         if (!(await Scratch.canFetch(args.AUDIO_URL))) {
             console.error("Permission denied to fetch URL:", args.AUDIO_URL);
             return;
