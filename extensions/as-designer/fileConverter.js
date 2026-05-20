@@ -277,7 +277,7 @@
       });
     }
 
-    uploadAndConvertLocalImage(args) {
+        uploadAndConvertLocalImage(args) {
       this._triggerLocalFilePicker("image/*", (file) => {
         const reader = new FileReader();
         reader.onload = (event) => {
@@ -292,11 +292,13 @@
               `${args.FILENAME}.${args.FORMAT.split("/")}`,
             );
           };
+          // eslint-disable-next-line extension/check-can-fetch
           img.src = event.target.result;
         };
         reader.readAsDataURL(file);
       });
     }
+
     _bufferToWavChannelMatrix(buffer) {
       const numOfChan = buffer.numberOfChannels;
       const sampleRate = buffer.sampleRate;
