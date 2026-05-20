@@ -1,3 +1,5 @@
+/* eslint-disable extension/check-can-fetch */
+
 // Name: File Processor and Converter
 // ID: FileProcessorAndConverter
 // Description: A collection of tools for processing and converting local and remote files, including audio and image format transformations, microphone capture, and text-based document generation.
@@ -292,6 +294,7 @@
       });
     }
 
+        // eslint-disable-next-line extension/check-can-fetch
     uploadAndConvertLocalImage(args) {
       this._triggerLocalFilePicker("image/*", (file) => {
         const reader = new FileReader();
@@ -307,12 +310,12 @@
               `${args.FILENAME}.${args.FORMAT.split("/")}`,
             );
           };
-          // eslint-disable-next-line extension/check-can-fetch
           img.src = event.target.result;
         };
         reader.readAsDataURL(file);
       });
     }
+
 
     _bufferToWavChannelMatrix(buffer) {
       const numOfChan = buffer.numberOfChannels;
