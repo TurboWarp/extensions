@@ -298,9 +298,14 @@
       });
     }
 
-    async convertAudioFileUrl(args) {
+        async convertAudioFileUrl(args) {
       try {
-        const response = await fetch(args.AUDIO_URL);
+        // 1. Verify safety permission before making the request
+        if (!(await Scratch.canFetch(args.AUDIO_URL))) {
+            console.error("Permission denied to fetch URL:", args.AUDIO_URL);
+            return;
+        }
+        const response = await Scratch.fetch(args.AUDIO_URL);
         const arrayBuffer = await response.arrayBuffer();
         const audioCtx = new (
           window.AudioContext || window.webkitAudioContext
@@ -317,6 +322,7 @@
         console.error("Audio asset network URL pipeline failed:", pipelineErr);
       }
     }
+
 
     _bufferToWavChannelMatrix(buffer) {
       const numOfChan = buffer.numberOfChannels;
