@@ -388,21 +388,33 @@
       }
     }
 
-    convertImageUrlToFormat(args) {
-      const img = new Image();
-      img.crossOrigin = "anonymous";
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
-        canvas.getContext("2d").drawImage(img, 0, 0);
-        this._executeDownload(
-          canvas.toDataURL(args.FORMAT),
-          `${args.FILENAME}.${args.FORMAT.split("/")}`,
+            async convertAudioFileUrl(args) {
+      try {
+        if (!(await Scratch.canFetch(args.AUDIO_URL))) {
+            console.error("Permission denied to fetch URL:", args.AUDIO_URL);
+            return;
+        }
+        
+        // eslint-disable-next-line extension/check-can-fetch
+        const response = await Scratch.fetch(args.AUDIO_URL);
+        const arrayBuffer = await response.arrayBuffer();
+        const audioCtx = new (
+          window.AudioContext || window.webkitAudioContext
+        )();
+        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+        this._processAndDownloadAudioBuffer(
+          audioBuffer,
+          args.FORMAT,
+          args.FILENAME,
         );
-      };
-      img.src = args.IMAGE_URL;
+        audioCtx.close();
+      } catch (pipelineErr) {
+        console.error("Audio asset network URL pipeline failed:", pipelineErr);
+      }
     }
+
+
 
     startAudioCapture() {
       if (mediaRecorder && mediaRecorder.state === "recording") return;
