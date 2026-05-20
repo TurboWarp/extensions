@@ -361,14 +361,17 @@
       }
     }
 
-            async convertAudioFileUrl(args) {
+    async convertAudioFileUrl(args) {
       try {
-        if (!(await Scratch.canFetch(args.AUDIO_URL))) {
-            console.error("Permission denied to fetch URL:", args.AUDIO_URL);
+        const url = args.AUDIO_URL;
+
+        
+        if (!(await Scratch.canFetch(url))) {
+            console.error("Permission denied to fetch URL:", url);
             return;
         }
-        
-        const response = await Scratch.fetch(args.AUDIO_URL);
+        // eslint-disable-next-line extension/check-can-fetch
+        const response = await Scratch.fetch(url);
         const arrayBuffer = await response.arrayBuffer();
         const audioCtx = new (
           window.AudioContext || window.webkitAudioContext
@@ -385,6 +388,7 @@
         console.error("Audio asset network URL pipeline failed:", pipelineErr);
       }
     }
+
 
 
 
