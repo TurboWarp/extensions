@@ -2,6 +2,11 @@
 
 All images in this folder are licensed under the [GNU General Public License version 3](../licenses/GPL-3.0.txt). Please see the below list for additional attribution information.
 
+## fileConverter.svg
+ - Created by [as_designer](https://scratch.mit.edu/users/as_designer).
+ - Background based on https://app.haikei.app/.
+ - File icons from [Adobe Stock](https://stock.adobe.com)
+
 ## box2d.svg
  - Created by [@True-Fantom](https://scratch.mit.edu/users/TrueFantom/) in https://github.com/TurboWarp/extensions/pull/498.
  - Based on https://github.com/griffpatch/scratch-gui/blob/develop/src/lib/libraries/extensions/physics.png by [@Griffpatch](https://scratch.mit.edu/users/griffpatch/).
