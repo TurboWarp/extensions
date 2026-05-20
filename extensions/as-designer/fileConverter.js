@@ -20,19 +20,19 @@
     getInfo() {
       return {
         id: "FileProcessorAndConverter",
-        name: "File Processor and Converter",
+        name: Scratch.translate("File Processor and Converter"),
         color1: "#0fbd8c", // Primary Theme Emerald
         color2: "#0da57a", // Deep Accent Emerald
         color3: "#0b845f", // Dark Shade Emerald
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Local Device File Inputs",
+            text: Scratch.translate("Local Device File Inputs"),
           },
           {
             opcode: "uploadAndConvertLocalAudio",
             blockType: Scratch.BlockType.COMMAND,
-            text: "upload local audio file and convert to [FORMAT] as [FILENAME] and download",
+            text: Scratch.translate("upload local audio file and convert to [FORMAT] as [FILENAME] and download"),
             arguments: {
               FORMAT: {
                 type: Scratch.ArgumentType.STRING,
@@ -48,7 +48,7 @@
           {
             opcode: "uploadAndConvertLocalImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "upload local image file and convert to [FORMAT] as [FILENAME] and download",
+            text: Scratch.translate("upload local image file and convert to [FORMAT] as [FILENAME] and download"),
             arguments: {
               FORMAT: {
                 type: Scratch.ArgumentType.STRING,
@@ -64,12 +64,12 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Remote Cloud URL Inputs",
+            text: Scratch.translate("Remote Cloud URL Inputs"),
           },
           {
             opcode: "convertAudioFileUrl",
             blockType: Scratch.BlockType.COMMAND,
-            text: "convert web audio link [AUDIO_URL] to [FORMAT] as [FILENAME] and download",
+            text: Scratch.translate("convert web audio link [AUDIO_URL] to [FORMAT] as [FILENAME] and download"),
             arguments: {
               AUDIO_URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -89,7 +89,7 @@
           {
             opcode: "convertImageUrlToFormat",
             blockType: Scratch.BlockType.COMMAND,
-            text: "convert web image link [IMAGE_URL] to [FORMAT] as [FILENAME] and download",
+            text: Scratch.translate("convert web image link [IMAGE_URL] to [FORMAT] as [FILENAME] and download"),
             arguments: {
               IMAGE_URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -109,17 +109,17 @@
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Hardware Audio Capture",
+            text: Scratch.translate("Hardware Audio Capture"),
           },
           {
             opcode: "startAudioCapture",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start recording microphone audio",
+            text: Scratch.translate("start recording microphone audio"),
           },
           {
             opcode: "stopAudioCaptureAndDownload",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop recording and download as [FILENAME].wav",
+            text: Scratch.translate("stop recording and download as [FILENAME].wav"),
             arguments: {
               FILENAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -130,46 +130,46 @@
           {
             opcode: "isRecordingAudio",
             blockType: Scratch.BlockType.REPORTER,
-            text: "is microphone recording?",
+            text: Scratch.translate("is microphone recording?"),
           },
 
           {
             blockType: Scratch.BlockType.LABEL,
-            text: "Document Generators",
+            text: Scratch.translate("Document Generators"),
           },
           {
             opcode: "downloadTextFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "save text [TEXT_CONTENT] as [FILENAME] [EXTENSION] and download",
+            text: Scratch.translate("save text [TEXT_CONTENT] as [FILENAME] [EXTENSION] and download"),
             arguments: {
               TEXT_CONTENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello World!",
+                defaultValue: Scratch.translate("Hello World!"),
               },
               FILENAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "document",
+                defaultValue: Scratch.translate("document"),
               },
               EXTENSION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "textExtensions",
-                defaultValue: "txt",
+                defaultValue: Scratch.translate("txt"),
               },
             },
           },
           {
             opcode: "convertJsonToCsvAndDownload",
             blockType: Scratch.BlockType.COMMAND,
-            text: "convert JSON [JSON_STR] to CSV named [FILENAME] and download",
+            text: Scratch.translate("convert JSON [JSON_STR] to CSV named [FILENAME] and download"),
             arguments: {
               JSON_STR: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue:
-                  '[{"item":"Sword","atk":15},{"item":"Shield","def":22}]',
+                  Scratch.translate('[{"item":"Sword","atk":15},{"item":"Shield","def":22}]'),
               },
               FILENAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "inventory",
+                defaultValue: Scratch.translate("inventory"),
               },
             },
           },
