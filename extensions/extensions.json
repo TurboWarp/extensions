@@ -1,5 +1,6 @@
 [
   // This file supports comments
+  "as-designer/fileConverter",
   "lab/text",
   "lab/face-sensing",
   "stretch",
