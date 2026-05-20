@@ -9,7 +9,7 @@
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error(
-      "This extension must be run unsandboxed to access local hardware file engines."
+      "This extension must be run unsandboxed to access local hardware file engines.",
     );
   }
 
@@ -246,7 +246,7 @@
           });
           this._executeDownload(
             URL.createObjectURL(textBlob),
-            `${fileName}_mp3_uri.txt`
+            `${fileName}_mp3_uri.txt`,
           );
         };
         reader.readAsDataURL(blob);
@@ -257,20 +257,21 @@
       this._triggerLocalFilePicker("audio/*", async (file) => {
         try {
           const arrayBuffer = await file.arrayBuffer();
-          const audioCtx = new (window.AudioContext ||
-            window.webkitAudioContext)();
+          const audioCtx = new (
+            window.AudioContext || window.webkitAudioContext
+          )();
           const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
           this._processAndDownloadAudioBuffer(
             audioBuffer,
             args.FORMAT,
-            args.FILENAME
+            args.FILENAME,
           );
           audioCtx.close();
         } catch (err) {
           console.error(
             "Failed to parse local audio object matrix layers:",
-            err
+            err,
           );
         }
       });
@@ -288,7 +289,7 @@
             canvas.getContext("2d").drawImage(img, 0, 0);
             this._executeDownload(
               canvas.toDataURL(args.FORMAT),
-              `${args.FILENAME}.${args.FORMAT.split("/")}`
+              `${args.FILENAME}.${args.FORMAT.split("/")}`,
             );
           };
           img.src = event.target.result;
@@ -301,14 +302,15 @@
       try {
         const response = await fetch(args.AUDIO_URL);
         const arrayBuffer = await response.arrayBuffer();
-        const audioCtx = new (window.AudioContext ||
-          window.webkitAudioContext)();
+        const audioCtx = new (
+          window.AudioContext || window.webkitAudioContext
+        )();
         const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
         this._processAndDownloadAudioBuffer(
           audioBuffer,
           args.FORMAT,
-          args.FILENAME
+          args.FILENAME,
         );
         audioCtx.close();
       } catch (pipelineErr) {
@@ -325,7 +327,7 @@
         numOfChan === 2
           ? this._interleaveChannels(
               buffer.getChannelData(0),
-              buffer.getChannelData(1)
+              buffer.getChannelData(1),
             )
           : buffer.getChannelData(0);
 
@@ -354,7 +356,7 @@
         view.setInt16(
           index,
           sample < 0 ? sample * 0x8000 : sample * 0x7fff,
-          true
+          true,
         );
         index += 2;
       }
@@ -390,7 +392,7 @@
         canvas.getContext("2d").drawImage(img, 0, 0);
         this._executeDownload(
           canvas.toDataURL(args.FORMAT),
-          `${args.FILENAME}.${args.FORMAT.split("/")}`
+          `${args.FILENAME}.${args.FORMAT.split("/")}`,
         );
       };
       img.src = args.IMAGE_URL;
@@ -418,7 +420,7 @@
       mediaRecorder.onstop = () => {
         this._executeDownload(
           URL.createObjectURL(new Blob(audioChunks, { type: "audio/wav" })),
-          `${args.FILENAME}.wav`
+          `${args.FILENAME}.wav`,
         );
         mediaRecorder.stream.getTracks().forEach((t) => t.stop());
         mediaRecorder = null;
@@ -434,9 +436,9 @@
     downloadTextFile(args) {
       this._executeDownload(
         URL.createObjectURL(
-          new Blob([args.TEXT_CONTENT], { type: "text/plain;charset=utf-8;" })
+          new Blob([args.TEXT_CONTENT], { type: "text/plain;charset=utf-8;" }),
         ),
-        `${args.FILENAME}.${args.EXTENSION}`
+        `${args.FILENAME}.${args.EXTENSION}`,
       );
     }
 
@@ -451,14 +453,14 @@
           rows.push(
             headers
               .map((h) => `"${("" + (r[h] ?? "")).replace(/"/g, '""')}"`)
-              .join(",")
+              .join(","),
           );
         }
         this._executeDownload(
           URL.createObjectURL(
-            new Blob([rows.join("\n")], { type: "text/csv;" })
+            new Blob([rows.join("\n")], { type: "text/csv;" }),
           ),
-          `${args.FILENAME}.csv`
+          `${args.FILENAME}.csv`,
         );
       } catch (e) {
         console.error("CSV matrix build failed:", e);
