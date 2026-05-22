@@ -1237,6 +1237,7 @@
       this.activeByChannel = /* @__PURE__ */ new Map();
       this.ccs = {};
       this.lastNotes = {};
+      /** @type {MidiEvent[]} */
       this.buffer = [];
       this.paused = false;
       this.recordStart = 0;
@@ -1618,7 +1619,7 @@
           {
             opcode: "whenNoteOnOff",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when note [NOTE] [PRESS]"),
+            text: Scratch.translate("when note [NOTE] [PRESS] [DEVICE]"),
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
             arguments: {
@@ -1631,12 +1632,16 @@
                 menu: "NOTE_EVENT_TYPE",
                 defaultValue: "ANY",
               },
+              DEVICE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "INPUT_DEVICES",
+              },
             },
           },
           {
             opcode: "whenAnyNoteOnOff",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when any note [PRESS]"),
+            text: Scratch.translate("when any note [PRESS] [DEVICE]"),
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
             arguments: {
@@ -1645,12 +1650,16 @@
                 menu: "NOTE_EVENT_TYPE",
                 defaultValue: "ANY",
               },
+              DEVICE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "INPUT_DEVICES",
+              },
             },
           },
           {
             opcode: "whenMidiEvent",
             blockType: Scratch.BlockType.HAT,
-            text: Scratch.translate("when input event [TYPE]"),
+            text: Scratch.translate("when input event [TYPE] [DEVICE]"),
             isEdgeActivated: false,
             shouldRestartExistingThreads: true,
             arguments: {
@@ -1658,6 +1667,10 @@
                 menu: "EVENT_TYPES_OPTIONAL",
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: "ANY",
+              },
+              DEVICE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "INPUT_DEVICES",
               },
             },
           },
@@ -2206,7 +2219,7 @@
       const deviceList =
         deviceType === "output" ? this.midi.outputs : this.midi.inputs;
 
-      const rawIndex = this.midi.outputs.findIndex((d) => d.id === deviceId);
+      const rawIndex = deviceList.findIndex((d) => d.id === deviceId);
       if (rawIndex !== -1) {
         // arrays start at 1
         return rawIndex + 1;
@@ -2276,7 +2289,7 @@
     // handled automatically b/c blockType = EVENT instead of HAT
     // whenDeviceEvent({ DEVICE_TYPE, STATE }, util) {
     // }
-    whenNoteOnOff({ NOTE, PRESS }, util) {
+    whenNoteOnOff({ NOTE, PRESS, DEVICE }, util) {
       const isAny = this._isAnyArg(PRESS);
       let type = isAny
         ? ["note", "noteOff"]
@@ -2285,13 +2298,18 @@
       const pitch = this._isAnyArg(NOTE)
         ? undefined
         : Scratch.Cast.toNumber(NOTE);
+
+      const device = DEVICE ? this._getDeviceIndex(DEVICE, "input") : undefined;
+
+      /** @type {MidiEvent | undefined} */
       const last = this.recorder.getLast();
 
       // filter if only note on or note off
       if (
         last &&
         type.includes(last.type) &&
-        (pitch === undefined || last.pitch === pitch)
+        (pitch === undefined || last.pitch === pitch) &&
+        (device === undefined || last.device === device)
       ) {
         setThreadMidiValue(util.thread, last);
         return true;
@@ -2299,28 +2317,41 @@
 
       return false;
     }
-    whenAnyNoteOnOff({ PRESS }, util) {
+    whenAnyNoteOnOff({ PRESS, DEVICE }, util) {
       const isAny = this._isAnyArg(PRESS);
       let type = isAny
         ? ["note", "noteOff"]
         : [normalizeType(Scratch.Cast.toString(PRESS))];
 
+      const device = DEVICE ? this._getDeviceIndex(DEVICE, "input") : undefined;
+
       const last = this.recorder.getLast();
       // filter if only note on or note off
-      if (last && type.includes(last.type)) {
+      if (
+        last &&
+        type.includes(last.type) &&
+        (device === undefined || last.device === device)
+      ) {
         setThreadMidiValue(util.thread, last);
         return true;
       }
 
       return false;
     }
-    whenMidiEvent({ TYPE }, util) {
+    whenMidiEvent({ TYPE, DEVICE }, util) {
       const isAny = this._isAnyArg(TYPE);
       const type = isAny
         ? undefined
         : normalizeType(Scratch.Cast.toString(TYPE));
+
+      const device = DEVICE ? this._getDeviceIndex(DEVICE, "input") : undefined;
+
       const last = this.recorder.getLast();
-      if (last && (isAny || last.type === type)) {
+      if (
+        last &&
+        (isAny || last.type === type) &&
+        (device === undefined || last.device === device)
+      ) {
         setThreadMidiValue(util.thread, last);
         return !!last;
       }
