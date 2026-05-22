@@ -1354,17 +1354,20 @@
         (c) => c.channel == channel
       );
     }
-    clear(newStartTime = 0) {
+    clear() {
       this.lastNotes = {};
       this.active.clear();
       this.activeByChannel.clear();
       this.ccs = {};
-      this.recordStart = newStartTime;
+      this.recordStart = 0;
       // remove old events
-      this._prune(newStartTime + this.bufferSeconds);
+      this.buffer = [];
     }
     getRange(start = this.recordStart ?? 0, end) {
       const first = this.buffer.findIndex((e) => (e.time ?? e.when) >= start);
+      if (first === -1) {
+        return [];
+      }
       if (!end) {
         return this.buffer.slice(first);
       }
@@ -2374,23 +2377,33 @@
       last || (last = this.recorder.getLast());
       return last ? midiToString(last) : "";
     }
-    isNoteActive({ NOTE, CHANNEL }, util) {
-      const pitch = this._isAnyArg(NOTE)
-        ? undefined
-        : Scratch.Cast.toNumber(NOTE);
-      const channel = Scratch.Cast.toNumber(CHANNEL) || undefined;
-      if (pitch == undefined) {
-        const notes = this.recorder.getActiveNotes(channel);
-        setThreadActiveNotes(util.thread, { channel, notes });
-        return notes.length == 0
-          ? undefined
-          : notes.reduce((a, b) => (a.when > b.when ? a : b));
+    isNoteActive({ NOTE }, util) {
+      if (typeof NOTE === "number" || /^\d+$/.test(NOTE)) {
+        const pitch = Scratch.Cast.toNumber(NOTE);
+        return !!this.recorder.isNoteActive(pitch);
       }
-      const note = this.recorder.getActiveNote(pitch, channel || undefined);
-      if (note) {
-        setThreadMidiValue(util.thread, note);
+
+      const raw = Scratch.Cast.toString(NOTE);
+
+      if (this._isAnyArg(raw)) {
+        const notes = this.recorder.getActiveNotes();
+        return notes.length > 0;
       }
-      return !!note;
+
+      const event = stringToMidi(raw);
+
+      // note a valid note event
+      if (event?.pitch == null) {
+        return false;
+      }
+
+      const note = this.recorder.getActiveNote(event.pitch, event.channel);
+      if (!note) {
+        return false;
+      }
+
+      // if full event type passed then see if timestamp close enough to be same note
+      return (event.time != null) ? (note.time - event.time < 0.1) : true;
     }
     isEventOfType({ TYPE }, util) {
       const type = this._isAnyArg(TYPE)
