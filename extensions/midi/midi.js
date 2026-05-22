@@ -493,7 +493,9 @@
 
     /** @type {MidiEvent} */
     const event = {
-      type: [REST_LITERAL, "rest"].includes(data.type) ? "rest" : normalizeType(data.type),
+      type: [REST_LITERAL, "rest"].includes(data.type)
+        ? "rest"
+        : normalizeType(data.type),
       ...(value1 != undefined && { value1 }),
       ...(value2 != undefined && { value2 }),
       channel: parseNumValue(data.channel, opts),
@@ -614,19 +616,19 @@
       for (let match of String(str).matchAll(kvHelper._tokenizeRe)) {
         const { key, value = "", ws } = match.groups;
         if (!key && !unkeyed && value) {
-            const [short, val] = /([a-z@]+)([\d.]+)/i.exec(value)?.slice(1) || [];
-            if (short && val) {
-                yield { key: short, value: val };
-                continue;
-            }
+          const [short, val] = /([a-z@]+)([\d.]+)/i.exec(value)?.slice(1) || [];
+          if (short && val) {
+            yield { key: short, value: val };
+            continue;
+          }
         }
         if (!key) {
-            unkeyed += `${unkeyed ? ws : ""}${value}`;
-            continue;
+          unkeyed += `${unkeyed ? ws : ""}${value}`;
+          continue;
         }
         if (unkeyed) {
-            yield { value: unquote(unkeyed) };
-            unkeyed = "";
+          yield { value: unquote(unkeyed) };
+          unkeyed = "";
         }
         yield { key, value: unquote(value) };
       }
@@ -941,7 +943,7 @@
       text: Scratch.translate("(polyTouch) Aftertouch"),
     },
     time: { key: "time", text: Scratch.translate("(time) Timestamp") },
-    duration: { key: "dur", text: Scratch.translate("(dur) Duration") }
+    duration: { key: "dur", text: Scratch.translate("(dur) Duration") },
   };
 
   //#endregion utils
@@ -1232,7 +1234,6 @@
     constructor() {
       super();
       this.active = /* @__PURE__ */ new Map();
-      // REVIEW should this just be a {[key: channel]: Map()}  instead?
       this.activeByChannel = /* @__PURE__ */ new Map();
       this.ccs = {};
       this.lastNotes = {};
@@ -1691,7 +1692,7 @@
               NOTE: {
                 type: Scratch.ArgumentType.NOTE,
                 defaultValue: 60,
-              }
+              },
             },
           },
           {
@@ -2404,7 +2405,7 @@
       }
 
       // if full event type passed then see if timestamp close enough to be same note
-      return (event.time != null) ? (note.time - event.time < 0.1) : true;
+      return event.time != null ? note.time - event.time < 0.1 : true;
     }
     isEventOfType({ TYPE }, util) {
       const type = this._isAnyArg(TYPE)
@@ -2626,8 +2627,9 @@
         .forEach(([alias, key]) => (event[key] = event[alias]));
 
       // normalize type and default to note if not otherwise specified
-      event.type =
-        ["REST_LITERAL", "rest"].includes(event.type) ? "rest" : normalizeType(event.type);
+      event.type = ["REST_LITERAL", "rest"].includes(event.type)
+        ? "rest"
+        : normalizeType(event.type);
       if (!event.type && event.pitch) event.type = "note";
       return event ? midiToString(event) : "";
     }
