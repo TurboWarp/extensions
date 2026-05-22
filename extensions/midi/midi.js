@@ -299,6 +299,7 @@
   const PREFIX_WHEN = "t=";
   const PREFIX_POS = "pos=";
   const PREFIX_DURATION = "dur=";
+  const PREFIX_BEATS = "beats=";
   /** Used when creating lists - treat ~ as empty no value */
   const REST_LITERAL = "~";
 
@@ -437,6 +438,9 @@
     if (event.dur) {
       msg += formatDuration(event.dur, opts);
     }
+    if (event.beats) {
+      msg += formatBeats(event.beats, opts);
+    }
     return msg;
   }
 
@@ -461,7 +465,7 @@
       } catch (_err) {}
     } else {
       const fullRe =
-        /^\s*(?<type>[a-zA-Z]{2,}|~)?\s*((?<pitch>[A-G][#b♯♭_]*-?\d?)|(?<value1>\b-?[0-9a-f]{1,5}\b))?\s*(?<value2>\b[0-9a-f]{1,3}\b)?\s*(?<keyvals>.*)\s*$/;
+        /^\s*(?<type>[a-zA-Z]{2,}(?!\d)|~)?\s*((?<pitch>[A-G][#b♯♭_]*-?\d?)|(?<value1>\b-?[0-9a-f]{1,5}\b))?\s*(?<value2>\b[0-9a-f]{1,3}\b)?\s*(?<keyvals>.*)\s*$/;
       data = fullRe.exec(text)?.groups ?? null;
     }
     if (!data) return null;
@@ -489,7 +493,7 @@
 
     /** @type {MidiEvent} */
     const event = {
-      type: data.type === REST_LITERAL ? "rest" : normalizeType(data.type),
+      type: [REST_LITERAL, "rest"].includes(data.type) ? "rest" : normalizeType(data.type),
       ...(value1 != undefined && { value1 }),
       ...(value2 != undefined && { value2 }),
       channel: parseNumValue(data.channel, opts),
@@ -609,13 +613,20 @@
       let unkeyed = "";
       for (let match of String(str).matchAll(kvHelper._tokenizeRe)) {
         const { key, value = "", ws } = match.groups;
+        if (!key && !unkeyed && value) {
+            const [short, val] = /([a-z@]+)([\d.]+)/i.exec(value)?.slice(1) || [];
+            if (short && val) {
+                yield { key: short, value: val };
+                continue;
+            }
+        }
         if (!key) {
-          unkeyed += `${unkeyed ? ws : ""}${value}`;
-          continue;
+            unkeyed += `${unkeyed ? ws : ""}${value}`;
+            continue;
         }
         if (unkeyed) {
-          yield { value: unquote(unkeyed) };
-          unkeyed = "";
+            yield { value: unquote(unkeyed) };
+            unkeyed = "";
         }
         yield { key, value: unquote(value) };
       }
@@ -716,6 +727,13 @@
 
   function formatDuration(value, opts) {
     return ` ${PREFIX_DURATION}${formatSeconds(value, opts)}`;
+  }
+
+  function formatBeats(value, opts) {
+    if (opts?.useFractions) {
+      value = formatFraction(value);
+    }
+    return ` ${PREFIX_BEATS}${value}`;
   }
 
   function formatSeconds(value, opts) {
@@ -923,8 +941,7 @@
       text: Scratch.translate("(polyTouch) Aftertouch"),
     },
     time: { key: "time", text: Scratch.translate("(time) Timestamp") },
-    duration: { key: "dur", text: Scratch.translate("(dur) Duration") },
-    instrument: { key: "instrument", text: Scratch.translate("Instrument") },
+    duration: { key: "dur", text: Scratch.translate("(dur) Duration") }
   };
 
   //#endregion utils
@@ -955,7 +972,7 @@
         device: 0,
         pitch: 60,
         dur: 0.5,
-        velocity: 196,
+        velocity: 96,
       };
       // TIP! If you use arrow functions on class methods then 'this' is automatically bound correctly, even if using as event listener
       this.refreshDevices = () => {
@@ -2587,17 +2604,17 @@
       }
       // rename aliases just in case
       [
-        ["beats", "dur"],
-        ["offset", "pos"],
+        ["duration", "dur"],
+        ["t", "time"],
         ["@", "time"],
       ]
         .filter(([alias, key]) => alias in event && event[key] == undefined)
         .forEach(([alias, key]) => (event[key] = event[alias]));
 
       // normalize type and default to note if not otherwise specified
-      let type =
-        event.type === REST_LITERAL ? "rest" : normalizeType(event.type);
-      if (!type && event.pitch) type = "note";
+      event.type =
+        ["REST_LITERAL", "rest"].includes(event.type) ? "rest" : normalizeType(event.type);
+      if (!event.type && event.pitch) event.type = "note";
       return event ? midiToString(event) : "";
     }
   }
