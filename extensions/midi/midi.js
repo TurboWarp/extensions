@@ -1691,12 +1691,7 @@
               NOTE: {
                 type: Scratch.ArgumentType.NOTE,
                 defaultValue: 60,
-              },
-              CHANNEL: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "CHANNELS",
-                defaultValue: "0",
-              },
+              }
             },
           },
           {
@@ -1786,7 +1781,7 @@
             opcode: "makeOutputNote",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "Note [NOTE] Duration [BEATS] Volume [VELOCITY]% [CHANNEL] [DEVICE]"
+              "Note [NOTE] Beats [BEATS] Volume [VELOCITY]% [CHANNEL] [DEVICE]"
             ),
             arguments: {
               NOTE: {
@@ -2341,7 +2336,13 @@
 
       // default event type is note, so any valid input will be treated as note by default
       const event = stringToMidi(`${text}`);
-      this.midi.sendOutputEvent(event);
+      if (event) {
+        this.midi.sendOutputEvent(event);
+      }
+      const dur = event.dur || event.beats ? beatsToSeconds(event.beats) : 0;
+      if (dur > 0) {
+        return new Promise((resolve) => setTimeout(resolve, dur * 1000));
+      }
     }
     sendOutputEvent({ EVENT, DEVICE }, util) {
       const text = Scratch.Cast.toString(EVENT);
