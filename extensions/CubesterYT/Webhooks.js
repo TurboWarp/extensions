@@ -15,18 +15,41 @@
   const runtime = Scratch.vm.runtime;
 
   let hideFromPalette = true;
+
+  /** @type {Record<string, {TYPE?: string; DATA?: unknown; URL?: string;}>} */
   let webhooks;
+
   function setupStorage() {
-    if (!runtime.extensionStorage["cubesterWebhooks"]) {
-      runtime.extensionStorage["cubesterWebhooks"] = {
-        webhooks: Object.create(null),
-      };
+    const safe = Object.create(null);
+
+    // We always want to rebuild storage as an object with null prototype to prevent pollution attacks later.
+    const existing = runtime.extensionStorage["cubesterWebhooks"];
+    if (
+      existing &&
+      typeof existing === "object" &&
+      existing.webhooks &&
+      typeof existing.webhooks === "object"
+    ) {
+      for (const key of Object.keys(existing.webhooks)) {
+        const entry = existing.webhooks[key];
+        // Everything later assumes this is a real object, so we should verify
+        if (entry && typeof entry === "object") {
+          safe[key] = entry;
+        }
+      }
     }
-    webhooks = runtime.extensionStorage["cubesterWebhooks"].webhooks;
-    if (Object.keys(webhooks).length > 0) {
+
+    runtime.extensionStorage["cubesterWebhooks"] = {
+      webhooks: safe
+    };
+    webhooks = safe;
+
+    if (hideFromPalette && Object.keys(webhooks).length > 0) {
       hideFromPalette = false;
+      runtime.extensionManager.refreshBlocks();
     }
   }
+
   setupStorage();
   runtime.on("PROJECT_LOADED", setupStorage);
 
