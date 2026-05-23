@@ -14,6 +14,72 @@
   const MIN_ZOOM = 20;
   const MAX_ZOOM = 2000;
 
+  // TODO: why are we handling Infinity differently? that's just clearly wrong. and NaN shouldn't be possible.
+  const clampZoom = (value) => {
+    const zoom = Number.isFinite(value) ? value : 100;
+    return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom));
+  };
+
+  // TODO: this is wrong, should be MUCH less tolerant
+  // TODO: actually handle alpha
+  const colorMatches = (r, g, b, alpha, color) => {
+    if (!color || alpha === 0) {
+      return false;
+    }
+    const tolerance = 24;
+    return Math.abs(r - color.r) <= tolerance &&
+      Math.abs(g - color.g) <= tolerance &&
+      Math.abs(b - color.b) <= tolerance;
+  };
+
+  // TODO: remove - should not be needed
+  const getCurrentCostume = (target) =>
+    target.sprite.costumes[target.currentCostume] || {};
+
+  // TODO: remove
+  const getBaseImageSize = (image) => ({
+    width: image.naturalWidth || image.videoWidth || image.width || 0,
+    height: image.naturalHeight || image.videoHeight || image.height || 0
+  });
+
+  // TODO: remove - should not be needed
+  const getDrawableSkinId = (drawable) => {
+    if (!drawable) {
+      return undefined;
+    }
+    if (typeof drawable.skin === "object" && drawable.skin && typeof drawable.skin.id === "number") {
+      return drawable.skin.id;
+    }
+    if (typeof drawable._skinId === "number") {
+      return drawable._skinId;
+    }
+    if (typeof drawable.skinId === "number") {
+      return drawable.skinId;
+    }
+    return undefined;
+  };
+
+  const getTargetBaseSkinId = (target, drawable) => {
+    const costume = getCurrentCostume(target);
+    if (typeof costume.skinId === "number") {
+      return costume.skinId;
+    }
+    const drawableSkinId = getDrawableSkinId(drawable);
+    const generatedSkinId = target.__videoSpritesSkinId;
+    if (drawableSkinId !== undefined && drawableSkinId !== generatedSkinId) {
+      return drawableSkinId;
+    }
+    return target.__videoSpritesOriginalSkinId;
+  };
+
+  const rememberOriginalSkin = (target, drawable, baseSkinId) => {
+    if (target.__videoSpritesOriginalSkinId !== undefined) {
+      return;
+    }
+    const currentSkinId = getDrawableSkinId(drawable);
+    target.__videoSpritesOriginalSkinId = currentSkinId !== undefined ? currentSkinId : baseSkinId;
+  };
+
   class VideoSpritesExtension {
     constructor() {
       this.vm = Scratch.vm;
@@ -32,10 +98,10 @@
       this.fillStates = new Map();
       this._hidPreview = false;
 
-      this._boundRefresh = this.refreshAllTargets.bind(this);
-      this.runtime.on("PROJECT_STOP_ALL", this._boundRefresh);
-      this.runtime.on("PROJECT_LOADED", this._boundRefresh);
-      this.runtime.on("PROJECT_CHANGED", this._boundRefresh);
+      const _boundRefresh = this.refreshAllTargets.bind(this);
+      this.runtime.on("PROJECT_STOP_ALL", _boundRefresh);
+      this.runtime.on("PROJECT_LOADED", _boundRefresh);
+      this.runtime.on("PROJECT_CHANGED", _boundRefresh);
     }
 
     getInfo() {
@@ -117,7 +183,7 @@
 
       this.fillStates.set(target.id, {
         mode: "color",
-        color: this.parseColor(args.COLOR)
+        color: Scratch.Cast.toRgbColorObject(args.COLOR)
       });
 
       this.startRenderLoop();
@@ -126,12 +192,12 @@
 
     changeCameraBy(args) {
       const amount = Scratch.Cast.toNumber(args.CAMERA_SCALE_INC);
-      this.zoom = this.clampZoom(this.zoom + amount);
+      this.zoom = clampZoom(this.zoom + amount);
       this.refreshAllTargets();
     }
 
     scaleCamera(args) {
-      this.zoom = this.clampZoom(Scratch.Cast.toNumber(args.CAMERA_SCALE));
+      this.zoom = clampZoom(Scratch.Cast.toNumber(args.CAMERA_SCALE));
       this.refreshAllTargets();
     }
 
@@ -229,14 +295,14 @@
       }
 
       const drawable = this.getDrawable(target);
-      const baseSkinId = this.getTargetBaseSkinId(target, drawable);
+      const baseSkinId = getTargetBaseSkinId(target, drawable);
       const baseImage = this.getSkinImage(baseSkinId);
 
       if (!baseImage) {
         return;
       }
 
-      const size = this.getBaseImageSize(baseImage);
+      const size = getBaseImageSize(baseImage);
       const width = size.width;
       const height = size.height;
 
@@ -276,7 +342,7 @@
 
         const shouldFill = fillState.mode === "mask"
           ? true
-          : this.colorMatches(maskData[i], maskData[i + 1], maskData[i + 2], alpha, color);
+          : colorMatches(maskData[i], maskData[i + 1], maskData[i + 2], alpha, color);
 
         if (shouldFill) {
           maskData[i] = sourceData[i];
@@ -289,7 +355,7 @@
       this.workContext.putImageData(maskImageData, 0, 0);
 
       const fallbackCenter = [width / 2, height / 2];
-      const costume = this.getCurrentCostume(target);
+      const costume = getCurrentCostume(target);
       const costumeCenter = (typeof costume.rotationCenterX === "number" && typeof costume.rotationCenterY === "number")
         ? [costume.rotationCenterX, costume.rotationCenterY]
         : null;
@@ -304,7 +370,7 @@
         this.renderer.updateBitmapSkin(generatedSkinId, this.workCanvas, 1, rotationCenter);
       }
 
-      this.rememberOriginalSkin(target, drawable, baseSkinId);
+      rememberOriginalSkin(target, drawable, baseSkinId);
       this.renderer.updateDrawableSkinId(target.drawableID, generatedSkinId);
 
       if (this.runtime.requestRedraw) {
@@ -346,7 +412,7 @@
     restoreTarget(target) {
       this.fillStates.delete(target.id);
 
-      const costume = this.getCurrentCostume(target);
+      const costume = getCurrentCostume(target);
       const restoreSkinId = typeof costume.skinId === "number"
         ? costume.skinId
         : target.__videoSpritesOriginalSkinId;
@@ -367,59 +433,10 @@
       }
     }
 
-    rememberOriginalSkin(target, drawable, baseSkinId) {
-      if (target.__videoSpritesOriginalSkinId !== undefined) {
-        return;
-      }
-
-      const currentSkinId = this.getDrawableSkinId(drawable);
-      target.__videoSpritesOriginalSkinId = currentSkinId !== undefined ? currentSkinId : baseSkinId;
-    }
-
     getDrawable(target) {
       return this.renderer && this.renderer._allDrawables
         ? this.renderer._allDrawables[target.drawableID]
         : null;
-    }
-
-    getDrawableSkinId(drawable) {
-      if (!drawable) {
-        return undefined;
-      }
-
-      if (typeof drawable.skin === "object" && drawable.skin && typeof drawable.skin.id === "number") {
-        return drawable.skin.id;
-      }
-
-      if (typeof drawable._skinId === "number") {
-        return drawable._skinId;
-      }
-
-      if (typeof drawable.skinId === "number") {
-        return drawable.skinId;
-      }
-
-      return undefined;
-    }
-
-    getTargetBaseSkinId(target, drawable) {
-      const costume = this.getCurrentCostume(target);
-      if (typeof costume.skinId === "number") {
-        return costume.skinId;
-      }
-
-      const drawableSkinId = this.getDrawableSkinId(drawable);
-      const generatedSkinId = target.__videoSpritesSkinId;
-
-      if (drawableSkinId !== undefined && drawableSkinId !== generatedSkinId) {
-        return drawableSkinId;
-      }
-
-      return target.__videoSpritesOriginalSkinId;
-    }
-
-    getCurrentCostume(target) {
-      return target.sprite.costumes[target.currentCostume] || {};
     }
 
     getSkinImage(skinId) {
@@ -451,13 +468,6 @@
       return null;
     }
 
-    getBaseImageSize(image) {
-      return {
-        width: image.naturalWidth || image.videoWidth || image.width || 0,
-        height: image.naturalHeight || image.videoHeight || image.height || 0
-      };
-    }
-
     getRotationCenter(skinId) {
       if (typeof skinId !== "number" || !this.renderer || !this.renderer._allSkins) {
         return null;
@@ -479,34 +489,6 @@
       return null;
     }
 
-    parseColor(value) {
-      const hex = Scratch.Cast.toString(value).trim();
-      const normalized = /^#?[0-9a-f]{6}$/i.test(hex)
-        ? hex.replace(/^#/, "")
-        : "ffffff";
-
-      return {
-        r: parseInt(normalized.slice(0, 2), 16),
-        g: parseInt(normalized.slice(2, 4), 16),
-        b: parseInt(normalized.slice(4, 6), 16)
-      };
-    }
-
-    colorMatches(r, g, b, alpha, color) {
-      if (!color || alpha === 0) {
-        return false;
-      }
-
-      const tolerance = 24;
-      return Math.abs(r - color.r) <= tolerance &&
-        Math.abs(g - color.g) <= tolerance &&
-        Math.abs(b - color.b) <= tolerance;
-    }
-
-    clampZoom(value) {
-      const zoom = Number.isFinite(value) ? value : 100;
-      return Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom));
-    }
   }
 
   Scratch.extensions.register(new VideoSpritesExtension());
