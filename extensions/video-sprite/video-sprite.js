@@ -2,7 +2,7 @@
 // ID: videoSprites
 // Description: A TurboWarp extension that lets you use your webcam inside sprites—either filling the whole sprite or replacing specific colors with live camera video, with adjustable zoom and real-time rendering.
 // By: Staevski_G <https://scratch.mit.edu/users/Staevski_G/>
-// Original: Video sprites (from Scratch Lab)
+// Original: Scratch Lab
 
 (function (Scratch) {
   "use strict";
@@ -16,7 +16,7 @@
   const MIN_ZOOM = 10;
   const MAX_ZOOM = 400;
 
-  class VideoSprites {
+  class VideoSpritesExtension {
     constructor() {
       this.vm = Scratch.vm;
       this.runtime = this.vm.runtime;
@@ -616,6 +616,6 @@
     }
   }
 
-  Scratch.extensions.register(new VideoSprites());
+  Scratch.extensions.register(new VideoSpritesExtension());
 })(Scratch);
 
