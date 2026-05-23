@@ -100,7 +100,7 @@ const run = async () => {
       });
 
       // don't hit any rate limits
-      await new Promise(resolve => setTimeout(resolve, 250));
+      await new Promise((resolve) => setTimeout(resolve, 250));
     } else {
       result.push({
         username: info.name,
