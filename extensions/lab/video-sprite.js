@@ -41,7 +41,6 @@
       this.stream = null;
       this.zoom = 100;
       this.mirror = true;
-      this.lastError = "";
       this.renderHandle = null;
       this.isRendering = false;
       this.fillStates = new Map();
@@ -56,8 +55,6 @@
       return {
         id: "videoSprites",
         name: "Video Sprites",
-        color1: "#4C97FF",
-        color2: "#3373CC",
         blocks: [
           {
             opcode: "videoSpriteFillSprite",
@@ -71,57 +68,38 @@
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#ffffff"
+                defaultValue: "#ffab19"
               }
             }
           },
+          '---',
           {
             opcode: "changeCameraBy",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change camera zoom by [AMOUNT]",
+            text: "change camera zoom by [CAMERA_SCALE_INC]",
             arguments: {
-              AMOUNT: {
+              CAMERA_SCALE_INC: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 10
+                defaultValue: 25
               }
             }
           },
           {
             opcode: "scaleCamera",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set camera zoom to [AMOUNT] %",
+            text: "set camera zoom [CAMERA_SCALE]",
             arguments: {
-              AMOUNT: {
+              CAMERA_SCALE: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 100
               }
             }
           },
+          '---',
           {
             opcode: "videoSpriteOff",
             blockType: Scratch.BlockType.COMMAND,
             text: "stop filling with camera"
-          },
-          "---",
-          {
-            opcode: "cameraReady",
-            blockType: Scratch.BlockType.BOOLEAN,
-            text: "camera ready?"
-          },
-          {
-            opcode: "cameraZoom",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "camera zoom"
-          },
-          {
-            opcode: "activeSpriteCount",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "camera-filled sprite count"
-          },
-          {
-            opcode: "lastErrorText",
-            blockType: Scratch.BlockType.REPORTER,
-            text: "video sprites error"
           }
         ]
       };
@@ -166,13 +144,13 @@
     }
 
     changeCameraBy(args) {
-      const amount = Scratch.Cast.toNumber(args.AMOUNT);
+      const amount = Scratch.Cast.toNumber(args.CAMERA_SCALE_INC);
       this.zoom = this.clampZoom(this.zoom + amount);
       this.refreshAllTargets();
     }
 
     scaleCamera(args) {
-      this.zoom = this.clampZoom(Scratch.Cast.toNumber(args.AMOUNT));
+      this.zoom = this.clampZoom(Scratch.Cast.toNumber(args.CAMERA_SCALE));
       this.refreshAllTargets();
     }
 
@@ -193,22 +171,9 @@
       return !!(this.stream && this.video.readyState >= 2);
     }
 
-    cameraZoom() {
-      return this.zoom;
-    }
-
-    activeSpriteCount() {
-      return this.fillStates.size;
-    }
-
-    lastErrorText() {
-      return this.lastError;
-    }
-
     requireSpriteTarget(util) {
       const target = util && util.target;
       if (!target || target.isStage) {
-        this.lastError = "Select a sprite before using Video Sprites blocks.";
         return null;
       }
 
@@ -221,7 +186,6 @@
       }
 
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        this.lastError = "Camera access is not available in this browser.";
         return false;
       }
 
@@ -243,10 +207,8 @@
 
         this.video.srcObject = this.stream;
         await this.video.play();
-        this.lastError = "";
         return true;
       } catch (error) {
-        this.lastError = error && error.message ? error.message : String(error);
         return false;
       }
     }
@@ -347,7 +309,6 @@
       const baseImage = this.getSkinImage(baseSkinId);
 
       if (!baseImage) {
-        this.lastError = "Could not read the sprite costume for Video Sprites.";
         return;
       }
 
@@ -371,7 +332,6 @@
       try {
         maskImageData = this.workContext.getImageData(0, 0, width, height);
       } catch (error) {
-        this.lastError = "The current costume could not be sampled for Video Sprites.";
         return;
       }
 
