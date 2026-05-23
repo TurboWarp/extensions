@@ -11,8 +11,8 @@
     throw new Error("Video Sprites must run unsandboxed.");
   }
 
-  const MIN_ZOOM = 10;
-  const MAX_ZOOM = 400;
+  const MIN_ZOOM = 20;
+  const MAX_ZOOM = 2000;
 
   class VideoSpritesExtension {
     constructor() {
