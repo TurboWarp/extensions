@@ -12283,7 +12283,7 @@
    * @param {number} hi
    * @returns {number}
    */
-  const clamp = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
+  const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
 
   /**
    * Shoelace signed area. Positive = CCW (outer), negative = CW (hole).
@@ -12307,7 +12307,8 @@
    * @param {Point} c
    * @returns {number}
    */
-  const area3 = (a, b, c) => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+  const area3 = (a, b, c) =>
+    (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 
   /**
    * Sample drawable silhouette into a padded binary opacity grid (1 = opaque).
@@ -12342,8 +12343,7 @@
     const sample = [0, 0, 0];
     let opaqueCount = 0;
 
-    const useEffects =
-      !!EffectTransform && drawable.enabledEffects !== 0;
+    const useEffects = !!EffectTransform && drawable.enabledEffects !== 0;
 
     for (let j = 0; j < gyI; j++) {
       coord[1] = j / (gyI - 1);
@@ -12415,8 +12415,7 @@
 
     // Midpoints fall on half-integers, so doubling gives a collision-free int
     // key as long as coords stay well below 100000 (they do).
-    const pointKey = (p) =>
-      Math.round(p.x * 2) * 100000 + Math.round(p.y * 2);
+    const pointKey = (p) => Math.round(p.x * 2) * 100000 + Math.round(p.y * 2);
 
     // Pass 1: per 2x2 block, pack corners into a 4-bit code (TL=0, TR=1,
     // BR=2, BL=3) and emit the segments the table calls for.
