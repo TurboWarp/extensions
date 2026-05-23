@@ -12219,7 +12219,7 @@
     ALL: "all",
   };
 
-  const _definePolyFromHull = function (hullPoints) {
+  const definePolyFromHull = (hullPoints) => {
     fixDef.shape = new b2PolygonShape();
 
     const vertices = [];
@@ -12240,46 +12240,45 @@
     fixDef.shape.SetAsArray(vertices);
   };
 
-  // earcut polygon triangulation with hole support
-  // ISC licensed -- https://github.com/mapbox/earcut
+  // How polygon mode works at a high level:
+  // 1. Sample silhouette opacity
+  // 2. Generate countours (marching squares)
+  // 3. Group those contours into rings + holes
+  // 4. Simplify (Ramer-Douglas-Peucker)
+  // 5. Triangulate (earcut)
+  // 6. Merge into convex pieces (Hertel-Mehlhorn)
+  // 7. Convert into Box2D fixtures
+
+  // earcut polygon triangulation
+  // ISC licensed - https://github.com/mapbox/earcut
+  // Copyright (c) 2024, Mapbox
   const earcut = (
     await Scratch.external.importModule(
       "https://cdn.jsdelivr.net/npm/earcut@3.0.2/src/earcut.js"
     )
   ).default;
 
-  // === Polygon mode ============================================================
-  // Builds a concave-capable physics shape from a sprite's costume. The renderer
-  // no longer exposes SVG path data, so the costume outline is recovered from its
-  // rasterized silhouette: sample opacity -> marching squares -> group contours
-  // into outer rings + holes -> simplify (RDP) -> earcut triangulation (holes and
-  // all) -> merge into convex pieces. Each convex piece becomes a Box2D fixture,
-  // so the body can be concave, hollow, and made of several disconnected islands.
+  // Silhouette sampling resolution
+  const POLY_GRID_MIN = 16;
+  const POLY_GRID_MAX = 96;
+  const POLY_GRID_STEP = 4;
 
-  // Silhouette sampling resolution: roughly one grid cell per _POLY_GRID_STEP
-  // costume pixels, clamped to [_POLY_GRID_MIN, _POLY_GRID_MAX] cells per axis.
-  // Fine enough to follow the outline, coarse enough to stay cheap -- the trace
-  // runs once when physics is enabled for a sprite, never per frame.
-  const _POLY_GRID_MIN = 16;
-  const _POLY_GRID_MAX = 96;
-  const _POLY_GRID_STEP = 4;
   // Ramer-Douglas-Peucker tolerance, in grid cells: outline points within this
   // distance of a kept edge are discarded. Larger means fewer, coarser corners.
-  const _POLY_RDP_EPSILON = 0.75;
-  // Contours whose |signed area| is below this many grid cells are sampling
-  // speckle -- dropped as outer islands, ignored as holes.
-  const _POLY_MIN_AREA = 2.0;
-  // Box2D polygon fixtures collide fastest with few vertices, so convex pieces
-  // are capped at this many (a larger piece is split into a fan).
-  const _POLY_MAX_VERTS = 8;
-  // Costumes that decompose into more fixtures than this collide slowly, so such
-  // a costume falls back to its single convex hull instead.
-  const _POLY_MAX_FIXTURES = 32;
+  const POLY_RDP_EPSILON = 0.75;
+
+  // Contours whose area is below this many grid cells are sampling noise
+  // and will be ignored when an island or a hole.
+  const POLY_MIN_AREA = 2.0;
+
+  // Maximum number of vertices per Box2D polygon before breaking apart.
+  const POLY_MAX_VERTS = 8;
+
+  // Maximum number of Box2D fixtures polygon mode can generate before falling back.
+  const POLY_MAX_FIXTURES = 32;
 
   /**
-   * A 2D point. Polygon-mode contours, rings, and convex pieces are all
-   * ordered arrays of these.
-   * @typedef {{ x: number, y: number }} PolyPoint
+   * @typedef {{ x: number, y: number }} Point
    */
 
   /**
@@ -12289,39 +12288,33 @@
    * @param {number} hi - Upper bound.
    * @returns {number} v constrained to [lo, hi].
    */
-  const _clamp = function (v, lo, hi) {
-    return v < lo ? lo : v > hi ? hi : v;
-  };
+  const clamp = (v, lo, hi) => v < lo ? lo : v > hi ? hi : v;
 
   /**
-   * Signed area of a polygon via the shoelace formula. The sign encodes the
-   * winding: positive is counter-clockwise (here, an outer contour), negative
-   * is clockwise (a hole). Used to classify contours and to check winding.
-   * @param {PolyPoint[]} pts - The polygon's vertices, in order.
+   * Signed area of a polygon via the shoelace formula.
+   * Positive in counter-clockwise (outer contour), negative is clockwise (hole).
+   * @param {Point[]} points - The polygon's vertices, in order.
    * @returns {number} The signed area.
    */
-  const _signedArea = function (pts) {
+  const signedArea = (points) => {
     let area = 0;
-    for (let i = 0, n = pts.length; i < n; i++) {
-      const a = pts[i];
-      const b = pts[(i + 1) % n];
+    for (let i = 0, n = points.length; i < n; i++) {
+      const a = points[i];
+      const b = points[(i + 1) % n];
       area += a.x * b.y - b.x * a.y;
     }
     return area / 2;
   };
 
   /**
-   * Twice the signed area of triangle abc -- the 2D cross product of (b - a)
-   * and (c - a). Positive means a, b, c make a counter-clockwise turn. This is
-   * the basic orientation test the decomposition relies on everywhere.
-   * @param {PolyPoint} a - First vertex.
-   * @param {PolyPoint} b - Second vertex.
-   * @param {PolyPoint} c - Third vertex.
-   * @returns {number} Twice the signed area of triangle abc.
+   * Compute twice the signed area of triangle abc.
+   * Positive means a, b, c make a counter-clockwise turn.
+   * @param {Point} a - First vertex.
+   * @param {Point} b - Second vertex.
+   * @param {Point} c - Third vertex.
+   * @returns {number} Twice the signed area.
    */
-  const _area3 = function (a, b, c) {
-    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
-  };
+  const area3 = (a, b, c) => (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
 
   /**
    * Sample a skin's silhouette into a binary opacity grid (1 = opaque).
@@ -12333,28 +12326,26 @@
    * Opacity is tested with isTouchingLinear (a 2x2 silhouette-pixel lookup),
    * matching scratch-render _getConvexHullPointsForDrawable.
    *
-   * @param {import('scratch-render').Skin} skin - A scratch-render Skin, queried for size and opacity.
+   * @param {import('scratch-render').Skin} skin scratch-render Skin
    * @returns {{ grid: Uint8Array, gx: number, gy: number, gxI: number,
    *   gyI: number, opaqueCount: number }} The padded grid (gx by gy cells
    *   including the border, gxI by gyI interior cells) and the opaque count.
    */
-  const _polySampleSilhouette = function (skin) {
-    if (typeof skin.updateSilhouette === "function") {
-      skin.updateSilhouette();
-    }
+  const polySampleSilhouette = (skin) => {
+    skin.updateSilhouette();
 
     // Grid resolution scales with costume size, within fixed bounds. gxI/gyI
     // count the real interior cells; gx/gy add the 1-cell border on each side.
     const size = skin.size;
-    const gxI = _clamp(
-      Math.round(size[0] / _POLY_GRID_STEP),
-      _POLY_GRID_MIN,
-      _POLY_GRID_MAX
+    const gxI = clamp(
+      Math.round(size[0] / POLY_GRID_STEP),
+      POLY_GRID_MIN,
+      POLY_GRID_MAX
     );
-    const gyI = _clamp(
-      Math.round(size[1] / _POLY_GRID_STEP),
-      _POLY_GRID_MIN,
-      _POLY_GRID_MAX
+    const gyI = clamp(
+      Math.round(size[1] / POLY_GRID_STEP),
+      POLY_GRID_MIN,
+      POLY_GRID_MAX
     );
     const gx = gxI + 2;
     const gy = gyI + 2;
@@ -12380,7 +12371,7 @@
 
   /**
    * Marching-squares case table. Every 2x2 block of grid cells forms a 4-bit
-   * code (bit layout in _polyMarchingSquares); this maps the code to the
+   * code (bit layout in polyMarchingSquares); this maps the code to the
    * contour segment(s) crossing that block, each a directed pair of cell edges
    * [fromEdge, toEdge]. Edges: 0 = top, 1 = right, 2 = bottom, 3 = left.
    * Segment direction is chosen so the opaque region stays on a consistent
@@ -12389,7 +12380,7 @@
    * the ambiguous "saddle" blocks and emit two segments.
    * @type {Array<Array<number[]>|null>}
    */
-  const _POLY_MS_TABLE = [
+  const POLY_MS_TABLE = [
     null,
     [[0, 3]],
     [[1, 0]],
@@ -12416,17 +12407,16 @@
 
   /**
    * Trace the closed contour loops of a binary grid with marching squares.
-   * @param {Uint8Array} grid - Padded binary opacity grid from
-   *   _polySampleSilhouette.
+   * @param {Uint8Array} grid - Padded binary opacity grid from polySampleSilhouette.
    * @param {number} gx - Grid width in cells, including the border.
    * @param {number} gy - Grid height in cells, including the border.
-   * @returns {PolyPoint[][]} One loop per opaque island and per hole, each an
+   * @returns {Point[][]} One loop per opaque island and per hole, each an
    *   ordered ring of points in grid coordinates.
    */
-  const _polyMarchingSquares = function (grid, gx, gy) {
+  const polyMarchingSquares = (grid, gx, gy) => {
     // A contour vertex sits at the midpoint of a cell edge. Given the block at
     // (ci, cj), return the point on one of its four edges.
-    const edgePoint = function (ci, cj, edge) {
+    const edgePoint = (ci, cj, edge) => {
       if (edge === 0) return { x: ci + 0.5, y: cj };
       if (edge === 1) return { x: ci + 1, y: cj + 0.5 };
       if (edge === 2) return { x: ci + 0.5, y: cj + 1 };
@@ -12436,9 +12426,8 @@
     // Edge midpoints land on half-integer coordinates, so doubling them gives
     // integers; pack the pair into one number, keyed for exact matching. Grid
     // coordinates stay far below the 100000 multiplier, so they never collide.
-    const pointKey = function (p) {
-      return Math.round(p.x * 2) * 100000 + Math.round(p.y * 2);
-    };
+    const pointKey = (p) =>
+      Math.round(p.x * 2) * 100000 + Math.round(p.y * 2);
 
     // Pass 1: visit every 2x2 block of cells. Pack its four corners into a
     // 4-bit code -- top-left is bit 0, top-right bit 1, bottom-right bit 2,
@@ -12454,7 +12443,7 @@
           (grid[cj * gx + ci + 1] << 1) |
           (grid[(cj + 1) * gx + ci + 1] << 2) |
           (grid[(cj + 1) * gx + ci] << 3);
-        const segs = _POLY_MS_TABLE[code];
+        const segs = POLY_MS_TABLE[code];
         if (!segs) continue;
         for (let s = 0; s < segs.length; s++) {
           const seg = {
@@ -12491,11 +12480,11 @@
   /**
    * Point-in-polygon test by the even-odd rule: cast a ray rightward from p
    * and count how many edges it crosses -- an odd count means p is inside.
-   * @param {PolyPoint} p - The point to test.
-   * @param {PolyPoint[]} ring - The polygon, as an ordered ring of vertices.
+   * @param {Point} p - The point to test.
+   * @param {Point[]} ring - The polygon, as an ordered ring of vertices.
    * @returns {boolean} True if p lies inside the ring.
    */
-  const _polyPointInPolygon = function (p, ring) {
+  const polyPointInPolygon = (p, ring) => {
     let inside = false;
     for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
       const a = ring[i];
@@ -12519,21 +12508,20 @@
    * and orphan holes (inside no outer) are dropped. A positive-area loop that
    * sits inside a hole is itself an outer, so it becomes its own group -- a
    * solid island floating in the hollow, which is the correct physics.
-   * @param {PolyPoint[][]} loops - Traced contour loops from
-   *   _polyMarchingSquares.
-   * @returns {Array<{ outer: PolyPoint[], holes: PolyPoint[][], area: number }>}
+   * @param {Point[][]} loops - Traced contour loops from polyMarchingSquares.
+   * @returns {Array<{ outer: Point[], holes: Point[][], area: number }>}
    *   One group per solid region: its outer ring, the holes inside it, and the
    *   outer ring's signed area.
    */
-  const _polyGroupContours = function (loops) {
+  const polyGroupContours = (loops) => {
     // Split loops by winding: outers each seed a group, holes wait to be placed.
     const groups = [];
     const holes = [];
     for (let i = 0; i < loops.length; i++) {
-      const area = _signedArea(loops[i]);
-      if (area > _POLY_MIN_AREA) {
+      const area = signedArea(loops[i]);
+      if (area > POLY_MIN_AREA) {
         groups.push({ outer: loops[i], area: area, holes: [] });
-      } else if (area < -_POLY_MIN_AREA) {
+      } else if (area < -POLY_MIN_AREA) {
         holes.push(loops[i]);
       }
     }
@@ -12546,7 +12534,7 @@
       let best = null;
       for (let g = 0; g < groups.length; g++) {
         if (
-          _polyPointInPolygon(probe, groups[g].outer) &&
+          polyPointInPolygon(probe, groups[g].outer) &&
           (best === null || groups[g].area < best.area)
         ) {
           best = groups[g];
@@ -12564,15 +12552,15 @@
    * it lies beyond epsilon it must be kept, and the spans on either side of it
    * are simplified the same way; otherwise the whole span collapses to the
    * chord and no interior point survives.
-   * @param {PolyPoint[]} pts - The polyline's vertices.
+   * @param {Point[]} pts - The polyline's vertices.
    * @param {number} first - Index of the span's first vertex.
    * @param {number} last - Index of the span's last vertex.
    * @param {number} epsilon - Distance tolerance, in the units of pts.
-   * @param {PolyPoint[]} out - Kept interior points are appended here, in
+   * @param {Point[]} out - Kept interior points are appended here, in
    *   order; the caller supplies the two endpoints itself.
    * @returns {void}
    */
-  const _polyRdpOpen = function (pts, first, last, epsilon, out) {
+  const polyRdpOpen = (pts, first, last, epsilon, out) => {
     let maxDist = -1;
     let index = -1;
     const a = pts[first];
@@ -12602,9 +12590,9 @@
 
     // Far enough out to matter: keep that point and recurse into both halves.
     if (index !== -1 && maxDist > epsilon * epsilon) {
-      _polyRdpOpen(pts, first, index, epsilon, out);
+      polyRdpOpen(pts, first, index, epsilon, out);
       out.push(pts[index]);
-      _polyRdpOpen(pts, index, last, epsilon, out);
+      polyRdpOpen(pts, index, last, epsilon, out);
     }
   };
 
@@ -12613,11 +12601,11 @@
    * first cut into two open halves at a pair of well-separated points: the
    * vertex farthest from loop[0], then the vertex farthest from that one. Each
    * half is simplified independently and the kept points are concatenated.
-   * @param {PolyPoint[]} loop - The closed contour to simplify.
+   * @param {Point[]} loop - The closed contour to simplify.
    * @param {number} epsilon - Distance tolerance, in grid cells.
-   * @returns {PolyPoint[]} The simplified loop, as a new array.
+   * @returns {Point[]} The simplified loop, as a new array.
    */
-  const _polyRdpLoop = function (loop, epsilon) {
+  const polyRdpLoop = (loop, epsilon) => {
     const n = loop.length;
     if (n <= 4) return loop.slice();
 
@@ -12655,10 +12643,10 @@
     // past the end of the array. The split points lo and hi are kept verbatim.
     const out = [];
     out.push(loop[lo]);
-    _polyRdpOpen(loop, lo, hi, epsilon, out);
+    polyRdpOpen(loop, lo, hi, epsilon, out);
     out.push(loop[hi]);
     const wrapped = loop.slice(hi).concat(loop.slice(0, lo + 1));
-    _polyRdpOpen(wrapped, 0, wrapped.length - 1, epsilon, out);
+    polyRdpOpen(wrapped, 0, wrapped.length - 1, epsilon, out);
     return out;
   };
 
@@ -12668,21 +12656,21 @@
    * result stays convex and within the vertex budget. This collapses earcut's
    * many triangles into a handful of fat convex polygons, which Box2D collides
    * far more cheaply. Winding is preserved.
-   * @param {PolyPoint[]} pts - The shared vertex list the faces index into.
+   * @param {Point[]} pts - The shared vertex list the faces index into.
    * @param {number[][]} faces - Faces as arrays of indices into pts. Mutated
    *   in place as faces are merged.
    * @param {number} maxVerts - Largest vertex count a merged face may reach.
    * @returns {number[][]} The same `faces` array, after merging.
    */
-  const _polyMergeConvex = function (pts, faces, maxVerts) {
+  const polyMergeConvex = (pts, faces, maxVerts) => {
     // A face is convex iff no corner is reflex. Faces here are wound positively
     // (counter-clockwise), so a clearly negative turn marks a reflex corner.
-    const isConvexFace = function (face) {
+    const isConvexFace = (face) => {
       const n = face.length;
       if (n < 3) return false;
       for (let i = 0; i < n; i++) {
         if (
-          _area3(
+          area3(
             pts[face[(i - 1 + n) % n]],
             pts[face[i]],
             pts[face[(i + 1) % n]]
@@ -12699,7 +12687,7 @@
     // reversed (a1->a0) in B. The merged ring is all of A starting just after
     // that edge, then B's other vertices -- i.e. the shared edge dissolved.
     // Returns null if there is no shared edge, or the union fails the checks.
-    const tryMerge = function (A, B) {
+    const tryMerge = (A, B) => {
       const nA = A.length;
       const nB = B.length;
       for (let s = 0; s < nA; s++) {
@@ -12745,14 +12733,14 @@
   /**
    * Decompose a simple polygon, optionally with holes, into convex polygons.
    * earcut triangulates the outer ring plus holes; the triangles are then
-   * merged back into a few fat convex faces by _polyMergeConvex.
-   * @param {PolyPoint[]} outer - The outer ring, an open ring in grid space.
-   * @param {PolyPoint[][]} holes - Hole rings inside `outer`, open rings in
+   * merged back into a few fat convex faces by polyMergeConvex.
+   * @param {Point[]} outer - The outer ring, an open ring in grid space.
+   * @param {Point[][]} holes - Hole rings inside `outer`, open rings in
    *   grid space. Holes with fewer than 3 vertices are dropped.
-   * @returns {PolyPoint[][]} Convex pieces covering the region, or an empty
+   * @returns {Point[][]} Convex pieces covering the region, or an empty
    *   array if the input cannot be triangulated.
    */
-  const _polyDecomposeWithHoles = function (outer, holes) {
+  const polyDecomposeWithHoles = (outer, holes) => {
     if (outer.length < 3) return [];
 
     // Holes left with fewer than 3 vertices by simplification cannot be
@@ -12782,7 +12770,7 @@
       return validHoles.length === 0 ? [outer.slice()] : [];
     }
 
-    // Reshape the flat index list into triangle faces. _polyMergeConvex assumes
+    // Reshape the flat index list into triangle faces. polyMergeConvex assumes
     // each face is wound positively (_area3 > 0); earcut's output winding
     // follows its input handedness, so normalise every triple here -- this MUST
     // happen before the merge or the merge produces garbage.
@@ -12791,7 +12779,7 @@
       let i0 = tris[t];
       const i1 = tris[t + 1];
       let i2 = tris[t + 2];
-      if (_area3(pts[i0], pts[i1], pts[i2]) < 0) {
+      if (area3(pts[i0], pts[i1], pts[i2]) < 0) {
         const swap = i0;
         i0 = i2;
         i2 = swap;
@@ -12799,7 +12787,7 @@
       faces.push([i0, i1, i2]);
     }
 
-    const merged = _polyMergeConvex(pts, faces, _POLY_MAX_VERTS);
+    const merged = polyMergeConvex(pts, faces, POLY_MAX_VERTS);
     const out = [];
     for (let i = 0; i < merged.length; i++) {
       const face = merged[i];
@@ -12816,11 +12804,11 @@
    * smaller convex pieces, all sharing vertex 0. Successive pieces overlap by
    * one vertex so the fan tiles the polygon seamlessly. A polygon already
    * within the budget is returned unchanged.
-   * @param {PolyPoint[]} poly - A convex polygon.
+   * @param {Point[]} poly - A convex polygon.
    * @param {number} maxVerts - Largest vertex count any output piece may have.
-   * @returns {PolyPoint[][]} One or more convex pieces, none over maxVerts.
+   * @returns {Point[][]} One or more convex pieces, none over maxVerts.
    */
-  const _polyLimitVertices = function (poly, maxVerts) {
+  const polyLimitVertices = (poly, maxVerts) => {
     const n = poly.length;
     if (n <= maxVerts) return [poly];
 
@@ -12844,10 +12832,10 @@
    * including the wrap-around pair. earcut's hole bridges and the coordinate
    * transforms can introduce such duplicates, and Box2D rejects zero-length
    * polygon edges.
-   * @param {PolyPoint[]} pts - The polygon's vertices, in order.
-   * @returns {PolyPoint[]} A new array with adjacent duplicates removed.
+   * @param {Point[]} pts - The polygon's vertices, in order.
+   * @returns {Point[]} A new array with adjacent duplicates removed.
    */
-  const _polyDedupe = function (pts) {
+  const polyDedupe = (pts) => {
     const eps = 1e-4;
     // Drop each point that equals the one already kept before it.
     const out = [];
@@ -12881,27 +12869,27 @@
   /**
    * Polygon mode's entry point: trace a drawable's costume into convex polygons
    * expressed in the same coordinate space as the "this costume" convex hull,
-   * ready to hand to _definePolyFromHull (each polygon is a closed ring, last
+   * ready to hand to definePolyFromHull (each polygon is a closed ring, last
    * vertex = first).
    * @param {import('scratch-render').Drawable} drawable - The scratch-render
    *   Drawable being traced, queried for its skin, scale, and rotation centre.
-   * @returns {PolyPoint[][]|null} The convex pieces as closed rings, or null if
+   * @returns {Point[][]|null} The convex pieces as closed rings, or null if
    *   the costume yields nothing usable -- the caller then falls back to the
    *   hull.
    */
-  const _traceCostumePolygon = function (drawable) {
+  const traceCostumePolygon = (drawable) => {
     const skin = drawable && drawable.skin;
     // No usable skin (e.g. a costume that has not finished loading).
     if (!skin || typeof skin.isTouchingLinear !== "function") return null;
 
-    const sampled = _polySampleSilhouette(skin);
+    const sampled = polySampleSilhouette(skin);
     // Fully transparent costume -- there is no silhouette to trace.
     if (sampled.opaqueCount === 0) return null;
 
     // Trace the silhouette, then sort the contours into solid regions, each an
     // outer ring with its holes.
-    const groups = _polyGroupContours(
-      _polyMarchingSquares(sampled.grid, sampled.gx, sampled.gy)
+    const groups = polyGroupContours(
+      polyMarchingSquares(sampled.grid, sampled.gx, sampled.gy)
     );
     if (groups.length === 0) return null;
 
@@ -12916,12 +12904,12 @@
     // (padded indices 1..gxI / 1..gyI). The 1-cell padding ring is synthetic,
     // so without the clamp the marching-squares midpoint rule leaves a
     // box-edge-touching outline half a cell out in the padding.
-    const prep = function (loop) {
-      const simplified = _polyRdpLoop(loop, _POLY_RDP_EPSILON);
+    const prep = (loop) => {
+      const simplified = polyRdpLoop(loop, POLY_RDP_EPSILON);
       for (let s = 0; s < simplified.length; s++) {
         simplified[s] = {
-          x: _clamp(simplified[s].x, 1, gxI),
-          y: _clamp(simplified[s].y, 1, gyI),
+          x: clamp(simplified[s].x, 1, gxI),
+          y: clamp(simplified[s].y, 1, gyI),
         };
       }
       return simplified;
@@ -12940,18 +12928,18 @@
           if (hole.length >= 3) holes.push(hole);
         }
 
-        const pieces = _polyDecomposeWithHoles(outer, holes);
+        const pieces = polyDecomposeWithHoles(outer, holes);
         for (let p = 0; p < pieces.length; p++) {
-          const capped = _polyLimitVertices(pieces[p], _POLY_MAX_VERTS);
+          const capped = polyLimitVertices(pieces[p], POLY_MAX_VERTS);
           for (let c = 0; c < capped.length; c++) {
             let piece = capped[c];
             if (piece.length < 3) continue;
 
             // Force positive (counter-clockwise) winding. The Y-flipping
-            // transform below reverses winding and _definePolyFromHull
+            // transform below reverses winding and definePolyFromHull
             // reverses it again, so a CCW piece here ends up CCW for Box2D --
             // the same path the "this costume" convex hull already relies on.
-            if (_signedArea(piece) < 0) piece = piece.slice().reverse();
+            if (signedArea(piece) < 0) piece = piece.slice().reverse();
 
             const transformed = [];
             for (let v = 0; v < piece.length; v++) {
@@ -12969,10 +12957,10 @@
             }
 
             // Discard pieces that dedupe or scaling collapsed to a sliver.
-            const cleaned = _polyDedupe(transformed);
+            const cleaned = polyDedupe(transformed);
             if (cleaned.length < 3) continue;
-            if (Math.abs(_signedArea(cleaned)) < 1e-3) continue;
-            // Close the ring: _definePolyFromHull expects last vertex = first.
+            if (Math.abs(signedArea(cleaned)) < 1e-3) continue;
+            // Close the ring: definePolyFromHull expects last vertex = first.
             cleaned.push({ x: cleaned[0].x, y: cleaned[0].y });
             result.push(cleaned);
           }
@@ -12983,7 +12971,7 @@
     }
     // A costume that decomposes into very many fixtures collides slowly; fall
     // back to the single convex hull instead of attaching all of them.
-    if (result.length > _POLY_MAX_FIXTURES) return null;
+    if (result.length > POLY_MAX_FIXTURES) return null;
     return result.length > 0 ? result : null;
   };
 
@@ -13975,7 +13963,7 @@
         { text: "this costume", value: SHAPE_TYPE_OPTIONS.COSTUME },
         { text: "this circle", value: SHAPE_TYPE_OPTIONS.CIRCLE },
         {
-          text: "this polygon (experimental)",
+          text: "this polygon",
           value: SHAPE_TYPE_OPTIONS.POLYGON,
         },
         { text: "all sprites", value: SHAPE_TYPE_OPTIONS.ALL },
@@ -14210,13 +14198,13 @@
         // Trace the costume silhouette into convex polygons (concave-capable).
         let traced = null;
         try {
-          traced = _traceCostumePolygon(drawable);
+          traced = traceCostumePolygon(drawable);
         } catch (e) {
           traced = null;
         }
 
         if (traced && traced.length > 0) {
-          _definePolyFromHull(traced[0]);
+          definePolyFromHull(traced[0]);
           allHulls = traced;
         } else {
           // Tracing produced nothing usable (empty or degenerate costume):
@@ -14228,7 +14216,7 @@
               y: (points[i][1] - offset[1]) * scaleY,
             });
           }
-          _definePolyFromHull(hullPoints);
+          definePolyFromHull(hullPoints);
         }
       } else {
         const hullPoints = [];
@@ -14239,7 +14227,7 @@
           });
         }
 
-        _definePolyFromHull(hullPoints);
+        definePolyFromHull(hullPoints);
       }
 
       const fixedRotation = target.rotationStyle !== ROTATION_STYLE_ALL_AROUND;
@@ -14255,7 +14243,7 @@
 
       if (allHulls) {
         for (let i = 1; i < allHulls.length; i++) {
-          _definePolyFromHull(allHulls[i]);
+          definePolyFromHull(allHulls[i]);
           body.CreateFixture(fixDef);
         }
       }
