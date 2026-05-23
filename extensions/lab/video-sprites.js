@@ -7,6 +7,17 @@
 (function (Scratch) {
   "use strict";
 
+  /*
+
+    FYI on the architecture here - we know that the Scratch Lab version of this does the swapping on the
+    GPU which is a much faster approach. We unfortunately don't have a ton of control over render internals
+    fom here and it's hard to justify somewhat large renderer changes right now to emulate that.
+
+    Instead, we're doing the swapping on with a CPU canvas and uploading that to the GPU as needed.
+    It's not ideal, but... it seems to work good enough.
+
+  */
+
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("Video Sprites must run unsandboxed.");
   }
@@ -152,14 +163,28 @@
       Math.abs(b1 - b2) <= tolerance;
   };
 
+  /**
+   * A skin for replacing all or parts (based on color) of a skin.
+   * 
+   * The idea is that we wrap the original skin as much as possible, but returning a new WebGL texture
+   * that we generate with colors swapped.
+   */
   class VideoSpriteSkin extends Skin {
+    /**
+     * @param {number} id
+     * @param {import('scratch-vm').Target} target
+     */
     constructor(id, target) {
       super(id, renderer);
 
-      // Assumed to always contain webcam feed
-      this.private = true;
+      // Don't set private = true because we make all touching operations occur against the parent skin, not us
+      // Thus, the private video data is not visible to the project.
 
+      /** @type {import('scratch-vm').Target} */
       this.target = target;
+
+      /** @type {boolean} */
+      this._useParentTexture = false;
     }
 
     dispose() {
@@ -170,7 +195,7 @@
       super.dispose();
     }
 
-    _parentSkin() {
+    _getParentSkin() {
       const costume = this.target.sprite.costumes[this.target.currentCostume];
       if (!costume || typeof costume.skinId !== "number") {
         return null;
@@ -178,54 +203,68 @@
       return renderer._allSkins[costume.skinId] || null;
     }
 
+    _renderAsParent() {
+      this._useParentTexture = true;
+    }
+
     get size() {
-      const parent = this._parentSkin();
-      return parent ? parent.size : [1, 1];
+      const parent = this._getParentSkin();
+      return parent ? parent.size : [0, 0];
     }
 
     get rotationCenter() {
-      const parent = this._parentSkin();
+      const parent = this._getParentSkin();
       return parent ? parent.rotationCenter : [0, 0];
     }
 
     useNearest(scale, drawable) {
-      const parent = this._parentSkin();
+      const parent = this._getParentSkin();
       return parent ? parent.useNearest(scale, drawable) : true;
     }
 
-    getTexture(scale) {
-      this._render();
-      return this._texture || super.getTexture(scale);
+    updateSilhouette(scale) {
+      const parent = this._getParentSkin();
+      if (parent) {
+        parent.updateSilhouette(scale);
+        this._silhouette = parent._silhouette;
+      }
     }
 
-    updateSilhouette(scale) {
-      this.getTexture(scale);
-      this._silhouette.unlazy();
+    getTexture(scale) {
+      // Re-render the parent at current scale so that we can get the most accurate silhouette
+      const parent = this._getParentSkin();
+      const parentTexture = parent?.getTexture(scale);
+
+      this._render();
+
+      if (parent && this._useParentTexture) {
+        return parentTexture;
+      }
+      return this._texture || super.getTexture(scale);
     }
 
     _render() {
       const state = getState(this.target);
       if (!state) {
-        // Shouldn't be able to happen
-        this.setEmptyImageData();
+        this._renderAsParent();
         return;
       }
 
-      const parent = this._parentSkin();
+      const parent = this._getParentSkin();
       if (!parent) {
-        // Parent skin does not exist - fall back to empty
-        this.setEmptyImageData();
+        this._renderAsParent();
         return;
       }
 
       parent.updateSilhouette();
       const silhouette = parent._silhouette;
+      this._silhouette = silhouette;
+
       const silhouetteData = silhouette._colorData;
       const width = silhouette._width;
       const height = silhouette._height;
       if (!width || !height || !silhouetteData) {
-        // Something is wrong with the parent skin - fall back to empty
-        this.setEmptyImageData();
+        this._renderAsParent();
         return;
       }
 
@@ -235,29 +274,42 @@
       }
 
       if (!sampleVideoToWorkCanvas(width, height, state.zoom)) {
+        this._useParentTexture = true;
         return;
       }
 
+      this._useParentTexture = false;
+
       const sampledVideoData = workContext.getImageData(0, 0, width, height).data;
-      const outData = new Uint8ClampedArray(silhouetteData);
+      const outData = new Uint8ClampedArray(silhouetteData.length);
 
       const isMask = state.mode === "mask";
       const maskColor = state.maskColor;
 
-      for (let i = 0; i < outData.length; i += 4) {
-        const alpha = outData[i + 3];
-        if (alpha === 0) {
+      for (let i = 0; i < silhouetteData.length; i += 4) {
+        const parentA = silhouetteData[i + 3];
+        if (parentA === 0) {
           continue;
         }
 
-        const shouldFill = isMask
-          ? true
-          : colorMatches(outData[i], outData[i + 1], outData[i + 2], maskColor[0], maskColor[1], maskColor[2]);
+        const parentR = silhouetteData[i];
+        const parentG = silhouetteData[i + 1];
+        const parentB = silhouetteData[i + 2];
 
-        if (shouldFill) {
+        const match = isMask
+          ? true
+          : colorMatches(parentR, parentG, parentB, maskColor[0], maskColor[1], maskColor[2]);
+
+        if (match) {
           outData[i] = sampledVideoData[i];
           outData[i + 1] = sampledVideoData[i + 1];
           outData[i + 2] = sampledVideoData[i + 2];
+          outData[i + 3] = parentA;
+        } else {
+          outData[i] = parentR;
+          outData[i + 1] = parentG;
+          outData[i + 2] = parentB;
+          outData[i + 3] = parentA;
         }
       }
 
@@ -268,7 +320,11 @@
         });
       }
 
-      this._setTexture(new ImageData(outData, width, height));
+      // Use direct WebGL as setTexture would update silhouette based on this texture, which we don't want.
+      gl.bindTexture(gl.TEXTURE_2D, this._texture);
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, new ImageData(outData, width, height));
+      gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     }
   }
 
@@ -284,6 +340,7 @@
     }
 
     renderer.updateDrawableSkinId(target.drawableID, state.skin.id);
+    state.skin.emitWasAltered();
     runtime.requestRedraw();
   };
 
@@ -333,18 +390,24 @@
     }
   };
 
-  runtime.on("BEFORE_EXECUTE", () => {
+  runtime.on("AFTER_EXECUTE", () => {
     for (let i = 0; i < renderer._allSkins.length; i++) {
+      // The skin existing is the source-of-truth for whether we are using video mode on a given target.
+
       const skin = renderer._allSkins[i];
       if (!(skin instanceof VideoSpriteSkin)) {
         continue;
       }
+
       const target = skin.target;
-      // VM's setCostume swaps our skin off the drawable; put ours back.
+
+      // If another script override the costume, switch it back to the video sprite one.
       const drawable = renderer._allDrawables[target.drawableID];
       if (drawable && drawable.skin !== skin) {
         renderer.updateDrawableSkinId(target.drawableID, skin.id);
       }
+
+      // Always have to assume the webcam image might have changed.
       skin.emitWasAltered();
     }
   });
