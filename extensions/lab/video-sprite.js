@@ -11,8 +11,6 @@
     throw new Error("Video Sprites must run unsandboxed.");
   }
 
-  const DEFAULT_CAMERA_WIDTH = 640;
-  const DEFAULT_CAMERA_HEIGHT = 480;
   const MIN_ZOOM = 10;
   const MAX_ZOOM = 400;
 
@@ -21,29 +19,18 @@
       this.vm = Scratch.vm;
       this.runtime = this.vm.runtime;
       this.renderer = this.runtime.renderer;
-
-      this.video = document.createElement("video");
-      this.video.setAttribute("playsinline", "");
-      this.video.muted = true;
-      this.video.autoplay = true;
-      this.video.style.display = "none";
-
-      this.sourceCanvas = document.createElement("canvas");
-      this.sourceContext = this.sourceCanvas.getContext("2d", {
-        willReadFrequently: true
-      });
+      this.videoDevice = this.runtime.ioDevices.video;
 
       this.workCanvas = document.createElement("canvas");
       this.workContext = this.workCanvas.getContext("2d", {
         willReadFrequently: true
       });
 
-      this.stream = null;
       this.zoom = 100;
-      this.mirror = true;
       this.renderHandle = null;
       this.isRendering = false;
       this.fillStates = new Map();
+      this._hidPreview = false;
 
       this._boundRefresh = this.refreshAllTargets.bind(this);
       this.runtime.on("PROJECT_STOP_ALL", this._boundRefresh);
@@ -168,7 +155,7 @@
     }
 
     cameraReady() {
-      return !!(this.stream && this.video.readyState >= 2);
+      return !!this.videoDevice.getFrame({ format: "canvas" });
     }
 
     requireSpriteTarget(util) {
@@ -181,32 +168,12 @@
     }
 
     async ensureCamera() {
-      if (this.cameraReady()) {
-        return true;
-      }
-
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        return false;
-      }
-
       try {
-        if (!document.body.contains(this.video)) {
-          document.body.appendChild(this.video);
+        await this.videoDevice.enableVideo();
+        if (!this._hidPreview) {
+          this._hidPreview = true;
+          this.videoDevice.setPreviewGhost(100);
         }
-
-        if (!this.stream) {
-          this.stream = await navigator.mediaDevices.getUserMedia({
-            video: {
-              facingMode: "user",
-              width: { ideal: DEFAULT_CAMERA_WIDTH },
-              height: { ideal: DEFAULT_CAMERA_HEIGHT }
-            },
-            audio: false
-          });
-        }
-
-        this.video.srcObject = this.stream;
-        await this.video.play();
         return true;
       } catch (error) {
         return false;
@@ -229,8 +196,6 @@
           this.isRendering = true;
 
           try {
-            this.updateSourceFrame();
-
             for (const target of this.getTargetsForFillStates()) {
               this.updateTargetSkin(target);
             }
@@ -277,27 +242,6 @@
 
       return targets;
     }
-    updateSourceFrame() {
-      const width = this.video.videoWidth || DEFAULT_CAMERA_WIDTH;
-      const height = this.video.videoHeight || DEFAULT_CAMERA_HEIGHT;
-
-      if (this.sourceCanvas.width !== width || this.sourceCanvas.height !== height) {
-        this.sourceCanvas.width = width;
-        this.sourceCanvas.height = height;
-      }
-
-      this.sourceContext.save();
-      this.sourceContext.clearRect(0, 0, width, height);
-
-      if (this.mirror) {
-        this.sourceContext.translate(width, 0);
-        this.sourceContext.scale(-1, 1);
-      }
-
-      this.sourceContext.drawImage(this.video, 0, 0, width, height);
-      this.sourceContext.restore();
-    }
-
     updateTargetSkin(target) {
       const fillState = this.fillStates.get(target.id);
       if (!fillState || !this.renderer) {
@@ -336,8 +280,11 @@
       }
 
       const source = this.sampleVideoToSize(width, height);
+      if (!source) {
+        return;
+      }
       const maskData = maskImageData.data;
-      const sourceData = source.data.data;
+      const sourceData = source.data;
       const color = fillState.color;
 
       for (let i = 0; i < maskData.length; i += 4) {
@@ -386,15 +333,23 @@
     }
 
     sampleVideoToSize(width, height) {
-      const zoomScale = 100 / this.zoom;
-      const cropWidth = this.sourceCanvas.width * zoomScale;
-      const cropHeight = this.sourceCanvas.height * zoomScale;
-      const cropX = (this.sourceCanvas.width - cropWidth) / 2;
-      const cropY = (this.sourceCanvas.height - cropHeight) / 2;
+      const sourceCanvas = this.videoDevice.getFrame({ format: "canvas" });
+      if (!sourceCanvas) {
+        return null;
+      }
+
+      const videoW = sourceCanvas.width;
+      const videoH = sourceCanvas.height;
+      const upscaleFactor = (100 / this.zoom) *
+        (width > height ? videoW / width : videoH / height);
+      const cropWidth = width * upscaleFactor;
+      const cropHeight = height * upscaleFactor;
+      const cropX = (videoW - cropWidth) / 2;
+      const cropY = (videoH - cropHeight) / 2;
 
       this.workContext.clearRect(0, 0, width, height);
       this.workContext.drawImage(
-        this.sourceCanvas,
+        sourceCanvas,
         cropX,
         cropY,
         cropWidth,
@@ -405,9 +360,7 @@
         height
       );
 
-      return {
-        data: this.workContext.getImageData(0, 0, width, height)
-      };
+      return this.workContext.getImageData(0, 0, width, height);
     }
 
     restoreTarget(target) {
