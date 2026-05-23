@@ -1,4 +1,4 @@
-// Name: Video sprites
+// Name: Video Sprites
 // ID: videoSprites
 // Description: Replace sprites with a live video feed. Compatible with Scratch Lab's Animated Text experiment.
 // By: Staevski_G <https://scratch.mit.edu/users/Staevski_G/>
@@ -125,8 +125,7 @@
 
     const videoWidth = videoCanvas.width;
     const videoHeight = videoCanvas.height;
-    const upscaleFactor =
-      width > height ? videoWidth / width : videoHeight / height;
+    const upscaleFactor = Math.min(videoWidth / width, videoHeight / height);
     const zoomFactor = zoom / 100;
     const cropWidth = (width * upscaleFactor) / zoomFactor;
     const cropHeight = (height * upscaleFactor) / zoomFactor;
@@ -186,8 +185,11 @@
       /** @type {import('scratch-vm').Target} */
       this.target = target;
 
-      /** @type {boolean} */
-      this._useParentTexture = false;
+      /** 
+       * Cached image data to reduce unnecessary allocations
+       * @type {Uint8ClampedArray|null}
+       */
+      this._outData = null;
     }
 
     dispose() {
@@ -204,10 +206,6 @@
         return null;
       }
       return renderer._allSkins[costume.skinId] || null;
-    }
-
-    _renderAsParent() {
-      this._useParentTexture = true;
     }
 
     get size() {
@@ -233,42 +231,28 @@
       }
     }
 
-    getTexture(scale) {
-      // Re-render the parent at current scale so that we can get the most accurate silhouette
-      const parent = this._getParentSkin();
-      const parentTexture = parent?.getTexture(scale);
-
-      this._render();
-
-      if (parent && this._useParentTexture) {
-        return parentTexture;
-      }
-      return this._texture || super.getTexture(scale);
+    _getParentTexture(scale) {
+      return this._getParentSkin()?.getTexture(scale) || super.getTexture(scale);
     }
 
-    _render() {
-      const state = getState(this.target);
-      if (!state) {
-        this._renderAsParent();
-        return;
-      }
-
+    getTexture(scale) {
+      const parentTexture = this._getParentTexture(scale);
       const parent = this._getParentSkin();
-      if (!parent) {
-        this._renderAsParent();
-        return;
+
+      const state = getState(this.target);
+      if (!state || !parent) {
+        return parentTexture;
       }
 
-      parent.updateSilhouette();
+      parent.updateSilhouette(scale);
       const silhouette = parent._silhouette;
       this._silhouette = silhouette;
 
-      const silhouetteData = silhouette._colorData;
-      const width = silhouette._width;
-      const height = silhouette._height;
+      const silhouetteData = silhouette?._colorData;
+      const width = silhouette?._width;
+      const height = silhouette?._height;
       if (!width || !height || !silhouetteData) {
-        this._renderAsParent();
-        return;
+        return parentTexture;
       }
 
       if (workCanvas.width !== width || workCanvas.height !== height) {
@@ -277,11 +261,8 @@
       }
 
       if (!sampleVideoToWorkCanvas(width, height, state.zoom)) {
-        this._useParentTexture = true;
-        return;
+        return parentTexture;
       }
-
-      this._useParentTexture = false;
 
       const sampledVideoData = workContext.getImageData(
         0,
@@ -289,7 +270,11 @@
         width,
         height
       ).data;
-      const outData = new Uint8ClampedArray(silhouetteData.length);
+
+      if (!this._outData || this._outData.length !== silhouetteData.length) {
+        this._outData = new Uint8ClampedArray(silhouetteData.length);
+      }
+      const outData = this._outData;
 
       const isMask = state.mode === "mask";
       const maskColor = state.maskColor;
@@ -297,6 +282,10 @@
       for (let i = 0; i < silhouetteData.length; i += 4) {
         const parentA = silhouetteData[i + 3];
         if (parentA === 0) {
+          outData[i] = 0;
+          outData[i + 1] = 0;
+          outData[i + 2] = 0;
+          outData[i + 3] = 0;
           continue;
         }
 
@@ -347,6 +336,8 @@
         new ImageData(outData, width, height)
       );
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+
+      return this._texture;
     }
   }
 
