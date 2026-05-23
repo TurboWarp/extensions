@@ -185,7 +185,7 @@
       /** @type {import('scratch-vm').Target} */
       this.target = target;
 
-      /** 
+      /**
        * Cached image data to reduce unnecessary allocations
        * @type {Uint8ClampedArray|null}
        */
@@ -232,7 +232,9 @@
     }
 
     _getParentTexture(scale) {
-      return this._getParentSkin()?.getTexture(scale) || super.getTexture(scale);
+      return (
+        this._getParentSkin()?.getTexture(scale) || super.getTexture(scale)
+      );
     }
 
     getTexture(scale) {
