@@ -1,8 +1,8 @@
 // Name: Video sprites
 // ID: videoSprites
-// Description: A TurboWarp extension that lets you use your webcam inside sprites—either filling the whole sprite or replacing specific colors with live camera video, with adjustable zoom and real-time rendering.
+// Description: Replace sprites with a live video feed. Compatible with Scratch Lab's Animated Text experiment.
 // By: Staevski_G <https://scratch.mit.edu/users/Staevski_G/>
-// Original: Scratch Lab
+// License: MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -32,10 +32,10 @@
 
   const workCanvas = document.createElement("canvas");
   const workContext = workCanvas.getContext("2d", {
-    willReadFrequently: true
+    willReadFrequently: true,
   });
   if (!workContext) {
-    throw new Error('Failed to get 2D rendering context for work canvas');
+    throw new Error("Failed to get 2D rendering context for work canvas");
   }
 
   const MIN_ZOOM = 20;
@@ -83,7 +83,7 @@
         zoom: DEFAULT_ZOOM,
         skin: null,
         mode: "mask",
-        maskColor: null
+        maskColor: null,
       };
       target[CUSTOM_STATE_KEY] = state;
     }
@@ -92,7 +92,7 @@
 
   /**
    * @param {import("scratch-vm").Target} target
-   * @param {number} zoom 
+   * @param {number} zoom
    */
   const setZoom = (target, zoom) => {
     const clamped = clampZoom(zoom);
@@ -116,7 +116,7 @@
    */
   const sampleVideoToWorkCanvas = (width, height, zoom) => {
     const videoCanvas = videoDevice.getFrame({
-      format: "canvas"
+      format: "canvas",
     });
 
     if (!videoCanvas) {
@@ -125,7 +125,8 @@
 
     const videoWidth = videoCanvas.width;
     const videoHeight = videoCanvas.height;
-    const upscaleFactor = width > height ? videoWidth / width : videoHeight / height;
+    const upscaleFactor =
+      width > height ? videoWidth / width : videoHeight / height;
     const zoomFactor = zoom / 100;
     const cropWidth = (width * upscaleFactor) / zoomFactor;
     const cropHeight = (height * upscaleFactor) / zoomFactor;
@@ -158,14 +159,16 @@
    */
   const colorMatches = (r1, g1, b1, r2, g2, b2) => {
     const tolerance = 1;
-    return Math.abs(r1 - r2) <= tolerance &&
+    return (
+      Math.abs(r1 - r2) <= tolerance &&
       Math.abs(g1 - g2) <= tolerance &&
-      Math.abs(b1 - b2) <= tolerance;
+      Math.abs(b1 - b2) <= tolerance
+    );
   };
 
   /**
    * A skin for replacing all or parts (based on color) of a skin.
-   * 
+   *
    * The idea is that we wrap the original skin as much as possible, but returning a new WebGL texture
    * that we generate with colors swapped.
    */
@@ -280,7 +283,12 @@
 
       this._useParentTexture = false;
 
-      const sampledVideoData = workContext.getImageData(0, 0, width, height).data;
+      const sampledVideoData = workContext.getImageData(
+        0,
+        0,
+        width,
+        height
+      ).data;
       const outData = new Uint8ClampedArray(silhouetteData.length);
 
       const isMask = state.mode === "mask";
@@ -298,7 +306,14 @@
 
         const match = isMask
           ? true
-          : colorMatches(parentR, parentG, parentB, maskColor[0], maskColor[1], maskColor[2]);
+          : colorMatches(
+              parentR,
+              parentG,
+              parentB,
+              maskColor[0],
+              maskColor[1],
+              maskColor[2]
+            );
 
         if (match) {
           outData[i] = sampledVideoData[i];
@@ -316,14 +331,21 @@
       if (!this._texture) {
         this._texture = twgl.createTexture(gl, {
           auto: false,
-          wrap: gl.CLAMP_TO_EDGE
+          wrap: gl.CLAMP_TO_EDGE,
         });
       }
 
       // Use direct WebGL as setTexture would update silhouette based on this texture, which we don't want.
       gl.bindTexture(gl.TEXTURE_2D, this._texture);
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, new ImageData(outData, width, height));
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        new ImageData(outData, width, height)
+      );
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
     }
   }
@@ -432,7 +454,7 @@
           {
             opcode: "videoSpriteFillSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("fill sprite with camera")
+            text: Scratch.translate("fill sprite with camera"),
           },
           {
             opcode: "videoSpriteFillColor",
@@ -441,11 +463,11 @@
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#fcb1e3"
-              }
-            }
+                defaultValue: "#fcb1e3",
+              },
+            },
           },
-          '---',
+          "---",
           {
             opcode: "changeCameraBy",
             blockType: Scratch.BlockType.COMMAND,
@@ -453,9 +475,9 @@
             arguments: {
               CAMERA_SCALE_INC: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 25
-              }
-            }
+                defaultValue: 25,
+              },
+            },
           },
           {
             opcode: "scaleCamera",
@@ -464,17 +486,17 @@
             arguments: {
               CAMERA_SCALE: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 100
-              }
-            }
+                defaultValue: 100,
+              },
+            },
           },
-          '---',
+          "---",
           {
             opcode: "videoSpriteOff",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("stop filling with camera")
-          }
-        ]
+            text: Scratch.translate("stop filling with camera"),
+          },
+        ],
       };
     }
 
@@ -503,7 +525,10 @@
     changeCameraBy(args, util) {
       const state = getState(util.target);
       const currentZoom = state ? state.zoom : DEFAULT_ZOOM;
-      setZoom(util.target, currentZoom + Scratch.Cast.toNumber(args.CAMERA_SCALE_INC));
+      setZoom(
+        util.target,
+        currentZoom + Scratch.Cast.toNumber(args.CAMERA_SCALE_INC)
+      );
     }
 
     scaleCamera(args, util) {
