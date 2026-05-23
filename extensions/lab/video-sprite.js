@@ -93,10 +93,7 @@
     }
 
     async videoSpriteFillSprite(args, util) {
-      const target = this.requireSpriteTarget(util);
-      if (!target) {
-        return;
-      }
+      const target = util.target;
 
       if (!(await this.ensureCamera())) {
         return;
@@ -112,10 +109,7 @@
     }
 
     async videoSpriteFillColor(args, util) {
-      const target = this.requireSpriteTarget(util);
-      if (!target) {
-        return;
-      }
+      const target = util.target;
 
       if (!(await this.ensureCamera())) {
         return;
@@ -142,12 +136,7 @@
     }
 
     videoSpriteOff(args, util) {
-      const target = this.requireSpriteTarget(util);
-      if (!target) {
-        return;
-      }
-
-      this.restoreTarget(target);
+      this.restoreTarget(util.target);
 
       if (this.fillStates.size === 0) {
         this.stopRenderLoop();
@@ -156,15 +145,6 @@
 
     cameraReady() {
       return !!this.videoDevice.getFrame({ format: "canvas" });
-    }
-
-    requireSpriteTarget(util) {
-      const target = util && util.target;
-      if (!target || target.isStage) {
-        return null;
-      }
-
-      return target;
     }
 
     async ensureCamera() {
@@ -228,7 +208,7 @@
 
       for (const targetId of this.fillStates.keys()) {
         const target = this.runtime.getTargetById(targetId);
-        if (!target || target.isStage) {
+        if (!target) {
           this.fillStates.delete(targetId);
           continue;
         }
