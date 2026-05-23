@@ -27,13 +27,83 @@
     throw new Error('Failed to get 2D rendering context for work canvas');
   }
 
+  const MIN_ZOOM = 20;
+  const MAX_ZOOM = 2000;
+  const DEFAULT_ZOOM = 100;
+
   /**
-   * Get cropped/scaled video frame.
+   * @param {number} zoom
+   * @returns {number}
+   */
+  const clampZoom = (zoom) => {
+    if (zoom < MIN_ZOOM) return MIN_ZOOM;
+    if (zoom > MAX_ZOOM) return MAX_ZOOM;
+    return zoom;
+  };
+
+  /**
+   * @typedef {"mask"|"color"} VideoSpriteMode
+   */
+
+  /**
+   * @typedef CustomState
+   * @property {number} zoom
+   * @property {VideoSpriteSkin|null} skin
+   * @property {VideoSpriteMode} mode
+   * @property {[number, number, number]|null} maskColor All in 0-255
+   */
+
+  const CUSTOM_STATE_KEY = Symbol();
+
+  /**
+   * @param {import("scratch-vm").Target} target
+   * @returns {CustomState|null}
+   */
+  const getState = (target) => target[CUSTOM_STATE_KEY] || null;
+
+  /**
+   * @param {import("scratch-vm").Target} target
+   * @returns {CustomState}
+   */
+  const getOrCreateState = (target) => {
+    let state = target[CUSTOM_STATE_KEY];
+    if (!state) {
+      state = {
+        zoom: DEFAULT_ZOOM,
+        skin: null,
+        mode: "mask",
+        maskColor: null
+      };
+      target[CUSTOM_STATE_KEY] = state;
+    }
+    return state;
+  };
+
+  /**
+   * @param {import("scratch-vm").Target} target
+   * @param {number} zoom 
+   */
+  const setZoom = (target, zoom) => {
+    const clamped = clampZoom(zoom);
+    const state = getOrCreateState(target);
+    if (state.zoom === clamped) {
+      return;
+    }
+
+    state.zoom = clamped;
+    if (state.skin) {
+      state.skin.emitWasAltered();
+    }
+  };
+
+  /**
+   * Get cropped/scaled video frame, zoomed around the center.
    * @param {number} width
    * @param {number} height
+   * @param {number} zoom
    * @returns {boolean} true if a frame was drawn
    */
-  const sampleVideo = (width, height) => {
+  const sampleVideoToWorkCanvas = (width, height, zoom) => {
     const videoCanvas = videoDevice.getFrame({
       format: "canvas"
     });
@@ -45,11 +115,13 @@
     const videoWidth = videoCanvas.width;
     const videoHeight = videoCanvas.height;
     const upscaleFactor = width > height ? videoWidth / width : videoHeight / height;
-    const cropWidth = width * upscaleFactor;
-    const cropHeight = height * upscaleFactor;
+    const zoomFactor = zoom / 100;
+    const cropWidth = (width * upscaleFactor) / zoomFactor;
+    const cropHeight = (height * upscaleFactor) / zoomFactor;
     const cropX = (videoWidth - cropWidth) / 2;
     const cropY = (videoHeight - cropHeight) / 2;
 
+    workContext.clearRect(0, 0, width, height);
     workContext.drawImage(
       videoCanvas,
       cropX,
@@ -64,6 +136,15 @@
     return true;
   };
 
+  /**
+   * @param {number} r1 from 0-255
+   * @param {number} g1 from 0-255
+   * @param {number} b1 from 0-255
+   * @param {number} r2 from 0-255
+   * @param {number} g2 from 0-255
+   * @param {number} b2 from 0-255
+   * @returns {boolean} true if matching
+   */
   const colorMatches = (r1, g1, b1, r2, g2, b2) => {
     const tolerance = 1;
     return Math.abs(r1 - r2) <= tolerance &&
@@ -79,9 +160,6 @@
       this.private = true;
 
       this.target = target;
-
-      this.mode = "mask";
-      this.maskColor = null;
     }
 
     dispose() {
@@ -126,6 +204,13 @@
     }
 
     _render() {
+      const state = getState(this.target);
+      if (!state) {
+        // Shouldn't be able to happen
+        this.setEmptyImageData();
+        return;
+      }
+
       const parent = this._parentSkin();
       if (!parent) {
         // Parent skin does not exist - fall back to empty
@@ -149,15 +234,15 @@
         workCanvas.height = height;
       }
 
-      if (!sampleVideo(width, height)) {
+      if (!sampleVideoToWorkCanvas(width, height, state.zoom)) {
         return;
       }
 
       const sampledVideoData = workContext.getImageData(0, 0, width, height).data;
       const outData = new Uint8ClampedArray(silhouetteData);
 
-      const isMask = this.mode === "mask";
-      const maskColor = this.maskColor;
+      const isMask = state.mode === "mask";
+      const maskColor = state.maskColor;
 
       for (let i = 0; i < outData.length; i += 4) {
         const alpha = outData[i + 3];
@@ -167,7 +252,7 @@
 
         const shouldFill = isMask
           ? true
-          : colorMatches(outData[i], outData[i + 1], outData[i + 2], maskColor.r, maskColor.g, maskColor.b);
+          : colorMatches(outData[i], outData[i + 1], outData[i + 2], maskColor[0], maskColor[1], maskColor[2]);
 
         if (shouldFill) {
           outData[i] = sampledVideoData[i];
@@ -187,23 +272,93 @@
     }
   }
 
-  class VideoSpritesExtension {
-    constructor() {
-      this.fillStates = new Map();
-      this._hidPreview = false;
+  /**
+   * @param {import("scratch-vm").Target} target
+   */
+  const attach = (target) => {
+    const state = getOrCreateState(target);
+    if (!state.skin) {
+      const id = renderer._nextSkinId++;
+      state.skin = new VideoSpriteSkin(id, target);
+      renderer._allSkins[id] = state.skin;
+    }
+    renderer.updateDrawableSkinId(target.drawableID, state.skin.id);
+    state.skin.emitWasAltered();
+    runtime.requestRedraw();
+  };
 
-      runtime.on("BEFORE_EXECUTE", () => this._onBeforeExecute());
-      runtime.on("PROJECT_STOP_ALL", () => this._disposeAll());
-      runtime.on("PROJECT_LOADED", () => this._disposeAll());
-      runtime.on("targetWasRemoved", (target) => {
-        const skin = this.fillStates.get(target.id);
-        if (skin) {
-          renderer.destroySkin(skin.id);
-          this.fillStates.delete(target.id);
-        }
-      });
+  const detach = (target) => {
+    const state = target[CUSTOM_STATE_KEY];
+    if (!state || !state.skin) {
+      return;
     }
 
+    target.setCostume(target.currentCostume);
+    renderer.destroySkin(state.skin.id);
+    state.skin = null;
+  };
+
+  const stopAllFills = () => {
+    for (let i = 0; i < renderer._allSkins.length; i++) {
+      const skin = renderer._allSkins[i];
+      if (!(skin instanceof VideoSpriteSkin)) {
+        continue;
+      }
+      const target = skin.target;
+      if (runtime.getTargetById(target.id)) {
+        target.setCostume(target.currentCostume);
+      }
+      renderer.destroySkin(skin.id);
+      const state = target[CUSTOM_STATE_KEY];
+      if (state) {
+        state.skin = null;
+      }
+    }
+  };
+
+  let hidPreview = false;
+
+  const ensureCamera = async () => {
+    try {
+      await videoDevice.enableVideo();
+      if (!hidPreview) {
+        hidPreview = true;
+        videoDevice.setPreviewGhost(100);
+      }
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  runtime.on("BEFORE_EXECUTE", () => {
+    for (let i = 0; i < renderer._allSkins.length; i++) {
+      const skin = renderer._allSkins[i];
+      if (!(skin instanceof VideoSpriteSkin)) {
+        continue;
+      }
+      const target = skin.target;
+      // VM's setCostume swaps our skin off the drawable; put ours back.
+      const drawable = renderer._allDrawables[target.drawableID];
+      if (drawable && drawable.skin !== skin) {
+        renderer.updateDrawableSkinId(target.drawableID, skin.id);
+      }
+      skin.emitWasAltered();
+    }
+  });
+
+  runtime.on("PROJECT_STOP_ALL", stopAllFills);
+  runtime.on("PROJECT_LOADED", stopAllFills);
+
+  runtime.on("targetWasRemoved", (target) => {
+    const state = target[CUSTOM_STATE_KEY];
+    if (state && state.skin) {
+      renderer.destroySkin(state.skin.id);
+      state.skin = null;
+    }
+  });
+
+  class VideoSpritesExtension {
     getInfo() {
       return {
         id: "videoSprites",
@@ -259,100 +414,39 @@
     }
 
     async videoSpriteFillSprite(args, util) {
-      if (!(await this.ensureCamera())) {
+      if (!(await ensureCamera())) {
         return;
       }
-      const skin = this._getOrCreateSkin(util.target);
-      skin.mode = "mask";
-      skin.color = null;
-      this._attach(util.target, skin);
+
+      const state = getOrCreateState(util.target);
+      state.mode = "mask";
+      state.maskColor = null;
+      attach(util.target);
     }
 
     async videoSpriteFillColor(args, util) {
-      if (!(await this.ensureCamera())) {
+      if (!(await ensureCamera())) {
         return;
       }
-      const skin = this._getOrCreateSkin(util.target);
-      skin.mode = "color";
-      skin.color = Scratch.Cast.toRgbColorObject(args.COLOR);
-      this._attach(util.target, skin);
+
+      const state = getOrCreateState(util.target);
+      state.mode = "color";
+      state.maskColor = Scratch.Cast.toRgbColorList(args.COLOR);
+      attach(util.target);
     }
 
-    // TODO: zoom needs to be per-target rather than global. Hardcoded for now.
-    changeCameraBy() {}
+    changeCameraBy(args, util) {
+      const state = getState(util.target);
+      const currentZoom = state ? state.zoom : DEFAULT_ZOOM;
+      setZoom(util.target, currentZoom + Scratch.Cast.toNumber(args.CAMERA_SCALE_INC));
+    }
 
-    scaleCamera() {}
+    scaleCamera(args, util) {
+      setZoom(util.target, Scratch.Cast.toNumber(args.CAMERA_SCALE));
+    }
 
     videoSpriteOff(args, util) {
-      const target = util.target;
-      const skin = this.fillStates.get(target.id);
-      if (!skin) {
-        return;
-      }
-      target.setCostume(target.currentCostume);
-      renderer.destroySkin(skin.id);
-      this.fillStates.delete(target.id);
-    }
-
-    async ensureCamera() {
-      try {
-        await videoDevice.enableVideo();
-        if (!this._hidPreview) {
-          this._hidPreview = true;
-          videoDevice.setPreviewGhost(100);
-        }
-        return true;
-      } catch (error) {
-        return false;
-      }
-    }
-
-    _getOrCreateSkin(target) {
-      const existing = this.fillStates.get(target.id);
-      if (existing) {
-        return existing;
-      }
-      const id = renderer._nextSkinId++;
-      const skin = new VideoSpriteSkin(id, target);
-      renderer._allSkins[id] = skin;
-      this.fillStates.set(target.id, skin);
-      return skin;
-    }
-
-    _attach(target, skin) {
-      renderer.updateDrawableSkinId(target.drawableID, skin.id);
-      skin.emitWasAltered();
-      runtime.requestRedraw();
-    }
-
-    _onBeforeExecute() {
-      if (this.fillStates.size === 0) {
-        return;
-      }
-      for (const [targetId, skin] of this.fillStates) {
-        const target = runtime.getTargetById(targetId);
-        if (!target) {
-          renderer.destroySkin(skin.id);
-          this.fillStates.delete(targetId);
-          continue;
-        }
-        const drawable = renderer._allDrawables[target.drawableID];
-        if (drawable && drawable.skin !== skin) {
-          renderer.updateDrawableSkinId(target.drawableID, skin.id);
-        }
-        skin.emitWasAltered();
-      }
-    }
-
-    _disposeAll() {
-      for (const [targetId, skin] of this.fillStates) {
-        const target = runtime.getTargetById(targetId);
-        if (target) {
-          target.setCostume(target.currentCostume);
-        }
-        renderer.destroySkin(skin.id);
-      }
-      this.fillStates.clear();
+      detach(util.target);
     }
   }
 
