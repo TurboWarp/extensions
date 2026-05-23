@@ -23,25 +23,35 @@
   const workContext = workCanvas.getContext("2d", {
     willReadFrequently: true
   });
+  if (!workContext) {
+    throw new Error('Failed to get 2D rendering context for work canvas');
+  }
 
-  // TODO: zoom should be per-target, not hardcoded
+  /**
+   * Get cropped/scaled video frame.
+   * @param {number} width
+   * @param {number} height
+   * @returns {boolean} true if a frame was drawn
+   */
   const sampleVideo = (width, height) => {
-    const sourceCanvas = videoDevice.getFrame({ format: "canvas" });
-    if (!sourceCanvas) {
-      return null;
+    const videoCanvas = videoDevice.getFrame({
+      format: "canvas"
+    });
+
+    if (!videoCanvas) {
+      return false;
     }
 
-    const videoW = sourceCanvas.width;
-    const videoH = sourceCanvas.height;
-    const upscaleFactor = width > height ? videoW / width : videoH / height;
+    const videoWidth = videoCanvas.width;
+    const videoHeight = videoCanvas.height;
+    const upscaleFactor = width > height ? videoWidth / width : videoHeight / height;
     const cropWidth = width * upscaleFactor;
     const cropHeight = height * upscaleFactor;
-    const cropX = (videoW - cropWidth) / 2;
-    const cropY = (videoH - cropHeight) / 2;
+    const cropX = (videoWidth - cropWidth) / 2;
+    const cropY = (videoHeight - cropHeight) / 2;
 
-    workContext.clearRect(0, 0, width, height);
     workContext.drawImage(
-      sourceCanvas,
+      videoCanvas,
       cropX,
       cropY,
       cropWidth,
@@ -51,20 +61,14 @@
       width,
       height
     );
-
-    return workContext.getImageData(0, 0, width, height).data;
+    return true;
   };
 
-  // TODO: this is wrong, should be MUCH less tolerant
-  // TODO: actually handle alpha
-  const colorMatches = (r, g, b, alpha, color) => {
-    if (!color || alpha === 0) {
-      return false;
-    }
-    const tolerance = 24;
-    return Math.abs(r - color.r) <= tolerance &&
-      Math.abs(g - color.g) <= tolerance &&
-      Math.abs(b - color.b) <= tolerance;
+  const colorMatches = (r1, g1, b1, r2, g2, b2) => {
+    const tolerance = 1;
+    return Math.abs(r1 - r2) <= tolerance &&
+      Math.abs(g1 - g2) <= tolerance &&
+      Math.abs(b1 - b2) <= tolerance;
   };
 
   class VideoSpriteSkin extends Skin {
@@ -77,7 +81,7 @@
       this.target = target;
 
       this.mode = "mask";
-      this.color = null;
+      this.maskColor = null;
     }
 
     dispose() {
@@ -88,7 +92,7 @@
       super.dispose();
     }
 
-    _baseSkin() {
+    _parentSkin() {
       const costume = this.target.sprite.costumes[this.target.currentCostume];
       if (!costume || typeof costume.skinId !== "number") {
         return null;
@@ -97,17 +101,18 @@
     }
 
     get size() {
-      const base = this._baseSkin();
-      return base ? base.size : [0, 0];
+      const parent = this._parentSkin();
+      return parent ? parent.size : [1, 1];
     }
 
     get rotationCenter() {
-      const base = this._baseSkin();
-      return base ? base.rotationCenter : this._rotationCenter;
+      const parent = this._parentSkin();
+      return parent ? parent.rotationCenter : [0, 0];
     }
 
-    useNearest() {
-      return false;
+    useNearest(scale, drawable) {
+      const parent = this._parentSkin();
+      return parent ? parent.useNearest(scale, drawable) : true;
     }
 
     getTexture(scale) {
@@ -115,23 +120,27 @@
       return this._texture || super.getTexture(scale);
     }
 
-    updateSilhouette() {
-      this._render();
+    updateSilhouette(scale) {
+      this.getTexture(scale);
       this._silhouette.unlazy();
     }
 
     _render() {
-      const baseSkin = this._baseSkin();
-      if (!baseSkin) {
+      const parent = this._parentSkin();
+      if (!parent) {
+        // Parent skin does not exist - fall back to empty
+        this.setEmptyImageData();
         return;
       }
 
-      baseSkin.updateSilhouette();
-      const silhouette = baseSkin._silhouette;
+      parent.updateSilhouette();
+      const silhouette = parent._silhouette;
       const silhouetteData = silhouette._colorData;
       const width = silhouette._width;
       const height = silhouette._height;
       if (!width || !height || !silhouetteData) {
+        // Something is wrong with the parent skin - fall back to empty
+        this.setEmptyImageData();
         return;
       }
 
@@ -140,33 +149,32 @@
         workCanvas.height = height;
       }
 
-      const sourceData = sampleVideo(width, height);
-      if (!sourceData) {
+      if (!sampleVideo(width, height)) {
         return;
       }
 
-      const out = new Uint8ClampedArray(silhouetteData);
-      const color = this.color;
-      const isMask = this.mode === "mask";
+      const sampledVideoData = workContext.getImageData(0, 0, width, height).data;
+      const outData = new Uint8ClampedArray(silhouetteData);
 
-      for (let i = 0; i < out.length; i += 4) {
-        const alpha = out[i + 3];
+      const isMask = this.mode === "mask";
+      const maskColor = this.maskColor;
+
+      for (let i = 0; i < outData.length; i += 4) {
+        const alpha = outData[i + 3];
         if (alpha === 0) {
           continue;
         }
 
         const shouldFill = isMask
           ? true
-          : colorMatches(out[i], out[i + 1], out[i + 2], alpha, color);
+          : colorMatches(outData[i], outData[i + 1], outData[i + 2], maskColor.r, maskColor.g, maskColor.b);
 
         if (shouldFill) {
-          out[i] = sourceData[i];
-          out[i + 1] = sourceData[i + 1];
-          out[i + 2] = sourceData[i + 2];
+          outData[i] = sampledVideoData[i];
+          outData[i + 1] = sampledVideoData[i + 1];
+          outData[i + 2] = sampledVideoData[i + 2];
         }
       }
-
-      workContext.putImageData(new ImageData(out, width, height), 0, 0);
 
       if (!this._texture) {
         this._texture = twgl.createTexture(gl, {
@@ -174,7 +182,8 @@
           wrap: gl.CLAMP_TO_EDGE
         });
       }
-      this._setTexture(workCanvas);
+
+      this._setTexture(new ImageData(outData, width, height));
     }
   }
 
