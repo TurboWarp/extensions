@@ -378,7 +378,7 @@
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
-                defaultValue: "#ffab19"
+                defaultValue: "#fcb1e3"
               }
             }
           },
