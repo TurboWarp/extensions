@@ -282,13 +282,16 @@
       state.skin = new VideoSpriteSkin(id, target);
       renderer._allSkins[id] = state.skin;
     }
+
     renderer.updateDrawableSkinId(target.drawableID, state.skin.id);
-    state.skin.emitWasAltered();
     runtime.requestRedraw();
   };
 
+  /**
+   * @param {import("scratch-vm").Target} target
+   */
   const detach = (target) => {
-    const state = target[CUSTOM_STATE_KEY];
+    const state = getState(target);
     if (!state || !state.skin) {
       return;
     }
@@ -317,7 +320,6 @@
   };
 
   let hidPreview = false;
-
   const ensureCamera = async () => {
     try {
       await videoDevice.enableVideo();
@@ -351,7 +353,7 @@
   runtime.on("PROJECT_LOADED", stopAllFills);
 
   runtime.on("targetWasRemoved", (target) => {
-    const state = target[CUSTOM_STATE_KEY];
+    const state = getState(target);
     if (state && state.skin) {
       renderer.destroySkin(state.skin.id);
       state.skin = null;
@@ -362,17 +364,17 @@
     getInfo() {
       return {
         id: "videoSprites",
-        name: "Video Sprites",
+        name: Scratch.translate("Video Sprites"),
         blocks: [
           {
             opcode: "videoSpriteFillSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "fill sprite with camera"
+            text: Scratch.translate("fill sprite with camera")
           },
           {
             opcode: "videoSpriteFillColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "fill [COLOR] with camera",
+            text: Scratch.translate("fill [COLOR] with camera"),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -384,7 +386,7 @@
           {
             opcode: "changeCameraBy",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change camera zoom by [CAMERA_SCALE_INC]",
+            text: Scratch.translate("change camera zoom by [CAMERA_SCALE_INC]"),
             arguments: {
               CAMERA_SCALE_INC: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -395,7 +397,7 @@
           {
             opcode: "scaleCamera",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set camera zoom [CAMERA_SCALE]",
+            text: Scratch.translate("set camera zoom [CAMERA_SCALE]"),
             arguments: {
               CAMERA_SCALE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -407,7 +409,7 @@
           {
             opcode: "videoSpriteOff",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop filling with camera"
+            text: Scratch.translate("stop filling with camera")
           }
         ]
       };
