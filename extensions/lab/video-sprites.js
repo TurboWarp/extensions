@@ -29,6 +29,7 @@
   const twgl = renderer.exports.twgl;
   const gl = renderer.gl;
   const videoDevice = runtime.ioDevices.video;
+  const RenderedTarget = Scratch.vm.exports.RenderedTarget;
 
   const workCanvas = document.createElement("canvas");
   const workContext = workCanvas.getContext("2d", {
@@ -429,6 +430,21 @@
 
   runtime.on("PROJECT_STOP_ALL", stopAllFills);
   runtime.on("PROJECT_LOADED", stopAllFills);
+
+  // targetWasCreated runs before the clone's Drawable is set up, so we have to patch makeClone.
+  const originalMakeClone = RenderedTarget.prototype.makeClone;
+  RenderedTarget.prototype.makeClone = function () {
+    const newClone = originalMakeClone.call(this);
+    const originalState = getState(this);
+    if (originalState && originalState.skin) {
+      const newState = getOrCreateState(newClone);
+      newState.zoom = originalState.zoom;
+      newState.mode = originalState.mode;
+      newState.maskColor = originalState.maskColor;
+      attach(newClone);
+    }
+    return newClone;
+  };
 
   runtime.on("targetWasRemoved", (target) => {
     const state = getState(target);
