@@ -40,7 +40,7 @@
     }
 
     runtime.extensionStorage["cubesterWebhooks"] = {
-      webhooks: safe
+      webhooks: safe,
     };
     webhooks = safe;
 
