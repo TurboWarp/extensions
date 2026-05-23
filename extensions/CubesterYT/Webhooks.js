@@ -43,8 +43,10 @@
       webhooks: safe
     };
     webhooks = safe;
-    if (Object.keys(webhooks).length > 0) {
+
+    if (hideFromPalette && Object.keys(webhooks).length > 0) {
       hideFromPalette = false;
+      runtime.extensionManager.refreshBlocks();
     }
   }
 
