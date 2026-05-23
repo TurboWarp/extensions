@@ -2,6 +2,7 @@
   // This file supports comments
   "lab/text",
   "lab/face-sensing",
+  "lab/video-sprites",
   "stretch",
   "gamepad",
   "box2d",
