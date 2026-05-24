@@ -4055,9 +4055,9 @@
         Scratch.Cast.toString(costume)
       );
       if (costIndex >= 0) {
-        const curCostume =
-          curTarget.sprite.costumes[costIndex].asset.encodeDataURI();
-        return curCostume || 0;
+        const costume = curTarget.sprite.costumes[costIndex];
+        const base64 = vm.getExportedCostumeBase64(costume);
+        return `data:${costume.asset.assetType.contentType};base64,${base64}` || 0;
       }
     }
 
