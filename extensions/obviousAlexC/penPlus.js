@@ -4057,8 +4057,9 @@
       if (costIndex >= 0) {
         const costume = curTarget.sprite.costumes[costIndex];
         const base64 = vm.getExportedCostumeBase64(costume);
-        return `data:${costume.asset.assetType.contentType};base64,${base64}` || 0;
+        return `data:${costume.asset.assetType.contentType};base64,${base64}`;
       }
+      return "";
     }
 
     getDimensionOf({ dimension, costume }, util) {
