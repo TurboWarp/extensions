@@ -16127,7 +16127,7 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
         ) {
           // This is to ensure the actual name value can be used via inputs. This implementation is inspired by the Translate extension's.
           return languageNameAndCodeLookupTableGLOBALIZED.nameMap[args.NAME];
-        // @ts-ignore
+          // @ts-ignore
         } else if (this._getLanguageNames().includes(args.NAME)) {
           // Fallback
           // @ts-ignore
