@@ -535,6 +535,8 @@
         "lab/face-sensing@name": "Sensore del Volto",
         "lab/text@description": "Un modo semplice per mostrare e animare il testo. Compatibie con i blocchi sperimentali \"Testo Animato\" di Scratch Lab.",
         "lab/text@name": "Testo Animato",
+        "lab/video-sprites@description": "Rimpiazza gli sprite con feed video live. Compatibile con l'esperimento Testo Animato dello Scratch Lab.",
+        "lab/video-sprites@name": "Video Sprite",
         "local-storage@description": "Memorizza dati persistenti. Come i cookie, ma in modo migliore.",
         "local-storage@name": "Memoria Locale",
         "mbw/xml@description": "Crea ed estrae valori dall'XML.",
