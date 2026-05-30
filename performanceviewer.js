@@ -40,8 +40,6 @@
 
         async getPing() {
             const startTime = performance.now();
-            try {
-                // Using a 'no-cors' request to a reliable public host
                 await fetch('https://www.google.com', { mode: 'no-cors', cache: 'no-store' });
                 return Math.round(performance.now() - startTime);
             } catch (e) {
