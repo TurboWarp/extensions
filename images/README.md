@@ -311,7 +311,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Font is Deja Vu Sans.
 
 ## Clay/htmlEncode.svg
- - Created by [@ClaytonTDM](https://github.com/ClaytonTDM) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
+ - Created by [@clay-rip](https://github.com/clay-rip) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
 
 ## CST1229/images.svg
  - Created by [@wiktorlaskowski](https://github.com/wiktorlaskowski) in https://github.com/TurboWarp/extensions/pull/2144
@@ -327,3 +327,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
  ## 8to16/mesh.svg
  - Created by [@kx1bx1](https://github.com/kx1bx1) in https://github.com/TurboWarp/extensions/pull/2382#issuecomment-3731596025
+
+## NishiOwO/dectalk.png
+ - Created by [@Dogo6647](https://github.com/Dogo6647)
+ - Used Arimo from Google Fonts.
