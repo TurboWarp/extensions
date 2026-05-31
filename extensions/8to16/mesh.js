@@ -1,14 +1,14 @@
-// Name: Mesh
+// Name: Cross-Project
 // ID: eightxtwoMesh
 // Description: Send and receive messages between other projects.
-// By: 8to16 <https://scratch.mit.edu/users/8to16/>
+// By: AmpElectrecuted
 // License: MPL-2.0
 
 (function (Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Mesh extension must run unsandboxed");
+    throw new Error("Cross-Project Broadcast extension must run unsandboxed");
   }
   const vm = Scratch.vm;
 
@@ -110,7 +110,7 @@
       }
     }
   };
-  setTimeout(() => bc.postMessage({ type: "ping" }), 50);
+  setTimeout(() => bc.postMessage({ type: "ping" }), 1000);
 
   class Mesh {
     getMeshagesForMenu() {
@@ -125,10 +125,10 @@
       // taken from SharkPool/Camera
       // in a Button Context, ScratchBlocks always exists
       ScratchBlocks.prompt(
-        Scratch.translate("New message name:"),
+        Scratch.translate("New cross-project message name:"),
         "",
         addMeshage,
-        Scratch.translate("Mesh Manager"),
+        Scratch.translate("New Message"),
         "broadcast_msg"
       );
     }
@@ -136,10 +136,10 @@
       // taken from SharkPool/Camera
       // in a Button Context, ScratchBlocks always exists
       ScratchBlocks.prompt(
-        Scratch.translate("Remove message named:"),
+        Scratch.translate("Remove cross-project message named:"),
         "",
         delMeshage,
-        Scratch.translate("Mesh Manager"),
+        Scratch.translate("Remove Message"),
         "broadcast_msg"
       );
     }
@@ -148,11 +148,11 @@
       // in a Button Context, ScratchBlocks always exists
       ScratchBlocks.prompt(
         Scratch.translate(
-          "New variable name (this variable will be available to all sprites):"
+          "New cross-project variable name (this variable will be available to all sprites):"
         ),
         "",
         addMeshVar,
-        Scratch.translate("Mesh Manager"),
+        Scratch.translate("New Variable"),
         "broadcast_msg"
       );
     }
@@ -160,17 +160,17 @@
       // taken from SharkPool/Camera
       // in a Button Context, ScratchBlocks always exists
       ScratchBlocks.prompt(
-        Scratch.translate("Remove variable named:"),
+        Scratch.translate("Remove cross-project variable named:"),
         "",
         delMeshVar,
-        Scratch.translate("Mesh Manager"),
+        Scratch.translate("Remove Variable"),
         "broadcast_msg"
       );
     }
     getInfo() {
       return {
         id: "eightxtwoMesh",
-        name: Scratch.translate("Mesh"),
+        name: Scratch.translate("Cross-Project"),
         docsURI: "https://extensions.turbowarp.org/8to16/mesh",
         color1: "#4cdab2",
         color2: "#44cda5",
@@ -190,7 +190,7 @@
           {
             opcode: "when",
             blockType: Scratch.BlockType.EVENT,
-            text: Scratch.translate("when I receive [BROADCAST]"),
+            text: Scratch.translate("when I receive cross-project [BROADCAST]"),
             isEdgeActivated: false,
             hideFromPalette: getMeshages().length === 0,
             arguments: {
@@ -203,7 +203,7 @@
           {
             opcode: "broadcast",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("broadcast [BROADCAST]"),
+            text: Scratch.translate("broadcast cross-project [BROADCAST]"),
             hideFromPalette: getMeshages().length === 0,
             arguments: {
               BROADCAST: {
@@ -215,7 +215,7 @@
           {
             opcode: "broadcastWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("broadcast [BROADCAST] and wait"),
+            text: Scratch.translate("broadcast cross-project [BROADCAST] and wait"),
             hideFromPalette: getMeshages().length === 0,
             arguments: {
               BROADCAST: {
@@ -239,7 +239,7 @@
           {
             opcode: "getVar",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get [VAR]"),
+            text: Scratch.translate("get cross-project [VAR]"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -251,7 +251,7 @@
           {
             opcode: "setVar",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set [VAR] to [VALUE]"),
+            text: Scratch.translate("set cross-project [VAR] to [VALUE]"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
@@ -267,7 +267,7 @@
           {
             opcode: "changeVar",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("change [VAR] by [VALUE]"),
+            text: Scratch.translate("change cross-project [VAR] by [VALUE]"),
             arguments: {
               VAR: {
                 type: Scratch.ArgumentType.STRING,
