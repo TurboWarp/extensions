@@ -1,7 +1,7 @@
 // Name: Video Sprites
 // ID: videoSprites
 // Description: Replace sprites with a live video feed. Compatible with Scratch Lab's Animated Text experiment.
-// By: Staevski_G <https://scratch.mit.edu/users/Staevski_G/>
+// By: Staevski_G <https://scratch.mit.edu/users/Gogoi-does-things/>
 // License: MPL-2.0
 
 (function (Scratch) {
