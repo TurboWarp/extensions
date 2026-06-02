@@ -3,7 +3,7 @@
 // Description: A comprehensive toolkit for complex numbers, including arithmetic, trigonometric functions, type classification, all supporting complex numbers.
 // ID: complexAnalysis
 
-(function(Scratch) {
+(function(Scratch) {    
     'use strict';
 
     // ==========================================
@@ -16,23 +16,28 @@
     // 2. MATHEMATICAL CORE PIPELINE
     // ==========================================
     
-    // Safely rounds precision errors without exploding e-notation or huge numbers
+    // Completely fixed precision system to trap floats ending in 999999... or 000000...
     function safeRound(value) {
+        let parsed = parseFloat(value);
+        if (isNaN(parsed)) return "NaN";
+        if (!isFinite(parsed)) return "NaN"; // Undefined states/Infinities standardizing to NaN
+
         let strVal = String(value);
+        // Do not alter large scientific notation configurations
         if (strVal.includes('e') || strVal.includes('E')) {
             return strVal;
         }
-        let parsed = parseFloat(value);
-        if (isNaN(parsed)) return "0";
-        if (Math.abs(parsed) > 1e10 || (Math.abs(parsed) < 1e-6 && parsed !== 0)) {
-            return strVal;
-        }
-        return String(Math.round(parsed * 1e10) / 1e10);
+
+        // Rounds to 10 decimal places to catch precision drift cleanly
+        let rounded = Math.round(parsed * 1e10) / 1e10;
+        return String(rounded);
     }
 
     function format_complex(a, b) {
         let a_str = safeRound(a);
         let b_str = safeRound(b);
+        
+        if (a_str === "NaN" || b_str === "NaN") return "NaN";
         
         let a_parsed = parseFloat(a_str);
         let b_parsed = parseFloat(b_str);
@@ -45,6 +50,7 @@
     }
 
     function realpartofcomplexnumber(number) {
+        if (String(number).includes("NaN") || String(number).includes("Undefined")) return "NaN";
         let cleaned = String(number).replace(/\s+/g, "");
         let parts = cleaned.match(/[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?i?/g);
         if (!parts) {
@@ -58,6 +64,7 @@
     }
 
     function imaginarypartofcomplexnumber(number) {
+        if (String(number).includes("NaN") || String(number).includes("Undefined")) return "NaN";
         let cleaned = String(number).replace(/\s+/g, "");
         let parts = cleaned.match(/[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?i?/g);
         if (!parts) {
@@ -76,6 +83,7 @@
 
     function imaginarypartofnumberdividedbyi(n) {
         let b_str = imaginarypartofcomplexnumber(n);
+        if (b_str === "NaN") return NaN;
         if (b_str.endsWith("i")) b_str = b_str.slice(0, -1);
         if (b_str === "" || b_str === "+") return 1;
         if (b_str === "-") return -1;
@@ -87,6 +95,7 @@
         let b = imaginarypartofnumberdividedbyi(n1);
         let c = parseFloat(realpartofcomplexnumber(n2));
         let d = imaginarypartofnumberdividedbyi(n2);
+        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) return "NaN";
         return format_complex(a + c, b + d);
     }
 
@@ -95,6 +104,7 @@
         let b = imaginarypartofnumberdividedbyi(n1);
         let c = parseFloat(realpartofcomplexnumber(n2));
         let d = imaginarypartofnumberdividedbyi(n2);
+        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) return "NaN";
         return format_complex(a - c, b - d);
     }
 
@@ -103,6 +113,7 @@
         let b = imaginarypartofnumberdividedbyi(a1);
         let c = parseFloat(realpartofcomplexnumber(b1));
         let d = imaginarypartofnumberdividedbyi(b1);
+        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) return "NaN";
         return format_complex((a * c) - (b * d), (a * d) + (b * c));
     }
 
@@ -114,8 +125,9 @@
         let b = imaginarypartofnumberdividedbyi(d1);
         let c = parseFloat(realpartofcomplexnumber(d2));
         let d = imaginarypartofnumberdividedbyi(d2);
+        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) return "NaN";
         let denominator = c**2 + d**2;
-        if (denominator === 0) return "Infinity";
+        if (denominator === 0) return "NaN"; // Cleaned from legacy "Infinity" to standard NaN
         return format_complex((a * c + b * d) / denominator, (b * c - a * d) / denominator);
     }
 
@@ -125,19 +137,25 @@
         let c = parseFloat(realpartofcomplexnumber(e2));
         let d = imaginarypartofnumberdividedbyi(e2);
         
+        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) return "NaN";
+        
         let r = Math.sqrt(a**2 + b**2);
-        if (r === 0) return c > 0 ? "0" : "Undefined";
+        if (r === 0) return c > 0 ? "0" : "NaN";
         let arg = Math.atan2(b, a);
         
         let partA = Math.pow(e, c * Math.log(r) - d * arg);
         let partBrealpart = Math.cos(d * Math.log(r) + c * arg);
         let partBimaginarypart = Math.sin(d * Math.log(r) + c * arg);
         
+        if (isNaN(partA) || isNaN(partBrealpart) || isNaN(partBimaginarypart)) return "NaN";
+        
         return multiplycomplexnumbers(format_complex(partA, 0), format_complex(partBrealpart, partBimaginarypart));
     }
 
     function lnAplusIB(real, imag) {
+        if (isNaN(real) || isNaN(imag)) return "NaN";
         let r = Math.sqrt(real**2 + imag**2);
+        if (r === 0) return "NaN"; 
         let theta = Math.atan2(imag, real);
         return format_complex(Math.log(r), theta);
     }
@@ -160,10 +178,10 @@
             return {
                 id: 'complexAnalysis',
                 name: 'Complex Analysis',
-                // Updated blockIconURI with a pure vector rendering of the blackboard bold ℂ math symbol
+                iconURL: 'https://raw.githubusercontent.com/Virlasl/YOUR_REPO_NAME/master/Picture.png',
                 blockIconURI: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><text x="2" y="18" fill="white" font-family="monospace, sans-serif" font-size="18" font-weight="900">ℂ</text></svg>',
-                color1: '#3408a2', // Updated to your custom Deep Indigo
-                color2: '#240475', // Matching deeper shade for borders/dropdown checks
+                color1: '#3408a2', 
+                color2: '#240475', 
                 blocks: [
                     { opcode: 'constant_e', blockType: Scratch.BlockType.REPORTER, text: 'e' },
                     { opcode: 'constant_pi', blockType: Scratch.BlockType.REPORTER, text: 'π' },
@@ -219,65 +237,44 @@
                         opcode: 'add',
                         blockType: Scratch.BlockType.REPORTER,
                         text: '[N1] + [N2]',
-                        arguments: {
-                            N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' },
-                            N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
-                        }
+                        arguments: { N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' }, N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' } }
                     },
                     {
                         opcode: 'sub',
                         blockType: Scratch.BlockType.REPORTER,
                         text: '[N1] - [N2]',
-                        arguments: {
-                            N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' },
-                            N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
-                        }
+                        arguments: { N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' }, N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' } }
                     },
                     {
                         opcode: 'mul',
                         blockType: Scratch.BlockType.REPORTER,
                         text: '[N1] * [N2]',
-                        arguments: {
-                            N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' },
-                            N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
-                        }
+                        arguments: { N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' }, N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' } }
                     },
                     {
                         opcode: 'div',
                         blockType: Scratch.BlockType.REPORTER,
                         text: '[N1] / [N2]',
-                        arguments: {
-                            N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' },
-                            N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
-                        }
+                        arguments: { N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' }, N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' } }
                     },
                     '---', 
                     {
                         opcode: 'pow',
                         blockType: Scratch.BlockType.REPORTER,
                         text: '[N1] ^ [N2]',
-                        arguments: {
-                            N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' },
-                            N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
-                        }
+                        arguments: { N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' }, N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' } }
                     },
                     {
                         opcode: 'rad',
                         blockType: Scratch.BlockType.REPORTER,
                         text: '[N1] √ [N2]',
-                        arguments: {
-                            N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' },
-                            N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
-                        }
+                        arguments: { N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' }, N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' } }
                     },
                     {
                         opcode: 'log_base',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'log [N1] of [N2]',
-                        arguments: {
-                            N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' },
-                            N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
-                        }
+                        arguments: { N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' }, N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' } }
                     },
                     {
                         opcode: 'e_to_ix',
@@ -344,10 +341,7 @@
                         opcode: 'atan2',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'atan2 of [N1] and [N2] (Radians)',
-                        arguments: {
-                            N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' },
-                            N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' }
-                        }
+                        arguments: { N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' }, N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' } }
                     }
                 ]
             };
@@ -360,28 +354,33 @@
         constant_pi() { return String(pi); }
 
         make_complex(args) {
-            let r = parseFloat(realpartofcomplexnumber(args.BOX1)) || 0;
-            let i = parseFloat(realpartofcomplexnumber(args.BOX2)) || 0;
+            let r = parseFloat(realpartofcomplexnumber(args.BOX1));
+            let i = parseFloat(realpartofcomplexnumber(args.BOX2));
+            if (isNaN(r) || isNaN(i)) return "NaN";
             return format_complex(r, i);
         }
 
         get_real(args) { return realpartofcomplexnumber(args.VAL); }
         get_imag(args) { return imaginarypartofcomplexnumber(args.VAL); }
-        get_imag_pure(args) { return String(imaginarypartofnumberdividedbyi(args.VAL)); }
+        get_imag_pure(args) { 
+            let pureVal = imaginarypartofnumberdividedbyi(args.VAL);
+            return isNaN(pureVal) ? "NaN" : String(pureVal);
+        }
 
         is_real(args) {
             let b = imaginarypartofnumberdividedbyi(args.VAL);
-            return b === 0;
+            return isNaN(b) ? false : b === 0;
         }
 
         is_pure_imaginary(args) {
             let a = parseFloat(realpartofcomplexnumber(args.VAL));
-            return a === 0;
+            return isNaN(a) ? false : a === 0;
         }
 
         is_complex(args) {
             let a = parseFloat(realpartofcomplexnumber(args.VAL));
             let b = imaginarypartofnumberdividedbyi(args.VAL);
+            if (isNaN(a) || isNaN(b)) return false;
             return a !== 0 && b !== 0;
         }
 
@@ -393,29 +392,32 @@
         
         rad(args) {
             let fractional_power = complexdivision("1", args.N1);
-            if (fractional_power === "Infinity" || fractional_power.includes("Undefined")) return "Undefined Root Index";
+            if (fractional_power === "NaN") return "NaN";
             return complexexponentiation(args.N2, fractional_power);
         }
 
         log_base(args) {
             let base_parsed = native_complex_ln_string(args.N1);
             let num_parsed = native_complex_ln_string(args.N2);
+            if (base_parsed === "NaN" || num_parsed === "NaN") return "NaN";
             return complexdivision(num_parsed, base_parsed);
         }
 
         e_to_ix(args) {
             let x = parseFloat(realpartofcomplexnumber(args.N1));
+            if (isNaN(x)) return "NaN";
             return format_complex(Math.cos(x), Math.sin(x));
         }
 
         n_to_pow_i(args) {
             let n = parseFloat(realpartofcomplexnumber(args.N1));
-            if (n <= 0) return "Undefined";
+            if (isNaN(n) || n <= 0) return "NaN";
             return format_complex(Math.cos(Math.log(n)), Math.sin(Math.log(n)));
         }
 
         i_to_pow_x(args) {
             let x = parseFloat(realpartofcomplexnumber(args.N1));
+            if (isNaN(x)) return "NaN";
             let angle = (pi * x) / 2;
             return format_complex(Math.cos(angle), Math.sin(angle));
         }
@@ -423,6 +425,7 @@
         abs(args) {
             let a = parseFloat(realpartofcomplexnumber(args.N1));
             let b = imaginarypartofnumberdividedbyi(args.N1);
+            if (isNaN(a) || isNaN(b)) return "NaN";
             let modulus = Math.sqrt(a**2 + b**2);
             return safeRound(modulus);
         }
@@ -430,49 +433,61 @@
         sin(args) {
             let a = parseFloat(realpartofcomplexnumber(args.N1));
             let b = imaginarypartofnumberdividedbyi(args.N1);
+            if (isNaN(a) || isNaN(b)) return "NaN";
             return format_complex(Math.sin(a) * Math.cosh(b), Math.cos(a) * Math.sinh(b));
         }
 
         cos(args) {
             let a = parseFloat(realpartofcomplexnumber(args.N1));
             let b = imaginarypartofnumberdividedbyi(args.N1);
+            if (isNaN(a) || isNaN(b)) return "NaN";
             return format_complex(Math.cos(a) * Math.cosh(b), -Math.sin(a) * Math.sinh(b));
         }
 
         tan(args) {
             let a = parseFloat(realpartofcomplexnumber(args.N1));
             let b = imaginarypartofnumberdividedbyi(args.N1);
+            if (isNaN(a) || isNaN(b)) return "NaN";
             let denominator = Math.cos(2 * a) + Math.cosh(2 * b);
-            if (denominator === 0) return "Undefined";
+            if (denominator === 0) return "NaN";
             return format_complex(Math.sin(2 * a) / denominator, Math.sinh(2 * b) / denominator);
         }
 
         asin(args) {
+            let check = parseFloat(realpartofcomplexnumber(args.N1));
+            if (isNaN(check)) return "NaN";
             let iz = multiplycomplexnumbers("i", args.N1);
             let z_sq = multiplycomplexnumbers(args.N1, args.N1);
             let one_minus_z_sq = complexsubtraction("1", z_sq);
             let sqrt_term = complex_sqrt(one_minus_z_sq);
             let log_argument = complexaddition(iz, sqrt_term);
             let ln_res = native_complex_ln_string(log_argument);
+            if (ln_res === "NaN") return "NaN";
             return multiplycomplexnumbers("-i", ln_res);
         }
 
         acos(args) {
+            let check = parseFloat(realpartofcomplexnumber(args.N1));
+            if (isNaN(check)) return "NaN";
             let z_sq = multiplycomplexnumbers(args.N1, args.N1);
             let one_minus_z_sq = complexsubtraction("1", z_sq);
             let sqrt_term = complex_sqrt(one_minus_z_sq);
             let i_times_sqrt = multiplycomplexnumbers("i", sqrt_term);
             let log_argument = complexaddition(args.N1, i_times_sqrt);
             let ln_res = native_complex_ln_string(log_argument);
+            if (ln_res === "NaN") return "NaN";
             return multiplycomplexnumbers("-i", ln_res);
         }
 
         atan(args) {
+            let check = parseFloat(realpartofcomplexnumber(args.N1));
+            if (isNaN(check)) return "NaN";
             let iz = multiplycomplexnumbers("i", args.N1);
             let numerator = complexsubtraction("1", iz);
             let denominator = complexaddition("1", iz);
             let div_res = complexdivision(numerator, denominator);
             let ln_res = native_complex_ln_string(div_res);
+            if (ln_res === "NaN") return "NaN";
             return multiplycomplexnumbers("0.5i", ln_res);
         }
 
@@ -482,7 +497,10 @@
             let x_real = parseFloat(realpartofcomplexnumber(args.N2));
             let x_imag = imaginarypartofnumberdividedbyi(args.N2);
 
+            if (isNaN(y_real) || isNaN(y_imag) || isNaN(x_real) || isNaN(x_imag)) return "NaN";
+
             if (y_imag === 0 && x_imag === 0) {
+                if (y_real === 0 && x_real === 0) return "NaN";
                 return format_complex(Math.atan2(y_real, x_real), 0);
             }
 
@@ -496,6 +514,7 @@
 
             let ratio = complexdivision(numerator, denominator);
             let ln_res = native_complex_ln_string(ratio);
+            if (ln_res === "NaN") return "NaN";
             return multiplycomplexnumbers("-i", ln_res);
         }
     }
