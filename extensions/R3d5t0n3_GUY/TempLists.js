@@ -319,11 +319,9 @@
           const listLength = list.length;
           if (!thread.variables) thread.variables = {};
           const vars = thread.variables;
-
           if (typeof util.stackFrame.index === "undefined") {
             util.stackFrame.index = 0;
           }
-
           if (util.stackFrame.index < listLength) {
             util.stackFrame.index++;
             vars[args.ITEM] = list[util.stackFrame.index - 1]
@@ -342,11 +340,9 @@
           const listLength = list.length;
           if (!thread.variables) thread.variables = {};
           const vars = thread.variables;
-
           if (typeof util.stackFrame.index === "undefined") {
             util.stackFrame.index = 0;
           }
-
           if (util.stackFrame.index < listLength) {
             util.stackFrame.index++;
             vars[args.IDX] = util.stackFrame.index;
@@ -365,11 +361,9 @@
           const listLength = list.length;
           if (!thread.variables) thread.variables = {};
           const vars = thread.variables;
-
           if (typeof util.stackFrame.index === "undefined") {
             util.stackFrame.index = 0;
           }
-
           if (util.stackFrame.index < listLength) {
             util.stackFrame.index++;
             vars[args.IDX] = util.stackFrame.index;
@@ -422,7 +416,6 @@
         }
         return Object.keys(thread.lists).join(",");
       }
-
     }
     
     Scratch.extensions.register(new TempLists());

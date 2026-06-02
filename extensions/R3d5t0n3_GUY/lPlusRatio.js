@@ -96,6 +96,7 @@
         }
       };
     }
+
     mathConstant({mathConst}) {
       return ((m) => { 
         switch (m) {

@@ -63,12 +63,15 @@
           }
         };
       }
+
       locateNodeList() {
         return document.getElementsByClassName('stage-header_stage-button-icon_3zzFK')
       }
+
       checkCompatibility() {
         return this.locateNodeList().length > 0
       }
+
       switchMode({mode}) {
         if (this.checkCompatibility()) {
           if ((this.evaluate()) === (mode === "exitFullscreen") || mode === "toggleFullscreen") this.locateNodeList()[this.locateNodeList().length - 1].click()
@@ -76,6 +79,7 @@
           console.warn("HtmlError. Could not locate node containing activateFullScreen ClickEvent");
         }
       }
+
       evaluate() {
         if (this.locateNodeList()) {
           return location.pathname.search(/\/fullscreen/i) > -1
