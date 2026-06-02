@@ -31,7 +31,6 @@
     }
 
     function format_complex(a, b) {
-        // Run values through safeRound first
         let a_str = safeRound(a);
         let b_str = safeRound(b);
         
@@ -47,7 +46,6 @@
 
     function realpartofcomplexnumber(number) {
         let cleaned = String(number).replace(/\s+/g, "");
-        // Account for signs inside e-notation scales (e.g. 1e+30 or 1e-5)
         let parts = cleaned.match(/[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?i?/g);
         if (!parts) {
             parts = cleaned.match(/[+-]?[^+-]+/g);
@@ -108,6 +106,9 @@
         return format_complex((a * c) - (b * d), (a * d) + (b * c));
     }
 
+    // ==========================================
+    // 3. ADVANCED OPERATIONS Pipeline
+    // ==========================================
     function complexdivision(d1, d2) {
         let a = parseFloat(realpartofcomplexnumber(d1));
         let b = imaginarypartofnumberdividedbyi(d1);
@@ -148,21 +149,21 @@
     }
 
     function complex_sqrt(n) {
-        // Correct internal logic path to map properly to complex analysis standard definitions
         return complexexponentiation(n, "0.5");
     }
 
     // ==========================================
-    // 3. TURBOWARP EXTENSION CONFIGURATION
+    // 4. TURBOWARP EXTENSION CONFIGURATION
     // ==========================================
     class ComplexAnalysisExtension {
         getInfo() {
             return {
                 id: 'complexAnalysis',
                 name: 'Complex Analysis',
-                blockIconURI: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h-4a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h4"/></svg>', 
-                color1: '#4C97FF', // Main block color
-                color2: '#3373CC', // Border/darker block color
+                // Updated blockIconURI with a pure vector rendering of the blackboard bold ℂ math symbol
+                blockIconURI: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><text x="2" y="18" fill="white" font-family="monospace, sans-serif" font-size="18" font-weight="900">ℂ</text></svg>',
+                color1: '#3408a2', // Updated to your custom Deep Indigo
+                color2: '#240475', // Matching deeper shade for borders/dropdown checks
                 blocks: [
                     { opcode: 'constant_e', blockType: Scratch.BlockType.REPORTER, text: 'e' },
                     { opcode: 'constant_pi', blockType: Scratch.BlockType.REPORTER, text: 'π' },
@@ -173,7 +174,7 @@
                         text: '[BOX1] + [BOX2] i',
                         arguments: {
                             BOX1: { type: Scratch.ArgumentType.STRING, defaultValue: '3' },
-                            BOX2: { type: Scratch.ArgumentType.STRING, defaultValue: '4i' }
+                            BOX2: { type: Scratch.ArgumentType.STRING, defaultValue: '4' }
                         }
                     },
                     {
@@ -195,7 +196,6 @@
                         arguments: { VAL: { type: Scratch.ArgumentType.STRING, defaultValue: '10 + 8i' } }
                     },
                     '---',
-                    // --- NEW SECTION: TYPE CLASSIFICATION BOOLEANS ---
                     {
                         opcode: 'is_real',
                         blockType: Scratch.BlockType.BOOLEAN,
@@ -354,7 +354,7 @@
         }
 
         // ==========================================
-        // 4. BLOCK IMPLEMENTATIONS (OPCODES)
+        // 5. BLOCK IMPLEMENTATIONS (OPCODES)
         // ==========================================
         constant_e() { return String(e); }
         constant_pi() { return String(pi); }
@@ -369,7 +369,6 @@
         get_imag(args) { return imaginarypartofcomplexnumber(args.VAL); }
         get_imag_pure(args) { return String(imaginarypartofnumberdividedbyi(args.VAL)); }
 
-        // --- TYPE CLASSIFICATION BOOLEANS LOGIC ---
         is_real(args) {
             let b = imaginarypartofnumberdividedbyi(args.VAL);
             return b === 0;
