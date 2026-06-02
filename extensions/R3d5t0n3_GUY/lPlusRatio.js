@@ -24,7 +24,7 @@
             disableMonitor: true,
             arguments: {
               mathConst: {
-                type: Scratch.ArgumentType.SRING,
+                type: Scratch.ArgumentType.STRING,
                 menu: "mathConstMenu",
               },
             },
