@@ -14,7 +14,7 @@
     getInfo() {
       return {
         id: 'LPlusRatio',
-        name: 'L+ Ratio',
+        name: Scratch.translate('L+ Ratio'),
         color1: '#1FBF5F',
         blocks: [
           {
