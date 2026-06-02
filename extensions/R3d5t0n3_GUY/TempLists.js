@@ -9,9 +9,13 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("This extension must run unsandboxed")
-  } else if (!Scratch.vm.runtime.extensionManager.isExtensionLoaded("lmsTempVars2")) {
-    throw new Error('Please install "Temporary Variables" (by LilyMakesThings) before loading this extension!')
+    throw new Error("This extension must run unsandboxed");
+  } else if (
+    !Scratch.vm.runtime.extensionManager.isExtensionLoaded("lmsTempVars2")
+  ) {
+    throw new Error(
+      'Please install "Temporary Variables" (by LilyMakesThings) before loading this extension!',
+    );
   } else {
     const label = (name, hidden) => ({
       blockType: Scratch.BlockType.LABEL,
@@ -35,7 +39,7 @@
               text: Scratch.translate("add [ITEM] to list [LIST]"),
               arguments: {
                 ITEM: this.fieldParamTemplate("item"),
-                LIST: this.fieldParamTemplate("list")
+                LIST: this.fieldParamTemplate("list"),
               },
             },
             {
@@ -44,7 +48,7 @@
               text: Scratch.translate("delete [IDX] of list [LIST]"),
               arguments: {
                 IDX: this.fieldParamTemplate("index"),
-                LIST: this.fieldParamTemplate("list")
+                LIST: this.fieldParamTemplate("list"),
               },
             },
             {
@@ -52,7 +56,7 @@
               blockType: Scratch.BlockType.COMMAND,
               text: Scratch.translate("delete all of list [LIST]"),
               arguments: {
-                LIST: this.fieldParamTemplate("list")
+                LIST: this.fieldParamTemplate("list"),
               },
             },
             {
@@ -62,17 +66,19 @@
               arguments: {
                 ITEM: this.fieldParamTemplate("item"),
                 IDX: this.fieldParamTemplate("index"),
-                LIST: this.fieldParamTemplate("list")
+                LIST: this.fieldParamTemplate("list"),
               },
             },
             {
               opcode: "replaceItemOfThreadList",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("replace item [IDX] of list [LIST] with [ITEM]"),
+              text: Scratch.translate(
+                "replace item [IDX] of list [LIST] with [ITEM]",
+              ),
               arguments: {
                 IDX: this.fieldParamTemplate("index"),
                 LIST: this.fieldParamTemplate("list"),
-                ITEM: this.fieldParamTemplate("item")
+                ITEM: this.fieldParamTemplate("item"),
               },
             },
             {
@@ -81,8 +87,8 @@
               text: Scratch.translate("item [IDX] of list [LIST]"),
               arguments: {
                 IDX: this.fieldParamTemplate("index"),
-                LIST: this.fieldParamTemplate("list")
-              }
+                LIST: this.fieldParamTemplate("list"),
+              },
             },
             {
               opcode: "indexInThreadList",
@@ -90,16 +96,16 @@
               text: Scratch.translate("index of [ITEM] in list [LIST]"),
               arguments: {
                 ITEM: this.fieldParamTemplate("item"),
-                LIST: this.fieldParamTemplate("list")
-              }
+                LIST: this.fieldParamTemplate("list"),
+              },
             },
             {
               opcode: "lengthOfThreadList",
               blockType: Scratch.BlockType.REPORTER,
               text: Scratch.translate("length of list [LIST]"),
               arguments: {
-                LIST: this.fieldParamTemplate("list")
-              }
+                LIST: this.fieldParamTemplate("list"),
+              },
             },
             {
               opcode: "threadListContains",
@@ -107,8 +113,8 @@
               text: Scratch.translate("list [LIST] contains [ITEM] ?"),
               arguments: {
                 LIST: this.fieldParamTemplate("list"),
-                ITEM: this.fieldParamTemplate("item")
-              }
+                ITEM: this.fieldParamTemplate("item"),
+              },
             },
 
             "---",
@@ -122,8 +128,8 @@
                 ITEM: this.fieldParamTemplate("item"),
                 LIST: {
                   type: Scratch.ArgumentType.STRING,
-                  defaultValue: "thread list"
-                }
+                  defaultValue: "thread list",
+                },
               },
             },
             {
@@ -135,23 +141,25 @@
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: "index",
                 },
-                LIST: this.fieldParamTemplate("list")
+                LIST: this.fieldParamTemplate("list"),
               },
             },
             {
               opcode: "forEachItemNum",
               blockType: Scratch.BlockType.LOOP,
-              text: Scratch.translate("for each item value [ITEM] # [IDX] in [LIST]"),
+              text: Scratch.translate(
+                "for each item value [ITEM] # [IDX] in [LIST]",
+              ),
               arguments: {
                 ITEM: this.fieldParamTemplate("item"),
                 IDX: {
                   type: Scratch.ArgumentType.STRING,
                   defaultValue: "index",
                 },
-                LIST: this.fieldParamTemplate("list")
+                LIST: this.fieldParamTemplate("list"),
               },
             },
-            
+
             "---",
 
             label(Scratch.translate("JSON"), false),
@@ -174,7 +182,7 @@
               text: Scratch.translate("[LIST] as array"),
               disableMonitor: true,
               arguments: {
-                LIST: this.fieldParamTemplate("list")
+                LIST: this.fieldParamTemplate("list"),
               },
             },
 
@@ -185,7 +193,7 @@
               blockType: Scratch.BlockType.BOOLEAN,
               text: Scratch.translate("thread list [LIST] exists?"),
               arguments: {
-                LIST: this.fieldParamTemplate("list")
+                LIST: this.fieldParamTemplate("list"),
               },
             },
             {
@@ -200,10 +208,17 @@
 
       fieldParamTemplate(argType) {
         switch (argType) {
-          case "list": return { type: Scratch.ArgumentType.STRING, defaultValue: "thread list" };
-          case "item": return { type: Scratch.ArgumentType.STRING, defaultValue: "thing" };
-          case "index": return { type: Scratch.ArgumentType.NUMBER, defaultValue: "1" };
-          default: return {};
+          case "list":
+            return {
+              type: Scratch.ArgumentType.STRING,
+              defaultValue: "thread list",
+            };
+          case "item":
+            return { type: Scratch.ArgumentType.STRING, defaultValue: "thing" };
+          case "index":
+            return { type: Scratch.ArgumentType.NUMBER, defaultValue: "1" };
+          default:
+            return {};
         }
       }
 
@@ -213,9 +228,9 @@
           thread.lists = Object.create(null);
         }
         if (args.LIST in thread.lists) {
-          thread.lists[args.LIST].push(args.ITEM)
+          thread.lists[args.LIST].push(args.ITEM);
         } else {
-          thread.lists[args.LIST] = [args.ITEM]
+          thread.lists[args.LIST] = [args.ITEM];
         }
       }
 
@@ -226,7 +241,7 @@
         }
         if (args.LIST in thread.lists) {
           if (1 <= args.IDX < thread.lists[args.LIST].length + 1) {
-            thread.lists[args.LIST].splice(Math.floor(args.IDX - 1), 1)
+            thread.lists[args.LIST].splice(Math.floor(args.IDX - 1), 1);
           }
         }
       }
@@ -236,7 +251,7 @@
         if (!thread.lists) {
           thread.lists = Object.create(null);
         }
-        thread.lists[args.LIST] = []
+        thread.lists[args.LIST] = [];
       }
 
       insertIntoThreadList(args, util) {
@@ -246,7 +261,11 @@
         }
         if (args.LIST in thread.lists) {
           if (1 <= args.IDX < thread.lists[args.LIST].length + 1) {
-            thread.lists[args.LIST].splice(Math.floor(args.IDX - 1), 0, args.ITEM)
+            thread.lists[args.LIST].splice(
+              Math.floor(args.IDX - 1),
+              0,
+              args.ITEM,
+            );
           }
         }
       }
@@ -258,7 +277,7 @@
         }
         if (args.LIST in thread.lists) {
           if (1 <= args.IDX < thread.lists[args.LIST].length + 1) {
-            thread.lists[args.LIST] = args.ITEM
+            thread.lists[args.LIST] = args.ITEM;
           }
         }
       }
@@ -268,10 +287,14 @@
         if (!thread.lists) {
           thread.lists = Object.create(null);
         }
-        if (args.LIST in thread.lists ? (1 <= args.IDX < thread.lists[args.LIST].length + 1) : false) {
-          return thread.lists[args.LIST][args.ITEM]
+        if (
+          args.LIST in thread.lists
+            ? 1 <= args.IDX < thread.lists[args.LIST].length + 1
+            : false
+        ) {
+          return thread.lists[args.LIST][args.ITEM];
         } else {
-          return ""
+          return "";
         }
       }
 
@@ -281,9 +304,9 @@
           thread.lists = Object.create(null);
         }
         if (args.LIST in thread.lists) {
-          return thread.lists[args.LIST].indexOf(args.ITEM) + 1
+          return thread.lists[args.LIST].indexOf(args.ITEM) + 1;
         } else {
-          return ""
+          return "";
         }
       }
 
@@ -293,9 +316,9 @@
           thread.lists = Object.create(null);
         }
         if (args.LIST in thread.lists) {
-          return thread.lists[args.LIST].length
+          return thread.lists[args.LIST].length;
         } else {
-          return ""
+          return "";
         }
       }
 
@@ -305,16 +328,16 @@
           thread.lists = Object.create(null);
         }
         if (args.LIST in thread.lists) {
-          return thread.lists[args.LIST].indexOf(args.ITEM) > -1
+          return thread.lists[args.LIST].indexOf(args.ITEM) > -1;
         } else {
-          return false
+          return false;
         }
       }
 
       forEachItem(args, util) {
         const thread = util.thread;
         if (thread.lists ? args.LIST in thread.lists : false) {
-          const list = thread.lists[args.LIST]
+          const list = thread.lists[args.LIST];
           if (!list) return false;
           const listLength = list.length;
           if (!thread.variables) thread.variables = {};
@@ -324,18 +347,18 @@
           }
           if (util.stackFrame.index < listLength) {
             util.stackFrame.index++;
-            vars[args.ITEM] = list[util.stackFrame.index - 1]
+            vars[args.ITEM] = list[util.stackFrame.index - 1];
             return true;
           }
         } else {
-          return false
+          return false;
         }
       }
 
       forEachNum(args, util) {
         const thread = util.thread;
         if (thread.lists ? args.LIST in thread.lists : false) {
-          const list = thread.lists[args.LIST]
+          const list = thread.lists[args.LIST];
           if (!list) return false;
           const listLength = list.length;
           if (!thread.variables) thread.variables = {};
@@ -349,14 +372,14 @@
             return true;
           }
         } else {
-          return false
+          return false;
         }
       }
 
       forEachItemNum(args, util) {
         const thread = util.thread;
         if (thread.lists ? args.LIST in thread.lists : false) {
-          const list = thread.lists[args.LIST]
+          const list = thread.lists[args.LIST];
           if (!list) return false;
           const listLength = list.length;
           if (!thread.variables) thread.variables = {};
@@ -367,11 +390,11 @@
           if (util.stackFrame.index < listLength) {
             util.stackFrame.index++;
             vars[args.IDX] = util.stackFrame.index;
-            vars[args.ITEM] = list[vars[args.IDX] - 1]
+            vars[args.ITEM] = list[vars[args.IDX] - 1];
             return true;
           }
         } else {
-          return false
+          return false;
         }
       }
 
@@ -384,9 +407,9 @@
         try {
           array = JSON.parse(args.ARRAY);
         } catch (error) {
-          array = []
+          array = [];
         }
-        thread.lists[args.LIST] = array
+        thread.lists[args.LIST] = array;
       }
 
       getListAsArray(args, util) {
@@ -395,9 +418,9 @@
           thread.lists = Object.create(null);
         }
         if (args.LIST in thread.lists) {
-          return JSON.stringify(thread.lists[args.LIST])
+          return JSON.stringify(thread.lists[args.LIST]);
         } else {
-          return ""
+          return "";
         }
       }
 
@@ -417,7 +440,7 @@
         return Object.keys(thread.lists).join(",");
       }
     }
-    
+
     Scratch.extensions.register(new TempLists());
   }
 })(Scratch);
