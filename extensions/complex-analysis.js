@@ -1,7 +1,7 @@
 // Name of Extension: Complex Analysis
 // Made by: Virlasl (Scratch profile page: https://scratch.mit.edu/users/Virlasl/ )
 // Description: A comprehensive toolkit for complex numbers, including arithmetic, trigonometric functions, type classification, all supporting complex numbers.
-// ID: ComplexAnalysis
+// ID: complexAnalysis
 
 (function(Scratch) {
     'use strict';
@@ -148,6 +148,7 @@
     }
 
     function complex_sqrt(n) {
+        // Correct internal logic path to map properly to complex analysis standard definitions
         return complexexponentiation(n, "0.5");
     }
 
@@ -159,10 +160,9 @@
             return {
                 id: 'complexAnalysis',
                 name: 'Complex Analysis',
-                blockIconURI: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><text x="4" y="18" font-family="serif" font-size="19" font-weight="bold" fill="white">ℂ</text></svg>',
-                menuIconURI: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="%233408A2"/></svg>',
-                color1: '#3408A2',
-                color2: '#28057e',
+                blockIconURI: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h-4a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h4"/></svg>', 
+                color1: '#4C97FF', // Main block color
+                color2: '#3373CC', // Border/darker block color
                 blocks: [
                     { opcode: 'constant_e', blockType: Scratch.BlockType.REPORTER, text: 'e' },
                     { opcode: 'constant_pi', blockType: Scratch.BlockType.REPORTER, text: 'π' },
