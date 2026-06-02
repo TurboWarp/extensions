@@ -1,36 +1,51 @@
 // Name of Extension: Complex Analysis
 // Made by: Virlasl (Scratch profile page: https://scratch.mit.edu/users/Virlasl/ )
-// Description: A comprehensive toolkit for complex numbers, including arithmetic, trigonometric functions, type classification, all supporting complex numbers.
+// Description: A comprehensive toolkit for complex numbers, including arithmetic, trigonometric functions, and type classification, all supporting complex numbers.
 // ID: complexAnalysis
 
-(function(Scratch) {    
+(function(Scratch) {        
     'use strict';
 
     // ==========================================
-    // 1. ENGINE CONSTANTS
+    // 1. ENGINE CONSTANTS (Aligned to maximum engine limits)
     // ==========================================
-    const e = 2.718281828459045;
+    const e = Math.E;
     const pi = Math.PI;
 
     // ==========================================
     // 2. MATHEMATICAL CORE PIPELINE
     // ==========================================
     
-    // Completely fixed precision system to trap floats ending in 999999... or 000000...
+    // Completely fixed precision system with a 0.001 closeness integer snapping mechanism
     function safeRound(value) {
         let parsed = parseFloat(value);
         if (isNaN(parsed)) return "NaN";
-        if (!isFinite(parsed)) return "NaN"; // Undefined states/Infinities standardizing to NaN
+        
+        // --- FIXED INFINITY PASS-THROUGH ---
+        // Instead of killing infinities, pass them through as clean strings!
+        if (parsed === Infinity) return "Infinity";
+        if (parsed === -Infinity) return "-Infinity";
 
         let strVal = String(value);
-        // Do not alter large scientific notation configurations
+        // Do not alter scientific notation Configurations
         if (strVal.includes('e') || strVal.includes('E')) {
             return strVal;
         }
 
-        // Rounds to 10 decimal places to catch precision drift cleanly
-        let rounded = Math.round(parsed * 1e10) / 1e10;
-        return String(rounded);
+        // 1. First, check your 0.001 snapping rule for integers
+        let nearestInteger = Math.round(parsed);
+        if (Math.abs(parsed - nearestInteger) < 0.001) {
+            return String(nearestInteger);
+        }
+
+        // 2. NEW DETECTOR: Only fix trailing binary drift blocks
+        if (/(9{4,}|0{4,})[0-9]?$/.test(strVal)) {
+            let rounded = Math.round(parsed * 1e12) / 1e12;
+            return String(rounded);
+        }
+
+        // 3. Otherwise, return the clean string
+        return strVal;
     }
 
     function format_complex(a, b) {
@@ -127,7 +142,7 @@
         let d = imaginarypartofnumberdividedbyi(d2);
         if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) return "NaN";
         let denominator = c**2 + d**2;
-        if (denominator === 0) return "NaN"; // Cleaned from legacy "Infinity" to standard NaN
+        if (denominator === 0) return "NaN"; 
         return format_complex((a * c + b * d) / denominator, (b * c - a * d) / denominator);
     }
 
@@ -160,6 +175,7 @@
         return format_complex(Math.log(r), theta);
     }
 
+    // Fixed naming reference to match usage
     function native_complex_ln_string(n) {
         let r = parseFloat(realpartofcomplexnumber(n));
         let i = imaginarypartofnumberdividedbyi(n);
@@ -276,6 +292,7 @@
                         text: 'log [N1] of [N2]',
                         arguments: { N1: { type: Scratch.ArgumentType.STRING, defaultValue: '' }, N2: { type: Scratch.ArgumentType.STRING, defaultValue: '' } }
                     },
+                    '---',
                     {
                         opcode: 'e_to_ix',
                         blockType: Scratch.BlockType.REPORTER,
