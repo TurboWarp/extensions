@@ -321,7 +321,8 @@
       if (costumeIndex === -1) return;
       const costume = util.target.sprite.costumes[costumeIndex];
 
-      const url = costume.asset.encodeDataURI();
+      const base64 = vm.getExportedCostumeBase64(costume);
+      const url = `data:${costume.asset.assetType.contentType};base64,${base64}`;
       const rotationCenterX = costume.rotationCenterX;
       const rotationCenterY = costume.rotationCenterY;
 
