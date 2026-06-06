@@ -405,7 +405,7 @@
             ? 1 <= args.IDX < thread.lists[args.LIST].length + 1
             : false
         ) {
-          return `${thread.lists?.[args.LIST]?.[args.ITEM] || ""}`;
+          return `${thread.lists?.[args.LIST]?.[args.IDX - 1] || ""}`;
         } else {
           return "";
         }
