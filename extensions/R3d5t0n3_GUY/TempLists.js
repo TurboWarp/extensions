@@ -1,7 +1,7 @@
 // Name: Temporary Lists
 // ID: r3d5t0n3guyTempLists
 // Description: Addon for Lily's "Temporary Variables" and "List Tools" that adds thread lists.
-// By: R3d5t0n3_GUY <https://github.com/R3d5t0n3GUY>
+// By: R3d5t0n3_GUY <https://scratch.mit.edu/users/R3dstone_engineerer>
 // Original: LilyMakesThings and Mio
 // License: MIT AND LGPL-3.0
 
