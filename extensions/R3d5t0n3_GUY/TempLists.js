@@ -1,12 +1,12 @@
 // Name: Temporary Lists
 // ID: r3d5t0n3guyTempLists
-// Description: Addon for Lily's "Temporary Variables" and "List Tools" that adds thread lists
+// Description: Addon for Lily's "Temporary Variables" and "List Tools" that adds thread lists.
 // By: R3d5t0n3_GUY <https://github.com/R3d5t0n3GUY>
+// Original: LilyMakesThings and Mio
 // License: MIT AND LGPL-3.0
 
 // REFERENCES:
-// "Temporary Variables" By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
-// "Temporary Variables" By: Mio <https://scratch.mit.edu/users/0znzw/>
+// "Temporary Variables" By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>, Mio <https://scratch.mit.edu/users/0znzw/>
 // "List Tools" By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 
 (function (Scratch) {
@@ -509,7 +509,7 @@
         thread.lists[args.LIST] = list.value;
       }
 
-      // ITERATION LOOPS
+      // ITERATION LOOPS (ADD "Temporary Variables" (by LilyMakesThings and Mio) TO YOUR PROJECT IF YOU WANT THESE)
       forEachItem(args, util) {
         const thread = util.thread;
         if (thread.lists ? args.LIST in thread.lists : false) {
