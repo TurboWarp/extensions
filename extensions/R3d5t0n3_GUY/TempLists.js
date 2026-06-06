@@ -199,10 +199,7 @@
               hideFromPalette: this.isDependencyNotLoaded(),
               arguments: {
                 ITEM: this.fieldParamTemplate("item"),
-                LIST: {
-                  type: Scratch.ArgumentType.STRING,
-                  defaultValue: "thread list",
-                },
+                LIST: this.fieldParamTemplate("list"),
               },
             },
             {
