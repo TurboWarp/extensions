@@ -15,6 +15,7 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("This extension must run unsandboxed");
   } else {
+
     class TemporaryLists {
       getInfo() {
         return {
@@ -270,7 +271,7 @@
       /*--------FUNCTIONS--------*/
 
       // EXTENSION CONSTRUCTION
-      getListObjectFromName = function (name, util) {
+      getListObjectFromName(name, util) {
         const vm = Scratch.vm;
         const runtime = vm.runtime;
         const stageTarget = runtime.getTargetForStage();
@@ -281,7 +282,7 @@
         if (listObject) return listObject;
         listObject = target.lookupVariableByNameAndType(name, "list");
         if (listObject) return listObject;
-      };
+      }
       isDependencyNotLoaded() {
         return !(
           Scratch?.vm?.runtime?.extensionManager?.isExtensionLoaded(
