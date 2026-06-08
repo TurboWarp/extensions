@@ -2,6 +2,7 @@
 // Made by: Virlasl (Scratch profile page: https://scratch.mit.edu/users/Virlasl/ )
 // Description: A comprehensive toolkit for complex numbers, including arithmetic, trigonometric functions, and type classification, all supporting complex numbers.
 // ID: complexAnalysis
+// Was made in python, converted to Java using Gemini AI because I'm not good at Java
 
 (function(Scratch) {        
     'use strict';
