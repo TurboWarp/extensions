@@ -195,7 +195,7 @@
             return {
                 id: 'complexAnalysis',
                 name: 'Complex Analysis',
-                iconURL: 'https://raw.githubusercontent.com/Virlasl/YOUR_REPO_NAME/master/Picture.png',
+                iconURL: 'https://raw.githubusercontent.com/Virlasl/extensions/master/images/complex-analysis.png',
                 blockIconURI: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><text x="2" y="18" fill="white" font-family="monospace, sans-serif" font-size="18" font-weight="900">ℂ</text></svg>',
                 color1: '#3408a2', 
                 color2: '#240475', 
