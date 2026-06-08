@@ -15,7 +15,6 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("This extension must run unsandboxed");
   } else {
-
     class TemporaryLists {
       getInfo() {
         return {
