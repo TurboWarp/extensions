@@ -15,7 +15,6 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("This extension must run unsandboxed");
   } else {
-
     class TemporaryLists {
       getInfo() {
         return {
@@ -282,7 +281,7 @@
         if (listObject) return listObject;
         listObject = target.lookupVariableByNameAndType(name, "list");
         if (listObject) return listObject;
-      }
+      };
       isDependencyNotLoaded() {
         return !(
           Scratch?.vm?.runtime?.extensionManager?.isExtensionLoaded(
