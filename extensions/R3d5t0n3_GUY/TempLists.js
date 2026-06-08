@@ -15,19 +15,6 @@
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("This extension must run unsandboxed");
   } else {
-    /* -- SETUP -- */
-    const vm = Scratch.vm;
-    const runtime = vm.runtime;
-    const getVarObjectFromName = function (name, util, type) {
-      const stageTarget = runtime.getTargetForStage();
-      const target = util.target;
-      let listObject = Object.create(null);
-
-      listObject = stageTarget.lookupVariableByNameAndType(name, type);
-      if (listObject) return listObject;
-      listObject = target.lookupVariableByNameAndType(name, type);
-      if (listObject) return listObject;
-    };
 
     class TemporaryLists {
       getInfo() {
@@ -284,6 +271,18 @@
       /*--------FUNCTIONS--------*/
 
       // EXTENSION CONSTRUCTION
+      getListObjectFromName = function (name, util) {
+        const vm = Scratch.vm;
+        const runtime = vm.runtime;
+        const stageTarget = runtime.getTargetForStage();
+        const target = util.target;
+        let listObject = Object.create(null);
+
+        listObject = stageTarget.lookupVariableByNameAndType(name, "list");
+        if (listObject) return listObject;
+        listObject = target.lookupVariableByNameAndType(name, "list");
+        if (listObject) return listObject;
+      }
       isDependencyNotLoaded() {
         return !(
           Scratch?.vm?.runtime?.extensionManager?.isExtensionLoaded(
@@ -498,10 +497,9 @@
         if (!thread.lists) {
           thread.lists = Object.create(null);
         }
-        const list = getVarObjectFromName(
+        const list = this.getListObjectFromName(
           Scratch.Cast.toString(args.LISTS),
-          util,
-          "list"
+          util
         );
         thread.lists[args.LIST] = list.value;
       }
