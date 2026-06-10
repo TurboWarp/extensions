@@ -389,7 +389,10 @@
     },
     "fr": {
         "-SIPC-/time@name": "Temps",
+        "CST1229/images@description": "Des blocks pour travailler avec les images",
         "Clay/htmlEncode@name": "Encodeur HTML",
+        "files@description": "Lisez et téléchargez des fichiers",
+        "files@name": "Fichiers",
         "runtime-options@name": "Options d'exécution"
     },
     "he": {
@@ -535,7 +538,7 @@
         "lab/face-sensing@name": "Sensore del Volto",
         "lab/text@description": "Un modo semplice per mostrare e animare il testo. Compatibie con i blocchi sperimentali \"Testo Animato\" di Scratch Lab.",
         "lab/text@name": "Testo Animato",
-        "lab/video-sprites@description": "Rimpiazza gli sprite con feed video live. Compatibile con l'esperimento Testo Animato dello Scratch Lab.",
+        "lab/video-sprites@description": "Rimpiazza l'interno della forma dello sprite con il video live della webcam. Compatibile con la versione sperimentale dei Video Sprite dello Scratch Lab.",
         "lab/video-sprites@name": "Video Sprite",
         "local-storage@description": "Memorizza dati persistenti. Come i cookie, ma in modo migliore.",
         "local-storage@name": "Memoria Locale",
@@ -605,6 +608,7 @@
         "Clay/htmlEncode@name": "HTMLエンコード",
         "CubesterYT/KeySimulation@description": "キーの押下とマウスのクリックをシュミレーションする。",
         "CubesterYT/KeySimulation@name": "キーシミュレーション",
+        "CubesterYT/Webhooks@description": "最新かつ非常に高性能なWebhook拡張機能。",
         "CubesterYT/WindowControls@description": "ウィンドウの移動、サイズ変更、名前の変更、ウィンドウ最大化の切り替え、ウィンドウのサイズの取得など。",
         "CubesterYT/WindowControls@name": "ウィンドウコントロール",
         "DNin/wake-lock@description": "コンピューターがスリープ状態にならないようにします。",
@@ -660,6 +664,7 @@
         "SharkPool/Camera@name": "カメラ V2",
         "SharkPool/Font-Manager@description": "フォントを追加、削除、管理する。",
         "SharkPool/Font-Manager@name": "フォントマネージャー",
+        "SharkPool/Tune-Shark-V3@description": "複雑なサウンドコントロールを提供する、高度なオーディオエンジン。",
         "Skyhigh173/bigint@description": "どんな整数 (小数を含まない) も処理する演算ブロック。",
         "Skyhigh173/bigint@name": "ビッグイント",
         "Skyhigh173/json@description": "JSON文字列と配列を処理する。",
