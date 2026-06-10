@@ -328,3 +328,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## NishiOwO/dectalk.png
  - Created by [@Dogo6647](https://github.com/Dogo6647)
  - Used Arimo from Google Fonts.
+
+## Den4ik-12/WheelScroll.svg
+ - Created by [@Den4ik-12](https://github.com/DDen4ik-12)
