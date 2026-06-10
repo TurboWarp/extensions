@@ -387,7 +387,7 @@
         }
         if (args.LIST in thread.lists) {
           if (1 <= args.IDX < thread.lists[args.LIST].length + 1) {
-            thread.lists[args.LIST] = args.ITEM;
+            thread.lists[args.LIST][args.IDX - 1] = args.ITEM;
           }
         } else {
           thread.lists[args.LIST] = [];
