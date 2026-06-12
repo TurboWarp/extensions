@@ -325,6 +325,9 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## DogeisCut/FormatNumbers.png
  - Created by [@Dillon](https://github.com/DillonRGaming)
 
+ ## 8to16/mesh.svg
+ - Created by [@kx1bx1](https://github.com/kx1bx1) in https://github.com/TurboWarp/extensions/pull/2382#issuecomment-3731596025
+
 ## NishiOwO/dectalk.png
  - Created by [@Dogo6647](https://github.com/Dogo6647)
  - Used Arimo from Google Fonts.
