@@ -2,7 +2,7 @@
 // ID: griffpatch
 // Description: Two dimensional physics.
 // Original: griffpatch <https://scratch.mit.edu/users/griffpatch/>
-// License: BSD-3-Clause AND MIT AND Zlib
+// License: BSD-3-Clause AND MIT AND Zlib AND ISC
 
 /*!
  * This is based on https://github.com/griffpatch/scratch-vm/tree/box2d/src/extensions/scratch3_griffpatch
@@ -22,7 +22,7 @@
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-(function (Scratch) {
+(async function (Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
@@ -4161,7 +4161,7 @@
     };
     b2Settings.b2Assert = function (a) {
       if (!a) {
-        throw "Assertion Failed";
+        throw new Error("Assertion Failed");
       }
     };
     Box2D.postDefs.push(function () {
@@ -12215,11 +12215,11 @@
   const SHAPE_TYPE_OPTIONS = {
     COSTUME: "costume",
     CIRCLE: "circle",
-    SVG_POLYGON: "svg",
+    POLYGON: "polygon",
     ALL: "all",
   };
 
-  const _definePolyFromHull = function (hullPoints) {
+  const definePolyFromHull = (hullPoints) => {
     fixDef.shape = new b2PolygonShape();
 
     const vertices = [];
@@ -12238,6 +12238,662 @@
     }
 
     fixDef.shape.SetAsArray(vertices);
+  };
+
+  // Polygon mode: silhouette -> marching squares -> ring/hole groups ->
+  // RDP simplify -> earcut triangulate -> Hertel-Mehlhorn merge -> fixtures.
+
+  // earcut (ISC, https://github.com/mapbox/earcut)
+  const earcut = (
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/earcut@3.0.2/src/earcut.js"
+    )
+  ).default;
+
+  // Missing on older renderers; without it, effects don't shape the trace.
+  const EffectTransform = Scratch.vm.runtime.renderer?.exports?.EffectTransform;
+
+  // Silhouette sampling resolution
+  const POLY_GRID_MIN = 16;
+  const POLY_GRID_MAX = 96;
+  const POLY_GRID_STEP = 4;
+
+  // Ramer-Douglas-Peucker tolerance, in grid cells: outline points within this
+  // distance of a kept edge are discarded. Larger means fewer, coarser corners.
+  const POLY_RDP_EPSILON = 0.75;
+
+  // Contours whose area is below this many grid cells are sampling noise
+  // and will be ignored when an island or a hole.
+  const POLY_MIN_AREA = 2.0;
+
+  // Maximum number of vertices per Box2D polygon before breaking apart.
+  const POLY_MAX_VERTS = 8;
+
+  // Maximum number of Box2D fixtures polygon mode can generate before falling back.
+  const POLY_MAX_FIXTURES = 32;
+
+  /**
+   * @typedef {{ x: number, y: number }} Point
+   */
+
+  /**
+   * Clamp v to [lo, hi].
+   * @param {number} v
+   * @param {number} lo
+   * @param {number} hi
+   * @returns {number}
+   */
+  const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
+
+  /**
+   * Shoelace signed area. Positive = CCW (outer), negative = CW (hole).
+   * @param {Point[]} points
+   * @returns {number}
+   */
+  const signedArea = (points) => {
+    let area = 0;
+    for (let i = 0, n = points.length; i < n; i++) {
+      const a = points[i];
+      const b = points[(i + 1) % n];
+      area += a.x * b.y - b.x * a.y;
+    }
+    return area / 2;
+  };
+
+  /**
+   * Twice the signed area of triangle abc. Positive iff a, b, c turn CCW.
+   * @param {Point} a
+   * @param {Point} b
+   * @param {Point} c
+   * @returns {number}
+   */
+  const area3 = (a, b, c) =>
+    (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+
+  /**
+   * Sample drawable silhouette into a padded binary opacity grid (1 = opaque).
+   * The 1-cell transparent border keeps every contour as a closed loop inside
+   * the grid. Effects are applied via EffectTransform when available, matching
+   * scratch-render's hull sampling.
+   * @param {import('scratch-render').Drawable} drawable
+   * @returns {{ grid: Uint8Array, gx: number, gy: number, gxI: number,
+   *   gyI: number, opaqueCount: number }} gx/gy include the border; gxI/gyI
+   *   are the interior dimensions.
+   */
+  const polySampleSilhouette = (drawable) => {
+    const skin = drawable.skin;
+    skin.updateSilhouette();
+
+    const size = skin.size;
+    const gxI = clamp(
+      Math.round(size[0] / POLY_GRID_STEP),
+      POLY_GRID_MIN,
+      POLY_GRID_MAX
+    );
+    const gyI = clamp(
+      Math.round(size[1] / POLY_GRID_STEP),
+      POLY_GRID_MIN,
+      POLY_GRID_MAX
+    );
+    const gx = gxI + 2;
+    const gy = gyI + 2;
+    const grid = new Uint8Array(gx * gy);
+    // 3-element: transformPoint's twgl.v3.copy needs a z slot.
+    const coord = [0, 0, 0];
+    const sample = [0, 0, 0];
+    let opaqueCount = 0;
+
+    const useEffects = !!EffectTransform && drawable.enabledEffects !== 0;
+
+    for (let j = 0; j < gyI; j++) {
+      coord[1] = j / (gyI - 1);
+      for (let i = 0; i < gxI; i++) {
+        coord[0] = i / (gxI - 1);
+        let lookup = coord;
+        if (useEffects) {
+          EffectTransform.transformPoint(drawable, coord, sample);
+          lookup = sample;
+        }
+        if (skin.isTouchingLinear(lookup)) {
+          grid[(j + 1) * gx + (i + 1)] = 1;
+          opaqueCount++;
+        }
+      }
+    }
+
+    return { grid, gx, gy, gxI, gyI, opaqueCount };
+  };
+
+  /**
+   * Marching-squares case table. Indexed by the 4-bit block code (see
+   * polyMarchingSquares for bit layout). Each entry is a list of segments
+   * [fromEdge, toEdge] where edges are 0=top, 1=right, 2=bottom, 3=left.
+   * Segments are oriented so the opaque region stays on one side, letting
+   * them chain head-to-tail into closed loops.
+   * @type {Array<Array<number[]>|null>}
+   */
+  const POLY_MS_TABLE = [
+    null,
+    [[0, 3]],
+    [[1, 0]],
+    [[1, 3]],
+    [[2, 1]],
+    [
+      [0, 3],
+      [2, 1],
+    ],
+    [[2, 0]],
+    [[2, 3]],
+    [[3, 2]],
+    [[0, 2]],
+    [
+      [1, 0],
+      [3, 2],
+    ],
+    [[1, 2]],
+    [[3, 1]],
+    [[0, 1]],
+    [[3, 0]],
+    null,
+  ];
+
+  /**
+   * Trace closed contour loops of a binary grid via marching squares.
+   * @param {Uint8Array} grid Padded grid from polySampleSilhouette.
+   * @param {number} gx Width in cells, including the border.
+   * @param {number} gy Height in cells, including the border.
+   * @returns {Point[][]} One loop per island and per hole, in grid coords.
+   */
+  const polyMarchingSquares = (grid, gx, gy) => {
+    // Edge midpoint for the (ci, cj) block; edge per POLY_MS_TABLE.
+    const edgePoint = (ci, cj, edge) => {
+      if (edge === 0) return { x: ci + 0.5, y: cj };
+      if (edge === 1) return { x: ci + 1, y: cj + 0.5 };
+      if (edge === 2) return { x: ci + 0.5, y: cj + 1 };
+      return { x: ci, y: cj + 0.5 };
+    };
+
+    // Midpoints fall on half-integers, so doubling gives a collision-free int
+    // key as long as coords stay well below 100000 (they do).
+    const pointKey = (p) => Math.round(p.x * 2) * 100000 + Math.round(p.y * 2);
+
+    // Pass 1: per 2x2 block, pack corners into a 4-bit code (TL=0, TR=1,
+    // BR=2, BL=3) and emit the segments the table calls for.
+    const segments = [];
+    const startMap = new Map();
+    for (let cj = 0; cj < gy - 1; cj++) {
+      for (let ci = 0; ci < gx - 1; ci++) {
+        const code =
+          grid[cj * gx + ci] |
+          (grid[cj * gx + ci + 1] << 1) |
+          (grid[(cj + 1) * gx + ci + 1] << 2) |
+          (grid[(cj + 1) * gx + ci] << 3);
+        const segs = POLY_MS_TABLE[code];
+        if (!segs) continue;
+        for (let s = 0; s < segs.length; s++) {
+          const seg = {
+            a: edgePoint(ci, cj, segs[s][0]),
+            b: edgePoint(ci, cj, segs[s][1]),
+            used: false,
+          };
+          segments.push(seg);
+          startMap.set(pointKey(seg.a), seg);
+        }
+      }
+    }
+
+    // Pass 2: chain head-to-tail via startMap until each loop closes.
+    const loops = [];
+    for (let i = 0; i < segments.length; i++) {
+      let seg = segments[i];
+      if (seg.used) continue;
+      const loop = [];
+      while (seg && !seg.used) {
+        seg.used = true;
+        loop.push(seg.a);
+        seg = startMap.get(pointKey(seg.b));
+      }
+      if (loop.length >= 3) loops.push(loop);
+    }
+
+    return loops;
+  };
+
+  /**
+   * Even-odd point-in-polygon test.
+   * @param {Point} p
+   * @param {Point[]} ring
+   * @returns {boolean}
+   */
+  const polyPointInPolygon = (p, ring) => {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const a = ring[i];
+      const b = ring[j];
+      if (
+        a.y > p.y !== b.y > p.y &&
+        p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x
+      ) {
+        inside = !inside;
+      }
+    }
+    return inside;
+  };
+
+  /**
+   * Group loops into solid regions: positive area = outer (seeds a group),
+   * negative = hole (attached to the smallest containing outer). Tiny |area|
+   * speckle and orphan holes are dropped. A positive loop inside a hole
+   * becomes its own group, modelling a solid island in a hollow.
+   * @param {Point[][]} loops From polyMarchingSquares.
+   * @returns {Array<{ outer: Point[], holes: Point[][], area: number }>}
+   */
+  const polyGroupContours = (loops) => {
+    const groups = [];
+    const holes = [];
+    for (let i = 0; i < loops.length; i++) {
+      const area = signedArea(loops[i]);
+      if (area > POLY_MIN_AREA) {
+        groups.push({ outer: loops[i], area: area, holes: [] });
+      } else if (area < -POLY_MIN_AREA) {
+        holes.push(loops[i]);
+      }
+    }
+
+    // Contours never cross, so one vertex decides containment; the smallest
+    // containing outer is the immediately enclosing one (handles nesting).
+    for (let h = 0; h < holes.length; h++) {
+      const probe = holes[h][0];
+      let best = null;
+      for (let g = 0; g < groups.length; g++) {
+        if (
+          polyPointInPolygon(probe, groups[g].outer) &&
+          (best === null || groups[g].area < best.area)
+        ) {
+          best = groups[g];
+        }
+      }
+      if (best !== null) best.holes.push(holes[h]);
+    }
+
+    return groups;
+  };
+
+  /**
+   * Ramer-Douglas-Peucker on the open polyline pts[first..last]. Kept interior
+   * points are appended to `out`; the caller supplies the endpoints.
+   * @param {Point[]} pts
+   * @param {number} first
+   * @param {number} last
+   * @param {number} epsilon Distance tolerance, in pts' units.
+   * @param {Point[]} out
+   * @returns {void}
+   */
+  const polyRdpOpen = (pts, first, last, epsilon, out) => {
+    let maxDist = -1;
+    let index = -1;
+    const a = pts[first];
+    const b = pts[last];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const lenSq = dx * dx + dy * dy;
+
+    // Squared distances throughout, so no square roots.
+    for (let i = first + 1; i < last; i++) {
+      const p = pts[i];
+      let dist;
+      if (lenSq === 0) {
+        // Degenerate chord: fall back to distance from a.
+        dist = (p.x - a.x) * (p.x - a.x) + (p.y - a.y) * (p.y - a.y);
+      } else {
+        const cross = (p.x - a.x) * dy - (p.y - a.y) * dx;
+        dist = (cross * cross) / lenSq;
+      }
+      if (dist > maxDist) {
+        maxDist = dist;
+        index = i;
+      }
+    }
+
+    if (index !== -1 && maxDist > epsilon * epsilon) {
+      polyRdpOpen(pts, first, index, epsilon, out);
+      out.push(pts[index]);
+      polyRdpOpen(pts, index, last, epsilon, out);
+    }
+  };
+
+  /**
+   * RDP-simplify a closed loop. RDP needs an open polyline, so the ring is
+   * split at two roughly antipodal vertices (farthest from loop[0], then
+   * farthest from that), keeping each half non-degenerate.
+   * @param {Point[]} loop
+   * @param {number} epsilon Distance tolerance, in grid cells.
+   * @returns {Point[]} A new simplified loop.
+   */
+  const polyRdpLoop = (loop, epsilon) => {
+    const n = loop.length;
+    if (n <= 4) return loop.slice();
+
+    let far1 = 0;
+    let best = -1;
+    for (let i = 1; i < n; i++) {
+      const d =
+        (loop[i].x - loop[0].x) * (loop[i].x - loop[0].x) +
+        (loop[i].y - loop[0].y) * (loop[i].y - loop[0].y);
+      if (d > best) {
+        best = d;
+        far1 = i;
+      }
+    }
+
+    let far2 = 0;
+    best = -1;
+    for (let i = 0; i < n; i++) {
+      const d =
+        (loop[i].x - loop[far1].x) * (loop[i].x - loop[far1].x) +
+        (loop[i].y - loop[far1].y) * (loop[i].y - loop[far1].y);
+      if (d > best) {
+        best = d;
+        far2 = i;
+      }
+    }
+
+    const lo = Math.min(far1, far2);
+    const hi = Math.max(far1, far2);
+    if (lo === hi) return loop.slice();
+    // First half lo..hi; second half hi..lo wrapping past the end.
+    const out = [];
+    out.push(loop[lo]);
+    polyRdpOpen(loop, lo, hi, epsilon, out);
+    out.push(loop[hi]);
+    const wrapped = loop.slice(hi).concat(loop.slice(0, lo + 1));
+    polyRdpOpen(wrapped, 0, wrapped.length - 1, epsilon, out);
+    return out;
+  };
+
+  /**
+   * Hertel-Mehlhorn convex merge: greedily dissolve shared edges between faces
+   * whenever the union stays convex and within maxVerts. Collapses earcut's
+   * triangles into fewer fat convex polygons for cheaper Box2D collisions.
+   * Faces must be CCW; winding is preserved.
+   * @param {Point[]} pts Shared vertex list indexed by faces.
+   * @param {number[][]} faces Index lists, mutated in place.
+   * @param {number} maxVerts Cap on any merged face's vertex count.
+   * @returns {number[][]} The same `faces` array, after merging.
+   */
+  const polyMergeConvex = (pts, faces, maxVerts) => {
+    // Faces are CCW, so any clearly negative turn marks a reflex corner.
+    const isConvexFace = (face) => {
+      const n = face.length;
+      if (n < 3) return false;
+      for (let i = 0; i < n; i++) {
+        if (
+          area3(
+            pts[face[(i - 1 + n) % n]],
+            pts[face[i]],
+            pts[face[(i + 1) % n]]
+          ) < -1e-9
+        ) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    // A shared edge runs a0->a1 in A and a1->a0 in B (same winding). The merged
+    // ring is A rotated to walk that edge last, then B's other vertices.
+    const tryMerge = (A, B) => {
+      const nA = A.length;
+      const nB = B.length;
+      for (let s = 0; s < nA; s++) {
+        const a0 = A[s];
+        const a1 = A[(s + 1) % nA];
+        for (let t = 0; t < nB; t++) {
+          if (a0 === B[(t + 1) % nB] && a1 === B[t]) {
+            const merged = [];
+            for (let k = 0; k < nA; k++) merged.push(A[(s + 1 + k) % nA]);
+            for (let k = 1; k < nB - 1; k++) merged.push(B[(t + 1 + k) % nB]);
+            if (merged.length > maxVerts) return null;
+            if (!isConvexFace(merged)) return null;
+            return merged;
+          }
+        }
+      }
+      return null;
+    };
+
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (let i = 0; i < faces.length && !changed; i++) {
+        for (let j = i + 1; j < faces.length && !changed; j++) {
+          const merged = tryMerge(faces[i], faces[j]);
+          if (merged) {
+            faces.splice(j, 1);
+            faces[i] = merged;
+            changed = true;
+          }
+        }
+      }
+    }
+
+    return faces;
+  };
+
+  /**
+   * Decompose a simple polygon (with optional holes) into convex pieces via
+   * earcut + Hertel-Mehlhorn.
+   * @param {Point[]} outer Open ring in grid space.
+   * @param {Point[][]} holes Open rings inside `outer`; <3-vertex holes dropped.
+   * @returns {Point[][]} Convex pieces, or empty if triangulation fails.
+   */
+  const polyDecomposeWithHoles = (outer, holes) => {
+    if (outer.length < 3) return [];
+
+    // Dropping a <3-vertex hole just fills it back in.
+    const validHoles = [];
+    for (let i = 0; i < holes.length; i++) {
+      if (holes[i].length >= 3) validHoles.push(holes[i]);
+    }
+
+    // earcut input: outer then holes, flat [x,y,...]; holeIndices marks starts.
+    const pts = outer.slice();
+    const holeIndices = [];
+    for (let i = 0; i < validHoles.length; i++) {
+      holeIndices.push(pts.length);
+      for (let k = 0; k < validHoles[i].length; k++) pts.push(validHoles[i][k]);
+    }
+    const coords = [];
+    for (let i = 0; i < pts.length; i++) {
+      coords.push(pts[i].x, pts[i].y);
+    }
+
+    const tris = earcut(coords, holeIndices, 2);
+    if (tris.length === 0) {
+      // No safe fill when holes are present.
+      return validHoles.length === 0 ? [outer.slice()] : [];
+    }
+
+    // earcut's winding follows the input, but the merge needs CCW — must be
+    // normalised here, or merging produces garbage.
+    const faces = [];
+    for (let t = 0; t < tris.length; t += 3) {
+      let i0 = tris[t];
+      const i1 = tris[t + 1];
+      let i2 = tris[t + 2];
+      if (area3(pts[i0], pts[i1], pts[i2]) < 0) {
+        const swap = i0;
+        i0 = i2;
+        i2 = swap;
+      }
+      faces.push([i0, i1, i2]);
+    }
+
+    const merged = polyMergeConvex(pts, faces, POLY_MAX_VERTS);
+    const out = [];
+    for (let i = 0; i < merged.length; i++) {
+      const face = merged[i];
+      const piece = [];
+      for (let k = 0; k < face.length; k++) piece.push(pts[face[k]]);
+      out.push(piece);
+    }
+
+    return out;
+  };
+
+  /**
+   * Fan-split a convex polygon over the maxVerts budget into smaller pieces,
+   * all sharing vertex 0 and overlapping by one vertex for seamless tiling.
+   * @param {Point[]} poly Convex polygon.
+   * @param {number} maxVerts
+   * @returns {Point[][]} One or more pieces, none over maxVerts.
+   */
+  const polyLimitVertices = (poly, maxVerts) => {
+    const n = poly.length;
+    if (n <= maxVerts) return [poly];
+
+    const out = [];
+    let i = 1;
+    while (i < n - 1) {
+      const end = Math.min(i + maxVerts - 2, n - 1);
+      const piece = [poly[0]];
+      for (let k = i; k <= end; k++) piece.push(poly[k]);
+      if (piece.length >= 3) out.push(piece);
+      // Resume at `end` so it's shared with the next piece's first edge.
+      i = end;
+    }
+
+    return out.length > 0 ? out : [poly];
+  };
+
+  /**
+   * Drop adjacent duplicate vertices (including the wrap-around pair).
+   * earcut's bridges and coordinate transforms can introduce them, and Box2D
+   * rejects zero-length edges.
+   * @param {Point[]} pts
+   * @returns {Point[]} New array.
+   */
+  const polyDedupe = (pts) => {
+    const eps = 1e-4;
+    const out = [];
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      const prev = out.length > 0 ? out[out.length - 1] : null;
+      if (
+        prev &&
+        Math.abs(prev.x - p.x) < eps &&
+        Math.abs(prev.y - p.y) < eps
+      ) {
+        continue;
+      }
+      out.push(p);
+    }
+
+    while (out.length >= 2) {
+      const a = out[0];
+      const b = out[out.length - 1];
+      if (Math.abs(a.x - b.x) < eps && Math.abs(a.y - b.y) < eps) {
+        out.pop();
+      } else {
+        break;
+      }
+    }
+
+    return out;
+  };
+
+  /**
+   * Polygon-mode entry point: trace a drawable's costume into convex pieces in
+   * the same space as the "this costume" hull, ready for definePolyFromHull
+   * (each piece is a closed ring, last vertex = first). Returns null when the
+   * costume yields nothing usable, so the caller falls back to the hull.
+   * @param {import('scratch-render').Drawable} drawable
+   * @returns {Point[][]|null}
+   */
+  const traceCostumePolygon = (drawable) => {
+    const skin = drawable && drawable.skin;
+    if (!skin || typeof skin.isTouchingLinear !== "function") return null;
+
+    const sampled = polySampleSilhouette(drawable);
+    if (sampled.opaqueCount === 0) return null;
+
+    const groups = polyGroupContours(
+      polyMarchingSquares(sampled.grid, sampled.gx, sampled.gy)
+    );
+    if (groups.length === 0) return null;
+
+    const size = skin.size;
+    const offset = skin.rotationCenter;
+    const scaleX = drawable.scale[0] / 100;
+    const scaleY = drawable.scale[1] / -100; // Flip Y for hulls
+    const gxI = sampled.gxI;
+    const gyI = sampled.gyI;
+
+    // Simplify, then clamp into interior indices 1..gxI / 1..gyI — without
+    // this, the midpoint rule leaves outlines half a cell out into the padding.
+    const prep = (loop) => {
+      const simplified = polyRdpLoop(loop, POLY_RDP_EPSILON);
+      for (let s = 0; s < simplified.length; s++) {
+        simplified[s] = {
+          x: clamp(simplified[s].x, 1, gxI),
+          y: clamp(simplified[s].y, 1, gyI),
+        };
+      }
+      return simplified;
+    };
+
+    const result = [];
+    for (let g = 0; g < groups.length; g++) {
+      // Don't let one malformed region abort the whole costume.
+      try {
+        const outer = prep(groups[g].outer);
+        if (outer.length < 3) continue;
+
+        const holes = [];
+        for (let h = 0; h < groups[g].holes.length; h++) {
+          const hole = prep(groups[g].holes[h]);
+          if (hole.length >= 3) holes.push(hole);
+        }
+
+        const pieces = polyDecomposeWithHoles(outer, holes);
+        for (let p = 0; p < pieces.length; p++) {
+          const capped = polyLimitVertices(pieces[p], POLY_MAX_VERTS);
+          for (let c = 0; c < capped.length; c++) {
+            let piece = capped[c];
+            if (piece.length < 3) continue;
+
+            // Force CCW: the Y-flip below reverses winding, then
+            // definePolyFromHull reverses again, leaving CCW for Box2D —
+            // matching what the "this costume" hull path produces.
+            if (signedArea(piece) < 0) piece = piece.slice().reverse();
+
+            const transformed = [];
+            for (let v = 0; v < piece.length; v++) {
+              // Strip padding, normalise to [0,1], scale to skin pixels, then
+              // recentre and apply sprite scale (negative scaleY flips Y).
+              const px = ((piece[v].x - 1) / (gxI - 1)) * size[0];
+              const py = ((piece[v].y - 1) / (gyI - 1)) * size[1];
+              transformed.push({
+                x: (px - offset[0]) * scaleX,
+                y: (py - offset[1]) * scaleY,
+              });
+            }
+
+            const cleaned = polyDedupe(transformed);
+            if (cleaned.length < 3) continue;
+            if (Math.abs(signedArea(cleaned)) < 1e-3) continue;
+            // definePolyFromHull expects last vertex = first.
+            cleaned.push({ x: cleaned[0].x, y: cleaned[0].y });
+            result.push(cleaned);
+          }
+        }
+      } catch (e) {
+        // Other groups and the hull fallback still apply.
+      }
+    }
+    // Too many fixtures collide slowly; fall back to the single hull.
+    if (result.length > POLY_MAX_FIXTURES) return null;
+    return result.length > 0 ? result : null;
   };
 
   const _placeBody = function (id, x, y, dir) {
@@ -13227,7 +13883,10 @@
       return [
         { text: "this costume", value: SHAPE_TYPE_OPTIONS.COSTUME },
         { text: "this circle", value: SHAPE_TYPE_OPTIONS.CIRCLE },
-        // { text: "this polygon", value: SHAPE_TYPE_OPTIONS.SVG_POLYGON },
+        {
+          text: "this polygon",
+          value: SHAPE_TYPE_OPTIONS.POLYGON,
+        },
         { text: "all sprites", value: SHAPE_TYPE_OPTIONS.ALL },
       ];
     }
@@ -13399,8 +14058,8 @@
 
     /**
      * Play a drum sound for some number of beats.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @property {string} shape - the shape
      */
     setPhysics(args, util) {
@@ -13456,25 +14115,30 @@
           (size[0] * Math.abs(scaleX) + size[1] * Math.abs(scaleY)) / 4.0 / zoom
         );
         // fixDef.shape.SetRadius((drawable.getBounds().width / 2) / zoom);
-      } else if (shape === SHAPE_TYPE_OPTIONS.SVG_POLYGON) {
-        const svg = drawable._skin._svgRenderer._svgTag;
-
-        // recurse through childNodes of type 'g', looking for type 'path'
-
-        const hullPoints = [];
-        if (svg) {
-          this._fetchPolygonPointsFromSVG(
-            svg,
-            hullPoints,
-            offset[0],
-            offset[1],
-            scaleX,
-            scaleY
-          );
+      } else if (shape === SHAPE_TYPE_OPTIONS.POLYGON) {
+        // Trace the costume silhouette into convex polygons (concave-capable).
+        let traced = null;
+        try {
+          traced = traceCostumePolygon(drawable);
+        } catch (e) {
+          traced = null;
         }
 
-        _definePolyFromHull(hullPoints[0]);
-        allHulls = hullPoints;
+        if (traced && traced.length > 0) {
+          definePolyFromHull(traced[0]);
+          allHulls = traced;
+        } else {
+          // Tracing produced nothing usable (empty or degenerate costume):
+          // fall back to the convex hull, same as "this costume" mode.
+          const hullPoints = [];
+          for (const i in points) {
+            hullPoints.push({
+              x: (points[i][0] - offset[0]) * scaleX,
+              y: (points[i][1] - offset[1]) * scaleY,
+            });
+          }
+          definePolyFromHull(hullPoints);
+        }
       } else {
         const hullPoints = [];
         for (const i in points) {
@@ -13484,7 +14148,7 @@
           });
         }
 
-        _definePolyFromHull(hullPoints);
+        definePolyFromHull(hullPoints);
       }
 
       const fixedRotation = target.rotationStyle !== ROTATION_STYLE_ALL_AROUND;
@@ -13500,7 +14164,7 @@
 
       if (allHulls) {
         for (let i = 1; i < allHulls.length; i++) {
-          _definePolyFromHull(allHulls[i]);
+          definePolyFromHull(allHulls[i]);
           body.CreateFixture(fixDef);
         }
       }
@@ -13510,60 +14174,6 @@
 
     disablePhysics(args, util) {
       _removeBody(util.target.id);
-    }
-
-    /**
-     *
-     * @param svg the svg element
-     * @param {Array} hullPointsList array of points
-     * @private
-     */
-    _fetchPolygonPointsFromSVG(svg, hullPointsList, ox, oy, scaleX, scaleY) {
-      if (svg.tagName === "g" || svg.tagName === "svg") {
-        if (svg.hasChildNodes()) {
-          for (const node of svg.childNodes) {
-            this._fetchPolygonPointsFromSVG(
-              node,
-              hullPointsList,
-              ox,
-              oy,
-              scaleX,
-              scaleY
-            );
-          }
-        }
-        return;
-      }
-
-      if (svg.tagName !== "path") {
-        return;
-      }
-      // This is it boys! Get that svg data :)
-      // <path xmlns="http://www.w3.org/2000/svg" d="M 1 109.7118 L 1 1.8097 L 60.3049 38.0516 L 117.9625 1.8097 L 117.9625 109.7118 L 59.8931 73.8817 Z "
-      //  data-paper-data="{&quot;origPos&quot;:null}" stroke-width="2" fill="#9966ff"/>
-
-      let fx;
-      let fy;
-
-      const hullPoints = [];
-      hullPointsList.push(hullPoints);
-
-      const tokens = svg.getAttribute("d").split(" ");
-      for (let i = 0; i < tokens.length; ) {
-        const token = tokens[i++];
-        if (token === "M" || token === "L") {
-          const x = Cast.toNumber(tokens[i++]);
-          const y = Cast.toNumber(tokens[i++]);
-          hullPoints.push({ x: (x - ox) * scaleX, y: (y - oy) * scaleY });
-          if (token === "M") {
-            fx = x;
-            fy = y;
-          }
-        }
-        if (token === "Z") {
-          hullPoints.push({ x: (fx - ox) * scaleX, y: (fy - oy) * scaleY });
-        }
-      }
     }
 
     applyForce(args, util) {
@@ -13698,8 +14308,8 @@
 
     /**
      * Set's the sprites position.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @property {number} x - x offset.
      * @property {number} y - y offset.
      * @property {string} space - Space type (SPACE_TYPE_OPTIONS)
@@ -13759,8 +14369,8 @@
 
     /**
      * Set the sprites velocity.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @property {number} sx - speed x.
      * @property {number} sy - speed y.
      */
@@ -13781,8 +14391,8 @@
 
     /**
      * Change the sprites velocity.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @property {number} sx - speed x.
      * @property {number} sy - speed y.
      */
@@ -13804,8 +14414,8 @@
 
     /**
      * Get the current tempo.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @return {boolean} - the current tempo, in beats per minute.
      */
     getStatic(args, util) {
@@ -13819,8 +14429,8 @@
 
     /**
      * Get the current tempo.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @return {number} - the current x velocity.
      */
     getVelocityX(args, util) {
@@ -13834,8 +14444,8 @@
 
     /**
      * Get the current tempo.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @return {boolean} - the current y velocity.
      */
     getVelocityY(args, util) {
@@ -13849,8 +14459,8 @@
 
     /**
      * Sets the static property
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @property {string} static - static or not
      */
     setStatic(args, util) {
@@ -13910,7 +14520,7 @@
 
     /**
      * Sets the sprite offset
-     * @param {object} args - the block arguments.
+     * @param {object} args the block arguments.
      * @property {number} ox - x offset.
      * @property {number} oy - y offset.
      */
@@ -13923,7 +14533,7 @@
 
     /**
      * Sets the sprite offset
-     * @param {object} args - the block arguments.
+     * @param {object} args the block arguments.
      * @property {number} ox - x offset.
      * @property {number} oy - y offset.
      */
@@ -14046,7 +14656,7 @@
 
     /**
      * Sets the stage
-     * @param {object} args - the block arguments.
+     * @param {object} args the block arguments.
      * @property {number} stageType - Stage Type.
      */
     setStage(args) {
@@ -14055,7 +14665,7 @@
 
     /**
      * Sets the gravity
-     * @param {object} args - the block arguments.
+     * @param {object} args the block arguments.
      * @property {number} gx - Gravity x.
      * @property {number} gy - Gravity y.
      */
