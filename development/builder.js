@@ -264,13 +264,12 @@ class ExtensionFile extends BuildFile {
       );
     }
 
-    const allCredits = [
-      ...metadata.by,
-      ...metadata.original
-    ];
+    const allCredits = [...metadata.by, ...metadata.original];
 
     if (allCredits.length === 0) {
-      throw new Error("Missing any credits. Add a // By: or // Original: comment to the header.");
+      throw new Error(
+        "Missing credits. Add a // By: or // Original: comment to the header."
+      );
     }
 
     for (const person of allCredits) {
