@@ -124,7 +124,7 @@
         id: EXT_ID,
         name: Scratch.translate("More Mouse Controls"),
         menuIconURI: EXT_ICON,
-        BLOCK_ICONURI: BLOCK_ICON,
+        blockIconURI: BLOCK_ICON,
         color1: "#99bbbb",
         color2: "#7a9696",
         color3: "#637a7a",
