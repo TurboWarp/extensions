@@ -1,6 +1,7 @@
 // Name: Runtime Options
 // ID: runtimeoptions
 // Description: Get and modify turbo mode, framerate, interpolation, clone limit, stage size, and more.
+// By: GarboMuffin
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {
