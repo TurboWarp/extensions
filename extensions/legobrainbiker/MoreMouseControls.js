@@ -46,7 +46,7 @@
       this.wheelDeltaMode = undefined;
       this.scrollDisabled = false;
 
-      Scratch.vm.runtime.on("PROJECT_LOADED", () => {
+      runtime.on("PROJECT_LOADED", () => {
         const stored = runtime.extensionStorage[EXT_ID];
         this.scrollDisabled = stored.scrollDisabled || false;
         runtime.ioDevices.mouse.usesRightClickDown = stored.contextMenuDisabled || false;
