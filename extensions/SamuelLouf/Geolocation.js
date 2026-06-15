@@ -204,7 +204,7 @@
     }
 
     async getCurrent(args, util) {
-      if (!(await this.isAllowed())) return "";
+      if (!(await Scratch.canGeolocate())) return "";
       var coordinates =
         util.thread._coordinates || (await getGeolocation(this.options));
       if (coordinates.success == true) {
@@ -221,7 +221,7 @@
         (args.VALUE == "stop" && !this.isWatching)
       )
         return "";
-      if (!(await this.isAllowed())) return "";
+      if (!(await Scratch.canGeolocate())) return "";
 
       this.isWatching = args.VALUE == "start";
 
@@ -264,8 +264,6 @@
     }
 
     async isAllowed() {
-      if (!this.isSupported()) return false;
-      // @ts-ignore
       return await Scratch.canGeolocate();
     }
 
