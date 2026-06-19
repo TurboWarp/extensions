@@ -383,14 +383,18 @@
       if (isNaN(this.mouseX)) return NaN;
       const canvasRect = canvas.getBoundingClientRect();
       const k = canvasRect.width / runtime.stageWidth;
-      return Math.round((this.mouseX - canvasRect.x - canvasRect.width / 2) / k);
+      return Math.round(
+        (this.mouseX - canvasRect.x - canvasRect.width / 2) / k
+      );
     }
 
     mouseGlobalY() {
       if (isNaN(this.mouseY)) return NaN;
       const canvasRect = canvas.getBoundingClientRect();
       const k = canvasRect.height / runtime.stageHeight;
-      return Math.round(-(this.mouseY - canvasRect.y - canvasRect.height / 2) / k);
+      return Math.round(
+        -(this.mouseY - canvasRect.y - canvasRect.height / 2) / k
+      );
     }
 
     toggleContextMenu(args) {
