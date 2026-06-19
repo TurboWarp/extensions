@@ -49,7 +49,8 @@
       runtime.on("PROJECT_LOADED", () => {
         const stored = runtime.extensionStorage[EXT_ID];
         this.scrollDisabled = stored.scrollDisabled || false;
-        runtime.ioDevices.mouse.usesRightClickDown = stored.contextMenuDisabled || false;
+        runtime.ioDevices.mouse.usesRightClickDown =
+          stored.contextMenuDisabled || false;
       });
 
       // An event listener is used instead of Mouse Wheel I/O API,
@@ -85,7 +86,7 @@
 
       const ogIoMousePostData = runtime.ioDevices.mouse.postData;
       // https://github.com/TurboWarp/scratch-vm/blob/develop/src/io/mouse.js
-      runtime.ioDevices.mouse.postData = function(data) {
+      runtime.ioDevices.mouse.postData = function (data) {
         if (typeof data.isDown !== "undefined") {
           // Do not trigger if down state has not changed.
           if (data.isDown === this._isDown) {
@@ -105,7 +106,7 @@
           }
         }
         ogIoMousePostData.call(this, data);
-      }
+      };
 
       document.addEventListener("mousemove", (e) => {
         this.mouseX = e.clientX;
@@ -339,9 +340,7 @@
         SCROLL_DIR: SCROLL_DIRS[axis].AXIS,
       });
       runtime.startHats(`${EXT_ID}_onScrollInDir`, {
-        SCROLL_DIR: delta > 0
-          ? SCROLL_DIRS[axis].POS
-          : SCROLL_DIRS[axis].NEG,
+        SCROLL_DIR: delta > 0 ? SCROLL_DIRS[axis].POS : SCROLL_DIRS[axis].NEG,
       });
     }
 
@@ -353,9 +352,14 @@
     isScrolledInDir(args) {
       if (!this.wheelScrolled) return false;
       const scrollDir = Cast.toString(args.SCROLL_DIR);
-      const wheelDeltaArray = [this.wheelDelta.x, this.wheelDelta.y, this.wheelDelta.zoom];
+      const wheelDeltaArray = [
+        this.wheelDelta.x,
+        this.wheelDelta.y,
+        this.wheelDelta.zoom,
+      ];
       SCROLL_DIRS.forEach((axisEnums, i) => {
-        if (scrollDir === axisEnums.AXIS && wheelDeltaArray[i] !== 0) return true;
+        if (scrollDir === axisEnums.AXIS && wheelDeltaArray[i] !== 0)
+          return true;
         if (scrollDir === axisEnums.NEG && wheelDeltaArray[i] < 0) return true;
         if (scrollDir === axisEnums.POS && wheelDeltaArray[i] > 0) return true;
       });
