@@ -8,11 +8,10 @@
 When updating this extension's block info, make sure to also update the documentation (/docs/Fakemon/Locale.md).
 This is most important for adding new blocks, but should also be done for changing block text to avoid confusion.
 
-Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't like my code :(-****
+Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't like my code :(
 */
 
 (async function (Scratch) {
-  // Has to be async for fetching the lookup table
   "use strict";
   /**
    * @type {string[]}
@@ -31,8 +30,9 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
    * @type {any}
    */
   let languageNameAndCodeLookupTableGLOBALIZED;
+  // This is a backup of the lookup table in case the user is offline. It may not always be up-to-date.
+  // TODO: use a build script to automatically get the latest version of the table to put in here (and maybe also make a version of Locale without this hefty object)
   const backupTable = {
-    // Backup of the lookup table for offline use (may not be up-to-date)
     menuMap: {
       am: [
         {
@@ -15560,7 +15560,7 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
     let fetchResult;
     try {
       fetchResult = await Scratch.fetch(
-        "https://raw.githubusercontent.com/TurboWarp/scratch-translate-extension-languages-mirror/main/package/languages.json" // TurboWarp's mirror of the supported Translate extension languages.
+        "https://raw.githubusercontent.com/TurboWarp/scratch-translate-extension-languages-mirror/main/package/languages.json" // TurboWarp's mirror of the supported Translate extension languages
       );
     } catch {
       fetchResult = null;
@@ -15580,7 +15580,7 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
    */
   let languageNameAndCodeLookupTable;
 
-  // SharkPool mentioned that many blocks in Locale can be recreated by other extensions (most notably JSON).
+  // SharkPool mentioned that many blocks in Locale can be recreated by other extensions (most notably JSON)
   let showRecreatableBlocks = true; // Whether or not to show blocks that can be recreated with other extensions
   let hasToggledRecreatableBlocks = false; // Whether or not the previous variable has been toggled before (so the explanation only shows once)
 
@@ -15604,7 +15604,6 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
       if (languageNameAndCodeLookupTableGLOBALIZED.menuMap) {
         languageNameAndCodeLookupTableGLOBALIZED.menuMap[
           this._matchLanguages(
-            // YOU ARE HERE
             Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap),
             JSON.parse(this.getLanguageArray())
           )[0] || "en"
@@ -16045,22 +16044,33 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
     }
     getLanguageCode() {
       // This block prefers the UI language stored in ReduxStore.
-      // @ts-ignore
-      // eslint-disable-next-line no-undef
-      return ReduxStore?.getState().locales.locale || navigator.languages[0];
+
+      try {
+        // @ts-ignore
+        // eslint-disable-next-line no-undef
+        return ReduxStore?.getState().locales.locale || navigator.languages[0];
+      } catch {
+        return navigator.languages[0];
+      }
     }
     getLanguageArray() {
-      // @ts-ignore
-      // eslint-disable-next-line no-undef
-      if (navigator.languages.includes(ReduxStore?.getState().locales.locale)) {
-        return JSON.stringify(navigator.languages);
-      } else {
-        return JSON.stringify([
+      try {
+        if (
           // @ts-ignore
           // eslint-disable-next-line no-undef
-          ReduxStore?.getState().locales.locale,
-          ...navigator.languages,
-        ]);
+          navigator.languages.includes(ReduxStore?.getState().locales.locale)
+        ) {
+          return JSON.stringify(navigator.languages);
+        } else {
+          return JSON.stringify([
+            // @ts-ignore
+            // eslint-disable-next-line no-undef
+            ReduxStore?.getState().locales.locale,
+            ...navigator.languages,
+          ]);
+        }
+      } catch {
+        return JSON.stringify(navigator.languages);
       }
     }
     /**
