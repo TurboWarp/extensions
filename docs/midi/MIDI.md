@@ -84,25 +84,6 @@ MIDI | Send [off D4] to (loopMIDI Port v):: #4c97ff
 
 ## Appendix - Message Format
 
-### JSON MidiEvent
-
-Represents a parsed MIDI event with the following properties:
-
-| Property | Aliases | Type | Description |
-|----------|---------|------|-------------|
-| `type` | - | `note` / `noteOff` / `cc` / `polyTouch` / `programChange` / `pitchBend` / `channelPressure` / `songPosition` / `songSelect` / `clock` / `start` / `continue` / `stop` / `activeSensing` / `reset` / `rest` | Type of MIDI command. Default: `note`. `rest` is a special null value *(no output, used for making sequences of notes)* |
-| `value1` | - | number (0-127) | Raw data1 byte value |
-| `value2` | - | number (0-127) | Raw data2 byte value |
-| `channel` | `ch` | number (1-16) | Channel of event. Default: 1 |
-| `device` | `dev` | number (1-N) | Index of MIDI input/output device |
-| `pitch` | `note` | number (0-127) | Note pitch. C4=60 |
-| `velocity` | - | number (0-127) | Note velocity. 0 = note off |
-| `cc` | - | number (0-127) | Continuous controller number |
-| `value` | - | number | CC/pitchBend/programChange value *(0-127 except for songPosition/pitchBend, which is 0-16384)* |
-| `time` | `t` / `@` | number | Time of event in **seconds** |
-| `pos` | - | number | Time in **beats** (converted to time using current tempo) |
-| `dur` | `duration` | number | **[Output only]** Duration in **seconds** (for `note` type, sends corresponding MIDI note off message automatically) |
-| `beats` | - | number | **[Output only]** Duration in **beats** - (converted to `duration` using current tempo) |
 
 ### Input Events
 
@@ -139,66 +120,12 @@ G4 dur=2 time=0.1
 C5 dur=2 time=0.15
 ```
 
-
 ---
 
-## MIDI Event Mappings
-
-This library parses raw MIDI messages (which encode `command`, `channel`, `param1` and `param2`) into a more readable object format.
-
-### Supported MIDI Commands
-
-<figure>
-
-| Event Type | Alias | Description | param1 | param2 |
-|------------|---------|-------------|--------|--------|
-| `note` | `note` | Note-on | `pitch` | `velocity` |
-| `noteOff` | `off` | Note-off | `pitch` | `velocity` |
-| `cc` | `cc` | Continuous controller | `cc` | `value` |
-| `polyTouch` | `touch` | Aftertouch | `pitch` | `value` |
-| `programChange` | `program` | Patch change | `value` | - |
-| `pitchBend` | `bend` | Pitch bend | - | `value`* |
-| `channelPressure` | `pressure` | Channel Pressure | `value` | - |
-| `songPosition` | `songpos` | Song Position Pointer † | - | `value`* |
-| `songSelect` | `songsel` | Song Select †| `value` | - |
-| `clock` | `clock` | Timing Clock †| - | - |
-| `start` | `start` | Start †| - | - |
-| `continue` | `continue` | Continue †| - | - |
-| `stop` | `stop` | Stop †| - | - |
-| `activeSensing` | `ping` | Active Sensing †| - | - |
-| `reset` | `reset` | System Reset †| - | - |
-
-<figcaption>
+### Formatting Events
 
 
-**Event Type** - name of MIDI data type
-
-**Alias** - alternative short name
-
-**param1** - Name of first value. For example, `note` events have `pitch`, `cc` has the controller # aka `cc`
-
-**param2** - Name of 2nd data parameter. This is the velocity for notes or `value` for CCs. These values will be in the range 0-127, except for `pitchBend` and `songPosition` which have the range 0-16384.
-
-
-\* High-resolution parameters (0-16384), instead of usual midi 0-127 range</small>
-
-† These types of commands may not be supported by all MIDI devices.
-
-</figcaption>
-</figure>
-
-
-
-
----
-
-## Formatting Events
-
-This library tries to support a lot of different ways to trigger events, defaulting to note events. 
-
-`{ }`
-
-These are all equivalent:
+These are all the same:
 
 | Value | Description |
 | ----- | ----------- |
@@ -210,51 +137,5 @@ These are all equivalent:
 | `60` | single values are treated as notes (60 = middle C) |
 | `C#4` | middle C-sharp |
 | `Db4` | Same note (61), but written as D-flat |
-
----
-
-## String Format Examples
-
-### Note Events
-
-```
-note C4 96              # Note on C4 with velocity 96
-note Db4 96 ch1 dev0   # With channel and device
-off D4                  # Note off
-note E4 96 dur=0.5     # With duration
-note F4 96 beats=1/4   # Duration in beats
-```
-
-### CC Events
-
-```
-cc 7 100               # CC #7 (volume) at value 100
-cc 10 64 ch5           # CC on channel 5
-```
-
-### Pitch Bend
-
-```
-bend 8192              # Pitch bend at center
-bend 16383             # Max up
-```
-
-### Other Events
-
-```
-program 5              # Program change
-pressure 100           # Channel pressure
-touch C4 64            # Aftertouch on C4
-clock                  # Timing clock
-```
-
-### Timing
-
-```
-note C4 96 t=1.5       # Timestamp 1.5 seconds
-note C4 96 pos=2       # Position in beats
-note C4 96 dur=0.25    # Duration in seconds
-note C4 96 @1.5        # Shorthand for timestamp
-```
 
 ---
