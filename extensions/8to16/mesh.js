@@ -215,7 +215,9 @@
           {
             opcode: "broadcastWait",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("broadcast cross-project [BROADCAST] and wait"),
+            text: Scratch.translate(
+              "broadcast cross-project [BROADCAST] and wait"
+            ),
             hideFromPalette: getMeshages().length === 0,
             arguments: {
               BROADCAST: {
