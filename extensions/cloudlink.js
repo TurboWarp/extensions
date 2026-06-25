@@ -6,6 +6,10 @@
 
 (function (Scratch) {
   /*
+  
+  Based on https://github.com/Mistium/extensions.mistium/blob/main/files%2FCloudlink4_Improved.js. 
+  Copyright (c) Mistium 2025.
+  
   CloudLink Extension for TurboWarp v0.1.2.
 
   This extension should be fully compatible with projects developed using
@@ -248,8 +252,7 @@
   }
 
   // Makes values safe for Scratch to represent.
-  // eslint-disable-next-line require-await
-  async function makeValueScratchSafe(data) {
+  function makeValueScratchSafe(data) {
     if (typeof data == "object") {
       try {
         return JSON.stringify(data);
@@ -334,9 +337,7 @@
   function sendMessage(message) {
     // Prevent running this while disconnected
     if (clVars.socket == null) {
-      console.warn(
-        "[CloudLink] Ignoring attempt to send a packet while disconnected."
-      );
+      //console.warn("[CloudLink] Ignoring attempt to send a packet while disconnected.");
       return;
     }
 
@@ -360,9 +361,7 @@
           eventHatTick: false,
         };
       } else {
-        console.warn(
-          "[CloudLink] Server is too old! Must be at least 0.1.8.x to support listeners."
-        );
+        //console.warn("[CloudLink] Server is too old! Must be at least 0.1.8.x to support listeners.");
       }
       clVars.listeners.enablerState = false;
     }
@@ -373,9 +372,7 @@
       clVars.linkState.identifiedProtocol < 2
     ) {
       // 0.1.8.x was the first server version to support rooms.
-      console.warn(
-        "[CloudLink] Server is too old! Must be at least 0.1.8.x to support room linking/unlinking."
-      );
+      //console.warn("[CloudLink] Server is too old! Must be at least 0.1.8.x to support room linking/unlinking.");
       return;
     }
 
@@ -384,22 +381,19 @@
     try {
       outgoing = JSON.stringify(message);
     } catch (SyntaxError) {
-      console.warn(
-        "[CloudLink] Failed to send a packet, invalid syntax:",
-        message
-      );
+      //console.warn("[CloudLink] Failed to send a packet, invalid syntax:", message);
       return;
     }
 
     // Send the message
-    console.log("[CloudLink] TX:", message);
+    //console.log("[CloudLink] TX:", message);
     clVars.socket.send(outgoing);
   }
 
   // Only sends the handshake command.
   function sendHandshake() {
     if (clVars.handshakeAttempted) return;
-    console.log("[CloudLink] Sending handshake...");
+    //console.log("[CloudLink] Sending handshake...");
     sendMessage({
       cmd: "handshake",
       val: {
@@ -415,9 +409,8 @@
   }
 
   // Compare the version string of the server to known compatible variants to configure clVars.linkState.identifiedProtocol.
-  // eslint-disable-next-line require-await
-  async function setServerVersion(version) {
-    console.log(`[CloudLink] Server version: ${String(version)}`);
+  function setServerVersion(version) {
+    //console.log(`[CloudLink] Server version: ${String(version)}`);
     clVars.server_version = version;
 
     // Auto-detect versions
@@ -438,9 +431,7 @@
         if (clVars.linkState.identifiedProtocol < value) {
           // Disconnect if protcol is too old
           if (value == -1) {
-            console.warn(
-              `[CloudLink] Server is too old to enable leagacy support. Disconnecting.`
-            );
+            //console.warn(`[CloudLink] Server is too old to enable leagacy support. Disconnecting.`);
             return clVars.socket.close(1000, "");
           }
 
@@ -451,9 +442,7 @@
     }
 
     // Log configured spec version
-    console.log(
-      `[CloudLink] Configured protocol spec to v${clVars.linkState.identifiedProtocol}.`
-    );
+    // // ////console.log(`[CloudLink] Configured protocol spec to v${clVars.linkState.identifiedProtocol}.`);
 
     // Fix timing bug
     clVars.linkState.status = 2;
@@ -485,28 +474,22 @@
   }
 
   // CL-specific netcode needed to make the extension work
-  async function handleMessage(data) {
+  function handleMessage(data) {
     // Parse the message JSON
     let packet = {};
     try {
       packet = JSON.parse(data);
     } catch (SyntaxError) {
-      console.error(
-        "[CloudLink] Incoming message parse failure! Is this really a CloudLink server?",
-        data
-      );
+      //console.error("[CloudLink] Incoming message parse failure! Is this really a CloudLink server?", data);
       return;
     }
 
     // Handle packet commands
     if (!Object.prototype.hasOwnProperty.call(packet, "cmd")) {
-      console.error(
-        '[CloudLink] Incoming message read failure! This message doesn\'t contain the required "cmd" key. Is this really a CloudLink server?',
-        packet
-      );
+      //console.error("[CloudLink] Incoming message read failure! This message doesn't contain the required \"cmd\" key. Is this really a CloudLink server?", packet);
       return;
     }
-    console.log("[CloudLink] RX:", packet);
+    //console.log("[CloudLink] RX:", packet);
     switch (packet.cmd) {
       case "gmsg":
         clVars.gmsg.varState = packet.val;
@@ -549,14 +532,12 @@
             // Server 0.1.5 (at least)
             case "vers":
               window.clearTimeout(clVars.handshakeTimeout);
-              await setServerVersion(packet.val.val);
+              setServerVersion(packet.val.val);
               return;
 
             // Server 0.1.7 (at least)
             case "motd":
-              console.log(
-                `[CloudLink] Message of the day: "${packet.val.val}"`
-              );
+              //console.log(`[CloudLink] Message of the day: \"${packet.val.val}\"`);
               clVars.motd = packet.val.val;
               return;
           }
@@ -570,7 +551,7 @@
         break;
 
       case "client_obj":
-        console.log("[CloudLink] Client object for this session:", packet.val);
+        //console.log("[CloudLink] Client object for this session:", packet.val);
         clVars.myUserObject = packet.val;
         break;
 
@@ -578,9 +559,7 @@
         // Store direct value
         // Protocol v0 (0.1.5 and legacy) don't implement status codes.
         if (clVars.linkState.identifiedProtocol == 0) {
-          console.warn(
-            "[CloudLink] Received a statuscode message while using protocol v0. This event shouldn't happen. It's likely that this server is modified (did MikeDEV overlook some unexpected behavior?)."
-          );
+          //console.warn("[CloudLink] Received a statuscode message while using protocol v0. This event shouldn't happen. It's likely that this server is modified (did MikeDEV overlook some unexpected behavior?).");
           return;
         }
 
@@ -601,21 +580,17 @@
                   clVars.myUserObject = packet.val;
                   clVars.username.value = packet.val.username;
                   clVars.username.accepted = true;
-                  console.log(
-                    `[CloudLink] Username has been set to "${clVars.username.value}" successfully!`
-                  );
+                  //console.log(`[CloudLink] Username has been set to \"${clVars.username.value}\" successfully!`);
 
                   // Username rejected / error
                 } else {
-                  console.log(
-                    `[CloudLink] Username rejected by the server! Error code ${packet.code}.}`
-                  );
+                  //console.log(`[CloudLink] Username rejected by the server! Error code ${packet.code}.}`);
                 }
                 return;
 
               case "handshake_cfg":
                 // Prevent handshake responses being stored in the statuscode variables
-                console.log("[CloudLink] Server responded to our handshake!");
+                //console.log("[CloudLink] Server responded to our handshake!");
                 return;
 
               case "link":
@@ -624,13 +599,11 @@
                 if (packet.code.includes("I:100")) {
                   clVars.rooms.isAttemptingLink = false;
                   clVars.rooms.isLinked = true;
-                  console.log("[CloudLink] Room linked successfully!");
+                  //console.log("[CloudLink] Room linked successfully!");
 
                   // Room link rejected / error
                 } else {
-                  console.log(
-                    `[CloudLink] Room link rejected! Error code ${packet.code}.}`
-                  );
+                  //console.log(`[CloudLink] Room link rejected! Error code ${packet.code}.}`);
                 }
                 return;
 
@@ -640,13 +613,11 @@
                 if (packet.code.includes("I:100")) {
                   clVars.rooms.isAttemptingUnlink = false;
                   clVars.rooms.isLinked = false;
-                  console.log("[CloudLink] Room unlinked successfully!");
+                  //console.log("[CloudLink] Room unlinked successfully!");
 
                   // Room link rejected / error
                 } else {
-                  console.log(
-                    `[CloudLink] Room unlink rejected! Error code ${packet.code}.}`
-                  );
+                  //console.log(`[CloudLink] Room unlink rejected! Error code ${packet.code}.}`);
                 }
                 return;
             }
@@ -681,9 +652,7 @@
           ) {
             clVars.username.value = clVars.username.temp;
             clVars.username.accepted = true;
-            console.log(
-              `[CloudLink] Username has been set to "${clVars.username.value}" successfully!`
-            );
+            //console.log(`[CloudLink] Username has been set to \"${clVars.username.value}\" successfully!`);
           }
         }
 
@@ -696,9 +665,7 @@
         else {
           // Check for "mode" key
           if (!Object.prototype.hasOwnProperty.call(packet, "mode")) {
-            console.warn(
-              '[CloudLink] Userlist message did not specify "mode" while running in protocol mode 3 or 4.'
-            );
+            //console.warn("[CloudLink] Userlist message did not specify \"mode\" while running in protocol mode 3 or 4.");
             return;
           }
           // Handle methods
@@ -708,41 +675,50 @@
               break;
             case "add":
               clVars.ulist.push(packet.val);
+              clVars.recentlyJoinedUser = packet.val;
+              Scratch.vm.runtime.startHats("cloudlink_whenuserconnects");
               break;
-            case "remove":
-              clVars.ulist.slice(clVars.ulist.indexOf(packet.val), 1);
+            case "remove": {
+              let index = -1;
+              for (let i = 0; i < clVars.ulist.length; i++) {
+                let user = clVars.ulist[i];
+                if (user.uuid == packet.val.uuid) {
+                  index = i;
+                  break;
+                }
+              }
+              clVars.ulist.splice(index, 1);
+              clVars.recentlyLeftUser = packet.val;
+              Scratch.vm.runtime.startHats("cloudlink_whenuserdisconnects");
               break;
+            }
             default:
-              console.warn(
-                `[CloudLink] Unrecognised userlist mode: "${packet.mode}".`
-              );
+              //console.warn(`[CloudLink] Unrecognised userlist mode: \"${packet.mode}\".`);
               break;
           }
         }
 
-        console.log("[CloudLink] Updating userlist:", clVars.ulist);
+        //console.log("[CloudLink] Updating userlist:", clVars.ulist);
         break;
 
       case "server_version":
         window.clearTimeout(clVars.handshakeTimeout);
-        await setServerVersion(packet.val);
+        setServerVersion(packet.val);
         break;
 
       case "client_ip":
-        console.log(`[CloudLink] Client IP address: ${packet.val}`);
-        console.warn(
-          "[CloudLink] This server has relayed your identified IP address to you. Under normal circumstances, this will be erased server-side when you disconnect, but you should still be careful. Unless you trust this server, it is not recommended to send login credentials or personal info."
-        );
+        //console.log(`[CloudLink] Client IP address: ${packet.val}`);
+        //console.warn("[CloudLink] This server has relayed your identified IP address to you. Under normal circumstances, this will be erased server-side when you disconnect, but you should still be careful. Unless you trust this server, it is not recommended to send login credentials or personal info.");
         clVars.client_ip = packet.val;
         break;
 
       case "motd":
-        console.log(`[CloudLink] Message of the day: "${packet.val}"`);
+        //console.log(`[CloudLink] Message of the day: \"${packet.val}\"`);
         clVars.motd = packet.val;
         break;
 
       default:
-        console.warn(`[CloudLink] Unrecognised command: "${packet.cmd}".`);
+        //console.warn(`[CloudLink] Unrecognised command: \"${packet.cmd}\".`);
         return;
     }
 
@@ -768,9 +744,7 @@
   // Basic netcode needed to make the extension work
   async function newClient(url) {
     if (!(await Scratch.canFetch(url))) {
-      console.warn(
-        "[CloudLink] Did not get permission to connect, aborting..."
-      );
+      //console.warn("[CloudLink] Did not get permission to connect, aborting...");
       return;
     }
 
@@ -779,12 +753,12 @@
     clVars.linkState.disconnectType = 0;
 
     // Establish a connection to the server
-    console.log("[CloudLink] Connecting to server:", url);
+    //console.log("[CloudLink] Connecting to server:", url);
     try {
       // eslint-disable-next-line extension/check-can-fetch
       clVars.socket = new WebSocket(url);
     } catch (e) {
-      console.warn("[CloudLink] An exception has occurred:", e);
+      //console.warn("[CloudLink] An exception has occurred:", e);
       return;
     }
 
@@ -793,13 +767,11 @@
       clVars.currentServerUrl = url;
 
       // Set the link state to connected.
-      console.log("[CloudLink] Connected.");
+      //console.log("[CloudLink] Connected.");
 
       // If a server_version message hasn't been received in over half a second, try to broadcast a handshake
       clVars.handshakeTimeout = window.setTimeout(function () {
-        console.log(
-          "[CloudLink] Hmm... This server hasn't sent us it's server info. Going to attempt a handshake."
-        );
+        //console.log("[CloudLink] Hmm... This server hasn't sent us it's server info. Going to attempt a handshake.");
         sendHandshake();
       }, 500);
 
@@ -817,7 +789,7 @@
       switch (clVars.linkState.status) {
         case 1: // Was connecting
           // Set the link state to ungraceful disconnect.
-          console.log(`[CloudLink] Connection failed (${event.code}).`);
+          //console.log(`[CloudLink] Connection failed (${event.code}).`);
           clVars.linkState.status = 4;
           clVars.linkState.disconnectType = 1;
           break;
@@ -828,16 +800,12 @@
             clVars.linkState.isAttemptingGracefulDisconnect
           ) {
             // Set the link state to graceful disconnect.
-            console.log(
-              `[CloudLink] Disconnected (${event.code} ${event.reason}).`
-            );
+            //console.log(`[CloudLink] Disconnected (${event.code} ${event.reason}).`);
             clVars.linkState.status = 3;
             clVars.linkState.disconnectType = 0;
           } else {
             // Set the link state to ungraceful disconnect.
-            console.log(
-              `[CloudLink] Lost connection (${event.code} ${event.reason}).`
-            );
+            //console.log(`[CloudLink] Lost connection (${event.code} ${event.reason}).`);
             clVars.linkState.status = 4;
             clVars.linkState.disconnectType = 2;
           }
@@ -1287,7 +1255,7 @@
             arguments: {
               IP: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "wss://cl.mikedev101.cc/",
+                defaultValue: "ws://127.0.0.1:3000/",
               },
             },
           },
@@ -1299,7 +1267,7 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "7",
+                defaultValue: 1,
               },
             },
           },
@@ -1347,7 +1315,7 @@
             arguments: {
               ROOMS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: JSON.stringify(["test"]),
+                defaultValue: '["test"]',
               },
             },
           },
@@ -1359,7 +1327,7 @@
             arguments: {
               ROOMS: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: JSON.stringify(["test"]),
+                defaultValue: '["test"]',
               },
             },
           },
@@ -1527,6 +1495,47 @@
           "---",
 
           {
+            opcode: "getNextPacket",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("pop next packet for [TYPE]"),
+            arguments: {
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "allmenu",
+                defaultValue: "All data",
+              },
+            },
+          },
+
+          {
+            opcode: "newPacketsExist",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("new packets exist for [TYPE]"),
+            arguments: {
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "allmenu",
+                defaultValue: "All data",
+              },
+            },
+          },
+
+          {
+            opcode: "getAndClearPacketQueue",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("pop all packets for [TYPE]"),
+            arguments: {
+              TYPE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "allmenu",
+                defaultValue: "All data",
+              },
+            },
+          },
+
+          "---",
+
+          {
             opcode: "clearAllPackets",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("clear all packets for [TYPE]"),
@@ -1537,6 +1546,32 @@
                 defaultValue: "All data",
               },
             },
+          },
+
+          {
+            opcode: "whenuserdisconnects",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when any user disconnects"),
+            isEdgeActivated: false,
+          },
+
+          {
+            opcode: "whenuserconnects",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when any user connects"),
+            isEdgeActivated: false,
+          },
+
+          {
+            opcode: "recentlyjoined",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("recently joined user"),
+          },
+
+          {
+            opcode: "recentlyleft",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("recently left user"),
           },
 
           "---",
@@ -1721,10 +1756,93 @@
           String(args.ID)
         )
       ) {
-        console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
+        //console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
         return "";
       }
       return clVars.listeners.varStates[String(args.ID)].varState;
+    }
+
+    getNextPacket(args) {
+      let temp = "";
+      switch (args.TYPE) {
+        case "Global data":
+          temp = clVars.gmsg.queue[0];
+          clVars.gmsg.queue.shift();
+          break;
+        case "Private data":
+          temp = clVars.pmsg.queue[0];
+          clVars.pmsg.queue.shift();
+          break;
+        case "Direct data":
+          temp = clVars.direct.queue[0];
+          clVars.direct.queue.shift();
+          break;
+        case "Status code":
+          temp = clVars.statuscode.queue[0];
+          clVars.statuscode.queue.shift();
+          break;
+        case "Global variables":
+          temp = clVars.gvar.queue[0];
+          clVars.gvar.queue.shift();
+          break;
+        case "Private variables":
+          temp = clVars.pvar.queue[0];
+          clVars.pvar.queue.shift();
+          break;
+        default:
+      }
+      return makeValueScratchSafe(JSON.stringify(temp));
+    }
+
+    getAndClearPacketQueue(args) {
+      let temp = "";
+      switch (args.TYPE) {
+        case "Global data":
+          temp = clVars.gmsg.queue;
+          clVars.gmsg.queue = [];
+          break;
+        case "Private data":
+          temp = clVars.pmsg.queue;
+          clVars.pmsg.queue = [];
+          break;
+        case "Direct data":
+          temp = clVars.direct.queue;
+          clVars.direct.queue = [];
+          break;
+        case "Status code":
+          temp = clVars.statuscode.queue;
+          clVars.statuscode.queue = [];
+          break;
+        case "Global variables":
+          temp = clVars.gvar.queue;
+          clVars.gvar.queue = [];
+          break;
+        case "Private variables":
+          temp = clVars.pvar.queue;
+          clVars.pvar.queue = [];
+          break;
+        default:
+      }
+      return makeValueScratchSafe(JSON.stringify(temp));
+    }
+
+    newPacketsExist(args) {
+      switch (args.TYPE) {
+        case "Global data":
+          return clVars.gmsg.queue.length > 0;
+        case "Private data":
+          return clVars.pmsg.queue.length > 0;
+        case "Direct data":
+          return clVars.direct.queue.length > 0;
+        case "Status code":
+          return clVars.statuscode.queue.length > 0;
+        case "Global variables":
+          return clVars.gvar.queue.length > 0;
+        case "Private variables":
+          return clVars.pvar.queue.length > 0;
+        default:
+          return false;
+      }
     }
 
     // Reporter - Returns the size of the message queue.
@@ -1752,6 +1870,8 @@
             clVars.gvar.queue.length +
             clVars.pvar.queue.length
           );
+        default:
+          return 0;
       }
     }
 
@@ -1780,6 +1900,8 @@
             gvar: clVars.gvar.queue,
             pvar: clVars.pvar.queue,
           });
+        default:
+          return "";
       }
     }
 
@@ -1794,9 +1916,7 @@
               String(args.VAR)
             )
           ) {
-            console.warn(
-              `[CloudLink] Global variable ${args.VAR} does not exist!`
-            );
+            //console.warn(`[CloudLink] Global variable ${args.VAR} does not exist!`);
             return "";
           }
           return clVars.gvar.varStates[String(args.VAR)].varState;
@@ -1807,12 +1927,12 @@
               String(args.VAR)
             )
           ) {
-            console.warn(
-              `[CloudLink] Private variable ${args.VAR} does not exist!`
-            );
+            //console.warn(`[CloudLink] Private variable ${args.VAR} does not exist!`);
             return "";
           }
           return clVars.pvar.varStates[String(args.VAR)].varState;
+        default:
+          return "";
       }
     }
 
@@ -1864,7 +1984,7 @@
       return Scratch.fetch(args.url, { method: "GET" })
         .then((response) => response.text())
         .catch((error) => {
-          console.warn(`[CloudLink] Fetch error: ${error}`);
+          //console.warn(`[CloudLink] Fetch error: ${error}`);
         });
     }
 
@@ -1878,17 +1998,17 @@
         })
           .then((response) => response.text())
           .catch((error) => {
-            console.warn(`[CloudLink] Request error: ${error}`);
+            //console.warn(`[CloudLink] Request error: ${error}`);
           });
       } else {
         return Scratch.fetch(args.url, {
           method: args.method,
           headers: JSON.parse(args.headers),
-          body: JSON.parse(args.data),
+          body: args.data,
         })
           .then((response) => response.text())
           .catch((error) => {
-            console.warn(`[CloudLink] Request error: ${error}`);
+            //console.warn(`[CloudLink] Request error: ${error}`);
           });
       }
     }
@@ -2091,9 +2211,7 @@
               String(args.VAR)
             )
           ) {
-            console.warn(
-              `[CloudLink] Global variable ${args.VAR} does not exist!`
-            );
+            //console.warn(`[CloudLink] Global variable ${args.VAR} does not exist!`);
             return false;
           }
           return clVars.gvar.varStates[String(args.ID)].hasNew;
@@ -2104,9 +2222,7 @@
               String(args.VAR)
             )
           ) {
-            console.warn(
-              `[CloudLink] Private variable ${args.VAR} does not exist!`
-            );
+            //console.warn(`[CloudLink] Private variable ${args.VAR} does not exist!`);
             return false;
           }
           return clVars.pvar.varStates[String(args.ID)].hasNew;
@@ -2122,7 +2238,7 @@
           String(args.ID)
         )
       ) {
-        console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
+        //console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
         return false;
       }
       return clVars.listeners.varStates[String(args.ID)].hasNew;
@@ -2165,7 +2281,7 @@
     // IP - String (websocket URL)
     openSocket(args) {
       if (clVars.socket != null) {
-        console.warn("[CloudLink] Already connected to a server.");
+        //console.warn("[CloudLink] Already connected to a server.");
         return;
       }
       return newClient(args.IP);
@@ -2175,7 +2291,7 @@
     // ID - Number (server entry #)
     openSocketPublicServers(args) {
       if (clVars.socket != null) {
-        console.warn("[CloudLink] Already connected to a server.");
+        //console.warn("[CloudLink] Already connected to a server.");
         return;
       }
       // This is the only server that's listed and works.
@@ -2188,7 +2304,7 @@
           String(args.ID)
         )
       ) {
-        console.warn("[CloudLink] Not a valid server ID!");
+        //console.warn("[CloudLink] Not a valid server ID!");
         return;
       }
       return newClient(clVars.serverList[String(args.ID)]["url"]);
@@ -2197,10 +2313,10 @@
     // Command - Closes the connection.
     closeSocket() {
       if (clVars.socket == null) {
-        console.warn("[CloudLink] Already disconnected.");
+        //console.warn("[CloudLink] Already disconnected.");
         return;
       }
-      console.log("[CloudLink] Disconnecting...");
+      //console.log("[CloudLink] Disconnecting...");
       clVars.linkState.isAttemptingGracefulDisconnect = true;
       clVars.socket.close(1000, "Client going away");
     }
@@ -2213,13 +2329,13 @@
 
       // Prevent running if an attempt is currently processing.
       if (clVars.username.attempted) {
-        console.warn("[CloudLink] Already attempting to set username!");
+        //console.warn("[CloudLink] Already attempting to set username!");
         return;
       }
 
       // Prevent running if the username is already set.
       if (clVars.username.accepted) {
-        console.warn("[CloudLink] Already set username!");
+        //console.warn("[CloudLink] Already set username!");
         return;
       }
 
@@ -2239,23 +2355,19 @@
 
       // Require server support
       if (clVars.linkState.identifiedProtocol < 2) {
-        console.warn(
-          "[CloudLink] Server is too old! Must be at least 0.1.8.x to support listeners."
-        );
+        //console.warn("[CloudLink] Server is too old! Must be at least 0.1.8.x to support listeners.");
         return;
       }
 
       // Prevent running if the username hasn't been set.
       if (!clVars.username.accepted) {
-        console.warn(
-          "[CloudLink] Username must be set before creating a listener!"
-        );
+        //console.warn("[CloudLink] Username must be set before creating a listener!");
         return;
       }
 
       // Must be used once per packet
       if (clVars.listeners.enablerState) {
-        console.warn("[CloudLink] Cannot create multiple listeners at a time!");
+        //console.warn("[CloudLink] Cannot create multiple listeners at a time!");
         return;
       }
 
@@ -2272,29 +2384,25 @@
 
       // Require server support
       if (clVars.linkState.identifiedProtocol < 2) {
-        console.warn(
-          "[CloudLink] Server is too old! Must be at least 0.1.8.x to support rooms."
-        );
+        //console.warn("[CloudLink] Server is too old! Must be at least 0.1.8.x to support rooms.");
         return;
       }
 
       // Prevent running if the username hasn't been set.
       if (!clVars.username.accepted) {
-        console.warn(
-          "[CloudLink] Username must be set before linking to rooms!"
-        );
+        //console.warn("[CloudLink] Username must be set before linking to rooms!");
         return;
       }
 
       // Prevent running if already linked.
       if (clVars.rooms.isLinked) {
-        console.warn("[CloudLink] Already linked to rooms!");
+        //console.warn("[CloudLink] Already linked to rooms!");
         return;
       }
 
       // Prevent running if a room link is in progress.
       if (clVars.rooms.isAttemptingLink) {
-        console.warn("[CloudLink] Currently linking to rooms! Please wait!");
+        //console.warn("[CloudLink] Currently linking to rooms! Please wait!");
         return;
       }
 
@@ -2310,33 +2418,25 @@
 
       // Require server support
       if (clVars.linkState.identifiedProtocol < 2) {
-        console.warn(
-          "[CloudLink] Server is too old! Must be at least 0.1.8.x to support rooms."
-        );
+        //console.warn("[CloudLink] Server is too old! Must be at least 0.1.8.x to support rooms.");
         return;
       }
 
       // Prevent running if the username hasn't been set.
       if (!clVars.username.accepted) {
-        console.warn(
-          "[CloudLink] Username must be set before selecting rooms!"
-        );
+        //console.warn("[CloudLink] Username must be set before selecting rooms!");
         return;
       }
 
       // Require once per packet
       if (clVars.rooms.enablerState) {
-        console.warn(
-          "[CloudLink] Cannot use the room selector more than once at a time!"
-        );
+        //console.warn("[CloudLink] Cannot use the room selector more than once at a time!");
         return;
       }
 
       // Prevent running if not linked.
       if (!clVars.rooms.isLinked) {
-        console.warn(
-          "[CloudLink] Cannot use room selector while not linked to rooms!"
-        );
+        //console.warn("[CloudLink] Cannot use room selector while not linked to rooms!");
         return;
       }
 
@@ -2351,31 +2451,25 @@
 
       // Require server support
       if (clVars.linkState.identifiedProtocol < 2) {
-        console.warn(
-          "[CloudLink] Server is too old! Must be at least 0.1.8.x to support rooms."
-        );
+        //console.warn("[CloudLink] Server is too old! Must be at least 0.1.8.x to support rooms.");
         return;
       }
 
       // Prevent running if the username hasn't been set.
       if (!clVars.username.accepted) {
-        console.warn(
-          "[CloudLink] Username must be set before unjoining rooms!"
-        );
+        //console.warn("[CloudLink] Username must be set before unjoining rooms!");
         return;
       }
 
       // Prevent running if already unlinked.
       if (!clVars.rooms.isLinked) {
-        console.warn("[CloudLink] Already unlinked from rooms!");
+        //console.warn("[CloudLink] Already unlinked from rooms!");
         return;
       }
 
       // Prevent running if a room unlink is in progress.
       if (clVars.rooms.isAttemptingUnlink) {
-        console.warn(
-          "[CloudLink] Currently unlinking from rooms! Please wait!"
-        );
+        //console.warn("[CloudLink] Currently unlinking from rooms! Please wait!");
         return;
       }
 
@@ -2400,9 +2494,7 @@
 
       // Prevent running if the username hasn't been set.
       if (!clVars.username.accepted) {
-        console.warn(
-          "[CloudLink] Username must be set before sending private messages!"
-        );
+        //console.warn("[CloudLink] Username must be set before sending private messages!");
         return;
       }
 
@@ -2426,9 +2518,7 @@
 
       // Prevent running if the username hasn't been set.
       if (!clVars.username.accepted) {
-        console.warn(
-          "[CloudLink] Username must be set before sending private variables!"
-        );
+        //console.warn("[CloudLink] Username must be set before sending private variables!");
         return;
       }
 
@@ -2452,9 +2542,7 @@
 
       // Prevent running if the username hasn't been set.
       if (!clVars.username.accepted) {
-        console.warn(
-          "[CloudLink] Username must be set before using this command!"
-        );
+        //console.warn("[CloudLink] Username must be set before using this command!");
         return;
       }
 
@@ -2491,9 +2579,7 @@
               String(args.VAR)
             )
           ) {
-            console.warn(
-              `[CloudLink] Global variable ${args.VAR} does not exist!`
-            );
+            //console.warn(`[CloudLink] Global variable ${args.VAR} does not exist!`);
             return;
           }
           clVars.gvar.varStates[String(args.ID)].hasNew = false;
@@ -2505,13 +2591,10 @@
               String(args.VAR)
             )
           ) {
-            console.warn(
-              `[CloudLink] Private variable ${args.VAR} does not exist!`
-            );
+            //console.warn(`[CloudLink] Private variable ${args.VAR} does not exist!`);
             return false;
           }
           clVars.pvar.varStates[String(args.ID)].hasNew = false;
-          break;
       }
     }
 
@@ -2524,7 +2607,7 @@
           String(args.ID)
         )
       ) {
-        console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
+        //console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
         return;
       }
       clVars.listeners.varStates[String(args.ID)].hasNew = false;
@@ -2561,6 +2644,18 @@
           clVars.pvar.queue = [];
           break;
       }
+    }
+
+    recentlyjoined() {
+      return makeValueScratchSafe(
+        JSON.stringify(clVars?.recentlyJoinedUser ?? {})
+      );
+    }
+
+    recentlyleft() {
+      return makeValueScratchSafe(
+        JSON.stringify(clVars?.recentlyLeftUser ?? {})
+      );
     }
   }
   Scratch.extensions.register(new CloudLink());
