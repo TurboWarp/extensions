@@ -248,6 +248,7 @@
             },
           },
           {
+            hideFromPalette: true,
             opcode: "returnNum",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[NUM] as number"),
