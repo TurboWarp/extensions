@@ -611,7 +611,10 @@
 
     repeat(args, util) {
       const string = Scratch.Cast.toString(args.STRING);
-      const repeat = Scratch.Cast.toNumber(args.REPEAT);
+      const repeat = Math.floor(Scratch.Cast.toNumber(args.REPEAT));
+      if (repeat < 0 || !Number.isFinite(repeat)) {
+        return "";
+      }
       return string.repeat(repeat);
     }
 
