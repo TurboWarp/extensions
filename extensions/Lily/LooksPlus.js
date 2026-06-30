@@ -542,7 +542,8 @@
       if (format === "content") {
         return costume.asset.decodeText();
       } else {
-        return costume.asset.encodeDataURI();
+        const base64 = Scratch.vm.getExportedCostumeBase64(costume);
+        return `data:${costume.asset.assetType.contentType};base64,${base64}`;
       }
     }
 
