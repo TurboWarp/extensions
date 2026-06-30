@@ -2,14 +2,15 @@
 // ID: masterMathAmmoPhysics
 // Description: Advanced three dimensional rigid body physics and collision detection.
 // By: -MasterMath- <https://scratch.mit.edu/users/-MasterMath-/>
-// License: MPL-2.0 and MIT
+// License: MPL-2.0 AND MIT
 
 // V0.9.5
 
 // Development using Cannon.js started December 14, 2024 - discontinued.
 // Development using Ammo.js started January 30, 2025.
 
-// ChatGPT and AI LLMs were used to assist in the learning of Ammo.js due to the apparent lack of documentation. They did not write all of the code for me.
+// ChatGPT and AI LLMs were used to assist in the learning of Ammo.js due to the apparent lack of documentation.
+// They did not write all of the code for me. All code has been validated in a real-world project.
 
 (async function (Scratch) {
   "use strict";
@@ -95,6 +96,10 @@
         world.addRigidBody(body);
         bodies[name] = body;
         bodies[name].collisions = [];
+
+        Ammo.destroy(localInertia);
+        Ammo.destroy(transform);
+        Ammo.destroy(rbInfo);
       }
 
       function addCompoundShape(name, shape, x1, y1, z1, x2, y2, z2) {
@@ -733,7 +738,7 @@
                   },
                   name: {
                     type: Scratch.ArgumentType.STRING,
-                    defaultValue: "body",
+                    defaultValue: "shape",
                   },
                   x1: {
                     type: Scratch.ArgumentType.NUMBER,
@@ -780,7 +785,7 @@
                   },
                   name: {
                     type: Scratch.ArgumentType.STRING,
-                    defaultValue: "body",
+                    defaultValue: "shape",
                   },
                   x1: {
                     type: Scratch.ArgumentType.NUMBER,
@@ -831,7 +836,7 @@
                   },
                   name: {
                     type: Scratch.ArgumentType.STRING,
-                    defaultValue: "body",
+                    defaultValue: "shape",
                   },
                   x1: {
                     type: Scratch.ArgumentType.NUMBER,
@@ -882,7 +887,7 @@
                   },
                   name: {
                     type: Scratch.ArgumentType.STRING,
-                    defaultValue: "body",
+                    defaultValue: "shape",
                   },
                   x1: {
                     type: Scratch.ArgumentType.NUMBER,
@@ -933,7 +938,7 @@
                   },
                   name: {
                     type: Scratch.ArgumentType.STRING,
-                    defaultValue: "body",
+                    defaultValue: "shape",
                   },
                   x1: {
                     type: Scratch.ArgumentType.NUMBER,
@@ -973,7 +978,7 @@
                 arguments: {
                   name: {
                     type: Scratch.ArgumentType.STRING,
-                    defaultValue: "compound shape",
+                    defaultValue: "shape",
                   },
                   mass: {
                     type: Scratch.ArgumentType.NUMBER,
@@ -2042,7 +2047,7 @@
           createShapeBody(
             new Ammo.btCapsuleShape(
               Cast.toNumber(radius),
-              Cast.toNumber(height + 2 * radius)
+              Cast.toNumber(height) + 2 * radius
             ),
             Cast.toNumber(mass),
             Cast.toString(name)
@@ -2099,6 +2104,10 @@
             world.addRigidBody(body);
             bodies[name] = body;
             bodies[name].collisions = [];
+
+            Ammo.destroy(localInertia);
+            Ammo.destroy(transform);
+            Ammo.destroy(rbInfo);
           } else {
             console.warn(
               `Attempted to create convex hull body from invalid vertex list ${vertices}`
@@ -2180,6 +2189,10 @@
           world.addRigidBody(body);
           bodies[name] = body;
           bodies[name].collisions = [];
+
+          Ammo.destroy(localInertia);
+          Ammo.destroy(transform);
+          Ammo.destroy(rbInfo);
         }
 
         createOBJBody({ type, name, mass, obj }, { target }) {
@@ -2234,6 +2247,10 @@
             world.addRigidBody(body);
             bodies[name] = body;
             bodies[name].collisions = [];
+
+            Ammo.destroy(localInertia);
+            Ammo.destroy(transform);
+            Ammo.destroy(rbInfo);
           } else {
             const points = processVertices(objFile.vertices);
 
@@ -2286,13 +2303,17 @@
             world.addRigidBody(body);
             bodies[name] = body;
             bodies[name].collisions = [];
+
+            Ammo.destroy(localInertia);
+            Ammo.destroy(transform);
+            Ammo.destroy(rbInfo);
           }
         }
 
-        createCompoundShape(name) {
+        createCompoundShape({ name }) {
           name = Cast.toString(name);
           if (compoundShapes[name]) {
-            Ammo.destory(compoundShapes[name]);
+            Ammo.destroy(compoundShapes[name]);
             delete compoundShapes[name];
           }
           if (bodies[name]) {
@@ -2416,7 +2437,7 @@
               name,
               new Ammo.btCapsuleShape(
                 Cast.toNumber(radius),
-                Cast.toNumber(height + 2 * radius)
+                Cast.toNumber(height) + 2 * radius
               ),
               x1,
               y1,
@@ -2691,7 +2712,7 @@
             bodies[name].getMotionState().setWorldTransform(tempTransform);
 
             Ammo.destroy(tempTransform);
-            Ammo.destory(newPos);
+            Ammo.destroy(newPos);
           } else {
             console.warn(
               `Attempted to change transformation of nonexistent body "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
@@ -2709,14 +2730,19 @@
             const position = newTransform.getOrigin();
             const rotation = newTransform.getRotation();
 
+            let result;
+
             switch (Cast.toString(transform)) {
               case "position":
-                return position[xyz]();
+                result = position[xyz]();
+                break;
               case "rotation":
-                return quaternionToEuler(rotation)[xyz];
+                result = quaternionToEuler(rotation)[xyz];
+                break;
             }
 
             Ammo.destroy(newTransform);
+            return result;
           } else {
             console.warn(
               `Attempted to get transformation of nonexistent body "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
@@ -2767,16 +2793,21 @@
           x2 = Cast.toNumber(x2);
           y2 = Cast.toNumber(y2);
           z2 = Cast.toNumber(z2);
+
           if (rays[name]) {
             Ammo.destroy(rays[name]);
             delete rays[name];
           }
+
           const from = new Ammo.btVector3(x, y, z);
           const to = new Ammo.btVector3(x2, y2, z2);
           const rayCallback = new Ammo.ClosestRayResultCallback(from, to); //* use AllHitsRayResultCallback for testing multiple intersection points along one ray; most use cases only require the first hit
           world.rayTest(from, to, rayCallback);
           rays[name] = rayCallback;
-          rays[name].endpoint = to;
+          rays[name].endpoint = { x: to.x(), y: to.y(), z: to.z() };
+
+          Ammo.destroy(from);
+          Ammo.destroy(to);
         }
 
         rayCastDirection({ name, x, y, z, pitch, yaw, distance }) {
@@ -2808,7 +2839,7 @@
           world.rayTest(from, to, rayCallback);
 
           rays[name] = rayCallback;
-          rays[name].endpoint = to;
+          rays[name].endpoint = { x: to.x(), y: to.y(), z: to.z() };
 
           Ammo.destroy(from);
           Ammo.destroy(to);
@@ -2841,7 +2872,7 @@
           const rayCallback = new Ammo.ClosestRayResultCallback(from, to);
           world.rayTest(from, to, rayCallback);
           rays[name] = rayCallback;
-          rays[name].endpoint = to;
+          rays[name].endpoint = { x: to.x(), y: to.y(), z: to.z() };
           Ammo.destroy(dir);
           Ammo.destroy(from);
           Ammo.destroy(to);
@@ -2852,18 +2883,19 @@
           xyz = Cast.toString(xyz);
           if (rays[name]) {
             const callback = rays[name];
-            if (callback) {
-              switch (Cast.toString(property)) {
-                case "position":
-                  return callback.hasHit()
-                    ? callback.get_m_hitPointWorld()[xyz]()
-                    : rays[name].endpoint[xyz];
-                case "normal":
-                  return callback.hasHit()
-                    ? callback.get_m_hitNormalWorld()[xyz]()
-                    : null;
-              }
+
+            switch (Cast.toString(property)) {
+              case "position":
+                return callback.hasHit()
+                  ? callback.get_m_hitPointWorld()[xyz]()
+                  : rays[name].endpoint[xyz];
+
+              case "normal":
+                return callback.hasHit()
+                  ? callback.get_m_hitNormalWorld()[xyz]()
+                  : null;
             }
+
             return null;
           } else {
             console.warn(
@@ -2872,9 +2904,8 @@
           }
         }
 
-        getBodyTouchingRay({ name, body }, { target }) {
+        getBodyTouchingRay({ name }, { target }) {
           name = Cast.toString(name);
-          body = Cast.toString(body);
           if (rays[name]) {
             return rays[name]?.hasHit()
               ? Cast.toString(
@@ -2896,7 +2927,8 @@
           body = Cast.toString(body);
           if (rays[name]) {
             if (bodies[body]) {
-              return bodies[body]?.includes(
+              return (
+                bodies[body].userData ==
                 Ammo.castObject(
                   rays[name]?.get_m_collisionObject(),
                   Ammo.btRigidBody
@@ -2963,9 +2995,9 @@
 
         pushCentralForce({ name, force, x, y, z }, { target }) {
           name = Cast.toString(name);
-          // x = Cast.toNumber(x);
-          // y = Cast.toNumber(y);
-          // z = Cast.toNumber(z);
+          x = Cast.toNumber(x);
+          y = Cast.toNumber(y);
+          z = Cast.toNumber(z);
           if (bodies[name]) {
             const forceVector = new Ammo.btVector3(x, y, z);
             bodies[name][force](forceVector);
@@ -2990,7 +3022,7 @@
             Ammo.destroy(torqueVector);
           } else {
             console.warn(
-              `Attempted to apply force on nonexistent body "${name}" in ${target.isStage ? "Stage" : `Sprite "${target.sprite.name}"`}`
+              `Attempted to apply torque on nonexistent body "${name}" in ${target.isStage ? "Stage" : `Sprite "${target.sprite.name}"`}`
             );
           }
         }
