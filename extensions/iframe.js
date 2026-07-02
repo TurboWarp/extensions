@@ -56,6 +56,8 @@
   let resizeBehavior = "scale";
   /** @type {string|number|boolean} */
   let latestMessage = "";
+  /** @type {string|number|boolean} */
+  let latestParentMessage = "";
 
   const updateFrameAttributes = () => {
     if (!iframe) {
@@ -124,15 +126,21 @@
     }
   };
 
+  /** @param {unknown} data */
+  const normalizeMessage = (data) =>
+    typeof data === "string" ||
+    typeof data === "number" ||
+    typeof data === "boolean"
+      ? data
+      : JSON.stringify(data);
+
   window.addEventListener("message", (e) => {
     if (iframe && iframe.contentWindow && e.source === iframe.contentWindow) {
-      latestMessage =
-        typeof e.data === "string" ||
-        typeof e.data === "number" ||
-        typeof e.data === "boolean"
-          ? e.data
-          : JSON.stringify(e.data);
+      latestMessage = normalizeMessage(e.data);
       Scratch.vm.runtime.startHats("iframe_whenMessage");
+    } else if (window.parent !== window && e.source === window.parent) {
+      latestParentMessage = normalizeMessage(e.data);
+      Scratch.vm.runtime.startHats("iframe_whenMessageParent");
     }
   });
 
@@ -285,6 +293,29 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("iframe message"),
           },
+          '---',
+          {
+            opcode: "sendMessageParent",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("send message [MESSAGE] to parent window"),
+            arguments: {
+              MESSAGE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello",
+              },
+            },
+          },
+          {
+            opcode: "whenMessageParent",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when message received from parent window"),
+            isEdgeActivated: false,
+          },
+          {
+            opcode: "parentMessage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("parent window message"),
+          },
         ],
         menus: {
           getMenu: {
@@ -424,8 +455,19 @@
       }
     }
 
+    sendMessageParent({ MESSAGE }) {
+      // if not embedded, window.parent is ourselves. don't send to ourselves
+      if (window.parent !== window) {
+        window.parent.postMessage(MESSAGE, "*");
+      }
+    }
+
     iframeMessage() {
       return latestMessage;
+    }
+
+    parentMessage() {
+      return latestParentMessage;
     }
   }
 
