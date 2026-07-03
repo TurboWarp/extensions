@@ -392,7 +392,7 @@
     }
 
     stringToBoolean({ STRING }) {
-      return STRING;
+      return Scratch.Cast.toBoolean(STRING);
     }
 
     regexReplace({ STRING, REGEX, NEWSTRING }) {
