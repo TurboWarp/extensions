@@ -49,6 +49,23 @@
     }
   };
 
+  // We want to disable rounding when pointerlock is active so that high framerates don't dramatically
+  // limit the project's input precision.
+  const originalGetScratchX = mouseDevice.getScratchX.bind(mouseDevice);
+  const originalGetScratchY = mouseDevice.getScratchY.bind(mouseDevice);
+  mouseDevice.getScratchX = () => {
+    if (isPointerLockEnabled) {
+      return mouse._scratchX;
+    }
+    return originalGetScratchX();
+  };
+  mouseDevice.getScratchY = () => {
+    if (isPointerLockEnabled) {
+      return mouse._scratchY;
+    }
+    return originalGetScratchY();
+  };
+
   document.addEventListener(
     "mousedown",
     (e) => {
