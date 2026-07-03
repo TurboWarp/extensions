@@ -134,11 +134,25 @@
       ? data
       : JSON.stringify(data);
 
+  /**
+   * @returns {Window|null}
+   */
+  const getParentWindow = () => {
+    // if no parent, window.parent is us. which is not useful
+    if (window.parent !== window) {
+      return window.parent;
+    }
+    if (window.opener) {
+      return window.opener;
+    }
+    return null;
+  };
+
   window.addEventListener("message", (e) => {
     if (iframe && iframe.contentWindow && e.source === iframe.contentWindow) {
       latestMessage = normalizeMessage(e.data);
       Scratch.vm.runtime.startHats("iframe_whenMessage");
-    } else if (window.parent !== window && e.source === window.parent) {
+    } else if (e.source === getParentWindow()) {
       latestParentMessage = normalizeMessage(e.data);
       Scratch.vm.runtime.startHats("iframe_whenMessageParent");
     }
@@ -293,7 +307,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("iframe message"),
           },
-          '---',
+          "---",
           {
             opcode: "sendMessageParent",
             blockType: Scratch.BlockType.COMMAND,
@@ -456,9 +470,9 @@
     }
 
     sendMessageParent({ MESSAGE }) {
-      // if not embedded, window.parent is ourselves. don't send to ourselves
-      if (window.parent !== window) {
-        window.parent.postMessage(MESSAGE, "*");
+      const parentWindow = getParentWindow();
+      if (parentWindow) {
+        parentWindow.postMessage(MESSAGE, "*");
       }
     }
 
