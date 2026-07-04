@@ -12,10 +12,13 @@
 
   const MOVEMENT_THRESHOLD_DEGREES = 5 * 10 ** -5; // ~ 5.5 meters
 
-  function getGeolocation(
-    options = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
-  ) {
+  /** 
+   * @param {PositionOptions} options
+   * @returns {Promise<{success: boolean; latitude?: number; longitude?: number; accuracy?: number}>}
+   */
+  function getGeolocation(options) {
     return new Promise((resolve) => {
+      /** @type {PositionCallback} */
       const success = (pos) => {
         resolve({
           success: true,
@@ -25,13 +28,11 @@
         });
       };
 
+      /** @type {PositionErrorCallback} */
       const error = (err) => {
+        console.warn(err);
         resolve({
-          success: false,
-          error: {
-            code: err.code,
-            message: err.message,
-          },
+          success: false
         });
       };
 
