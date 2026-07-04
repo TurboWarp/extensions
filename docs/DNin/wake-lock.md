@@ -5,7 +5,7 @@ The Wake Lock feature allows you to keep your computer's screen on while a proje
 ## Activating and Releasing Wake Lock
 
 ```scratch
-set wake lock to [on v] :: #0FBD8C
+set wake lock to (on v) :: #0FBD8C
 ```
 This block will activate wake lock.
 
@@ -19,7 +19,8 @@ Wake lock will also be released automatically when the project stops or is resta
 
 ## Browser support
 
-Not all browsers support wake lock (notably, Firefox does not). In these browsers requesting wake lock will not do anything.
+> [!WARNING]
+> Not all browsers support wake lock **(notably, Firefox does not)**. In these browsers requesting wake lock will not do anything.
 
 ## Note
 

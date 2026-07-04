@@ -26,6 +26,7 @@ class Extension {
     /** @type {Person[]} */
     this.original = [];
     this.context = "";
+    this.scratchCompatible = false;
   }
 }
 
@@ -102,6 +103,9 @@ const parseMetadata = (extensionCode) => {
       case "context":
         metadata.context = value;
         break;
+      case "scratch-compatible":
+        metadata.scratchCompatible = value === "true";
+        break;
       default:
         // TODO
         break;
@@ -111,4 +115,4 @@ const parseMetadata = (extensionCode) => {
   return metadata;
 };
 
-module.exports = parseMetadata;
+export default parseMetadata;

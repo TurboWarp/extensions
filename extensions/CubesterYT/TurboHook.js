@@ -46,6 +46,7 @@
           {
             opcode: "params",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "[MENU] [DATA]",
             arguments: {
               MENU: {
@@ -60,6 +61,7 @@
           {
             opcode: "connector",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "[STRING1] , [STRING2]",
           },
         ],

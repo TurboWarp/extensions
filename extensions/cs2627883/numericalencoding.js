@@ -1,6 +1,6 @@
-// Name: Numerical Encoding
+// Name: Numerical Encoding V1
 // ID: cs2627883NumericalEncoding
-// Description: Encode strings as numbers for cloud variables.
+// Description: Use V2 instead as it is more efficient. V1 only exists for compatibility reasons.
 // By: cs2627883 <https://scratch.mit.edu/users/cs2627883/>
 // License: MIT
 
@@ -59,12 +59,12 @@
     getInfo() {
       return {
         id: "cs2627883NumericalEncoding",
-        name: Scratch.translate("Numerical Encoding"),
+        name: Scratch.translate("Numerical Encoding V1"),
         blocks: [
           {
             opcode: "NumericalEncode",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Encode [DATA] to numbers"),
+            text: Scratch.translate("encode [DATA] to numbers"),
             arguments: {
               DATA: {
                 type: Scratch.ArgumentType.STRING,
@@ -75,7 +75,7 @@
           {
             opcode: "NumericalDecode",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Decode [ENCODED] back to text"),
+            text: Scratch.translate("decode [ENCODED] back to text"),
             arguments: {
               ENCODED: {
                 type: Scratch.ArgumentType.STRING,

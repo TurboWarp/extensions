@@ -50,7 +50,7 @@
           {
             opcode: "Timedata",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get [Timedata] from [timestamp]"),
+            text: Scratch.translate("[Timedata] from [timestamp]"),
             arguments: {
               timestamp: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -406,7 +406,7 @@
         return 0;
       }
       const monthIndex = Math.round(Scratch.Cast.toNumber(args.MONTH));
-      if (monthIndex < 0 || monthIndex >= 12) {
+      if (monthIndex < 0 || monthIndex >= 13) {
         return 0;
       }
       const date = new Date(year, monthIndex, 0);

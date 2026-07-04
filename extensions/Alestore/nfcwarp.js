@@ -51,7 +51,7 @@
 
     nfcRead() {
       if (!this.supported()) {
-        return "NFC not supported";
+        return Scratch.translate("NFC not supported");
       }
       return new Promise((resolve, reject) => {
         const ndef = new NDEFReader();

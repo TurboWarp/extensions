@@ -4,7 +4,7 @@
     getInfo() {
       return {
         id: "profanityAPI",
-        name: "profanityAPI",
+        name: Scratch.translate("Profanity API"),
         color1: "#cf6a3c",
         color2: "#cf6a3c",
         color3: "#cf6a3c",
@@ -12,11 +12,11 @@
           {
             opcode: "checkProfanity",
             blockType: Scratch.BlockType.REPORTER,
-            text: "Remove profanity from [TEXT]",
+            text: Scratch.translate("remove profanity from [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello, I love pizza!",
+                defaultValue: Scratch.translate("Hello, I love pizza!"),
               },
             },
           },

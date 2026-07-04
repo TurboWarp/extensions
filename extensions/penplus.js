@@ -1,8 +1,8 @@
 // Name: Pen Plus V5 (Old)
 // ID: betterpen
-// Description: Replaced by Pen Plus V6.
+// Description: Replaced by Pen Plus V7.
 // By: ObviousAlexC <https://scratch.mit.edu/users/pinksheep2917/>
-// License: MIT
+// License: MIT AND BSD-3-Clause
 
 /* eslint-disable no-empty-pattern */
 /* eslint-disable no-prototype-builtins */
@@ -1779,7 +1779,7 @@ Other various small fixes
         return;
       }
       // Permission is checked earlier.
-      // eslint-disable-next-line no-restricted-syntax
+      // eslint-disable-next-line extension/check-can-fetch
       const image = new Image();
       image.onload = function () {
         textureInfo.width = image.width;
@@ -2423,7 +2423,7 @@ Other various small fixes
     getInfo() {
       return {
         id: "betterpen",
-        name: "Pen+ V5",
+        name: Scratch.translate("Pen+ V5"),
         color1: "#0e9a6b",
         color2: "#0b7f58",
         color3: "#096647",
