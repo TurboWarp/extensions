@@ -1,6 +1,6 @@
 // Name: Geolocation
 // ID: samuelloufgeolocation
-// Description: Get the user's geolocation.
+// Description: Get the user's current location (requires permission from browser).
 // By: SamuelLouf <https://scratch.mit.edu/users/samuellouf/>
 // License: MIT
 
