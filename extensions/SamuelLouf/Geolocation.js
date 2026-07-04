@@ -23,7 +23,7 @@
           longitude: pos.coords.longitude,
           accuracy: pos.coords.accuracy,
         });
-      }
+      };
 
       const error = (err) => {
         resolve({
@@ -33,7 +33,7 @@
             message: err.message,
           },
         });
-      }
+      };
 
       navigator.geolocation.getCurrentPosition(success, error, options);
     });
@@ -197,8 +197,9 @@
     async getCurrent(args, util) {
       if (!(await Scratch.canGeolocate())) return "";
 
-      const validOptions = this.getInfo()
-          .menus.coordinates.items.map((e) => e.value);
+      const validOptions = this.getInfo().menus.coordinates.items.map(
+        (e) => e.value
+      );
       const coordinates =
         util.thread._coordinates || (await getGeolocation(this.options));
       if (validOptions.includes(args.WHAT)) {
