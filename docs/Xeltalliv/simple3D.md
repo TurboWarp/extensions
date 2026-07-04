@@ -161,7 +161,7 @@ You first transform X, Y, Z into X, Y, Z and W of the clip space and then GPU au
 X, Y, Z by W, so X, Y, Z end up in range from -1 to 1. Where W is the actual depth, while Z is depth converted to the correct range to be used with the
 depth buffer (everything below -1 and above 1 gets clipped) (too far and too close).
 
-If that sounded complicated, don't worry, Simple3D extension mostly handles it for you.
+If this sounds complicated, don't worry, Simple3D extension mostly handles it for you.
 
 So let's recap:
 ```
