@@ -194,7 +194,7 @@ scale X (objectSizeX) Y (objectSizeY) Z (objectSizeZ) :: sensing
 draw mesh [my mesh] :: sensing
 ```
 
-Doing all of those steps again for every mesh you want to draw is inefficient. This is where doing steps in reverse becomes helpful. The wrapper block will save the transformation when entered, and will restore it when exited. Using this, it's possible to do this:
+Doing all of those steps again for every mesh you want to draw is inefficient. This is where doing steps in reverse becomes helpful. The wrapper block will save the transformation when entered, and will restore it when exited. Using this, it's possible to do the following:
 ```scratch
 start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
