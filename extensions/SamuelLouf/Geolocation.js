@@ -75,7 +75,12 @@
    * @param {{latitude: number; longitude: number; accuracy: number}} coords
    */
   function updatePosition(coords) {
-    const moved = hasMoved(latitude, longitude, coords.latitude, coords.longitude);
+    const moved = hasMoved(
+      latitude,
+      longitude,
+      coords.latitude,
+      coords.longitude
+    );
 
     latitude = coords.latitude;
     longitude = coords.longitude;
@@ -101,9 +106,9 @@
     }
 
     const allowedByBrowser = await navigator.permissions.query({
-      name: "geolocation"
+      name: "geolocation",
     });
-    return allowedByBrowser.state !== 'denied';
+    return allowedByBrowser.state !== "denied";
   }
 
   class Geolocation {
@@ -222,7 +227,7 @@
     }
 
     async getPositionOnce() {
-      if (!await canGeolocate()) return;
+      if (!(await canGeolocate())) return;
       const result = await getGeolocation(options);
       if (result) {
         updatePosition(result);
