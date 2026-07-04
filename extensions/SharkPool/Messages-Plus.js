@@ -22,6 +22,9 @@
     MYSELF = "_myself_",
     MYSELF2 = "_myselfOnly_";
 
+  const ALL_TARGETS = Symbol("ALL_TARGETS"); // broadcast to every sprite
+  const NO_TARGET = Symbol("NO_TARGET"); // the named target does not exist
+
   let nonRestartedMsgs = [],
     threadedMsgs = [];
 
@@ -371,13 +374,13 @@
     /**
      * @param {string} targetName
      * @param {VM.BlockUtility} util
-     * @returns {VM.Target|undefined}
+     * @returns {VM.Target|typeof ALL_TARGETS|typeof NO_TARGET}
      */
     _getTargetFromMenu(targetName, util) {
-      if (targetName === ALL) return undefined;
+      if (targetName === ALL) return ALL_TARGETS;
       if (targetName === STAGE) return util.runtime.getTargetForStage();
       if (targetName === MYSELF || targetName === MYSELF2) return util.target;
-      return util.runtime.getSpriteTargetByName(targetName) || null;
+      return util.runtime.getSpriteTargetByName(targetName) || NO_TARGET;
     }
 
     /**
@@ -390,8 +393,13 @@
     _broadcast(broadcastName, targetName, data, util) {
       if (!broadcastName) return [];
       const target = this._getTargetFromMenu(targetName, util);
+      if (target === NO_TARGET) return [];
       let newThreads = [];
-      if (target) {
+      if (target === ALL_TARGETS) {
+        newThreads = util.startHats("event_whenbroadcastreceived", {
+          BROADCAST_OPTION: broadcastName,
+        });
+      } else {
         // MYSELF2 -> "myself only" is the executors instance
         const clones = targetName === MYSELF2 ? [target] : target.sprite.clones;
         for (const clone of clones)
@@ -402,11 +410,6 @@
               clone
             )
           );
-      } else {
-        // All sprites
-        newThreads = util.startHats("event_whenbroadcastreceived", {
-          BROADCAST_OPTION: broadcastName,
-        });
       }
       for (const thread of newThreads) thread[kReceivedData] = data;
       return newThreads;
@@ -511,6 +514,7 @@
       const blockIds = this._getMessageHats(broadcast, "IDs");
       let received = "";
       const target = this._getTargetFromMenu(args.TARGET, util);
+      if (target === NO_TARGET) return received;
       for (const ID of blockIds) {
         const thread = runtime.threads.find((thread) => thread.topBlock === ID);
         if (thread && thread.receivedData !== undefined) {
