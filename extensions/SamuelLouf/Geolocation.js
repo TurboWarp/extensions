@@ -62,7 +62,7 @@
           {
             opcode: "isSupported",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is geolocation supported by this device?"),
+            text: Scratch.translate("device supports geolocation?"),
           },
           {
             opcode: "isAllowed",
@@ -123,17 +123,6 @@
             },
           },
           {
-            opcode: "addToTimeout",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("add [SECONDS] seconds to timeout"),
-            arguments: {
-              SECONDS: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: 1,
-              },
-            },
-          },
-          {
             opcode: "getTimeout",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("get timeout"),
@@ -152,7 +141,7 @@
           {
             opcode: "isHighAccuracy",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is the accuracy high?"),
+            text: Scratch.translate("is high accuracy?"),
           },
         ],
         menus: {
@@ -207,7 +196,7 @@
       if (!(await Scratch.canGeolocate())) return "";
       var coordinates =
         util.thread._coordinates || (await getGeolocation(this.options));
-      if (coordinates.success == true) {
+      if (this.getInfo().menus.coordinates.items.map((e) => e.value).includes(args.WHAT)) {
         this.lastCoords = coordinates;
         return coordinates[args.WHAT];
       } else {
@@ -268,15 +257,11 @@
     }
 
     isSupported() {
-      return !!navigator.geolocation;
+      return Scratch.Cast.toBoolean(navigator.geolocation);
     }
 
     setTimeoutTo(args) {
-      this.options.timeout = Number(args.SECONDS) * 1000;
-    }
-
-    addToTimeout(args) {
-      this.options.timeout += Number(args.SECONDS) * 1000;
+      this.options.timeout = Scratch.Cast.toNumber(args.SECONDS) * 1000;
     }
 
     getTimeout() {
