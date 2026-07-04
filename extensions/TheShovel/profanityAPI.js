@@ -26,7 +26,7 @@
 
     checkProfanity({ TEXT }) {
       return Scratch.fetch(
-        "https://www.purgomalum.com/service/plain?text=" + TEXT
+        "https://www.purgomalum.com/service/plain?text=" + encodeURIComponent(TEXT)
       )
         .then((r) => r.text())
         .catch(() => "");
