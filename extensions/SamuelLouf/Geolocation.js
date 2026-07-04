@@ -111,10 +111,6 @@
           },
           "---",
           {
-            blockType: Scratch.BlockType.LABEL,
-            text: Scratch.translate("Geolocation Options"),
-          },
-          {
             opcode: "setTimeoutTo",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set timeout to [SECONDS] seconds"),
@@ -196,7 +192,7 @@
     }
 
     async getCurrent(args, util) {
-      if (!(await Scratch.canGeolocate())) return "";
+      if (!navigator.geolocation || !(await Scratch.canGeolocate())) return "";
 
       const validOptions = this.getInfo().menus.coordinates.items.map(
         (e) => e.value
@@ -204,6 +200,9 @@
       const coordinates =
         util.thread._coordinates || (await getGeolocation(this.options));
       if (validOptions.includes(args.WHAT)) {
+        if (!coordinates.success) {
+          return "";
+        }
         this.lastCoords = coordinates;
         return coordinates[args.WHAT];
       } else {
