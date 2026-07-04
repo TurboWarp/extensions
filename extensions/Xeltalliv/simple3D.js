@@ -4037,6 +4037,41 @@ void main() {
       },
     },
     {
+      opcode: "textureFromLMSVideo",
+      blockType: BlockType.REPORTER,
+      text: "texture from video [NAME]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          menu: "lmsVideos",
+        },
+      },
+      def: function ({ NAME }, { target }) {
+        let retStatus = "[texture data]";
+        imageSourceSync = null;
+        imageSource = new Promise((resolve, reject) => {
+          if (!runtime.ext_lmsVideo) {
+            retStatus = "video extension not detected";
+            resolve(null);
+            return;
+          }
+          if (!hasOwn(runtime.ext_lmsVideo.videos, NAME)) {
+            retStatus = "video not found";
+            resolve(null);
+            return;
+          }
+          const video = runtime.ext_lmsVideo.videos[NAME].videoElement;
+          imageSourceSync = {
+            width: video.videoWidth,
+            height: video.videoHeight,
+            data: video,
+          };
+          resolve(imageSourceSync);
+        });
+        return retStatus;
+      },
+    },
+    {
       blockType: BlockType.LABEL,
       text: "Text measurement",
     },
@@ -5201,6 +5236,10 @@ void main() {
         acceptReporters: true,
         items: "externalTransformsMenu",
       },
+      lmsVideos: {
+        acceptReporters: true,
+        items: "lmsVideosMenu",
+      },
       clearLayers: {
         acceptReporters: true,
         items: Object.keys(ClearLayers),
@@ -5410,6 +5449,9 @@ void main() {
       definitions.find(
         (b) => b.opcode == "matStartWithExternal"
       ).hideFromPalette = Object.keys(externalTransforms).length == 0;
+      definitions.find(
+        (b) => b.opcode == "textureFromLMSVideo"
+      ).hideFromPalette = !runtime.ext_lmsVideo;
       return extInfo;
     }
     dispose() {
@@ -5478,6 +5520,11 @@ void main() {
       if (out.length == 0)
         out.push({ value: "", text: "- no external sources -" });
       return out;
+    }
+    lmsVideosMenu() {
+      let videos = Object.keys(runtime.ext_lmsVideo.videos);
+      if (videos.length == 0) videos = ["video 1"];
+      return videos;
     }
   }
 
