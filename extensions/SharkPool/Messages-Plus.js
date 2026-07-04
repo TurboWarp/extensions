@@ -490,9 +490,11 @@
           return;
         }
         const data = Scratch.Cast.toString(args.DATA);
-        const newThreads = [];
+        let newThreads = [];
         for (const name of parsedNames)
-          newThreads.concat(this._broadcast(name, args.TARGET, data, util));
+          newThreads = newThreads.concat(
+            this._broadcast(name, args.TARGET, data, util)
+          );
         if (
           newThreads.length === 0 ||
           Scratch.Cast.toString(args.WAIT) === "continue"
