@@ -517,10 +517,10 @@
       if (target === NO_TARGET) return received;
       for (const ID of blockIds) {
         const thread = runtime.threads.find((thread) => thread.topBlock === ID);
-        if (thread && thread.receivedData !== undefined) {
-          if (!target) received = thread.receivedData;
+        if (thread && thread[kReceivedData] !== undefined) {
+          if (target === ALL_TARGETS) received = thread[kReceivedData];
           else if (target.id === thread.target.id)
-            received = thread.receivedData;
+            received = thread[kReceivedData];
         }
       }
       return received;
