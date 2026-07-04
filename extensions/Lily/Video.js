@@ -737,5 +737,7 @@
     }
   }
 
-  Scratch.extensions.register(new Video());
+  const extension = new Video();
+  Scratch.extensions.register(extension);
+  Scratch.vm.runtime.ext_lmsVideo = extension;
 })(Scratch);
