@@ -330,7 +330,7 @@ create mesh [my mesh] :: sensing
 ```
 Creates an empty mesh with the specified name. If a mesh with such name already exists, it gets replaced.
 
-Whitespaces at the end of the name and any commas are removed for compatibility with the “make mesh inherit” block.
+Whitespaces at both ends of the name and any commas are removed for compatibility with the “make mesh inherit” block.
 
 ---
 ```scratch
