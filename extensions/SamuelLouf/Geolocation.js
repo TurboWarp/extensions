@@ -196,7 +196,11 @@
       if (!(await Scratch.canGeolocate())) return "";
       var coordinates =
         util.thread._coordinates || (await getGeolocation(this.options));
-      if (this.getInfo().menus.coordinates.items.map((e) => e.value).includes(args.WHAT)) {
+      if (
+        this.getInfo()
+          .menus.coordinates.items.map((e) => e.value)
+          .includes(args.WHAT)
+      ) {
         this.lastCoords = coordinates;
         return coordinates[args.WHAT];
       } else {
