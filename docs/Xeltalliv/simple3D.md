@@ -275,7 +275,7 @@ For each vertex, the UV texture coordinates at it are calculated as follows:
 
 ### Pixel Colors
 For each pixel, the final color calculation goes as follows:
-1. texture is read, blank if texture is not provided
+1. texture is read, white if texture is not provided
 2. multiplied by interpolated vertex color RGBA
 3. alpha threshold check is performed
 4. "make opaque" is applied
@@ -330,7 +330,7 @@ create mesh [my mesh] :: sensing
 ```
 Creates an empty mesh with the specified name. If a mesh with such name already exists, it gets replaced.
 
-Whitespaces and commas will be removed from the mesh name. This is done for compatibility with "make mesh inherit" block.
+Whitespaces at the end of the name and any commas are removed for compatibility with the “make mesh inherit” block.
 
 ---
 ```scratch
