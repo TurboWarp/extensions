@@ -12,16 +12,32 @@
 
   const MOVEMENT_THRESHOLD_DEGREES = 5 * 10 ** -5; // ~ 5.5 meters
 
-  /** 
+  /** @type {Required<PositionOptions>} */
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 10000,
+    maximumAge: 0,
+  };
+
+  /** @type {number|null} */
+  let latitude = null;
+  /** @type {number|null} */
+  let longitude = null;
+  /** @type {number|null} accuracy of the position, in meters */
+  let accuracy = null;
+
+  /** @type {number|null} */
+  let watcherID = null;
+
+  /**
    * @param {PositionOptions} options
-   * @returns {Promise<{success: boolean; latitude?: number; longitude?: number; accuracy?: number}>}
+   * @returns {Promise<{latitude: number; longitude: number; accuracy: number}|null>}
    */
   function getGeolocation(options) {
     return new Promise((resolve) => {
       /** @type {PositionCallback} */
       const success = (pos) => {
         resolve({
-          success: true,
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude,
           accuracy: pos.coords.accuracy,
@@ -31,28 +47,66 @@
       /** @type {PositionErrorCallback} */
       const error = (err) => {
         console.warn(err);
-        resolve({
-          success: false
-        });
+        resolve(null);
       };
 
       navigator.geolocation.getCurrentPosition(success, error, options);
     });
   }
 
-  class Geolocation {
-    constructor() {
-      this.options = {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0,
-      };
+  /**
+   * @param {number|null} oldLatitude
+   * @param {number|null} oldLongitude
+   * @param {number} newLatitude
+   * @param {number} newLongitude
+   * @returns {boolean}
+   */
+  function hasMoved(oldLatitude, oldLongitude, newLatitude, newLongitude) {
+    return (
+      oldLatitude === null ||
+      oldLongitude === null ||
+      Math.abs(oldLatitude - newLatitude) >= MOVEMENT_THRESHOLD_DEGREES ||
+      Math.abs(oldLongitude - newLongitude) >= MOVEMENT_THRESHOLD_DEGREES
+    );
+  }
 
-      this.isWatching = false;
-      this.watcherID = null;
-      this.lastCoords = null;
+  /**
+   * Updates the stored position and, if it moved, fires "when location changed".
+   * @param {{latitude: number; longitude: number; accuracy: number}} coords
+   */
+  function updatePosition(coords) {
+    const moved = hasMoved(latitude, longitude, coords.latitude, coords.longitude);
+
+    latitude = coords.latitude;
+    longitude = coords.longitude;
+    accuracy = coords.accuracy;
+
+    if (moved) {
+      Scratch.vm.runtime.startHats("samuelloufgeolocation_onUserMove");
+    }
+  }
+
+  /**
+   * @returns {Promise<boolean>}
+   */
+  async function canGeolocate() {
+    const supported = !!navigator.geolocation;
+    if (!supported) {
+      return false;
     }
 
+    const allowedByVM = await Scratch.canGeolocate();
+    if (!allowedByVM) {
+      return false;
+    }
+
+    const allowedByBrowser = await navigator.permissions.query({
+      name: "geolocation"
+    });
+    return allowedByBrowser.state !== 'denied';
+  }
+
+  class Geolocation {
     getInfo() {
       return {
         id: "samuelloufgeolocation",
@@ -74,40 +128,46 @@
           },
           "---",
           {
+            opcode: "getPositionOnce",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("get position once and wait"),
+          },
+          {
+            opcode: "getLatitude",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("latitude"),
+          },
+          {
+            opcode: "getLongitude",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("longitude"),
+          },
+          {
+            opcode: "getAccuracy",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("accuracy (meters)"),
+          },
+          "---",
+          {
             opcode: "onUserMove",
             blockType: Scratch.BlockType.EVENT,
-            text: Scratch.translate("when the user's position changes"),
+            text: Scratch.translate("when location changed"),
             isEdgeActivated: false,
           },
           {
-            opcode: "changePositionWatching",
+            opcode: "startWatching",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("[VALUE] watching the user's position"),
-            arguments: {
-              VALUE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "start_stop",
-              },
-            },
+            text: Scratch.translate("start watching position"),
+          },
+          {
+            opcode: "stopWatching",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("stop watching position"),
           },
           {
             opcode: "isWatchingPos",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate(
-              "watching the user's position?"
-            ),
-          },
-          "---",
-          {
-            opcode: "getCurrent",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get [WHAT]"),
-            arguments: {
-              WHAT: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "coordinates",
-              },
-            },
+            text: Scratch.translate("watching position?"),
           },
           "---",
           {
@@ -144,23 +204,6 @@
           },
         ],
         menus: {
-          coordinates: {
-            acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("latitude"),
-                value: "latitude",
-              },
-              {
-                text: Scratch.translate("longitude"),
-                value: "longitude",
-              },
-              {
-                text: Scratch.translate("accuracy"),
-                value: "accuracy",
-              },
-            ],
-          },
           accuracy: {
             acceptReporters: true,
             items: [
@@ -174,93 +217,53 @@
               },
             ],
           },
-          start_stop: {
-            acceptReporters: true,
-            items: [
-              {
-                text: Scratch.translate("start"),
-                value: "start",
-              },
-              {
-                text: Scratch.translate("stop"),
-                value: "stop",
-              },
-            ],
-          },
         },
       };
     }
 
-    async getCurrent(args, util) {
-      if (!navigator.geolocation || !(await Scratch.canGeolocate())) return "";
-
-      const validOptions = this.getInfo().menus.coordinates.items.map(
-        (e) => e.value
-      );
-      const coordinates =
-        util.thread._coordinates || (await getGeolocation(this.options));
-      if (validOptions.includes(args.WHAT)) {
-        if (!coordinates.success) {
-          return "";
-        }
-        this.lastCoords = coordinates;
-        return coordinates[args.WHAT];
-      } else {
-        return "";
+    async getPositionOnce() {
+      if (!await canGeolocate()) return;
+      const result = await getGeolocation(options);
+      if (result) {
+        updatePosition(result);
       }
     }
 
-    async changePositionWatching(args) {
-      if (!(await Scratch.canGeolocate())) return "";
-      if (
-        (args.VALUE == "start" && this.isWatching) ||
-        (args.VALUE == "stop" && !this.isWatching)
-      ) {
-        return "";
-      }
+    getLatitude() {
+      return latitude === null ? "" : latitude;
+    }
 
-      this.isWatching = args.VALUE == "start";
+    getLongitude() {
+      return longitude === null ? "" : longitude;
+    }
 
-      if (args.VALUE == "start") {
-        this.watcherID = navigator.geolocation.watchPosition(
-          (pos) => {
-            var coords = pos.toJSON().coords;
-            if (!(this.lastCoords == null)) {
-              // last coords are entered
-              if (
-                Math.abs(this.lastCoords.latitude - coords.latitude) <
-                  MOVEMENT_THRESHOLD_DEGREES &&
-                Math.abs(this.lastCoords.longitude - coords.longitude) <
-                  MOVEMENT_THRESHOLD_DEGREES
-              ) {
-                return; // Assume we have not moved if only a small distance
-              }
-            }
-            this.lastCoords = coords;
+    getAccuracy() {
+      return accuracy === null ? "" : accuracy;
+    }
 
-            var threads = Scratch.vm.runtime.startHats(
-              "samuelloufgeolocation_onUserMove"
-            );
-            for (var thread of threads) {
-              coords.success = true;
-              // @ts-ignore
-              thread._coordinates = coords;
-            }
-          },
-          () => {},
-          this.options
-        );
-      } else {
-        navigator.geolocation.clearWatch(this.watcherID);
-      }
+    async startWatching() {
+      if (watcherID !== null || !(await canGeolocate())) return;
+      watcherID = navigator.geolocation.watchPosition(
+        (pos) => updatePosition(pos.coords),
+        (err) => {
+          console.warn(err);
+        },
+        options
+      );
+    }
+
+    async stopWatching() {
+      if (watcherID === null || !(await canGeolocate())) return;
+      navigator.geolocation.clearWatch(watcherID);
+      watcherID = null;
     }
 
     isWatchingPos() {
-      return this.isWatching;
+      return watcherID !== null;
     }
 
     async isAllowed() {
-      return await Scratch.canGeolocate();
+      return await canGeolocate();
     }
 
     isSupported() {
@@ -268,19 +271,19 @@
     }
 
     setTimeoutTo(args) {
-      this.options.timeout = Scratch.Cast.toNumber(args.SECONDS) * 1000;
+      options.timeout = Scratch.Cast.toNumber(args.SECONDS) * 1000;
     }
 
     getTimeout() {
-      return this.options.timeout / 1000;
+      return options.timeout / 1000;
     }
 
     setAccuracy(args) {
-      this.options.enableHighAccuracy = args.ACCURACY === "high";
+      options.enableHighAccuracy = args.ACCURACY === "high";
     }
 
     isHighAccuracy() {
-      return this.options.enableHighAccuracy;
+      return options.enableHighAccuracy;
     }
   }
   // @ts-ignore
