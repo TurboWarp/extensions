@@ -265,7 +265,7 @@
     }
 
     isSupported() {
-      return Scratch.Cast.toBoolean(navigator.geolocation);
+      return !!navigator.geolocation;
     }
 
     setTimeoutTo(args) {
