@@ -25,7 +25,7 @@ jobs:
       )
     steps:
       - name: Checkout upstream
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: TurboWarp/extensions
           persist-credentials: false
@@ -35,15 +35,15 @@ jobs:
           PR_NUM: "${{ github.event.issue.number }}"
           GH_TOKEN: "${{ github.token }}"
       - name: Install Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
       - name: Install dependencies
         run: npm ci
       - name: Format
         run: npm run format
       - name: Upload formatted code
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: comment-format-untrusted-artifact
           path: extensions/
@@ -60,7 +60,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout upstream
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: TurboWarp/extensions
           # Can't use the default workflow token because commits made by it won't cause more
@@ -80,7 +80,7 @@ jobs:
           PR_NUM: "${{ github.event.issue.number }}"
           GH_TOKEN: "${{ github.token }}"
       - name: Download formatted code
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: comment-format-untrusted-artifact
           path: extensions

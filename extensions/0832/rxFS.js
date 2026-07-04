@@ -216,7 +216,6 @@
 
     search({ STR }) {
       Search = "";
-      i = 0;
       str = btoa(unescape(encodeURIComponent(STR)));
       for (var i in rxFSsy) {
         if (!(rxFSsy[i].indexOf(str) == undefined)) {
@@ -228,7 +227,6 @@
 
     list({ STR }) {
       Search = "";
-      i = 0;
       str = btoa(unescape(encodeURIComponent(STR)));
       for (var i in rxFSsy) {
         if (rxFSsy[i].slice(0, str.length) == str) {

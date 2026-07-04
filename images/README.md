@@ -242,7 +242,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@Skyhigh173](https://github.com/Skyhigh173) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1751679667
 
 ## godslayerakp/http.svg
- - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636912111
+ - Created by [@wiktorlaskowski](https://github.com/wiktorlaskowski) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636912111
 
 ## Alestore/nfcwarp.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636726352
@@ -311,7 +311,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Font is Deja Vu Sans.
 
 ## Clay/htmlEncode.svg
- - Created by [@ClaytonTDM](https://github.com/ClaytonTDM) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
+ - Created by [@clay-rip](https://github.com/clay-rip) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
 
 ## CST1229/images.svg
  - Created by [@wiktorlaskowski](https://github.com/wiktorlaskowski) in https://github.com/TurboWarp/extensions/pull/2144
@@ -321,3 +321,10 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## CubesterYT/KeySimulation.svg
  - Created by [@SharkPool-SP](https://github.com/SharkPool-SP/)
+
+## DogeisCut/FormatNumbers.png
+ - Created by [@Dillon](https://github.com/DillonRGaming)
+
+## NishiOwO/dectalk.png
+ - Created by [@Dogo6647](https://github.com/Dogo6647)
+ - Used Arimo from Google Fonts.

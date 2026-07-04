@@ -1,6 +1,6 @@
-const path = require("path");
-const MarkdownIt = require("markdown-it");
-const renderTemplate = require("./render-template");
+import * as path from "node:path";
+import MarkdownIt from "markdown-it";
+import renderTemplate from "./render-template.js";
 
 // From GitHub's markdown alert SVG icons: https://github.com/primer/octicons
 const blockIcons = {
@@ -140,7 +140,7 @@ const renderDocs = (markdownSource, slug) => {
 
   const bodyHTML = md.renderer.render(tokens, md.options, env);
 
-  return renderTemplate(path.join(__dirname, "docs-template.ejs"), {
+  return renderTemplate(path.join(import.meta.dirname, "docs-template.ejs"), {
     slug,
     headerHTML,
     headerText,
@@ -149,4 +149,4 @@ const renderDocs = (markdownSource, slug) => {
   });
 };
 
-module.exports = renderDocs;
+export default renderDocs;

@@ -1,5 +1,6 @@
-# npm
+# Dependencies
 node_modules
+cached-extension-dependencies
 
 # Final built website and localizations
 build

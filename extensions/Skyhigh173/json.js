@@ -1109,7 +1109,7 @@
           ) {
             count ||= 1;
             if (freqMap.has(num)) ++count;
-            if (count > mode[1]) (mode[0] = num), (mode[1] = count);
+            if (count > mode[1]) ((mode[0] = num), (mode[1] = count));
             freqMap.set(num, count);
           }
           return mode[0];

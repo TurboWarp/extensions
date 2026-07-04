@@ -1,13 +1,13 @@
-const pathUtil = require("path");
-const fs = require("fs");
-const {
+import * as pathUtil from "node:path";
+import * as fs from "node:fs";
+import {
   transifexApi,
   ORGANIZATION_NAME,
   PROJECT_NAME,
   RUNTIME_RESOURCE,
   METADATA_RESOURCE,
   SOURCE_LOCALE,
-} = require("./transifex-common");
+} from "./transifex-common.js";
 
 /**
  * @template T
@@ -224,12 +224,18 @@ const run = async () => {
   ]);
 
   fs.writeFileSync(
-    pathUtil.join(__dirname, "../translations/extension-runtime.json"),
+    pathUtil.join(
+      import.meta.dirname,
+      "../translations/extension-runtime.json"
+    ),
     JSON.stringify(runtime, null, 4)
   );
 
   fs.writeFileSync(
-    pathUtil.join(__dirname, "../translations/extension-metadata.json"),
+    pathUtil.join(
+      import.meta.dirname,
+      "../translations/extension-metadata.json"
+    ),
     JSON.stringify(metadata, null, 4)
   );
 };
