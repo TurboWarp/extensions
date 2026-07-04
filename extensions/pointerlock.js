@@ -1,6 +1,7 @@
 // Name: Pointerlock
 // ID: pointerlock
 // Description: Adds blocks for mouse locking. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the pointerlock experiment.
+// By: GarboMuffin
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {
@@ -46,6 +47,23 @@
     if (!isPointerLockEnabled) {
       return originalPostIOData(data);
     }
+  };
+
+  // We want to disable rounding when pointerlock is active so that high framerates don't dramatically
+  // limit the project's input precision.
+  const originalGetScratchX = mouseDevice.getScratchX.bind(mouseDevice);
+  const originalGetScratchY = mouseDevice.getScratchY.bind(mouseDevice);
+  mouseDevice.getScratchX = () => {
+    if (isPointerLockEnabled) {
+      return mouse._scratchX;
+    }
+    return originalGetScratchX();
+  };
+  mouseDevice.getScratchY = () => {
+    if (isPointerLockEnabled) {
+      return mouse._scratchY;
+    }
+    return originalGetScratchY();
   };
 
   document.addEventListener(
