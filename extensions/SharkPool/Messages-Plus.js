@@ -2,13 +2,15 @@
 // ID: SPmessagePlus
 // Description: New Powerful Message Blocks that work with Vanilla Blocks!
 // By: SharkPool
+// License: MIT
 
 // Version 1.3.11
 
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed)
+  if (!Scratch.extensions.unsandboxed) {
     throw new Error("Messages+ must run unsandboxed");
+  }
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -426,6 +428,7 @@
           }
         }
       );
+
       return IDs;
     }
 
@@ -471,8 +474,9 @@
         if (
           newThreads.length === 0 ||
           Scratch.Cast.toString(args.WAIT) === "continue"
-        )
+        ) {
           return;
+        }
         util.stackFrame.startedThreads = newThreads;
       }
       this._waitForStartedThreads(util);
@@ -491,23 +495,27 @@
         }
         const data = Scratch.Cast.toString(args.DATA);
         let newThreads = [];
-        for (const name of parsedNames)
+        for (const name of parsedNames) {
           newThreads = newThreads.concat(
             this._broadcast(name, args.TARGET, data, util)
           );
+        }
         if (
           newThreads.length === 0 ||
           Scratch.Cast.toString(args.WAIT) === "continue"
-        )
+        ) {
           return;
+        }
         util.stackFrame.startedThreads = newThreads;
       }
       this._waitForStartedThreads(util);
     }
 
     receivedData(args, util) {
-      if (!Object.prototype.hasOwnProperty.call(util.thread, kReceivedData))
+      if (!Object.prototype.hasOwnProperty.call(util.thread, kReceivedData)) {
         return "";
+      }
+
       return util.thread[kReceivedData];
     }
 
@@ -525,6 +533,7 @@
             received = thread[kReceivedData];
         }
       }
+
       return received;
     }
 
@@ -574,7 +583,7 @@
 
     respondData(args, util) {
       util.thread.justReported = Scratch.Cast.toString(args.DATA);
-      //Delay the Deletion of this Thread
+      // Delay the deletion of this Thread
       if (util.stackTimerNeedsInit()) {
         util.startStackTimer(0);
         runtime.requestRedraw();
@@ -595,6 +604,7 @@
           break;
         }
       }
+
       return waiting;
     }
 
@@ -609,6 +619,7 @@
           break;
         }
       }
+
       return waiting;
     }
 
@@ -619,6 +630,7 @@
         const name = targets[i].getName();
         targets[i] = targets[i].isOriginal ? name : `${name} (clone)`;
       }
+
       return JSON.stringify(targets);
     }
 
@@ -626,16 +638,18 @@
       const msg = Scratch.Cast.toString(args.BROADCAST_OPTION).toUpperCase();
       const index = nonRestartedMsgs.indexOf(msg);
       if (args.TOGGLE === "on" && index > -1) nonRestartedMsgs.splice(index, 1);
-      else if (args.TOGGLE === "off" && index === -1)
+      else if (args.TOGGLE === "off" && index === -1) {
         nonRestartedMsgs.push(msg);
+      }
     }
 
     toggleOverlap(args) {
       const msg = Scratch.Cast.toString(args.BROADCAST_OPTION).toUpperCase();
       const index = threadedMsgs.indexOf(msg);
       if (args.TOGGLE === "on" && index === -1) threadedMsgs.push(msg);
-      else if (args.TOGGLE === "off" && index > -1)
+      else if (args.TOGGLE === "off" && index > -1) {
         threadedMsgs.splice(index, 1);
+      }
     }
 
     whenReceived(args, util) {
@@ -643,6 +657,7 @@
       const inputName = Scratch.Cast.toString(
         args.BROADCAST_OPTION
       ).toUpperCase();
+
       if (messageName) return inputName === messageName;
       return false;
     }
