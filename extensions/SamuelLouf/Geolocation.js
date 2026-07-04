@@ -70,7 +70,7 @@
           {
             opcode: "isAllowed",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is geolocation allowed?"),
+            text: Scratch.translate("geolocation allowed?"),
           },
           "---",
           {
@@ -94,7 +94,7 @@
             opcode: "isWatchingPos",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate(
-              "is TurboWarp watching the user's position?"
+              "watching the user's position?"
             ),
           },
           "---",
