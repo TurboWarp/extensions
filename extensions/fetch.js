@@ -30,7 +30,16 @@
     }
 
     get(args) {
-      return Scratch.fetch(args.URL)
+      let url;
+      try {
+        url = new URL(args.URL);
+      } catch (e) {
+        return Promise.resolve("");
+      }
+      if (url.protocol !== "http:" && url.protocol !== "https:") {
+        return Promise.resolve("");
+      }
+      return Scratch.fetch(url.toString())
         .then((r) => r.text())
         .catch(() => "");
     }
