@@ -4,6 +4,6 @@
 {
 	"name": "Node.js",
 	"image": "mcr.microsoft.com/devcontainers/javascript-node:4-22-trixie",
-	"forwardPorts": [8080],
+	"forwardPorts": [8000],
 	"postCreateCommand": "npm ci"
 }
