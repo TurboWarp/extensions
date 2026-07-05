@@ -694,7 +694,7 @@ Default for mesh is not set. Once set, cannot be undone.
 ```scratch
 set [my mesh] vertex draw ranges from [starts list v] to [ends list v] :: sensing
 ```
-Same as `vertex draw range` block, but for multiple ranges at once.
+Same as the `vertex draw range` block, but for multiple ranges at once.
 
 Useful for implementing culling, as it allows toggling visibility of different parts of the mesh, without the cost of doing multiple draw calls.
 
@@ -1106,7 +1106,7 @@ display canvas on myself :: sensing hat
 restore my look :: sensing
 ```
 
-Blocks to display Simple3D canvas as skin on the current canvas. Works similarly to the Skins extension.  
+Blocks to display Simple3D canvas as skin on the current sprite. Works similarly to the Skins extension.  
 
 ---
 ```scratch
