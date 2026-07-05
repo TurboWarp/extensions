@@ -66,17 +66,17 @@
       function createShapeBody(shape, mass, name) {
         mass = Cast.toNumber(mass);
         name = Cast.toString(name);
-        if (bodies[name]) {
-          const body = bodies[name];
-          if (body) {
-            world.removeRigidBody(body);
-            world.removeCollisionObject(body);
-            Ammo.destroy(body.getMotionState());
-            Ammo.destroy(body.getCollisionShape());
-            Ammo.destroy(body);
-            delete bodies[name];
-          }
+
+        let body = bodies[name];
+        if (body) {
+          world.removeRigidBody(body);
+          world.removeCollisionObject(body);
+          Ammo.destroy(body.getMotionState());
+          Ammo.destroy(body.getCollisionShape());
+          Ammo.destroy(body);
+          delete bodies[name];
         }
+
         const localInertia = new Ammo.btVector3(0, 0, 0);
         shape.calculateLocalInertia(mass, localInertia);
 
@@ -91,7 +91,7 @@
           shape,
           localInertia
         );
-        const body = new Ammo.btRigidBody(rbInfo);
+        body = new Ammo.btRigidBody(rbInfo);
         body.userData = name;
         world.addRigidBody(body);
         bodies[name] = body;
