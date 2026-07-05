@@ -203,11 +203,12 @@
             },
           },
           {
+            // Legacy block
             disableMonitor: true,
             opcode: "getSpriteValue",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("sprite [EXPORT]"),
-            hideFromPalette: true, // Old block
+            hideFromPalette: true,
             arguments: {
               EXPORT: {
                 type: Scratch.ArgumentType.STRING,
@@ -629,27 +630,8 @@
     }
 
     getSpriteValue(args, util) {
-      // Old block
-      const option = Cast.toString(args.EXPORT);
-      if (option === "name") {
-        return util.target.sprite.name ?? "";
-      } else if (option === "dataURI") {
-        try {
-          return new Promise((resolve) => {
-            Scratch.vm.exportSprite(util.target.id).then((blob) => {
-              const fr = new FileReader();
-              fr.onload = () => resolve(fr.result);
-              fr.onabort = () => {
-                throw new Error("Read aborted");
-              };
-              fr.readAsDataURL(blob);
-            });
-          });
-        } catch (e) {
-          console.error("Failed to export the sprite", e);
-          return "";
-        }
-      }
+      args.TARGET = "_myself_";
+      return this.getSpriteValue2(args, util);
     }
 
     reorderCostume(args, util) {
