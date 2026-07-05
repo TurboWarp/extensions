@@ -190,7 +190,12 @@
             disableMonitor: true,
             opcode: "getSpriteValue2",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("sprite [TARGET] [EXPORT]"),
+            text: Scratch.translate({
+              id: "lmsAssets.getSpriteValueTarget",
+              default: "sprite [TARGET] [EXPORT]",
+              description:
+                "Reporter block that exports a specific sprite as a data URI or gets its name",
+            }),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
