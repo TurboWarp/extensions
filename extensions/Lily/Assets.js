@@ -190,8 +190,12 @@
             disableMonitor: true,
             opcode: "getSpriteValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("sprite [EXPORT]"),
+            text: Scratch.translate("sprite [TARGET] [EXPORT]"),
             arguments: {
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "targets",
+              },
               EXPORT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "sprite",
@@ -586,13 +590,16 @@
     }
 
     getSpriteValue(args, util) {
+      const target = this._getTargetFromMenu(args.TARGET, util);
+      if (!target || target.isStage) return "";
+
       const option = Cast.toString(args.EXPORT);
       if (option === "name") {
-        return util.target.sprite.name ?? "";
+        return target.sprite.name ?? "";
       } else if (option === "dataURI") {
         try {
           return new Promise((resolve) => {
-            Scratch.vm.exportSprite(util.target.id).then((blob) => {
+            Scratch.vm.exportSprite(target.id).then((blob) => {
               const fr = new FileReader();
               fr.onload = () => resolve(fr.result);
               fr.onabort = () => {
