@@ -4043,7 +4043,7 @@ void main() {
       arguments: {
         NAME: {
           type: ArgumentType.STRING,
-          menu: "lmsVideos",
+          defaultValue: "my video",
         },
       },
       def: function ({ NAME }, { target }) {
@@ -5236,10 +5236,6 @@ void main() {
         acceptReporters: true,
         items: "externalTransformsMenu",
       },
-      lmsVideos: {
-        acceptReporters: true,
-        items: "lmsVideosMenu",
-      },
       clearLayers: {
         acceptReporters: true,
         items: Object.keys(ClearLayers),
@@ -5520,11 +5516,6 @@ void main() {
       if (out.length == 0)
         out.push({ value: "", text: "- no external sources -" });
       return out;
-    }
-    lmsVideosMenu() {
-      let videos = Object.keys(runtime.ext_lmsVideo.videos);
-      if (videos.length == 0) videos = ["video 1"];
-      return videos;
     }
   }
 
