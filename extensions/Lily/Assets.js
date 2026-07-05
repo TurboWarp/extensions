@@ -188,7 +188,7 @@
           },
           {
             disableMonitor: true,
-            opcode: "getSpriteValue",
+            opcode: "getSpriteValue2",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("sprite [TARGET] [EXPORT]"),
             arguments: {
@@ -196,6 +196,19 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "targets",
               },
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "sprite",
+              },
+            },
+          },
+          {
+            disableMonitor: true,
+            opcode: "getSpriteValue",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("sprite [EXPORT]"),
+            hideFromPalette: true, // Old block
+            arguments: {
               EXPORT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "sprite",
@@ -589,7 +602,7 @@
       return util.target.sprite.name ?? "";
     }
 
-    getSpriteValue(args, util) {
+    getSpriteValue2(args, util) {
       const target = this._getTargetFromMenu(args.TARGET, util);
       if (!target || target.isStage) return "";
 
@@ -600,6 +613,30 @@
         try {
           return new Promise((resolve) => {
             Scratch.vm.exportSprite(target.id).then((blob) => {
+              const fr = new FileReader();
+              fr.onload = () => resolve(fr.result);
+              fr.onabort = () => {
+                throw new Error("Read aborted");
+              };
+              fr.readAsDataURL(blob);
+            });
+          });
+        } catch (e) {
+          console.error("Failed to export the sprite", e);
+          return "";
+        }
+      }
+    }
+
+    getSpriteValue(args, util) {
+      // Old block
+      const option = Cast.toString(args.EXPORT);
+      if (option === "name") {
+        return util.target.sprite.name ?? "";
+      } else if (option === "dataURI") {
+        try {
+          return new Promise((resolve) => {
+            Scratch.vm.exportSprite(util.target.id).then((blob) => {
               const fr = new FileReader();
               fr.onload = () => resolve(fr.result);
               fr.onabort = () => {
