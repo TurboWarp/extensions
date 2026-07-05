@@ -802,6 +802,7 @@
       mesh.data.texture?.hasFailedToLoad?.(),
 
     "primitive type": (mesh) => mesh.data.primitivesName ?? "triangles",
+    "primitive size": (mesh) => mesh.data.primitivesSize ?? 1,
     "blending type": (mesh) => mesh.data.blending ?? "default",
     "culling type": (mesh) => mesh.data.culling ?? "nothing",
     "alpha threshold": (mesh) => mesh.data.alphaTest ?? 0,
