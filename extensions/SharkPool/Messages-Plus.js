@@ -1,6 +1,6 @@
 // Name: Messages+
 // ID: SPmessagePlus
-// Description: New Powerful Message Blocks that work with Vanilla Blocks!
+// Description: Powerful new message blocks that work with vanilla broadcasts.
 // By: SharkPool
 // License: MIT
 
