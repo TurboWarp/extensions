@@ -248,6 +248,7 @@
             },
           },
           {
+            hideFromPalette: true,
             opcode: "returnNum",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[NUM] as number"),
@@ -460,7 +461,11 @@
         .join(" ");
     }
     repeatTxtTimes(args) {
-      return Scratch.Cast.toString(args.TEXT).repeat(Math.floor(args.NUM));
+      const times = Math.floor(Scratch.Cast.toNumber(args.NUM));
+      if (times < 0 || !Number.isFinite(times)) {
+        return "";
+      }
+      return Scratch.Cast.toString(args.TEXT).repeat(times);
     }
     jsonParse(args) {
       try {

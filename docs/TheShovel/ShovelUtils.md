@@ -2,7 +2,8 @@
 
 Shovel Utils is an extension focused mostly on injecting and modifying sprites and assets inside the project, as well as several other functions.
 
-**Disclaimer: Modifying and importing assets can be dangerous, and has the potential to corrupt your project. Be careful!**
+> [!CAUTION]
+> **Modifying and importing assets can be dangerous, and has the potential to corrupt your project. Be careful!**
 
 ## Importing Assets
 
@@ -10,7 +11,8 @@ Shovel Utils offers an easy way to import several types of assets, including spr
 
 ---
 
-**This goes for all blocks that fetch from a link: If you're experiences errors and are not able to import an asset from a link, check your console! You may be running into a CORS error. To resolve this, use a proxy like [corsproxy.io](https://corsproxy.io).**
+> [!TIP]
+> **This goes for all blocks that fetch from a link: If you're experiences errors and are not able to import an asset from a link, check your console! You may be running into a CORS error. To resolve this, use a proxy like [corsproxy.io](https://corsproxy.io).**
 
 ```scratch
 import sprite from [Link or data uri here]

@@ -3,6 +3,7 @@
 // Description: Special category with every menu from every Scratch category and extensions.
 // By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
 // License: MIT AND LGPL-3.0
+// Scratch-compatible: true
 
 (function (Scratch) {
   "use strict";

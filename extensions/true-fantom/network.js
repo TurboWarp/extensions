@@ -102,8 +102,8 @@
             opcode: "connected_to_internet_block",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("connected to internet?"),
+            hideFromPalette: true,
           },
-          "---",
           {
             opcode: "browser_block",
             blockType: Scratch.BlockType.REPORTER,
