@@ -659,9 +659,7 @@
 
     whenReceived(args, util) {
       const messageName = util.thread[kMessageName];
-      const inputName = Cast.toString(
-        args.BROADCAST_OPTION
-      ).toUpperCase();
+      const inputName = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
 
       if (messageName) return inputName === messageName;
       return false;
