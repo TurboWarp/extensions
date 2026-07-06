@@ -328,3 +328,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## NishiOwO/dectalk.png
  - Created by [@Dogo6647](https://github.com/Dogo6647)
  - Used Arimo from Google Fonts.
+
+## SamuelLouf/weather.png
+ - Created by [@horizontal-shading](https://github.com/horizontal-shading) for [@samuellouf](https://github.com/samuellouf)'s "Weather" extension
