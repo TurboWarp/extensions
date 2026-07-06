@@ -521,6 +521,7 @@
         case "top 5 songs":
         case "top songs":
           urlPath = "/top-tracks";
+          /* fallthrough */
         default:
           artistData = await this._fetchFromSpotify(
             "artist", args.URL, { urlPath }
