@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version 1.3.11
+// Version 1.3.2
 
 (function (Scratch) {
   "use strict";
@@ -12,11 +12,14 @@
     throw new Error("Messages+ must run unsandboxed");
   }
 
+  const Cast = Scratch.Cast;
   const vm = Scratch.vm;
   const runtime = vm.runtime;
 
   const kMessageName = Symbol("kMessageName"); // May be defined on a Thread as a string
   const kReceivedData = Symbol("kReceivedData"); // May be defined on a Thread as any Scratch-compatible value
+  const kResponseData = Symbol("kResponseData"); // May be defined on a Thread as any Scratch-compatible value
+  const kReceiveTime = Symbol("kReceiveTime"); // May be defined on a Thread as a number
 
   // TODO: _all_ is not actually a reserved value
   const ALL = "_all_",
@@ -38,6 +41,7 @@
         ...threads,
         ...runtime.startHats("SPmessagePlus_whenAnyBroadcast"),
       ];
+
       runtime.allScriptsByOpcodeDo(
         "SPmessagePlus_whenReceived",
         (script, target) => {
@@ -48,6 +52,7 @@
           else threads.push(runtime._pushThread(id, target));
         }
       );
+
       const name = fields.BROADCAST_OPTION;
       for (const thread of threads) thread[kMessageName] = name;
     }
@@ -58,9 +63,11 @@
   runtime._restartThread = function (thread) {
     const name = thread[kMessageName];
     if (name) {
-      if (threadedMsgs.indexOf(name) > -1)
+      if (threadedMsgs.indexOf(name) > -1) {
         return runtime._pushThread(thread.topBlock, thread.target);
-      else if (nonRestartedMsgs.indexOf(name) > -1) return thread;
+      } else if (nonRestartedMsgs.indexOf(name) > -1) {
+        return thread;
+      }
     }
     return ogRestartThread.call(this, thread);
   };
@@ -363,8 +370,8 @@
         { text: Scratch.translate("myself only"), value: MYSELF2 },
       ];
       const targets = runtime.targets;
-      for (let index = 1; index < targets.length; index++) {
-        const target = targets[index];
+      for (let i = 1; i < targets.length; i++) {
+        const target = targets[i];
         if (target.isOriginal) {
           const targetName = target.getName();
           spriteNames.push({ text: targetName, value: targetName });
@@ -396,6 +403,7 @@
       if (!broadcastName) return [];
       const target = this._getTargetFromMenu(targetName, util);
       if (target === NO_TARGET) return [];
+
       let newThreads = [];
       if (target === ALL_TARGETS) {
         newThreads = util.startHats("event_whenbroadcastreceived", {
@@ -404,7 +412,7 @@
       } else {
         // MYSELF2 -> "myself only" is the executors instance
         const clones = targetName === MYSELF2 ? [target] : target.sprite.clones;
-        for (const clone of clones)
+        for (const clone of clones) {
           newThreads = newThreads.concat(
             util.startHats(
               "event_whenbroadcastreceived",
@@ -412,7 +420,9 @@
               clone
             )
           );
+        }
       }
+
       for (const thread of newThreads) thread[kReceivedData] = data;
       return newThreads;
     }
@@ -438,11 +448,11 @@
     _waitForStartedThreads(util) {
       if (
         util.stackFrame.startedThreads.some(
-          (thread) => runtime.threads.indexOf(thread) !== -1
+          (t) => runtime.threads.indexOf(t) !== -1
         )
       ) {
-        const running = util.stackFrame.startedThreads.every((thread) =>
-          runtime.isWaitingThread(thread)
+        const running = util.stackFrame.startedThreads.every((t) =>
+          runtime.isWaitingThread(t)
         );
         if (running) util.yieldTick();
         else util.yield();
@@ -451,8 +461,10 @@
 
     // Block Funcs
     messageName(args, util) {
-      if (!Object.prototype.hasOwnProperty.call(util.thread, kMessageName))
+      if (!Object.prototype.hasOwnProperty.call(util.thread, kMessageName)) {
         return "";
+      }
+
       const name = util.thread[kMessageName];
       // The name stored on the thread is toUpperCase(), so lookup the user-facing name
       const variable = util.runtime
@@ -468,12 +480,11 @@
 
     broadcastDataTarget(args, util) {
       if (!util.stackFrame.startedThreads) {
-        const name = Scratch.Cast.toString(args.BROADCAST_OPTION);
-        const data = Scratch.Cast.toString(args.DATA);
-        const newThreads = this._broadcast(name, args.TARGET, data, util);
+        const name = Cast.toString(args.BROADCAST_OPTION);
+        const newThreads = this._broadcast(name, args.TARGET, args.DATA, util);
         if (
           newThreads.length === 0 ||
-          Scratch.Cast.toString(args.WAIT) === "continue"
+          Cast.toString(args.WAIT) === "continue"
         ) {
           return;
         }
@@ -484,7 +495,7 @@
 
     broadcastArray(args, util) {
       if (!util.stackFrame.startedThreads) {
-        const namesTxt = Scratch.Cast.toString(args.MESSAGES);
+        const namesTxt = Cast.toString(args.MESSAGES);
         let parsedNames;
         try {
           // try parsing and removing duplicates
@@ -493,16 +504,15 @@
           console.warn(e);
           return;
         }
-        const data = Scratch.Cast.toString(args.DATA);
         let newThreads = [];
         for (const name of parsedNames) {
           newThreads = newThreads.concat(
-            this._broadcast(name, args.TARGET, data, util)
+            this._broadcast(name, args.TARGET, args.DATA, util)
           );
         }
         if (
           newThreads.length === 0 ||
-          Scratch.Cast.toString(args.WAIT) === "continue"
+          Cast.toString(args.WAIT) === "continue"
         ) {
           return;
         }
@@ -520,17 +530,20 @@
     }
 
     otherData(args, util) {
-      const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
+      const broadcast = Cast.toString(args.BROADCAST_OPTION);
       const blockIds = this._getMessageHats(broadcast, "IDs");
       let received = "";
+
       const target = this._getTargetFromMenu(args.TARGET, util);
       if (target === NO_TARGET) return received;
+
       for (const ID of blockIds) {
-        const thread = runtime.threads.find((thread) => thread.topBlock === ID);
+        const thread = runtime.threads.find((t) => t.topBlock === ID);
         if (thread && thread[kReceivedData] !== undefined) {
           if (target === ALL_TARGETS) received = thread[kReceivedData];
-          else if (target.id === thread.target.id)
+          else if (target.id === thread.target.id) {
             received = thread[kReceivedData];
+          }
         }
       }
 
@@ -542,47 +555,38 @@
     }
 
     broadcastReturnData(args, util) {
-      if (!util.stackFrame.broadcastVar)
-        util.stackFrame.broadcastVar = Scratch.Cast.toString(
-          args.BROADCAST_OPTION
+      if (!util.stackFrame.initialized) {
+        util.stackFrame.initialized = true;
+        util.stackFrame.responses = [];
+        util.stackFrame.startedThreads = this._broadcast(
+          Cast.toString(args.BROADCAST_OPTION),
+          args.TARGET,
+          args.DATA,
+          util
         );
-      const data = Scratch.Cast.toString(args.DATA);
-      let response = "";
-      if (util.stackFrame.broadcastVar) {
-        const name = util.stackFrame.broadcastVar;
-        if (!util.stackFrame.startedThreads) {
-          util.stackFrame.startedThreads = this._broadcast(
-            name,
-            args.TARGET,
-            data,
-            util
-          );
-          if (util.stackFrame.startedThreads.length === 0) return;
-        }
-        const waiting = util.stackFrame.startedThreads.some(
-          (thread) => runtime.threads.indexOf(thread) !== -1
-        );
-        for (const thread of util.stackFrame.startedThreads) {
-          if (thread.justReported) {
-            response = thread.justReported;
-            break;
-          }
-        }
-        if (!response && waiting) {
-          if (
-            util.stackFrame.startedThreads.every((thread) =>
-              runtime.isWaitingThread(thread)
-            )
-          )
-            util.yieldTick();
-          else util.yield();
+
+        if (util.stackFrame.startedThreads.length === 0) return "[]";
+        util.yield();
+      }
+
+      const threads = util.stackFrame.startedThreads;
+      if (threads.some((t) => runtime.isActiveThread(t))) {
+        util.yield();
+        return; // restart block
+      }
+
+      for (const thread of threads) {
+        if (thread[kResponseData]) {
+          util.stackFrame.responses.push(thread[kResponseData]);
         }
       }
-      return response ? response : "";
+
+      util.stackFrame.initialized = false;
+      return JSON.stringify(util.stackFrame.responses);
     }
 
     respondData(args, util) {
-      util.thread.justReported = Scratch.Cast.toString(args.DATA);
+      util.thread[kResponseData] = args.DATA;
       // Delay the deletion of this Thread
       if (util.stackTimerNeedsInit()) {
         util.startStackTimer(0);
@@ -593,15 +597,18 @@
     }
 
     isReceived(args) {
-      const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
-      const blockIds = this._getMessageHats(broadcast, "IDs");
+      const broadcastName = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
+      const now = Date.now();
       let waiting = false;
-      for (const ID of blockIds) {
-        const thread = runtime.threads.find((thread) => thread.topBlock === ID);
-        if (thread && thread.messageFlag === undefined) {
-          thread.messageFlag = Date.now();
+      for (const thread of runtime.threads) {
+        if (thread[kReceiveTime] === undefined) {
+          thread[kReceiveTime] = now;
+        }
+        if (
+          thread[kMessageName] === broadcastName &&
+          thread[kReceiveTime] >= now
+        ) {
           waiting = true;
-          break;
         }
       }
 
@@ -609,12 +616,10 @@
     }
 
     isWaiting(args) {
-      const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
-      const blockIds = this._getMessageHats(broadcast, "IDs");
+      const broadcastName = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
       let waiting = false;
-      for (const ID of blockIds) {
-        const thread = runtime.threads.find((thread) => thread.topBlock === ID);
-        if (thread) {
+      for (const thread of runtime.threads) {
+        if (thread[kMessageName] === broadcastName) {
           waiting = true;
           break;
         }
@@ -624,7 +629,7 @@
     }
 
     receivers(args) {
-      const broadcast = Scratch.Cast.toString(args.BROADCAST_OPTION);
+      const broadcast = Cast.toString(args.BROADCAST_OPTION);
       const targets = this._getMessageHats(broadcast, "targets");
       for (let i = 0; i < targets.length; i++) {
         const name = targets[i].getName();
@@ -635,7 +640,7 @@
     }
 
     toggleRestart(args) {
-      const msg = Scratch.Cast.toString(args.BROADCAST_OPTION).toUpperCase();
+      const msg = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
       const index = nonRestartedMsgs.indexOf(msg);
       if (args.TOGGLE === "on" && index > -1) nonRestartedMsgs.splice(index, 1);
       else if (args.TOGGLE === "off" && index === -1) {
@@ -644,7 +649,7 @@
     }
 
     toggleOverlap(args) {
-      const msg = Scratch.Cast.toString(args.BROADCAST_OPTION).toUpperCase();
+      const msg = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
       const index = threadedMsgs.indexOf(msg);
       if (args.TOGGLE === "on" && index === -1) threadedMsgs.push(msg);
       else if (args.TOGGLE === "off" && index > -1) {
@@ -654,7 +659,7 @@
 
     whenReceived(args, util) {
       const messageName = util.thread[kMessageName];
-      const inputName = Scratch.Cast.toString(
+      const inputName = Cast.toString(
         args.BROADCAST_OPTION
       ).toUpperCase();
 
