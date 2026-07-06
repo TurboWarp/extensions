@@ -95,7 +95,7 @@
    * @returns {boolean}
    */
   function isElectron() {
-    return navigator.userAgent.includes('Electron');
+    return navigator.userAgent.includes("Electron");
   }
 
   /**
@@ -134,12 +134,14 @@
         color3: "#04C825",
         menuIconURI,
         blocks: [
-          ...(isElectron() ? [
-            {
-              blockType: Scratch.BlockType.LABEL,
-              text: Scratch.translate('Not supported in desktop app'),
-            },
-          ] : []),
+          ...(isElectron()
+            ? [
+                {
+                  blockType: Scratch.BlockType.LABEL,
+                  text: Scratch.translate("Not supported in desktop app"),
+                },
+              ]
+            : []),
           {
             opcode: "isSupported",
             blockType: Scratch.BlockType.BOOLEAN,
