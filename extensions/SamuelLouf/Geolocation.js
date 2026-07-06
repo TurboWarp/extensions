@@ -1,6 +1,6 @@
 // Name: Geolocation
 // ID: samuelloufgeolocation
-// Description: Get the user's current location (requires permission from browser).
+// Description: Get the user's current location (requires permission from browser). Not supported in desktop app or Electron packaged projects.
 // By: SamuelLouf <https://scratch.mit.edu/users/samuellouf/>
 // License: MIT
 
@@ -92,11 +92,24 @@
   }
 
   /**
+   * @returns {boolean}
+   */
+  function isElectron() {
+    return navigator.userAgent.includes("Electron");
+  }
+
+  /**
+   * @returns {boolean}
+   */
+  function isSupported() {
+    return !!navigator.geolocation && !isElectron();
+  }
+
+  /**
    * @returns {Promise<boolean>}
    */
   async function canGeolocate() {
-    const supported = !!navigator.geolocation;
-    if (!supported) {
+    if (!isSupported()) {
       return false;
     }
 
@@ -121,6 +134,14 @@
         color3: "#04C825",
         menuIconURI,
         blocks: [
+          ...(isElectron()
+            ? [
+                {
+                  blockType: Scratch.BlockType.LABEL,
+                  text: Scratch.translate("Not supported in desktop app"),
+                },
+              ]
+            : []),
           {
             opcode: "isSupported",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -272,7 +293,7 @@
     }
 
     isSupported() {
-      return !!navigator.geolocation;
+      return isSupported();
     }
 
     setTimeoutTo(args) {
