@@ -80,6 +80,7 @@
       return {
         id: "SPmessagePlus",
         name: Scratch.translate("Messages+"),
+        docsURI: "https://extensions.turbowarp.org/SharkPool/Messages-Plus",
         color1: "#FFBF00",
         color2: "#E6AC00",
         color3: "#CC9900",
