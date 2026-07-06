@@ -4062,6 +4062,15 @@ void main() {
             return;
           }
           const video = runtime.ext_lmsVideo.videos[NAME].videoElement;
+          const videoReady =
+            video.readyState >= video.HAVE_CURRENT_DATA &&
+            video.videoWidth > 0 &&
+            video.videoHeight > 0;
+          if (!videoReady) {
+            retStatus = "video is not ready";
+            resolve(null);
+            return;
+          }
           imageSourceSync = {
             width: video.videoWidth,
             height: video.videoHeight,
