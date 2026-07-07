@@ -16,14 +16,30 @@
    */
   async function getCurrentWeather(coordinates) {
     var fetched_json = await Scratch.fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.latitude}&longitude=${coordinates.longitude}&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m`
+      `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.latitude}&longitude=${coordinates.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m`
     )
       .then((r) => r.text())
       .catch(() => "");
     if (!fetched_json) return "";
     fetched_json = JSON.parse(fetched_json);
     // @ts-ignore
-    return fetched_json.current_weather;
+    return fetched_json.current;
+  }
+
+  /**
+   * Is it day ?
+   * @param {{ latitude: any; longitude: any; }} coordinates
+   */
+  async function isDay(coordinates) {
+    var fetched_json = await Scratch.fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.latitude}&longitude=${coordinates.longitude}&current=is_day`
+    )
+      .then((r) => r.text())
+      .catch(() => "");
+    if (!fetched_json) return "";
+    fetched_json = JSON.parse(fetched_json);
+    // @ts-ignore
+    return fetched_json.current.is_day == 1;
   }
 
   /**
@@ -78,10 +94,32 @@
   const meteo_now_menu = [
     "temperature (C)",
     "temperature (F)",
+    "apparent temperature (C)",
+    "apparent temperature (F)",
     "weather code",
-    "wind direction",
+    "wind direction (°)",
     "wind speed (km/h)",
     "wind speed (mph)",
+    "wind gusts (km/h)",
+    "wind gusts (mph)",
+    "precipitation (mm)",
+    "precipitation (inches)",
+    "rain (mm)",
+    "rain (inches)",
+    "showers (mm)",
+    "showers (inches)",
+    "snowfall (cm)",
+    "snowfall (inches)",
+    "surface pressure (hPa)",
+    {
+      text: "sea level pressure (hPa)",
+      value: "pressure_msl",
+    },
+    "cloud cover (%)",
+    {
+      text: "relative humidity (%)",
+      value: "relative_humidity_2m",
+    },
   ];
 
   class Weather {
@@ -143,6 +181,23 @@
               },
             },
           },
+          {
+            opcode: "is_day_at",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate(
+              "daytime at latitude [latitude] longitude [longitude]?"
+            ),
+            arguments: {
+              latitude: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 42.3592593,
+              },
+              longitude: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: -71.0933625,
+              },
+            },
+          },
           "---",
           "---",
           {
@@ -186,6 +241,17 @@
               },
             },
           },
+          {
+            opcode: "is_day_in",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("daytime in [place]?"),
+            arguments: {
+              place: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Paris, France",
+              },
+            },
+          },
         ],
         menus: {
           meteo_now_menu: {
@@ -211,9 +277,21 @@
     get_current_weather(weather, args) {
       if (args.METEO.includes("temperature")) {
         if (args.METEO.includes("(C)")) {
-          return weather.temperature;
+          return weather[
+            args.METEO.includes("apparent")
+              ? "apparent_temperature"
+              : "temperature_2m"
+          ];
         } else {
-          var temperature = (weather.temperature * 9) / 5 + 32;
+          var temperature =
+            (weather[
+              args.METEO.includes("apparent")
+                ? "apparent_temperature"
+                : "temperature_2m"
+            ] *
+              9) /
+              5 +
+            32;
           return Scratch.Cast.toNumber(
             Scratch.Cast.toString(itemOfFromString(0, temperature, ".")) +
               "." +
@@ -222,19 +300,43 @@
         }
       } else if (args.METEO == "all (JSON)") {
         return JSON.stringify(weather);
-      } else if (args.METEO.includes("wind speed")) {
-        if (args.METEO.includes("(km/h)")) {
-          return weather.windspeed;
+      } else if (args.METEO.includes("wind")) {
+        if (args.METEO.includes("(km/h)") || args.METEO.includes("(°)")) {
+          return weather[
+            args.METEO.split(" (")[0].replaceAll(" ", "_") + "_10m"
+          ];
         } else {
-          var wind_speed = weather.windspeed / 1.609;
+          var wind_speed =
+            weather[args.METEO.split(" (")[0].replaceAll(" ", "_") + "_10m"] /
+            1.609;
           return Scratch.Cast.toNumber(
             Scratch.Cast.toString(itemOfFromString(0, wind_speed, ".")) +
               "." +
               lettersOf(itemOfFromString(1, wind_speed, "."), 0, 1)
           );
         }
+      } else if (
+        ["Precipitation", "Rain", "Showers", "Snowfall"].includes(
+          args.METEO.split(" ")[0]
+        )
+      ) {
+        if (args.METEO.includes("(cm)") || args.METEO.includes("(mm)")) {
+          return weather[args.METEO.split(" ")[0].toLocaleLowerCase()];
+        } else {
+          return (
+            Math.round(
+              ((weather[args.METEO.split(" ")[0].toLocaleLowerCase()] *
+                (args.METEO.split(" ")[0] == "Snowfall" ? 10 : 1)) /
+                25.4) *
+                10 ** 4
+            ) /
+            10 ** 4
+          );
+        }
       } else {
-        return weather[args.METEO.replace(" ", "")];
+        return weather[
+          args.METEO.toLocaleLowerCase().split(" (")[0].replaceAll(" ", "_")
+        ];
       }
     }
 
@@ -245,15 +347,7 @@
       var value = Scratch.Cast.toNumber(args.value);
       var response = await this.get_current_weather_at(args);
       response = Scratch.Cast.toNumber(response);
-      var margin = args.METEO.includes("temperature")
-        ? args.METEO.includes("(C)")
-          ? 2.5
-          : 3.6
-        : args.METEO.includes("wind speed")
-          ? args.METEO.includes("(km/h)")
-            ? 10
-            : 6.2
-          : 0;
+      var margin = 10;
       return compare(response, value, args.OPERATORS, margin);
     }
 
@@ -269,21 +363,26 @@
     }
 
     /**
+     * @param {{ latitude?: any; longitude?: any; }} args
+     */
+    async is_day_at(args) {
+      return await isDay({
+        latitude: args.latitude,
+        longitude: args.longitude,
+      });
+    }
+
+    // ---
+    // ---
+
+    /**
      * @param {{ OPERATORS: string; value: any; METEO: string | string[]; }} args
      */
     async is_current_weather_in(args) {
       var response = await this.get_current_weather_in(args);
       var value = Scratch.Cast.toNumber(args.value);
       response = Scratch.Cast.toNumber(response);
-      var margin = args.METEO.includes("temperature")
-        ? args.METEO.includes("(C)")
-          ? 2.5
-          : 3.6
-        : args.METEO.includes("wind speed")
-          ? args.METEO.includes("(km/h)")
-            ? 10
-            : 6.2
-          : 0;
+      var margin = 10;
       return compare(response, value, args.OPERATORS, margin);
     }
 
@@ -298,6 +397,18 @@
         longitude: geolocation[0],
       });
       return this.get_current_weather(current_weather, { METEO: args.METEO });
+    }
+
+    /**
+     * @param {{ place?: any; }} args
+     */
+    async is_day_in(args) {
+      var geolocation = await getCoordinatesFromAdress(args.place);
+      if (!geolocation) return "";
+      return await isDay({
+        latitude: geolocation[1],
+        longitude: geolocation[0],
+      });
     }
   }
   Scratch.extensions.register(new Weather());
