@@ -1,6 +1,7 @@
 // Name: Files
 // ID: files
 // Description: Read and download files.
+// By: GarboMuffin
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {

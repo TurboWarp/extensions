@@ -1,6 +1,7 @@
 // Name: Face Sensing
 // ID: faceSensing
 // Description: Sense faces with the camera.
+// By: GarboMuffin
 // License: MPL-2.0
 // Scratch-compatible: true
 
