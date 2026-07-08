@@ -1,8 +1,8 @@
 // Name: HTML Inputs
 // ID: samuelloufhtmlinputs
 // Description: Add HTML inputs over the stage.
-// By: SamuelLouf <https://scratch.mit.edu/users/samuellouf/>
-// License: MPL-2.0
+// By: SamuelLouf <https://samuellouf.github.io/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -14,6 +14,10 @@
   const interactive = true;
   const resizeBehavior = "scale";
 
+  /**
+   * Update an element's attributes
+   * @param {string} name
+   */
   const updateElementAttributes = (name) => {
     if (html_elements[name] == undefined) return;
 
@@ -69,6 +73,14 @@
   const getOverlayMode = () =>
     resizeBehavior === "scale" ? "scale-centered" : "manual";
 
+  /**
+   * Create an element
+   * @param {string} element 
+   * @param {string} name 
+   * @param {Array<{ name: string; value: string; }>} attributes 
+   * @param {string} id 
+   * @param {string} class_names 
+   */
   const createElement = (
     element,
     name,
@@ -93,6 +105,10 @@
     updateElementAttributes(name);
   };
 
+  /**
+   * Close an element
+   * @param {string} name 
+   */
   const closeElement = (name) => {
     if (html_elements[name]) {
       Scratch.renderer.removeOverlay(html_elements[name]);
@@ -114,16 +130,27 @@
     }
   };
 
+  /**
+   * Label block
+   * @param {string} text 
+   * @returns {{blockType: string; text: string}}
+   */
   const label = (text) => {
     return {
-      blockType: "label",
+      blockType: Scratch.BlockType.LABEL,
       text: text,
     };
   };
 
+  /**
+   * Get promise from event
+   * @param {*} item 
+   * @param {string} event 
+   * @returns 
+   */
   const getPromiseFromEvent = (item, event) => {
     return new Promise((resolve) => {
-      const listener = (e) => {
+      const listener = (/** @type {event} */ e) => {
         item.removeEventListener(event, listener);
         resolve(e);
       };
@@ -131,7 +158,34 @@
     });
   };
 
-  // data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIyOS4yMTAwNyIgaGVpZ2h0PSIxNC41NTY1NiIgdmlld0JveD0iMCwwLDI5LjIxMDA3LDE0LjU1NjU2Ij48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjI1LjM5NDk2LC0xNzIuNzIxNzIpIj48ZyBmaWxsPSIjOTk2NmZmIiBzdHJva2Utd2lkdGg9IjAiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCI+PHBhdGggZD0iTTIyNS4zOTkwNywxODAuODI4NjlsLTAuMDA0MSwtMS40MDA0MWw5LjY4MDIsLTQuNTk2OTNsMC4wNDA5NywxLjgyMDExbC03LjQ5NTcsMy40ODQyOGw3LjQyODk0LDMuMDMxNTlsMC4wMjU3OSwxLjc2NDM0eiIgc3Ryb2tlPSJub25lIi8+PHBhdGggZD0iTTI0NC45MjQ4MywxODUuMDQwMDRsMC4wMjU3OSwtMS43NjQzNGw3LjQyODk0LC0zLjAzMTU5bC03LjQ5NTcsLTMuNDg0MjhsMC4wNDA5NywtMS44MjAxMWw5LjY4MDIsNC41OTY5MmwtMC4wMDQxLDEuNDAwNHoiIHN0cm9rZT0ibm9uZSIvPjxwYXRoIGQ9Ik0yMzYuMzA4MTUsMTg3LjE5MzY1bDUuMzUyMzEsLTE0LjQ3MTkzbDIuMDYwODksMC4xNjkyNmwtNS4zMzE3NiwxNC4zODczeiIgc3Ryb2tlPSIjMDAwMDAwIi8+PC9nPjwvZz48L3N2Zz48IS0tcm90YXRpb25DZW50ZXI6MTQuNjA1MDM1OTMxMDM4MTc0OjcuMjc4Mjc5NTU3MjI5MDQxLS0+
+  /**
+   * Look up list
+   * @param {string} list 
+   * @param {*} util 
+   * @returns 
+   */
+  function lookupList(list, util) {
+    const byId = util.target.lookupVariableById(list);
+    if (byId && byId.type === "list") {
+      return byId;
+    }
+    const byName = util.target.lookupVariableByNameAndType(list, "list");
+    if (byName) {
+      return byName;
+    }
+    return null;
+  }
+
+  /**
+   * @param {string} value
+   * @param {string} text
+   */
+  function _option(value, text) {
+    var option = document.createElement("option");
+    option.value = value;
+    option.text = text;
+    return option;
+  }
 
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateElementsAttributes);
 
@@ -577,35 +631,25 @@
       };
     }
 
-    createInput({ TYPE, NAME }) {
+    /**
+     * @param {{ NAME: string; TYPE: string; }} args
+     */
+    createInput({ NAME, TYPE }) {
       createElement("input", Scratch.Cast.toString(NAME), [
         { name: "type", value: TYPE },
       ]);
     }
 
-    createSelect({ NAME }) {
-      createElement("select", Scratch.Cast.toString(NAME));
+    /**
+     * @param {{ NAME: string; }} args
+     */
+    createSelect(args) {
+      createElement("select", Scratch.Cast.toString(args.NAME));
     }
 
-    lookupList(list, util) {
-      const byId = util.target.lookupVariableById(list);
-      if (byId && byId.type === "list") {
-        return byId;
-      }
-      const byName = util.target.lookupVariableByNameAndType(list, "list");
-      if (byName) {
-        return byName;
-      }
-      return null;
-    }
-
-    _option(value, text) {
-      var option = document.createElement("option");
-      option.value = value;
-      option.text = text;
-      return option;
-    }
-
+    /**
+     * @param {{ NAME: string }} args 
+     */
     emptySelectMenu({ NAME }) {
       NAME = Scratch.Cast.toString(NAME);
       try {
@@ -626,30 +670,40 @@
       updateElementAttributes(NAME);
     }
 
+    /**
+     * @param {{ NAME: string; LIST: string; }} args 
+     * @param {*} util 
+     */
     setSelectOptionsToList({ NAME, LIST }, util) {
       NAME = Scratch.Cast.toString(NAME);
-      let listVariable = this.lookupList(LIST, util).value;
+      let listVariable = lookupList(LIST, util).value;
       this.emptySelectMenu({ NAME });
       for (var i in listVariable) {
         html_elements[NAME].appendChild(
-          this._option(listVariable[i], listVariable[i])
+          _option(listVariable[i], listVariable[i])
         );
       }
       updateElementAttributes(NAME);
     }
 
+    /**
+     * @param {{ NAME: string; LIST: string; SPLITBY: string; }} args 
+     */
     setSelectOptionsToText({ NAME, LIST, SPLITBY }) {
       NAME = Scratch.Cast.toString(NAME);
       let listVariable = LIST.split(SPLITBY);
       this.emptySelectMenu({ NAME });
       for (var i in listVariable) {
         html_elements[NAME].appendChild(
-          this._option(listVariable[i], listVariable[i])
+          _option(listVariable[i], listVariable[i])
         );
       }
       updateElementAttributes(NAME);
     }
 
+    /**
+     * @param {{ NAME: string; ATTRIBUTE: string; VALUE: string; }} args 
+     */
     setElement({ NAME, ATTRIBUTE, VALUE }) {
       NAME = Scratch.Cast.toString(NAME);
       switch (ATTRIBUTE) {
@@ -667,9 +721,11 @@
 
     getLists() {
       const globalLists = Object.values(
+        // @ts-ignore
         Scratch.vm.runtime.getTargetForStage().variables
       ).filter((x) => x.type == "list");
       const localLists = Object.values(
+        // @ts-ignore
         Scratch.vm.editingTarget.variables
       ).filter((x) => x.type == "list");
       const uniqueLists = [...new Set([...globalLists, ...localLists])];
@@ -687,23 +743,35 @@
       }));
     }
 
+    /**
+     * @param {{ NAME: string; }} args
+     */
     elementExists({ NAME }) {
       NAME = Scratch.Cast.toString(NAME);
       return html_elements[NAME] != undefined;
     }
 
+    /**
+     * @param {{ NAME: string; X: number; }} args 
+     */
     setElementX({ NAME, X }) {
       NAME = Scratch.Cast.toString(NAME);
       elements_coordinates[NAME].x = Scratch.Cast.toNumber(X);
       updateElementAttributes(NAME);
     }
 
+    /**
+     * @param {{ NAME: string; Y: number; }} args 
+     */
     setElementY({ NAME, Y }) {
       NAME = Scratch.Cast.toString(NAME);
       elements_coordinates[NAME].y = Scratch.Cast.toNumber(Y);
       updateElementAttributes(NAME);
     }
 
+    /**
+     * @param {{ NAME: string; ATTRIBUTE: string; }} args 
+     */
     getElement({ NAME, ATTRIBUTE }) {
       NAME = Scratch.Cast.toString(NAME);
       switch (ATTRIBUTE) {
@@ -727,6 +795,9 @@
       }
     }
 
+    /**
+     * @param {{ NAME: string; EVENT: string; }} args 
+     */
     async waitUntilElementEvent({ NAME, EVENT }) {
       NAME = Scratch.Cast.toString(NAME);
       if (html_elements[NAME]) {
@@ -734,6 +805,9 @@
       }
     }
 
+    /**
+     * @param {{ NAME: string }} args 
+     */
     show({ NAME }) {
       NAME = Scratch.Cast.toString(NAME);
       if (html_elements[NAME]) {
@@ -741,6 +815,9 @@
       }
     }
 
+    /**
+     * @param {{ NAME: string }} args 
+     */
     hide({ NAME }) {
       NAME = Scratch.Cast.toString(NAME);
       if (html_elements[NAME]) {
@@ -748,6 +825,9 @@
       }
     }
 
+    /**
+     * @param {{ NAME: string }} args 
+     */
     elementVisibility({ NAME }) {
       NAME = Scratch.Cast.toString(NAME);
       if (html_elements[NAME]) {
@@ -755,6 +835,9 @@
       }
     }
 
+    /**
+     * @param {{ NAME: string }} args 
+     */
     deleteElement({ NAME }) {
       closeElement(Scratch.Cast.toString(NAME));
     }
@@ -763,18 +846,27 @@
       closeElements();
     }
 
+    /**
+     * @param {{ NAME: string; WIDTH: Number; }} args
+     */
     setElementWidth({ NAME, WIDTH }) {
       NAME = Scratch.Cast.toString(NAME);
       elements_coordinates[NAME].width = Scratch.Cast.toNumber(WIDTH);
       updateElementAttributes(NAME);
     }
 
+    /**
+     * @param {{ NAME: string; HEIGHT: Number; }} args
+     */
     setElementHeight({ NAME, HEIGHT }) {
       NAME = Scratch.Cast.toString(NAME);
       elements_coordinates[NAME].height = Scratch.Cast.toNumber(HEIGHT);
       updateElementAttributes(NAME);
     }
 
+    /**
+     * @param {{ NAME: string; }} args
+     */
     refreshElement({ NAME }) {
       updateElementAttributes(Scratch.Cast.toString(NAME));
     }
