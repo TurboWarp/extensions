@@ -1,6 +1,9 @@
 // Name: Clipboard
 // ID: clipboard
 // Description: Read and write from the system clipboard.
+// By: tomyo-code
+// By: AdamMady
+// By: NamelessCat <https://scratch.mit.edu/users/NamelessCat/>
 // License: Apache-2.0
 
 /*!

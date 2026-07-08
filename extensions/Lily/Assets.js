@@ -742,6 +742,7 @@
 
     async loadExtension(args) {
       const url = Cast.toString(args.URL);
+      if (!(await vm.securityManager.canLoadExtensionFromProject(url))) return;
       await vm.extensionManager.loadExtensionURL(url);
     }
 
