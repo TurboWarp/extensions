@@ -1,7 +1,7 @@
 // Name: HTML Inputs
 // ID: samuelloufhtmlinputs
 // Description: Add HTML inputs over the stage.
-// By: SamuelLouf <https://samuellouf.github.io/>
+// By: SamuelLouf <https://scratch.mit.edu/users/samuellouf/>
 // License: MIT
 
 (function (Scratch) {
