@@ -7,7 +7,7 @@
 (function (Scratch) {
     "use strict";
     if (!Scratch.extensions.unsandboxed) {
-        throw new Error("SearchParams must be run unsandboxed.");
+        throw new Error("Input Boxes must be run unsandboxed.");
     }
     class InputBoxExtension {
         constructor() {
