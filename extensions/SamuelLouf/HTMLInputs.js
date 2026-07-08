@@ -75,11 +75,11 @@
 
   /**
    * Create an element
-   * @param {string} element 
-   * @param {string} name 
-   * @param {Array<{ name: string; value: string; }>} attributes 
-   * @param {string} id 
-   * @param {string} class_names 
+   * @param {string} element
+   * @param {string} name
+   * @param {Array<{ name: string; value: string; }>} attributes
+   * @param {string} id
+   * @param {string} class_names
    */
   const createElement = (
     element,
@@ -107,7 +107,7 @@
 
   /**
    * Close an element
-   * @param {string} name 
+   * @param {string} name
    */
   const closeElement = (name) => {
     if (html_elements[name]) {
@@ -132,7 +132,7 @@
 
   /**
    * Label block
-   * @param {string} text 
+   * @param {string} text
    * @returns {{blockType: string; text: string}}
    */
   const label = (text) => {
@@ -144,9 +144,9 @@
 
   /**
    * Get promise from event
-   * @param {*} item 
-   * @param {string} event 
-   * @returns 
+   * @param {*} item
+   * @param {string} event
+   * @returns
    */
   const getPromiseFromEvent = (item, event) => {
     return new Promise((resolve) => {
@@ -160,9 +160,9 @@
 
   /**
    * Look up list
-   * @param {string} list 
-   * @param {*} util 
-   * @returns 
+   * @param {string} list
+   * @param {*} util
+   * @returns
    */
   function lookupList(list, util) {
     const byId = util.target.lookupVariableById(list);
@@ -648,7 +648,7 @@
     }
 
     /**
-     * @param {{ NAME: string }} args 
+     * @param {{ NAME: string }} args
      */
     emptySelectMenu({ NAME }) {
       NAME = Scratch.Cast.toString(NAME);
@@ -671,8 +671,8 @@
     }
 
     /**
-     * @param {{ NAME: string; LIST: string; }} args 
-     * @param {*} util 
+     * @param {{ NAME: string; LIST: string; }} args
+     * @param {*} util
      */
     setSelectOptionsToList({ NAME, LIST }, util) {
       NAME = Scratch.Cast.toString(NAME);
@@ -687,7 +687,7 @@
     }
 
     /**
-     * @param {{ NAME: string; LIST: string; SPLITBY: string; }} args 
+     * @param {{ NAME: string; LIST: string; SPLITBY: string; }} args
      */
     setSelectOptionsToText({ NAME, LIST, SPLITBY }) {
       NAME = Scratch.Cast.toString(NAME);
@@ -702,7 +702,7 @@
     }
 
     /**
-     * @param {{ NAME: string; ATTRIBUTE: string; VALUE: string; }} args 
+     * @param {{ NAME: string; ATTRIBUTE: string; VALUE: string; }} args
      */
     setElement({ NAME, ATTRIBUTE, VALUE }) {
       NAME = Scratch.Cast.toString(NAME);
@@ -752,7 +752,7 @@
     }
 
     /**
-     * @param {{ NAME: string; X: number; }} args 
+     * @param {{ NAME: string; X: number; }} args
      */
     setElementX({ NAME, X }) {
       NAME = Scratch.Cast.toString(NAME);
@@ -761,7 +761,7 @@
     }
 
     /**
-     * @param {{ NAME: string; Y: number; }} args 
+     * @param {{ NAME: string; Y: number; }} args
      */
     setElementY({ NAME, Y }) {
       NAME = Scratch.Cast.toString(NAME);
@@ -770,7 +770,7 @@
     }
 
     /**
-     * @param {{ NAME: string; ATTRIBUTE: string; }} args 
+     * @param {{ NAME: string; ATTRIBUTE: string; }} args
      */
     getElement({ NAME, ATTRIBUTE }) {
       NAME = Scratch.Cast.toString(NAME);
@@ -796,7 +796,7 @@
     }
 
     /**
-     * @param {{ NAME: string; EVENT: string; }} args 
+     * @param {{ NAME: string; EVENT: string; }} args
      */
     async waitUntilElementEvent({ NAME, EVENT }) {
       NAME = Scratch.Cast.toString(NAME);
@@ -806,7 +806,7 @@
     }
 
     /**
-     * @param {{ NAME: string }} args 
+     * @param {{ NAME: string }} args
      */
     show({ NAME }) {
       NAME = Scratch.Cast.toString(NAME);
@@ -816,7 +816,7 @@
     }
 
     /**
-     * @param {{ NAME: string }} args 
+     * @param {{ NAME: string }} args
      */
     hide({ NAME }) {
       NAME = Scratch.Cast.toString(NAME);
@@ -826,7 +826,7 @@
     }
 
     /**
-     * @param {{ NAME: string }} args 
+     * @param {{ NAME: string }} args
      */
     elementVisibility({ NAME }) {
       NAME = Scratch.Cast.toString(NAME);
@@ -836,7 +836,7 @@
     }
 
     /**
-     * @param {{ NAME: string }} args 
+     * @param {{ NAME: string }} args
      */
     deleteElement({ NAME }) {
       closeElement(Scratch.Cast.toString(NAME));
