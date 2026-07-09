@@ -91,8 +91,7 @@ The **sprites** dropdown behaves the same as in the broadcast command blocks.
 (broadcast (message1 v) with data (...) to (all sprites v)::#FFBF00)
 ```
 
-Broadcasts the specified message to the selected sprites while sending a value to the receiving scripts,
-then returns an array containing the responses from every receiver.
+Broadcasts the specified message to the selected sprites while sending a value to the receiving scripts, then returns an array containing the responses from every receiver.
 
 This block behaves the same as the previous reporter, but also includes a **data** input.
 Any value can be passed through this input, allowing the receiver scripts to access additional information while processing the broadcast.
