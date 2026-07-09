@@ -2,7 +2,7 @@
 // ID: samuelloufwikipedia
 // Description: Fetch the content of Wikipedia pages.
 // By: SamuelLouf <https://scratch.mit.edu/users/samuellouf/>
-// License: MPL-2.0
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -226,7 +226,7 @@
     async fetchFirstParagraph(args) {
       var data = await fetchWikipedia(
         this.wikipediaLanguages,
-        encodeURIComponent(args.NAME)
+        args.NAME
       );
       if (data == "") return "";
       const pageId = Object.keys(data.query.pages)[0];
@@ -247,7 +247,7 @@
     async fetchShortSentence(args) {
       var data = await fetchWikipedia(
         this.wikipediaLanguages,
-        encodeURIComponent(args.NAME)
+        args.NAME
       );
       if (data == "") return "";
       const pageId = Object.keys(data.query.pages)[0];
@@ -263,7 +263,7 @@
     async doesPageExists(args) {
       var data = await fetchWikipedia(
         this.wikipediaLanguages,
-        encodeURIComponent(args.NAME)
+        args.NAME
       );
       if (data == "") return "";
       return !!data.query.pages[0];
