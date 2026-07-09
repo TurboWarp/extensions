@@ -20,6 +20,8 @@ This block triggers automatically every time **any** message is broadcasted acro
 This reporter block returns the exact name of the received message.
 It must be placed inside a "when I receive" or "when any broadcast is received" script to function.
 
+**Important:** If the broadcast was sent using a dynamic message (i.e., a message that does not appear in the broadcast message dropdown), this block returns the message name in uppercase (`message1` becomes `MESSAGE1`). This behavior is an inherent limitation of Scratch and cannot be changed.
+
 ```scratch
 broadcast (message1 v) to (all sprites v) and [continue v]::#FFBF00
 ```
