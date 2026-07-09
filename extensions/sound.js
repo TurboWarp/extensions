@@ -1,6 +1,8 @@
 // Name: URL Playback
 // ID: notSound
 // Description: Play sounds from URLs. Previously called "Sound".
+// By: softed <https://scratch.mit.edu/users/softed/>
+// By: GarboMuffin
 // License: MIT AND MPL-2.0
 
 ((Scratch) => {

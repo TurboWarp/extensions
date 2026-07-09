@@ -49,8 +49,9 @@ enable for [this costume v] mode [normal v] :: #0FBD8C
 
 Make physics apply to this sprite. It can also collide with other sprites that have physics enabled.
 
- - `this costume`: Enable physics only for the current sprite or clone.
+ - `this costume`: Enable physics only for the current sprite or clone, tracing the convex hull of the costume. Faster than `this polygon` and less likely to have physics errors, but less accurate.
  - `this circle`: Enable physics for the current sprite or clone as if it were shaped like a circle.
+ - `this polygon`: Enable physics for the current sprite or clone, tracing full shape of the costume. Slower than `this costume`, but more accurately reflects costume shape.
  - `all sprites`: Enable physics for all sprites.
 
 Precision mode will make the sprite work extra hard to make sure it doesn't overlap with anything.
