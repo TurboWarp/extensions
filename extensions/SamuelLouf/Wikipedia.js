@@ -224,14 +224,11 @@
     }
 
     async fetchFirstParagraph(args) {
-      var data = await fetchWikipedia(
-        this.wikipediaLanguages,
-        args.NAME
-      );
+      var data = await fetchWikipedia(this.wikipediaLanguages, args.NAME);
       if (data == "") return "";
       const pageId = Object.keys(data.query.pages)[0];
       let extract = data.query.pages[pageId].extract;
-      if (extract == undefined) return ""
+      if (extract == undefined) return "";
       extract = extract.replace(/\s{2,}/g, " ");
       var paragraph = extract.split("\n")[0];
       var split_paragraph = paragraph.split(".");
@@ -246,14 +243,11 @@
     }
 
     async fetchShortSentence(args) {
-      var data = await fetchWikipedia(
-        this.wikipediaLanguages,
-        args.NAME
-      );
+      var data = await fetchWikipedia(this.wikipediaLanguages, args.NAME);
       if (data == "") return "";
       const pageId = Object.keys(data.query.pages)[0];
       let extract = data.query.pages[pageId].extract;
-      if (extract == undefined) return ""
+      if (extract == undefined) return "";
       extract = extract.replace(/\s{2,}/g, " ");
       return extract.split(".").slice(0, 2).join(".") + ".";
     }
@@ -263,10 +257,7 @@
     }
 
     async doesPageExists(args) {
-      var data = await fetchWikipedia(
-        this.wikipediaLanguages,
-        args.NAME
-      );
+      var data = await fetchWikipedia(this.wikipediaLanguages, args.NAME);
       if (data == "") return "";
       return Object.keys(data.query.pages).length > 0;
     }
