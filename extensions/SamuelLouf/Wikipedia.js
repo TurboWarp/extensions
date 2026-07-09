@@ -216,7 +216,7 @@
         ],
         menus: {
           languages: {
-            acceptReporters: false,
+            acceptReporters: true,
             items: languages_list,
           },
         },
@@ -231,6 +231,7 @@
       if (data == "") return "";
       const pageId = Object.keys(data.query.pages)[0];
       let extract = data.query.pages[pageId].extract;
+      if (extract == undefined) return ""
       extract = extract.replace(/\s{2,}/g, " ");
       var paragraph = extract.split("\n")[0];
       var split_paragraph = paragraph.split(".");
@@ -252,6 +253,7 @@
       if (data == "") return "";
       const pageId = Object.keys(data.query.pages)[0];
       let extract = data.query.pages[pageId].extract;
+      if (extract == undefined) return ""
       extract = extract.replace(/\s{2,}/g, " ");
       return extract.split(".").slice(0, 2).join(".") + ".";
     }
@@ -266,7 +268,7 @@
         args.NAME
       );
       if (data == "") return "";
-      return !!data.query.pages[0];
+      return Object.keys(data.query.pages).length > 0;
     }
 
     // ---
