@@ -461,10 +461,7 @@
       runtime.allScriptsByOpcodeDo(
         "event_whenbroadcastreceived",
         (script, target) => {
-          const {
-            blockId: topBlockId,
-            fieldsOfInputs: hatFields
-          } = script;
+          const { blockId: topBlockId, fieldsOfInputs: hatFields } = script;
           if (hatFields.BROADCAST_OPTION.value === broadcastName) {
             IDs.push(type === "blocks" ? topBlockId : target);
           }
@@ -473,7 +470,6 @@
 
       return IDs;
     }
-
 
     /**
      * @param {VM.BlockUtility} util
