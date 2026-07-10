@@ -19,7 +19,7 @@
   const kMessageName = Symbol("kMessageName"); // May be defined on a Thread as a string
   const kReceivedData = Symbol("kReceivedData"); // May be defined on a Thread as any Scratch-compatible value
   const kResponseData = Symbol("kResponseData"); // May be defined on a Thread as any Scratch-compatible value
-  const kReceiveTime = Symbol("kReceiveTime"); // May be defined on a Thread as a number
+  const kReceiveCache = Symbol("kReceiveCache"); // May be defined on a Thread as a Set
 
   // TODO: _all_ is not actually a reserved value
   const ALL = "_all_",
@@ -54,8 +54,12 @@
         }
       );
 
+      const receiverCache = new Set(); // <is () received?> block IDs get stored in this alias to avoid hogging resources.
       const name = fields.BROADCAST_OPTION;
-      for (const thread of threads) thread[kMessageName] = name;
+      for (const thread of threads) {
+        thread[kReceiveCache] = receiverCache;
+        thread[kMessageName] = name;
+      }
     }
 
     return threads;
@@ -362,7 +366,7 @@
               text: Scratch.translate({
                 default: "on",
                 description:
-                  "Allows only one instance of a broadcast, restarts old instance",
+                  "Used in context 'set [option] for [...] to [on]'. Will enable the option for a specific message.",
               }),
               value: "on",
             },
@@ -370,7 +374,7 @@
               text: Scratch.translate({
                 default: "off",
                 description:
-                  "Allows multiple instances of a broadcast, no restarts",
+                  "Used in context 'set [option] for [...] to [off]'. Will disable the option for a specific message.",
               }),
               value: "off",
             },
@@ -445,19 +449,40 @@
       return newThreads;
     }
 
-    _getMessageHats(name, type) {
+    /**
+     * @param {string} broadcastName
+     * @param {string} type
+     * @returns {(string|VM.Target)[]}
+     */
+    _getMessageHats(broadcastName, type) {
+      broadcastName = Cast.toString(broadcastName).toUpperCase();
+
       const IDs = [];
       runtime.allScriptsByOpcodeDo(
         "event_whenbroadcastreceived",
         (script, target) => {
-          const { blockId: topBlockId, fieldsOfInputs: hatFields } = script;
-          if (hatFields.BROADCAST_OPTION.value === name.toUpperCase()) {
-            IDs.push(type === "IDs" ? topBlockId : target);
+          const {
+            blockId: topBlockId,
+            fieldsOfInputs: hatFields
+          } = script;
+          if (hatFields.BROADCAST_OPTION.value === broadcastName) {
+            IDs.push(type === "blocks" ? topBlockId : target);
           }
         }
       );
 
       return IDs;
+    }
+
+
+    /**
+     * @param {VM.BlockUtility} util
+     * @returns {string}
+     */
+    _thisBlockID(util) {
+      return util.thread.isCompiled
+        ? util.thread.peekStack()
+        : util.thread.peekStackFrame().op.id;
     }
 
     /**
@@ -549,7 +574,7 @@
 
     otherData(args, util) {
       const broadcast = Cast.toString(args.BROADCAST_OPTION);
-      const blockIds = this._getMessageHats(broadcast, "IDs");
+      const blockIds = this._getMessageHats(broadcast, "blocks");
       let received = "";
 
       const target = this._getTargetFromMenu(args.TARGET, util);
@@ -617,24 +642,21 @@
       util.thread.stopThisScript();
     }
 
-    isReceived(args) {
-      // TODO use alternative method
+    isReceived(args, util) {
+      const blockID = this._thisBlockID(util);
       const broadcastName = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
-      const now = Date.now();
-      let waiting = false;
+      let received = false;
       for (const thread of runtime.threads) {
-        if (thread[kReceiveTime] === undefined) {
-          thread[kReceiveTime] = now;
-        }
         if (
           thread[kMessageName] === broadcastName &&
-          thread[kReceiveTime] >= now
+          !thread[kReceiveCache].has(blockID)
         ) {
-          waiting = true;
+          received = true;
+          thread[kReceiveCache].add(blockID);
         }
       }
 
-      return waiting;
+      return received;
     }
 
     isWaiting(args) {
