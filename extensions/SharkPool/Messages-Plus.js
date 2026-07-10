@@ -30,8 +30,9 @@
   const ALL_TARGETS = Symbol("ALL_TARGETS"); // broadcast to every sprite
   const NO_TARGET = Symbol("NO_TARGET"); // the named target does not exist
 
-  let nonRestartedMsgs = [],
-    threadedMsgs = [];
+  const noRestartMsgs = new Set();
+  const overlappedMsgs = new Set();
+  const multiResponseMsgs = new Set();
 
   const ogStartHats = runtime.startHats;
   runtime.startHats = function (opcode, fields, target) {
@@ -45,7 +46,7 @@
       runtime.allScriptsByOpcodeDo(
         "SPmessagePlus_whenReceived",
         (script, target) => {
-          // fields are evaluated in the hat, which makes it slower :(
+          // inputs are evaluated in the hat, which makes it slower :(
           const id = script.blockId;
           const existing = runtime.threadMap.get(`${target.id}&${id}`);
           if (existing) threads.push(runtime._restartThread(existing));
@@ -56,6 +57,7 @@
       const name = fields.BROADCAST_OPTION;
       for (const thread of threads) thread[kMessageName] = name;
     }
+
     return threads;
   };
 
@@ -63,12 +65,13 @@
   runtime._restartThread = function (thread) {
     const name = thread[kMessageName];
     if (name) {
-      if (threadedMsgs.indexOf(name) > -1) {
+      if (overlappedMsgs.has(name)) {
         return runtime._pushThread(thread.topBlock, thread.target);
-      } else if (nonRestartedMsgs.indexOf(name) > -1) {
+      } else if (noRestartMsgs.has(name)) {
         return thread;
       }
     }
+
     return ogRestartThread.call(this, thread);
   };
 
@@ -287,6 +290,19 @@
             },
           },
           {
+            opcode: "toggleMultiResponse",
+            blockType: Scratch.BlockType.COMMAND,
+            extensions: ["colours_event"],
+            hideFromPalette: true,
+            text: Scratch.translate(
+              "set multiple responses for [BROADCAST_OPTION] to [TOGGLE]"
+            ),
+            arguments: {
+              BROADCAST_OPTION: { type: null },
+              TOGGLE: { type: Scratch.ArgumentType.STRING, menu: "TOGGLE" },
+            },
+          },
+          {
             blockType: Scratch.BlockType.XML,
             xml: `
               <block type="SPmessagePlus_isReceived"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value></block>
@@ -295,6 +311,7 @@
               <sep gap="36"/>
               <block type="SPmessagePlus_toggleRestart"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TOGGLE"><shadow type="SPmessagePlus_TOGGLE_menu"></shadow></value></block>
               <block type="SPmessagePlus_toggleOverlap"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TOGGLE"><shadow type="SPmessagePlus_TOGGLE_menu"></shadow></value></block>
+              <block type="SPmessagePlus_toggleMultiResponse"><value name="BROADCAST_OPTION"><shadow type="event_broadcast_menu"></shadow></value><value name="TOGGLE"><shadow type="SPmessagePlus_TOGGLE_menu"></shadow></value></block>
             `,
           },
           {
@@ -556,11 +573,12 @@
     }
 
     broadcastReturnData(args, util) {
+      const name = Cast.toString(args.BROADCAST_OPTION);
       if (!util.stackFrame.initialized) {
         util.stackFrame.initialized = true;
         util.stackFrame.responses = [];
         util.stackFrame.startedThreads = this._broadcast(
-          Cast.toString(args.BROADCAST_OPTION),
+          name,
           args.TARGET,
           args.DATA,
           util
@@ -577,13 +595,15 @@
       }
 
       for (const thread of threads) {
-        if (thread[kResponseData]) {
+        if (thread[kResponseData] !== undefined) {
           util.stackFrame.responses.push(thread[kResponseData]);
         }
       }
 
       util.stackFrame.initialized = false;
-      return JSON.stringify(util.stackFrame.responses);
+      return multiResponseMsgs.has(name)
+        ? JSON.stringify(util.stackFrame.responses)
+        : util.stackFrame.responses[0];
     }
 
     respondData(args, util) {
@@ -598,6 +618,7 @@
     }
 
     isReceived(args) {
+      // TODO use alternative method
       const broadcastName = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
       const now = Date.now();
       let waiting = false;
@@ -642,20 +663,23 @@
 
     toggleRestart(args) {
       const msg = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
-      const index = nonRestartedMsgs.indexOf(msg);
-      if (args.TOGGLE === "on" && index > -1) nonRestartedMsgs.splice(index, 1);
-      else if (args.TOGGLE === "off" && index === -1) {
-        nonRestartedMsgs.push(msg);
-      }
+
+      if (args.TOGGLE === "off") noRestartMsgs.add(msg);
+      else if (args.TOGGLE === "on") noRestartMsgs.delete(msg);
     }
 
     toggleOverlap(args) {
       const msg = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
-      const index = threadedMsgs.indexOf(msg);
-      if (args.TOGGLE === "on" && index === -1) threadedMsgs.push(msg);
-      else if (args.TOGGLE === "off" && index > -1) {
-        threadedMsgs.splice(index, 1);
-      }
+
+      if (args.TOGGLE === "on") overlappedMsgs.add(msg);
+      else if (args.TOGGLE === "off") overlappedMsgs.delete(msg);
+    }
+
+    toggleMultiResponse(args) {
+      const msg = Cast.toString(args.BROADCAST_OPTION);
+
+      if (args.TOGGLE === "on") multiResponseMsgs.add(msg);
+      else if (args.TOGGLE === "off") multiResponseMsgs.delete(msg);
     }
 
     whenReceived(args, util) {
