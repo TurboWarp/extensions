@@ -16,7 +16,7 @@
    */
   async function getCurrentWeather(coordinates) {
     var fetched_json = await Scratch.fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.latitude}&longitude=${coordinates.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m`
+      `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.latitude}&longitude=${coordinates.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m,is_day`
     )
       .then((r) => r.text())
       .catch(() => "");
@@ -24,22 +24,6 @@
     fetched_json = JSON.parse(fetched_json);
     // @ts-ignore
     return fetched_json.current;
-  }
-
-  /**
-   * Is it day ?
-   * @param {{ latitude: any; longitude: any; }} coordinates
-   */
-  async function isDay(coordinates) {
-    var fetched_json = await Scratch.fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.latitude}&longitude=${coordinates.longitude}&current=is_day`
-    )
-      .then((r) => r.text())
-      .catch(() => "");
-    if (!fetched_json) return "";
-    fetched_json = JSON.parse(fetched_json);
-    // @ts-ignore
-    return fetched_json.current.is_day == 1;
   }
 
   /**
@@ -366,10 +350,10 @@
      * @param {{ latitude?: any; longitude?: any; }} args
      */
     async is_day_at(args) {
-      return await isDay({
+      return await getCurrentWeather({
         latitude: args.latitude,
         longitude: args.longitude,
-      });
+      }).then((r) => r == "" ? "" : r.is_day == 1);
     }
 
     // ---
@@ -405,10 +389,10 @@
     async is_day_in(args) {
       var geolocation = await getCoordinatesFromAdress(args.place);
       if (!geolocation) return "";
-      return await isDay({
+      return await getCurrentWeather({
         latitude: geolocation[1],
         longitude: geolocation[0],
-      });
+      }).then((r) => r == "" ? "" : r.is_day == 1);
     }
   }
   Scratch.extensions.register(new Weather());
