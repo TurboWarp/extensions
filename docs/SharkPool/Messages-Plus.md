@@ -85,7 +85,9 @@ If no matching "when I receive" script is actively running, this reporter will r
 (broadcast (message1 v) to (all sprites v)::#FFBF00)
 ```
 
-Broadcasts the specified message to the selected sprites and returns an array containing the responses from every receiver.
+Broadcasts the specified message to the selected sprites and returns the response or responses from the receiving scripts.
+
+The value returned depends on the **multiple responses** setting for the message. If multiple responses are enabled, an array containing all responses is returned. Otherwise, only the first response is returned.
 
 The **sprites** dropdown behaves the same as in the broadcast command blocks.
 
@@ -93,10 +95,11 @@ The **sprites** dropdown behaves the same as in the broadcast command blocks.
 (broadcast (message1 v) with data (...) to (all sprites v)::#FFBF00)
 ```
 
-Broadcasts the specified message to the selected sprites while sending a value to the receiving scripts, then returns an array containing the responses from every receiver.
+Broadcasts the specified message to the selected sprites while sending a value to the receiving scripts, then returns the response or responses from those scripts.
 
-This block behaves the same as the previous reporter, but also includes a **data** input.
-Any value can be passed through this input, allowing the receiver scripts to access additional information while processing the broadcast.
+As with the previous reporter, the return value depends on the **multiple responses** setting for the message.
+
+Any value can be passed through the **data** input, allowing the receiving scripts to access additional information while processing the broadcast.
 
 ```scratch
 respond [received!]::#FFBF00 cap
@@ -155,6 +158,18 @@ When **on**, sending the same broadcast message while it is already running will
 When **off**, only one instance of the script is allowed to run at a time for that message.
 
 By default, script overlapping is **disabled (off)**.
+
+```scratch
+set multiple responses for (message1 v) to [on v]::#FFBF00
+```
+
+Controls whether the reporter broadcast blocks return a single response or all responses for the specified message.
+
+When **on**, every response sent by receivers of that message is collected and returned.
+
+When **off**, only the first response is returned for that message.
+
+By default, multiple responses is **disabled (off)**.
 
 ```scratch
 when I receive (message1 v)::#FFBF00 hat
