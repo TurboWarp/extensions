@@ -185,7 +185,7 @@ class ExtensionFile extends BuildFile {
    * @returns {{jsCode: string; sourceMap: string | null}}
    */
   async transpile() {
-    const sourceMap = this.mode === 'development';
+    const sourceMap = this.mode === "development";
     const source = await fsPromises.readFile(this.sourcePath, "utf-8");
     if (this.sourcePath.endsWith(".ts")) {
       return transpileTypeScript(source, this.slug, !!sourceMap);
@@ -207,7 +207,8 @@ class ExtensionFile extends BuildFile {
       let suffixJS = "";
 
       if (this.sourcePath.endsWith(".ts")) {
-        prefixJS += "/* transpiled from TypeScript - see repository for original version with types */";
+        prefixJS +=
+          "/* transpiled from TypeScript - see repository for original version with types */";
       }
 
       const translations = filterTranslationsByPrefix(
