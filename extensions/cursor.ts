@@ -12,8 +12,6 @@
     throw new Error("MouseCursor extension must be run unsandboxed");
   }
 
-  const intentionalTypeErrorForTesting: string = 3;
-
   const lazilyCreatedCanvas = () => {
     let canvas: HTMLCanvasElement | null = null;
     let ctx: CanvasRenderingContext2D | null = null;
