@@ -63,7 +63,7 @@ jobs:
             sed -e 's/^\[warn] \(.*\)$/::warning file=\1,line=1::File was not formatted with prettier. Usually, commenting !format will fix this./' \
           ))
 
-  type-warnings:
+  typecheck:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -77,8 +77,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Generate type warnings
-        run: node development/ci-generate-type-warnings.js
+      - name: Check types
+        run: node development/ci-type-check.js
         env:
           PR_NUMBER: "${{ github.event.number }}"
           GH_REPO: "${{ github.repository }}"
