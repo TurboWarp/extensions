@@ -12,6 +12,7 @@ import parseMetadata from "./parse-extension-metadata.js";
 import parseTranslations from "./parse-extension-translations.js";
 import renderTemplate from "./render-template.js";
 import renderDocs from "./render-docs.js";
+import transpileTypeScript from "./transpile-typescript.js";
 import { mkdirp, recursiveReadDirectory } from "./fs-utils.js";
 import {
   fetchAllDependencies,
@@ -176,8 +177,27 @@ class ExtensionFile extends BuildFile {
     this.mode = mode;
   }
 
+  getType() {
+    return ".js";
+  }
+
+  /**
+   * @returns {{jsCode: string; sourceMap: string | null}}
+   */
+  async transpile() {
+    const sourceMap = this.mode === 'development';
+    const source = await fsPromises.readFile(this.sourcePath, "utf-8");
+    if (this.sourcePath.endsWith(".ts")) {
+      return transpileTypeScript(source, this.slug, !!sourceMap);
+    }
+    return {
+      jsCode: source,
+      sourceMap: null,
+    };
+  }
+
   async read() {
-    let data = await fsPromises.readFile(this.sourcePath, "utf-8");
+    let data = (await this.transpile()).jsCode;
 
     if (this.mode !== "development") {
       const dependenciesJS = rewriteExternalToInline(data);
@@ -185,6 +205,10 @@ class ExtensionFile extends BuildFile {
 
       let prefixJS = "";
       let suffixJS = "";
+
+      if (this.sourcePath.endsWith(".ts")) {
+        prefixJS += "/* transpiled from TypeScript - see repository for original version with types */";
+      }
 
       const translations = filterTranslationsByPrefix(
         this.allTranslations,
@@ -286,10 +310,10 @@ class ExtensionFile extends BuildFile {
       }
     }
 
-    validateImports(js);
+    validateImports((await this.transpile()).jsCode);
   }
 
-  getStrings() {
+  async getStrings() {
     if (!this.featured) {
       return null;
     }
@@ -315,7 +339,7 @@ class ExtensionFile extends BuildFile {
       },
     };
 
-    const jsCode = fs.readFileSync(this.sourcePath, "utf-8");
+    const jsCode = (await this.transpile()).jsCode;
     const unprefixedRuntimeStrings = parseTranslations(jsCode);
     const runtimeStrings = Object.fromEntries(
       Object.entries(unprefixedRuntimeStrings).map(([key, value]) => [
@@ -331,9 +355,26 @@ class ExtensionFile extends BuildFile {
   }
 
   async getDependencies() {
-    return parseExtensionDependencies(
-      await fsPromises.readFile(this.sourcePath, "utf-8")
-    );
+    return parseExtensionDependencies((await this.transpile()).jsCode);
+  }
+}
+
+class ExtensionSourceMapFile extends BuildFile {
+  /**
+   * @param {ExtensionFile} extensionFile
+   */
+  constructor(extensionFile) {
+    super(extensionFile.sourcePath);
+    /** @type {ExtensionFile} */
+    this.extensionFile = extensionFile;
+  }
+
+  getType() {
+    return ".json";
+  }
+
+  async read() {
+    return (await this.extensionFile.transpile()).sourceMap;
   }
 }
 
@@ -675,13 +716,13 @@ class Build {
   /**
    * @returns {Record<string, Record<string, TranslatableString>>}
    */
-  generateL10N() {
+  async generateL10N() {
     const allStrings = {};
 
     for (const [filePath, file] of Object.entries(this.files)) {
       let fileStrings;
       try {
-        fileStrings = file.getStrings();
+        fileStrings = await file.getStrings();
       } catch (error) {
         console.error(error);
         throw new Error(
@@ -717,7 +758,7 @@ class Build {
   async exportL10N(root) {
     await mkdirp(root);
 
-    const groups = this.generateL10N();
+    const groups = await this.generateL10N();
     for (const [name, strings] of Object.entries(groups)) {
       const filename = pathUtil.join(root, `exported-${name}.json`);
       await fsPromises.writeFile(filename, JSON.stringify(strings, null, 2));
@@ -799,20 +840,34 @@ class Builder {
     for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.extensionsRoot
     )) {
-      if (!filename.endsWith(".js")) {
+      const isJavaScript = filename.endsWith(".js");
+      const isTypeScript =
+        filename.endsWith(".ts") && !filename.endsWith(".d.ts");
+      if (!isJavaScript && !isTypeScript) {
+        // Not an extension.
         continue;
       }
+
       const extensionSlug = filename.split(".")[0];
       const featured = featuredExtensionSlugs.includes(extensionSlug);
-      const file = new ExtensionFile(
+
+      const extensionFile = new ExtensionFile(
         absolutePath,
         extensionSlug,
         featured,
         translations["extension-runtime"],
         this.mode
       );
-      extensionFiles[extensionSlug] = file;
-      build.files[`/${filename}`] = file;
+      extensionFiles[extensionSlug] = extensionFile;
+      build.files[`/${extensionSlug}.js`] = extensionFile;
+
+      // Sourcemaps are only accurate in development builds as production builds will insert strings
+      // and cached dependencies.
+      if (isTypeScript && this.mode === "development") {
+        build.files[`/${extensionSlug}.js.map`] = new ExtensionSourceMapFile(
+          extensionFile
+        );
+      }
     }
 
     /** @type {Record<string, ImageFile>} */

@@ -55,7 +55,7 @@ const run = async () => {
   const build = await builder.build();
 
   console.log("Generating strings...");
-  const l10n = build.generateL10N();
+  const l10n = await build.generateL10N();
 
   console.log("Uploading runtime strings...");
   await uploadRuntimeStrings(l10n["extension-runtime"]);
