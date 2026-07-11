@@ -552,7 +552,7 @@
       };
     }
 
-    setCur(args: { cur: string }) {
+    setCur(args: { cur: unknown }) {
       const newCursor = Scratch.Cast.toString(args.cur);
       // Prevent setting cursor to "url(...), default" from causing fetch.
       if (ALL_ALLOWED_CURSORS.includes(newCursor)) {
@@ -564,12 +564,12 @@
     }
 
     setCursorImage(
-      args: { position: string; size: string },
+      args: { position: unknown; size: unknown },
       util: VM.BlockUtility
     ) {
-      const [maxWidth, maxHeight] = parseTuple(args.size).map((i) =>
-        Math.max(0, i)
-      );
+      const [maxWidth, maxHeight] = parseTuple(
+        Scratch.Cast.toString(args.size)
+      ).map((i) => Math.max(0, i));
 
       const currentCostume =
         util.target.getCostumes()[util.target.currentCostume];
@@ -584,9 +584,9 @@
       }
 
       if (encodedCostume) {
-        const [percentX, percentY] = parseTuple(args.position).map(
-          (i) => Math.max(0, Math.min(100, i)) / 100
-        );
+        const [percentX, percentY] = parseTuple(
+          Scratch.Cast.toString(args.position)
+        ).map((i) => Math.max(0, Math.min(100, i)) / 100);
         const x = percentX * encodedCostume.width;
         const y = percentY * encodedCostume.height;
 
