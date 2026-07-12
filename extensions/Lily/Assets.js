@@ -129,10 +129,6 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "targets",
               },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Sprite1",
-              },
             },
           },
           {
@@ -143,10 +139,6 @@
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
               },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "costume1",
-              },
             },
           },
           {
@@ -156,10 +148,6 @@
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "sound1",
               },
             },
           },
