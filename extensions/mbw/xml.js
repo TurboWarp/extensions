@@ -468,7 +468,9 @@
      * @param {unknown} args.ATTR
      */
     hasAttribute({ XML, ATTR }) {
-      return this.getAttribute({ XML, ATTR }) !== "";
+      const { xml } = this.stringToXml(Scratch.Cast.toString(XML));
+      if (xml === null) return false;
+      return xml.hasAttribute(Scratch.Cast.toString(ATTR));
     }
 
     /**
