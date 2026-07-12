@@ -207,6 +207,7 @@
     dict_property_null({ KEY, DICT }) {
       if (!dictionaries.get(DICT)) return false;
       let dict = dictionaries.get(DICT);
+      KEY = Scratch.Cast.toString(KEY);
       return dict.get(KEY) === null ? true : false;
     }
 
