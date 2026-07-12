@@ -323,10 +323,6 @@
             ),
             blockType: BlockType.COMMAND,
             arguments: {
-              PROPERTY: {
-                type: ArgumentType.STRING,
-                menu: "properties",
-              },
               X: {
                 type: ArgumentType.NUMBER,
                 defaultValue: 100,
