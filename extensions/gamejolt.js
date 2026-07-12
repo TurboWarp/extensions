@@ -1131,7 +1131,6 @@
     };
 
     /**
-     * Unused in the extension because of ScoreFetchGuestEx
      * @param {number} iScoreTableID
      * @param {string} sName
      * @param {number} iLimit
@@ -2745,7 +2744,7 @@
     }
     scoreFetchGuestSimple({ amount, username, ID }) {
       return new Promise((resolve) =>
-        GameJolt.ScoreFetchGuestEx(ID, username, amount, (pResponse) => {
+        GameJolt.ScoreFetchGuest(ID, username, amount, (pResponse) => {
           if (pResponse.success != trueStr) {
             [err.scores, err.last] = [pResponse.message, pResponse.message];
             data.scores = undefined;
@@ -2836,9 +2835,7 @@
     scoreReturnTables({ tableDataType, index }) {
       if (!data.tables) return err.get("tables");
       if (!data.tables[Math.floor(index)]) return err.get("noIndex");
-      return (
-        !data.tables[Math.floor(index)][tableDataType] || err.get("noData")
-      );
+      return data.tables[Math.floor(index)][tableDataType] || err.get("noData");
     }
     scoreReturnTablesJson() {
       return JSON.stringify(data.tables) || err.get("tables") || "{}";
