@@ -3588,14 +3588,6 @@ void main() {
                 multiDrawCount
               );
             } else {
-              console.log(
-                mesh.data.primitives ?? gl.TRIANGLES,
-                starts,
-                0,
-                amounts,
-                0,
-                multiDrawCount
-              );
               ext_md.multiDrawArraysWEBGL(
                 mesh.data.primitives ?? gl.TRIANGLES,
                 starts,
