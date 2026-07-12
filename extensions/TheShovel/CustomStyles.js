@@ -147,7 +147,7 @@
       css += `${monitorListHeader} { background: ${listHeaderBackground}; }`;
     }
     if (listFooterBackground) {
-      css += `${monitorListFooter} { background: ${listHeaderBackground}; }`;
+      css += `${monitorListFooter} { background: ${listFooterBackground}; }`;
     }
     if (listValueBackground) {
       css += `${monitorRowValueOuter} { background: ${listValueBackground} !important; }`;
