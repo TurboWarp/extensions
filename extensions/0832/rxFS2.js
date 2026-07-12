@@ -235,8 +235,9 @@
     }
 
     folder({ STR, STR2 }) {
-      rxFSfi[rxFSsy.indexOf(encodeURIComponent(STR)) + 1 - 1] =
-        encodeURIComponent(STR2);
+      const index = rxFSsy.indexOf(encodeURIComponent(STR));
+      if (index === -1) return;
+      rxFSfi[index] = encodeURIComponent(STR2);
     }
 
     search({ STR }) {
