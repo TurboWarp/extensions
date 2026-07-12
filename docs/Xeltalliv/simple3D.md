@@ -795,7 +795,7 @@ measure text [Hello World!] font [italic bold 32px sans-serif] :: sensing
 (measured (up v) size ::sensing)
 ```
 Used for measuring how the text texture was or will be generated.
-Outputs 4 sizes. Sizes can be negative.
+Outputs 5 sizes. Sizes can be negative.
 
 
 ### Fonts <a name="blocks-fonts"></a>
@@ -919,7 +919,7 @@ Transform direction only applies rotations and does not apply offsets.
 
 ### Rendering into textures <a name="blocks-rendertargets"></a>
 ```scratch
-render to stage :: sensing
+render to canvas :: sensing
 ```
 Selects simple3D layer as an active render target.
 
