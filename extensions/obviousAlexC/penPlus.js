@@ -4650,7 +4650,7 @@
       //Make sure its an array
       if (!Array.isArray(converted)) return;
       converted = converted.map(function (str) {
-        return parseInt(str);
+        return parseFloat(str);
       });
 
       this.programs[shader].uniformDat[uniformName] = converted;
