@@ -2043,10 +2043,6 @@ Other various small fixes
             type: Scratch.ArgumentType.NUMBER,
             defaultValue: "1",
           },
-          spr: {
-            type: Scratch.ArgumentType.NUMBER,
-            defaultValue: "1",
-          },
         },
       },
       {
@@ -2180,12 +2176,6 @@ Other various small fixes
         opcode: "getstamprotation",
         blockType: Scratch.BlockType.REPORTER,
         text: "Stamp Rotation",
-        arguments: {
-          ANGLE: {
-            type: Scratch.ArgumentType.ANGLE,
-            defaultValue: "90",
-          },
-        },
       },
       {
         opcode: "setpenstrechandsquash",
