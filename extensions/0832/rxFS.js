@@ -210,8 +210,9 @@
     }
 
     file({ STR, STR2 }) {
-      rxFSfi[rxFSsy.indexOf(btoa(unescape(encodeURIComponent(STR)))) + 1 - 1] =
-        btoa(unescape(encodeURIComponent(STR2)));
+      const index = rxFSsy.indexOf(btoa(unescape(encodeURIComponent(STR))));
+      if (index === -1) return;
+      rxFSfi[index] = btoa(unescape(encodeURIComponent(STR2)));
     }
 
     search({ STR }) {
