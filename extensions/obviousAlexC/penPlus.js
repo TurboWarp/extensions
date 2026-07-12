@@ -5994,9 +5994,9 @@
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
 
-      const buffer = this.programs[shader].buffer;
-
       if (!this.programs[shader]) return;
+
+      const buffer = this.programs[shader].buffer;
 
       //Make sure we have the triangle data updating accordingly
       this.trianglesDrawn += listLength;
