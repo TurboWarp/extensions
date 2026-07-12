@@ -2557,7 +2557,7 @@ Other various small fixes
         if (coordmenu == "x") {
           return scrcoord - runtime.stageWidth / 2;
         } else {
-          return scrcoord * -1 - runtime.stageHeight / 2;
+          return scrcoord * -1 + runtime.stageHeight / 2;
         }
       }
     }
