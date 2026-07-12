@@ -297,7 +297,7 @@
         const targetsToReset = [];
         for (const target of this.vm.runtime.targets) {
           const drawable = this.render._allDrawables[target.drawableID];
-          if (drawable.skin.id === IMG) {
+          if (drawable && drawable.skin && drawable.skin.id === IMG) {
             targetsToReset.push(target);
           }
         }
