@@ -576,6 +576,19 @@ Default for mesh is "triangles".
 
 ---
 ```scratch
+set [my mesh] primitive size (1) :: sensing
+```
+When using point primitives, changes point size.
+When using lines, line strip or line loop primitives, changes line width.
+
+> [!WARNING]  
+> This feature shouldn't be relied on, as the minimum and maximum supported values vary depending on the GPU. Many GPUs don't support values above 1.  
+> You can view information about your GPU at https://webglreport.com/.  
+
+Default for mesh is 1.
+
+---
+```scratch
 set [my mesh] blending (default v) :: sensing
 ```
 
@@ -679,6 +692,14 @@ Default for mesh is not set. Once set, cannot be undone.
 
 ---
 ```scratch
+set [my mesh] vertex draw ranges from [starts list v] to [ends list v] :: sensing
+```
+Same as the `vertex draw range` block, but for multiple ranges at once.
+
+Useful for implementing culling, as it allows toggling visibility of different parts of the mesh, without the cost of doing multiple draw calls.
+
+---
+```scratch
 set [my mesh] instance draw limit (10) :: sensing
 ```
 Normally, how many instances are drawn is determined by the length of supplied lists.
@@ -760,6 +781,13 @@ Note that it is not alpha, red, green, blue used by many pen projects on scratch
 Creates black texture of given size.
 ⚡ Texture gets loaded instantly.
 
+---
+```scratch
+(texture from video [my video] :: sensing)
+```
+Creates texture from the current frame of the video. For video to move, needs to be called every frame.  
+⚡ Texture gets loaded instantly.
+
 
 ### Text measurement <a name="blocks-text-measurement"></a>
 ```scratch
@@ -836,9 +864,10 @@ Overwrites currently active transformation with transformation from the list. Re
 
 ---
 ```scratch
-move X (0) Y (0) Z (0) :: sensing
+move X:(0) Y:(0) Z:(0) :: sensing
 rotate around [X v] by (0) degrees :: sensing
-scale X (1) Y (1) Z (1) :: sensing
+scale X:(1) Y:(1) Z:(1) :: sensing
+skew [X v] by (1) [X v] :: sensing
 ```
 Applies change to currently selected transformation
 
@@ -872,14 +901,14 @@ Offset without rotation can be useful for positioning something at the end of th
 
 ### Manual transformations <a name="blocks-manual-transformations"></a>
 ```scratch
-transform X (0) Y (0) Z (0) :: sensing
+transform X:(0) Y:(0) Z:(0) :: sensing
 ```
 Transforms point using currently selected transformation. It is the fastest way to transform coordinates, especially if there are a lot of them.
 
 ---
 ```scratch
-transform X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
-transform direction X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
+transform X:(0) Y:(0) Z:(0) from [world space v] to [model space v] :: sensing
+transform direction X:(0) Y:(0) Z:(0) from [world space v] to [model space v] :: sensing
 ```
 Transforms point from specified coordinate system to another. Convenient, but slower.
 Transform direction only applies rotations and does not apply offsets.
@@ -936,7 +965,8 @@ Viewport box specifies the area to which the rendered image will be stretched to
 Clipping box specifies the area in which pixels are allowed to be modified.
 Readback box specifies the area from which reading to list and reading to data URI blocks will read the pixels.
 
-Note: coordinates are specified in **real pixels** starting from the bottom left corner, **not scratch units**. You can get the size of the Simple3D layer in pixels from either:
+> [!NOTE]  
+> Coordinates are specified in **real pixels** starting from the bottom left corner, **not scratch units**. You can get the size of the Simple3D layer in pixels from either:
 ```scratch
 (stage width :: sensing)
 (stage height :: sensing)
@@ -946,7 +976,8 @@ Note: coordinates are specified in **real pixels** starting from the bottom left
 ```
 And while it may match scratch units while the high quality pen is disabled, when **high quality pen is on**, the resolution will often be higher. Your projects need to account for that.
 
-Note: Those custom areas can either be set or not set. When they aren't set, they use X1:`0` Y1:`0` X2:`render target width` Y2:`render target height` and automatically update with resolution changes. If you set them to custom values, you need to handle rescaling manually.
+> [!NOTE]  
+> Those custom areas can either be set or not set. When they aren't set, they use X1:`0` Y1:`0` X2:`render target width` Y2:`render target height` and automatically update with resolution changes. If you set them to custom values, you need to handle rescaling manually.
 
 ---
 ```scratch
@@ -1007,22 +1038,94 @@ Specifies the center point around which the fog will be drawn.
 Default is X:0 Y:0 Z:0 in view space.
 
 ### Resolution changes <a name="blocks-resolution"></a>
+
+Here "canvas" refers to the skin into which Simple3D renders all of its grapics.  
+By default canvas is displayed on Simple3D layer. 
+By default the size of canvas in scratch units matches the size of the stage in scratch units, so it covers the whole stage.  
+By default canvas has resolution that mimics the behavior of pen layer:  
+- When high quality pen is disabled, canvas has resolution that matches the size of the stage in scratch units.  
+- When high quality pen is enabled, canvas has resolution that matches the resolution of the stage in actual screen pixels.  
+
+Canvas can also be displayed on sprites. Simple3D layer can be turned off.  
+Resolution of canvas and size at which it is displayed can be changed. The way it it stretched (blurry or pixelated) can also be changed.
+
+---
+
 ```scratch
-when resultion changes :: sensing hat
+when stage resolution changes :: sensing hat
+(horizontal stage resolution :: sensing)
+(vertical stage resolution :: sensing)
+```
+Reporter blocks return the resolution at which scratch stage is rendered in actual screen pixels.
+Hat block triggers when that resolution changes.
+
+---
+```scratch
 (stage width :: sensing)
 (stage height :: sensing)
 ```
-simple3D layer automatically always matches the resolution of the pen layer (or what resolution pen layer would have if it was present, even when pen layer is missing).
-That means that by default, at default stage size it is locked to 480x360, but with "High quality pen" enabled or non-default stage sizes, it can become something different.
-Hat block gets triggered when that resoltion changes.
-Reporter blocks report current resolution.
+Return the size of stage in scratch units. (e.g. 480x360 or 640x360)
 
-Technically those blocks could be workarounded by contantly checking with blocks listed below.
+---
 ```scratch
-render to stage :: sensing
-(render target [width v] :: sensing)
-(render target [height v] :: sensing)
+<high quality pen enabled? :: sensing>
 ```
+Returns whether the high quality pen is enabled or not.
+
+---
+```scratch
+set canvas [size v] to X:(100) Y:(100) :: sensing
+set canvas [resolution v] to X:(100) Y:(100) :: sensing
+clear canvas [size v] :: sensing
+clear canvas [resolution v] :: sensing
+```
+resolution - changes resolution at which simple3D layer is rendered.
+size - changes the size in scratch units at which simple3D layer is displayed on the stage.
+
+---
+```scratch
+make scaled canvas look [pixelated v] :: sensing
+make scaled canvas look [blurry v] :: sensing
+```
+Changes how scaled canvas looks.
+
+Default is "pixelated".
+
+---
+```scratch
+when canvas resolution changes :: sensing hat
+(canvas width :: sensing)
+(canvas height :: sensing)
+```
+Reporter blocks return the resolution of canvas, not size at which it is displayed.
+Hat block triggers when that resolution changes.
+
+---
+```scratch
+display canvas on myself :: sensing hat
+restore my look :: sensing
+```
+
+Blocks to display Simple3D canvas as skin on the current sprite. Works similarly to the Skins extension.  
+
+---
+```scratch
+set Simple3D layer visibility to (visible v) :: sensing
+```
+Shows or hides simple3D layer.  
+Hiding Simple3D layer is primarily useful, when canvas is displayed on another sprite.  
+Accepts booleans true and false, not strings "visible" and "hidden".  
+
+---
+```scratch
+reset everything with antialiasing (on v) :: sensing
+```
+Same as "reset everything" block, but with control over antialiasing.  
+Accepts booleans true and false, not strings "on" and "off".  
+
+> [!NOTE]  
+> WebGL does not provide any way of toggling antialiasing after WebGL context has already been created, and there is no easy way of transferring resources between WebGL contexts.  
+
 
 ## Integrations with other extensions <a name="ext-integration"></a>
 
@@ -1068,4 +1171,15 @@ end
 
 when stage clicked
 move everything by x: (hit position [x v] :: #d10000) y: (hit position [y v] :: #d10000) z: (hit position [z v] :: #d10000) :: #d10000
+```
+
+### Lily/Video extension <a name="videos-integration"></a>
+Simple3D provides a dedicated block to read current frame of the video into a textures.
+```scratch
+load video from URL [https://extensions.turbowarp.org/dango.mp4] as [my video] :: #557882
+set [my video] to [loop v] :: #557882
+start video [my video] on (myself v) :: #557882
+forever
+set [my mesh v] texture (texture from video [my video] :: sensing) [clamp to edge v] [pixelated v] :: sensing
+end
 ```

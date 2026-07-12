@@ -3,7 +3,7 @@
 // Description: Make GPU accelerated 3D projects easily.
 // By: Vadik1 <https://scratch.mit.edu/users/Vadik1/>
 // License: MPL-2.0 AND BSD-3-Clause
-// Version: 1.2.2
+// Version: 1.3.0
 
 (function (Scratch) {
   "use strict";
@@ -306,6 +306,8 @@
    * @returns {boolean}
    */
   const hasOwn = (obj, name) => Object.prototype.hasOwnProperty.call(obj, name);
+  const clamp = (value, min, max) =>
+    value > max ? max : value < min ? min : value;
 
   class Buffer {
     constructor(type) {
@@ -411,6 +413,11 @@
     reset() {
       this.depthTest = "closer";
       this.depthWrite = true;
+      this.viewport = null;
+      this.scissors = null;
+      this.readarea = null;
+      this.updateScissorsEnabled();
+      this.updateViewport();
     }
   }
   class Texture {
@@ -795,6 +802,7 @@
       mesh.data.texture?.hasFailedToLoad?.(),
 
     "primitive type": (mesh) => mesh.data.primitivesName ?? "triangles",
+    "primitive size": (mesh) => mesh.data.primitivesSize ?? 1,
     "blending type": (mesh) => mesh.data.blending ?? "default",
     "culling type": (mesh) => mesh.data.culling ?? "nothing",
     "alpha threshold": (mesh) => mesh.data.alphaTest ?? 0,
@@ -1056,17 +1064,10 @@
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
       gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
       this._texture = texture;
-      this._nativeSize = renderer.getNativeSize();
-      this._boundOnNativeSizeChanged = this.onNativeSizeChanged.bind(this);
-      this._rotationCenter = [this._nativeSize[0] / 2, this._nativeSize[1] / 2];
-      renderer.on("NativeSizeChanged", this._boundOnNativeSizeChanged);
+      this.updateNativeSize();
       this.resizeCanvas();
     }
     dispose() {
-      renderer.removeListener(
-        "NativeSizeChanged",
-        this._boundOnNativeSizeChanged
-      );
       if (this._texture) {
         this._renderer.gl.deleteTexture(this._texture);
         this._texture = null;
@@ -1096,22 +1097,25 @@
       this.emitWasAltered();
     }
     resizeCanvas() {
-      if (renderer.useHighQualityRender) {
-        canvas.width = renderer.canvas.width;
-        canvas.height = renderer.canvas.height;
-      } else {
-        canvas.width = this._nativeSize[0];
-        canvas.height = this._nativeSize[1];
-      }
+      const nextSize =
+        canvasResolution ||
+        (renderer.useHighQualityRender
+          ? [renderer.canvas.width, renderer.canvas.height]
+          : this._nativeSize);
+      if (canvas.width === nextSize[0] && canvas.height === nextSize[1]) return;
+      canvas.width = nextSize[0];
+      canvas.height = nextSize[1];
       if (currentRenderTarget == canvasRenderTarget)
         currentRenderTarget.updateViewport();
       runtime.startHats(`${extensionId}_whenCanvasResized`);
       this.updateContent();
     }
-    onNativeSizeChanged(event) {
-      this._nativeSize = event.newSize;
+    updateNativeSize() {
+      this._nativeSize = canvasNativeSize || renderer.getNativeSize();
       this._rotationCenter = [this._nativeSize[0] / 2, this._nativeSize[1] / 2];
-      this.resizeCanvas();
+    }
+    useNearest() {
+      return canvasUseNearest;
     }
   }
   function addSimple3DLayer(publicApi) {
@@ -1146,7 +1150,9 @@
     // Detect resizing
     drawable.setHighQuality = function (...args) {
       Object.getPrototypeOf(this).setHighQuality(...args);
-      this.skin.resizeCanvas();
+      runtime.startHats(`${extensionId}_whenStageResized`);
+      if (!canvasNativeSize) this.skin.updateNativeSize();
+      if (!canvasResolution) this.skin.resizeCanvas();
     };
 
     // Support for SharkPool's Layer Control extension
@@ -1259,6 +1265,9 @@ uniform mat4 u_model;
 #ifdef BONE_COUNT
 uniform mat4 u_bones[BONE_COUNT];
 #endif
+#ifdef POINT_SIZE
+uniform float u_point_size;
+#endif
 uniform vec2 u_uvOffset;
 uniform vec3 u_fog_position;
 
@@ -1356,6 +1365,9 @@ void main() {
 #ifdef FOG_POS
   v_viewpos -= u_fog_position;
 #endif
+#ifdef POINT_SIZE
+  gl_PointSize = u_point_size;
+#endif
 }
 `;
   let fshSrc = `
@@ -1443,6 +1455,19 @@ void main() {
       console.log(gl.getShaderInfoLog(vsh));
       console.log(gl.getShaderInfoLog(fsh));
       console.log(gl.getProgramInfoLog(program));
+      console.log(flags);
+      console.log(
+        (defines + vshSrc)
+          .split("\n")
+          .map((m, i) => (i + 1 + "").padStart(3) + ": " + m)
+          .join("\n")
+      );
+      console.log(
+        (defines + fshSrc)
+          .split("\n")
+          .map((m, i) => (i + 1 + "").padStart(3) + ": " + m)
+          .join("\n")
+      );
     }
     gl.deleteShader(vsh);
     gl.deleteShader(fsh);
@@ -1697,6 +1722,110 @@ void main() {
     }
     return chunkedArray;
   }
+  function initGlContext(options = {}) {
+    lastContextOptions = options;
+    canvas = document.createElement("canvas");
+    canvas.id = "simple3d-canvas";
+    gl = canvas.getContext("webgl2", options);
+    if (!gl)
+      alert(
+        "Simple 3D extension failed to get WebGL2 context. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
+      );
+    ext_af =
+      gl.getExtension("EXT_texture_filter_anisotropic") ||
+      gl.getExtension("MOZ_EXT_texture_filter_anisotropic") ||
+      gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
+    ext_smi = gl.getExtension("OES_shader_multisample_interpolation");
+    ext_md = gl.getExtension("WEBGL_multi_draw") || new MultiDrawPolyfill(gl);
+    gl.enable(gl.DEPTH_TEST);
+    gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    texture = getDefaultTexture();
+  }
+  function disposeGlContext() {
+    gl.deleteTexture(texture);
+    canvas = null;
+    gl = null;
+  }
+
+  class MultiDrawPolyfill {
+    constructor(gl) {
+      this.gl = gl;
+    }
+    multiDrawArraysWEBGL(
+      mode,
+      firstsList,
+      firstsOffset,
+      countsList,
+      countsOffset,
+      drawcount
+    ) {
+      for (let i = 0; i < drawcount; i++) {
+        this.gl.drawArrays(
+          mode,
+          firstsList[i + firstsOffset],
+          countsList[i + countsOffset]
+        );
+      }
+    }
+    multiDrawElementsWEBGL(
+      mode,
+      countsList,
+      countsOffset,
+      type,
+      offsetsList,
+      offsetsOffset,
+      drawcount
+    ) {
+      for (let i = 0; i < drawcount; i++) {
+        this.gl.drawElements(
+          mode,
+          countsList[i + countsOffset],
+          type,
+          offsetsList[i + offsetsOffset]
+        );
+      }
+    }
+    multiDrawArraysInstancedWEBGL(
+      mode,
+      firstsList,
+      firstsOffset,
+      countsList,
+      countsOffset,
+      instanceCountsList,
+      instanceCountsOffset,
+      drawcount
+    ) {
+      for (let i = 0; i < drawcount; i++) {
+        this.gl.drawArraysInstanced(
+          mode,
+          firstsList[i + firstsOffset],
+          countsList[i + countsOffset],
+          instanceCountsList[i + instanceCountsOffset]
+        );
+      }
+    }
+    multiDrawElementsInstancedWEBGL(
+      mode,
+      countsList,
+      countsOffset,
+      type,
+      offsetsList,
+      offsetsOffset,
+      instanceCountsList,
+      instanceCountsOffset,
+      drawcount
+    ) {
+      for (let i = 0; i < drawcount; i++) {
+        this.gl.drawElementsInstanced(
+          mode,
+          countsList[i + countsOffset],
+          type,
+          offsetsList[i + offsetsOffset],
+          instanceCountsList[i + instanceCountsOffset]
+        );
+      }
+    }
+  }
 
   if (!Scratch.extensions.unsandboxed)
     throw new Error("Simple 3D extension must be run unsandboxed");
@@ -1709,20 +1838,15 @@ void main() {
   const runtime = vm.runtime;
 
   const extensionId = "xeltallivSimple3D";
+  let lastContextOptions = {};
   let canvasDirty = true;
-  let canvas = document.createElement("canvas");
-  let gl = canvas.getContext("webgl2");
-  if (!gl)
-    alert(
-      "Simple 3D extension failed to get WebGL2 context. If it worked before, try restarting your browser or rebooting your device. If not, your GPU might not support WebGL2"
-    );
-  const ext_af =
-    gl.getExtension("EXT_texture_filter_anisotropic") ||
-    gl.getExtension("MOZ_EXT_texture_filter_anisotropic") ||
-    gl.getExtension("WEBKIT_EXT_texture_filter_anisotropic");
-  const ext_smi = gl.getExtension("OES_shader_multisample_interpolation");
-  gl.enable(gl.DEPTH_TEST);
-  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+  let canvas;
+  let gl;
+  let ext_af;
+  let ext_smi;
+  let ext_md;
+  let texture;
+  initGlContext();
   // prettier-ignore
   const Blendings = {
     "overwrite color (fastest for opaque)": [false],
@@ -1769,7 +1893,6 @@ void main() {
     "depth": gl.DEPTH_BUFFER_BIT,
     "color and depth": gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT,
   };
-  const texture = getDefaultTexture();
   const meshes = new Map();
   const programs = new ProgramManager();
   const modelDecoder = new ModelDecoder();
@@ -1800,9 +1923,34 @@ void main() {
   let currentCulling;
   let currentCullingProps;
   let lastTextMeasurement;
-  let transformCache;
+  let canvasNativeSize;
+  let canvasResolution;
+  let canvasUseNearest;
 
-  function resetEverything() {
+  function resetEverything(options = {}) {
+    for (const mesh of meshes.values()) {
+      mesh.destroy();
+    }
+    meshes.clear();
+    programs.clear();
+    modelDecoder.clear();
+    if (JSON.stringify(lastContextOptions) !== JSON.stringify(options)) {
+      console.log(
+        "Simple3D: Recreating canvas with different options.\nOld:",
+        lastContextOptions,
+        "New:",
+        options
+      );
+      disposeGlContext();
+      initGlContext(options);
+    }
+    canvasNativeSize = null;
+    canvasResolution = null;
+    canvasUseNearest = true;
+    if (skinId !== null) {
+      renderer._allSkins[skinId].updateNativeSize();
+      renderer._allSkins[skinId].resizeCanvas();
+    }
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     canvasRenderTarget.reset();
@@ -1830,17 +1978,6 @@ void main() {
     currentCulling = 0;
     currentCullingProps = [null, null];
     lastTextMeasurement = null;
-    transformCache = {
-      from: m4.identity(),
-      to: m4.identity(),
-      matrix: m4.identity(),
-    };
-    for (const mesh of meshes.values()) {
-      mesh.destroy();
-    }
-    meshes.clear();
-    programs.clear();
-    modelDecoder.clear();
     canvasDirty = true;
     renderer.dirty = true;
     runtime.requestRedraw();
@@ -2508,13 +2645,13 @@ void main() {
       },
       def: function ({ NAME, TRANSFORMS, MATRIXES }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
-        const myData = mesh.myData;
         const list = target.lookupVariableByNameAndType(
           Cast.toString(MATRIXES),
           "list"
         );
         if (!mesh || !list) return;
         const value = list.value.map(Cast.toNumber);
+        const myData = mesh.myData;
 
         if (TRANSFORMS == "original") {
           myData.bonesOrig = chunkArray(value, 16).map(m4.inverse);
@@ -2784,6 +2921,28 @@ void main() {
         if (!hasOwn(Primitives, primitivesName)) return;
         mesh.myData.primitives = Primitives[primitivesName];
         mesh.myData.primitivesName = primitivesName;
+        mesh.myData.primitivesSize = mesh.myData.primitivesSize || 1;
+        mesh.update();
+      },
+    },
+    {
+      opcode: "setMeshPrimitiveSize",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] primitive size [SIZE]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        SIZE: {
+          type: ArgumentType.STRING,
+          defaultValue: 1,
+        },
+      },
+      def: function ({ NAME, SIZE }, { target }) {
+        const mesh = meshes.get(Cast.toString(NAME));
+        if (!mesh) return;
+        mesh.myData.primitivesSize = Math.max(1, Cast.toNumber(SIZE));
         mesh.update();
       },
     },
@@ -2961,6 +3120,40 @@ void main() {
       },
     },
     {
+      opcode: "setMeshDrawRanges",
+      blockType: BlockType.COMMAND,
+      text: "set [NAME] vertex draw ranges from [STARTS] to [ENDS]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my mesh",
+        },
+        STARTS: {
+          type: ArgumentType.STRING,
+          menu: "lists",
+        },
+        ENDS: {
+          type: ArgumentType.STRING,
+          menu: "lists",
+        },
+      },
+      def: function ({ NAME, STARTS, ENDS }, { target }) {
+        const mesh = meshes.get(Cast.toString(NAME));
+        const startsList = target.lookupVariableByNameAndType(STARTS, "list");
+        const endsList = target.lookupVariableByNameAndType(ENDS, "list");
+        if (!startsList || !endsList || !mesh) return;
+        const starts = startsList.value.map(
+          (x) => Math.max(1, Math.floor(Cast.toNumber(x))) - 1
+        );
+        const ends = endsList.value.map((x) =>
+          Math.max(0, Math.floor(Cast.toNumber(x)))
+        );
+        const lengths = ends.map((x, i) => Math.max(0, ends[i] - starts[i]));
+        mesh.myData.drawRanges = [starts, lengths];
+        mesh.update();
+      },
+    },
+    {
       opcode: "setMeshInstanceLimit",
       blockType: BlockType.COMMAND,
       text: "set [NAME] instance draw limit [END]",
@@ -3060,6 +3253,7 @@ void main() {
         if (mesh.data.makeOpaque) flags.push("MAKE_OPAQUE");
         if (mesh.data.billboarding) flags.push("BILLBOARD");
         if (mesh.data.uvOffset) flags.push("UV_OFFSET");
+        if (mesh.data.primitives === gl.POINTS) flags.push("POINT_SIZE");
         if (mesh.buffers.instanceTransforms) {
           flags.push("INSTANCING");
           if (mesh.buffers.instanceTransforms.size <= 3)
@@ -3284,6 +3478,16 @@ void main() {
         if (mesh.data.alphaTest > 0) {
           gl.uniform1f(program.uloc.u_alpha_threshold, mesh.data.alphaTest);
         }
+        if (
+          mesh.data.primitives === gl.LINES ||
+          mesh.data.primitives === gl.LINE_STRIP ||
+          mesh.data.primitives === gl.LINE_LOOP
+        ) {
+          gl.lineWidth(mesh.data.primitivesSize);
+        }
+        if (mesh.data.primitives === gl.POINTS) {
+          gl.uniform1f(program.uloc.u_point_size, mesh.data.primitivesSize);
+        }
 
         if (mesh.data.bonesDiff) {
           gl.uniformMatrix4fv(program.uloc.u_bones, false, mesh.data.bonesDiff);
@@ -3304,71 +3508,168 @@ void main() {
           transforms.modelToWorld
         );
 
-        let start = 0;
-        let amount = mesh.buffers.indices
-          ? mesh.buffers.indices.length
-          : length;
-        if (mesh.data.drawRange) {
-          const size = mesh.buffers.indices
-            ? mesh.buffers.indices.bytesPerEl
-            : 1;
-          start = mesh.data.drawRange[0] * size;
-          const end = Math.min(
-            mesh.data.drawRange[0] + mesh.data.drawRange[1],
-            amount
-          );
-          amount = end - mesh.data.drawRange[0];
-        }
-        if (mesh.buffers.instanceTransforms) {
-          let instanceCount = mesh.buffers.instanceTransforms.length;
-          if (
-            mesh.data.maxInstances &&
-            mesh.data.maxInstances < instanceCount
-          ) {
-            instanceCount = mesh.data.maxInstances;
+        if (
+          mesh.data.drawRanges &&
+          mesh.data.drawRanges[0].length == mesh.data.drawRanges[1].length
+        ) {
+          const multiDrawCount = mesh.data.drawRanges[0].length;
+          let starts = [];
+          let amounts = [];
+          for (let i = 0; i < multiDrawCount; i++) {
+            const drStart = mesh.data.drawRanges[0][i];
+            const drAmount = mesh.data.drawRanges[1][i];
+            const amountMax = mesh.buffers.indices
+              ? mesh.buffers.indices.length
+              : length;
+            const size = mesh.buffers.indices
+              ? mesh.buffers.indices.bytesPerEl
+              : 1;
+            const start = drStart * size;
+            const end = Math.min(drStart + drAmount, amountMax);
+            const amount = end - drStart;
+            starts.push(start);
+            amounts.push(amount);
           }
-          if (mesh.buffers.indices) {
-            const indexTypes = [
-              null,
-              gl.UNSIGNED_BYTE,
-              gl.UNSIGNED_SHORT,
-              null,
-              gl.UNSIGNED_INT,
-            ];
-            gl.drawElementsInstanced(
-              mesh.data.primitives ?? gl.TRIANGLES,
-              amount,
-              indexTypes[mesh.buffers.indices.bytesPerEl],
-              start,
-              instanceCount
-            );
+          if (mesh.buffers.instanceTransforms) {
+            let instanceCount = mesh.buffers.instanceTransforms.length;
+            if (
+              mesh.data.maxInstances &&
+              instanceCount > mesh.data.maxInstances
+            ) {
+              instanceCount = mesh.data.maxInstances;
+            }
+            if (mesh.buffers.indices) {
+              const indexTypes = [
+                null,
+                gl.UNSIGNED_BYTE,
+                gl.UNSIGNED_SHORT,
+                null,
+                gl.UNSIGNED_INT,
+              ];
+              ext_md.multiDrawElementsInstancedWEBGL(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                amounts,
+                0,
+                indexTypes[mesh.buffers.indices.bytesPerEl],
+                starts,
+                0,
+                new Float32Array(multiDrawCount).fill(instanceCount),
+                0,
+                multiDrawCount
+              );
+            } else {
+              ext_md.multiDrawArraysInstancedWEBGL(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                starts,
+                0,
+                amounts,
+                0,
+                new Float32Array(multiDrawCount).fill(instanceCount),
+                0,
+                multiDrawCount
+              );
+            }
           } else {
-            gl.drawArraysInstanced(
-              mesh.data.primitives ?? gl.TRIANGLES,
-              start,
-              amount,
-              instanceCount
-            );
+            if (mesh.buffers.indices) {
+              const indexTypes = [
+                null,
+                gl.UNSIGNED_BYTE,
+                gl.UNSIGNED_SHORT,
+                null,
+                gl.UNSIGNED_INT,
+              ];
+              ext_md.multiDrawElementsWEBGL(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                amounts,
+                0,
+                indexTypes[mesh.buffers.indices.bytesPerEl],
+                starts,
+                0,
+                multiDrawCount
+              );
+            } else {
+              ext_md.multiDrawArraysWEBGL(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                starts,
+                0,
+                amounts,
+                0,
+                multiDrawCount
+              );
+            }
           }
         } else {
-          if (mesh.buffers.indices) {
-            const indexTypes = [
-              null,
-              gl.UNSIGNED_BYTE,
-              gl.UNSIGNED_SHORT,
-              null,
-              gl.UNSIGNED_INT,
-            ];
-            gl.drawElements(
-              mesh.data.primitives ?? gl.TRIANGLES,
-              amount,
-              indexTypes[mesh.buffers.indices.bytesPerEl],
-              start
+          let start = 0;
+          let amount = mesh.buffers.indices
+            ? mesh.buffers.indices.length
+            : length;
+          if (mesh.data.drawRange) {
+            const size = mesh.buffers.indices
+              ? mesh.buffers.indices.bytesPerEl
+              : 1;
+            start = mesh.data.drawRange[0] * size;
+            const end = Math.min(
+              mesh.data.drawRange[0] + mesh.data.drawRange[1],
+              amount
             );
+            amount = end - mesh.data.drawRange[0];
+          }
+          if (mesh.buffers.instanceTransforms) {
+            let instanceCount = mesh.buffers.instanceTransforms.length;
+            if (
+              mesh.data.maxInstances &&
+              instanceCount > mesh.data.maxInstances
+            ) {
+              instanceCount = mesh.data.maxInstances;
+            }
+            if (mesh.buffers.indices) {
+              const indexTypes = [
+                null,
+                gl.UNSIGNED_BYTE,
+                gl.UNSIGNED_SHORT,
+                null,
+                gl.UNSIGNED_INT,
+              ];
+              gl.drawElementsInstanced(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                amount,
+                indexTypes[mesh.buffers.indices.bytesPerEl],
+                start,
+                instanceCount
+              );
+            } else {
+              gl.drawArraysInstanced(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                start,
+                amount,
+                instanceCount
+              );
+            }
           } else {
-            gl.drawArrays(mesh.data.primitives ?? gl.TRIANGLES, start, amount);
+            if (mesh.buffers.indices) {
+              const indexTypes = [
+                null,
+                gl.UNSIGNED_BYTE,
+                gl.UNSIGNED_SHORT,
+                null,
+                gl.UNSIGNED_INT,
+              ];
+              gl.drawElements(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                amount,
+                indexTypes[mesh.buffers.indices.bytesPerEl],
+                start
+              );
+            } else {
+              gl.drawArrays(
+                mesh.data.primitives ?? gl.TRIANGLES,
+                start,
+                amount
+              );
+            }
           }
         }
+
         if (currentRenderTarget === canvasRenderTarget) {
           canvasDirty = true; // Telling extension to update texture
           renderer.dirty = true; // Telling renderer to redraw the screen
@@ -3729,6 +4030,50 @@ void main() {
       },
     },
     {
+      opcode: "textureFromLMSVideo",
+      blockType: BlockType.REPORTER,
+      text: "texture from video [NAME]",
+      arguments: {
+        NAME: {
+          type: ArgumentType.STRING,
+          defaultValue: "my video",
+        },
+      },
+      def: function ({ NAME }, { target }) {
+        let retStatus = "[texture data]";
+        imageSourceSync = null;
+        imageSource = new Promise((resolve, reject) => {
+          if (!runtime.ext_lmsVideo) {
+            retStatus = "video extension not detected";
+            resolve(null);
+            return;
+          }
+          if (!hasOwn(runtime.ext_lmsVideo.videos, NAME)) {
+            retStatus = "video not found";
+            resolve(null);
+            return;
+          }
+          const video = runtime.ext_lmsVideo.videos[NAME].videoElement;
+          const videoReady =
+            video.readyState >= video.HAVE_CURRENT_DATA &&
+            video.videoWidth > 0 &&
+            video.videoHeight > 0;
+          if (!videoReady) {
+            retStatus = "video is not ready";
+            resolve(null);
+            return;
+          }
+          imageSourceSync = {
+            width: video.videoWidth,
+            height: video.videoHeight,
+            data: video,
+          };
+          resolve(imageSourceSync);
+        });
+        return retStatus;
+      },
+    },
+    {
       blockType: BlockType.LABEL,
       text: "Text measurement",
     },
@@ -4006,6 +4351,55 @@ void main() {
       },
     },
     {
+      opcode: "matSkew",
+      blockType: BlockType.COMMAND,
+      text: "skew [AXIS1] by [FACTOR] [AXIS2]",
+      arguments: {
+        AXIS1: {
+          type: ArgumentType.STRING,
+          menu: "axis",
+        },
+        AXIS2: {
+          type: ArgumentType.STRING,
+          menu: "axis",
+        },
+        FACTOR: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 1,
+        },
+      },
+      def: function ({ AXIS1, AXIS2, FACTOR }) {
+        let index = 0;
+        switch (AXIS1) {
+          case "X":
+            index += 0;
+            break;
+          case "Y":
+            index += 1;
+            break;
+          case "Z":
+            index += 2;
+            break;
+          default:
+            return;
+        }
+        switch (AXIS2) {
+          case "X":
+            index += 0;
+            break;
+          case "Y":
+            index += 4;
+            break;
+          case "Z":
+            index += 8;
+            break;
+          default:
+            return;
+        }
+        transforms[selectedTransform][index] += Cast.toNumber(FACTOR);
+      },
+    },
+    {
       opcode: "matWrapper",
       blockType: BlockType.CONDITIONAL,
       text: "wrapper",
@@ -4159,15 +4553,6 @@ void main() {
           transformed = vec;
           return;
         }
-        if (
-          lookup2[from] === transformCache.from &&
-          lookup2[to] === transformCache.to
-        ) {
-          transformed = m4.multiplyVec(transformCache.matrix, vec);
-          return;
-        }
-        transformCache.from = lookup2[from];
-        transformCache.to = lookup2[to];
         let swapped = false;
         if (from > to) {
           [from, to] = [to, from];
@@ -4178,7 +4563,6 @@ void main() {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
         if (swapped) totalMat = m4.inverse(totalMat);
-        transformCache.matrix = totalMat;
         transformed = m4.multiplyVec(totalMat, vec);
         if (TO == "projected (scratch units)") {
           transformed[0] =
@@ -4236,15 +4620,6 @@ void main() {
           transformed = vec;
           return;
         }
-        if (
-          lookup2[from] === transformCache.from &&
-          lookup2[to] === transformCache.to
-        ) {
-          transformed = m4.multiplyVec(transformCache.matrix, vec);
-          return;
-        }
-        transformCache.from = lookup2[from];
-        transformCache.to = lookup2[to];
         let swapped = false;
         if (from > to) {
           [from, to] = [to, from];
@@ -4255,7 +4630,6 @@ void main() {
           totalMat = m4.multiply(lookup2[i], totalMat);
         }
         if (swapped) totalMat = m4.inverse(totalMat);
-        transformCache.matrix = totalMat;
         transformed = m4.multiplyVec(totalMat, vec);
       },
     },
@@ -4283,7 +4657,7 @@ void main() {
     {
       opcode: "renderToStage",
       blockType: BlockType.COMMAND,
-      text: "render to stage",
+      text: "render to canvas",
       def: function () {
         canvasRenderTarget.setAsRenderTarget();
       },
@@ -4623,18 +4997,152 @@ void main() {
     },
     {
       blockType: BlockType.LABEL,
-      text: "Resolution changes",
+      text: "Resolution changes and presentation",
+    },
+    {
+      opcode: "whenStageResized",
+      blockType: BlockType.EVENT,
+      text: "when stage resolution changes",
+      isEdgeActivated: false,
+    },
+    {
+      opcode: "stageResolutionWidth",
+      blockType: BlockType.REPORTER,
+      text: "horizontal stage resolution",
+      def: function () {
+        return renderer.canvas.width;
+      },
+    },
+    {
+      opcode: "stageResolutionHeight",
+      blockType: BlockType.REPORTER,
+      text: "vertical stage resolution",
+      def: function () {
+        return renderer.canvas.height;
+      },
+    },
+    {
+      opcode: "stageSizeWidth",
+      blockType: BlockType.REPORTER,
+      text: "stage width",
+      def: function () {
+        return runtime.stageWidth;
+      },
+    },
+    {
+      opcode: "stageSizeHeight",
+      blockType: BlockType.REPORTER,
+      text: "stage height",
+      def: function () {
+        return runtime.stageHeight;
+      },
+    },
+    {
+      opcode: "getHqPen",
+      blockType: BlockType.BOOLEAN,
+      text: "high quality pen enabled?",
+      def: function () {
+        return renderer.useHighQualityRender;
+      },
+    },
+    {
+      opcode: "setCanvasSize",
+      blockType: BlockType.COMMAND,
+      text: "set canvas [SIZE] to X: [X] Y: [Y]",
+      arguments: {
+        SIZE: {
+          type: ArgumentType.STRING,
+          defaultValue: "resolution",
+          menu: "canvasSizeProperty",
+        },
+        X: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 960,
+        },
+        Y: {
+          type: ArgumentType.NUMBER,
+          defaultValue: 720,
+        },
+      },
+      def: function ({ SIZE, X, Y }) {
+        if (SIZE === "size") {
+          canvasNativeSize = [
+            clamp(Cast.toNumber(X), 1, 4096),
+            clamp(Cast.toNumber(Y), 1, 4096),
+          ];
+          renderer._allSkins[skinId].updateNativeSize();
+          if (!canvasResolution) renderer._allSkins[skinId].resizeCanvas();
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
+        if (SIZE === "resolution") {
+          canvasResolution = [
+            clamp(Cast.toNumber(X), 1, 4096),
+            clamp(Cast.toNumber(Y), 1, 4096),
+          ];
+          renderer._allSkins[skinId].resizeCanvas();
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
+      },
+    },
+    {
+      opcode: "clearCanvasSize",
+      blockType: BlockType.COMMAND,
+      text: "clear canvas [SIZE]",
+      arguments: {
+        SIZE: {
+          type: ArgumentType.STRING,
+          defaultValue: "resolution",
+          menu: "canvasSizeProperty",
+        },
+      },
+      def: function ({ SIZE, WIDTH, HEIGHT }) {
+        if (SIZE === "size") {
+          canvasNativeSize = null;
+          renderer._allSkins[skinId].updateNativeSize();
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
+        if (SIZE === "resolution") {
+          canvasResolution = null;
+          renderer._allSkins[skinId].resizeCanvas();
+          canvasDirty = true; // Telling extension to update texture
+          renderer.dirty = true; // Telling renderer to redraw the screen
+          runtime.requestRedraw(); // Telling sequencer to yield in loops
+        }
+      },
+    },
+    {
+      opcode: "canvasFilter",
+      blockType: BlockType.COMMAND,
+      text: "make scaled canvas look [FILTER]",
+      arguments: {
+        FILTER: {
+          type: ArgumentType.STRING,
+          menu: "textureFilter",
+        },
+      },
+      def: function ({ FILTER }) {
+        canvasUseNearest = FILTER !== "blurred";
+        canvasDirty = true; // Telling extension to update texture
+        renderer.dirty = true; // Telling renderer to redraw the screen
+        runtime.requestRedraw(); // Telling sequencer to yield in loops
+      },
     },
     {
       opcode: "whenCanvasResized",
       blockType: BlockType.EVENT,
-      text: "when resolution changes",
+      text: "when canvas resolution changes",
       isEdgeActivated: false,
     },
     {
       opcode: "canvasWidth",
       blockType: BlockType.REPORTER,
-      text: "stage width",
+      text: "canvas width",
       def: function () {
         return canvas.width;
       },
@@ -4642,9 +5150,65 @@ void main() {
     {
       opcode: "canvasHeight",
       blockType: BlockType.REPORTER,
-      text: "stage height",
+      text: "canvas height",
       def: function () {
         return canvas.height;
+      },
+    },
+    {
+      opcode: "displaySkin",
+      blockType: BlockType.COMMAND,
+      text: "display canvas on myself",
+      def: function (_, { target }) {
+        renderer._allDrawables[target.drawableID].skin =
+          renderer._allSkins[skinId];
+        canvasDirty = true; // Telling extension to update texture
+        renderer.dirty = true; // Telling renderer to redraw the screen
+        runtime.requestRedraw(); // Telling sequencer to yield in loops
+      },
+    },
+    {
+      opcode: "restoreSkin",
+      blockType: BlockType.COMMAND,
+      text: "restore my look",
+      def: function (_, { target }) {
+        target.updateAllDrawableProperties();
+        canvasDirty = true; // Telling extension to update texture
+        renderer.dirty = true; // Telling renderer to redraw the screen
+        runtime.requestRedraw(); // Telling sequencer to yield in loops
+      },
+    },
+    {
+      opcode: "setLayerVisibility",
+      blockType: BlockType.COMMAND,
+      text: "set Simple3D layer visibility to [STATE]",
+      arguments: {
+        STATE: {
+          type: ArgumentType.STRING,
+          defaultValue: "true",
+          menu: "visibility",
+        },
+      },
+      def: function ({ STATE }) {
+        renderer._allDrawables[drawableId].updateVisible(Cast.toBoolean(STATE));
+        canvasDirty = true; // Telling extension to update texture
+        renderer.dirty = true; // Telling renderer to redraw the screen
+        runtime.requestRedraw(); // Telling sequencer to yield in loops
+      },
+    },
+    {
+      opcode: "resetEverythingWithAntialias",
+      blockType: BlockType.COMMAND,
+      text: "reset everything with antialiasing [ANTIALIAS]",
+      arguments: {
+        ANTIALIAS: {
+          type: ArgumentType.STRING,
+          defaultValue: "true",
+          menu: "onOff",
+        },
+      },
+      def: function ({ ANTIALIAS }) {
+        resetEverything({ antialias: Cast.toBoolean(ANTIALIAS) });
       },
     },
   ];
@@ -4687,6 +5251,13 @@ void main() {
         items: [
           { text: "on", value: "true" },
           { text: "off", value: "false" },
+        ],
+      },
+      visibility: {
+        acceptReporters: true,
+        items: [
+          { text: "visible", value: "true" },
+          { text: "hidden", value: "false" },
         ],
       },
       meshProperties: {
@@ -4864,6 +5435,10 @@ void main() {
         acceptReporters: false,
         items: ["viewport box", "clipping box", "readback box"],
       },
+      canvasSizeProperty: {
+        acceptReporters: false,
+        items: ["size", "resolution"],
+      },
     },
   };
 
@@ -4872,6 +5447,9 @@ void main() {
       definitions.find(
         (b) => b.opcode == "matStartWithExternal"
       ).hideFromPalette = Object.keys(externalTransforms).length == 0;
+      definitions.find(
+        (b) => b.opcode == "textureFromLMSVideo"
+      ).hideFromPalette = !runtime.ext_lmsVideo;
       return extInfo;
     }
     dispose() {
@@ -4879,8 +5457,7 @@ void main() {
       removeSimple3DLayer();
       modelDecoder.destroy();
       runtime.removeListener("PROJECT_LOADED", resetEverything);
-      canvas = null;
-      gl = null;
+      disposeGlContext();
       const noop = () => {};
       for (let block of definitions) {
         if (block == "---") continue;
@@ -4972,10 +5549,23 @@ void main() {
   }
   gl.__proto__ = ogl; //*/
 
+  let warningShown = false;
   publicApi.i_will_not_ask_for_help_when_these_break = () => {
-    console.warn(
-      "WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. WHEN your code breaks, do not expect help.\n\nProper stable APIs will be added later."
-    );
+    if (!warningShown) {
+      console.warn(
+        "WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. WHEN your code breaks, do not expect help.\n\nProper stable APIs will be added later."
+      );
+      if (
+        runtime.extensionManager.isExtensionURLLoaded(
+          "https://extensions.turbowarp.org/Xeltalliv/simple3D.js"
+        )
+      ) {
+        alert(
+          "WARNING: You are accessing Simple3D internals. Expect them to change frequently with no regard to backwards compatibility. If you are making a project, please load Simple3D from a file or from text to prevent it from auto-updating. To do it, load correct version of Simple3D first, then open sb3 file."
+        );
+      }
+      warningShown = true;
+    }
     return {
       canvas,
       gl,
