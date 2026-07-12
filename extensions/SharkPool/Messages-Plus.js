@@ -626,7 +626,7 @@
       util.stackFrame.initialized = false;
       return multiResponseMsgs.has(name)
         ? JSON.stringify(util.stackFrame.responses)
-        : util.stackFrame.responses[0] ?? "";
+        : (util.stackFrame.responses[0] ?? "");
     }
 
     respondData(args, util) {
