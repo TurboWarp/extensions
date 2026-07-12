@@ -60,11 +60,7 @@
       }
 
       // <is () received?> blocks get stored in this temporary cache.
-      if (threads.length > 0) {
-        receivedMsgs.set(name, []);
-      } else {
-        receivedMsgs.delete(name);
-      }
+      receivedMsgs.set(name, new WeakMap());
     }
 
     return threads;
@@ -650,13 +646,17 @@
 
     isReceived(args, util) {
       const blockID = this._thisBlockID(util);
-      const cacheID = util.target.id + blockID;
       const broadcastName = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
 
       const receiveCache = receivedMsgs.get(broadcastName);
       if (receiveCache !== undefined) {
-        if (!receiveCache.includes(cacheID)) {
-          receiveCache.push(cacheID);
+        let receivedBlocks = receiveCache.get(util.thread);
+        if (receivedBlocks === undefined) {
+          receivedBlocks = new Set();
+          receiveCache.set(util.thread, receivedBlocks);
+        }
+        if (!receivedBlocks.has(blockID)) {
+          receivedBlocks.add(blockID);
           return true;
         }
       }
