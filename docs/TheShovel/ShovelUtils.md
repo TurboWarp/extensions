@@ -92,7 +92,7 @@ Get the accurate FPS, or frames per second, of the current project. This is *not
 (list [MyList] as array)
 ```
 
-Get the values of a list, exported as a JSON array. If the specified list has not been created yet, or is empty, the block will return empty.
+Get the values of a list, exported as a JSON array.  If the specified list has not been created yet, the block will return empty.
 
 ```scratch
 set list [MyList] to [⟦1,2⟧]
@@ -104,4 +104,4 @@ Sets the values of lists. Accepts JSON arrays as inputs. If the specified list h
 (brightness of [ #ffffff] ::)
 ```
 
-Gets the brightness of a hex value. Reports a whole number between 0 and 255. To transfer this to a value between 0 and 100 (what TurboWarp uses), divide the output of the block by 2.55 and round.
+Gets the brightness of a hex value. Reports a decimal between 0 and 255. To transfer this to a value between 0 and 100 (what TurboWarp uses), divide the output of the block by 2.55 and round.
