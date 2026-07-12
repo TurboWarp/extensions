@@ -391,7 +391,7 @@
             arguments: {
               text: {
                 type: ArgumentType.STRING,
-                default: "Apple!",
+                defaultValue: "Apple!",
               },
             },
             text: Scratch.translate("set request body to [text]"),
