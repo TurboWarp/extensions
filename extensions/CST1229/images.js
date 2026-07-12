@@ -355,9 +355,8 @@
     }
 
     queryImage({ QUERY, IMG }) {
-      if (!this.render._allSkins[IMG] || !this.validImages.has(IMG)) return "";
-
       IMG = Cast.toNumber(IMG);
+      if (!this.render._allSkins[IMG] || !this.validImages.has(IMG)) return "";
 
       let returnValue = 0;
       let drawableID = null;
