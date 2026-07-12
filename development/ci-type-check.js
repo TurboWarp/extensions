@@ -3,9 +3,8 @@ import ts from "typescript";
 import { createAnnotation, getChangedFiles, isCI } from "./ci-interop.js";
 
 /**
- * @fileoverview Generates CI annotations for type warnings in files modified by the
- * pull request. Standard TypeScript CLI will include all files and its output is
- * detected as errors, so not usable for us.
+ * @fileoverview Generates CI annotations for type checking.
+ * JavaScript files are warn-only; TypeScript are hard errors.
  */
 
 const check = async () => {
@@ -16,7 +15,7 @@ const check = async () => {
     pathUtil.join(rootDir, f)
   );
 
-  console.log(`${changedFiles.size} changed files:`);
+  console.log(`${changedFiles.length} changed files:`);
   console.log(Array.from(changedFiles).sort().join("\n"));
   console.log("");
 
@@ -39,10 +38,23 @@ const check = async () => {
   ];
 
   let numWarnings = 0;
+  let numErrors = 0;
 
   for (const diagnostic of diagnostics) {
-    if (!changedFilesAbsolute.includes(diagnostic.file.fileName)) {
+    const isBlocker = diagnostic.file.fileName.endsWith(".ts");
+
+    if (
+      !isBlocker &&
+      !changedFilesAbsolute.includes(diagnostic.file.fileName)
+    ) {
+      // Warning in a file not touched by the PR: ignore
       continue;
+    }
+
+    if (isBlocker) {
+      numErrors++;
+    } else {
+      numWarnings++;
     }
 
     const startPosition = ts.getLineAndCharacterOfPosition(
@@ -60,12 +72,12 @@ const check = async () => {
       0
     );
 
-    numWarnings++;
     createAnnotation({
-      type: "warning",
+      type: isBlocker ? "error" : "warning",
       file: diagnostic.file.fileName,
-      title: "Type warning - may indicate a bug - ignore if no bug",
-      onlyIfChanged: true,
+      title: isBlocker
+        ? "Type error - must be fixed"
+        : "Type warning - may indicate a bug - ignore if no bug",
       message: flattened,
       line: startPosition.line + 1,
       col: startPosition.character + 1,
@@ -74,12 +86,17 @@ const check = async () => {
     });
   }
 
+  console.log(`Errors: ${numErrors}`);
   console.log(`Warnings in changed files: ${numWarnings}`);
-  console.log(`Warnings in all files: ${diagnostics.length}`);
+  console.log(`Total errors+warnings in all files: ${diagnostics.length}`);
+
+  return numErrors === 0;
 };
 
 if (isCI()) {
-  check();
+  check().then((success) => {
+    process.exit(success ? 0 : 1);
+  });
 } else {
   console.error(
     "This script is only intended to be used in CI. For development, use normal TypeScript CLI instead."

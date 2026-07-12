@@ -4,7 +4,7 @@
 // By: GarboMuffin
 // License: MIT AND MPL-2.0
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
@@ -23,18 +23,12 @@
   const STAGE_SIZE = "stage size";
   const USERNAME = "username";
 
-  /** @param {string} what */
-  const emitChanged = (what) =>
+  const emitChanged = (what: string) =>
     Scratch.vm.runtime.startHats("runtimeoptions_whenChange", {
       WHAT: what,
     });
 
-  /**
-   * @template T
-   * @param {T} obj
-   * @returns {T}
-   */
-  const shallowCopy = (obj) => Object.assign({}, obj);
+  const shallowCopy = <T>(obj: T): T => Object.assign({}, obj);
 
   let previousRuntimeOptions = shallowCopy(Scratch.vm.runtime.runtimeOptions);
 
@@ -60,7 +54,10 @@
   Scratch.vm.on("STAGE_SIZE_CHANGED", () => emitChanged(STAGE_SIZE));
 
   const originalPostData = Scratch.vm.runtime.ioDevices.userData.postData;
-  Scratch.vm.runtime.ioDevices.userData.postData = function (data) {
+  Scratch.vm.runtime.ioDevices.userData.postData = function (
+    this: VM.UserData,
+    data: VM.UserDataData
+  ) {
     const newUsername = data.username !== this._username;
     originalPostData.call(this, data);
     if (newUsername) {
@@ -68,8 +65,8 @@
     }
   };
 
-  class RuntimeOptions {
-    getInfo() {
+  class RuntimeOptions implements Scratch.Extension {
+    getInfo(): Scratch.Info {
       return {
         id: "runtimeoptions",
         name: Scratch.translate("Runtime Options"),
@@ -334,7 +331,7 @@
       };
     }
 
-    getEnabled({ thing }) {
+    getEnabled({ thing }: { thing: unknown }) {
       if (thing === TURBO_MODE) {
         return Scratch.vm.runtime.turboMode;
       } else if (thing === INTERPOLATION) {
@@ -349,23 +346,23 @@
       return false;
     }
 
-    setEnabled({ thing, enabled }) {
-      enabled = Scratch.Cast.toBoolean(enabled);
+    setEnabled({ thing, enabled }: { thing: unknown; enabled: unknown }) {
+      const isEnabled = Scratch.Cast.toBoolean(enabled);
 
       if (thing === TURBO_MODE) {
-        Scratch.vm.setTurboMode(enabled);
+        Scratch.vm.setTurboMode(isEnabled);
       } else if (thing === INTERPOLATION) {
-        Scratch.vm.setInterpolation(enabled);
+        Scratch.vm.setInterpolation(isEnabled);
       } else if (thing === REMOVE_FENCING) {
         Scratch.vm.setRuntimeOptions({
-          fencing: !enabled,
+          fencing: !isEnabled,
         });
       } else if (thing === REMOVE_MISC_LIMITS) {
         Scratch.vm.setRuntimeOptions({
-          miscLimits: !enabled,
+          miscLimits: !isEnabled,
         });
       } else if (thing === HIGH_QUALITY_PEN) {
-        Scratch.renderer.setUseHighQualityRender(enabled);
+        Scratch.renderer.setUseHighQualityRender(isEnabled);
       }
     }
 
@@ -373,22 +370,20 @@
       return Scratch.vm.runtime.frameLoop.framerate;
     }
 
-    setFramerate({ fps }) {
-      fps = Scratch.Cast.toNumber(fps);
-      Scratch.vm.setFramerate(fps);
+    setFramerate({ fps }: { fps: unknown }) {
+      Scratch.vm.setFramerate(Scratch.Cast.toNumber(fps));
     }
 
     getCloneLimit() {
       return Scratch.vm.runtime.runtimeOptions.maxClones;
     }
-    setCloneLimit({ limit }) {
-      limit = Scratch.Cast.toNumber(limit);
+    setCloneLimit({ limit }: { limit: unknown }) {
       Scratch.vm.setRuntimeOptions({
-        maxClones: limit,
+        maxClones: Scratch.Cast.toNumber(limit),
       });
     }
 
-    getDimension({ dimension }) {
+    getDimension({ dimension }: { dimension: unknown }) {
       if (dimension === "width") {
         return Scratch.vm.runtime.stageWidth;
       } else if (dimension === "height") {
@@ -397,13 +392,14 @@
       return 0;
     }
 
-    setDimensions({ width, height }) {
-      width = Scratch.Cast.toNumber(width);
-      height = Scratch.Cast.toNumber(height);
-      Scratch.vm.setStageSize(width, height);
+    setDimensions({ width, height }: { width: unknown; height: unknown }) {
+      Scratch.vm.setStageSize(
+        Scratch.Cast.toNumber(width),
+        Scratch.Cast.toNumber(height)
+      );
     }
 
-    setUsername({ username }) {
+    setUsername({ username }: { username: unknown }) {
       Scratch.vm.postIOData("userData", {
         username: Scratch.Cast.toString(username),
       });

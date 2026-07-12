@@ -5,12 +5,11 @@
 // Context: "iframe" is an HTML element that lets websites embed other websites.
 // License: MIT AND MPL-2.0
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
-  /** @type {HTMLIFrameElement|null} */
-  let iframe = null;
-  let overlay = null;
+  let iframe: HTMLIFrameElement | null = null;
+  let overlay: RenderWebGL.Overlay | null = null;
 
   const featurePolicy = {
     accelerometer: "'none'",
@@ -54,10 +53,8 @@
   let height = -1; // negative means default
   let interactive = true;
   let resizeBehavior = "scale";
-  /** @type {string|number|boolean} */
-  let latestMessage = "";
-  /** @type {string|number|boolean} */
-  let latestParentMessage = "";
+  let latestMessage: string | number | boolean = "";
+  let latestParentMessage: string | number | boolean = "";
 
   const updateFrameAttributes = () => {
     if (!iframe) {
@@ -97,7 +94,7 @@
   const getOverlayMode = () =>
     resizeBehavior === "scale" ? "scale-centered" : "manual";
 
-  const createFrame = (src) => {
+  const createFrame = (src: string) => {
     iframe = document.createElement("iframe");
     iframe.style.width = "100%";
     iframe.style.height = "100%";
@@ -126,18 +123,14 @@
     }
   };
 
-  /** @param {unknown} data */
-  const normalizeMessage = (data) =>
+  const normalizeMessage = (data: unknown): string | number | boolean =>
     typeof data === "string" ||
     typeof data === "number" ||
     typeof data === "boolean"
       ? data
       : JSON.stringify(data);
 
-  /**
-   * @returns {Window|null}
-   */
-  const getParentWindow = () => {
+  const getParentWindow = (): Window | null => {
     // if no parent, window.parent is us. which is not useful
     if (window.parent !== window) {
       return window.parent;
@@ -162,8 +155,8 @@
 
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", closeFrame);
 
-  class IframeExtension {
-    getInfo() {
+  class IframeExtension implements Scratch.Extension {
+    getInfo(): Scratch.Info {
       return {
         name: Scratch.translate("Iframe"),
         id: "iframe",
@@ -370,14 +363,15 @@
       };
     }
 
-    async display({ URL }) {
+    async display({ URL }: { URL: unknown }) {
       closeFrame();
-      if (await Scratch.canEmbed(URL)) {
-        createFrame(Scratch.Cast.toString(URL));
+      const url = Scratch.Cast.toString(URL);
+      if (await Scratch.canEmbed(url)) {
+        createFrame(url);
       }
     }
 
-    async displayHTML({ HTML }) {
+    async displayHTML({ HTML }: { HTML: unknown }) {
       closeFrame();
       const url = `data:text/html;,${encodeURIComponent(
         Scratch.Cast.toString(HTML)
@@ -403,7 +397,7 @@
       closeFrame();
     }
 
-    get({ MENU }) {
+    get({ MENU }: { MENU: unknown }) {
       MENU = Scratch.Cast.toString(MENU);
       if (MENU === "url") {
         if (iframe) return iframe.getAttribute("src");
@@ -427,32 +421,32 @@
       }
     }
 
-    setX({ X }) {
+    setX({ X }: { X: unknown }) {
       x = Scratch.Cast.toNumber(X);
       updateFrameAttributes();
     }
 
-    setY({ Y }) {
+    setY({ Y }: { Y: unknown }) {
       y = Scratch.Cast.toNumber(Y);
       updateFrameAttributes();
     }
 
-    setWidth({ WIDTH }) {
+    setWidth({ WIDTH }: { WIDTH: unknown }) {
       width = Scratch.Cast.toNumber(WIDTH);
       updateFrameAttributes();
     }
 
-    setHeight({ HEIGHT }) {
+    setHeight({ HEIGHT }: { HEIGHT: unknown }) {
       height = Scratch.Cast.toNumber(HEIGHT);
       updateFrameAttributes();
     }
 
-    setInteractive({ INTERACTIVE }) {
+    setInteractive({ INTERACTIVE }: { INTERACTIVE: unknown }) {
       interactive = Scratch.Cast.toBoolean(INTERACTIVE);
       updateFrameAttributes();
     }
 
-    setResize({ RESIZE }) {
+    setResize({ RESIZE }: { RESIZE: unknown }) {
       if (RESIZE === "scale" || RESIZE === "viewport") {
         resizeBehavior = RESIZE;
         if (overlay) {
@@ -463,13 +457,13 @@
       }
     }
 
-    sendMessage({ MESSAGE }) {
+    sendMessage({ MESSAGE }: { MESSAGE: unknown }) {
       if (iframe && iframe.contentWindow) {
         iframe.contentWindow.postMessage(MESSAGE, "*");
       }
     }
 
-    sendMessageParent({ MESSAGE }) {
+    sendMessageParent({ MESSAGE }: { MESSAGE: unknown }) {
       const parentWindow = getParentWindow();
       if (parentWindow) {
         parentWindow.postMessage(MESSAGE, "*");

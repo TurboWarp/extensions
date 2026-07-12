@@ -5,7 +5,7 @@
 // By: GarboMuffin
 // License: MIT AND MPL-2.0
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
@@ -13,17 +13,13 @@
   }
 
   const lazilyCreatedCanvas = () => {
-    /** @type {HTMLCanvasElement} */
-    let canvas = null;
-    /** @type {CanvasRenderingContext2D} */
-    let ctx = null;
-    /**
-     * @param {number} width
-     * @param {number} height
-     * @returns {[HTMLCanvasElement, CanvasRenderingContext2D]}
-     */
-    return (width, height) => {
-      if (!canvas) {
+    let canvas: HTMLCanvasElement | null = null;
+    let ctx: CanvasRenderingContext2D | null = null;
+    return (
+      width: number,
+      height: number
+    ): [HTMLCanvasElement, CanvasRenderingContext2D] => {
+      if (!canvas || !ctx) {
         canvas = document.createElement("canvas");
         ctx = canvas.getContext("2d");
         if (!ctx) {
@@ -38,15 +34,17 @@
   };
   const getRawSkinCanvas = lazilyCreatedCanvas();
 
+  const isSVGSkin = (skin: RenderWebGL.Skin): skin is RenderWebGL.SVGSkin =>
+    !!(skin as RenderWebGL.SVGSkin)._svgImage;
+
   /**
-   * @param {RenderWebGL.Skin} skin
-   * @returns {string} A data: URI for the skin.
+   * @param skin
+   * @returns A data: URI for the skin.
    */
-  const encodeSkinToURL = (skin) => {
-    const svgSkin = /** @type {RenderWebGL.SVGSkin} */ (skin);
-    if (svgSkin._svgImage) {
+  const encodeSkinToURL = (skin: RenderWebGL.Skin): string => {
+    if (isSVGSkin(skin)) {
       // This is an SVG skin
-      return svgSkin._svgImage.src;
+      return skin._svgImage.src;
     }
 
     // It's probably a bitmap skin.
@@ -57,7 +55,9 @@
     if (silhouette.unlazy) {
       silhouette.unlazy();
     }
-    const colorData = silhouette._colorData;
+    // The renderer types _colorData with a generic ArrayBufferLike backing, but the
+    // ImageData constructor specifically wants an ArrayBuffer-backed array.
+    const colorData = silhouette._colorData as Uint8ClampedArray<ArrayBuffer>;
     const width = silhouette._width;
     const height = silhouette._height;
     const imageData = new ImageData(
@@ -70,13 +70,11 @@
     return canvas.toDataURL();
   };
 
-  /**
-   * @param {VM.Costume} costume
-   * @param {number} maxWidth
-   * @param {number} maxHeight
-   * @returns {{uri: string, width: number, height: number}}
-   */
-  const costumeToCursor = (costume, maxWidth, maxHeight) => {
+  const costumeToCursor = (
+    costume: VM.Costume,
+    maxWidth: number,
+    maxHeight: number
+  ): { uri: string; width: number; height: number } => {
     const skin = Scratch.vm.renderer._allSkins[costume.skinId];
     const imageURI = encodeSkinToURL(skin);
 
@@ -113,13 +111,10 @@
     };
   };
 
-  /** @type {string} */
   let nativeCursor = "default";
-  /** @type {null|string} */
-  let customCursorImageName = null;
+  let customCursorImageName: null | string = null;
 
   const canvas = Scratch.renderer.canvas;
-  /** @type {string} */
   let currentCanvasCursor = nativeCursor;
   const updateCanvasCursor = () => {
     if (canvas.style.cursor !== currentCanvasCursor) {
@@ -135,19 +130,16 @@
 
   /**
    * Parse strings like "60x12" or "77,1"
-   * @param {string} string
-   * @returns {[number, number]}
    */
-  const parseTuple = (string) => {
+  const parseTuple = (string: string): [number, number] => {
     const [a, b] = ("" + string).split(/[ ,x]/);
     return [+a || 0, +b || 0];
   };
 
   /**
-   * @param {string} size eg. "48x84"
-   * @returns {string}
+   * @param size eg. "48x84"
    */
-  const formatUnreliableSize = (size) =>
+  const formatUnreliableSize = (size: string): string =>
     Scratch.translate(
       {
         default: "{size} (unreliable)",
@@ -196,7 +188,7 @@
     "nwse-resize",
   ];
 
-  class MouseCursor {
+  class MouseCursor implements Scratch.Extension {
     constructor() {
       Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
         this.setCur({
@@ -560,7 +552,7 @@
       };
     }
 
-    setCur(args) {
+    setCur(args: { cur: unknown }) {
       const newCursor = Scratch.Cast.toString(args.cur);
       // Prevent setting cursor to "url(...), default" from causing fetch.
       if (ALL_ALLOWED_CURSORS.includes(newCursor)) {
@@ -571,10 +563,13 @@
       }
     }
 
-    setCursorImage(args, util) {
-      const [maxWidth, maxHeight] = parseTuple(args.size).map((i) =>
-        Math.max(0, i)
-      );
+    setCursorImage(
+      args: { position: unknown; size: unknown },
+      util: VM.BlockUtility
+    ) {
+      const [maxWidth, maxHeight] = parseTuple(
+        Scratch.Cast.toString(args.size)
+      ).map((i) => Math.max(0, i));
 
       const currentCostume =
         util.target.getCostumes()[util.target.currentCostume];
@@ -589,9 +584,9 @@
       }
 
       if (encodedCostume) {
-        const [percentX, percentY] = parseTuple(args.position).map(
-          (i) => Math.max(0, Math.min(100, i)) / 100
-        );
+        const [percentX, percentY] = parseTuple(
+          Scratch.Cast.toString(args.position)
+        ).map((i) => Math.max(0, Math.min(100, i)) / 100);
         const x = percentX * encodedCostume.width;
         const y = percentY * encodedCostume.height;
 

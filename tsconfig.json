@@ -4,6 +4,9 @@
     "noEmit": true,
     "allowJs": true,
     "checkJs": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "inlineSources": true,
     "paths": {
       // See https://github.com/turboWarp/types#using-from-npm
       "scratch-vm": ["./node_modules/@turbowarp/types/index.d.ts"],
