@@ -226,8 +226,9 @@
       }
       let dict = dictionaries.get(DICT);
       KEY = Cast.toString(KEY);
-      if (isNaN(+dict.get(KEY))) dict.set(KEY, 0);
-      dict.set(KEY, dict.get(KEY) + BY);
+
+      const oldValue = Cast.toNumber(dict.get(KEY));
+      dict.set(KEY, oldValue + Cast.toNumber(BY));
     }
 
     dict_delete({ DICT }) {
