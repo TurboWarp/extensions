@@ -28,12 +28,13 @@
    * @param {Blob} blob
    * @returns {Promise<string>}
    */
-  const readAsDataURL = (blob) => new Promise((resolve, reject) => {
-    const fr = new FileReader();
-    fr.onload = () => resolve(fr.result);
-    fr.onerror = (e) => reject(e);
-    fr.readAsDataURL(blob);
-  });
+  const readAsDataURL = (blob) =>
+    new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = (e) => reject(e);
+      fr.readAsDataURL(blob);
+    });
 
   class Assets {
     getInfo() {
@@ -618,11 +619,10 @@
         return (async () => {
           const blob = await Scratch.vm.exportSprite(target.id);
           return readAsDataURL(blob);
-        })()
-          .catch((e) => {
-            console.error(e);
-            return "";
-          });
+        })().catch((e) => {
+          console.error(e);
+          return "";
+        });
       }
     }
 
@@ -746,13 +746,12 @@
         return Scratch.vm.toJSON();
       } else if (option === "dataURI") {
         return (async () => {
-          const blob = await Scratch.vm.saveProjectSb3()
+          const blob = await Scratch.vm.saveProjectSb3();
           return readAsDataURL(blob);
-        })()
-          .catch((e) => {
-            console.error(e);
-            return '';
-          });
+        })().catch((e) => {
+          console.error(e);
+          return "";
+        });
       }
     }
 
