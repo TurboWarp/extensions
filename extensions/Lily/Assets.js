@@ -534,7 +534,7 @@
     }
 
     deleteSprite(args, util) {
-      const target = this._getTargetFromMenu(args.TARGET);
+      const target = this._getTargetFromMenu(args.TARGET, util);
       if (!target || target.isStage) return;
 
       Scratch.vm.deleteSprite(target.id);
