@@ -1179,14 +1179,14 @@
   };
 
   const parseEnglish = (text) => {
-    const words = text.toLowerCase().match(/\b\w+\b/g);
+    const words = text.toLowerCase().match(/\b\w+\b/g) || [];
     const uniques = Array.from(new Set(words));
     uniques.sort();
     return uniques;
   };
 
   const parseChinese = (text) => {
-    const words = text.match(/[^\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+/g);
+    const words = text.match(/[^\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+/g) || [];
     const uniques = Array.from(new Set(words));
     uniques.sort(function (a, b) {
       return a.localeCompare(b, "zh-Hans-CN", { sensitivity: "accent" });
