@@ -24,6 +24,17 @@
     return true;
   };
 
+  /**
+   * @param {Blob} blob
+   * @returns {Promise<string>}
+   */
+  const readAsDataURL = (blob) => new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => resolve(fr.result);
+    fr.onerror = (e) => reject(e);
+    fr.readAsDataURL(blob);
+  });
+
   class Assets {
     getInfo() {
       const dataURIOption = Scratch.translate({
@@ -604,21 +615,14 @@
       if (option === "name") {
         return target.sprite.name ?? "";
       } else if (option === "dataURI") {
-        try {
-          return new Promise((resolve) => {
-            Scratch.vm.exportSprite(target.id).then((blob) => {
-              const fr = new FileReader();
-              fr.onload = () => resolve(fr.result);
-              fr.onabort = () => {
-                throw new Error("Read aborted");
-              };
-              fr.readAsDataURL(blob);
-            });
+        return (async () => {
+          const blob = await Scratch.vm.exportSprite(target.id);
+          return readAsDataURL(blob);
+        })()
+          .catch((e) => {
+            console.error(e);
+            return "";
           });
-        } catch (e) {
-          console.error("Failed to export the sprite", e);
-          return "";
-        }
       }
     }
 
@@ -741,21 +745,14 @@
       if (option === "JSON") {
         return Scratch.vm.toJSON();
       } else if (option === "dataURI") {
-        try {
-          return new Promise((resolve) => {
-            vm.saveProjectSb3().then((blob) => {
-              const fr = new FileReader();
-              fr.onload = () => resolve(fr.result);
-              fr.onabort = () => {
-                throw new Error("Read aborted");
-              };
-              fr.readAsDataURL(blob);
-            });
+        return (async () => {
+          const blob = await Scratch.vm.saveProjectSb3()
+          return readAsDataURL(blob);
+        })()
+          .catch((e) => {
+            console.error(e);
+            return '';
           });
-        } catch (e) {
-          console.error("Failed to export the project", e);
-          return "";
-        }
       }
     }
 
