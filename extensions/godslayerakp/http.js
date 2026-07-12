@@ -34,11 +34,9 @@
       case "number":
         switch (typeof value) {
           case "string":
-            return Cast.toString(value);
           case "boolean":
-            return Cast.toBoolean(value);
           case "number":
-            return value;
+            return Number(value);
           case "function":
           case "object":
             return NaN;
