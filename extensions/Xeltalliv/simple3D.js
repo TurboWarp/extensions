@@ -3777,7 +3777,10 @@ void main() {
             return;
           }
           const costumeIndex = target.getCostumeIndexByName(NAME);
-          if (costumeIndex == -1) return;
+          if (costumeIndex == -1) {
+            resolve(null);
+            return;
+          }
           const costume = target.sprite.costumes[costumeIndex];
           // eslint-disable-next-line extension/check-can-fetch
           const img = new Image();
