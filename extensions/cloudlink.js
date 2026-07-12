@@ -1967,7 +1967,7 @@
     // NUM - Number, ARRAY - String (JSON Array)
     getFromJSONArray(args) {
       var json_array = JSON.parse(args.ARRAY);
-      if (json_array[args.NUM] == "undefined") {
+      if (typeof json_array[args.NUM] === "undefined") {
         return "";
       } else {
         let data = json_array[args.NUM];
@@ -2254,7 +2254,7 @@
 
       // New ulist handling
       if (clVars.linkState.identifiedProtocol > 2) {
-        if (this.isValidJSON(args.ID)) {
+        if (this.isValidJSON({ JSON_STRING: args.ID })) {
           return clVars.ulist.some(
             (o) =>
               o.username === JSON.parse(args.ID).username &&
