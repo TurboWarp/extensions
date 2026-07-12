@@ -172,8 +172,8 @@
     sync({ STR, STR2 }) {
       str = btoa(unescape(encodeURIComponent(STR)));
       str2 = btoa(unescape(encodeURIComponent(STR2)));
-      if (rxFSsy.indexOf(str) + 1 == 0) {
-        rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = str2;
+      if (rxFSsy.indexOf(str) + 1 != 0) {
+        rxFSsy[rxFSsy.indexOf(str)] = str2;
       }
     }
 
@@ -218,7 +218,7 @@
       Search = "";
       str = btoa(unescape(encodeURIComponent(STR)));
       for (var i in rxFSsy) {
-        if (!(rxFSsy[i].indexOf(str) == undefined)) {
+        if (rxFSsy[i].indexOf(str) != -1) {
           Search = [Search, "LA==", rxFSsy[i]].join("");
         }
       }
