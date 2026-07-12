@@ -1616,11 +1616,6 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("tint triangle to [color]"),
             arguments: {
-              point: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "1",
-                menu: "pointMenu",
-              },
               color: {
                 type: Scratch.ArgumentType.COLOR,
                 defaultValue: "#0000ff",
@@ -1944,12 +1939,6 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "penPlusShaders",
               },
-              x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              x2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              x3: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              y3: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
             filter: "sprite",
           },
