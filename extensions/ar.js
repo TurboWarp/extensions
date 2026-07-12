@@ -774,7 +774,7 @@
     }
     getMatrixItem(args) {
       let item = args.ITEM | 0;
-      if (item < 1 && item > 16) return "";
+      if (item < 1 || item > 16) return "";
       let matrix = null;
       switch (args.MATRIX) {
         case "combined":
