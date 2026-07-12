@@ -559,10 +559,9 @@
 
     tweenVariable(args, util) {
       const variable = util.target.lookupVariableById(args.VAR);
+      if (!variable || variable.type !== "") return;
       const value = this._tweenValue(args, util, "", "VALUE", variable.value);
-      if (variable && variable.type === "") {
-        variable.value = value;
-      }
+      variable.value = value;
     }
 
     tweenXY(args, util) {
