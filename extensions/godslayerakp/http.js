@@ -620,7 +620,7 @@
 
     getHeaderValue(args) {
       const name = Cast.toString(args.name);
-      return this.response.get(name);
+      return this.response.headers.get(name);
     }
 
     getHeaderJSON() {
