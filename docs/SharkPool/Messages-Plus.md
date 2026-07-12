@@ -31,9 +31,10 @@ Broadcasts the specified message to the selected sprites.
 The **sprites** dropdown controls which sprites will receive the broadcast:
 
 - **`all sprites`** - Every sprite, its clones, and the stage will receive the broadcast
+- **`stage`** - Only the stage will receive the broadcast
 - **`myself and clones`** - The sprite containing this block and its clones will receive the broadcast
-- **`myself only`** - The sprite containing this block will receive the broadcast
-- **Any other option** - Only the selected sprite will receive the broadcast
+- **`myself only`** - The single sprite or clone containing this block will receive the broadcast
+- **Any other option** - The selected sprite and all of its clones will receive the broadcast
 
 The final dropdown controls whether the block waits for the broadcasts to finish:
 
@@ -57,9 +58,11 @@ broadcast [\["message1", "message2"\]] with data (...) to (all sprites v) and [c
 Broadcasts multiple messages simultaneously to the selected sprites while sending a value to the receiving scripts (or 'receivers').
 
 This block behaves the same as the previous broadcast with data block, except the message input is replaced with an array of message names.
-Each message in the array is broadcasted at the same time to the selected sprites.
+Each message in the array is broadcasted at the same time to the selected sprites. Duplicate message names are ignored, so each unique message is only broadcasted once.
 
 The data passed is shared across all broadcasts.
+
+If the input is not a valid array, the block does nothing.
 
 ```scratch
 (received data::#FFBF00)
@@ -76,8 +79,10 @@ If it is used outside of those scripts, it will return nothing as it does not ha
 
 Returns the data that was passed with a **currently running** broadcast script that matches the specified message and sprite target.
 
-Unlike the "received data" reporter, this can retrieve data from _any_ script with a matching broadcast that is currently being executed,
+Unlike the "received data" reporter, this can retrieve data from another script with a matching broadcast that is currently being executed,
 not just the one that triggered the current script.
+
+This only inspects standard "when I receive" scripts. Data carried by "when any broadcast is received" scripts or the extension's dynamic "when I receive" hat is not retrieved.
 
 If no matching "when I receive" script is actively running, this reporter will return nothing.
 
@@ -107,7 +112,7 @@ respond [received!]::#FFBF00 cap
 
 Sends a response back to the broadcaster. This block can only be used inside a "when I receive" or "when any broadcast is received" script.
 
-The value inputted is returned as part of the broadcast reporter’s array of responses.
+The value inputted is returned by the broadcast reporter blocks. If multiple responses are enabled for the message, it becomes one entry in the returned array of responses; otherwise it may be returned as the single response.
 
 ```scratch
 <is (message1 v) received?::#FFBF00>
@@ -133,7 +138,9 @@ If no matching broadcast scripts are active, it returns `false`.
 (receivers of (message1 v)::#FFBF00)
 ```
 
-Returns an array of all sprites that will receive the specified message.
+Returns an array of all sprites that have a standard "when I receive" script for the specified message.
+
+Sprites that only handle the message through a "when any broadcast is received" script or the extension's dynamic "when I receive" hat are not included.
 
 ```scratch
 set script restart for (message1 v) to [on v]::#FFBF00
@@ -141,9 +148,9 @@ set script restart for (message1 v) to [on v]::#FFBF00
 
 Controls whether a broadcasted script should restart when the same message is received again.
 
-When **on**, sending the same broadcast message again will not restart an already running script. Instead, the existing instance continues running.
+When **on**, re-broadcasting the same message will restart any currently running scripts for that message.
 
-When **off**, re-broadcasting the same message will restart any currently running scripts for that message.
+When **off**, sending the same broadcast message again will not restart an already running script. Instead, the existing instance continues running.
 
 By default, script restarting is **enabled (on)**.
 
