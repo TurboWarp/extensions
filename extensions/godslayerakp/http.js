@@ -98,6 +98,7 @@
       let name = names[index];
       name = name.replaceAll(/(?<!\\)&dot/g, ".");
       if (isUnsafePathSegment(name)) return null;
+      names[index] = name;
     }
     return names;
   };
