@@ -1488,11 +1488,11 @@
     }
 
     commentString(args) {
-      return args.INPUT;
+      return args.INPUTB;
     }
 
     commentBool(args) {
-      return args.INPUT || false;
+      return args.INPUTB || false;
     }
   }
   Scratch.extensions.register(new LMSUtils());

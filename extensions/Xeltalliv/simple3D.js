@@ -2251,10 +2251,6 @@ void main() {
           type: ArgumentType.STRING,
           menu: "lists",
         },
-        Z: {
-          type: ArgumentType.STRING,
-          menu: "lists",
-        },
       },
       def: function ({ NAME, X, Y }, { target }) {
         const mesh = meshes.get(Cast.toString(NAME));
@@ -4082,10 +4078,6 @@ void main() {
       blockType: BlockType.COMMAND,
       text: "measure text [TEXT] font [FONT]",
       arguments: {
-        PROP: {
-          type: ArgumentType.STRING,
-          defaultValue: "up",
-        },
         TEXT: {
           type: ArgumentType.STRING,
           defaultValue: "Hello World!",
@@ -4095,8 +4087,7 @@ void main() {
           defaultValue: "italic bold 32px sans-serif",
         },
       },
-      def: function ({ PROP, TEXT, FONT }) {
-        PROP = Cast.toString(PROP);
+      def: function ({ TEXT, FONT }) {
         TEXT = Cast.toString(TEXT);
         FONT = Cast.toString(FONT);
         const canv = document.createElement("canvas");
@@ -5099,7 +5090,7 @@ void main() {
           menu: "canvasSizeProperty",
         },
       },
-      def: function ({ SIZE, WIDTH, HEIGHT }) {
+      def: function ({ SIZE }) {
         if (SIZE === "size") {
           canvasNativeSize = null;
           renderer._allSkins[skinId].updateNativeSize();
