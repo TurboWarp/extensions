@@ -590,7 +590,7 @@
     }
 
     broadcastReturn(args, util) {
-      return this.broadcastReturnData({ ...args, DATA: "" }, util) || "";
+      return this.broadcastReturnData({ ...args, DATA: "" }, util) ?? "";
     }
 
     broadcastReturnData(args, util) {
@@ -605,7 +605,9 @@
           util
         );
 
-        if (util.stackFrame.startedThreads.length === 0) return "[]";
+        if (util.stackFrame.startedThreads.length === 0) {
+          return multiResponseMsgs.has(name) ? "[]" : "";
+        }
         util.yield();
       }
 
@@ -624,7 +626,7 @@
       util.stackFrame.initialized = false;
       return multiResponseMsgs.has(name)
         ? JSON.stringify(util.stackFrame.responses)
-        : util.stackFrame.responses[0];
+        : util.stackFrame.responses[0] ?? "";
     }
 
     respondData(args, util) {
