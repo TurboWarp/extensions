@@ -1299,7 +1299,7 @@
       if (!this.zip) return;
       this.zips[this.zip].comment = Scratch.Cast.toString(COMMENT);
     }
-    getComment({ COMMENT }) {
+    getComment() {
       if (!this.zip) return "";
       return this.zips[this.zip].comment || "";
     }
