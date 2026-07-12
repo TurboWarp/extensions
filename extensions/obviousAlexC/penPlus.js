@@ -4723,7 +4723,7 @@
 
           const texture = renderer._allSkins[costume.skinId].getTexture();
 
-          if (texture !== text) return costume.name;
+          if (texture === text) return costume.name;
         }
       }
       return foundValue;
