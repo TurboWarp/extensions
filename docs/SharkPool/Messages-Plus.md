@@ -118,12 +118,9 @@ The value inputted is returned by the broadcast reporter blocks. If multiple res
 <is (message1 v) received?::#FFBF00>
 ```
 
-Returns `true` **once** when the specified broadcast is received.
+Returns `true` **once** when the specified message was broadcast. Each copy of this block returns `true` once when the broadcast happens, then false until it is broadcast again.
 
-This block returns `true` only at the moment the broadcast is received and handled by a **`when I receive`** or **`when any broadcast is received`** script.
-After that instant, it returns `false` again until the next matching broadcast.
-
-A broadcast can only be detected if there is an active receiving script handling it.
+Each copy of this block tracks its has-received status separately. One script checking for the message will not prevent another script or block from additionally detecting it.
 
 ```scratch
 <is (message1 v) waiting?::#FFBF00>
