@@ -203,8 +203,8 @@
     sync({ STR, STR2 }) {
       str = encodeURIComponent(STR);
       str2 = encodeURIComponent(STR2);
-      if (rxFSsy.indexOf(str) + 1 == 0) {
-        rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = str2;
+      if (rxFSsy.indexOf(str) + 1 != 0) {
+        rxFSsy[rxFSsy.indexOf(str)] = str2;
       }
     }
 
@@ -243,7 +243,7 @@
       Search = "";
       str = encodeURIComponent(STR);
       for (var i in rxFSsy) {
-        if (!(rxFSsy[i].indexOf(str) == undefined)) {
+        if (rxFSsy[i].indexOf(str) != -1) {
           Search = [Search, ',"', rxFSsy[i], '"'].join("");
         }
       }
