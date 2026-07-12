@@ -488,6 +488,7 @@
           {
             opcode: "startsWith",
             blockType: Scratch.BlockType.BOOLEAN,
+            hideFromPalette: true,
             text: Scratch.translate("does [a] begin with a text?"),
             arguments: {
               a: {
@@ -993,6 +994,7 @@
       return replaceText(args.text, args.o, args.n);
     }
     startsWith(args) {
+      // Legacy unused block - we don't know what the intention was so we just hide this one now
       if (typeof args.a === "string" && args.a.startsWith(args.a)) {
         return true;
       } else {
