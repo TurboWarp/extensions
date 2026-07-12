@@ -85,10 +85,6 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "1",
               },
-              C: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "100",
-              },
             },
           },
           "---",
