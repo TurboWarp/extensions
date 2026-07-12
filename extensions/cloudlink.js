@@ -688,6 +688,7 @@
                   break;
                 }
               }
+              if (index === -1) break;
               clVars.ulist.splice(index, 1);
               clVars.recentlyLeftUser = packet.val;
               Scratch.vm.runtime.startHats("cloudlink_whenuserdisconnects");
