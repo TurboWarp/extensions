@@ -1214,7 +1214,7 @@
           case "modification date":
             return obj.date.toLocaleString(navigator.language);
           case "long modification date":
-            return new Date().toLocaleString(navigator.language, {
+            return obj.date.toLocaleString(navigator.language, {
               dateStyle: "full",
               timeStyle: "medium",
             });
