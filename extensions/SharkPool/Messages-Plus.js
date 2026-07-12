@@ -19,7 +19,6 @@
   const kMessageName = Symbol("kMessageName"); // May be defined on a Thread as a string
   const kReceivedData = Symbol("kReceivedData"); // May be defined on a Thread as any Scratch-compatible value
   const kResponseData = Symbol("kResponseData"); // May be defined on a Thread as any Scratch-compatible value
-  const kReceiveCache = Symbol("kReceiveCache"); // May be defined on a Thread as a Set
 
   // TODO: _all_ is not actually a reserved value
   const ALL = "_all_",
@@ -33,6 +32,7 @@
   const noRestartMsgs = new Set();
   const overlappedMsgs = new Set();
   const multiResponseMsgs = new Set();
+  const receivedMsgs = new Map();
 
   const ogStartHats = runtime.startHats;
   runtime.startHats = function (opcode, fields, target) {
@@ -54,11 +54,16 @@
         }
       );
 
-      const receiverCache = new Set(); // <is () received?> block IDs get stored in this alias to avoid hogging resources.
       const name = fields.BROADCAST_OPTION;
       for (const thread of threads) {
-        thread[kReceiveCache] = receiverCache;
         thread[kMessageName] = name;
+      }
+
+      // <is () received?> blocks get stored in this temporary cache.
+      if (threads.length > 0) {
+        receivedMsgs.set(name, []);
+      } else {
+        receivedMsgs.delete(name);
       }
     }
 
@@ -79,6 +84,9 @@
     return ogRestartThread.call(this, thread);
   };
 
+  runtime.on("PROJECT_STOP_ALL", () => receivedMsgs.clear());
+  runtime.on("PROJECT_START", () => receivedMsgs.clear());
+  
   const menuIconURI =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2My42OCIgaGVpZ2h0PSI2My42OCIgdmlld0JveD0iMCAwIDYzLjY4IDYzLjY4Ij48cGF0aCBkPSJNMiAzMS44NEMyIDE1LjM2IDE1LjM2IDIgMzEuODQgMnMyOS44NCAxMy4zNiAyOS44NCAyOS44NC0xMy4zNiAyOS44NC0yOS44NCAyOS44NFMyIDQ4LjMyIDIgMzEuODR6IiBmaWxsPSIjZmZiZjAwIiBzdHJva2U9IiNjOTAiIHN0cm9rZS13aWR0aD0iNCIvPjxwYXRoIGQ9Ik0xMC44MTIgMzAuNDY1Yy0uMTg1LTkuMDg3IDUuMDMzLTExLjk5NyA4Ljk2NC0xMS45OTcgNC43ODMgMCAxNS4zNy0uMjc2IDIzLjUyMiAwIDMuOTguMTM1IDkuNzYyIDMuMTUzIDkuNTcgMTEuOTk3LS4xODEgOC4zNy02LjY0IDEwLjkxOC05LjYzOCAxMC45MThIMzAuNzYyYy0xLjM3IDAtNS4yMDMgNy4yMjYtMTEuNDU4IDcuMDEtNC40MzYtLjE1MyAyLjUyMi03LjAxLjc0MS03LjAxLTUuMjc5IDAtOS4xMDUtNC41OTQtOS4yMzMtMTAuOTE4IiBmaWxsPSIjZmZmIi8+PHBhdGggZD0iTTM4LjYyNSA0NC44MjR2LTMuMTc2aC0zLjE3NmMtMS41MyAwLTIuNzctMS4xMzQtMi43Ny0yLjUzNHMxLjI0LTIuNTM0IDIuNzctMi41MzRoMy4xNzZ2LTMuMTc2YzAtMS41MyAxLjEzNC0yLjc3IDIuNTM0LTIuNzdzMi41MzMgMS4yNCAyLjUzMyAyLjc3djMuMTc2aDMuMTc2YzEuNTMgMCAyLjc3MSAxLjEzNSAyLjc3MSAyLjUzNCAwIDEuNC0xLjI0IDIuNTM0LTIuNzcgMi41MzRoLTMuMTc3djMuMTc2YzAgMS41My0xLjEzNCAyLjc3LTIuNTMzIDIuNzdzLTIuNTM0LTEuMjQtMi41MzQtMi43N3oiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmYmYwMCIgc3Ryb2tlLXdpZHRoPSI2Ii8+PHBhdGggZD0iTTM4LjYyNSA0NC44MjR2LTMuMTc2aC0zLjE3NmMtMS41MyAwLTIuNzctMS4xMzQtMi43Ny0yLjUzNHMxLjI0LTIuNTM0IDIuNzctMi41MzRoMy4xNzZ2LTMuMTc2YzAtMS41MyAxLjEzNC0yLjc3IDIuNTM0LTIuNzdzMi41MzMgMS4yNCAyLjUzMyAyLjc3djMuMTc2aDMuMTc2YzEuNTMgMCAyLjc3MSAxLjEzNSAyLjc3MSAyLjUzNCAwIDEuNC0xLjI0IDIuNTM0LTIuNzcgMi41MzRoLTMuMTc3djMuMTc2YzAgMS41My0xLjEzNCAyLjc3LTIuNTMzIDIuNzdzLTIuNTM0LTEuMjQtMi41MzQtMi43NyIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==";
 
@@ -642,23 +650,23 @@
 
     isReceived(args, util) {
       const blockID = this._thisBlockID(util);
+      const cacheID = util.target.id + blockID;
       const broadcastName = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
-      let received = false;
-      for (const thread of runtime.threads) {
-        if (
-          thread[kMessageName] === broadcastName &&
-          !thread[kReceiveCache].has(blockID)
-        ) {
-          received = true;
-          thread[kReceiveCache].add(blockID);
+
+      const receiveCache = receivedMsgs.get(broadcastName);
+      if (receiveCache !== undefined) {
+        if (!receiveCache.includes(cacheID)) {
+          receiveCache.push(cacheID);
+          return true;
         }
       }
 
-      return received;
+      return false;
     }
 
     isWaiting(args) {
       const broadcastName = Cast.toString(args.BROADCAST_OPTION).toUpperCase();
+
       let waiting = false;
       for (const thread of runtime.threads) {
         if (thread[kMessageName] === broadcastName) {
