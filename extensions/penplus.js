@@ -1977,8 +1977,9 @@ Other various small fixes
 
   function getspritecostume(util, c) {
     let target = util.target;
-    let dataURI = target.sprite.costumes[c - 1].asset.encodeDataURI();
-    return dataURI;
+    const costume = target.sprite.costumes[c - 1];
+    const base64 = vm.getExportedCostumeBase64(costume);
+    return `data:${costume.asset.assetType.contentType};base64,${base64}`;
   }
 
   async function coolcash(uri, clamp) {
