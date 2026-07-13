@@ -18,8 +18,18 @@
     objectCache = {};
   }, 100); // clear the cache every 0.1 second
   function parse(string) {
+    if (!objectCache[string]) {
+      objectCache[string] = JSON.parse(string);
+    }
+    return objectCache[string];
+  }
+  function parseRemoveCache(string) {
+    let parsed;
     if (objectCache[string]) {
-      objectCache[string] = JSON.parse(string)
+      parsed = objectCache[string];
+      delete objectCache[string];
+    } else {
+      parsed = JSON.parse(string);
     }
     return objectCache[string];
   }
@@ -677,7 +687,7 @@
         return false;
       } else {
         try {
-          parse(json);
+          (json);
           return true;
         } catch {
           return false;
@@ -696,7 +706,7 @@
         return json;
       } else {
         try {
-          return parse(json) ?? "";
+          return (json) ?? "";
         } catch {
           return json;
         }
@@ -826,7 +836,7 @@
 
     json_set({ item, value, json }) {
       try {
-        json = parse(json);
+        json = parseRemoveCache(json);
         value = this.json_valid_return(value);
         value = this._fixInvalidJSONValues(value);
         json = {
@@ -841,7 +851,7 @@
 
     json_delete({ item, json }) {
       try {
-        json = { ...parse(json) };
+        json = parseRemoveCache(json);
         delete json[item];
         return stringify(json);
       } catch {
@@ -912,7 +922,7 @@
 
     json_array_push({ item, json }) {
       try {
-        json = parse(json);
+        json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
         return stringify(json.concat(item));
       } catch {
@@ -922,7 +932,7 @@
 
     json_array_insert({ item, pos, json }) {
       try {
-        json = parse(json);
+        json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
         json = json.toSpliced(pos - 1, 0, item);
         return stringify(json);
@@ -933,7 +943,7 @@
 
     json_array_set({ item, pos, json }) {
       try {
-        json = parse(json);
+        json = parseRemoveCache(json);
         json = json.toSpliced(
           pos - 1,
           1,
@@ -947,7 +957,7 @@
 
     json_array_delete({ item, json }) {
       try {
-        json = parse(json);
+        json = parseRemoveCache(json);
         json = json.toSpliced(item - 1, 1);
         return stringify(json);
       } catch {
@@ -957,7 +967,7 @@
 
     json_array_remove_all({ item, json }) {
       try {
-        json = parse(json);
+        json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
         return stringify(json.filter((v) => v !== item));
       } catch {
@@ -995,7 +1005,7 @@
 
     json_array_join({ json, d }) {
       try {
-        return parse(json).join(d);
+        return parseRemoveCache(json).join(d);
       } catch {
         return "";
       }
@@ -1019,7 +1029,7 @@
 
     json_array_setlen({ json, len }) {
       try {
-        json = [...parse(json)];
+        json = [...parseRemoveCache(json)];
         json.length = len;
         return stringify(json);
       } catch {
@@ -1060,7 +1070,7 @@
     json_array_sort(args) {
       let list;
       try {
-        list = parse(args.list);
+        list = parseRemoveCache(args.list);
       } catch {
         return "";
       }
