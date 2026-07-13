@@ -194,7 +194,7 @@
               id: "lmsAssets.getSpriteValueTarget",
               default: "sprite [TARGET] [EXPORT]",
               description:
-                "Reporter block that exports a specific sprite as a data URI or gets its name",
+                "Reports information about a sprite. [TARGET] is a menu of sprite names. [EXPORT] is a menu with the options 'name' and 'dataURI'.",
             }),
             arguments: {
               TARGET: {
