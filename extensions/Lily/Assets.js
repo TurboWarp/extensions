@@ -188,9 +188,32 @@
           },
           {
             disableMonitor: true,
+            opcode: "getSpriteValue2",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "lmsAssets.getSpriteValueTarget",
+              default: "sprite [TARGET] [EXPORT]",
+              description:
+                "Reports information about a sprite. [TARGET] is a menu of sprite names. [EXPORT] is a menu with the options 'name' and 'dataURI'.",
+            }),
+            arguments: {
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "targets",
+              },
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "sprite",
+              },
+            },
+          },
+          {
+            // Legacy block
+            disableMonitor: true,
             opcode: "getSpriteValue",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("sprite [EXPORT]"),
+            hideFromPalette: true,
             arguments: {
               EXPORT: {
                 type: Scratch.ArgumentType.STRING,
@@ -585,14 +608,17 @@
       return util.target.sprite.name ?? "";
     }
 
-    getSpriteValue(args, util) {
+    getSpriteValue2(args, util) {
+      const target = this._getTargetFromMenu(args.TARGET, util);
+      if (!target || target.isStage) return "";
+
       const option = Cast.toString(args.EXPORT);
       if (option === "name") {
-        return util.target.sprite.name ?? "";
+        return target.sprite.name ?? "";
       } else if (option === "dataURI") {
         try {
           return new Promise((resolve) => {
-            Scratch.vm.exportSprite(util.target.id).then((blob) => {
+            Scratch.vm.exportSprite(target.id).then((blob) => {
               const fr = new FileReader();
               fr.onload = () => resolve(fr.result);
               fr.onabort = () => {
@@ -606,6 +632,11 @@
           return "";
         }
       }
+    }
+
+    getSpriteValue(args, util) {
+      args.TARGET = "_myself_";
+      return this.getSpriteValue2(args, util);
     }
 
     reorderCostume(args, util) {
