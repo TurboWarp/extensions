@@ -3,7 +3,7 @@
 # If multiple rules match, only the last one applies. File names are case sensitive.
 
 # Fallback for everything not mentioned
-* @turbowarp/admins
+* @GarboMuffin
 
 # Allow extension reviewers to approve these changes without additional codeowner
 /extensions
