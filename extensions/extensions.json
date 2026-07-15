@@ -10,6 +10,7 @@
   "pointerlock",
   "cursor",
   "runtime-options",
+  "Lily/Interpolation",
   "fetch",
   "text",
   "local-storage",
