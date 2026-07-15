@@ -39,8 +39,8 @@
     if (isNaN(n1) || isNaN(n2)) {
       // At least one argument can't be converted to a number.
       // Scratch compares strings as case insensitive, but it shouldn't be here
-      const s1 = String(v1);
-      const s2 = String(v2);
+      const s1 = cast.toString(v1);
+      const s2 = cast.toString(v2);
       if (s1 < s2) {
         return -1;
       } else if (s1 > s2) {
