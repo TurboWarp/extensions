@@ -43,7 +43,10 @@
           const [integerPart, fractionalPart = ""] = mantissa.split(".");
           if (exponent >= fractionalPart.length) {
             // Pad with trailing zeros
-            xWithoutDecimal = integerPart + fractionalPart + "0".repeat(exponent - fractionalPart.length);
+            xWithoutDecimal =
+              integerPart +
+              fractionalPart +
+              "0".repeat(exponent - fractionalPart.length);
           } else {
             // Shift decimal point right
             xWithoutDecimal = integerPart + fractionalPart.slice(0, exponent);
@@ -427,7 +430,7 @@
     }
     mod({ a, b }) {
       if (Number(b) == 0) return "NaN";
-      
+
       const modulo = bi(b);
       if (modulo === 0n) return "NaN";
       return (bi(a) % modulo).toString();

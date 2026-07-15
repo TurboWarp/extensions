@@ -1283,7 +1283,8 @@
       if (args.STRING === "") return "";
       if (args.DROPDOWN === "base64") return btoa(Cast.toString(args.STRING));
       if (args.DROPDOWN === "binary") {
-        return Cast.toString(args.STRING).split("")
+        return Cast.toString(args.STRING)
+          .split("")
           .map(function (char) {
             return char.charCodeAt(0).toString(2);
           })
@@ -1314,7 +1315,10 @@
     }
 
     rootBlock(args) {
-      return Math.pow(Cast.toNumber(args.INPUTB), 1 / Cast.toNumber(args.INPUTA));
+      return Math.pow(
+        Cast.toNumber(args.INPUTB),
+        1 / Cast.toNumber(args.INPUTA)
+      );
     }
 
     normaliseValue(args) {

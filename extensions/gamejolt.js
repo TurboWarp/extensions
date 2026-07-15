@@ -2623,17 +2623,20 @@
     }
     trophyFetchAll({ trophyFetchGroup }) {
       return new Promise((resolve) =>
-        GameJolt.TrophyFetch(Scratch.Cast.toNumber(trophyFetchGroup), (pResponse) => {
-          if (pResponse.success != trueStr) {
-            [err.trophies, err.last] = [pResponse.message, pResponse.message];
-            data.trophies = undefined;
+        GameJolt.TrophyFetch(
+          Scratch.Cast.toNumber(trophyFetchGroup),
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              [err.trophies, err.last] = [pResponse.message, pResponse.message];
+              data.trophies = undefined;
+              resolve();
+              return;
+            }
+            data.trophies = pResponse.trophies;
+            err.trophies = undefined;
             resolve();
-            return;
           }
-          data.trophies = pResponse.trophies;
-          err.trophies = undefined;
-          resolve();
-        })
+        )
       );
     }
     trophyFetchId({ ID }) {
