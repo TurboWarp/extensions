@@ -267,7 +267,7 @@
     checkProfanity({ TEXT, REPLACEMENT }) {
       // Use a function as the second argument so that replacing with "$&" does not allow
       // bypass.
-      return String(TEXT).replace(regex, () => REPLACEMENT);
+      return Scratch.Cast.toString(TEXT).replace(regex, () => REPLACEMENT);
     }
   }
 

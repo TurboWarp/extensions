@@ -634,7 +634,7 @@
       if (!Number.isFinite(position)) {
         return "";
       }
-      let t = String(wordbank);
+      let t = Scratch.Cast.toString(wordbank);
       let a = t.length;
       let string = "";
       for (let i = 0; i < position; i++) {
