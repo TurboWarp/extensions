@@ -156,9 +156,20 @@
       let dict = null;
       try {
         dict = JSON.parse(OBJ);
+        if (dict === null || typeof dict !== "object") {
+          dict = { error: "data must be an object or array" };
+        }
       } catch (e) {
         dict = { error: Cast.toString(e) };
       }
+
+      // add the length value if this is an array
+      if (Array.isArray(dict)) {
+         const entries = Object.entries(dict);
+         entries.push(["length", dict.length]);
+         dict = Object.fromEntries(entries);
+      }
+
       dictionaries.set(DICT, new Map(Object.entries(dict)));
     }
 
