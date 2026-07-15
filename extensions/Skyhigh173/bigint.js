@@ -17,6 +17,8 @@
       return x;
     }
     if (typeof x === "string") {
+      x = x.toLowerCase();
+
       // Try to parse things like '8n'
       if (x.charAt(x.length - 1) === "n") {
         try {
@@ -25,13 +27,32 @@
           // ignore
         }
       }
+
       // Must remove decimal using string operations. Math.trunc will convert to float
       // which ruins the point of using bigints.
       const decimalIndex = x.indexOf(".");
-      const withoutDecimal =
+      let xWithoutDecimal =
         decimalIndex === -1 ? x : x.substring(0, decimalIndex);
+
+      if (xWithoutDecimal.includes("e")) {
+        // read scientific notation
+        const [mantissa, exponentStr] = xWithoutDecimal.split("e");
+        const exponent = parseInt(exponentStr, 10);
+
+        if (!isNaN(exponent) && exponent >= 0) {
+          const [integerPart, fractionalPart = ""] = mantissa.split(".");
+          if (exponent >= fractionalPart.length) {
+            // Pad with trailing zeros
+            xWithoutDecimal = integerPart + fractionalPart + "0".repeat(exponent - fractionalPart.length);
+          } else {
+            // Shift decimal point right
+            xWithoutDecimal = integerPart + fractionalPart.slice(0, exponent);
+          }
+        }
+      }
+
       try {
-        return BigInt(withoutDecimal);
+        return BigInt(xWithoutDecimal);
       } catch (e) {
         return 0n;
       }
@@ -406,7 +427,10 @@
     }
     mod({ a, b }) {
       if (Number(b) == 0) return "NaN";
-      return (bi(a) % bi(b)).toString();
+      
+      const modulo = bi(b);
+      if (modulo === 0n) return "NaN";
+      return (bi(a) % modulo).toString();
     }
 
     and({ a, b }) {
