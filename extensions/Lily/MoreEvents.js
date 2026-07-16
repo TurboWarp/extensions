@@ -567,7 +567,7 @@
         Math.round(Scratch.Cast.toNumber(args.DURATION)),
         0
       );
-      return Scratch.Cast.toBoolean(runTimer % duration === 0);
+      return !!(runTimer % duration === 0);
     }
 
     whenKeyAction(args, util) {
