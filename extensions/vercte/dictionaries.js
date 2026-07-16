@@ -163,7 +163,10 @@
       }
 
       if (parsed === null || typeof parsed !== "object") {
-        dictionaries.set(DICT, new Map([["error", "data must be an object or array"]]));
+        dictionaries.set(
+          DICT,
+          new Map([["error", "data must be an object or array"]])
+        );
         return;
       }
 
