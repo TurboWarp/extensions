@@ -153,24 +153,27 @@
     }
 
     dict_parse({ OBJ, DICT }) {
-      let dict = null;
+      let parsed;
+
       try {
-        dict = JSON.parse(OBJ);
-        if (dict === null || typeof dict !== "object") {
-          dict = { error: "data must be an object or array" };
-        }
+        parsed = JSON.parse(OBJ);
       } catch (e) {
-        dict = { error: Cast.toString(e) };
+        dictionaries.set(DICT, new Map([["error", Cast.toString(e)]]));
+        return;
       }
 
-      // add the length value if this is an array
-      if (Array.isArray(dict)) {
-        const entries = Object.entries(dict);
-        entries.push(["length", dict.length]);
-        dict = Object.fromEntries(entries);
+      if (parsed === null || typeof parsed !== "object") {
+        dictionaries.set(DICT, new Map([["error", "data must be an object or array"]]));
+        return;
       }
 
-      dictionaries.set(DICT, new Map(Object.entries(dict)));
+      const dataMap = new Map(Object.entries(parsed));
+      if (Array.isArray(parsed)) {
+        // Add a length property if this is an array
+        dataMap.set("length", parsed.length);
+      }
+
+      dictionaries.set(DICT, dataMap);
     }
 
     dict_get({ KEY, DICT }) {
