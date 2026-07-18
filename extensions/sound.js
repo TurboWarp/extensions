@@ -8,7 +8,8 @@
 ((Scratch) => {
   "use strict";
 
-  const audioEngine = Scratch.vm.runtime.audioEngine;
+  const runtime = Scratch.vm.runtime;
+  const audioEngine = runtime.audioEngine;
 
   /**
    * This method assumes that the caller has already requested permission to fetch the URL.
@@ -80,6 +81,107 @@
     }
   };
 
+  // Unfortunately, we can't play all sounds with the audio engine.
+  // For these sounds, fall back to a primitive <audio>-based solution that will work for all
+  // sounds, even those without CORS.
+  class MediaPlayer {
+    constructor() {
+      /**
+       * @type {Array<{src: Audio, id: VM.Target.id}>}
+       */
+      this.mediaElements = [];
+
+      // Setup basic project control support
+      runtime.on("PROJECT_START", () => this._stopAll());
+      runtime.on("PROJECT_STOP_ALL", () => this._stopAll());
+
+      runtime.on("RUNTIME_PAUSED", () => {
+        this._forEveryMediaElement((audio) => audio.pause());
+      });
+      runtime.on("RUNTIME_UNPAUSED", () => {
+        this._forEveryMediaElement((audio) => {
+          if (audio.paused) {
+            audio.play().catch(() => {});
+          }
+        });
+      });
+
+      runtime.on("BEFORE_EXECUTE", () => {
+        // we cant bind this to the audioEngine gain node, so mimic
+        // applying the project volume.
+        const projectVolume = audioEngine.inputNode.gain.value;
+        this._forEveryMediaElement((audio, targetID) => {
+          this._updateVolume(audio, targetID, projectVolume);
+        });
+      })
+    }
+
+    _forEveryMediaElement(callback) {
+      for (let i = 0; i < this.mediaElements.length; i++) {
+        const mediaElement = this.mediaElements[i];
+        callback(mediaElement.src, mediaElement.id);
+      }
+    }
+
+    _stopAll() {
+      this._forEveryMediaElement((audio) => {
+        audio.pause();
+        audio.currentTime = 0;
+      });
+
+      // Manually clear media elements since we cant really force onended
+      this.mediaElements = []; 
+    }
+
+    _updateVolume(audio, targetID, projectVolume) {
+      // Make a minimal effort to simulate Scratch's sound effects.
+      // We can get pretty close for volumes <100%.
+      // playbackRate does not have enough range for simulating pitch.
+      // There is no way for us to pan left or right.
+      const target = runtime.getTargetById(targetID);
+      if (target) {
+        const targetVolume = target.volume / 100;
+        audio.volume = targetVolume * projectVolume;
+      }
+    }
+
+    /**
+     * This method assumes that the caller has already requested permission to fetch the URL.
+     * @param {string} url
+     * @param {VM.Target.id} targetID
+     * @returns {Promise<void>}
+     */
+    playNewSound(url, targetID) {
+      return new Promise((resolve, reject) => {
+        // Permission is checked in playSound()
+        // eslint-disable-next-line extension/check-can-fetch
+        const mediaElement = new Audio(url);
+        this.mediaElements.push({
+          src: mediaElement,
+          id: targetID,
+        });
+
+        const projectVolume = audioEngine.inputNode.gain.value;
+        this._updateVolume(mediaElement, targetID, projectVolume);
+
+        mediaElement.onended = () => {
+          const index = this.mediaElements.findIndex((m) => m.src === mediaElement);
+          if (index > -1) this.mediaElements.splice(index, 1);
+
+          resolve();
+        };
+        mediaElement
+          .play()
+          .then(() => {
+            // Wait for onended
+          })
+          .catch((err) => {
+            reject(err);
+          });
+        });
+    }
+  }
+
   /**
    * @param {string} url
    * @param {VM.Target} target
@@ -111,39 +213,7 @@
     return true;
   };
 
-  /**
-   * This method assumes that the caller has already requested permission to fetch the URL.
-   * @param {string} url
-   * @param {VM.Target} target
-   * @returns {Promise<void>}
-   */
-  const playWithAudioElement = (url, target) =>
-    new Promise((resolve, reject) => {
-      // Unfortunately, we can't play all sounds with the audio engine.
-      // For these sounds, fall back to a primitive <audio>-based solution that will work for all
-      // sounds, even those without CORS.
-      // Permission is checked in playSound()
-      // eslint-disable-next-line extension/check-can-fetch
-      const mediaElement = new Audio(url);
-
-      // Make a minimal effort to simulate Scratch's sound effects.
-      // We can get pretty close for volumes <100%.
-      // playbackRate does not have enough range for simulating pitch.
-      // There is no way for us to pan left or right.
-      mediaElement.volume = target.volume / 100;
-
-      mediaElement.onended = () => {
-        resolve();
-      };
-      mediaElement
-        .play()
-        .then(() => {
-          // Wait for onended
-        })
-        .catch((err) => {
-          reject(err);
-        });
-    });
+  const mediaPlayer = new MediaPlayer();
 
   /**
    * @param {string} url
@@ -158,7 +228,7 @@
 
       const success = await playWithAudioEngine(url, target);
       if (!success) {
-        return await playWithAudioElement(url, target);
+        return await mediaPlayer.playNewSound(url, target.id);
       }
     } catch (e) {
       console.warn(`All attempts to play ${url} failed`, e);
