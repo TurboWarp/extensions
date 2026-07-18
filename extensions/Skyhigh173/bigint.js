@@ -28,7 +28,7 @@
         }
       }
 
-      if (x.includes("e")) {
+      if (x.includes("e") && !x.includes("x")) {
         // read scientific notation
         const [mantissa, exponentStr] = x.split("e");
         const exponent = parseInt(exponentStr, 10);
