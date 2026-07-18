@@ -1544,7 +1544,7 @@
               fetchType: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "fetchTypes",
-                defaultValue: String(GameJolt.FETCH_USERNAME),
+                defaultValue: Scratch.Cast.toString(GameJolt.FETCH_USERNAME),
               },
             },
           },
@@ -1655,7 +1655,7 @@
               indexOrID: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "indexOrID",
-                defaultValue: String(GameJolt.FETCH_ALL),
+                defaultValue: Scratch.Cast.toString(GameJolt.FETCH_ALL),
               },
               value: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -2491,7 +2491,7 @@
       );
     }
     loginAutoBool() {
-      return Boolean(GameJolt.asQueryParam["gjapi_username"]);
+      return Scratch.Cast.toBoolean(GameJolt.asQueryParam["gjapi_username"]);
     }
     logout() {
       return new Promise((resolve) =>
@@ -2623,17 +2623,20 @@
     }
     trophyFetchAll({ trophyFetchGroup }) {
       return new Promise((resolve) =>
-        GameJolt.TrophyFetch(Number(trophyFetchGroup), (pResponse) => {
-          if (pResponse.success != trueStr) {
-            [err.trophies, err.last] = [pResponse.message, pResponse.message];
-            data.trophies = undefined;
+        GameJolt.TrophyFetch(
+          Scratch.Cast.toNumber(trophyFetchGroup),
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              [err.trophies, err.last] = [pResponse.message, pResponse.message];
+              data.trophies = undefined;
+              resolve();
+              return;
+            }
+            data.trophies = pResponse.trophies;
+            err.trophies = undefined;
             resolve();
-            return;
           }
-          data.trophies = pResponse.trophies;
-          err.trophies = undefined;
-          resolve();
-        })
+        )
       );
     }
     trophyFetchId({ ID }) {

@@ -878,7 +878,7 @@
 
     json_array_from({ json }) {
       try {
-        return JSON.stringify(Array.from(String(json)));
+        return JSON.stringify(Array.from(Scratch.Cast.toString(json)));
       } catch {
         return "";
       }
@@ -981,7 +981,7 @@
     }
 
     json_array_create({ text, d }) {
-      return JSON.stringify(String(text).split(d));
+      return JSON.stringify(Scratch.Cast.toString(text).split(d));
     }
 
     json_array_join({ json, d }) {

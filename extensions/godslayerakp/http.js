@@ -9,6 +9,11 @@
   if (!Scratch.extensions.unsandboxed)
     throw new Error("can not load out side unsandboxed mode");
 
+  const { Cast, vm } = Scratch;
+  const { runtime } = vm;
+
+  const extensionId = "gsaHTTPRequests";
+
   const setType = (value, type) => {
     switch (type) {
       case "string":
@@ -17,7 +22,7 @@
           case "boolean":
           case "number":
           case "function":
-            return String(value);
+            return Cast.toString(value);
           case "object":
             try {
               return JSON.stringify(value);
@@ -29,9 +34,9 @@
       case "number":
         switch (typeof value) {
           case "string":
-            return String(value);
+            return Cast.toString(value);
           case "boolean":
-            return Boolean(value);
+            return Cast.toBoolean(value);
           case "number":
             return value;
           case "function":
@@ -45,7 +50,7 @@
           case "boolean":
           case "function":
           case "number":
-            return Boolean(value);
+            return Cast.toBoolean(value);
           case "object":
             return false;
         }
@@ -73,9 +78,10 @@
   const parseType = (text) => {
     // this isnt text and we just pass it down as what ever it is
     if (typeof text !== "string") return text;
-    if (!isNaN(Number(text))) {
-      return Number(text);
-    } else {
+
+    const asNumber = Number(text); // loose cast to allow NaN and other values
+    if (!isNaN(asNumber)) return asNumber;
+    else {
       try {
         const parsed = JSON.parse(text);
         if (typeof parsed === "object") return parsed;
@@ -112,11 +118,6 @@
     object[path[path.length - 1]] = value;
   };
 
-  const { vm } = Scratch;
-  const { runtime } = vm;
-
-  const extensionId = "gsaHTTPRequests";
-
   // the funny class to make event blocks look better
   class Events {
     constructor() {
@@ -152,7 +153,7 @@
   const createBlockId = (block) => `${extensionId}_${block}`;
 
   /* ------- BLOCKS -------- */
-  const { BlockType, Cast, ArgumentType } = Scratch;
+  const { BlockType, ArgumentType } = Scratch;
 
   class WebRequests {
     static get defaultRequest() {
@@ -723,7 +724,7 @@
         const body = await this.response.blob.text();
         this.response.text = body;
       } catch (err) {
-        this.response.error = String(err);
+        this.response.error = Cast.toString(err);
         console.warn("request failed with error", err);
         this.request.fail = true;
         this.request.end = true;

@@ -951,7 +951,8 @@
           repeat_i_inc >= 0 ? repeat_i <= args.n : repeat_i >= args.n;
           repeat_i += repeat_i_inc
         ) {
-          repeat_j = String(repeat_j) + String(args.text);
+          repeat_j =
+            Scratch.Cast.toString(repeat_j) + Scratch.Cast.toString(args.text);
         }
         return repeat_j;
       }

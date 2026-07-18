@@ -50,6 +50,7 @@
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxNzYuMzk4NTQiIGhlaWdodD0iMTIyLjY3MDY5IiB2aWV3Qm94PSIwLDAsMTc2LjM5ODU0LDEyMi42NzA2OSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTE1MS44MDA3MywtMTE4LjY2NDY2KSI+PGcgZGF0YS1wYXBlci1kYXRhPSJ7JnF1b3Q7aXNQYWludGluZ0xheWVyJnF1b3Q7OnRydWV9IiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0iYnV0dCIgc3Ryb2tlLWxpbmVqb2luPSJtaXRlciIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtZGFzaGFycmF5PSIiIHN0cm9rZS1kYXNob2Zmc2V0PSIwIiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6IG5vcm1hbCI+PGc+PHBhdGggZD0iTTI4Ni4xMjAzNywxNTcuMTc3NTVjMjMuMjQwODYsMCA0Mi4wNzg5LDE4LjgzOTQ2IDQyLjA3ODksNDIuMDc4OWMwLDIzLjIzOTQ0IC0xOC44MzgwMyw0Mi4wNzg5IC00Mi4wNzg5LDQyLjA3ODloLTkyLjI0MDc0Yy0yMy4yNDA4NiwwIC00Mi4wNzg5LC0xOC44Mzk0NiAtNDIuMDc4OSwtNDIuMDc4OWMwLC0yMy4yMzk0NCAxOC44MzgwMywtNDIuMDc4OSA0Mi4wNzg5LC00Mi4wNzg5aDQuMTg4ODdjMS44MTE1MywtMjEuNTcwNTUgMTkuODkzNTcsLTM4LjUxMjg5IDQxLjkzMTUsLTM4LjUxMjg5YzIyLjAzNzkzLDAgNDAuMTE5OTcsMTYuOTQyMzQgNDEuOTMxNSwzOC41MTI4OXoiIGZpbGw9IiNmZmZmZmYiLz48cGF0aCBkPSJNMjg5LjA4NjU1LDIxNi45NjA3NHY5LjA0NjY3aC0yNi45MTY2M2gtOS4wNDY2N3YtOS4wNDY2N3YtNTQuNTAzMzloOS4wNDY2N3Y1NC41MDMzOXoiIGZpbGw9IiMwMGMyOGMiLz48cGF0aCBkPSJNMjIyLjQwOTI1LDIyNi4wMDc0MWMtOC4zNTMyLDAgLTE2LjM2NDMxLC0zLjMxODM0IC0yMi4yNzA5LC05LjIyNDkyYy01LjkwNjYxLC01LjkwNjU4IC05LjIyNDkxLC0xMy45MTc2OCAtOS4yMjQ5MSwtMjIuMjcwODljMCwtOC4zNTMyIDMuMzE4MjksLTE2LjM2NDMxIDkuMjI0OTEsLTIyLjI3MDljNS45MDY1OSwtNS45MDY2MSAxMy45MTc3LC05LjIyNDkxIDIyLjI3MDksLTkuMjI0OTFoMjEuMTA4OXY4LjkzNDk4aC0yMS4xMDg5djAuMTAyNTdjLTUuOTU2MjgsMCAtMTEuNjY4NjQsMi4zNjYxNiAtMTUuODgwMzcsNi41Nzc4OWMtNC4yMTE3Myw0LjIxMTczIC02LjU3Nzg5LDkuOTI0MDggLTYuNTc3ODksMTUuODgwMzdjMCw1Ljk1NjI4IDIuMzY2MTYsMTEuNjY4NjQgNi41Nzc4OSwxNS44ODAzN2M0LjIxMTczLDQuMjExNzMgOS45MjQwOCw2LjU3NzkzIDE1Ljg4MDM3LDYuNTc3OTN2MC4xMDI1M2gyMS4xMDg5djguOTM0OTh6IiBmaWxsPSIjMDBjMjhjIi8+PC9nPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjg4LjE5OTI2OTk5OTk5OTk4OjYxLjMzNTM0NDk5OTk5OTk5LS0+";
 
   // Declare VM
+  const Cast = Scratch.Cast;
   const vm = Scratch.vm;
   const runtime = vm.runtime;
 
@@ -257,10 +258,10 @@
       try {
         return JSON.stringify(data);
       } catch (SyntaxError) {
-        return String(data);
+        return Cast.toString(data);
       }
     } else {
-      return String(data);
+      return Cast.toString(data);
     }
   }
 
@@ -410,7 +411,7 @@
 
   // Compare the version string of the server to known compatible variants to configure clVars.linkState.identifiedProtocol.
   function setServerVersion(version) {
-    //console.log(`[CloudLink] Server version: ${String(version)}`);
+    //console.log(`[CloudLink] Server version: ${Cast.toString(version)}`);
     clVars.server_version = version;
 
     // Auto-detect versions
@@ -506,7 +507,7 @@
         break;
 
       case "gvar":
-        clVars.gvar.varStates[String(packet.name)] = {
+        clVars.gvar.varStates[Cast.toString(packet.name)] = {
           hasNew: true,
           varState: packet.val,
           eventHatTick: true,
@@ -516,7 +517,7 @@
         break;
 
       case "pvar":
-        clVars.pvar.varStates[String(packet.name)] = {
+        clVars.pvar.varStates[Cast.toString(packet.name)] = {
           hasNew: true,
           varState: packet.val,
           eventHatTick: true,
@@ -640,7 +641,7 @@
           clVars.linkState.identifiedProtocol == 1
         ) {
           // Split the username list string
-          clVars.ulist = String(packet.val).split(";");
+          clVars.ulist = Cast.toString(packet.val).split(";");
 
           // Get rid of blank entry at the end of the list
           clVars.ulist.pop();
@@ -724,15 +725,16 @@
 
     // Handle listeners
     if (Object.prototype.hasOwnProperty.call(packet, "listener")) {
-      if (clVars.listeners.current.includes(String(packet.listener))) {
+      const listener = Cast.toString(packet.listener);
+      if (clVars.listeners.current.includes(listener)) {
         // Remove the listener from the currently listening list
         clVars.listeners.current.splice(
-          clVars.listeners.current.indexOf(String(packet.listener)),
+          clVars.listeners.current.indexOf(listener),
           1
         );
 
         // Update listener states
-        clVars.listeners.varStates[String(packet.listener)] = {
+        clVars.listeners.varStates[listener] = {
           hasNew: true,
           varState: packet,
           eventHatTick: true,
@@ -1753,13 +1755,13 @@
       if (
         !Object.prototype.hasOwnProperty.call(
           clVars.listeners.varStates,
-          String(args.ID)
+          Cast.toString(args.ID)
         )
       ) {
         //console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
         return "";
       }
-      return clVars.listeners.varStates[String(args.ID)].varState;
+      return clVars.listeners.varStates[Cast.toString(args.ID)].varState;
     }
 
     getNextPacket(args) {
@@ -1913,24 +1915,24 @@
           if (
             !Object.prototype.hasOwnProperty.call(
               clVars.gvar.varStates,
-              String(args.VAR)
+              Cast.toString(args.VAR)
             )
           ) {
             //console.warn(`[CloudLink] Global variable ${args.VAR} does not exist!`);
             return "";
           }
-          return clVars.gvar.varStates[String(args.VAR)].varState;
+          return clVars.gvar.varStates[Cast.toString(args.VAR)].varState;
         case "Private variables":
           if (
             !Object.prototype.hasOwnProperty.call(
               clVars.pvar.varStates,
-              String(args.VAR)
+              Cast.toString(args.VAR)
             )
           ) {
             //console.warn(`[CloudLink] Private variable ${args.VAR} does not exist!`);
             return "";
           }
-          return clVars.pvar.varStates[String(args.VAR)].varState;
+          return clVars.pvar.varStates[Cast.toString(args.VAR)].varState;
         default:
           return "";
       }
@@ -2105,12 +2107,12 @@
           if (
             !Object.prototype.hasOwnProperty.call(
               clVars.gvar.varStates,
-              String(args.VAR)
+              Cast.toString(args.VAR)
             )
           )
             break;
-          if (clVars.gvar.varStates[String(args.VAR)].eventHatTick) {
-            clVars.gvar.varStates[String(args.VAR)].eventHatTick = false;
+          if (clVars.gvar.varStates[Cast.toString(args.VAR)].eventHatTick) {
+            clVars.gvar.varStates[Cast.toString(args.VAR)].eventHatTick = false;
             return true;
           }
 
@@ -2121,12 +2123,12 @@
           if (
             !Object.prototype.hasOwnProperty.call(
               clVars.pvar.varStates,
-              String(args.VAR)
+              Cast.toString(args.VAR)
             )
           )
             break;
-          if (clVars.pvar.varStates[String(args.VAR)].eventHatTick) {
-            clVars.pvar.varStates[String(args.VAR)].eventHatTick = false;
+          if (clVars.pvar.varStates[Cast.toString(args.VAR)].eventHatTick) {
+            clVars.pvar.varStates[Cast.toString(args.VAR)].eventHatTick = false;
             return true;
           }
 
@@ -2141,7 +2143,7 @@
       if (typeof args.toBeJSONified == "string") {
         try {
           JSON.parse(args.toBeJSONified);
-          return String(args.toBeJSONified);
+          return Cast.toString(args.toBeJSONified);
         } catch (err) {
           return "Not JSON!";
         }
@@ -2208,24 +2210,24 @@
           if (
             !Object.prototype.hasOwnProperty.call(
               clVars.gvar.varStates,
-              String(args.VAR)
+              Cast.toString(args.VAR)
             )
           ) {
             //console.warn(`[CloudLink] Global variable ${args.VAR} does not exist!`);
             return false;
           }
-          return clVars.gvar.varStates[String(args.VAR)].hasNew;
+          return clVars.gvar.varStates[Cast.toString(args.VAR)].hasNew;
         case "Private variables":
           if (
             !Object.prototype.hasOwnProperty.call(
               clVars.pvar.varStates,
-              String(args.VAR)
+              Cast.toString(args.VAR)
             )
           ) {
             //console.warn(`[CloudLink] Private variable ${args.VAR} does not exist!`);
             return false;
           }
-          return clVars.pvar.varStates[String(args.VAR)].hasNew;
+          return clVars.pvar.varStates[Cast.toString(args.VAR)].hasNew;
       }
     }
 
@@ -2235,13 +2237,13 @@
       if (
         !Object.prototype.hasOwnProperty.call(
           clVars.listeners.varStates,
-          String(args.ID)
+          Cast.toString(args.ID)
         )
       ) {
         //console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
         return false;
       }
-      return clVars.listeners.varStates[String(args.ID)].hasNew;
+      return clVars.listeners.varStates[Cast.toString(args.ID)].hasNew;
     }
 
     // Boolean - Returns true if a username/ID/UUID/object exists in the userlist.
@@ -2260,7 +2262,7 @@
           );
         } else {
           return clVars.ulist.some(
-            (o) => o.username === String(args.ID) || o.id == args.ID
+            (o) => o.username === Cast.toString(args.ID) || o.id == args.ID
           );
         }
       } else return false;
@@ -2295,19 +2297,19 @@
         return;
       }
       // This is the only server that's listed and works.
-      if (Scratch.Cast.toNumber(args.ID) >= 1) {
+      if (Cast.toNumber(args.ID) >= 1) {
         args.ID = 7;
       }
       if (
         !Object.prototype.hasOwnProperty.call(
           clVars.serverList,
-          String(args.ID)
+          Cast.toString(args.ID)
         )
       ) {
         //console.warn("[CloudLink] Not a valid server ID!");
         return;
       }
-      return newClient(clVars.serverList[String(args.ID)]["url"]);
+      return newClient(clVars.serverList[Cast.toString(args.ID)]["url"]);
     }
 
     // Command - Closes the connection.
@@ -2576,25 +2578,25 @@
           if (
             !Object.prototype.hasOwnProperty.call(
               clVars.gvar.varStates,
-              String(args.VAR)
+              Cast.toString(args.VAR)
             )
           ) {
             //console.warn(`[CloudLink] Global variable ${args.VAR} does not exist!`);
             return;
           }
-          clVars.gvar.varStates[String(args.VAR)].hasNew = false;
+          clVars.gvar.varStates[Cast.toString(args.VAR)].hasNew = false;
           break;
         case "Private variables":
           if (
             !Object.prototype.hasOwnProperty.call(
               clVars.pvar.varStates,
-              String(args.VAR)
+              Cast.toString(args.VAR)
             )
           ) {
             //console.warn(`[CloudLink] Private variable ${args.VAR} does not exist!`);
             return false;
           }
-          clVars.pvar.varStates[String(args.VAR)].hasNew = false;
+          clVars.pvar.varStates[Cast.toString(args.VAR)].hasNew = false;
       }
     }
 
@@ -2604,13 +2606,13 @@
       if (
         !Object.prototype.hasOwnProperty.call(
           clVars.listeners.varStates,
-          String(args.ID)
+          Cast.toString(args.ID)
         )
       ) {
         //console.warn(`[CloudLink] Listener ID ${args.ID} does not exist!`);
         return;
       }
-      clVars.listeners.varStates[String(args.ID)].hasNew = false;
+      clVars.listeners.varStates[Cast.toString(args.ID)].hasNew = false;
     }
 
     // Command - Clears all packet queues.
