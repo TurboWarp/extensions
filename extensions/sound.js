@@ -113,7 +113,7 @@
         this._forEveryMediaElement((audio, targetID) => {
           this._updateVolume(audio, targetID, projectVolume);
         });
-      })
+      });
     }
 
     _forEveryMediaElement(callback) {
@@ -130,7 +130,7 @@
       });
 
       // Manually clear media elements since we cant really force onended
-      this.mediaElements = []; 
+      this.mediaElements = [];
     }
 
     _updateVolume(audio, targetID, projectVolume) {
@@ -165,7 +165,9 @@
         this._updateVolume(mediaElement, targetID, projectVolume);
 
         mediaElement.onended = () => {
-          const index = this.mediaElements.findIndex((m) => m.src === mediaElement);
+          const index = this.mediaElements.findIndex(
+            (m) => m.src === mediaElement
+          );
           if (index > -1) this.mediaElements.splice(index, 1);
 
           resolve();
@@ -178,7 +180,7 @@
           .catch((err) => {
             reject(err);
           });
-        });
+      });
     }
   }
 
