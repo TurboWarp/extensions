@@ -36,7 +36,7 @@
           case "string":
           case "boolean":
           case "number":
-            return Number(value);
+            return Cast.toNumber(value);
           case "function":
           case "object":
             return NaN;
