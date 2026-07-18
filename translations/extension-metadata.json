@@ -1831,6 +1831,8 @@
         "SharkPool/Camera@name": "摄像机 V2",
         "SharkPool/Font-Manager@description": "添加、删除与管理字体。",
         "SharkPool/Font-Manager@name": "字体管理",
+        "SharkPool/Messages-Plus@description": "强大的新消息积木，兼容原版广播。",
+        "SharkPool/Messages-Plus@name": "消息 +",
         "SharkPool/Tune-Shark-V3@description": "一款先进的音频引擎，提供复杂的声音控制。",
         "Skyhigh173/bigint@description": "适用于无限大整数（不含小数）的数学模块。",
         "Skyhigh173/bigint@name": "大整数",
