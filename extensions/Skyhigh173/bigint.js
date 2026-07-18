@@ -28,31 +28,29 @@
         }
       }
 
-      // Must remove decimal using string operations. Math.trunc will convert to float
-      // which ruins the point of using bigints.
-      const decimalIndex = x.indexOf(".");
-      let xWithoutDecimal =
-        decimalIndex === -1 ? x : x.substring(0, decimalIndex);
-
-      if (xWithoutDecimal.includes("e")) {
+      if (x.includes("e")) {
         // read scientific notation
-        const [mantissa, exponentStr] = xWithoutDecimal.split("e");
+        const [mantissa, exponentStr] = x.split("e");
         const exponent = parseInt(exponentStr, 10);
 
         if (!isNaN(exponent) && exponent >= 0) {
           const [integerPart, fractionalPart = ""] = mantissa.split(".");
           if (exponent >= fractionalPart.length) {
             // Pad with trailing zeros
-            xWithoutDecimal =
+            x =
               integerPart +
               fractionalPart +
               "0".repeat(exponent - fractionalPart.length);
           } else {
             // Shift decimal point right
-            xWithoutDecimal = integerPart + fractionalPart.slice(0, exponent);
+            x = integerPart + fractionalPart.slice(0, exponent);
           }
         }
       }
+
+      // Must remove decimal using string operations. Math.trunc will convert to float
+      // which ruins the point of using bigints.
+      const xWithoutDecimal = x.replaceAll(".", "");
 
       try {
         return BigInt(xWithoutDecimal);
