@@ -51,9 +51,8 @@
       // Must remove decimal using string operations. Math.trunc will convert to float
       // which ruins the point of using bigints.
       const decimalIndex = x.indexOf(".");
-      const xWithoutDecimal = decimalIndex === -1
-        ? x
-        : x.substring(0, decimalIndex);
+      const xWithoutDecimal =
+        decimalIndex === -1 ? x : x.substring(0, decimalIndex);
 
       try {
         return BigInt(xWithoutDecimal);
