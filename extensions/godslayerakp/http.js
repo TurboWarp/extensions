@@ -79,7 +79,7 @@
     // this isnt text and we just pass it down as what ever it is
     if (typeof text !== "string") return text;
 
-    const asNumber = Cast.toNumber(text);
+    const asNumber = Number(text); // loose cast to allow NaN and other values
     if (!isNaN(asNumber)) return asNumber;
     else {
       try {
