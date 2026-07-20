@@ -70,63 +70,105 @@ If no video is displayed, this block will return an empty value.
 ## Video Playback
 
 ```scratch
-set skin of (myself v) to [my skin] :: #6b56ff
+start video [my video] at [0] seconds :: #557882
 ```
-Skins can be applied to a sprite with this block, so long as you loaded the skin beforehand. Skins can be applied to multiple sprites/clones.
 
-Using the "myself" option will apply the skin to the sprite the block is running in: if the block is running in a clone, it will apply the skin to the clone. **Do not confuse "myself" with the sprite's name.**
+Starts playing the specified video from the given time, in seconds.
 
-Skins will automatically be removed from every sprite when the project has stopped.
+If the video is already playing, playback restarts from the specified position.
 
 ---
 
 ```scratch
-restore skin of (myself v) :: #6b56ff
+start video [my video] at [0] seconds and wait until done:: #557882
 ```
-You can remove the skin of a sprite with the "restore skin" block. This will remove the skin from that specific sprite.
+
+Starts playing the specified video from the given time, in seconds, and waits until playback finishes.
+
+If the video is already playing, playback restarts from the specified position before waiting for it to finish.
 
 ---
 
 ```scratch
-restore targets with skin [my skin] :: #6b56ff
+([current time v] of video [my video] :: #557882)
 ```
-You can remove a skin from every sprite that has it applied with the "restore targets with skin" block. "Target" refers to "sprite" in this context.
 
-## Deleting Skins
+Reports the selected property of the specified video.
 
-Skins that have been loaded will still exist after the project has stopped. In order to truly delete a skin, you have 2 methods.
+**Available properties:**
+- current time -- Current playback position, in seconds
+- duration -- Total length of the video, in seconds
+- volume -- Current volume, from 0 to 100
+- width -- Native width, in pixels
+- height -- Native height, in pixels
+- playback rate -- Current playback speed (1 is normal speed)
 
 ---
 
 ```scratch
-delete skin [my skin] :: #6b56ff
+(screenshot of video [my video] at current time :: #557882)
 ```
-Delete a specified skin, and reset any sprite that had it applied.
+
+Reports a Data.URI containing an image of the video's current frame.
+
+The returned value can be used anywhere a URL/Data.URI image is accepted, such as the Skins extension.
 
 ---
 
 ```scratch
-delete all skins :: #6b56ff
+pause video [my video] :: #557882
 ```
-Delete every skin that has been loaded and reset all sprites that had any skin applied.
 
-## Other Blocks
-
-```scratch
-<skin [my skin] is loaded? :: #6b56ff>
-```
-Check whether a skin is actually loaded. This becomes true **after** the block has finished loading the skin.
+Pauses playback of the specified video.
 
 ---
 
 ```scratch
-((width v) of skin [my skin] :: #6b56ff)
+resume video [my video] :: #557882
 ```
-Get the width/height of a skin. The values are rounded.
+
+Resumes playback of the specified video. If the video is already playing, this block has no effect.
 
 ---
 
 ```scratch
-(current skin of (myself v) :: #6b56ff)
+set video [my video] to [loop v] :: #557882
 ```
-The name of the skin that is applied to the specified sprite.
+
+Toggles wether the specified video should loop or not.
+
+---
+
+```scratch
+<video [my video] is (playing v) ? :: #557882>
+```
+
+Reports the selected property of the specified video.
+
+**Available properties:**
+- playing -- True if the video is actively playing
+- paused -- True if the video is paused
+- looping -- True if the video will loop
+
+---
+
+```scratch
+set volume of video [my video] to [100] :: #557882
+```
+
+Sets the volume of the specified video.
+
+The volume value ranges from `0` (muted) to `100` (maximum volume).
+
+---
+
+```scratch
+set playback rate of video [my video] to [2] :: #557882
+```
+
+Changes the playback speed of the specified video.
+
+A value of `1` is the normal playback speed. Values above `1` make the video play faster, while values below `1` make it play slower.
+
+Values less than `0` will do nothing.
+
