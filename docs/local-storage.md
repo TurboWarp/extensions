@@ -44,6 +44,12 @@ Or delete everything stored in the namespace:
 delete storage :: #0FBD8C
 ```
 
+If you ever loose track of what variables you previously set in storage, you can use the below block. It will return an array of all variables (or 'keys') in storage.
+
+```scratch
+(all keys from storage :: #0FBD8C)
+```
+
 ## Performance
 
 The local storage extension is inevitably slower than regular variables.
