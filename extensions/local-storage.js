@@ -200,6 +200,12 @@
             },
           },
           {
+            opcode: "getAll",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("all keys from storage"),
+            disableMonitor: true,
+          },
+          {
             opcode: "removeAll",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete storage"),
@@ -256,6 +262,14 @@
       }
       delete namespaceValues[Scratch.Cast.toString(KEY)];
       saveToLocalStorage();
+    }
+
+    getAll() {
+      if (!validNamespace()) {
+        return "";
+      }
+
+      return JSON.stringify(Object.keys(namespaceValues)); 
     }
 
     removeAll() {
