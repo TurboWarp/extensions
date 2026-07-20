@@ -1,10 +1,16 @@
-const express = require("express");
-const Builder = require("./builder");
+import express from "express";
+import Builder from "./builder.js";
 
 let mostRecentBuild = null;
 const builder = new Builder("development");
-builder.startWatcher((newBuild) => {
+await builder.startWatcher(async (newBuild) => {
   mostRecentBuild = newBuild;
+
+  try {
+    await newBuild.checkForNewImports();
+  } catch (e) {
+    console.error("Error checking for new imports", e);
+  }
 });
 
 const app = express();
@@ -36,7 +42,11 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/*", (req, res, next) => {
+app.use("/", async (req, res, next) => {
+  if (req.method !== "GET") {
+    return next();
+  }
+
   if (!mostRecentBuild) {
     res.contentType("text/plain");
     res.status(500);
@@ -50,7 +60,7 @@ app.get("/*", (req, res, next) => {
   }
 
   res.contentType(fileInBuild.getType());
-  res.send(fileInBuild.read());
+  res.send(await fileInBuild.read());
 });
 
 app.use((req, res) => {
@@ -61,6 +71,6 @@ app.use((req, res) => {
 
 // The port the server runs on matters. The editor only treats port 8000 as unsandboxed.
 const PORT = 8000;
-app.listen(8000, () => {
+app.listen(PORT, () => {
   console.log(`Development server is ready on http://localhost:${PORT}/`);
 });

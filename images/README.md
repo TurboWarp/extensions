@@ -60,7 +60,8 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1586464191
 
 ## sound.svg
- - Created by [@softedco](https://scratch.mit.edu/users/softed/) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1369138404.
+ - Created by [@Scratch_Fakemon](https://scratch.mit.edu/users/Scratch_Fakemon) in https://github.com/TurboWarp/extensions/pull/2121
+ - Font is Lohit Devanagari.
 
 ## encoding.svg
  - Created by [@BlueDome77](https://github.com/BlueDome77) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1632625905
@@ -176,6 +177,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## obviousAlexC/SensingPlus.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
+ - Touching finger icon based on https://fonts.google.com/icons?selected=Material+Icons:touch_app:&icon.set=Material+Icons&icon.style=Filled under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 ## lab/text.svg
  - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
@@ -241,7 +243,7 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Created by [@Skyhigh173](https://github.com/Skyhigh173) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1751679667
 
 ## godslayerakp/http.svg
- - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636912111
+ - Created by [@wiktorlaskowski](https://github.com/wiktorlaskowski) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636912111
 
 ## Alestore/nfcwarp.svg
  - Created by [@HamsterCreativity](https://github.com/HamsterCreativity) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1636726352
@@ -310,13 +312,20 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Font is Deja Vu Sans.
 
 ## Clay/htmlEncode.svg
- - Created by [@ClaytonTDM](https://github.com/ClaytonTDM) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
+ - Created by [@clay-rip](https://github.com/clay-rip) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
 
 ## CST1229/images.svg
- - Created by [@mcnole25](https://github.com/mcnole25) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-2122654376
+ - Created by [@wiktorlaskowski](https://github.com/wiktorlaskowski) in https://github.com/TurboWarp/extensions/pull/2144
 
 ## shreder95ua/resolution.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
 
 ## CubesterYT/KeySimulation.svg
  - Created by [@SharkPool-SP](https://github.com/SharkPool-SP/)
+
+## DogeisCut/FormatNumbers.png
+ - Created by [@Dillon](https://github.com/DillonRGaming)
+
+## NishiOwO/dectalk.png
+ - Created by [@Dogo6647](https://github.com/Dogo6647)
+ - Used Arimo from Google Fonts.

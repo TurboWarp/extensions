@@ -477,7 +477,7 @@
       if (!list2) return;
       const currentVal = list1.value;
       for (let i = 0; i < args.NUM; i++) {
-        list1.value = list1.value.concat(currentVal);
+        list2.value = list2.value.concat(currentVal);
       }
     }
 

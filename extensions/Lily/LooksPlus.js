@@ -419,10 +419,13 @@
       if (!target) {
         return;
       }
+
       const drawableID = target.drawableID;
       const layerOrder = target.getLayerOrder();
-      const newLayer = args.LAYER - layerOrder;
-      renderer.setDrawableOrder(drawableID, newLayer, "sprite", true);
+      const newLayer = Scratch.Cast.toNumber(args.LAYER) - layerOrder;
+      if (!isNaN(newLayer) && Number.isFinite(newLayer)) {
+        renderer.setDrawableOrder(drawableID, newLayer, "sprite", true);
+      }
     }
 
     spriteLayerNumber(args, util) {

@@ -142,25 +142,26 @@ draw [my mesh] :: sensing
 Result should once again look the same.
 
 ### Primitive restart index
-"triangle strips" and "triangle fans" are no doubt efficient, but when using it you only get 1 long continious thing of triangles, meaning that to draw many "strips" or "fans" you will have to call "draw mesh" many times, cancelling the efficiency.
-However there is a solution for it. You can use "triangle strips" and "triangle fans" together with list of indices. If you specify index 0 or below, it will interrupt the previous chain of triangles and restart a new one.
+"triangle strips" and "triangle fans" are efficient, but when using it you only get 1 long continuous mesh of triangles, meaning that to draw many "strips" or "fans" you will have to call "draw mesh" many times, which makes it less efficient.
+
+The solution to this is to use "triangle strips" and "triangle fans" together with list of indices. If you specify index 0 or below, it will interrupt the previous chain of triangles and restart a new one.
 
 Same applies to "line strip" and "line loop".
 
 ## Setting up transformations <a name="transformations"></a>
-The typical sequence of simple transformation for 3D project goes like this:
-First you start off with having a 3D model in it's own coordinate system (model space), with all vertex positions stored relatively from it's origin. The first step would be to transform it to the world coordinate system. If the object has it's own rotation, rotate every vertex around it's origin (0,0,0) by correct amount of degrees. If it is scaled, scale them. Then once that is done, offset every vertex by object's world position. Now positions of all of the vertices are in the world coordinate system (world space).
+The typical sequence of simple transformation for a 3D project goes like this:
+You'd start off with having a 3D model in its own coordinate system (model space), with all vertex positions stored relative to its origin. The first step after this would be to transform it to the world coordinate system. If the object has its own rotation, rotate every vertex around its origin (0,0,0) by the correct amount of degrees. If it's scaled, scale them. Once that is done, offset every vertex by the object's world position. Now the positions of all of the vertices are in the world coordinate system (world space).
 
-The next step is to transfrorm them to the coordinate system relatively to the viewer, where viewer is at X:0, Y:0, Z:0 and is always facing negative Z. In 3D projects on normal scratch it is common for viewer to face positive Z, where the more Z something has, the further away it is in front of the viewer, but in case of this extension, it was designed like most software outside scratch - the **less** Z something has, the further it is in front of the viewer. To do this transformation, first subtract camera position from position of every vertex. That will place the camera in the origin of the world and make everything relatively to it, but rotation is still not taken into a count. To use it, rotate every point by negated/inverse camera rotation.
+The next step is to transfrorm them to the coordinate system relative to the viewer, where the viewer is at X:0, Y:0, Z:0 and is always facing negative Z. In 3D projects on normal ("vanilla") Scratch, it is common for the viewer to be facing positive Z, where the more Z something has, the further away it is in front of the viewer. In the case of this extension - as well as most software outside of Scratch - the **less** Z something has, the further it is in front of the viewer. To do this transformation, first subtract camera position from position of every vertex. That will place the camera in the origin of the world and position everything relatively to it, but rotation is still not taken into account. To use it, rotate every point by negated/inverse camera rotation.
 
-What you now have are 3D positions relatively to the camera. But your screen is 2D, so the last step is to do the projection. The general gist of it is that you divide all X and Y by Z, so that the further something is, the smaller it is and the closer it is to the center of the screen. And while doing that, clipping everything that goes offscreen or too close and behind you.
+What you now have are 3D positions relative to the camera. But your screen is 2D, so the last step is to do the projection. The general gist of it is that you divide all X and Y by Z, so that the further something is, the smaller it is and the closer it is to the center of the screen. And while doing that, clipping everything that goes offscreen or too close and behind you.
 
 But in reality it's somewhat more complicated.
 You first transform X, Y, Z into X, Y, Z and W of the clip space and then GPU automatically clips X, Y and Z to the rangle from -W to W, and then divides
 X, Y, Z by W, so X, Y, Z end up in range from -1 to 1. Where W is the actual depth, while Z is depth converted to the correct range to be used with the
 depth buffer (everything below -1 and above 1 gets clipped) (too far and too close).
 
-If that sounded complicated, do not worry, Simple3D extension mostly handles it for you.
+If this sounds complicated, don't worry, Simple3D extension mostly handles it for you.
 
 So let's recap:
 ```
@@ -179,8 +180,8 @@ divide X,Y,Z by depth W (done by GPU, cannot be controlled)
 draw to the screen at X,Y. Use Z for depth check.
 ```
 
-And now it's time to make some actual Simple3D scratch blocks code.
-In Simple3D those transformations are combined into 1 big transformation, and all the steps have to be specified in reverse.
+And now it's time to make some actual Simple3D code.
+In Simple3D, those transformations are combined into 1 big transformation, and all the steps have to be specified in reverse.
 ```scratch
 start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
@@ -193,7 +194,7 @@ scale X (objectSizeX) Y (objectSizeY) Z (objectSizeZ) :: sensing
 draw mesh [my mesh] :: sensing
 ```
 
-Doing all of those steps again for every mesh you want to draw is inefficient. This is where doing steps in reverse becomes helpful. Combined with wrapper block, which saves the transformation when entering it, and restores it when exiting it, it is possible to do this:
+Doing all of those steps again for every mesh you want to draw is inefficient. This is where doing steps in reverse becomes helpful. The wrapper block will save the transformation when entered, and will restore it when exited. Using this, it's possible to do the following:
 ```scratch
 start with perspective FOV (90) near (0.1) far (1000) :: sensing
 rotate around [X v] by ((0) - (camRotX)) degrees :: sensing
@@ -210,8 +211,8 @@ draw mesh [my mesh] :: sensing
 } :: sensing
 end
 ```
-This will work and it is efficient, however this extension also provides advanced features like fog, instancing, billboarding, which need to intervine in some of the intermediate steps.
-And when you create one large transformation by youself, it has no way of doing that. Which is why, currently the correct way to setup transformations is like this:
+This will work and it is efficient, however this extension also provides advanced features (such as fog, instancing, and billboarding) that will need to intervene in some of the intermediate steps.
+This means when you create one big transformation by yourself, it will have no way of doing that. This is why currently the correct way to setup transformations is like this:
 ```scratch
 configure [to projected from view space v] transformation :: sensing
 start with perspective FOV (90) near (0.1) far (1000) :: sensing
@@ -232,8 +233,8 @@ scale X (objectSizeX) Y (objectSizeY) Z (objectSizeZ) :: sensing
 draw mesh [my mesh] :: sensing
 end
 ```
-The extension allows you to split your large transformation into 3 separate transformations, which will be applied sequentially, allowing some of the features to do their thing inbetween.
-It also allows you to easily got between different coordinate systems using those blocks:
+The extension allows you to split your large transformation into 3 separate transformations, which will be applied sequentially, allowing some of the features to act inbetween.
+It also allows you to easily work between different coordinate systems using those blocks:
 ```scratch
 transform X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
 transform direction X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
@@ -258,12 +259,12 @@ When billboarding is enabled:
 5. transformed by instance transform
 6. transformed from world space to view space
 7. saved position is added to current position
-8. transformed from veiw space to clip space
+8. transformed from view space to clip space
 9. division of XYZ by W (performed automatically by the GPU)
 
 ### Vertex colors
 1. vertex color is read, white if not provided
-2. multipled by instance color
+2. multiplied by instance color
 
 ### Vertex UVs
 For each vertex, the UV texture coordinates at it are calculated as follows:
@@ -274,13 +275,13 @@ For each vertex, the UV texture coordinates at it are calculated as follows:
 
 ### Pixel Colors
 For each pixel, the final color calculation goes as follows:
-1. texture is read or white if texture is not provided
-2. multipled by interpolated vertex color RGBA
+1. texture is read, white if texture is not provided
+2. multiplied by interpolated vertex color RGBA
 3. alpha threshold check is performed
-4. make opaque is applied
-5. multipled by global color multipler
+4. "make opaque" is applied
+5. multiplied by global color multiplier
 6. added global color adder
-7. fog is aplied
+7. fog is applied
 
 
 ## Blocks <a name="blocks"></a>
@@ -309,12 +310,12 @@ Clear color is a global value.
 set depth test (closer v) write (on v) :: sensing
 ```
 Before new pixel is drawn, it's depth is compared to the pixel already drawn on that location.
-If it passes according to the check in the first argument of this block, it gets drawn. If it fails, the new pixel gets discarded, and whatever was there remains there.
+If it passes according to the check in the first argument of this block, it gets drawn. If it fails, the new pixel gets discarded, and whatever was there remains.
 The second argument controls when check passes whether only color should be updated or both color and depth value. Turning this off can be useful for drawing transparent things, which should react to already drawn opaque things, while not modifying depth to not interfer with each other.
 **Depth test and write are values that are saved separately for each render target.**
 Despite all 6 sides of the cube texture being different render targets, they still share those values.
 
-For stage, default values are "closer" and "on". **However, for textures used as render targets default values are "everything" and "off".** Memory for storing depth is not even allocated until depth write is set to "on".
+For stage, default values are "closer" and "on". **However, for textures used as render targets, default values are "everything" and "off".** Memory for storing depth is not even allocated until depth write is set to "on".
 
 
 ### Meshes <a name="blocks-meshes"></a>
@@ -327,9 +328,9 @@ Lists all the mesh names separated by commas. Mainly meant to be used manually f
 ```scratch
 create mesh [my mesh] :: sensing
 ```
-Creates an empty mesh with the specified name. If mesh with such name already exists, the old one gets fully deleted first.
+Creates an empty mesh with the specified name. If a mesh with such name already exists, it gets replaced.
 
-Also, whitespaces at both ends of the name, as well as any commas get removed from the mesh name. This is done for compatibility with "make mesh inhert" block.
+Whitespaces at both ends of the name and any commas are removed for compatibility with the “make mesh inherit” block.
 
 ---
 ```scratch
@@ -344,9 +345,9 @@ make mesh [my mesh 3] inherit from meshes [my mesh 1,my mesh 2] :: sensing
 Sets up the first mesh to inherit any lists or properties from multiple other meshes. 
 If multiple other meshes have the same property, the last one takes the priority.
 If any of the specified meshes to inherit form a cyclic dependancy, the entire operation fails.
-Names are provided in a comma separated list. Mesh names are trimmed from spaces on both ends. So `my mesh 1,my mesh 2`, `my mesh 1, my mesh 2`, and `    my mesh 1    ,   my mesh 2   ` will all behave the same.
+Names are provided in a comma-separated list. Mesh names are trimmed from spaces on both ends. So `my mesh 1,my mesh 2`, `my mesh 1, my mesh 2`, and `    my mesh 1    ,   my mesh 2   ` will all behave the same.
 
-This is the a key feature meant to avoid data duplication. When using it, nothing that could be expensive is duplicated.
+This is a key feature meant to avoid data duplication. When using it, nothing that could be expensive is duplicated.
 **Use this instead of uploading the same lists or textures into multiple different meshes.**
 You can even rapidly change what meshes are inherited while the project is running.
 
@@ -361,7 +362,7 @@ Used to obtain properties of a mesh.
 set [my mesh] vertex indices [list v] :: sensing
 ```
 An optional mesh list used to provide the order in which vertices are read and used to construct primitives.
-Starts from 1. Specifying value 0 or below can be used to break up "triangle strip", "traingle fan", "line strip" and "line loop" into multiple ones.
+Starts from 1. Specifying value 0 or below can be used to break up "triangle strip", "triangle fan", "line strip" and "line loop" into multiple ones.
 
 ---
 ```scratch
@@ -369,7 +370,7 @@ set [my mesh] positions XY [listX v] [listY v] :: sensing
 set [my mesh] positions XYZ [listX v] [listY v] [listZ v] :: sensing
 ```
 Used to upload vertex positions into the mesh.
-**The only mandatory list for mesh to become drawable.**
+**The only mandatory list for a mesh to become drawable.**
 
 ---
 ```scratch
@@ -385,18 +386,18 @@ set [my mesh] texture coordinates UV [listU v] [listV v] :: sensing
 set [my mesh] texture coordinates UVW [listU v] [listV v] [listW v] :: sensing
 ```
 Used to upload texture coordinates into the mesh.
-The 2 component one is used for 2D textures. Specifies 2D coordinates on a texture, which go from 0 to 1. But values outside of those bounds are also valid and useful.
-The 3 component one is used for cube textures (cubemaps). Specifies 3D direction from the center, which will be intersected with the cube around it.
-If texture coordinates are specified, but texture is not, the default texture is used.
+The block with 2 components is used for 2D textures. Specifies 2D coordinates on a texture, which go from 0 to 1. But values outside of those bounds are also valid and useful.
+The block with 3 components is used for cube textures (cubemaps). Specifies 3D direction from the center, which will be intersected with the cube around it.
+If texture coordinates are specified, but a texture is not, the default texture is used.
 
 ---
 ```scratch
 set [my mesh] texture () [clamp to edge v] [pixelated v] :: sensing
 set [my mesh] cube texture (X+ v) () [clamp to edge v] [pixelated v] :: sensing
 ```
-Used to upload texture into the mesh.
-Calling this block depending on the type of texture used either uploads texture instantly (e.g. empty or text) or schedules texture to be uploaded into the mesh some time in the future (e.g. load from url or from costume).
-**So if for example you upload texture from a costume and immediately try to draw this mesh once, you will not see it. It takes time to load!**
+Used to upload a texture into the mesh.
+Depending on the type of texture used, calling the block will either upload the texture instantly (e.g. empty or text) or schedules the texture to be uploaded into the mesh some time in the future (e.g. load from url or from costume).
+**So if for example you upload a texture from a costume and immediately try to draw this mesh once, you will not see it. It will take some time to load!**
 
 Use the block below to check if the texture has finished loading.
 ```scratch
@@ -536,7 +537,7 @@ This only affects vertex related data. It does not affect uploading texture pixe
 
 **This is one of 2 properties that is not inherited.** This is done for performance reasons and to reduce chances of misuse.
 
-Deafult for mesh is "rarely".
+Default for mesh is "rarely".
 
 ---
 ```scratch
@@ -549,9 +550,8 @@ Decodes a 3D model file and uploads it into a mesh. Block continues instantly, b
 > This block is designed as a more of a shortcut for quick testing, rather than the main way of loading 3D models. For anything more complex, make your own 3D model parser.
 
 File formats:
- - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) is a very common and well known 3D model file format. It supports UV texture coordinates, materials with colors and textures. However it does not have a standartized way to do vertex colors. This block implements a non-standart but widely supported way to represent vertex colors as 4th - 7th elements of `v`. The OBJ and MTL specification describes a lot of features, only some of which are currently (or even can be) supported by this importer. In particular, there is currently no way to import models which use multiple textures as this extensions only supports 1 texture per mesh. Normals and anything lighting related isn't and can't be supported. **In case both OBJ and MTL files need to be imported, combine them all into 1 list sequentially, first all of the MTL files and then the OBJ file.**
- - [off](https://en.wikipedia.org/wiki/OFF_(file_format)) is a not that well known, but very simple file format. Is is quite neat for the use in scratch in general, as it's simpler than OBJ and unlike it, natively supports both vertex and face colors. It does not support textures or texture coordinates. You can read more about it and find a lot of example models [here](http://web.archive.org/web/20230331211230/https://people.sc.fsu.edu/~jburkardt/data/off/off.html).
-
+ - [obj](https://en.wikipedia.org/wiki/Wavefront_.obj_file) is a very common and well known 3D model file format. It supports UV texture coordinates, materials with colors and textures. However it does not have a standardized way to do vertex colors. This block implements a non-standard but widely supported way to represent vertex colors as 4th - 7th elements of `v`. The OBJ and MTL specification describes a lot of features, only some of which are currently (or even can be) supported by this importer. In particular, there is currently no way to import models which use multiple textures, as this extension only supports 1 texture per mesh. Normals and anything lighting related isn't and can't be supported. **In case both OBJ and MTL files need to be imported, combine them all into 1 list sequentially: first all of the MTL files, and then the OBJ file.**
+ - [off](https://en.wikipedia.org/wiki/OFF_(file_format)) is not that well known, but a very simple file format. Is is quite neat for use in Scratch in general, as it's simpler than OBJ. Unlike it, natively supports both vertex and face colors. It does not support textures or texture coordinates. You can read more about it and find a lot of example models [here](http://web.archive.org/web/20230331211230/https://people.sc.fsu.edu/~jburkardt/data/off/off.html). Since the format is so simple, this importer supports all features of it.
 Imported model is affected by transformation set with:
 ```scratch
 configure [importing from file v] transformation :: sensing
@@ -573,6 +573,19 @@ Used for changing the way vertices are assembled into primitives.
 When using vertex indices, specifying vertex index 0 or below can be used to break up "triangle strip", "triangle fan", "line strip" and "line loop" into multiple ones.
 
 Default for mesh is "triangles".
+
+---
+```scratch
+set [my mesh] primitive size (1) :: sensing
+```
+When using point primitives, changes point size.
+When using lines, line strip or line loop primitives, changes line width.
+
+> [!WARNING]  
+> This feature shouldn't be relied on, as the minimum and maximum supported values vary depending on the GPU. Many GPUs don't support values above 1.  
+> You can view information about your GPU at https://webglreport.com/.  
+
+Default for mesh is 1.
 
 ---
 ```scratch
@@ -679,6 +692,14 @@ Default for mesh is not set. Once set, cannot be undone.
 
 ---
 ```scratch
+set [my mesh] vertex draw ranges from [starts list v] to [ends list v] :: sensing
+```
+Same as the `vertex draw range` block, but for multiple ranges at once.
+
+Useful for implementing culling, as it allows toggling visibility of different parts of the mesh, without the cost of doing multiple draw calls.
+
+---
+```scratch
 set [my mesh] instance draw limit (10) :: sensing
 ```
 Normally, how many instances are drawn is determined by the length of supplied lists.
@@ -760,6 +781,13 @@ Note that it is not alpha, red, green, blue used by many pen projects on scratch
 Creates black texture of given size.
 ⚡ Texture gets loaded instantly.
 
+---
+```scratch
+(texture from video [my video] :: sensing)
+```
+Creates texture from the current frame of the video. For video to move, needs to be called every frame.  
+⚡ Texture gets loaded instantly.
+
 
 ### Text measurement <a name="blocks-text-measurement"></a>
 ```scratch
@@ -767,7 +795,7 @@ measure text [Hello World!] font [italic bold 32px sans-serif] :: sensing
 (measured (up v) size ::sensing)
 ```
 Used for measuring how the text texture was or will be generated.
-Outputs 4 sizes. Sizes can be negative.
+Outputs 5 sizes. Sizes can be negative.
 
 
 ### Fonts <a name="blocks-fonts"></a>
@@ -836,9 +864,10 @@ Overwrites currently active transformation with transformation from the list. Re
 
 ---
 ```scratch
-move X (0) Y (0) Z (0) :: sensing
+move X:(0) Y:(0) Z:(0) :: sensing
 rotate around [X v] by (0) degrees :: sensing
-scale X (1) Y (1) Z (1) :: sensing
+scale X:(1) Y:(1) Z:(1) :: sensing
+skew [X v] by (1) [X v] :: sensing
 ```
 Applies change to currently selected transformation
 
@@ -872,14 +901,14 @@ Offset without rotation can be useful for positioning something at the end of th
 
 ### Manual transformations <a name="blocks-manual-transformations"></a>
 ```scratch
-transform X (0) Y (0) Z (0) :: sensing
+transform X:(0) Y:(0) Z:(0) :: sensing
 ```
 Transforms point using currently selected transformation. It is the fastest way to transform coordinates, especially if there are a lot of them.
 
 ---
 ```scratch
-transform X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
-transform direction X (0) Y (0) Z (0) from [world space v] to [model space v] :: sensing
+transform X:(0) Y:(0) Z:(0) from [world space v] to [model space v] :: sensing
+transform direction X:(0) Y:(0) Z:(0) from [world space v] to [model space v] :: sensing
 ```
 Transforms point from specified coordinate system to another. Convenient, but slower.
 Transform direction only applies rotations and does not apply offsets.
@@ -890,7 +919,7 @@ Transform direction only applies rotations and does not apply offsets.
 
 ### Rendering into textures <a name="blocks-rendertargets"></a>
 ```scratch
-render to stage :: sensing
+render to canvas :: sensing
 ```
 Selects simple3D layer as an active render target.
 
@@ -936,7 +965,8 @@ Viewport box specifies the area to which the rendered image will be stretched to
 Clipping box specifies the area in which pixels are allowed to be modified.
 Readback box specifies the area from which reading to list and reading to data URI blocks will read the pixels.
 
-Note: coordinates are specified in **real pixels** starting from the bottom left corner, **not scratch units**. You can get the size of the Simple3D layer in pixels from either:
+> [!NOTE]  
+> Coordinates are specified in **real pixels** starting from the bottom left corner, **not scratch units**. You can get the size of the Simple3D layer in pixels from either:
 ```scratch
 (stage width :: sensing)
 (stage height :: sensing)
@@ -946,7 +976,8 @@ Note: coordinates are specified in **real pixels** starting from the bottom left
 ```
 And while it may match scratch units while the high quality pen is disabled, when **high quality pen is on**, the resolution will often be higher. Your projects need to account for that.
 
-Note: Those custom areas can either be set or not set. When they aren't set, they use X1:`0` Y1:`0` X2:`render target width` Y2:`render target height` and automatically update with resolution changes. If you set them to custom values, you need to handle rescaling manually.
+> [!NOTE]  
+> Those custom areas can either be set or not set. When they aren't set, they use X1:`0` Y1:`0` X2:`render target width` Y2:`render target height` and automatically update with resolution changes. If you set them to custom values, you need to handle rescaling manually.
 
 ---
 ```scratch
@@ -1007,22 +1038,94 @@ Specifies the center point around which the fog will be drawn.
 Default is X:0 Y:0 Z:0 in view space.
 
 ### Resolution changes <a name="blocks-resolution"></a>
+
+Here "canvas" refers to the skin into which Simple3D renders all of its grapics.  
+By default canvas is displayed on Simple3D layer. 
+By default the size of canvas in scratch units matches the size of the stage in scratch units, so it covers the whole stage.  
+By default canvas has resolution that mimics the behavior of pen layer:  
+- When high quality pen is disabled, canvas has resolution that matches the size of the stage in scratch units.  
+- When high quality pen is enabled, canvas has resolution that matches the resolution of the stage in actual screen pixels.  
+
+Canvas can also be displayed on sprites. Simple3D layer can be turned off.  
+Resolution of canvas and size at which it is displayed can be changed. The way it it stretched (blurry or pixelated) can also be changed.
+
+---
+
 ```scratch
-when resultion changes :: sensing hat
+when stage resolution changes :: sensing hat
+(horizontal stage resolution :: sensing)
+(vertical stage resolution :: sensing)
+```
+Reporter blocks return the resolution at which scratch stage is rendered in actual screen pixels.
+Hat block triggers when that resolution changes.
+
+---
+```scratch
 (stage width :: sensing)
 (stage height :: sensing)
 ```
-simple3D layer automatically always matches the resolution of the pen layer (or what resolution pen layer would have if it was present, even when pen layer is missing).
-That means that by default, at default stage size it is locked to 480x360, but with "High quality pen" enabled or non-default stage sizes, it can become something different.
-Hat block gets triggered when that resoltion changes.
-Reporter blocks report current resolution.
+Return the size of stage in scratch units. (e.g. 480x360 or 640x360)
 
-Technically those blocks could be workarounded by contantly checking with blocks listed below.
+---
 ```scratch
-render to stage :: sensing
-(render target [width v] :: sensing)
-(render target [height v] :: sensing)
+<high quality pen enabled? :: sensing>
 ```
+Returns whether the high quality pen is enabled or not.
+
+---
+```scratch
+set canvas [size v] to X:(100) Y:(100) :: sensing
+set canvas [resolution v] to X:(100) Y:(100) :: sensing
+clear canvas [size v] :: sensing
+clear canvas [resolution v] :: sensing
+```
+resolution - changes resolution at which simple3D layer is rendered.
+size - changes the size in scratch units at which simple3D layer is displayed on the stage.
+
+---
+```scratch
+make scaled canvas look [pixelated v] :: sensing
+make scaled canvas look [blurry v] :: sensing
+```
+Changes how scaled canvas looks.
+
+Default is "pixelated".
+
+---
+```scratch
+when canvas resolution changes :: sensing hat
+(canvas width :: sensing)
+(canvas height :: sensing)
+```
+Reporter blocks return the resolution of canvas, not size at which it is displayed.
+Hat block triggers when that resolution changes.
+
+---
+```scratch
+display canvas on myself :: sensing hat
+restore my look :: sensing
+```
+
+Blocks to display Simple3D canvas as skin on the current sprite. Works similarly to the Skins extension.  
+
+---
+```scratch
+set Simple3D layer visibility to (visible v) :: sensing
+```
+Shows or hides simple3D layer.  
+Hiding Simple3D layer is primarily useful, when canvas is displayed on another sprite.  
+Accepts booleans true and false, not strings "visible" and "hidden".  
+
+---
+```scratch
+reset everything with antialiasing (on v) :: sensing
+```
+Same as "reset everything" block, but with control over antialiasing.  
+Accepts booleans true and false, not strings "on" and "off".  
+
+> [!NOTE]  
+> WebGL does not provide any way of toggling antialiasing after WebGL context has already been created, and there is no easy way of transferring resources between WebGL contexts.  
+
 
 ## Integrations with other extensions <a name="ext-integration"></a>
 
@@ -1068,4 +1171,15 @@ end
 
 when stage clicked
 move everything by x: (hit position [x v] :: #d10000) y: (hit position [y v] :: #d10000) z: (hit position [z v] :: #d10000) :: #d10000
+```
+
+### Lily/Video extension <a name="videos-integration"></a>
+Simple3D provides a dedicated block to read current frame of the video into a textures.
+```scratch
+load video from URL [https://extensions.turbowarp.org/dango.mp4] as [my video] :: #557882
+set [my video] to [loop v] :: #557882
+start video [my video] on (myself v) :: #557882
+forever
+set [my mesh v] texture (texture from video [my video] :: sensing) [clamp to edge v] [pixelated v] :: sensing
+end
 ```

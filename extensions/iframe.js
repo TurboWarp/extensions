@@ -1,6 +1,7 @@
 // Name: Iframe
 // ID: iframe
 // Description: Display webpages or HTML over the stage.
+// By: GarboMuffin
 // Context: "iframe" is an HTML element that lets websites embed other websites.
 // License: MIT AND MPL-2.0
 
@@ -53,6 +54,10 @@
   let height = -1; // negative means default
   let interactive = true;
   let resizeBehavior = "scale";
+  /** @type {string|number|boolean} */
+  let latestMessage = "";
+  /** @type {string|number|boolean} */
+  let latestParentMessage = "";
 
   const updateFrameAttributes = () => {
     if (!iframe) {
@@ -106,7 +111,6 @@
         .join("; ")
     );
     iframe.setAttribute("allowtransparency", "true");
-    iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("src", src);
 
     overlay = Scratch.renderer.addOverlay(iframe, getOverlayMode());
@@ -120,6 +124,38 @@
       overlay = null;
     }
   };
+
+  /** @param {unknown} data */
+  const normalizeMessage = (data) =>
+    typeof data === "string" ||
+    typeof data === "number" ||
+    typeof data === "boolean"
+      ? data
+      : JSON.stringify(data);
+
+  /**
+   * @returns {Window|null}
+   */
+  const getParentWindow = () => {
+    // if no parent, window.parent is us. which is not useful
+    if (window.parent !== window) {
+      return window.parent;
+    }
+    if (window.opener) {
+      return window.opener;
+    }
+    return null;
+  };
+
+  window.addEventListener("message", (e) => {
+    if (iframe && iframe.contentWindow && e.source === iframe.contentWindow) {
+      latestMessage = normalizeMessage(e.data);
+      Scratch.vm.runtime.startHats("iframe_whenMessage");
+    } else if (e.source === getParentWindow()) {
+      latestParentMessage = normalizeMessage(e.data);
+      Scratch.vm.runtime.startHats("iframe_whenMessageParent");
+    }
+  });
 
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateFrameAttributes);
 
@@ -246,6 +282,52 @@
                 menu: "resizeMenu",
               },
             },
+          },
+          "---",
+          {
+            opcode: "sendMessage",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("send message [MESSAGE] to iframe"),
+            arguments: {
+              MESSAGE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello",
+              },
+            },
+          },
+          {
+            opcode: "whenMessage",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when message received from iframe"),
+            isEdgeActivated: false,
+          },
+          {
+            opcode: "iframeMessage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("iframe message"),
+          },
+          "---",
+          {
+            opcode: "sendMessageParent",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("send message [MESSAGE] to parent window"),
+            arguments: {
+              MESSAGE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello",
+              },
+            },
+          },
+          {
+            opcode: "whenMessageParent",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when message received from parent window"),
+            isEdgeActivated: false,
+          },
+          {
+            opcode: "parentMessage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("parent window message"),
           },
         ],
         menus: {
@@ -378,6 +460,27 @@
           updateFrameAttributes();
         }
       }
+    }
+
+    sendMessage({ MESSAGE }) {
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage(MESSAGE, "*");
+      }
+    }
+
+    sendMessageParent({ MESSAGE }) {
+      const parentWindow = getParentWindow();
+      if (parentWindow) {
+        parentWindow.postMessage(MESSAGE, "*");
+      }
+    }
+
+    iframeMessage() {
+      return latestMessage;
+    }
+
+    parentMessage() {
+      return latestParentMessage;
     }
   }
 
