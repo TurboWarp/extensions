@@ -60,6 +60,7 @@
       this.videoElement.width = 1;
       this.videoElement.height = 1;
       this.videoElement.crossOrigin = "anonymous";
+      this.videoElement.playsInline = true;
       this.videoElement.onloadeddata = () => {
         // First frame loaded
         this.readyCallback();
