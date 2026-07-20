@@ -278,8 +278,8 @@
       );
     }
 
-    async stopWatching() {
-      if (watcherID === null || !(await canGeolocate())) return;
+    stopWatching() {
+      if (watcherID === null || !isSupported()) return;
       navigator.geolocation.clearWatch(watcherID);
       watcherID = null;
     }

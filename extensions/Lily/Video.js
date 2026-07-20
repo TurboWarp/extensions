@@ -247,10 +247,6 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "targets",
               },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "my video",
-              },
             },
           },
           {

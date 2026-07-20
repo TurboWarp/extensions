@@ -14,9 +14,8 @@
     try {
       const obj = JSON.parse(str);
       if (obj && typeof obj === "object") return obj;
-    } catch (e) {
-      return {};
-    }
+    } catch (e) {}
+    return {};
   };
 
   class TurboHook {

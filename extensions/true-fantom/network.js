@@ -46,7 +46,7 @@
               responses.push(res.text());
               break;
             case 2:
-              responses.push(JSON.stringify(res.json()));
+              responses.push(res.json().then((json) => JSON.stringify(json)));
               break;
             case 3:
               responses.push(Cast.toString(res.ok));
@@ -79,7 +79,7 @@
         for (let i = 0; i <= RESPONSES_TYPES.length - 1; i++) {
           responses += SPLIT + arr[i];
         }
-        return SPLIT === "" ? responses : responses.slice(1);
+        return SPLIT === "" ? responses : responses.slice(SPLIT.length);
       })
       .catch((err) => {
         console.error(err);

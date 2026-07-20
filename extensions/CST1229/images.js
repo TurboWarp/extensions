@@ -297,7 +297,7 @@
         const targetsToReset = [];
         for (const target of this.vm.runtime.targets) {
           const drawable = this.render._allDrawables[target.drawableID];
-          if (drawable.skin.id === IMG) {
+          if (drawable && drawable.skin && drawable.skin.id === IMG) {
             targetsToReset.push(target);
           }
         }
@@ -355,9 +355,8 @@
     }
 
     queryImage({ QUERY, IMG }) {
-      if (!this.render._allSkins[IMG] || !this.validImages.has(IMG)) return "";
-
       IMG = Cast.toNumber(IMG);
+      if (!this.render._allSkins[IMG] || !this.validImages.has(IMG)) return "";
 
       let returnValue = 0;
       let drawableID = null;

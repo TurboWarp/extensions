@@ -368,7 +368,7 @@
       if (bottom > top) {
         let temp = bottom;
         bottom = top;
-        bottom = temp;
+        top = temp;
       }
 
       const drawable =

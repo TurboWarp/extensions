@@ -34,11 +34,9 @@
       case "number":
         switch (typeof value) {
           case "string":
-            return Cast.toString(value);
           case "boolean":
-            return Cast.toBoolean(value);
           case "number":
-            return value;
+            return Cast.toNumber(value);
           case "function":
           case "object":
             return NaN;
@@ -100,6 +98,7 @@
       let name = names[index];
       name = name.replaceAll(/(?<!\\)&dot/g, ".");
       if (isUnsafePathSegment(name)) return null;
+      names[index] = name;
     }
     return names;
   };
@@ -391,7 +390,7 @@
             arguments: {
               text: {
                 type: ArgumentType.STRING,
-                default: "Apple!",
+                defaultValue: "Apple!",
               },
             },
             text: Scratch.translate("set request body to [text]"),
@@ -620,7 +619,7 @@
 
     getHeaderValue(args) {
       const name = Cast.toString(args.name);
-      return this.response.get(name);
+      return this.response.headers.get(name);
     }
 
     getHeaderJSON() {

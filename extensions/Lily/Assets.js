@@ -24,6 +24,18 @@
     return true;
   };
 
+  /**
+   * @param {Blob} blob
+   * @returns {Promise<string>}
+   */
+  const readAsDataURL = (blob) =>
+    new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = (e) => reject(e);
+      fr.readAsDataURL(blob);
+    });
+
   class Assets {
     getInfo() {
       const dataURIOption = Scratch.translate({
@@ -129,10 +141,6 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "targets",
               },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Sprite1",
-              },
             },
           },
           {
@@ -143,10 +151,6 @@
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
               },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "costume1",
-              },
             },
           },
           {
@@ -156,10 +160,6 @@
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "sound1",
               },
             },
           },
@@ -546,7 +546,7 @@
     }
 
     deleteSprite(args, util) {
-      const target = this._getTargetFromMenu(args.TARGET);
+      const target = this._getTargetFromMenu(args.TARGET, util);
       if (!target || target.isStage) return;
 
       Scratch.vm.deleteSprite(target.id);
@@ -616,21 +616,13 @@
       if (option === "name") {
         return target.sprite.name ?? "";
       } else if (option === "dataURI") {
-        try {
-          return new Promise((resolve) => {
-            Scratch.vm.exportSprite(target.id).then((blob) => {
-              const fr = new FileReader();
-              fr.onload = () => resolve(fr.result);
-              fr.onabort = () => {
-                throw new Error("Read aborted");
-              };
-              fr.readAsDataURL(blob);
-            });
-          });
-        } catch (e) {
-          console.error("Failed to export the sprite", e);
+        return (async () => {
+          const blob = await Scratch.vm.exportSprite(target.id);
+          return readAsDataURL(blob);
+        })().catch((e) => {
+          console.error(e);
           return "";
-        }
+        });
       }
     }
 
@@ -753,21 +745,13 @@
       if (option === "JSON") {
         return Scratch.vm.toJSON();
       } else if (option === "dataURI") {
-        try {
-          return new Promise((resolve) => {
-            vm.saveProjectSb3().then((blob) => {
-              const fr = new FileReader();
-              fr.onload = () => resolve(fr.result);
-              fr.onabort = () => {
-                throw new Error("Read aborted");
-              };
-              fr.readAsDataURL(blob);
-            });
-          });
-        } catch (e) {
-          console.error("Failed to export the project", e);
+        return (async () => {
+          const blob = await Scratch.vm.saveProjectSb3();
+          return readAsDataURL(blob);
+        })().catch((e) => {
+          console.error(e);
           return "";
-        }
+        });
       }
     }
 
