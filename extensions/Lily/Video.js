@@ -187,6 +187,7 @@
         id: "lmsVideo",
         color1: "#557882",
         name: Scratch.translate("Video"),
+        docsURI: "https://extensions.turbowarp.org/Lily/Video",
         blocks: [
           {
             blockType: Scratch.BlockType.XML,
