@@ -269,7 +269,7 @@
         return "";
       }
 
-      return JSON.stringify(Object.keys(namespaceValues)); 
+      return JSON.stringify(Object.keys(namespaceValues));
     }
 
     removeAll() {
