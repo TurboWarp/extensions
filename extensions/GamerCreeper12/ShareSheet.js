@@ -252,5 +252,5 @@
       return this.errorMsg;
     }
   }
-  Scratch.extensions.register(new GamerCreeperNoobsShareSheetExtension());
+  Scratch.extensions.register(new GamerCreeperShareExtension());
 })(Scratch);
