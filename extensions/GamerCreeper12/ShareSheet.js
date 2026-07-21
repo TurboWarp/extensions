@@ -1,5 +1,5 @@
 // Name: ShareSheet
-// ID: gamercreepernoobssharesheetextension
+// ID: gamerCreeperShare
 // Description: Share data from your browser.
 // By: GamerCreeper12 <https://scratch.mit.edu/users/GamerCreeper12/>
 // License: MPL-2.0
@@ -13,7 +13,7 @@
 
   const Cast = Scratch.Cast;
 
-  class GamerCreeperNoobsShareSheetExtension {
+  class GamerCreeperShareExtension {
     constructor() {
       this.dataType = "text";
       this.title = "";
