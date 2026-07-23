@@ -180,6 +180,18 @@
             extensions: ["colours_sounds"],
           },
           {
+            opcode: "stopAllSpriteSounds",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("stop all sounds in [TARGET]"),
+            arguments: {
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "targets",
+              },
+            },
+            extensions: ["colours_sounds"],
+          },
+          {
             opcode: "pauseSounds",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("pause all sounds"),
@@ -494,6 +506,23 @@
       const soundId = sprite.sounds[index].soundId;
       const soundBank = sprite.soundBank;
       soundBank.stop(target, soundId);
+    }
+
+    stopAllSpriteSounds(args, util) {
+      let target = Scratch.vm.runtime.getSpriteTargetByName(args.TARGET);
+      if (args.TARGET === "_myself_") target = util.target;
+      if (args.TARGET === "_stage_") target = runtime.getTargetForStage();
+      if (!target) return;
+
+      const sprite = target.sprite;
+      const soundBank = sprite.soundBank;
+
+      const allSounds = Object.values(soundBank.soundPlayers);
+      for (const sound of allSounds) {
+        if (sound.isPlaying) {
+          soundBank.stop(target, sound.id);
+        }
+      }
     }
 
     pauseSounds(args, util) {
