@@ -60,6 +60,7 @@
       this.videoElement.width = 1;
       this.videoElement.height = 1;
       this.videoElement.crossOrigin = "anonymous";
+      this.videoElement.playsInline = true;
       this.videoElement.onloadeddata = () => {
         // First frame loaded
         this.readyCallback();
@@ -186,6 +187,7 @@
         id: "lmsVideo",
         color1: "#557882",
         name: Scratch.translate("Video"),
+        docsURI: "https://extensions.turbowarp.org/Lily/Video",
         blocks: [
           {
             blockType: Scratch.BlockType.XML,
