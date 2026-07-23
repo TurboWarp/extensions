@@ -5,6 +5,7 @@
 // License: MIT
 
 // Thanks LilyMakesThings for the awesome banner!
+// TODO clean up this extension code
 (function (Scratch) {
   "use strict";
 
@@ -14,6 +15,7 @@
   let monitorBackgroundColor = "";
   let variableValueBackground = "";
   let variableValueTextColor = "";
+  let variableSliderColor = "";
   let listFooterBackground = "";
   let listHeaderBackground = "";
   let listValueText = "";
@@ -140,6 +142,9 @@
     if (variableValueTextColor) {
       css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor} !important; }`;
     }
+    if (variableSliderColor) {
+      css += `${monitorRoot} { accent-color: ${variableSliderColor} !important; }`;
+    }
     if (variableValueRoundness >= 0) {
       css += `${monitorValue} { border-radius: ${variableValueRoundness}px; }`;
     }
@@ -212,6 +217,7 @@
     monitorBackgroundColor = "";
     variableValueBackground = "";
     variableValueTextColor = "";
+    variableSliderColor = "";
     listFooterBackground = "";
     listHeaderBackground = "";
     listValueText = "";
@@ -533,6 +539,10 @@
                 value: "variable value text",
               },
               {
+                text: Scratch.translate("variable slider color"),
+                value: "variable slider color",
+              },
+              {
                 text: Scratch.translate("list header background"),
                 value: "list header background",
               },
@@ -648,6 +658,10 @@
                 value: "variable value text",
               },
               {
+                text: Scratch.translate("variable slider color"),
+                value: "variable slider color",
+              },
+              {
                 text: Scratch.translate("list header background"),
                 value: "list header background",
               },
@@ -749,6 +763,8 @@
           variableValueBackground = color;
         } else if (args.COLORABLE === "variable value text") {
           variableValueTextColor = color;
+        } else if (args.COLORABLE === "variable slider color") {
+          variableSliderColor = color;
         } else if (args.COLORABLE === "list header background") {
           listHeaderBackground = color;
         } else if (args.COLORABLE === "list footer background") {
@@ -875,6 +891,8 @@
         return variableValueBackground;
       } else if (args.ITEM === "variable value text") {
         return variableValueTextColor;
+      } else if (args.ITEM === "variable slider color") {
+        return variableSliderColor;
       } else if (args.ITEM === "list header background") {
         return listHeaderBackground;
       } else if (args.ITEM === "list footer background") {
