@@ -894,6 +894,7 @@
           "---",
 
           {
+            hideFromPalette: true,
             opcode: "returnVersionData",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("extension version"),
