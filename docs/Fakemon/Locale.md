@@ -1,8 +1,8 @@
 # Locale
-The Locale extension allows developers to manualy register translations for text rather than using an external server like the Translate extension. It is designed for those who want control over the translations.
+Locale allows developers to manually register translations of text and get information about languages. It was designed to simplify the process of including manually-curated translations in projects and mitigate the need for automatic translations such as those provided by the Translate extension.
 
 > [!NOTE]
-> Some of these blocks use JSON, a format for storing data in key-value pairs. The JSON extension will make these blocks much easier to use, especially for beginners.
+> Many of these blocks use JSON, a format for storing data in key-value pairs. The JSON extension will make these blocks much easier to use, especially for beginners.
  
 
 ## Working With Translation Information
@@ -34,7 +34,7 @@ If you need to merge the existing the existing information with something new, u
 ```scratchblocks
 merge current translation information with JSON [{}] ::#2a5fa0
 ```
-This block takes the current translation information and sets the values of the keys defined in the input to their new values. This can both replace and add new keys.
+This block uses the newly-provided JSON to update the existing global translation information by keeping the information that only exists in the original object and adding the new object's values from there. Keys from both objects will use the new values.
 
 You can get the global information with this block:
 ```scratchblocks

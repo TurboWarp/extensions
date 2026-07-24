@@ -1,14 +1,11 @@
 // Name: Locale
 // ID: fakemonLocale
-// Description: Blocks for manually registering translations of text.
+// Description: Blocks for manual translations and language information.
 // By: Scratch_Fakemon <https://scratch.mit.edu/users/Scratch_Fakemon/>
 // License: MPL-2.0
 
 /* Note for contributors:
-When updating this extension's block info, make sure to also update the documentation (/docs/Fakemon/Locale.md).
-This is most important for adding new blocks, but should also be done for changing block text to avoid confusion.
-
-Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't like my code :(
+When updating this extension's block info, please also update the documentation (/docs/Fakemon/Locale.md). Thanks!
 */
 
 (async function (Scratch) {
@@ -31,7 +28,7 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
    */
   let languageNameAndCodeLookupTableGLOBALIZED;
   // This is a backup of the lookup table in case the user is offline. It may not always be up-to-date.
-  // TODO: use a build script to automatically get the latest version of the table to put in here (and maybe also make a version of Locale without this hefty object)
+  // TODO: use a build script to automatically get the latest version of the table to put in here (and maybe also make a version of Locale without this hefty chonker)
   const backupTable = {
     menuMap: {
       am: [
@@ -15659,7 +15656,7 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
             arguments: {
               JSON: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: `{"en":{${Scratch.translate("Hello, world!")}:"Hello, world!"},"es":{${Scratch.translate("Hello, world!")}:"¡Hola, mundo!"}}`,
+                defaultValue: `{"en":{"${Scratch.translate("Hello, world!")}":"Hello, world!"},"es":{"${Scratch.translate("Hello, world!")}":"¡Hola, mundo!"}}`,
               },
             },
           },
@@ -15673,7 +15670,7 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
             arguments: {
               JSON: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: `{"en":{${Scratch.translate("Hello, world!")}:"Hello, world!"},"es":{${Scratch.translate("Hello, world!")}:"¡Hola, mundo!"}}`,
+                defaultValue: `{"pl":{"${Scratch.translate("Hello, world!")}":"Cześć, świat!"}}`,
               },
             },
           },
@@ -15708,7 +15705,7 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
               },
               JSON: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: `{${Scratch.translate("Hello, world!")}:"¡Hola, mundo!"}`,
+                defaultValue: `{"${Scratch.translate("Hello, world!")}":"¡Hola, mundo!"}`,
               },
             },
           },
@@ -15726,7 +15723,7 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
               },
               JSON: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: `{${Scratch.translate("Hello, world!")}:"¡Hola, mundo!"}`,
+                defaultValue: `{"${Scratch.translate("Apples and bananas")}":"Manzanas y plátanos"}`,
               },
             },
           },
@@ -15933,7 +15930,7 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
           Scratch.translate(
             `This button will ${showRecreatableBlocks ? "hide" : "show"} blocks that can be recreated with other extensions or require values set by these blocks.`
           )
-        ); // Explain what the button does
+        );
         if (
           confirm(
             Scratch.translate(
@@ -15997,7 +15994,10 @@ Additionally, do NOT remove the TypeScript comments (//@ts-ignore); it doesn't l
     mergePerLangLocaleJSON(args) {
       let backupLocaleObject = localeObject; // Save a backup in case something breaks
       try {
-        localeObject[args.LANG] = { ...localeObject, ...JSON.parse(args.JSON) };
+        localeObject[args.LANG] = {
+          ...localeObject[args.LANG],
+          ...JSON.parse(args.JSON),
+        };
       } catch {
         localeObject = backupLocaleObject;
       }
