@@ -5,7 +5,6 @@
 // License: MIT
 
 // Thanks LilyMakesThings for the awesome banner!
-// TODO clean up this extension code
 (function (Scratch) {
   "use strict";
 
