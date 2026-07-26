@@ -35,7 +35,7 @@
     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   */
-  const MimeTypes = await (async function() {
+  const MimeTypes = await (async function () {
     try {
       const dbResponse = await Scratch.external.fetch(
         "https://cdn.jsdelivr.net/npm/mime-db@1.52.0/db.json"
