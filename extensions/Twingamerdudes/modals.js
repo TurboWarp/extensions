@@ -1,5 +1,5 @@
 // Name: Modals
-// ID: modals
+// ID: twinGamerModals
 // Description: Adds support for HTML modals.
 // By: Twingamerdudes <https://scratch.mit.edu/users/twingamerdudesreal/>
 // License: MPL-2.0
