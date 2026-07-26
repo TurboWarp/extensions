@@ -304,6 +304,7 @@
         close.style.transformOrigin = "50% 50%";
         close.style.zIndex = "100";
         close.style.borderRadius = "0 0 0 5px";
+        close.style.color = "#ffffff"
 
         //Additional modal CSS
         modal.style.width = "300px";
