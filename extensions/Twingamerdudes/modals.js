@@ -46,7 +46,9 @@
           {
             opcode: "showModalWithInput",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show input modal [TEXT] with the background [COLOR] secondary color [SCOLOR], text color [TCOLOR], and placeholder [PLACEHOLDER]",
+            text: Scratch.translate(
+              "show input modal [TEXT] with the background [COLOR] secondary color [SCOLOR], text color [TCOLOR], and placeholder [PLACEHOLDER]"
+            ),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -73,12 +75,12 @@
           {
             opcode: "closeModal",
             blockType: Scratch.BlockType.COMMAND,
-            text: "close modal",
+            text: Scratch.translate("close modal"),
           },
           {
             opcode: "addTextToModal",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add [TEXT] to the current modal",
+            text: Scratch.translate("add [TEXT] to the current modal"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -89,7 +91,9 @@
           {
             opcode: "addModalButton",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add button [NAME] with the background color of [SCOLOR] and the text color of [TCOLOR] to the current modal",
+            text: Scratch.translate(
+              "add button [NAME] with the background color of [SCOLOR] and the text color of [TCOLOR] to the current modal"
+            ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
@@ -108,7 +112,7 @@
           {
             opcode: "changeDefaultModalText",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change default modal text to [TEXT]",
+            text: Scratch.translate("change default modal text to [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -119,7 +123,7 @@
           {
             opcode: "changeDefaultModalColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change modal background color to [COLOR]",
+            text: Scratch.translate("change modal background color to [COLOR]"),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -130,7 +134,7 @@
           {
             opcode: "changeDefaultModalTextColor",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change modal text color to [COLOR]",
+            text: Scratch.translate("change modal text color to [COLOR]"),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -141,31 +145,31 @@
           {
             opcode: "inputModalValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: "input modal value",
+            text: Scratch.translate("input modal value"),
             disableMonitor: true,
           },
           {
             opcode: "IsModalOpen",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is modal open?",
+            text: Scratch.translate("is modal open?"),
           },
           {
             opcode: "modalOpen",
-            blockType: Scratch.BlockType.HAT,
-            text: "when a modal is opened",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when a modal is opened"),
             isEdgeActivated: false,
           },
           {
             opcode: "modalClose",
-            blockType: Scratch.BlockType.HAT,
-            text: "when a modal is closed",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when a modal is closed"),
             isEdgeActivated: false,
           },
           {
             blockType: Scratch.BlockType.EVENT,
             opcode: "whenButtonPressed",
-            text: "when [BUTTON] is clicked",
-            isEdgeActivated: false, // required boilerplate
+            text: Scratch.translate("when modal [BUTTON] is clicked"),
+            isEdgeActivated: false,
             arguments: {
               BUTTON: {
                 type: Scratch.ArgumentType.STRING,
@@ -209,7 +213,6 @@
     changeDefaultModalText(args) {
       if (isModalOpen) {
         const defaultModalText = args.TEXT;
-        const modal = document.querySelector("dialog");
         const text = document.getElementById("modals_modalText");
         text.textContent = defaultModalText;
       }
