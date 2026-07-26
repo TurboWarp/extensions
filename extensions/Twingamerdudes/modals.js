@@ -2,6 +2,7 @@
 // ID: modals
 // Description: Adds support for HTML modals.
 // By: Twingamerdudes <https://scratch.mit.edu/users/twingamerdudesreal/>
+// License: MPL-2.0
 (function (Scratch) {
   "use strict";
 
@@ -9,9 +10,7 @@
     throw new Error("Modals must run unsandboxed");
   }
 
-  const vm = Scratch.vm;
-  let modalInput = ""; // By: Twingamerdudes <https://scratch.mit.edu/users/twingamerdudesreal/>
-  // Original: YourMom
+  let modalInput = "";
   let buttonPressed = "";
   let isModalOpen = false;
   class Modals {
@@ -188,10 +187,11 @@
     addTextToModal(args) {
       if (isModalOpen) {
         const text = args.TEXT;
-        //select the first <dialog> element
+
         const modal = document.querySelector("dialog");
         const textNode = document.createTextNode(text);
         const breakNode = document.createElement("br");
+
         modal.appendChild(breakNode);
         modal.appendChild(textNode);
       }
@@ -217,12 +217,11 @@
 
     addModalButton(args, util) {
       if (isModalOpen) {
-        //init stuff
+        //Initilization
         const buttonName = args.NAME;
         const modal = document.querySelector("dialog");
         const button = document.createElement("button");
 
-        //CSS Hell
         button.style.backgroundColor = args.SCOLOR;
         button.style.color = args.TCOLOR;
         button.style.border = "none";
@@ -266,15 +265,19 @@
     inputModalValue() {
       return modalInput;
     }
+
     showModal(args, util) {
       //Create Modal
       if (!isModalOpen) {
         var modal = document.createElement("dialog");
+
         var text = document.createElement("p");
         text.id = "modals_modalText";
         text.textContent = args.TEXT;
         modal.appendChild(text);
+
         document.body.appendChild(modal);
+
         //Create Close Button
         var close = document.createElement("button");
         close.innerHTML = "X";
@@ -284,7 +287,8 @@
           modal.close();
           modal.remove();
         });
-        //CSS Hell
+
+        //Close buttons CSS
         close.style.position = "absolute";
         close.style.top = "0";
         close.style.right = "0";
@@ -297,15 +301,20 @@
         close.style.transformOrigin = "50% 50%";
         close.style.zIndex = "100";
         close.style.borderRadius = "0 0 0 5px";
-        //Finish Modal
+
+        //Additional modal CSS
         modal.style.width = "300px";
         modal.style.padding = "20px 30px";
         modal.style.textAlign = "center";
         modal.style.background = args.COLOR;
         modal.style.color = args.TCOLOR;
+
+        //Finish Modal
         modal.appendChild(close);
+
         modal.showModal();
         isModalOpen = true;
+
         util.startHats("modals_modalOpen");
       }
     }
@@ -314,17 +323,19 @@
       if (!isModalOpen) {
         //Create Modal
         var modal = document.createElement("dialog");
+
         var text = document.createElement("p");
         text.id = "modals_modalText";
         text.textContent = args.TEXT;
         modal.appendChild(text);
+
         document.body.appendChild(modal);
 
         //Create input
         var input = document.createElement("input");
         input.placeholder = args.PLACEHOLDER;
 
-        //CSS Hell
+        //Input's CSS
         input.type = "text";
         input.id = "modals_modalInput";
         input.style.width = "100%";
@@ -339,7 +350,7 @@
         input.style.borderRadius = "5px";
         input.style.color = args.TCOLOR;
 
-        //WHY DO I HAVE TO DO THIS!?!?!?!?!?!?
+        //Preview text placeholder's color
         var pcss =
           "#modals_modalInput::placeholder { color: " +
           args.TCOLOR +
@@ -358,7 +369,7 @@
           modal.remove();
         });
 
-        //More CSS Hell
+        //Close button's CSS
         close.style.position = "absolute";
         close.style.top = "0";
         close.style.right = "0";
@@ -379,13 +390,14 @@
           util.startHats("modals_modalClose");
           const input = document.getElementById("modals_modalInput");
           isModalOpen = false;
+
           // @ts-ignore
           modalInput = input.value;
           modal.close();
           modal.remove();
         });
 
-        //More CSS Hell
+        //Submit button CSS
         submit.style.backgroundColor = args.SCOLOR;
         submit.style.color = args.TCOLOR;
         submit.style.border = "none";
@@ -397,18 +409,22 @@
         submit.style.zIndex = "0";
         submit.style.borderRadius = "5px";
 
-        //Finish Modal
+        //Extra modal CSS
         modal.style.width = "300px";
         modal.style.padding = "20px 30px";
         modal.style.textAlign = "center";
         modal.style.background = args.COLOR;
         modal.style.color = args.TCOLOR;
         modal.style.overflow = "hidden";
+
+        //Finish Modal
         modal.appendChild(close);
         modal.appendChild(input);
         modal.appendChild(submit);
-        isModalOpen = true;
+
         modal.showModal();
+        isModalOpen = true;
+
         util.startHats("modals_modalOpen");
       }
     }
