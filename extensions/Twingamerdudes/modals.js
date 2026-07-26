@@ -16,7 +16,7 @@
   class Modals {
     getInfo() {
       return {
-        id: "modals",
+        id: "twinGamerModals",
         name: Scratch.translate("Modals"),
         color1: "#a01c1c",
         color2: "#861515",
