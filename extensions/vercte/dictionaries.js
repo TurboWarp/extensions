@@ -8,6 +8,8 @@
   "use strict";
   let dictionaries = new Map();
 
+  const Cast = Scratch.Cast;
+
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
     dictionaries.clear();
   });
@@ -16,7 +18,7 @@
     getInfo() {
       return {
         id: "verctedictionaries",
-        name: "Dictionaries",
+        name: Scratch.translate("Dictionaries"),
         color1: "#008cff",
         color2: "#0073d1",
         color3: "#0066ba",
@@ -24,12 +26,12 @@
           {
             opcode: "dict_list",
             blockType: Scratch.BlockType.REPORTER,
-            text: "list of dictionaries",
+            text: Scratch.translate("list of dictionaries"),
           },
           {
             opcode: "dict_stringify",
             blockType: Scratch.BlockType.REPORTER,
-            text: "stringify dictionary [DICT] into JSON",
+            text: Scratch.translate("stringify dictionary [DICT] into JSON"),
             arguments: {
               DICT: {
                 type: Scratch.ArgumentType.STRING,
@@ -40,7 +42,7 @@
           {
             opcode: "dict_parse",
             blockType: Scratch.BlockType.COMMAND,
-            text: "parse JSON [OBJ] into dictionary [DICT]",
+            text: Scratch.translate("parse JSON [OBJ] into dictionary [DICT]"),
             arguments: {
               OBJ: {
                 type: Scratch.ArgumentType.STRING,
@@ -55,7 +57,7 @@
           {
             opcode: "dict_get",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get key [KEY] from dictionary [DICT]",
+            text: Scratch.translate("key [KEY] from dictionary [DICT]"),
             arguments: {
               KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "bar" },
               DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
@@ -64,7 +66,9 @@
           {
             opcode: "dict_property_defined",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "key [KEY] in dictionary [DICT] is defined?",
+            text: Scratch.translate(
+              "key [KEY] in dictionary [DICT] is defined?"
+            ),
             arguments: {
               KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "bar" },
               DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
@@ -73,7 +77,7 @@
           {
             opcode: "dict_property_null",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "key [KEY] in dictionary [DICT] is null?",
+            text: Scratch.translate("key [KEY] in dictionary [DICT] is null?"),
             arguments: {
               KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "bar" },
               DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
@@ -85,7 +89,9 @@
           {
             opcode: "dict_set",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set key [KEY] in dictionary [DICT] to [VAL]",
+            text: Scratch.translate(
+              "set key [KEY] in dictionary [DICT] to [VAL]"
+            ),
             arguments: {
               KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "bar" },
               DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
@@ -95,7 +101,9 @@
           {
             opcode: "dict_change",
             blockType: Scratch.BlockType.COMMAND,
-            text: "change key [KEY] in dictionary [DICT] by [BY]",
+            text: Scratch.translate(
+              "change key [KEY] in dictionary [DICT] by [BY]"
+            ),
             arguments: {
               KEY: {
                 type: Scratch.ArgumentType.STRING,
@@ -111,7 +119,7 @@
           {
             opcode: "dict_delete",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove dictionary [DICT]",
+            text: Scratch.translate("remove dictionary [DICT]"),
             arguments: {
               DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
             },
@@ -119,7 +127,7 @@
           {
             opcode: "dict_delete_key",
             blockType: Scratch.BlockType.COMMAND,
-            text: "remove key [KEY] from dictionary [DICT]",
+            text: Scratch.translate("remove key [KEY] from dictionary [DICT]"),
             arguments: {
               KEY: { type: Scratch.ArgumentType.STRING, defaultValue: "bar" },
               DICT: { type: Scratch.ArgumentType.STRING, defaultValue: "foo" },
@@ -145,17 +153,35 @@
     }
 
     dict_parse({ OBJ, DICT }) {
-      let dict = null;
+      let parsed;
+
       try {
-        dict = JSON.parse(OBJ);
+        parsed = JSON.parse(OBJ);
       } catch (e) {
-        dict = { error: String(e) };
+        dictionaries.set(DICT, new Map([["error", Cast.toString(e)]]));
+        return;
       }
-      dictionaries.set(DICT, new Map(Object.entries(dict)));
+
+      if (parsed === null || typeof parsed !== "object") {
+        dictionaries.set(
+          DICT,
+          new Map([["error", "data must be an object or array"]])
+        );
+        return;
+      }
+
+      const dataMap = new Map(Object.entries(parsed));
+      if (Array.isArray(parsed)) {
+        // Add a length property if this is an array
+        dataMap.set("length", parsed.length);
+      }
+
+      dictionaries.set(DICT, dataMap);
     }
 
     dict_get({ KEY, DICT }) {
       if (!dictionaries.get(DICT)) return "null";
+      KEY = Cast.toString(KEY);
       let dict = dictionaries.get(DICT);
       let value = dict.get(KEY);
       if (
@@ -174,12 +200,14 @@
     dict_property_defined({ KEY, DICT }) {
       if (!dictionaries.get(DICT)) return false;
       let dict = dictionaries.get(DICT);
+      KEY = Cast.toString(KEY);
       return dict.get(KEY) === undefined ? false : true;
     }
 
     dict_property_null({ KEY, DICT }) {
       if (!dictionaries.get(DICT)) return false;
       let dict = dictionaries.get(DICT);
+      KEY = Scratch.Cast.toString(KEY);
       return dict.get(KEY) === null ? true : false;
     }
 
@@ -188,6 +216,7 @@
         dictionaries.set(DICT, new Map());
       }
       let dict = dictionaries.get(DICT);
+      KEY = Cast.toString(KEY);
       dict.set(KEY, VAL);
     }
 
@@ -196,8 +225,10 @@
         dictionaries.set(DICT, new Map());
       }
       let dict = dictionaries.get(DICT);
-      if (isNaN(+dict.get(KEY))) dict.set(KEY, 0);
-      dict.set(KEY, dict.get(KEY) + BY);
+      KEY = Cast.toString(KEY);
+
+      const oldValue = Cast.toNumber(dict.get(KEY));
+      dict.set(KEY, oldValue + Cast.toNumber(BY));
     }
 
     dict_delete({ DICT }) {
@@ -206,6 +237,7 @@
 
     dict_delete_key({ KEY, DICT }) {
       if (dictionaries.has(DICT)) {
+        KEY = Cast.toString(KEY);
         dictionaries.get(DICT).delete(KEY);
       }
     }

@@ -8,7 +8,7 @@
     getInfo() {
       return {
         id: "truefantomnetworkm",
-        name: "Network",
+        name: Scratch.translate("Network"),
 
         color1: "#83cc70",
         color2: "#76b865",
@@ -20,40 +20,40 @@
           {
             opcode: "connected_to_internet_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "connected to internet?",
+            text: Scratch.translate("connected to internet?"),
           },
           "---",
           {
             opcode: "current_url_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current url",
+            text: Scratch.translate("current url"),
           },
           "---",
           {
             opcode: "network_type_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "network type",
+            text: Scratch.translate("network type"),
           },
           {
             opcode: "network_generation_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "network generation",
+            text: Scratch.translate("network generation"),
           },
           "---",
           {
             opcode: "downlink_speed_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "downlink speed in mb/s",
+            text: Scratch.translate("downlink speed in mb/s"),
           },
           {
             opcode: "downlink_max_speed_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "downlink max speed in mb/s",
+            text: Scratch.translate("downlink max speed in mb/s"),
           },
           {
             opcode: "rtt_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "rtt in ms",
+            text: Scratch.translate("rtt in ms"),
           },
         ],
       };

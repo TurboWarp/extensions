@@ -29,6 +29,7 @@
     getInfo() {
       return {
         id: "0832rxfs2",
+        // eslint-disable-next-line extension/should-translate
         name: "rxFS",
         color1: "#192d50",
         color2: "#192d50",
@@ -38,7 +39,7 @@
             blockIconURI: file,
             opcode: "start",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id: "start", default: "Create [STR]" }),
+            text: Scratch.translate({ id: "start", default: "create [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -52,7 +53,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "folder",
-              default: "Set [STR] to [STR2]",
+              default: "set [STR] to [STR2]",
             }),
             arguments: {
               STR: {
@@ -74,7 +75,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "sync",
-              default: "Change the location of [STR] to [STR2]",
+              default: "change the location of [STR] to [STR2]",
             }),
             arguments: {
               STR: {
@@ -91,7 +92,7 @@
             blockIconURI: file,
             opcode: "del",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({ id: "del", default: "Delete [STR]" }),
+            text: Scratch.translate({ id: "del", default: "delete [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -105,7 +106,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "webin",
-              default: "Load [STR] from the web",
+              default: "load [STR] from the web",
             }),
             arguments: {
               STR: {
@@ -118,7 +119,7 @@
             blockIconURI: file,
             opcode: "open",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id: "open", default: "Open [STR]" }),
+            text: Scratch.translate({ id: "open", default: "open [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -133,7 +134,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "clean",
-              default: "Clear the file system",
+              default: "clear the file system",
             }),
             arguments: {},
           },
@@ -143,7 +144,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate({
               id: "in",
-              default: "Import file system from [STR]",
+              default: "import file system from [STR]",
             }),
             arguments: {
               STR: {
@@ -158,7 +159,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "out",
-              default: "Export file system",
+              default: "export file system",
             }),
             arguments: {},
           },
@@ -168,7 +169,7 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
               id: "list",
-              default: "List all files under [STR]",
+              default: "list all files under [STR]",
             }),
             arguments: {
               STR: {
@@ -180,8 +181,9 @@
           {
             blockIconURI: folder,
             opcode: "search",
+            hideFromPalette: true,
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({ id: "search", default: "Search [STR]" }),
+            text: Scratch.translate({ id: "search", default: "search [STR]" }),
             arguments: {
               STR: {
                 type: Scratch.ArgumentType.STRING,
@@ -201,8 +203,8 @@
     sync({ STR, STR2 }) {
       str = encodeURIComponent(STR);
       str2 = encodeURIComponent(STR2);
-      if (rxFSsy.indexOf(str) + 1 == 0) {
-        rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = str2;
+      if (rxFSsy.indexOf(str) + 1 != 0) {
+        rxFSsy[rxFSsy.indexOf(str)] = str2;
       }
     }
 
@@ -225,21 +227,24 @@
 
     del({ STR }) {
       str = encodeURIComponent(STR);
-      rxFSfi[rxFSsy.indexOf(str) + 1 - 1] = undefined;
-      rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = undefined;
+      const index = rxFSsy.indexOf(str);
+      if (index !== -1) {
+        rxFSfi.splice(index, 1);
+        rxFSsy.splice(index, 1);
+      }
     }
 
     folder({ STR, STR2 }) {
-      rxFSfi[rxFSsy.indexOf(encodeURIComponent(STR)) + 1 - 1] =
-        encodeURIComponent(STR2);
+      const index = rxFSsy.indexOf(encodeURIComponent(STR));
+      if (index === -1) return;
+      rxFSfi[index] = encodeURIComponent(STR2);
     }
 
     search({ STR }) {
       Search = "";
-      i = 0;
       str = encodeURIComponent(STR);
       for (var i in rxFSsy) {
-        if (!(rxFSsy[i].indexOf(str) == undefined)) {
+        if (rxFSsy[i].indexOf(str) != -1) {
           Search = [Search, ',"', rxFSsy[i], '"'].join("");
         }
       }
@@ -248,7 +253,6 @@
 
     list({ STR }) {
       Search = "";
-      i = 0;
       str = encodeURIComponent(STR);
       for (var i in rxFSsy) {
         if (rxFSsy[i].slice(0, str.length) == str) {

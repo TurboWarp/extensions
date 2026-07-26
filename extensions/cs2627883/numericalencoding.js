@@ -20,7 +20,7 @@
     let encoded = "";
     for (let i = 0; i < str.length; ++i) {
       // Get character
-      const char = String(str.charCodeAt(i));
+      const char = Scratch.Cast.toString(str.charCodeAt(i));
       // Pad encodedChar with 0s to ensure all encodedchars are the same length
       const encodedChar = "0".repeat(MAX_CHAR_LEN - char.length) + char;
       encoded += encodedChar;
@@ -64,7 +64,7 @@
           {
             opcode: "NumericalEncode",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Encode [DATA] to numbers"),
+            text: Scratch.translate("encode [DATA] to numbers"),
             arguments: {
               DATA: {
                 type: Scratch.ArgumentType.STRING,
@@ -75,7 +75,7 @@
           {
             opcode: "NumericalDecode",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Decode [ENCODED] back to text"),
+            text: Scratch.translate("decode [ENCODED] back to text"),
             arguments: {
               ENCODED: {
                 type: Scratch.ArgumentType.STRING,
