@@ -51,6 +51,10 @@
     "https://raw.githubusercontent.com/dectalk/tw-dectalk/b387df5a1133dd08a8f3af94d7899dec3f507fd8/dtc.js": {
       "sha256": "de29c298d3e260d348e9f8eed74e644258e8222fdf741a55665400d560876e8b",
       "contentType": "application/octet-stream"
+    },
+    "https://cdn.jsdelivr.net/npm/mime-db@1.52.0/db.json": {
+      "sha256": "85c8e1ba609079947c8df83c092900ab0226e1d7b60e5e7105fb7dd701833263",
+      "contentType": "application/json; charset=utf-8"
     }
   }
 }
