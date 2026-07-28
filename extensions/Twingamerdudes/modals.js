@@ -111,7 +111,7 @@
           {
             opcode: "closeModal",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("close modal"),
+            text: Scratch.translate("close current modal"),
           },
           {
             opcode: "addTextToModal",
