@@ -10,9 +10,45 @@
     throw new Error("Modals must run unsandboxed");
   }
 
-  let modalInput = "";
   let buttonPressed = "";
   let isModalOpen = false;
+
+  const createBasicModel = (color, textColor) => {
+    var modal = document.createElement("dialog");
+    modal.style.width = "300px";
+    modal.style.padding = "20px 30px";
+    modal.style.textAlign = "center";
+    modal.style.background = color;
+    modal.style.color = textColor;
+    modal.style.overflow = "hidden";
+
+    /* 
+      No eventListeners created because createModalWithInput is handled through promises that resolve when the modal is closed, 
+      while normally creating a modal does not use promises (doesn't need to wait for input aside from basic buttons)
+    */
+    var close = document.createElement("button");
+    close.innerHTML = "X";
+
+    //Close buttons CSS
+    close.style.position = "absolute";
+    close.style.top = "0";
+    close.style.right = "0";
+    close.style.padding = "5px";
+    close.style.border = "none";
+    close.style.background = "#ff0000";
+    close.style.fontSize = "0.8em";
+    close.style.cursor = "pointer";
+    close.style.outline = "none";
+    close.style.transformOrigin = "50% 50%";
+    close.style.zIndex = "100";
+    close.style.borderRadius = "0 0 0 5px";
+    close.style.color = "#ffffff";
+
+    modal.appendChild(close);
+
+    return { modal: modal, closeButton: close };
+  };
+
   class Modals {
     getInfo() {
       return {
@@ -45,7 +81,7 @@
           },
           {
             opcode: "showModalWithInput",
-            blockType: Scratch.BlockType.COMMAND,
+            blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
               "show input modal [TEXT] with the background [COLOR] secondary color [SCOLOR], text color [TCOLOR], and placeholder [PLACEHOLDER]"
             ),
@@ -143,10 +179,9 @@
             },
           },
           {
-            opcode: "inputModalValue",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("input modal value"),
-            disableMonitor: true,
+            opcode: "waitUntilModalClosed",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("wait until current modal is closed"),
           },
           {
             opcode: "IsModalOpen",
@@ -181,13 +216,20 @@
       };
     }
 
+    waitUntilModalClosed(args, util) {
+      if (isModalOpen) {
+        util.yield();
+      }
+    }
+
     whenButtonPressed(args) {
-      if (buttonPressed == Scratch.Cast.toString(args.BUTTON)) {
+      if (Scratch.Cast.compare(buttonPressed, args.BUTTON) == 0) {
         buttonPressed = "";
         return true;
       }
       return false;
     }
+
     addTextToModal(args) {
       if (isModalOpen) {
         const text = args.TEXT;
@@ -196,8 +238,8 @@
         const textNode = document.createTextNode(text);
         const breakNode = document.createElement("br");
 
-        modal.appendChild(breakNode);
         modal.appendChild(textNode);
+        modal.appendChild(breakNode);
       }
     }
 
@@ -213,7 +255,7 @@
     changeDefaultModalText(args) {
       if (isModalOpen) {
         const defaultModalText = args.TEXT;
-        const text = document.getElementById("modals_modalText");
+        const text = document.getElementById("twinGamerModals_modalText");
         text.textContent = defaultModalText;
       }
     }
@@ -239,7 +281,7 @@
 
         button.addEventListener("click", function () {
           buttonPressed = buttonName;
-          util.startHats("modals_whenButtonPressed");
+          util.startHats("twinGamerModals_whenButtonPressed");
         });
         modal.appendChild(button);
       }
@@ -265,172 +307,134 @@
       return isModalOpen;
     }
 
-    inputModalValue() {
-      return modalInput;
-    }
-
     showModal(args, util) {
       //Create Modal
       if (!isModalOpen) {
-        var modal = document.createElement("dialog");
+        const modalInformation = createBasicModel(args.COLOR, args.TCOLOR);
 
-        var text = document.createElement("p");
-        text.id = "modals_modalText";
+        const modal = modalInformation.modal;
+        const close = modalInformation.closeButton;
+
+        const text = document.createElement("p");
+        text.id = "twinGamerModals_modalText";
         text.textContent = args.TEXT;
+
         modal.appendChild(text);
 
-        document.body.appendChild(modal);
-
         //Create Close Button
-        var close = document.createElement("button");
-        close.innerHTML = "X";
         close.addEventListener("click", function () {
-          util.startHats("modals_modalClose");
+          util.startHats("twinGamerModals_modalClose");
+
           isModalOpen = false;
           modal.close();
           modal.remove();
         });
 
-        //Close buttons CSS
-        close.style.position = "absolute";
-        close.style.top = "0";
-        close.style.right = "0";
-        close.style.padding = "5px";
-        close.style.border = "none";
-        close.style.background = "#ff0000";
-        close.style.fontSize = "0.8em";
-        close.style.cursor = "pointer";
-        close.style.outline = "none";
-        close.style.transformOrigin = "50% 50%";
-        close.style.zIndex = "100";
-        close.style.borderRadius = "0 0 0 5px";
-        close.style.color = "#ffffff";
-
-        //Additional modal CSS
-        modal.style.width = "300px";
-        modal.style.padding = "20px 30px";
-        modal.style.textAlign = "center";
-        modal.style.background = args.COLOR;
-        modal.style.color = args.TCOLOR;
-
-        //Finish Modal
-        modal.appendChild(close);
+        document.body.appendChild(modal);
 
         modal.showModal();
         isModalOpen = true;
 
-        util.startHats("modals_modalOpen");
+        util.startHats("twinGamerModals_modalOpen");
       }
     }
 
     showModalWithInput(args, util) {
-      if (!isModalOpen) {
-        //Create Modal
-        var modal = document.createElement("dialog");
+      return new Promise((resolve, reject) => {
+        if (!isModalOpen) {
+          //Create Modal
+          const modalInformation = createBasicModel(args.COLOR, args.TCOLOR);
 
-        var text = document.createElement("p");
-        text.id = "modals_modalText";
-        text.textContent = args.TEXT;
-        modal.appendChild(text);
+          const modal = modalInformation.modal;
+          const close = modalInformation.closeButton;
 
-        document.body.appendChild(modal);
+          const text = document.createElement("p");
+          text.id = "twinGamerModals_modalText";
+          text.textContent = args.TEXT;
 
-        //Create input
-        var input = document.createElement("input");
-        input.placeholder = args.PLACEHOLDER;
+          modal.appendChild(text);
 
-        //Input's CSS
-        input.type = "text";
-        input.id = "modals_modalInput";
-        input.style.width = "100%";
-        input.style.margin = "10px 0";
-        input.style.padding = "5px";
-        input.style.border = "none";
-        input.style.background = args.SCOLOR;
-        input.style.fontSize = "0.8em";
-        input.style.outline = "none";
-        input.style.transformOrigin = "50% 50%";
-        input.style.zIndex = "100";
-        input.style.borderRadius = "5px";
-        input.style.color = args.TCOLOR;
+          //Create Close Button
+          close.addEventListener("click", function () {
+            util.startHats("twinGamerModals_modalClose");
+            isModalOpen = false;
+            modal.close();
+            modal.remove();
 
-        //Preview text placeholder's color
-        var pcss =
-          "#modals_modalInput::placeholder { color: " +
-          args.TCOLOR +
-          "; opacity: 0.5; }";
-        var styleElement = document.createElement("style");
-        styleElement.appendChild(document.createTextNode(pcss));
-        document.head.appendChild(styleElement);
+            return resolve("");
+          });
 
-        //Create Close Button
-        var close = document.createElement("button");
-        close.innerHTML = "X";
-        close.addEventListener("click", function () {
-          util.startHats("modals_modalClose");
-          isModalOpen = false;
-          modal.close();
-          modal.remove();
-        });
+          //Create input
+          var input = document.createElement("input");
+          input.placeholder = args.PLACEHOLDER;
 
-        //Close button's CSS
-        close.style.position = "absolute";
-        close.style.top = "0";
-        close.style.right = "0";
-        close.style.padding = "5px";
-        close.style.border = "none";
-        close.style.background = "#ff0000";
-        close.style.fontSize = "0.8em";
-        close.style.cursor = "pointer";
-        close.style.outline = "none";
-        close.style.transformOrigin = "50% 50%";
-        close.style.zIndex = "0";
-        close.style.borderRadius = "0 0 0 5px";
+          //Input's CSS
+          input.type = "text";
+          input.id = "twinGamerModals_modalInput";
+          input.style.width = "100%";
+          input.style.margin = "10px 0";
+          input.style.padding = "5px";
+          input.style.border = "none";
+          input.style.background = args.SCOLOR;
+          input.style.fontSize = "0.8em";
+          input.style.outline = "none";
+          input.style.transformOrigin = "50% 50%";
+          input.style.zIndex = "100";
+          input.style.borderRadius = "5px";
+          input.style.color = args.TCOLOR;
 
-        //Create Submit Button
-        var submit = document.createElement("button");
-        submit.innerHTML = "Submit";
-        submit.addEventListener("click", function () {
-          util.startHats("modals_modalClose");
-          const input = document.getElementById("modals_modalInput");
-          isModalOpen = false;
+          //Preview text placeholder's color
+          var pcss =
+            "#twinGamerModals_modalInput::placeholder { color: " +
+            args.TCOLOR +
+            "; opacity: 0.5; }";
+          var styleElement = document.createElement("style");
+          styleElement.appendChild(document.createTextNode(pcss));
+          document.head.appendChild(styleElement);
 
-          // @ts-ignore
-          modalInput = input.value;
-          modal.close();
-          modal.remove();
-        });
+          //Create Submit Button
+          var submit = document.createElement("button");
+          submit.innerHTML = "Submit";
+          submit.addEventListener("click", function () {
+            util.startHats("twinGamerModals_modalClose");
+            const input = document.getElementById("twinGamerModals_modalInput");
+            isModalOpen = false;
 
-        //Submit button CSS
-        submit.style.backgroundColor = args.SCOLOR;
-        submit.style.color = args.TCOLOR;
-        submit.style.border = "none";
-        submit.style.padding = "5px";
-        submit.style.fontSize = "1em";
-        submit.style.cursor = "pointer";
-        submit.style.outline = "none";
-        submit.style.transformOrigin = "50% 50%";
-        submit.style.zIndex = "0";
-        submit.style.borderRadius = "5px";
+            // @ts-ignore
+            let modalInput = input.value;
 
-        //Extra modal CSS
-        modal.style.width = "300px";
-        modal.style.padding = "20px 30px";
-        modal.style.textAlign = "center";
-        modal.style.background = args.COLOR;
-        modal.style.color = args.TCOLOR;
-        modal.style.overflow = "hidden";
+            modal.close();
+            modal.remove();
 
-        //Finish Modal
-        modal.appendChild(close);
-        modal.appendChild(input);
-        modal.appendChild(submit);
+            return resolve(modalInput);
+          });
 
-        modal.showModal();
-        isModalOpen = true;
+          //Submit button CSS
+          submit.style.backgroundColor = args.SCOLOR;
+          submit.style.color = args.TCOLOR;
+          submit.style.border = "none";
+          submit.style.padding = "5px";
+          submit.style.fontSize = "1em";
+          submit.style.cursor = "pointer";
+          submit.style.outline = "none";
+          submit.style.transformOrigin = "50% 50%";
+          submit.style.zIndex = "0";
+          submit.style.borderRadius = "5px";
 
-        util.startHats("modals_modalOpen");
-      }
+          //Finish Modal
+          modal.appendChild(input);
+          modal.appendChild(submit);
+
+          document.body.appendChild(modal);
+
+          modal.showModal();
+          isModalOpen = true;
+
+          util.startHats("twinGamerModals_modalOpen");
+        } else {
+          return reject("NaN");
+        }
+      });
     }
   }
   Scratch.extensions.register(new Modals());
