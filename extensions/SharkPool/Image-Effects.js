@@ -108,6 +108,7 @@
       if (!input) return null;
 
       if (input.startsWith("<svg")) {
+        /* global Base64 */
         const data = typeof Base64 !== "undefined" ? Base64.toBase64(input) : btoa(input);
         return `data:image/svg+xml;base64,${data}`;
       }
@@ -210,15 +211,19 @@
       if (cached.img) return cached.img;
 
       return new Promise((resolve) => {
-        const img = new Image();
-        img.crossOrigin = "Anonymous";
-        img.onerror = () => resolve(null);
-        img.onload = () => {
-          ImageCache.set(cacheKey, { src: img });
-          img._spHash = cacheKey;
-          resolve(img);
-        };
-        img.src = source;
+        Scratch.canFetch(source).then((canFetch) => {
+          if (!canFetch) resolve(null);
+
+          const img = new Image();
+          img.crossOrigin = "Anonymous";
+          img.onerror = () => resolve(null);
+          img.onload = () => {
+            ImageCache.set(cacheKey, { src: img });
+            img._spHash = cacheKey;
+            resolve(img);
+          };
+          img.src = source;
+        });
       });
     }
 
@@ -685,29 +690,6 @@
               W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
             }
           },
-          /* Deprecation Marker */
-          {
-            opcode: "clipImage", blockType: Scratch.BlockType.REPORTER,
-            text: "clip [CUTOUT] from [MAIN]", hideFromPalette: true,
-            arguments: {
-              MAIN: { type: Scratch.ArgumentType.STRING }, CUTOUT: { type: Scratch.ArgumentType.STRING }
-            }
-          },
-          {
-            opcode: "overlayImage", blockType: Scratch.BlockType.REPORTER,
-            text: "clip [CUTOUT] onto [MAIN]", hideFromPalette: true,
-            arguments: {
-              MAIN: { type: Scratch.ArgumentType.STRING }, CUTOUT: { type: Scratch.ArgumentType.STRING }
-            }
-          },
-          {
-            opcode: "convertHexToRGB", blockType: Scratch.BlockType.REPORTER,
-            text: "convert [HEX] to [CHANNEL]", hideFromPalette: true,
-            arguments: {
-              HEX: { type: Scratch.ArgumentType.COLOR }, CHANNEL: { type: Scratch.ArgumentType.STRING, menu: "CHANNELS" }
-            }
-          }
-          /* Marker End */
         ],
         menus: {
           POSITIONS: [
@@ -734,9 +716,6 @@
             genMenuItem("data.URI")
           ],
           EFFECTS: { acceptReporters: true, items: EFFECTS_MENU },
-          /* Deprecation Marker */
-          CHANNELS: { acceptReporters: true, items: ["R", "G", "B"] }
-          /* Marker End */
         },
       };
     }
@@ -2001,12 +1980,6 @@
       dispose(); 
       return result;
     }
-
-    /* Deprecation Marker */
-    convertHexToRGB() {return ""}
-    clipImage(){return "use new masking block"}
-    overlayImage(){return "use new masking block"}
-    /* Marker End */
   }
 
   Scratch.extensions.register(new imgEffectsSP());
