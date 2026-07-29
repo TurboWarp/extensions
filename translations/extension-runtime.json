@@ -14092,6 +14092,7 @@
         "SharkPool/Tune-Shark-V3@_toggle sound [NAME] overlapping [TYPE]": "[TYPE]声音[NAME]重叠",
         "SharkPool/Tune-Shark-V3@_toggle sound [NAME] reverse mode [TYPE]": "[TYPE]声音[NAME]倒放",
         "SharkPool/Tune-Shark-V3@_toggle sound link to [GO] [STOP] [ON_OFF]": "[ON_OFF]声音链接到[GO][STOP]",
+        "SharkPool/Tune-Shark-V3@_tone": "音色",
         "SharkPool/Tune-Shark-V3@_tremolo": "颤音",
         "SharkPool/Tune-Shark-V3@_unBind": "解绑",
         "SharkPool/Tune-Shark-V3@_unpause": "取消暂停",
