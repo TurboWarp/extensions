@@ -1583,6 +1583,7 @@
       const { canvas, context } = ImageHelper.getHelper();
       ImageHelper.prepCanvas(image);
 
+      ImageHelper.currentImageHash = null; // we change the canvas size here, dont cache
       const canvasSize = Math.max(image.width, image.height) * 2;
       canvas.width = canvasSize;
       canvas.height = canvasSize;
