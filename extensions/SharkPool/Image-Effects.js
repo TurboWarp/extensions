@@ -8,17 +8,18 @@
 
 (function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed) throw new Error("Image Effects must run unsandboxed");
+  if (!Scratch.extensions.unsandboxed)
+    throw new Error("Image Effects must run unsandboxed");
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDUuOTU1IiBoZWlnaHQ9IjE0NS45NTUiIHZpZXdCb3g9IjAgMCAxNDUuOTU1IDE0NS45NTUiPjxwYXRoIGQ9Ik0wIDcyLjk3N0MwIDMyLjY3MiAzMi42NzIgMCA3Mi45NzcgMHM3Mi45NzcgMzIuNjcyIDcyLjk3NyA3Mi45NzctMzIuNjcyIDcyLjk3Ny03Mi45NzcgNzIuOTc3UzAgMTEzLjI4MiAwIDcyLjk3NyIgZmlsbD0iIzc3NGRjYiIvPjxwYXRoIGQ9Ik04Ljg2MyA3Mi45NzdjMC0zNS40MSAyOC43MDUtNjQuMTE1IDY0LjExNS02NC4xMTVzNjQuMTE0IDI4LjcwNSA2NC4xMTQgNjQuMTE1LTI4LjcwNSA2NC4xMTYtNjQuMTE1IDY0LjExNlM4Ljg2MiAxMDguMzg3IDguODYyIDcyLjk3N3oiIGZpbGw9IiM5NmYiLz48cGF0aCBkPSJNMTA1LjI3OCA3NC44MDljLTIuMDQgMS4xODQtMTAuMTg2LjE4Ny0xMS42NTUgMS44NzQtNS43MjMgNi41NzItNS41NTkgMjIuNzgyLTYuMTkgMjQtLjc5MyAxLjUzLTIuNzkyIDIuMDQ1LTMuODUzIDAtLjg3LTEuNjgyLjE0Mi0xNy45ODgtNS44NzQtMjMuOTg2LTEuMzA1LTEuMzAyLTkuMzM1LS45NC0xMC45Ny0xLjg4OHMtMi4wNC0zLjE0NiAwLTQuMzNjMi4wMzktMS4xODMgOS42LS4xOSAxMS42NzktMy40MyA0LjIxNS01LjI5NSA0LjUzNy0yMS4yMzIgNS4xNjUtMjIuNDQ0Ljc5My0xLjUzIDIuNzkyLTIuMDQ2IDMuODUzIDAgLjgzOSAxLjYxOCAxLjMxOSAxNi43NDQgNi44NyAyMy4yNzggMS40NjkgMS43MyA5LjUxMyAxLjc0OCAxMC45NzUgMi41OTZzMi4wNCAzLjE0NyAwIDQuMzN6IiBmaWxsPSIjZmZmIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNCIvPjxwYXRoIGQ9Ik02NS44MDMgNTIuNzY3Yy0xLjA2Ni42MTgtNS43MzMuNjMtNi44MDUgMS44OTMtNC4wNDggNC43NjUtMi41OTggNy43OTYtMy4yMSA4Ljk3NS0uNzczIDEuNDkzLTIuMjMgMS4xMTYtMi44MSAwLS40NTctLjg4NC40NTEtNC4wMi0zLjQ3NC04Ljg1NC0xLjAzLTEuMjY5LTQuMjIyLTEuMzUyLTUuNzA5LTIuMjE1cy0xLjE5Mi0yLjQ2NiAwLTMuMTU4IDQuODQ4LS4yMjcgNS44LTEuMTc2YzQuMzg3LTQuMzc0IDIuNzQ5LTcuMjY2IDMuMzg0LTguNDkyLjc3NC0xLjQ5MiAyLjIzMi0xLjExNSAyLjgxIDAgLjQ2Ljg4OC0xLjQ2IDMuNzA5IDIuNzE0IDguNTAyIDEuMDcxIDEuMjMgNS44MTIuNTAzIDcuMyAxLjM2NnMxLjA2NiAyLjU0IDAgMy4xNTl6TTQzLjU4NSA5NS4yNzZjMS4wNjYtLjYxOSA1LjczMi0uNjMyIDYuODA0LTEuODkzIDQuMDQ4LTQuNzY2IDIuNTk4LTcuNzk2IDMuMjEtOC45NzYuNzczLTEuNDkyIDIuMjMxLTEuMTE2IDIuODEgMCAuNDU4Ljg4NC0uNDUgNC4wMiAzLjQ3NCA4Ljg1NCAxLjAzIDEuMjcgNC4yMjIgMS4zNTIgNS43MSAyLjIxNSAxLjQ4Ni44NjMgMS4xOTEgMi40NjYgMCAzLjE1OC0xLjE5My42OTItNC44NDkuMjI3LTUuOCAxLjE3Ni00LjM4OCA0LjM3NC0yLjc1IDcuMjY2LTMuMzg1IDguNDkyLS43NzMgMS40OTItMi4yMzEgMS4xMTYtMi44MSAwLS40Ni0uODg3IDEuNDYtMy43MDktMi43MTMtOC41MDItMS4wNzItMS4yMy01LjgxMy0uNTAzLTcuMy0xLjM2NnMtMS4wNjctMi41NCAwLTMuMTU4eiIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIuNSIvPjwvc3ZnPg==";
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDUuOTU1IiBoZWlnaHQ9IjE0NS45NTUiIHZpZXdCb3g9IjAgMCAxNDUuOTU1IDE0NS45NTUiPjxwYXRoIGQ9Ik0wIDcyLjk3N0MwIDMyLjY3MiAzMi42NzIgMCA3Mi45NzcgMHM3Mi45NzcgMzIuNjcyIDcyLjk3NyA3Mi45NzctMzIuNjcyIDcyLjk3Ny03Mi45NzcgNzIuOTc3UzAgMTEzLjI4MiAwIDcyLjk3NyIgZmlsbD0iIzc3NGRjYiIvPjxwYXRoIGQ9Ik04Ljg2MyA3Mi45NzdjMC0zNS40MSAyOC43MDUtNjQuMTE1IDY0LjExNS02NC4xMTVzNjQuMTE0IDI4LjcwNSA2NC4xMTQgNjQuMTE1LTI4LjcwNSA2NC4xMTYtNjQuMTE1IDY0LjExNlM4Ljg2MiAxMDguMzg3IDguODYyIDcyLjk3N3oiIGZpbGw9IiM5NmYiLz48cGF0aCBkPSJNMTA1LjI3OCA3NC44MDljLTIuMDQgMS4xODQtMTAuMTg2LjE4Ny0xMS42NTUgMS44NzQtNS43MjMgNi41NzItNS41NTkgMjIuNzgyLTYuMTkgMjQtLjc5MyAxLjUzLTIuNzkyIDIuMDQ1LTMuODUzIDAtLjg3LTEuNjgyLjE0Mi0xNy45ODgtNS44NzQtMjMuOTg2LTEuMzA1LTEuMzAyLTkuMzM1LS45NC0xMC45Ny0xLjg4OHMtMi4wNC0zLjE0NiAwLTQuMzNjMi4wMzktMS4xODMgOS42LS4xOSAxMS42NzktMy40MyA0LjIxNS01LjI5NSA0LjUzNy0yMS4yMzIgNS4xNjUtMjIuNDQ0Ljc5My0xLjUzIDIuNzkyLTIuMDQ2IDMuODUzIDAgLjgzOSAxLjYxOCAxLjMxOSAxNi43NDQgNi44NyAyMy4yNzggMS40NjkgMS43MyA5LjUxMyAxLjc0OCAxMC45NzUgMi41OTZzMi4wNCAzLjE0NyAwIDQuMzN6IiBmaWxsPSIjZmZmIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iNCIvPjxwYXRoIGQ9Ik02NS44MDMgNTIuNzY3Yy0xLjA2Ni42MTgtNS43MzMuNjMtNi44MDUgMS44OTMtNC4wNDggNC43NjUtMi41OTggNy43OTYtMy4yMSA4Ljk3NS0uNzczIDEuNDkzLTIuMjMgMS4xMTYtMi44MSAwLS40NTctLjg4NC40NTEtNC4wMi0zLjQ3NC04Ljg1NC0xLjAzLTEuMjY5LTQuMjIyLTEuMzUyLTUuNzA5LTIuMjE1cy0xLjE5Mi0yLjQ2NiAwLTMuMTU4IDQuODQ4LS4yMjcgNS44LTEuMTc2YzQuMzg3LTQuMzc0IDIuNzQ5LTcuMjY2IDMuMzg0LTguNDkyLjc3NC0xLjQ5MiAyLjIzMi0xLjExNSAyLjgxIDAgLjQ2Ljg4OC0xLjQ2IDMuNzA5IDIuNzE0IDguNTAyIDEuMDcxIDEuMjMgNS44MTIuNTAzIDcuMyAxLjM2NnMxLjA2NiAyLjU0IDAgMy4xNTl6TTQzLjU4NSA5NS4yNzZjMS4wNjYtLjYxOSA1LjczMi0uNjMyIDYuODA0LTEuODkzIDQuMDQ4LTQuNzY2IDIuNTk4LTcuNzk2IDMuMjEtOC45NzYuNzczLTEuNDkyIDIuMjMxLTEuMTE2IDIuODEgMCAuNDU4Ljg4NC0uNDUgNC4wMiAzLjQ3NCA4Ljg1NCAxLjAzIDEuMjcgNC4yMjIgMS4zNTIgNS43MSAyLjIxNSAxLjQ4Ni44NjMgMS4xOTEgMi40NjYgMCAzLjE1OC0xLjE5My42OTItNC44NDkuMjI3LTUuOCAxLjE3Ni00LjM4OCA0LjM3NC0yLjc1IDcuMjY2LTMuMzg1IDguNDkyLS43NzMgMS40OTItMi4yMzEgMS4xMTYtMi44MSAwLS40Ni0uODg3IDEuNDYtMy43MDktMi43MTMtOC41MDItMS4wNzItMS4yMy01LjgxMy0uNTAzLTcuMy0xLjM2NnMtMS4wNjctMi41NCAwLTMuMTU4eiIgZmlsbD0iI2ZmZiIgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjIuNSIvPjwvc3ZnPg==";
 
   const Cast = Scratch.Cast;
   const runtime = Scratch.vm.runtime;
 
   /**
    * Generates an item for a block dropdown menu.
-   * 
+   *
    * @param text {String} Text value of menu item
    * @param value {String|undefined} Value of menu item, uses 'text' param if undefined
    * @returns Menu item object
@@ -26,7 +27,7 @@
   const genMenuItem = (text, value) => {
     return {
       text: Scratch.translate(text),
-      value: value ?? text
+      value: value ?? text,
     };
   };
 
@@ -47,7 +48,7 @@
     genMenuItem("sepia"),
     genMenuItem("scanlines"),
     genMenuItem("grain"),
-    genMenuItem("cubism")
+    genMenuItem("cubism"),
   ];
 
   class ImageCache {
@@ -100,7 +101,9 @@
     static HEX_COLOR_REGEX = /^#[0-9A-F]{6}[0-9a-f]{0,2}$/i;
     static TO_RAD = Math.PI / 180;
     static canvas = document.createElement("canvas");
-    static context = ImageHelper.canvas.getContext("2d", { willReadFrequently: true });
+    static context = ImageHelper.canvas.getContext("2d", {
+      willReadFrequently: true,
+    });
     static currentImageHash = null;
 
     static _validateSource(input) {
@@ -109,7 +112,8 @@
 
       if (input.startsWith("<svg")) {
         /* global Base64 */
-        const data = typeof Base64 !== "undefined" ? Base64.toBase64(input) : btoa(input);
+        const data =
+          typeof Base64 !== "undefined" ? Base64.toBase64(input) : btoa(input);
         return `data:image/svg+xml;base64,${data}`;
       }
 
@@ -150,13 +154,18 @@
         parseInt(hex.slice(1, 3), 16),
         parseInt(hex.slice(3, 5), 16),
         parseInt(hex.slice(5, 7), 16),
-        hex.length > 8 ? parseInt(hex.slice(7, 9), 16) : 255
+        hex.length > 8 ? parseInt(hex.slice(7, 9), 16) : 255,
       ];
     }
 
     static rgbaToHex(rgba) {
-      const alpha = rgba[3] !== undefined ? Math.round(rgba[3]).toString(16).padStart(2, "0") : "";
-      const rgbHex = (1 << 24 | rgba[0] << 16 | rgba[1] << 8 | rgba[2]).toString(16).slice(1);
+      const alpha =
+        rgba[3] !== undefined
+          ? Math.round(rgba[3]).toString(16).padStart(2, "0")
+          : "";
+      const rgbHex = ((1 << 24) | (rgba[0] << 16) | (rgba[1] << 8) | rgba[2])
+        .toString(16)
+        .slice(1);
 
       return `#${rgbHex}${alpha}`;
     }
@@ -197,7 +206,7 @@
         dstWidth < 0 ? -canvas.width : 0,
         dstHeight < 0 ? -canvas.height : 0,
         canvas.width,
-        canvas.height,
+        canvas.height
       );
       context.restore();
     }
@@ -243,7 +252,7 @@
       return {
         canvas: tempCanvas,
         ctx,
-        dispose
+        dispose,
       };
     }
 
@@ -271,13 +280,8 @@
       const end = Math.min(options.end ?? pixelData.length, pixelData.length);
       for (let i = start; i < end; i += 4) {
         const result = callback(
-          [
-            pixelData[i],
-            pixelData[i + 1],
-            pixelData[i + 2],
-            pixelData[i + 3]
-          ],
-          i / 4,
+          [pixelData[i], pixelData[i + 1], pixelData[i + 2], pixelData[i + 3]],
+          i / 4
         );
 
         pixelData[i] = result[0];
@@ -293,11 +297,7 @@
     }
 
     static unloadImageData(method, ...args) {
-      const imageData = method.call(
-        null,
-        ImageHelper.context,
-        ...args
-      );
+      const imageData = method.call(null, ImageHelper.context, ...args);
 
       ImageHelper.context.putImageData(imageData, 0, 0);
       return ImageHelper.canvas.toDataURL("image/png");
@@ -310,7 +310,7 @@
       this.mask = {
         pos: [0, 0],
         scale: [100, 100],
-        direction: 90
+        direction: 90,
       };
       this.shardPieces = [];
 
@@ -334,9 +334,12 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("set tint of [SVG] to [COLOR]"),
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              COLOR: { type: Scratch.ArgumentType.COLOR }
-            }
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              COLOR: { type: Scratch.ArgumentType.COLOR },
+            },
           },
           "---",
           {
@@ -345,135 +348,219 @@
             text: Scratch.translate("remove [COLOR] from [DATA_URI]"),
             arguments: {
               COLOR: { type: Scratch.ArgumentType.COLOR },
-              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE }
-            }
+              DATA_URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+            },
           },
           {
             opcode: "replaceColor",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("replace [COLOR] with [REPLACE] in [DATA_URI]"),
+            text: Scratch.translate(
+              "replace [COLOR] with [REPLACE] in [DATA_URI]"
+            ),
             arguments: {
               COLOR: { type: Scratch.ArgumentType.COLOR },
-              REPLACE: { type: Scratch.ArgumentType.COLOR, defaultValue: "#00ff00" },
-              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE }
-            }
+              REPLACE: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#00ff00",
+              },
+              DATA_URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+            },
           },
           {
             opcode: "replaceColorPattern",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("replace [COLOR] with pattern [PATTERN] scale [SCALE] in [DATA_URI]"),
+            text: Scratch.translate(
+              "replace [COLOR] with pattern [PATTERN] scale [SCALE] in [DATA_URI]"
+            ),
             arguments: {
               COLOR: { type: Scratch.ArgumentType.COLOR },
-              PATTERN: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
+              PATTERN: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
               SCALE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
-              DATA_URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE }
-            }
+              DATA_URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+            },
           },
           {
             opcode: "setSoftness",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set color threshold to [AMT] %"),
             arguments: {
-              AMT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
-            }
+              AMT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
+            },
           },
           "---",
           {
             opcode: "applyEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("set [EFFECT] effect of [SVG] to [PERCENTAGE] %"),
+            text: Scratch.translate(
+              "set [EFFECT] effect of [SVG] to [PERCENTAGE] %"
+            ),
             arguments: {
               EFFECT: { type: Scratch.ArgumentType.STRING, menu: "EFFECTS" },
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              PERCENTAGE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 }
-            }
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              PERCENTAGE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 50,
+              },
+            },
           },
           {
             opcode: "applyBulgeEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("set bulge effect of [SVG] to [STRENGTH] % at x [CENTER_X] y [CENTER_Y]"),
+            text: Scratch.translate(
+              "set bulge effect of [SVG] to [STRENGTH] % at x [CENTER_X] y [CENTER_Y]"
+            ),
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
               STRENGTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               CENTER_X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              CENTER_Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            }
+              CENTER_Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
           },
           {
             opcode: "applyWaveEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("set wave effect of [SVG] to amplitude x [AMPX] y [AMPY] and frequency x [FREQX] y [FREQY]"),
+            text: Scratch.translate(
+              "set wave effect of [SVG] to amplitude x [AMPX] y [AMPY] and frequency x [FREQX] y [FREQY]"
+            ),
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
               AMPX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               AMPY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
               FREQX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              FREQY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
-            }
+              FREQY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+            },
           },
           {
             opcode: "applyLineGlitchEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("set line glitch effect of [SVG] to [PERCENTAGE]% on [DIRECT] axis and line width [WIDTH]"),
+            text: Scratch.translate(
+              "set line glitch effect of [SVG] to [PERCENTAGE]% on [DIRECT] axis and line width [WIDTH]"
+            ),
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              PERCENTAGE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              PERCENTAGE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 50,
+              },
               DIRECT: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" },
-              WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
-            }
+              WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+            },
           },
           {
             opcode: "applyAbberationEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("set abberation effect of [SVG] to [PERCENTAGE] % on [DIRECT] axis with [COLOR1] and [COLOR2]"),
+            text: Scratch.translate(
+              "set abberation effect of [SVG] to [PERCENTAGE] % on [DIRECT] axis with [COLOR1] and [COLOR2]"
+            ),
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              PERCENTAGE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-              COLOR1: { type: Scratch.ArgumentType.COLOR, defaultValue: "#ff0000" },
-              COLOR2: { type: Scratch.ArgumentType.COLOR, defaultValue: "#00f7ff" },
-              DIRECT: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" }
-            }
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              PERCENTAGE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 5,
+              },
+              COLOR1: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#ff0000",
+              },
+              COLOR2: {
+                type: Scratch.ArgumentType.COLOR,
+                defaultValue: "#00f7ff",
+              },
+              DIRECT: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" },
+            },
           },
           "---",
           {
             opcode: "removeTransparencyEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("remove pixels [REMOVE] [THRESHOLD] % transparency from [SVG]"),
+            text: Scratch.translate(
+              "remove pixels [REMOVE] [THRESHOLD] % transparency from [SVG]"
+            ),
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              THRESHOLD: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
-              REMOVE: { type: Scratch.ArgumentType.STRING, menu: "REMOVAL" }
-            }
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              THRESHOLD: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 50,
+              },
+              REMOVE: { type: Scratch.ArgumentType.STRING, menu: "REMOVAL" },
+            },
           },
           {
             opcode: "applyEdgeOutlineEffect",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("add outline to [SVG] thickness [THICKNESS] color [COLOR]"),
+            text: Scratch.translate(
+              "add outline to [SVG] thickness [THICKNESS] color [COLOR]"
+            ),
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
               THICKNESS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              COLOR: { type: Scratch.ArgumentType.COLOR }
-            }
+              COLOR: { type: Scratch.ArgumentType.COLOR },
+            },
           },
           {
             opcode: "upscaleImage",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("sharpen image [URI] by [NUM] %"),
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
-            }
+              URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+            },
           },
-          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Clipping & Masking") },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Clipping & Masking"),
+          },
           {
             opcode: "maskImage",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[TYPE] mask [MASK] from [IMG]"),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "MASKING" },
-              IMG: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              MASK: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE }
-            }
+              IMG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              MASK: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+            },
           },
           "---",
           {
@@ -482,8 +569,8 @@
             text: Scratch.translate("set mask position to x [X] y [Y]"),
             arguments: {
               X: { type: Scratch.ArgumentType.NUMBER },
-              Y: { type: Scratch.ArgumentType.NUMBER }
-            }
+              Y: { type: Scratch.ArgumentType.NUMBER },
+            },
           },
           {
             opcode: "changeCutout",
@@ -491,8 +578,8 @@
             text: Scratch.translate("change mask position by x [X] y [Y]"),
             arguments: {
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            }
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
           },
           {
             opcode: "currentCut",
@@ -500,8 +587,8 @@
             text: Scratch.translate("mask [POS]"),
             disableMonitor: true,
             arguments: {
-              POS: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" }
-            }
+              POS: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" },
+            },
           },
           "---",
           {
@@ -510,8 +597,8 @@
             text: Scratch.translate("set mask size to x [SIZE] y [Y]"),
             arguments: {
               SIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
-            }
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+            },
           },
           {
             opcode: "changeScale",
@@ -519,8 +606,8 @@
             text: Scratch.translate("change mask size by x [SIZE] y [Y]"),
             arguments: {
               SIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            }
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
           },
           {
             opcode: "currentScale",
@@ -528,8 +615,8 @@
             text: Scratch.translate("mask size [POS]"),
             disableMonitor: true,
             arguments: {
-              POS: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" }
-            }
+              POS: { type: Scratch.ArgumentType.STRING, menu: "POSITIONS" },
+            },
           },
           "---",
           {
@@ -537,51 +624,62 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("set mask direction to [ANGLE]"),
             arguments: {
-              ANGLE: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 }
-            }
+              ANGLE: { type: Scratch.ArgumentType.ANGLE, defaultValue: 90 },
+            },
           },
           {
             opcode: "changeDirection",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("change mask direction by [ANGLE]"),
             arguments: {
-              ANGLE: { type: Scratch.ArgumentType.ANGLE, defaultValue: 15 }
-            }
+              ANGLE: { type: Scratch.ArgumentType.ANGLE, defaultValue: 15 },
+            },
           },
           {
             opcode: "currentDir",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("mask direction"),
-            disableMonitor: true
+            disableMonitor: true,
           },
           "---",
           {
             opcode: "crackImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("crack [URI] into [SHARDS] shards with [TEETH] teeth"),
+            text: Scratch.translate(
+              "crack [URI] into [SHARDS] shards with [TEETH] teeth"
+            ),
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
+              URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
               SHARDS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 6 },
-              TEETH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 4 }
-            }
+              TEETH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 4 },
+            },
           },
           {
             opcode: "getShard",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("shard # [SHARD]"),
             arguments: {
-              SHARD: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
-            }
+              SHARD: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+            },
           },
-          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Image Data") },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Image Data"),
+          },
           {
             opcode: "commonCol",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[TYPE] common color in [URI]"),
             arguments: {
               TYPE: { type: Scratch.ArgumentType.STRING, menu: "DOMINANT" },
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE }
-            }
+              URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+            },
           },
           "---",
           {
@@ -589,68 +687,98 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[TYPE] of [URI]"),
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "PIXELTYPE" }
-            }
+              URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "PIXELTYPE" },
+            },
           },
           {
             opcode: "getPixel",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("pixel [NUM] of [URI]"),
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
-            }
+              URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+            },
           },
           {
             opcode: "setPixel",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("set color of pixel [NUM] to [COLOR] in [URI]"),
+            text: Scratch.translate(
+              "set color of pixel [NUM] to [COLOR] in [URI]"
+            ),
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
+              URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              COLOR: { type: Scratch.ArgumentType.COLOR }
-            }
+              COLOR: { type: Scratch.ArgumentType.COLOR },
+            },
           },
           {
             opcode: "setPixels",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("set color of pixels from [NUM] to [NUM2] to [COLOR] in [URI]"),
+            text: Scratch.translate(
+              "set color of pixels from [NUM] to [NUM2] to [COLOR] in [URI]"
+            ),
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
+              URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               NUM2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              COLOR: { type: Scratch.ArgumentType.COLOR }
-            }
+              COLOR: { type: Scratch.ArgumentType.COLOR },
+            },
           },
-          { blockType: Scratch.BlockType.LABEL, text: Scratch.translate("Image Conversions") },
+          {
+            blockType: Scratch.BlockType.LABEL,
+            text: Scratch.translate("Image Conversions"),
+          },
           {
             opcode: "svgToBitmap",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("convert svg [SVG] to bitmap with width [WIDTH] height [HEIGHT]"),
+            text: Scratch.translate(
+              "convert svg [SVG] to bitmap with width [WIDTH] height [HEIGHT]"
+            ),
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "<svg></svg>" },
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "<svg></svg>",
+              },
               WIDTH: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
-              HEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
-            }
+              HEIGHT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+            },
           },
           {
             opcode: "convertImageToSVG",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("convert image [URI] to svg [TYPE]"),
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "fileType" }
-            }
+              URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "fileType" },
+            },
           },
           {
             opcode: "makeSVGimage",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("put image [URI] into blank svg [TYPE]"),
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
-              TYPE: { type: Scratch.ArgumentType.STRING, menu: "fileType" }
-            }
+              URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
+              TYPE: { type: Scratch.ArgumentType.STRING, menu: "fileType" },
+            },
           },
           "---",
           {
@@ -658,64 +786,73 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("stretch [URI] to width [W] height [H]"),
             arguments: {
-              URI: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
+              URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
               W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 },
-              H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
-            }
+              H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+            },
           },
           {
             opcode: "skewSVG",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("skew image [SVG] at x [X] y [Y]"),
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: DEFAULT_IMG_VALUE },
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: DEFAULT_IMG_VALUE,
+              },
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            }
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
           },
           {
             opcode: "removeThorns",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("remove vector thorns from [SVG]"),
             arguments: {
-              SVG: { type: Scratch.ArgumentType.STRING, defaultValue: "<svg></svg>" }
-            }
+              SVG: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "<svg></svg>",
+              },
+            },
           },
           "---",
           {
             opcode: "audioToImage",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("convert audio URI [AUDIO_URI] to PNG with width [W]"),
+            text: Scratch.translate(
+              "convert audio URI [AUDIO_URI] to PNG with width [W]"
+            ),
             arguments: {
-              AUDIO_URI: { type: Scratch.ArgumentType.STRING, defaultValue: "data:audio/..." },
-              W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
-            }
+              AUDIO_URI: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "data:audio/...",
+              },
+              W: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
+            },
           },
         ],
         menus: {
-          POSITIONS: [
-            genMenuItem("x"), 
-            genMenuItem("y")
-          ],
+          POSITIONS: [genMenuItem("x"), genMenuItem("y")],
           REMOVAL: [
             genMenuItem("under"),
             genMenuItem("over"),
-            genMenuItem("equal to")],
+            genMenuItem("equal to"),
+          ],
           DOMINANT: [genMenuItem("most"), genMenuItem("least")],
           MASKING: [
             genMenuItem("clip"),
             genMenuItem("cutout"),
-            genMenuItem("overlay")
+            genMenuItem("overlay"),
           ],
           PIXELTYPE: [
             genMenuItem("width"),
             genMenuItem("height"),
-            genMenuItem("total")
+            genMenuItem("total"),
           ],
-          fileType: [
-            genMenuItem("content"),
-            genMenuItem("data.URI")
-          ],
+          fileType: [genMenuItem("content"), genMenuItem("data.URI")],
           EFFECTS: { acceptReporters: true, items: EFFECTS_MENU },
         },
       };
@@ -723,8 +860,10 @@
 
     // Helper Funcs
     _valueInRange(value, target) {
-      return value >= target - this.colorThreshold &&
-        value <= target + this.colorThreshold;
+      return (
+        value >= target - this.colorThreshold &&
+        value <= target + this.colorThreshold
+      );
     }
 
     _colorInRange(rgba, targetRgba) {
@@ -785,11 +924,7 @@
           const index = (y * width + linePos) * 4;
           if (linePos >= 0 && linePos < width) {
             for (let x = lineStart; x < lineEnd; x++) {
-              imageData.data.copyWithin(
-                (y * width + x) * 4,
-                index,
-                index + 4
-              );
+              imageData.data.copyWithin((y * width + x) * 4, index, index + 4);
             }
           }
         }
@@ -811,7 +946,7 @@
         const index = (y * width + x) * 4;
         const enlargeFactor = 1 + Math.random() * (1.5 + value / 200);
         const blurRadius = Math.floor(enlargeFactor * 4);
-  
+
         for (let offsetY = -blurRadius; offsetY <= blurRadius; offsetY++) {
           for (let offsetX = -blurRadius; offsetX <= blurRadius; offsetX++) {
             const newX = x + offsetX;
@@ -871,14 +1006,19 @@
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           const index = (y * width + x) * 4;
-          const dx = x - (width / 2);
-          const dy = y - (height / 2);
+          const dx = x - width / 2;
+          const dy = y - height / 2;
           const distance = Math.sqrt(dx * dx + dy * dy);
           const offset = Math.sin(distance * value) * value;
           const sourceX = Math.floor(x + offset);
           const sourceY = Math.floor(y);
 
-          if (sourceX >= 0 && sourceX < width && sourceY >= 0 && sourceY < height) {
+          if (
+            sourceX >= 0 &&
+            sourceX < width &&
+            sourceY >= 0 &&
+            sourceY < height
+          ) {
             const srcIndex = (sourceY * width + sourceX) * 4;
             if (imageData.data[srcIndex + 3] > 0) {
               imageData.data.copyWithin(index, srcIndex, srcIndex + 4);
@@ -914,7 +1054,7 @@
           }
         }
       }
-    
+
       imageData.data.set(newData);
       return callback(true, imageData);
     }
@@ -949,9 +1089,7 @@
 
         if (lineBrightness[y] === undefined) {
           lineBrightness[y] =
-            Math.random() < value / 100
-              ? Math.random() * (value / 2)
-              : 0;
+            Math.random() < value / 100 ? Math.random() * (value / 2) : 0;
         }
 
         const bright = lineBrightness[y];
@@ -1051,13 +1189,10 @@
             srcY = Math.round(cy + dy * scale);
           }
 
-          if (
-            srcX >= 0 && srcX < width &&
-            srcY >= 0 && srcY < height
-          ) {
+          if (srcX >= 0 && srcX < width && srcY >= 0 && srcY < height) {
             const s = (srcY * width + srcX) * 4;
             const d = (y * width + x) * 4;
-              
+
             output[d] = data[s];
             output[d + 1] = data[s + 1];
             output[d + 2] = data[s + 2];
@@ -1084,10 +1219,7 @@
           const sx = x + waveX;
           const sy = y + waveY;
 
-          if (
-            sx >= 0 && sx < width &&
-            sy >= 0 && sy < height
-          ) {
+          if (sx >= 0 && sx < width && sy >= 0 && sy < height) {
             const s = (sy * width + sx) * 4;
             const d = (y * width + x) * 4;
 
@@ -1120,22 +1252,14 @@
         if (horizontal) {
           const src = line * width * 4;
           for (let y = start; y < end; y++) {
-            data.copyWithin(
-              y * width * 4,
-              src,
-              src + width * 4
-            );
+            data.copyWithin(y * width * 4, src, src + width * 4);
           }
         } else {
           for (let y = 0; y < height; y++) {
             const src = (y * width + line) * 4;
 
             for (let x = start; x < end; x++) {
-              data.copyWithin(
-                (y * width + x) * 4,
-                src,
-                src + 4
-              );
+              data.copyWithin((y * width + x) * 4, src, src + 4);
             }
           }
         }
@@ -1152,9 +1276,7 @@
 
       const left = new Uint8ClampedArray(data.length);
       const right = new Uint8ClampedArray(data.length);
-      const offset = Math.round(
-        (axis === "x" ? width : height) * 0.5 * amount
-      );
+      const offset = Math.round((axis === "x" ? width : height) * 0.5 * amount);
 
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -1186,14 +1308,14 @@
           const li = (ly * width + lx) * 4;
           const ri = (ry * width + rx) * 4;
 
-          left[li] = r * color1[0] / 255;
-          left[li + 1] = g * color1[1] / 255;
-          left[li + 2] = b * color1[2] / 255;
+          left[li] = (r * color1[0]) / 255;
+          left[li + 1] = (g * color1[1]) / 255;
+          left[li + 2] = (b * color1[2]) / 255;
           left[li + 3] = a;
 
-          right[ri] = r * color2[0] / 255;
-          right[ri + 1] = g * color2[1] / 255;
-          right[ri + 2] = b * color2[2] / 255;
+          right[ri] = (r * color2[0]) / 255;
+          right[ri + 1] = (g * color2[1]) / 255;
+          right[ri + 2] = (b * color2[2]) / 255;
           right[ri + 3] = a;
         }
       }
@@ -1255,9 +1377,15 @@
 
       const side = 3;
       const weights = [
-        0, -factor, 0,
-        -factor, 1 + 4 * factor, -factor,
-        0, -factor, 0
+        0,
+        -factor,
+        0,
+        -factor,
+        1 + 4 * factor,
+        -factor,
+        0,
+        -factor,
+        0,
       ];
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -1270,16 +1398,8 @@
             for (let kx = 0; kx < side; kx++) {
               const weight = weights[ky * side + kx];
 
-              const sy = ImageHelper.clamp(
-                0,
-                height - 1,
-                y + ky - 1
-              );
-              const sx = ImageHelper.clamp(
-                0,
-                width - 1,
-                x + kx - 1
-              );
+              const sy = ImageHelper.clamp(0, height - 1, y + ky - 1);
+              const sx = ImageHelper.clamp(0, width - 1, x + kx - 1);
 
               const index = (sy * width + sx) * 4;
               r += data[index] * weight;
@@ -1309,7 +1429,7 @@
         Math.min(255, (pixel[0] * rgba[0]) / 255),
         Math.min(255, (pixel[1] * rgba[1]) / 255),
         Math.min(255, (pixel[2] * rgba[2]) / 255),
-        Math.min(255, (pixel[3] * rgba[3]) / 255)
+        Math.min(255, (pixel[3] * rgba[3]) / 255),
       ]);
     }
 
@@ -1456,7 +1576,7 @@
       const image = await ImageHelper.newImage(args.SVG);
       if (!image) return INVALID_IMG;
 
-      const strength = 1 - (Cast.toNumber(args.STRENGTH) / 100);
+      const strength = 1 - Cast.toNumber(args.STRENGTH) / 100;
       const centerX = Cast.toNumber(args.CENTER_X) / 100;
       const centerY = Cast.toNumber(args.CENTER_Y) / 100;
 
@@ -1472,7 +1592,12 @@
         (canvasSize - image.height) / 2
       );
 
-      return ImageHelper.unloadImageData(this._bulge, strength, centerX, centerY);
+      return ImageHelper.unloadImageData(
+        this._bulge,
+        strength,
+        centerX,
+        centerY
+      );
     }
 
     async applyWaveEffect(args) {
@@ -1510,7 +1635,13 @@
       const amount = Cast.toNumber(args.PERCENTAGE) / 100;
 
       ImageHelper.prepCanvas(image);
-      return ImageHelper.unloadImageData(this._aberration, amount, color1, color2, axis);
+      return ImageHelper.unloadImageData(
+        this._aberration,
+        amount,
+        color1,
+        color2,
+        axis
+      );
     }
 
     async removeTransparencyEffect(args) {
@@ -1567,8 +1698,8 @@
       const mask = this.mask;
       const scaleW = maskImage.width * (mask.scale[0] / 50);
       const scaleH = maskImage.height * (mask.scale[1] / 50);
-      const cutX = mask.pos[0] + (image.width / 2) - (scaleW / 2);
-      const cutY = mask.pos[1] - (image.height / 2) + (scaleH / 2);
+      const cutX = mask.pos[0] + image.width / 2 - scaleW / 2;
+      const cutY = mask.pos[1] - image.height / 2 + scaleH / 2;
 
       if (args.TYPE === "clip") {
         context.globalCompositeOperation = "destination-in";
@@ -1636,7 +1767,10 @@
 
       const teeth = Math.max(0, Math.round(Cast.toNumber(args.TEETH)));
       const shardCount = Math.max(2, Math.round(Cast.toNumber(args.SHARDS)));
-      const cols = Math.max(1, Math.round(Math.sqrt(shardCount * (width / height))));
+      const cols = Math.max(
+        1,
+        Math.round(Math.sqrt(shardCount * (width / height)))
+      );
       const rows = Math.max(1, Math.round(shardCount / cols));
 
       const cellW = width / cols;
@@ -1672,7 +1806,10 @@
           const y1 = r * cellH;
           const y2 = (r + 1) * cellH;
           if (c === 0 || c === cols) {
-            row.push([{ x, y: y1 }, { x, y: y2 }]);
+            row.push([
+              { x, y: y1 },
+              { x, y: y2 },
+            ]);
           } else {
             row.push(buildJaggedLine(x, y1, x, y2));
           }
@@ -1688,7 +1825,10 @@
           const x1 = c * cellW;
           const x2 = (c + 1) * cellW;
           if (r === 0 || r === rows) {
-            row.push([{ x: x1, y }, { x: x2, y }]);
+            row.push([
+              { x: x1, y },
+              { x: x2, y },
+            ]);
           } else {
             row.push(buildJaggedLine(x1, y, x2, y));
           }
@@ -1703,9 +1843,18 @@
           const right = verticalEdges[r][c + 1];
           const bottom = [...horizontalEdges[r + 1][c]].reverse();
           const left = [...verticalEdges[r][c]].reverse();
-          const polygon = [...top, ...right.slice(1), ...bottom.slice(1), ...left.slice(1)];
+          const polygon = [
+            ...top,
+            ...right.slice(1),
+            ...bottom.slice(1),
+            ...left.slice(1),
+          ];
 
-          const { canvas: shardCanvas, ctx, dispose } = ImageHelper.newTempCanvas(width, height);
+          const {
+            canvas: shardCanvas,
+            ctx,
+            dispose,
+          } = ImageHelper.newTempCanvas(width, height);
 
           ctx.save();
           ctx.beginPath();
@@ -1748,9 +1897,10 @@
         .sort((a, b) => a[1] - b[1])
         .map((c) => c[0]);
 
-      const rgba = args.TYPE === "most"
-        ? sortedColors[sortedColors.length - 1]
-        : sortedColors[0];
+      const rgba =
+        args.TYPE === "most"
+          ? sortedColors[sortedColors.length - 1]
+          : sortedColors[0];
       return ImageHelper.rgbaToHex(rgba.split(","));
     }
 
@@ -1771,7 +1921,7 @@
           return "";
       }
     }
-    
+
     async getPixel(args) {
       const image = await ImageHelper.newImage(args.URI);
       if (!image) return INVALID_IMG;
@@ -1799,7 +1949,8 @@
 
       const rgba = ImageHelper.hexToRgba(args.COLOR);
       const start = (Cast.toNumber(args.NUM) - 1) * 4;
-      const end = (args.NUM2 === undefined ? start : Cast.toNumber(args.NUM2) * 4) + 4;
+      const end =
+        (args.NUM2 === undefined ? start : Cast.toNumber(args.NUM2) * 4) + 4;
       const options = { start, end };
 
       ImageHelper.prepCanvas(image);
@@ -1867,7 +2018,7 @@
                 y,
                 width: runWidth,
                 height: 1,
-                color: runColor
+                color: runColor,
               };
               rects.push(rect);
             }
@@ -1890,7 +2041,10 @@
         const b = (rgba >>> 16) & 255;
         const a = (rgba >>> 24) & 255;
 
-        const node = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        const node = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "rect"
+        );
         node.setAttribute("x", rect.x);
         node.setAttribute("y", rect.y);
         node.setAttribute("width", rect.width);
@@ -1921,14 +2075,20 @@
       svg += `<image x="0" y="0" width="${width / 2}" height="${height / 2}" `;
       svg += `xlink:href="${image.src}"/></g></svg>`;
 
-      return args.TYPE === "content" ? svg : `data:image/svg+xml;base64,${btoa(svg)}`;
+      return args.TYPE === "content"
+        ? svg
+        : `data:image/svg+xml;base64,${btoa(svg)}`;
     }
 
     async stretchImg(args) {
       const image = await ImageHelper.newImage(args.URI);
       if (!image) return INVALID_IMG;
 
-      ImageHelper.prepCanvas(image, Cast.toNumber(args.W), Cast.toNumber(args.H));
+      ImageHelper.prepCanvas(
+        image,
+        Cast.toNumber(args.W),
+        Cast.toNumber(args.H)
+      );
       return ImageHelper.canvas.toDataURL("image/png");
     }
 
@@ -1942,14 +2102,17 @@
       const tanX = Math.tan(skewX);
       const tanY = Math.tan(skewY);
 
-      const newWidth  = image.width + Math.abs(image.width * tanY);
+      const newWidth = image.width + Math.abs(image.width * tanY);
       const newHeight = image.height + Math.abs(image.height * tanX);
 
-      const { canvas, ctx, dispose } = ImageHelper.newTempCanvas(newWidth, newHeight);
+      const { canvas, ctx, dispose } = ImageHelper.newTempCanvas(
+        newWidth,
+        newHeight
+      );
 
       ctx.save();
       ctx.translate(newWidth / 2, newHeight / 2);
-      ctx.setTransform(1, tanX, tanY, 1, newWidth / 2, newHeight / 2); 
+      ctx.setTransform(1, tanX, tanY, 1, newWidth / 2, newHeight / 2);
       ctx.drawImage(image, -image.width / 2, -image.height / 2);
       ctx.restore();
 
@@ -1959,7 +2122,10 @@
     }
 
     removeThorns(args) {
-      return Cast.toString(args.SVG).replaceAll(`linejoin="miter"`, `linejoin="round"`);
+      return Cast.toString(args.SVG).replaceAll(
+        `linejoin="miter"`,
+        `linejoin="round"`
+      );
     }
 
     audioToImage(args) {
@@ -1978,7 +2144,7 @@
       }
 
       const result = canvas.toDataURL("image/png");
-      dispose(); 
+      dispose();
       return result;
     }
   }
