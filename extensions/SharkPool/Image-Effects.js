@@ -211,6 +211,7 @@
       if (cached.img) return cached.img;
 
       return new Promise((resolve) => {
+        // eslint-disable-next-line extension/check-can-fetch
         Scratch.canFetch(source).then((canFetch) => {
           if (!canFetch) resolve(null);
 
