@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.3.0.0
+// Version V.3.0.01
 
 (function (Scratch) {
   "use strict";
@@ -134,6 +134,7 @@
       height += padding;
 
       context.globalCompositeOperation = "source-over";
+      context.filter = "none";
       if (canvas.width === width && canvas.height === height) {
         context.resetTransform();
         context.clearRect(0, 0, width, height);
