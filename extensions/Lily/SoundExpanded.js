@@ -514,13 +514,18 @@
 
     stopAllSpriteSounds(args, util) {
       const targets = [];
-      if (args.TARGET === "_myself_") targets.push(util.target);
-      else if (args.TARGET === "_stage_")
-        targets.push(runtime.getTargetForStage());
-      else if (args.TARGET === "_myfamily_")
-        targets.push(...util.target.sprite.clones);
-      else {
-        targets.push(Scratch.vm.runtime.getSpriteTargetByName(args.TARGET));
+      switch (args.TARGET) {
+        case '_myself_':
+          targets.push(util.target);
+          break;
+        case '_stage_':
+          targets.push(runtime.getTargetForStage());
+          break;
+        case '_myfamily_':
+          targets.push(...util.target.sprite.clones);
+          break;
+        default:
+          targets.push(runtime.getSpriteTargetByName(args.TARGET))
       }
 
       for (const target of targets) {
