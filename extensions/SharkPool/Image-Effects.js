@@ -105,6 +105,7 @@
       willReadFrequently: true,
     });
     static currentImageHash = null;
+    static canvasPadding = 0;
 
     static _validateSource(input) {
       input = Cast.toString(input).trim();
@@ -123,15 +124,19 @@
       return null;
     }
 
-    static _clearStage(width, height) {
+    static _clearStage(width, height, padding) {
       width = Math.max(1, Math.abs(width));
       height = Math.max(1, Math.abs(height));
 
       const { canvas, context } = ImageHelper.getHelper();
+
+      width += padding;
+      height += padding;
+
       context.globalCompositeOperation = "source-over";
-      if (width === canvas.width && height === canvas.height) {
+      if (canvas.width === width && canvas.height === height) {
         context.resetTransform();
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.clearRect(0, 0, width, height);
       } else {
         canvas.width = width;
         canvas.height = height;
@@ -187,6 +192,7 @@
 
     static prepCanvas(image, opt_width, opt_height) {
       const { canvas, context } = ImageHelper.getHelper();
+      const padding = ImageHelper.canvasPadding;
 
       const srcWidth = image.naturalWidth || image.width || 300;
       const srcHeight = image.naturalHeight || image.height || 150;
@@ -194,20 +200,10 @@
       const dstHeight = opt_height ?? srcHeight;
 
       ImageHelper.currentImageHash = image._spHash;
-      ImageHelper._clearStage(dstWidth, dstHeight);
+      ImageHelper._clearStage(dstWidth, dstHeight, padding);
       context.save();
       context.scale(dstWidth < 0 ? -1 : 1, dstHeight < 0 ? -1 : 1);
-      context.drawImage(
-        image,
-        0,
-        0,
-        srcWidth,
-        srcHeight,
-        dstWidth < 0 ? -canvas.width : 0,
-        dstHeight < 0 ? -canvas.height : 0,
-        canvas.width,
-        canvas.height
-      );
+      ImageHelper.drawImage(image, dstWidth, dstHeight);
       context.restore();
     }
 
@@ -270,6 +266,28 @@
       });
 
       return imageData;
+    }
+
+    static drawImage(image, width, height) {
+      const { canvas, context } = ImageHelper.getHelper();
+      const padding = ImageHelper.canvasPadding;
+
+      const srcWidth = image.naturalWidth || image.width || 300;
+      const srcHeight = image.naturalHeight || image.height || 150;
+      if (!width) width = srcWidth;
+      if (!height) height = srcHeight;
+
+      context.drawImage(
+        image,
+        0,
+        0,
+        srcWidth,
+        srcHeight,
+        width < 0 ? -(canvas.width + padding / 2) : padding / 2,
+        height < 0 ? -(canvas.height + padding / 2) : padding / 2,
+        width,
+        height
+      );
     }
 
     static forEachPixel(callback, options = {}) {
@@ -540,6 +558,15 @@
                 defaultValue: DEFAULT_IMG_VALUE,
               },
               NUM: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
+            },
+          },
+          "---",
+          {
+            opcode: "setCanvasPadding",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set canvas padding to [VALUE]"),
+            arguments: {
+              VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
           },
           {
@@ -1459,7 +1486,7 @@
       if (!image || !pattern) return INVALID_IMG;
 
       ImageHelper.prepCanvas(image);
-      const { width, height } = image;
+      const { width, height } = ImageHelper.canvas;
       const imageData = ImageHelper.getImageData();
       const modified = new ImageData(
         new Uint8ClampedArray(imageData.data),
@@ -1530,7 +1557,7 @@
         if (pixelsAltered) context.putImageData(imageData, 0, 0);
         else {
           context.clearRect(0, 0, canvas.width, canvas.height);
-          context.drawImage(image, 0, 0, image.width, image.height);
+          ImageHelper.drawImage(image);
         }
 
         return canvas.toDataURL("image/png");
@@ -1688,12 +1715,18 @@
       return ImageHelper.unloadImageData(this._sharpen, value);
     }
 
+    setCanvasPadding(args) {
+      ImageHelper.canvasPadding = Math.max(0, Cast.toNumber(args.VALUE));
+      ImageCache.clear(); // some images might be cached with bigger padding.
+    }
+
     async maskImage(args) {
       const image = await ImageHelper.newImage(args.IMG);
       const maskImage = await ImageHelper.newImage(args.MASK);
       if (!image || !maskImage) return INVALID_IMG;
 
       const { canvas, context } = ImageHelper.getHelper();
+      const padding = ImageHelper.canvasPadding / 2;
       ImageHelper.prepCanvas(image);
 
       const mask = this.mask;
@@ -1712,7 +1745,13 @@
 
       context.translate(cutX + scaleW / 2, cutY * -1 + scaleH / 2);
       context.rotate((mask.direction - 90) * ImageHelper.TO_RAD);
-      context.drawImage(maskImage, scaleW / -2, scaleH / -2, scaleW, scaleH);
+      context.drawImage(
+        maskImage,
+        padding + scaleW / -2,
+        padding + scaleH / -2,
+        scaleW,
+        scaleH
+      );
       context.setTransform(1, 0, 0, 1, 0, 0);
 
       return canvas.toDataURL("image/png");
