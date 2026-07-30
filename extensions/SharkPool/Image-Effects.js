@@ -191,7 +191,7 @@
     }
 
     static prepCanvas(image, opt_width, opt_height) {
-      const { canvas, context } = ImageHelper.getHelper();
+      const context = ImageHelper.context;
       const padding = ImageHelper.canvasPadding;
 
       const srcWidth = image.naturalWidth || image.width || 300;
