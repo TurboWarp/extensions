@@ -136,14 +136,10 @@
 
       function processVertices(list) {
         const points = [];
-        const array = list;
-        if (array) {
-          for (let i = 0; i < array.length; i++) {
-            if (array[i] != "" && array[i].split(" ").length === 3) {
-              const item = array[i].split(" ");
-              if (item.length !== 3) {
-                return;
-              }
+        if (list) {
+          for (let i = 0; i < list.length; i++) {
+            const item = list[i].split(" ");
+            if (list[i] != "" && item.length === 3) {
               points.push(
                 new Ammo.btVector3(
                   Cast.toNumber(item[0]),
