@@ -96,12 +96,12 @@ If the video is already playing, playback restarts from the specified position b
 Reports the selected property of the specified video.
 
 **Available properties:**
-- current time -- Current playback position, in seconds
-- duration -- Total length of the video, in seconds
-- volume -- Current volume, from 0 to 100
-- width -- Native width, in pixels
-- height -- Native height, in pixels
-- playback rate -- Current playback speed (1 is normal speed)
+- current time: Current playback position, in seconds
+- duration: Total length of the video, in seconds
+- volume: Current volume, from 0 to 100
+- width: Native width, in pixels
+- height: Native height, in pixels
+- playback rate: Current playback speed (1 is normal speed)
 
 ---
 
@@ -146,9 +146,9 @@ Toggles wether the specified video should loop or not.
 Reports the selected property of the specified video.
 
 **Available properties:**
-- playing -- True if the video is actively playing
-- paused -- True if the video is paused
-- looping -- True if the video will loop
+- playing: True if the video is actively playing
+- paused: True if the video is paused
+- looping: True if the video will loop
 
 ---
 
