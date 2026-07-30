@@ -515,17 +515,17 @@
     stopAllSpriteSounds(args, util) {
       const targets = [];
       switch (args.TARGET) {
-        case '_myself_':
+        case "_myself_":
           targets.push(util.target);
           break;
-        case '_stage_':
+        case "_stage_":
           targets.push(runtime.getTargetForStage());
           break;
-        case '_myfamily_':
+        case "_myfamily_":
           targets.push(...util.target.sprite.clones);
           break;
         default:
-          targets.push(runtime.getSpriteTargetByName(args.TARGET))
+          targets.push(runtime.getSpriteTargetByName(args.TARGET));
       }
 
       for (const target of targets) {
