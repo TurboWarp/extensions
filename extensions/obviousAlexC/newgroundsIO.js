@@ -104,28 +104,33 @@
     disabled returns the real destination as JSON instead of navigating to it,
     which lets us prompt for the URL the user will actually visit.
   */
-  const openLoaderURL = (componentName) => new Promise((resolve) => {
-    const core = NGIO.ngioCore;
-    if (!core) return resolve();
+  const openLoaderURL = (componentName) =>
+    new Promise((resolve) => {
+      const core = NGIO.ngioCore;
+      if (!core) return resolve();
 
-    const component = core.getComponent(componentName, {
-      redirect: false,
-      log_stat: true,
+      const component = core.getComponent(componentName, {
+        redirect: false,
+        log_stat: true,
+      });
+      if (!component) return resolve();
+
+      core.executeComponent(component, (response) => {
+        const result = Array.isArray(response.result)
+          ? response.result[0]
+          : response.result;
+
+        if (response.success && result && result.url) {
+          resolve(
+            Scratch.openWindow(result.url)
+              // don't return the Window and don't reject on an error
+              .then(() => {}, () => {})
+          );
+        } else {
+          resolve();
+        }
+      });
     });
-
-    core.executeComponent(component, (response) => {
-      const result = Array.isArray(response.result)
-        ? response.result[0]
-        : response.result;
-
-      if (response.success && result && result.url) {
-        // don't return the Window to the project
-        resolve(Scratch.openWindow(result.url).then(() => {}));
-      } else {
-        resolve();
-      }
-    });
-  });
 
   //Status functions and variable
   const statusReport = (status) => {
@@ -1475,13 +1480,12 @@
     async promptLogin(args, util) {
       if (NGIO.session && !userDat.logged) {
         // the NGIO SDK has to be the one who actually opens the URL since it probes for a response,
-        // but we're able to show the permission dialogue firsth ere.
+        // but we're able to show the permission dialogue first here.
         const passportURL = NGIO.session.passport_url;
-        if (!passportURL || !(await Scratch.canOpenWindow(passportURL))) {
-          return;
+        if (passportURL && (await Scratch.canOpenWindow(passportURL))) {
+          NGIO.openLoginPage();
         }
 
-        NGIO.openLoginPage();
         return this.waitForValid(util);
       }
     }
