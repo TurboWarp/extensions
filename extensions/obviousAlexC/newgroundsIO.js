@@ -124,7 +124,10 @@
           resolve(
             Scratch.openWindow(result.url)
               // don't return the Window and don't reject on an error
-              .then(() => {}, () => {})
+              .then(
+                () => {},
+                () => {}
+              )
           );
         } else {
           resolve();
