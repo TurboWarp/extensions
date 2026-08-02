@@ -49,7 +49,7 @@
         .filter((m) => m[1].extensions !== undefined)
         .map((m) => [m[0], m[1].extensions]);
     } catch {
-      console.warn("Couldnt not retrieve data from Mime DB!");
+      console.warn("Could not retrieve data from Mime DB!");
       return [];
     }
   })();
