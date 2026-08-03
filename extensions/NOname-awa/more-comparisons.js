@@ -31,6 +31,7 @@
             arguments: {},
             disableMonitor: true,
           },
+          /* eslint-disable extension/should-translate */
           {
             opcode: "boolean",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -432,6 +433,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
         ],
       };
     }

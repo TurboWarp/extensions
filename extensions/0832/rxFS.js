@@ -23,6 +23,7 @@
     getInfo() {
       return {
         id: "0832rxfs",
+        // eslint-disable-next-line extension/should-translate
         name: "rxFS",
         color1: "#2bdab7",
         blocks: [
@@ -149,6 +150,7 @@
           {
             blockIconURI: file,
             opcode: "search",
+            hideFromPalette: true,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("search [STR]"),
             arguments: {
@@ -170,8 +172,8 @@
     sync({ STR, STR2 }) {
       str = btoa(unescape(encodeURIComponent(STR)));
       str2 = btoa(unescape(encodeURIComponent(STR2)));
-      if (rxFSsy.indexOf(str) + 1 == 0) {
-        rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = str2;
+      if (rxFSsy.indexOf(str) + 1 != 0) {
+        rxFSsy[rxFSsy.indexOf(str)] = str2;
       }
     }
 
@@ -200,21 +202,24 @@
 
     del({ STR }) {
       str = btoa(unescape(encodeURIComponent(STR)));
-      rxFSfi[rxFSsy.indexOf(str) + 1 - 1] = undefined;
-      rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = undefined;
+      const index = rxFSsy.indexOf(str);
+      if (index !== -1) {
+        rxFSfi.splice(index, 1);
+        rxFSsy.splice(index, 1);
+      }
     }
 
     file({ STR, STR2 }) {
-      rxFSfi[rxFSsy.indexOf(btoa(unescape(encodeURIComponent(STR)))) + 1 - 1] =
-        btoa(unescape(encodeURIComponent(STR2)));
+      const index = rxFSsy.indexOf(btoa(unescape(encodeURIComponent(STR))));
+      if (index === -1) return;
+      rxFSfi[index] = btoa(unescape(encodeURIComponent(STR2)));
     }
 
     search({ STR }) {
       Search = "";
-      i = 0;
       str = btoa(unescape(encodeURIComponent(STR)));
       for (var i in rxFSsy) {
-        if (!(rxFSsy[i].indexOf(str) == undefined)) {
+        if (rxFSsy[i].indexOf(str) != -1) {
           Search = [Search, "LA==", rxFSsy[i]].join("");
         }
       }
@@ -223,7 +228,6 @@
 
     list({ STR }) {
       Search = "";
-      i = 0;
       str = btoa(unescape(encodeURIComponent(STR)));
       for (var i in rxFSsy) {
         if (rxFSsy[i].slice(0, str.length) == str) {

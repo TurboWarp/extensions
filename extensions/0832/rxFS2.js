@@ -29,6 +29,7 @@
     getInfo() {
       return {
         id: "0832rxfs2",
+        // eslint-disable-next-line extension/should-translate
         name: "rxFS",
         color1: "#192d50",
         color2: "#192d50",
@@ -180,6 +181,7 @@
           {
             blockIconURI: folder,
             opcode: "search",
+            hideFromPalette: true,
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({ id: "search", default: "search [STR]" }),
             arguments: {
@@ -201,8 +203,8 @@
     sync({ STR, STR2 }) {
       str = encodeURIComponent(STR);
       str2 = encodeURIComponent(STR2);
-      if (rxFSsy.indexOf(str) + 1 == 0) {
-        rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = str2;
+      if (rxFSsy.indexOf(str) + 1 != 0) {
+        rxFSsy[rxFSsy.indexOf(str)] = str2;
       }
     }
 
@@ -225,21 +227,24 @@
 
     del({ STR }) {
       str = encodeURIComponent(STR);
-      rxFSfi[rxFSsy.indexOf(str) + 1 - 1] = undefined;
-      rxFSsy[rxFSsy.indexOf(str) + 1 - 1] = undefined;
+      const index = rxFSsy.indexOf(str);
+      if (index !== -1) {
+        rxFSfi.splice(index, 1);
+        rxFSsy.splice(index, 1);
+      }
     }
 
     folder({ STR, STR2 }) {
-      rxFSfi[rxFSsy.indexOf(encodeURIComponent(STR)) + 1 - 1] =
-        encodeURIComponent(STR2);
+      const index = rxFSsy.indexOf(encodeURIComponent(STR));
+      if (index === -1) return;
+      rxFSfi[index] = encodeURIComponent(STR2);
     }
 
     search({ STR }) {
       Search = "";
-      i = 0;
       str = encodeURIComponent(STR);
       for (var i in rxFSsy) {
-        if (!(rxFSsy[i].indexOf(str) == undefined)) {
+        if (rxFSsy[i].indexOf(str) != -1) {
           Search = [Search, ',"', rxFSsy[i], '"'].join("");
         }
       }
@@ -248,7 +253,6 @@
 
     list({ STR }) {
       Search = "";
-      i = 0;
       str = encodeURIComponent(STR);
       for (var i in rxFSsy) {
         if (rxFSsy[i].slice(0, str.length) == str) {

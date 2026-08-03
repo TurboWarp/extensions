@@ -25,7 +25,8 @@
    */
   const timerValue = (timer) => {
     return (
-      ((timer.paused ? 0 : Date.now() - timer.startTime) + timer.pauseTime) /
+      ((timer.paused ? 0 : Math.floor(performance.now()) - timer.startTime) +
+        timer.pauseTime) /
       1000
     );
   };
@@ -215,7 +216,7 @@
 
     startResetTimer(args) {
       timers[args.TIMER] = {
-        startTime: Date.now(),
+        startTime: Math.floor(performance.now()),
         pauseTime: 0,
         paused: false,
       };
@@ -233,7 +234,7 @@
       if (!timer) return;
       if (timer.paused === false) return;
       timer.paused = false;
-      timer.startTime = Date.now();
+      timer.startTime = Math.floor(performance.now());
     }
 
     valueOfTimer(args) {
@@ -244,7 +245,7 @@
     setTimer(args) {
       timers[args.TIMER] = {
         paused: false,
-        startTime: Date.now(),
+        startTime: Math.floor(performance.now()),
         pauseTime: Scratch.Cast.toNumber(args.NUM) * 1000,
       };
     }

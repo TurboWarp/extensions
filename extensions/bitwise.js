@@ -80,6 +80,7 @@
             },
           },
           "---",
+          /* eslint-disable extension/should-translate */
           {
             opcode: "bitwiseRightShift",
             blockType: Scratch.BlockType.REPORTER,
@@ -155,6 +156,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
           "---",
           {
             opcode: "bitwiseAnd",

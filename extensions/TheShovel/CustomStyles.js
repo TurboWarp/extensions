@@ -14,6 +14,7 @@
   let monitorBackgroundColor = "";
   let variableValueBackground = "";
   let variableValueTextColor = "";
+  let variableSliderColor = "";
   let listFooterBackground = "";
   let listHeaderBackground = "";
   let listValueText = "";
@@ -120,7 +121,7 @@
     // We assume all values are sanitized when they are set, so then we can just use them as-is here.
 
     if (monitorText) {
-      css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorText}; }`;
+      css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorText} !important; }`;
     }
     if (monitorBackgroundColor) {
       css += `${monitorRoot}, ${monitorRowsInner} { background: ${monitorBackgroundColor}; }`;
@@ -138,7 +139,10 @@
       css += `${monitorValue}, ${monitorValueLarge} { background: ${variableValueBackground} !important; }`;
     }
     if (variableValueTextColor) {
-      css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor}; }`;
+      css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor} !important; }`;
+    }
+    if (variableSliderColor) {
+      css += `${monitorRoot} { accent-color: ${variableSliderColor} !important; }`;
     }
     if (variableValueRoundness >= 0) {
       css += `${monitorValue} { border-radius: ${variableValueRoundness}px; }`;
@@ -147,13 +151,13 @@
       css += `${monitorListHeader} { background: ${listHeaderBackground}; }`;
     }
     if (listFooterBackground) {
-      css += `${monitorListFooter} { background: ${listHeaderBackground}; }`;
+      css += `${monitorListFooter} { background: ${listFooterBackground}; }`;
     }
     if (listValueBackground) {
       css += `${monitorRowValueOuter} { background: ${listValueBackground} !important; }`;
     }
     if (listValueText) {
-      css += `${monitorRowValueOuter} { color: ${listValueText}; }`;
+      css += `${monitorRowValueOuter} { color: ${listValueText} !important; }`;
     }
     if (listValueRoundness >= 0) {
       css += `${monitorRowValueOuter} { border-radius: ${listValueRoundness}px; }`;
@@ -212,6 +216,7 @@
     monitorBackgroundColor = "";
     variableValueBackground = "";
     variableValueTextColor = "";
+    variableSliderColor = "";
     listFooterBackground = "";
     listHeaderBackground = "";
     listValueText = "";
@@ -533,6 +538,10 @@
                 value: "variable value text",
               },
               {
+                text: Scratch.translate("variable slider color"),
+                value: "variable slider color",
+              },
+              {
                 text: Scratch.translate("list header background"),
                 value: "list header background",
               },
@@ -648,6 +657,10 @@
                 value: "variable value text",
               },
               {
+                text: Scratch.translate("variable slider color"),
+                value: "variable slider color",
+              },
+              {
                 text: Scratch.translate("list header background"),
                 value: "list header background",
               },
@@ -728,8 +741,8 @@
                 value: "ask prompt button image",
               },
               {
-                text: Scratch.translate("list scroll rule"),
-                value: "list scroll rule",
+                text: Scratch.translate("list scrolling"),
+                value: "list scrolling",
               },
             ],
           },
@@ -749,6 +762,8 @@
           variableValueBackground = color;
         } else if (args.COLORABLE === "variable value text") {
           variableValueTextColor = color;
+        } else if (args.COLORABLE === "variable slider color") {
+          variableSliderColor = color;
         } else if (args.COLORABLE === "list header background") {
           listHeaderBackground = color;
         } else if (args.COLORABLE === "list footer background") {
@@ -875,6 +890,8 @@
         return variableValueBackground;
       } else if (args.ITEM === "variable value text") {
         return variableValueTextColor;
+      } else if (args.ITEM === "variable slider color") {
+        return variableSliderColor;
       } else if (args.ITEM === "list header background") {
         return listHeaderBackground;
       } else if (args.ITEM === "list footer background") {
@@ -915,11 +932,17 @@
         return askInputRoundness;
       } else if (args.ITEM === "ask prompt button image") {
         return askButtonImage;
-      } else if (args.ITEM === "list scrolling") {
-        if (allowScrolling === "auto") {
-          return "enabled";
-        } else {
+      } else if (
+        args.ITEM === "list scrolling" ||
+        // Old version of this extension had "list scroll rule" in the menu so
+        // we'll support either.
+        // https://github.com/TurboWarp/extensions/pull/2262
+        args.ITEM === "list scroll rule"
+      ) {
+        if (allowScrolling === "hidden") {
           return "disabled";
+        } else {
+          return "enabled";
         }
       }
       return "";

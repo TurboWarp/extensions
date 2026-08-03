@@ -1,6 +1,7 @@
 // Name: Fetch
 // ID: fetch
 // Description: Make requests to the broader internet.
+// By: GarboMuffin
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {
@@ -15,6 +16,7 @@
           {
             opcode: "get",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "GET [URL]",
             arguments: {
               URL: {

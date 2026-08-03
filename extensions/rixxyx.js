@@ -9,12 +9,18 @@
  * This file is available under an informal "use with credit" license.
  */
 
-(function () {
+(function (Scratch) {
   "use strict";
 
   var count = 0;
   var isMeasure = false;
   var time = 0;
+
+  Scratch.vm.runtime.on("AFTER_EXECUTE", () => {
+    if (isMeasure) {
+      time += 1;
+    }
+  });
 
   class RixxyX {
     getInfo() {
@@ -22,11 +28,13 @@
         color1: "#773c00",
         color2: "#5f3000",
         id: "RixxyX",
+        // eslint-disable-next-line extension/should-translate
         name: "RixxyX",
         blocks: [
           {
             opcode: "notEquals",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate
             text: "[TEXT_1] != [TEXT_2]",
             arguments: {
               TEXT_1: {
@@ -240,6 +248,7 @@
             },
           },
           {
+            hideFromPalette: true,
             opcode: "returnNum",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[NUM] as number"),
@@ -302,7 +311,7 @@
           {
             opcode: "jsonParse",
             blockType: Scratch.BlockType.REPORTER,
-            text: "JSON.parse([TEXT])",
+            text: Scratch.translate("parse JSON [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
@@ -313,7 +322,8 @@
           {
             opcode: "returnENum",
             blockType: Scratch.BlockType.REPORTER,
-            text: "e", // e
+            // eslint-disable-next-line extension/should-translate
+            text: "e",
             arguments: {},
           },
           {
@@ -408,6 +418,9 @@
     }
     setCount(args) {
       if (
+        // Logically, checking for count being negative makes no sense, but it was there for
+        // a while and we don't want remove it for compatibility. No one should be using this
+        // in new projects.
         count.toString().indexOf("-") == -1 &&
         args.NUM.toString().indexOf("-") == -1
       ) {
@@ -451,7 +464,11 @@
         .join(" ");
     }
     repeatTxtTimes(args) {
-      return Scratch.Cast.toString(args.TEXT).repeat(Math.floor(args.NUM));
+      const times = Math.floor(Scratch.Cast.toNumber(args.NUM));
+      if (times < 0 || !Number.isFinite(times)) {
+        return "";
+      }
+      return Scratch.Cast.toString(args.TEXT).repeat(times);
     }
     jsonParse(args) {
       try {
@@ -480,11 +497,8 @@
       isMeasure = false;
     }
     returnTime(args) {
-      if (isMeasure == true) {
-        time += 1;
-      }
       return time;
     }
   }
   Scratch.extensions.register(new RixxyX());
-})();
+})(Scratch);

@@ -14,9 +14,8 @@
     try {
       const obj = JSON.parse(str);
       if (obj && typeof obj === "object") return obj;
-    } catch (e) {
-      return {};
-    }
+    } catch (e) {}
+    return {};
   };
 
   class TurboHook {
@@ -38,6 +37,7 @@
             ),
             blockType: Scratch.BlockType.COMMAND,
             arguments: {
+              // hookDATA is intentionally not defined here so it makes an empty input
               hookURL: {
                 type: Scratch.ArgumentType.STRING,
               },
@@ -46,6 +46,7 @@
           {
             opcode: "params",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "[MENU] [DATA]",
             arguments: {
               MENU: {
@@ -60,7 +61,9 @@
           {
             opcode: "connector",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate
             text: "[STRING1] , [STRING2]",
+            // arguments intentionally not defined here so it makes an empty input
           },
         ],
         menus: {

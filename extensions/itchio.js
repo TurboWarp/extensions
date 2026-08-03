@@ -71,6 +71,7 @@
     getInfo() {
       return {
         id: "itch",
+        // eslint-disable-next-line extension/should-translate
         name: "itch.io",
         menuIconURI: icon,
         blockIconURI: icon,
@@ -353,7 +354,7 @@
       return data.rewards ? true : false;
     }
     returnGameSubProducts({ subProducts, index }) {
-      data.sub_products?.[index]?.[subProducts] || err();
+      return data.sub_products?.[index]?.[subProducts] || err();
     }
     subProductsLength() {
       return data.sub_products?.length || 0;

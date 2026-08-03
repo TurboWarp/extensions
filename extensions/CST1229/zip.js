@@ -2,13 +2,57 @@
 // ID: cst1229zip
 // Description: Create and edit .zip format files, including .sb3 files.
 // By: CST1229 <https://scratch.mit.edu/users/CST1229/>
-// License: MIT AND LGPL-3.0
+// License: MIT AND MPL-2.0
 
-(function (Scratch) {
+(async function (Scratch) {
   "use strict";
 
   // @ts-expect-error - not typed yet
   const JSZip = Scratch.vm.exports.JSZip;
+
+  /*!
+    (The MIT License)
+
+    Copyright (c) 2014 Jonathan Ong <me@jongleberry.com>
+    Copyright (c) 2015-2022 Douglas Christopher Wilson <doug@somethingdoug.com>
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    'Software'), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+    IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+    CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+    TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+    SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+  */
+  const MimeTypes = await (async function () {
+    try {
+      const dbResponse = await Scratch.external.fetch(
+        "https://cdn.jsdelivr.net/npm/mime-db@1.52.0/db.json"
+      );
+      if (!dbResponse.ok) return [];
+
+      // We need to convert this table to a lookup array with
+      // mime types with applicable file type extensions.
+      const mimeTable = await dbResponse.json();
+      return Object.entries(mimeTable)
+        .filter((m) => m[1].extensions !== undefined)
+        .map((m) => [m[0], m[1].extensions]);
+    } catch {
+      console.warn("Could not retrieve data from Mime DB!");
+      return [];
+    }
+  })();
 
   const extIcon =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMCAzMCI+PHJlY3Qgd2lkdGg9IjIzIiBoZWlnaHQ9IjIwIiB4PSI2IiB5PSIzIiBmaWxsPSIjZDhkODZjIiBzdHJva2U9IiM3ZDdkMjMiIHN0cm9rZS13aWR0aD0iMiIgcGFpbnQtb3JkZXI9InN0cm9rZSBtYXJrZXJzIGZpbGwiIHJ4PSI0IiByeT0iNCIgc3R5bGU9ImZvbnQtdmFyaWF0aW9uLXNldHRpbmdzOm5vcm1hbCIvPjxyZWN0IHdpZHRoPSIyOCIgaGVpZ2h0PSIyMCIgeD0iMSIgeT0iOCIgZmlsbD0iI2Q4ZDg2YyIgc3Ryb2tlPSIjN2Q3ZDIzIiBzdHJva2Utd2lkdGg9IjIiIHBhaW50LW9yZGVyPSJzdHJva2UgbWFya2VycyBmaWxsIiByeD0iNCIgcnk9IjQiIHN0eWxlPSJmb250LXZhcmlhdGlvbi1zZXR0aW5nczpub3JtYWwiLz48cGF0aCBmaWxsPSIjN2Q3ZDIzIiBkPSJNNSAxMlY3LjU1bDQtLjAyNlYxMlptMyA0di00aDR2NHptLTMgNHYtNGg0djR6bTMgNHYtNGg0djR6bS0zIDQuMTgxVjI0aDR2NC4xNzV6IiBzdHlsZT0ibWl4LWJsZW5kLW1vZGU6bm9ybWFsIi8+PHBhdGggZmlsbD0iIzdkN2QyMyIgc3Ryb2tlPSIjN2Q3ZDIzIiBzdHJva2Utd2lkdGg9Ii4xIiBkPSJNMTAgNy4xMjNWNWgydjIuMTM2Wk0xMSA1VjIuNTYybDItLjE2MlY1WiIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOm5vcm1hbCIvPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzdkN2QyMyIgc3Ryb2tlLXdpZHRoPSIyIiBkPSJNMTUuNDg3IDI0Ljh2LTEuNzY1bDUuNjczLTguNTJoLTUuNDkzVjEyLjRoOC40NTN2MS44OTdsLTUuNzExIDguMzg3aDUuNzg3VjI0Ljh6IiBhcmlhLWxhYmVsPSJaIiBmb250LWZhbWlseT0iQ29uc29sYXMiIGZvbnQtc2l6ZT0iMTkuNDMiIGZvbnQtd2VpZ2h0PSI3MDAiIHBhaW50LW9yZGVyPSJzdHJva2UgbWFya2VycyBmaWxsIiBzdHlsZT0iLWlua3NjYXBlLWZvbnQtc3BlY2lmaWNhdGlvbjomcXVvdDtDb25zb2xhcywgQm9sZCZxdW90OyIgdHJhbnNmb3JtPSJzY2FsZSgxLjAzMyAuOTY4KSIvPjwvc3ZnPg==";
@@ -227,7 +271,7 @@
           {
             opcode: "renameFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "rename [FROM] to [TO]",
+            text: Scratch.translate("rename [FROM] to [TO]"),
             arguments: {
               FROM: {
                 type: Scratch.ArgumentType.STRING,
@@ -244,7 +288,7 @@
           {
             opcode: "copyFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: "copy [FROM] to [TO]",
+            text: Scratch.translate("copy [FROM] to [TO]"),
             arguments: {
               FROM: {
                 type: Scratch.ArgumentType.STRING,
@@ -264,7 +308,9 @@
           {
             opcode: "copyFileToArchive",
             blockType: Scratch.BlockType.COMMAND,
-            text: "copy [FROM] in [FROMARCHIVE] to [TO] in [TOARCHIVE]",
+            text: Scratch.translate(
+              "copy [FROM] in [FROMARCHIVE] to [TO] in [TOARCHIVE]"
+            ),
             arguments: {
               FROM: {
                 type: Scratch.ArgumentType.STRING,
@@ -663,6 +709,17 @@
       }
       return arr;
     }
+    isStringValid(string, partLength, validchars) {
+      if (string.length % partLength !== 0) {
+        return false;
+      }
+      for (let i = 0; i < string.length; i++) {
+        if (!validchars.includes(string[i])) {
+          return false;
+        }
+      }
+      return true;
+    }
     // get a file/folder by path
     getObj(path, zip = this.zip) {
       // JSZip.prototype.files seems to be a null-prototype object
@@ -704,6 +761,18 @@
         i++;
       }
       if (this.zipPaths[zip] === "") this.zipPaths[zip] = "/";
+    }
+
+    _tryGetMIMEType(fileName) {
+      // Try getting the MIME based on the file name using the mime-types library.
+      // JSZip doesnt store this anywhere, so we have to detect this ourselves.
+      const FALLBACK_MIME = "application/octet-stream";
+
+      const fileType = fileName.split(".").pop().toLowerCase();
+      if (!fileType) return FALLBACK_MIME; // shouldnt happen
+
+      const foundEntry = MimeTypes.find((m) => m[1].includes(fileType));
+      return foundEntry ? foundEntry[0] : FALLBACK_MIME;
     }
 
     /// Blocks
@@ -750,14 +819,14 @@
             break;
           case "hex":
             {
-              if (!/^(?:[0-9A-F]{2})*$/i.test(DATA)) return;
+              if (!this.isStringValid(DATA, 2, "0123456789ABCDEF")) return;
               const dataArr = this.splitIntoParts(DATA, 2);
               DATA = Uint8Array.from(dataArr.map((o) => parseInt(o, 16)));
             }
             break;
           case "binary":
             {
-              if (!/^(?:[01]{8})*$/i.test(DATA)) return;
+              if (!this.isStringValid(DATA, 8, "01")) return;
               const dataArr = this.splitIntoParts(DATA, 8);
               DATA = Uint8Array.from(dataArr.map((o) => parseInt(o, 2)));
             }
@@ -897,8 +966,11 @@
           case "base64":
           case "data: URL": {
             let data = await obj.async("base64");
-            if (TYPE === "data: URL")
-              data = "data:application/octet-stream;base64," + data;
+            if (TYPE === "data: URL") {
+              const mime = this._tryGetMIMEType(obj.name);
+              data = `data:${mime};base64,${data}`;
+            }
+
             return data;
           }
           case "hex": {
@@ -967,7 +1039,8 @@
             break;
           case "hex":
             {
-              if (!/^(?:[0-9A-F]{2})*$/i.test(CONTENT)) return "";
+              if (!this.isStringValid(CONTENT, 2, "0123456789ABCDEF"))
+                return "";
               const dataArr = this.splitIntoParts(CONTENT, 2);
               const data = Uint8Array.from(dataArr.map((o) => parseInt(o, 16)));
               this.zips[this.zip].file(path, data, {
@@ -977,7 +1050,7 @@
             break;
           case "binary":
             {
-              if (!/^(?:[01]{8})*$/i.test(CONTENT)) return "";
+              if (!this.isStringValid(CONTENT, 8, "01")) return "";
               const dataArr = this.splitIntoParts(CONTENT, 8);
               const data = Uint8Array.from(dataArr.map((o) => parseInt(o, 2)));
               this.zips[this.zip].file(path, data, {
@@ -1200,7 +1273,7 @@
           case "modification date":
             return obj.date.toLocaleString(navigator.language);
           case "long modification date":
-            return new Date().toLocaleString(navigator.language, {
+            return obj.date.toLocaleString(navigator.language, {
               dateStyle: "full",
               timeStyle: "medium",
             });
@@ -1285,7 +1358,7 @@
       if (!this.zip) return;
       this.zips[this.zip].comment = Scratch.Cast.toString(COMMENT);
     }
-    getComment({ COMMENT }) {
+    getComment() {
       if (!this.zip) return "";
       return this.zips[this.zip].comment || "";
     }

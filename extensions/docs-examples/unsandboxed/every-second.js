@@ -1,3 +1,5 @@
+/* eslint-disable -- passing the linting step requires content not covered when this is introduced */
+
 (function(Scratch) {
   'use strict';
   class EverySecond {
@@ -18,7 +20,6 @@
   }
   // highlight-start
   setInterval(() => {
-    // eslint-disable-next-line no-unused-vars
     const startedThreads = Scratch.vm.runtime.startHats('everysecondexample_everySecond');
   }, 1000);
   // highlight-end

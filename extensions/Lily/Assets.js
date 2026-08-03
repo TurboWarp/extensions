@@ -1,6 +1,8 @@
 // Name: Asset Manager
 // ID: lmsAssets
 // Description: Add, remove, and get data from various types of assets.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// By: Mio <https://scratch.mit.edu/users/0znzw/>
 // License: MIT AND LGPL-3.0
 
 // TheShovel is so epic and cool and awesome
@@ -22,8 +24,24 @@
     return true;
   };
 
+  /**
+   * @param {Blob} blob
+   * @returns {Promise<string>}
+   */
+  const readAsDataURL = (blob) =>
+    new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = (e) => reject(e);
+      fr.readAsDataURL(blob);
+    });
+
   class Assets {
     getInfo() {
+      const dataURIOption = Scratch.translate({
+        default: "dataURI",
+        description: "Menu option called dataURI",
+      });
       return {
         id: "lmsAssets",
         color1: "#5779ca",
@@ -123,10 +141,6 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "targets",
               },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Sprite1",
-              },
             },
           },
           {
@@ -137,10 +151,6 @@
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
               },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "costume1",
-              },
             },
           },
           {
@@ -150,10 +160,6 @@
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "sound1",
               },
             },
           },
@@ -174,9 +180,46 @@
             text: Scratch.translate("all sounds"),
           },
           {
+            // Legacy block
+            hideFromPalette: true,
             opcode: "getSpriteName",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("sprite name"),
+          },
+          {
+            disableMonitor: true,
+            opcode: "getSpriteValue2",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "lmsAssets.getSpriteValueTarget",
+              default: "sprite [TARGET] [EXPORT]",
+              description:
+                "Reports information about a sprite. [TARGET] is a menu of sprite names. [EXPORT] is a menu with the options 'name' and 'dataURI'.",
+            }),
+            arguments: {
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "targets",
+              },
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "sprite",
+              },
+            },
+          },
+          {
+            // Legacy block
+            disableMonitor: true,
+            opcode: "getSpriteValue",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("sprite [EXPORT]"),
+            hideFromPalette: true,
+            arguments: {
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "sprite",
+              },
+            },
           },
           "---",
           {
@@ -277,9 +320,23 @@
             },
           },
           {
+            // Legacy block
+            hideFromPalette: true,
             opcode: "getProjectJSON",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("project JSON"),
+          },
+          {
+            disableMonitor: true,
+            opcode: "getProjectValue",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("project [EXPORT]"),
+            arguments: {
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "project",
+              },
+            },
           },
           "---",
           {
@@ -313,7 +370,7 @@
                 value: "index",
               },
               {
-                text: Scratch.translate("dataURI"),
+                text: dataURIOption,
                 value: "dataURI",
               },
               {
@@ -327,6 +384,32 @@
               {
                 text: Scratch.translate("asset ID"),
                 value: "asset ID",
+              },
+            ],
+          },
+          project: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("JSON"),
+                value: "JSON",
+              },
+              {
+                text: dataURIOption,
+                value: "dataURI",
+              },
+            ],
+          },
+          sprite: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("name"),
+                value: "name",
+              },
+              {
+                text: dataURIOption,
+                value: "dataURI",
               },
             ],
           },
@@ -463,7 +546,7 @@
     }
 
     deleteSprite(args, util) {
-      const target = this._getTargetFromMenu(args.TARGET);
+      const target = this._getTargetFromMenu(args.TARGET, util);
       if (!target || target.isStage) return;
 
       Scratch.vm.deleteSprite(target.id);
@@ -523,6 +606,29 @@
 
     getSpriteName(args, util) {
       return util.target.sprite.name ?? "";
+    }
+
+    getSpriteValue2(args, util) {
+      const target = this._getTargetFromMenu(args.TARGET, util);
+      if (!target || target.isStage) return "";
+
+      const option = Cast.toString(args.EXPORT);
+      if (option === "name") {
+        return target.sprite.name ?? "";
+      } else if (option === "dataURI") {
+        return (async () => {
+          const blob = await Scratch.vm.exportSprite(target.id);
+          return readAsDataURL(blob);
+        })().catch((e) => {
+          console.error(e);
+          return "";
+        });
+      }
+    }
+
+    getSpriteValue(args, util) {
+      args.TARGET = "_myself_";
+      return this.getSpriteValue2(args, util);
     }
 
     reorderCostume(args, util) {
@@ -634,8 +740,24 @@
       return Scratch.vm.toJSON();
     }
 
+    getProjectValue(args) {
+      const option = Cast.toString(args.EXPORT);
+      if (option === "JSON") {
+        return Scratch.vm.toJSON();
+      } else if (option === "dataURI") {
+        return (async () => {
+          const blob = await Scratch.vm.saveProjectSb3();
+          return readAsDataURL(blob);
+        })().catch((e) => {
+          console.error(e);
+          return "";
+        });
+      }
+    }
+
     async loadExtension(args) {
       const url = Cast.toString(args.URL);
+      if (!(await vm.securityManager.canLoadExtensionFromProject(url))) return;
       await vm.extensionManager.loadExtensionURL(url);
     }
 

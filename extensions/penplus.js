@@ -1779,7 +1779,7 @@ Other various small fixes
         return;
       }
       // Permission is checked earlier.
-      // eslint-disable-next-line no-restricted-syntax
+      // eslint-disable-next-line extension/check-can-fetch
       const image = new Image();
       image.onload = function () {
         textureInfo.width = image.width;
@@ -2043,10 +2043,6 @@ Other various small fixes
             type: Scratch.ArgumentType.NUMBER,
             defaultValue: "1",
           },
-          spr: {
-            type: Scratch.ArgumentType.NUMBER,
-            defaultValue: "1",
-          },
         },
       },
       {
@@ -2180,12 +2176,6 @@ Other various small fixes
         opcode: "getstamprotation",
         blockType: Scratch.BlockType.REPORTER,
         text: "Stamp Rotation",
-        arguments: {
-          ANGLE: {
-            type: Scratch.ArgumentType.ANGLE,
-            defaultValue: "90",
-          },
-        },
       },
       {
         opcode: "setpenstrechandsquash",
@@ -2423,7 +2413,7 @@ Other various small fixes
     getInfo() {
       return {
         id: "betterpen",
-        name: "Pen+ V5",
+        name: Scratch.translate("Pen+ V5"),
         color1: "#0e9a6b",
         color2: "#0b7f58",
         color3: "#096647",
@@ -2567,7 +2557,7 @@ Other various small fixes
         if (coordmenu == "x") {
           return scrcoord - runtime.stageWidth / 2;
         } else {
-          return scrcoord * -1 - runtime.stageHeight / 2;
+          return scrcoord * -1 + runtime.stageHeight / 2;
         }
       }
     }

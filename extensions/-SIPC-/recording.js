@@ -96,17 +96,17 @@
         return;
       }
       console.log("Stop recording");
-      mediaRecorder.addEventListener("stop", function () {
+      mediaRecorder.addEventListener("stop", async function () {
         const blob = new Blob(recordedChunks, { type: "audio/wav" });
-        const url = URL.createObjectURL(blob);
-        const downloadLink = document.createElement("a");
-        downloadLink.href = url;
-        downloadLink.download = name;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        URL.revokeObjectURL(url);
         recordedChunks = [];
+
+        const url = URL.createObjectURL(blob);
+        try {
+          await Scratch.download(url, name);
+        } catch (e) {
+          console.error(e);
+        }
+        URL.revokeObjectURL(url);
       });
       mediaRecorder.stop();
       mediaRecorder = null;

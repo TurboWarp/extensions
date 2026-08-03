@@ -1,125 +1,166 @@
 # Local Storage
 
-This extension allows you to automatically save plain text in storage. Forget save codes! With this extension, we can make a game that doesn't require any user interaction to save progress.
+The local storage extension allows you to automatically save plain text in a storage space provided by the browser. Forget save codes! With this extension, we can make a game that doesn't require any user interaction to save progress.
 
 ## Namespaces
 
-The namespace is basically like the file you want to read and write to. Each project should set this to something unique, such as developer/project title so each project gets its own storage space. If two different projects use the same namespace, they will overwrite eachother's data and cause very bad things!
+A namespace is basically the file in the browser's storage you want to save your codes in. Every project should use a unique namespace. If two projects use the same namespace, they will overwrite each other's storage and they'll probably both end up broken :(
 
-You can set which namespace to use with this block:
+By default, the extension generates a random namespace for you and saves this inside the project, **so you shouldn't need to worry about managing the namespace yourself**. You should still be aware of what a namespace is since changing it could break your project.
+
+In older versions of the extension, it was necessary to configure the namespace by running the set namespace block at the start of your project. This block should not be needed anymore unless you are doing something very advanced. For example, if you want to access variables stored in another project, you can find that project's namespace and then set your namespace to the same thing. This would let you access the values that project stored.
+
+## Basic usage
+
+Think of local storage as providing a special type of variable that persists between sessions. Rather than using the "Make a Variable" button to make a new variable, you just type its name into an input. Unlike normal cloud variables, local storage is not restricted to just numbers.
+
+To put a value into storage, use this block:
 
 ```scratch
-set storage namespace ID to [project title] :: #0FBD8C
+set [score] to [1000] in storage :: #0FBD8C
 ```
 
-Some example namespaces:
-
- - `griffpatch/Paper Minecraft`
- - `Untitled-37 by TestMuffin`
-
-The format isn't important -- it just needs to be unique. Don't include a version number like "v1.4" in the namespace unless you want to discard data from old versions of your project.
-
-## Reading and writing
-
-After setting the namespace, you're ready to read from and write to storage.
-
-You can store data in keys, which are kind of like names of variables in any Scratch project, except they persist between sessions.
-
-You can store data in storage keys with this block:
+This sets the `score` variable to `1000` only within your project's namespace. You can retrieve the variable later using:
 
 ```scratch
-set key [score] to [1000] :: #0FBD8C
+(get [score] from storage :: #0FBD8C)
 ```
 
-And read it with:
+You can of course set a variable to something based on its old value, just like with regular variables. For example, this will increase the stored score by 10 every time it runs:
 
 ```scratch
-(get key [score] :: #0FBD8C)
+set [score] to ((get [score] from storage :: #0FBD8C) + [10]) in storage :: #0FBD8C
 ```
 
-If you want to delete a key and its value, use this block:
+To delete something from storage, use this block:
 
 ```scratch
-delete key [score] :: #0FBD8C
+delete [score] from storage :: #0FBD8C
 ```
 
-Or wipe everything stored in the namespace:
+Or delete everything stored in the namespace:
 
 ```scratch
-delete all keys :: #0FBD8C
+delete storage :: #0FBD8C
 ```
 
-## Loading data into memory
+## Performance
 
-Relying on the disk to read information that gets saved such as a player's progress or stats can be pretty slow. That's why it's very useful to store this data in variables while it's in use. Variables are like your project's random-access memory. One way of doing this is by getting all keys from storage and putting their values in variables as part of your project's initialization process.
+The local storage extension is inevitably slower than regular variables.
 
-If you're unfamiliar with computer memory, think of reading local storage as opening up your dictionary to look for a definition for someone and reading memory as remembering the definition you just read and saying it to someone. Of course, you wouldn't want to be constantly running to get the dictionary every time the same definition was requested.
+Reading from storage is actually decently fast, though still slower than regular variables. However, putting values into storage is quite a bit slower since the extension tries to immediately save any changes the moment the block runs.
 
-While browsers actually hold this data in memory automatically for quicker access, it's still more efficient and a better practice to take some work off the browser by not constantly getting the same storage key over and over again for no reason, and is much more important to know and think about if you ever use other programming languages where you don't want the disk to have to spend time reading the same data over and over again when it could be kept in memory (that's what memory is for).
-
-For example, in a game, you can speed up code that needs to know how many coins the player has collected by getting the storage key for coins and then loading it into a variable, just once on startup.
+To better illustrate, these two pieces of code both set `counter` to `1000` in storage. However, the second one will be much faster because it only actually writes to storage one time while the first one will do so 1000 times.
 
 ```scratch
-forever
-    if <(get key [coins] :: #0FBD8C) > [99]> then // Don't do this
-        broadcast (1-UP v)
-    end
+define slow
+set [counter] to [1] in storage :: #0FBD8C
+repeat [1000]
+    set [counter] to ((get [counter] from storage :: #0FBD8C) + [1]) in storage :: #0FBD8C
 end
 
-set [coins v] to (get key [coins] :: #0FBD8C) // Do this instead
-forever
-    if <(coins) > [99]> then
-        broadcast (1-UP v)
-    end
+define faster
+set [counter v] to [1]
+repeat [1000]
+    change [counter v] by [1]
 end
+set [counter] to (counter) in storage :: #0FBD8C
 ```
 
-So in general, we don't really need to load data from storage again once we have it in memory. If we already know what's in storage and what we're writing to storage because that data is already present in the project's variables, we really only need to read from storage once to initialize and then we're good.
+## Changes in other windows
 
-...Right?
+Sometimes a user may open the same project in multiple tabs or windows, each of which could be trying to read stuff from storage and put new values in. This might cause your project to misbehave without careful consideration.
 
-## Handling interference from other windows
+Here's an example scenario. Suppose you have a game, and at the start of your game you load in information about the user's progress like this:
 
-Sometimes a user may open the same project in multiple tabs or windows, each of which could be trying to read and write data to the same space. If this causes a desync, it can result in unexpected behavior.
+```scratch
+when gf clicked
+set [level v] to (get [level] from storage :: #0FBD8C)
+set [gold v] to (get [gold] from storage :: #0FBD8C)
+set [name v] to (get [name] from storage :: #0FBD8C)
+```
 
-Here's an example scenario. Suppose someone opens the same game twice by accident. They play in Window A for a while and save the game. Then they close that window and do something else. Later, they come back to the other window they had opened before and start playing in Window B, but all the progress is "gone" because that window had already been running the game and had already loaded the save data before Window A had saved the progress that was made, and it's too late because they had saved the game in Window B before they realized the problem. This is unfortunate for the player, but more importantly for you, the developer, what is the project supposed to do now? Mix the data?
+As your game advanced, you make sure to use the "set in storage" block to save the player's progress. All seems good.
 
-So you can see how it's a good idea to consider that people may have multiple windows of the same project open intentionally or accidentally.
+Unfortunately, there is a scenario that might cause a lot of grief. Suppose the player opens two copies of your game at once on accident without noticing. They play in Window A for a while and assume their progress is being saved. Then they close that window and do something else. Later, they come back to the other window they had opened before and start playing in Window B, but all the progress is "gone" because that window had already been running the game and had already loaded save data before Window A had saved the progress that was made, and it's too late because they had saved the game in Window B before they realized the problem.
 
-You don't have to do things like auto-refresh content if you didn't intend for your project to support multi-window usage, but it's nice to at least make sure no glitches happen if someone accidentally had multiple windows open. Here are a few ways you can deal with this problem:
+The "correct" behavior to do in this type of scenario is heavily context-dependent, thus the extension can't solve this for you. You'll need to write some scripts if this preventing this scenario is important. Here are some possible ways to deal with the problem:
 
-## Initialize by loading from storage
+## Read and write all at once
 
-For games and other projects that are intended for use only in one window, we recommend you load all storage keys you need into variables only when the project starts so that nothing changes if a second instance of the project writes to storage while you're still using the first one. Then, when you need to save data, rewrite everything in the same group of data (like everything in the same save file in a game) to storage at the same time so nothing from other instances of the project gets mixed in.
+For projects are confident they will only be open in one window at once, or ones that rely on manual saving where indiscriminently overwriting the old save is the expected outcome, the simplest approach is to read all values from storage into regular variables at the start, then your game does all its logic using just the regular variables. To save, your game puts these regular variabels back in storage. Here's what that looks like:
 
-The worst that could happen with this implementation is that "data A" might be overwritten by "data B", if the user made a mistake.
+```scratch
+when i receive [start v]
+set [mana v] to (get [mana] from storage :: #0FBD8C)
+set [cookies v] to (get [cookies] from storage :: #0FBD8C)
 
-## Reload data from storage as needed
+when i receive [save v]
+set [mana] to (mana) in storage :: #0FBD8C
+set [cookies] to (cookies) in storage :: #0FBD8C
+```
 
-Sometimes you might want to respond to changes in local storage. There is a block to help with this:
+Pros:
+
+ * Very simple.
+ * Changes in another window will not affect your local variables.
+
+Cons:
+
+ * Changes in other windows will be indiscriminently overwritten on each save.
+ * This may result in data loss, depending on the context.
+
+## Constantly reading from storage
+
+For projects where having multiple windows open at once is expected and storage changes in one project should immediately appear in the other, the simplest approach is to always be re-reading the variable from storage every time you use it. Here's what that looks like:
+
+```scratch
+when gf clicked
+forever
+    say (join [Coins: ] (get [coins] from storage :: #0FBD8C))
+end
+
+when this sprite clicked
+set [coins] to ((get [coins] from storage :: #0FBD8C) + [1]) in storage :: #0FBD8C
+```
+
+Because changes to storage are always being re-read instead of being stored in a local storage, changes in one window will immediately propagate to the other. In the case of simple counters, this may be sufficient.
+
+Pros:
+
+ * Still pretty simple.
+ * Avoids unnecessary variables.
+ * Changes to storage are instantly available to all windows at the same time.
+
+Cons:
+
+ * Reading from storage is slightly slower than regular variables, even when nothing has changed since the last read.
+ * May not work well for anything more complicated than a counter.
+
+## Reloading data as it changes
+
+The local storage extension offers an event block to detect arbitrary storage changes by other windows. This takes a bit of extra code, but it is the most flexible approach and essentially combines the benefits of the above approahes for projects that need to have storage sync between open windows. The simplest form of it is:
 
 ```scratch
 when another window changes storage :: hat #0FBD8C
+set [silver v] to (get [silver] from storage :: #0FBD8C)
 ```
 
-The code under this block will run whenever a different instance of the project writes to storage or if a different project that's using the same namespace writes to storage. This allows your project to properly respond to and handle these events as they happen.
+Pros:
 
-This may or may not be important. You probably wouldn't want to use this technique in a game - games don't need to respond to other instances of themselves writing to storage. Plus, if game save data from one window is mixed in with data from another, it can cause glitches like sequence breaks.
+ - You can access your data in a regular variable, so it's fast.
+ - Your data changes in response to other windows.
+ - You get a lot more control. Instead of just taking the new value from storage as-is, you could process it in any way you want before storing it in a local variable.
 
-This kind of thing is more useful if you made something like a file system simulator that you want to have auto-refresh if the user makes edits in other windows, you may want to use this so that the content being displayed stays up to date even if another window modifies it.
+Cons:
 
-You could do this by constantly getting the storage key, but it's better to only grab keys from storage when necessary. The block above is how you do that.
-
-## Merge the data
-
-This one is more advanced and the way you would code it depends on the project, but you could make it so that when you're about to save data and another window wrote data that was not loaded into the first window, the two are merged - the data being written is merged with the data that was already present, so that if you collected 100 coins in one session and 100 XP in another, both of those changes in the save data would stay.
-
-Make sure to do this correctly because if data is merged incorrectly, it can cause glitches like sequence breaks in a game.
-
-I said that this is advanced, because sometimes these algorithms can get confused when merging changes to the same piece of data. (Like, what are we supposed to do if we're trying to merge two changes, one of which changes "A" to "B" and the other changes the same "A" to "C"?) This is known as a merge conflict. If you don't have any way to prioritize one change over another, you'll just be stuck with two branches of data.
+ - A bit more complex.
+ - Due to block execution order, the rest of your projects may execute for a frame before the change event runs. This might cause a 1 frame delay before the local variable is updated.
 
 ## Local storage limits
 
-This extension uses the browser's local storage API, which limits each website to around 5 MiB or 5,242,800 bytes of local storage data, so if we want local storage to be able to hold data for many projects, each one should stay well below this limit. We recommend only storing small files such as game save data or settings in local storage.
+This extension uses the browser's local storage API, which limits each website to around 5 MB of data, so if we want local storage to be able to hold data for many projects, each one should stay well below this limit. We recommend only storing small files such as game save data or settings in local storage.
 
-In rare instances, such as when a system is running out of disk space, the browser may delete our data to make room for something else. We, unfortunately, cannot influence when this happens.
+The TurboWarp Desktop app and the Electron environments in the packager raise the storage size limit to 100 MB. However, we do not recommend storing anywhere near that much in local storage.
+
+In rare instances, such as when a system is running out of disk space, the browser may start deleting data at random to make room for something else. We, unfortunately, cannot influence when this happens.

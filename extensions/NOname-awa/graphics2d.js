@@ -97,6 +97,7 @@
           {
             opcode: "vertical",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate
             text: "[a] ⊥ [b]",
             arguments: {
               a: {

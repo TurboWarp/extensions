@@ -1,6 +1,7 @@
 // Name: Steamworks
 // ID: steamworks
 // Description: Connect your project to Steamworks APIs.
+// By: GarboMuffin
 // License: MPL-2.0
 // Context: Probably don't translate the word "Steamworks".
 
@@ -15,6 +16,7 @@
     getInfo() {
       return {
         id: "steamworks",
+        // eslint-disable-next-line extension/should-translate
         name: "Steamworks",
         color1: "#136C9F",
         color2: "#105e8c",

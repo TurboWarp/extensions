@@ -559,7 +559,6 @@
         default:
           "Are you sure you want to close this window?\n\n(This message will not appear when the project is packaged)",
       });
-      // @ts-expect-error
       if (typeof ScratchBlocks === "undefined" || confirm(editorConfirmation)) {
         window.close();
       }

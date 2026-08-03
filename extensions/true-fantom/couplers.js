@@ -23,6 +23,7 @@
         menuIconURI: icon,
 
         blocks: [
+          /* eslint-disable extension/should-translate */
           {
             opcode: "value1_or_value2_block",
             blockType: Scratch.BlockType.REPORTER,
@@ -75,6 +76,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
           {
             opcode: "true_block",
             blockType: Scratch.BlockType.BOOLEAN,

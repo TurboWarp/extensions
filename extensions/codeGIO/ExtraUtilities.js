@@ -259,6 +259,7 @@
     }
 
     strict_equality(args) {
+      // intentionally not === despite "strict equality" for compatibility reasons
       return args.one == args.two;
     }
 

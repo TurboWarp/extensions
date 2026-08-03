@@ -2,6 +2,7 @@
 // ID: ShovelUtils
 // Description: A bunch of miscellaneous blocks.
 // By: TheShovel
+// By: Mio <https://scratch.mit.edu/users/0znzw/>
 // License: MIT
 
 (function (Scratch) {
@@ -30,7 +31,7 @@
     getInfo() {
       return {
         id: "ShovelUtils",
-        name: "ShovelUtils",
+        name: Scratch.translate("ShovelUtils"),
         color1: "#f54242",
         color2: "#f54242",
         color3: "#f54242",
@@ -131,12 +132,6 @@
             opcode: "restartProject",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("restart project"),
-            arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "0",
-              },
-            },
           },
           {
             opcode: "deleteSprite",
@@ -237,7 +232,6 @@
       if (!target || target.isStage) {
         return;
       }
-      // @ts-expect-error
       if (typeof ScratchBlocks !== "undefined") {
         if (
           !confirm(
@@ -271,7 +265,6 @@
     }
 
     importProject({ TEXT }) {
-      // @ts-ignore
       if (typeof ScratchBlocks !== "undefined") {
         // We are in the editor. Ask before loading a new project to avoid unrecoverable data loss.
         if (

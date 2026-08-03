@@ -183,22 +183,12 @@
             opcode: "pauseSounds",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("pause all sounds"),
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND,
-              },
-            },
             extensions: ["colours_sounds"],
           },
           {
             opcode: "resumeSounds",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("resume all sounds"),
-            arguments: {
-              SOUND: {
-                type: Scratch.ArgumentType.SOUND,
-              },
-            },
             extensions: ["colours_sounds"],
           },
 

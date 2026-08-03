@@ -875,7 +875,7 @@
         }
 
         // canFetch() checked above
-        // eslint-disable-next-line no-restricted-syntax
+        // eslint-disable-next-line extension/no-xmlhttprequest
         var pRequest = new XMLHttpRequest();
 
         // bind callback function
@@ -1131,7 +1131,6 @@
     };
 
     /**
-     * Unused in the extension because of ScoreFetchGuestEx
      * @param {number} iScoreTableID
      * @param {string} sName
      * @param {number} iLimit
@@ -1394,6 +1393,7 @@
     getInfo() {
       return {
         id: "GameJoltAPI",
+        // eslint-disable-next-line extension/should-translate
         name: "Game Jolt API",
         color1: "#2F7F6F",
         color2: "#2A2731",
@@ -1543,7 +1543,7 @@
               fetchType: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "fetchTypes",
-                defaultValue: String(GameJolt.FETCH_USERNAME),
+                defaultValue: Scratch.Cast.toString(GameJolt.FETCH_USERNAME),
               },
             },
           },
@@ -1577,6 +1577,7 @@
             opcode: "friendsFetch",
             blockIconURI: icons.user,
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- deprecated
             text: "fetched user's friend ID at index[index] (Deprecated)",
             arguments: {
               index: {
@@ -1642,6 +1643,7 @@
             opcode: "trophyFetch",
             blockIconURI: icons.trophy,
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- deprecated
             text: "fetched trophy [trophyDataType] at [indexOrID][value] (Deprecated)",
             arguments: {
               trophyDataType: {
@@ -1652,7 +1654,7 @@
               indexOrID: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "indexOrID",
-                defaultValue: String(GameJolt.FETCH_ALL),
+                defaultValue: Scratch.Cast.toString(GameJolt.FETCH_ALL),
               },
               value: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -2066,6 +2068,7 @@
             opcode: "dataStoreGetKey",
             blockIconURI: icons.store,
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- deprecated
             text: "fetched [globalOrPerUser] keys with pattern [pattern] at index [index] (Deprecated)",
             arguments: {
               globalOrPerUser: {
@@ -2142,6 +2145,7 @@
             opcode: "timeFetch",
             blockIconURI: icons.time,
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- deprecated
             text: "server's current [timeType] (Deprecated)",
             arguments: {
               timeType: {
@@ -2486,7 +2490,7 @@
       );
     }
     loginAutoBool() {
-      return Boolean(GameJolt.asQueryParam["gjapi_username"]);
+      return Scratch.Cast.toBoolean(GameJolt.asQueryParam["gjapi_username"]);
     }
     logout() {
       return new Promise((resolve) =>
@@ -2618,17 +2622,20 @@
     }
     trophyFetchAll({ trophyFetchGroup }) {
       return new Promise((resolve) =>
-        GameJolt.TrophyFetch(Number(trophyFetchGroup), (pResponse) => {
-          if (pResponse.success != trueStr) {
-            [err.trophies, err.last] = [pResponse.message, pResponse.message];
-            data.trophies = undefined;
+        GameJolt.TrophyFetch(
+          Scratch.Cast.toNumber(trophyFetchGroup),
+          (pResponse) => {
+            if (pResponse.success != trueStr) {
+              [err.trophies, err.last] = [pResponse.message, pResponse.message];
+              data.trophies = undefined;
+              resolve();
+              return;
+            }
+            data.trophies = pResponse.trophies;
+            err.trophies = undefined;
             resolve();
-            return;
           }
-          data.trophies = pResponse.trophies;
-          err.trophies = undefined;
-          resolve();
-        })
+        )
       );
     }
     trophyFetchId({ ID }) {
@@ -2737,7 +2744,7 @@
     }
     scoreFetchGuestSimple({ amount, username, ID }) {
       return new Promise((resolve) =>
-        GameJolt.ScoreFetchGuestEx(ID, username, amount, (pResponse) => {
+        GameJolt.ScoreFetchGuest(ID, username, amount, (pResponse) => {
           if (pResponse.success != trueStr) {
             [err.scores, err.last] = [pResponse.message, pResponse.message];
             data.scores = undefined;
@@ -2828,9 +2835,7 @@
     scoreReturnTables({ tableDataType, index }) {
       if (!data.tables) return err.get("tables");
       if (!data.tables[Math.floor(index)]) return err.get("noIndex");
-      return (
-        !data.tables[Math.floor(index)][tableDataType] || err.get("noData")
-      );
+      return data.tables[Math.floor(index)][tableDataType] || err.get("noData");
     }
     scoreReturnTablesJson() {
       return JSON.stringify(data.tables) || err.get("tables") || "{}";

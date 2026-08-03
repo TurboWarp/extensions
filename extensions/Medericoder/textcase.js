@@ -244,6 +244,7 @@
           {
             opcode: "strictlyequal",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate
             text: "[TEXT1] ≡ [TEXT2]",
             arguments: {
               TEXT1: {
@@ -259,6 +260,7 @@
           {
             opcode: "quasiequal",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate
             text: "[TEXT1] ≈ [TEXT2]",
             arguments: {
               TEXT1: {
