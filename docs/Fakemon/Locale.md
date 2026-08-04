@@ -139,16 +139,28 @@ The last block you should know about is the translate block. It's what actually 
 This block uses the information set by the blocks in the **Working With Translation Information** section of this documentation to actually translate the text. If the specified text has no translation in that language, the input will be used instead. This is to prevent errors and projects with completely blank strings. In this case, an untranslated language is better than none.
 
 ```scratchblocks
-(all strings with attempted translations ::#2a5fa0)
+(all strings with attempted translations as strings ::#2a5fa0)
 ```
 
-This block returns every piece of text that has had a translation block used on it as an array since the most recent green flag click. It's useful for providing translators with all strings that can be translated, including ones that have already been completed.
+This block returns every piece of text that has had a translation block used on it as an array of strings since the most recent green flag click. It's useful for providing translators with all strings that can be translated, including ones that have already been completed.
 
 ```scratchblocks
-(all strings with failed translations ::#2a5fa0)
+(all strings with attempted translations as objects ::#2a5fa0)
+```
+
+This block is the same as the above but it provides the text being translated *and* the language being translated to in the form of an object.
+
+```scratchblocks
+(all strings with failed translations as strings ::#2a5fa0)
 ```
 
 This block returns every translation that has failed since the most recent green flag click. It's useful for providing translators with strings that still need to be translated.
+
+```scratchblocks
+(all strings with failed translations as objects ::#2a5fa0)
+```
+
+This block is the same as the above but it provides the text being translated, the language being translated to, and the error message that explains why the translation failed.
 
 ## Example <!--TODO: Make more examples and/or a sample project (priority: low-medium)-->
 
@@ -157,7 +169,7 @@ This is an example of a simple project that uses the Locale extension:
 ```scratchblocks
 when gf clicked
 set translation for [Hello, World!] in language code [en] to [Hello, world!] ::#2a5fa0 // en is the language code for English.
-set translation for [Hello, World!] in language code [es] to [¡Hola, mundo!] ::#2a5fa0 // es is the language code for Español—Spanish.
+set translation for [Hello, World!] in language code [es] to [¡Hola, mundo!] ::#2a5fa0 // es is the language code for Spanish.
 set [language v] to (item (1) of array  (preferred languages that can be translated to ::#2a5fa0) ::#3271d0) // The `item () of array` block is from the JSON extension.
 say (translate [Hello, world!] to language code (language ::variables) ::#2a5fa0) for (2) secs
 ```
