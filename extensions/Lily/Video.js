@@ -60,6 +60,7 @@
       this.videoElement.width = 1;
       this.videoElement.height = 1;
       this.videoElement.crossOrigin = "anonymous";
+      this.videoElement.playsInline = true;
       this.videoElement.onloadeddata = () => {
         // First frame loaded
         this.readyCallback();
@@ -186,6 +187,7 @@
         id: "lmsVideo",
         color1: "#557882",
         name: Scratch.translate("Video"),
+        docsURI: "https://extensions.turbowarp.org/Lily/Video",
         blocks: [
           {
             blockType: Scratch.BlockType.XML,
@@ -246,10 +248,6 @@
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "targets",
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "my video",
               },
             },
           },
@@ -737,5 +735,7 @@
     }
   }
 
-  Scratch.extensions.register(new Video());
+  const extension = new Video();
+  Scratch.extensions.register(extension);
+  Scratch.vm.runtime.ext_lmsVideo = extension;
 })(Scratch);

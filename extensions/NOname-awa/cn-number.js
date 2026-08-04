@@ -134,13 +134,14 @@
       Number_in >= 0 ? Math.floor(Number_in) : Math.ceil(Number_in)
     );
     After_decimal_point = "." + String(String(Number_in).split(".")[1]);
+    const upper = Number(uppercase);
     unit = (
-      uppercase
+      upper
         ? "个、拾、佰、仟、万、亿、兆、京"
         : "个、十、百、千、万、亿、兆、京"
     ).split("、");
     C_Number = (
-      uppercase
+      upper
         ? "壹、贰、叁、肆、伍、陆、柒、捌、玖、拾"
         : "一、二、三、四、五、六、七、八、九、十"
     ).split("、");

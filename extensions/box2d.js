@@ -13185,9 +13185,9 @@
 
     reset() {
       for (const body in bodies) {
-        if (pinned[body.uid]) {
-          world.DestroyJoint(pinned[body.uid]);
-          delete pinned[body.uid];
+        if (pinned[body]) {
+          world.DestroyJoint(pinned[body]);
+          delete pinned[body];
         }
         world.DestroyBody(bodies[body]);
         delete bodies[body];

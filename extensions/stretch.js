@@ -1,6 +1,8 @@
 // Name: Stretch
 // ID: stretch
 // Description: Stretch sprites horizontally or vertically.
+// By: GarboMuffin
+// By: TheStarWorld
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {

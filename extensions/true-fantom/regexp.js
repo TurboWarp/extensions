@@ -32,7 +32,7 @@
     return new RegExp(arr[1], arr[2]);
   };
   const toRegExpString = (val) => {
-    return String(val);
+    return cast.toString(val);
   };
 
   const RegExpCompare = (redat, restr) => {
@@ -527,7 +527,7 @@
               );
             case "keys":
               data = Array.from(str.matchAll(gredat)).map((val) =>
-                String(val.index + 1)
+                cast.toString(val.index + 1)
               );
               return toJsonString(
                 redat.global ? data : data[0] ? [data[0]] : []
@@ -546,7 +546,7 @@
               );
             case "map":
               data = Array.from(str.matchAll(gredat)).map((val) => [
-                String(val.index + 1),
+                cast.toString(val.index + 1),
                 val[0],
               ]);
               return toJsonString(

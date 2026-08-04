@@ -177,6 +177,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## obviousAlexC/SensingPlus.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
+ - Touching finger icon based on https://fonts.google.com/icons?selected=Material+Icons:touch_app:&icon.set=Material+Icons&icon.style=Filled under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 ## lab/text.svg
  - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).

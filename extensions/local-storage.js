@@ -1,6 +1,8 @@
 // Name: Local Storage
 // ID: localstorage
 // Description: Store data persistently. Like cookies, but better.
+// By: infernostars
+// By: GarboMuffin
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {

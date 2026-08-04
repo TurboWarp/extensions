@@ -95,6 +95,46 @@
     itemCount: 20,
   };
 
+  /*
+    The SDK's Loader methods open a window to the gateway and let the server
+    redirect, so the URL they would pass to window.open() is not the page the user
+    ends up on. loadAuthorUrl and loadOfficialUrl in particular go wherever the
+    app's developer pointed them, which can be any website, so a prompt showing the
+    gateway URL would be actively misleading. Asking the gateway with redirect
+    disabled returns the real destination as JSON instead of navigating to it,
+    which lets us prompt for the URL the user will actually visit.
+  */
+  const openLoaderURL = (componentName) =>
+    new Promise((resolve) => {
+      const core = NGIO.ngioCore;
+      if (!core) return resolve();
+
+      const component = core.getComponent(componentName, {
+        redirect: false,
+        log_stat: true,
+      });
+      if (!component) return resolve();
+
+      core.executeComponent(component, (response) => {
+        const result = Array.isArray(response.result)
+          ? response.result[0]
+          : response.result;
+
+        if (response.success && result && result.url) {
+          resolve(
+            Scratch.openWindow(result.url)
+              // don't return the Window and don't reject on an error
+              .then(
+                () => {},
+                () => {}
+              )
+          );
+        } else {
+          resolve();
+        }
+      });
+    });
+
   //Status functions and variable
   const statusReport = (status) => {
     if (NGIO.isWaitingStatus) {
@@ -108,13 +148,13 @@
         // this is an out-of-date (or possibly a development) version
         if (NGIO.isDeprecated) {
           ConnectionStatus = "Out of date!";
-          NGIO.loadOfficialUrl();
+          openLoaderURL("Loader.loadOfficialUrl");
         }
 
         // the site hosting this copy has been blocked
         if (!NGIO.legalHost) {
           ConnectionStatus = "Illegal Host";
-          NGIO.loadOfficialUrl();
+          openLoaderURL("Loader.loadOfficialUrl");
         }
 
         break;
@@ -1227,17 +1267,17 @@
       }
     }
 
-    //Referrals
+    // Referrals
     loadNewgrounds() {
-      NGIO.loadNewgrounds();
+      return openLoaderURL("Loader.loadNewgrounds");
     }
 
     loadMoreGames() {
-      NGIO.loadMoreGames();
+      return openLoaderURL("Loader.loadMoreGames");
     }
 
     loadAuthor() {
-      NGIO.loadAuthorUrl();
+      return openLoaderURL("Loader.loadAuthorUrl");
     }
 
     //score
@@ -1440,9 +1480,15 @@
       });
     }
 
-    promptLogin(args, util) {
+    async promptLogin(args, util) {
       if (NGIO.session && !userDat.logged) {
-        NGIO.openLoginPage();
+        // the NGIO SDK has to be the one who actually opens the URL since it probes for a response,
+        // but we're able to show the permission dialogue first here.
+        const passportURL = NGIO.session.passport_url;
+        if (passportURL && (await Scratch.canOpenWindow(passportURL))) {
+          NGIO.openLoginPage();
+        }
+
         return this.waitForValid(util);
       }
     }
@@ -1458,7 +1504,12 @@
       NGOptions.version = version;
     }
 
-    connect({ gameID, code }) {
+    async connect({ gameID, code }) {
+      // This block is hidden from the palette, but old projects can still contain it.
+      if (!(await Scratch.canFetch("https://www.newgrounds.io/"))) {
+        return;
+      }
+
       NGIO.init(gameID, code, NGOptions);
 
       //Add a hook for the connection status to Newgrounds.

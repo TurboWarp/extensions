@@ -260,7 +260,7 @@
       if (!Object.prototype.hasOwnProperty.call(util.stackFrame, "index")) {
         util.stackFrame.index = 0;
       }
-      if (util.stackFrame.index < Number(args.NUM)) {
+      if (util.stackFrame.index < Scratch.Cast.toNumber(args.NUM)) {
         util.stackFrame.index++;
         vars[args.VAR] = util.stackFrame.index;
         return true;
