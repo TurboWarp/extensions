@@ -132,12 +132,6 @@
             opcode: "restartProject",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("restart project"),
-            arguments: {
-              TEXT: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "0",
-              },
-            },
           },
           {
             opcode: "deleteSprite",

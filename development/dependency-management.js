@@ -361,7 +361,7 @@ const generateNewJS = (jsImport) => {
   if (jsImport.type === "fetch") {
     const toBuffer = toArrayBufferJS(buffer);
     return {
-      js: `Promise.resolve(new Response(${toBuffer.js}, {headers: {"content-type": ${JSON.stringify(contentType)}}))`,
+      js: `Promise.resolve(new Response(${toBuffer.js}, {headers: {"content-type": ${JSON.stringify(contentType)}}}))`,
       snippets: toBuffer.snippets,
     };
   }

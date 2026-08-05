@@ -10,6 +10,15 @@ To learn how to write custom extensions, see our documentation:
 
 The rest of this page is about this specific repository.
 
+## AI policy
+
+Like any tool, AI has good uses and bad uses. Follow these guidelines to avoid wasting your time and ours:
+
+ - **No AI-generated images under any condition**. We would rather not have an image than use AI-generated content. Many humans have very finely tuned AI detectors. They won't be happy when they notice.
+ - **Be transparent about what tools you used and to what extent**. There's a lot of ways to tell if code was written with an LLM, so there's no reason to lie.
+ - **Don't submit code that is entirely LLM-generated**. There must be a human involved in reviewing and testing all changes. Even if you didn't write the code, it's under your name. If you can't understand your own code, we have no hope of understanding either.
+ - **Reviewers are volunteers**. They are free to weigh your usage of AI in deciding whether or when to review your change.
+
 ## Acceptance criteria
 
 These categories of extensions are **highly discouraged**:
@@ -75,8 +84,7 @@ You must use line comments; block comments `/* */` will not work. These fields a
  - `ID` must be identical to the `id` returned by getInfo().
  - `Description` appears on the webstie and in the library.
  - `License` describes the license that the extension's code is under. It must be a valid [SPDX license](https://spdx.org/licenses/) expression. For the Mozilla Public License verison 2.0 that we recommend, the identifier is `MPL-2.0`.
-
-`By` allows you to credit yourself. `Original` is used if the extension is based on another person's work. They both use the same format of `Name` or `Name <https://scratch.mit.edu/users/username>`. Links to places other than Scratch are not allowed at this time. You can repeat both of these as many times as needed, just add another `// By: ...` comment.
+ - `By` credits yourself. Use the formats: `Name` or `Name <https://scratch.mit.edu/users/username>`. Links to places other than Scratch are not allowed at this time. You can repeat both of these as many times as needed, just add another `// By: ...` comment. Must have at least one credit; discuss with us if you do not want credit.
 
 ## Translations
 

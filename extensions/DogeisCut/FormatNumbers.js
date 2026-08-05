@@ -29,6 +29,11 @@
       this.decimalPlaces = 2;
     }
 
+    toFixedTrimmed(number, decimalPlaces) {
+      const formatted = number.toFixed(decimalPlaces);
+      return decimalPlaces > 0 ? formatted.replace(/\.?0+$/, "") : formatted;
+    }
+
     convertToADStandard(number, decimalPlaces = 2) {
       if (typeof number !== "number" || isNaN(number)) {
         return "Invalid Input";
@@ -86,16 +91,14 @@
       }
 
       if (Math.abs(number) < 1000) {
-        return number.toFixed(decimalPlaces).replace(/\.?0+$/, "");
+        return this.toFixedTrimmed(number, decimalPlaces);
       }
 
       const tier = Math.max(0, Math.floor(Math.log10(Math.abs(number)) / 3));
 
       if (tier <= 11) {
         const scaledNumber = number / Math.pow(10, tier * 3);
-        return (
-          scaledNumber.toFixed(decimalPlaces).replace(/\.?0+$/, "") + kMBd[tier]
-        );
+        return this.toFixedTrimmed(scaledNumber, decimalPlaces) + kMBd[tier];
       }
 
       const illionNumber = Math.floor(Math.log10(Math.abs(number)) / 3) - 1;
@@ -136,9 +139,7 @@
       const scaledNumber =
         number / Math.pow(10, Math.floor(Math.log10(Math.abs(number)) / 3) * 3);
       return (
-        scaledNumber.toFixed(decimalPlaces).replace(/\.?0+$/, "") +
-        " " +
-        illionString
+        this.toFixedTrimmed(scaledNumber, decimalPlaces) + " " + illionString
       );
     }
 

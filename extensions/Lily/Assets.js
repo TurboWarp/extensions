@@ -24,6 +24,18 @@
     return true;
   };
 
+  /**
+   * @param {Blob} blob
+   * @returns {Promise<string>}
+   */
+  const readAsDataURL = (blob) =>
+    new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = (e) => reject(e);
+      fr.readAsDataURL(blob);
+    });
+
   class Assets {
     getInfo() {
       const dataURIOption = Scratch.translate({
@@ -129,10 +141,6 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "targets",
               },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Sprite1",
-              },
             },
           },
           {
@@ -143,10 +151,6 @@
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
               },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "costume1",
-              },
             },
           },
           {
@@ -156,10 +160,6 @@
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "sound1",
               },
             },
           },
@@ -188,9 +188,32 @@
           },
           {
             disableMonitor: true,
+            opcode: "getSpriteValue2",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "lmsAssets.getSpriteValueTarget",
+              default: "sprite [TARGET] [EXPORT]",
+              description:
+                "Reports information about a sprite. [TARGET] is a menu of sprite names. [EXPORT] is a menu with the options 'name' and 'dataURI'.",
+            }),
+            arguments: {
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "targets",
+              },
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "sprite",
+              },
+            },
+          },
+          {
+            // Legacy block
+            disableMonitor: true,
             opcode: "getSpriteValue",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("sprite [EXPORT]"),
+            hideFromPalette: true,
             arguments: {
               EXPORT: {
                 type: Scratch.ArgumentType.STRING,
@@ -523,7 +546,7 @@
     }
 
     deleteSprite(args, util) {
-      const target = this._getTargetFromMenu(args.TARGET);
+      const target = this._getTargetFromMenu(args.TARGET, util);
       if (!target || target.isStage) return;
 
       Scratch.vm.deleteSprite(target.id);
@@ -585,27 +608,27 @@
       return util.target.sprite.name ?? "";
     }
 
-    getSpriteValue(args, util) {
+    getSpriteValue2(args, util) {
+      const target = this._getTargetFromMenu(args.TARGET, util);
+      if (!target || target.isStage) return "";
+
       const option = Cast.toString(args.EXPORT);
       if (option === "name") {
-        return util.target.sprite.name ?? "";
+        return target.sprite.name ?? "";
       } else if (option === "dataURI") {
-        try {
-          return new Promise((resolve) => {
-            Scratch.vm.exportSprite(util.target.id).then((blob) => {
-              const fr = new FileReader();
-              fr.onload = () => resolve(fr.result);
-              fr.onabort = () => {
-                throw new Error("Read aborted");
-              };
-              fr.readAsDataURL(blob);
-            });
-          });
-        } catch (e) {
-          console.error("Failed to export the sprite", e);
+        return (async () => {
+          const blob = await Scratch.vm.exportSprite(target.id);
+          return readAsDataURL(blob);
+        })().catch((e) => {
+          console.error(e);
           return "";
-        }
+        });
       }
+    }
+
+    getSpriteValue(args, util) {
+      args.TARGET = "_myself_";
+      return this.getSpriteValue2(args, util);
     }
 
     reorderCostume(args, util) {
@@ -722,26 +745,19 @@
       if (option === "JSON") {
         return Scratch.vm.toJSON();
       } else if (option === "dataURI") {
-        try {
-          return new Promise((resolve) => {
-            vm.saveProjectSb3().then((blob) => {
-              const fr = new FileReader();
-              fr.onload = () => resolve(fr.result);
-              fr.onabort = () => {
-                throw new Error("Read aborted");
-              };
-              fr.readAsDataURL(blob);
-            });
-          });
-        } catch (e) {
-          console.error("Failed to export the project", e);
+        return (async () => {
+          const blob = await Scratch.vm.saveProjectSb3();
+          return readAsDataURL(blob);
+        })().catch((e) => {
+          console.error(e);
           return "";
-        }
+        });
       }
     }
 
     async loadExtension(args) {
       const url = Cast.toString(args.URL);
+      if (!(await vm.securityManager.canLoadExtensionFromProject(url))) return;
       await vm.extensionManager.loadExtensionURL(url);
     }
 

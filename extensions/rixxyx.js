@@ -248,6 +248,7 @@
             },
           },
           {
+            hideFromPalette: true,
             opcode: "returnNum",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("[NUM] as number"),
@@ -417,6 +418,9 @@
     }
     setCount(args) {
       if (
+        // Logically, checking for count being negative makes no sense, but it was there for
+        // a while and we don't want remove it for compatibility. No one should be using this
+        // in new projects.
         count.toString().indexOf("-") == -1 &&
         args.NUM.toString().indexOf("-") == -1
       ) {
@@ -460,7 +464,11 @@
         .join(" ");
     }
     repeatTxtTimes(args) {
-      return Scratch.Cast.toString(args.TEXT).repeat(Math.floor(args.NUM));
+      const times = Math.floor(Scratch.Cast.toNumber(args.NUM));
+      if (times < 0 || !Number.isFinite(times)) {
+        return "";
+      }
+      return Scratch.Cast.toString(args.TEXT).repeat(times);
     }
     jsonParse(args) {
       try {
