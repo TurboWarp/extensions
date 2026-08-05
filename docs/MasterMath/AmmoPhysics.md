@@ -30,7 +30,7 @@
 - Torque: newton-meters (n•m)
 - Rotation: degrees
 
-While most users will likely be using Simple3D, some Scratch-based 3D engines use large unitless values for scale, but because the Ammo.js library uses single-precision floats, **large values can cause loss of precision, instability, or solver issues**, like jittery or inaccurate collisions, or objects tunnelling through each other.
+While most users will likely be using Simple3D, some Scratch-based 3D engines use large unitless values for scale, but because the Ammo.js library uses single-precision floats, **large values can cause loss of precision, instability, or solver issues**, like jittery or inaccurate collisions, or objects tunneling through each other.
 
 Generally speaking, **values in between 0.01-1000 are safe**. If you must scale outside SI units, make sure to scale units proportionally and consistently to avoid unexpected behavior.
 
@@ -79,7 +79,7 @@ If your project's delta time is higher than your target frame rate, simulation s
 - Your project's target frame rate is 60 FPS.
 - Your project is lagging a bit, so your delta time might be running at 33ms instead of 16ms, so you need at least 2 substeps per frame to account for the loss in simulation quality.
 
-Note the term "max" substeps: It automatically computes the necessary substeps without exceeding that value. In most scenarios, increasing max substeps will not provide a noticable increase in quality, it only helps when your delta time is longer than your frame interval (e.g., you're lagging).
+Note the term "max" substeps: It automatically computes the necessary substeps without exceeding that value. In most scenarios, increasing max substeps will not provide a noticeable increase in quality, it only helps when your delta time is longer than your frame interval (e.g., you're lagging).
 
 ```scratch
 (max substeps :: #0fbd8c)
@@ -134,7 +134,7 @@ create capsule body with name: [body] mass: (5) radius: (0.5) height: (1) :: #0f
 Creates a capsule body with the specified name, mass, radius, and height. This body is great for using as your player's hitbox!
 
 >[!TIP]
-> Bodies support **safe replacement**, meaning that when you create a new object with the same name as an already existing object, it will override the new object safely. This can be strategically used to change a body's properties later, but don't do this too frequently and beware of optimization.
+> Bodies support **safe replacement**, meaning that when you create a new object with the same name as an already existing object, it will override the old object safely. This can be strategically used to change a body's properties later, but don't do this too frequently and beware of optimization.
 
 ### Complex Bodies <a name="complex-bodies"></a>
 
@@ -187,7 +187,7 @@ Additionally, you may notice there are **two types of triangle meshes**:
 1. Static
 2. Dynamic
 
-Static triangle meshes can't move and are bounding-volume-heirarchy accelerated. This means they are much more performant for static geometry like your level terrain or map, but they can't move or react to forces. **It does not support triangle-triangle interaction,** but is significantly faster for raycasting and convex hulls. Therefore, dynamic triangle meshes won't be able to collide triangle-to-triangle collisions with BVH static meshes.
+Static triangle meshes can't move and are bounding-volume-hierarchy accelerated. This means they are much more performant for static geometry like your level terrain or map, but they can't move or react to forces. **It does not support triangle-triangle interaction,** but is significantly faster for raycasting and convex hulls. Therefore, dynamic triangle meshes won't be able to collide triangle-to-triangle collisions with BVH static meshes.
 
 Dynamic triangle meshes are special: they support **deformable and/or moving concave meshes**. They also support **triangle-to-triangle collision with other dynamic triangle meshes**. However:
 
@@ -220,7 +220,7 @@ This block allows you to set a body's physical material properties. A float from
 
 Friction 0 means entirely frictionless (for example, something like ice should have a friction of ≈0.02). The default is 0.5. This type of friction is linear or sliding friction. More complex materials that have differing types of friction in different directions (e.g., ice skates have 0 friction forward but 1 friction side to side) or rolling friction aren't yet supported but may be upon enough user request.
 
-By default bounciness (elasticity/restitution) is 0, so if you want a body to be bouncy you have to increase it. You might wonder why your body isn't more bouncy after you increase it:  **you also have to increase the bounciness of the of the reacting/colliding object (for example the ground) to see an effect.**
+By default bounciness (elasticity/restitution) is 0, so if you want a body to be bouncy you have to increase it. You might wonder why your body isn't more bouncy after you increase it:  **you also have to increase the bounciness of the reacting/colliding object (for example the ground) to see an effect.**
 
 ```scratch
 set [linear v] factor of body [body] to x: [1] y: [1] z: [1] :: #0fbd8c
@@ -230,7 +230,7 @@ This block sets the linear or angular factor of a body. This is essentially a mo
 ```scratch
 set [linear v] velocity of body [body] to x: [1] y: [1] z: [1] :: #0fbd8c
 ```
-This block, unlike forces, overrites a body's velocity. Effects are immediate.
+This block, unlike forces, overwrites a body's velocity. Effects are immediate.
 
 >[!TIP]
 > Using this velocity block with a capsule body that has an angular factor of 0 is a great way to set up basic player movement!
@@ -238,12 +238,12 @@ This block, unlike forces, overrites a body's velocity. Effects are immediate.
 ```scratch
 ([x] [linear v] velocity of body [body] :: #0fbd8c)
 ```
-This block returns the linear or angular body of the specified body on the specified axis. 
+This block returns the linear or angular velocity of the specified body on the specified axis. 
 
 ```scratch
 set linear damping of body [body] to [0.01] and angular damping to [0.01] :: #0fbd8c
 ```
-This block controls how fast a body loses its momentum. You can think of it like air resistance—especially large values will make your body feel like it's floating in molasess, and a value of 0 will result in no damping (like in a vacuum or outer space).
+This block controls how fast a body loses its momentum. You can think of it like air resistance—especially large values will make your body feel like it's floating in molasses, and a value of 0 will result in no damping (like in a vacuum or outer space).
 
 ```scratch
 set gravity of body [body] to x: (0) y: (0) z: (0) :: #0fbd8c
@@ -320,7 +320,7 @@ This block fires a ray with the specified name from point A to point B.
 ```scratch
 cast ray with name [ray] from x: (0) y: (0) z: (0) with pitch: (45) yaw: (45) distance: (5) :: #0fbd8c
 ```
-This block fires a ray with the specified name. Unlike the block above, it accepts a starting point and pitch/yaw **in degrees**, and will move along that rotation until it hits a body or reaches the max distance. Roll (or z-rotation) is unnacounted for since it does not affect the direction of the ray. **_This block assumes facing -Z is forward._**
+This block fires a ray with the specified name. Unlike the block above, it accepts a starting point and pitch/yaw **in degrees**, and will move along that rotation until it hits a body or reaches the max distance. Roll (or z-rotation) is unnaccounted for since it does not affect the direction of the ray. **_This block assumes facing -Z is forward._**
 
 ```scratch
 cast ray with name [ray] from x: (0) y: (0) z: (0) towards coordinate x: (7) y: (15) z: (12) distance: (5) :: #0fbd8c
@@ -382,7 +382,7 @@ Pushes the specified body with the given XYZ rotational torque in newton-meters.
 
 ## Debugging <a name="debugging"></a>
 
-Ammo Physics will report errors that have occured. To see these errors, open the developer inspector (ctrl + shift + I on Windows, cmd + option + I on Mac) and select the "Console" tab at the top of the window. Here, you can see errors that have occured and in which sprite they have occured. While this system will not catch every issue, it can certainly narrow down issues such as referencing a body or a ray that does not exist or improperly formatted object lists.
+Ammo Physics will report errors that have occurred. To see these errors, open the developer inspector (ctrl + shift + I on Windows, cmd + option + I on Mac) and select the "Console" tab at the top of the window. Here, you can see errors that have occurred and in which sprite they have occurred. While this system will not catch every issue, it can certainly narrow down issues such as referencing a body or a ray that does not exist or an improperly formatted object list.
 
 ## More Resources <a name="more-resources"></a>
 
