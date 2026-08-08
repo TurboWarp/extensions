@@ -1,3 +1,8 @@
+// Name: Js Math
+// ID: jsmath
+// Description: Exposes all of the JavaScript math functions
+// By: dangerdangerau
+// License: MPL-2.0
 class Js_math {
   constructor() {
     this.FUNCTIONS = {
