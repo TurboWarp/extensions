@@ -1,0 +1,1424 @@
+// MakerPlus Serial Hardware Extension
+// Copyright (c) 2026 Darrenliu09
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+(function (Scratch) {
+  'use strict';
+
+  class MakerPlusExtension {
+    constructor() {
+      this.port = null;
+      this.reader = null;
+      this.writer = null;
+      this.decoder = new TextDecoder();
+      this.encoder = new TextEncoder();
+      this.sensorData = {};
+      this.isConnected = false;
+      this.boardType = '';
+      this.readLoop = this.readLoop.bind(this);
+      this.language = this.detectLanguage();
+    }
+
+    detectLanguage() {
+      const lang = navigator.language || navigator.userLanguage;
+      if (lang.startsWith('zh')) return 'zh';
+      return 'en';
+    }
+
+    getStrings() {
+      const zh = {
+        name: '创客+',
+        openCodeEditor: '打开代码编辑器',
+        runCode: '运行代码',
+        selectBoard: '选择开发板 [BOARD]',
+        currentBoard: '当前开发板',
+        connect: '连接设备 [BAUD] 波特率',
+        disconnect: '断开连接',
+        isConnected: '设备已连接?',
+        setPinMode: '设置引脚 [PIN] 为 [MODE]',
+        digitalWrite: '引脚 [PIN] 输出 [VALUE]',
+        digitalRead: '读取引脚 [PIN] 数字值',
+        analogRead: '读取引脚 [PIN] 模拟值',
+        analogWrite: '引脚 [PIN] PWM输出 [VALUE]',
+        sendSerial: '发送串口数据 [DATA]',
+        readSerial: '读取串口数据',
+        servoWrite: '舵机引脚 [PIN] 转到 [ANGLE]度',
+        delay: '延迟 [MS] 毫秒',
+        pinInfo: '引脚信息 [PIN]',
+        input: '输入',
+        output: '输出',
+        inputPullup: '上拉输入',
+        inputPulldown: '下拉输入',
+        high: '高电平',
+        low: '低电平',
+        openDisplayEditor: '打开显示屏编辑器',
+        sendDisplayData: '发送显示数据',
+        clearDisplay: '清空显示屏',
+        displayText: '显示文字 [TEXT]',
+        displayImage: '显示图片 [URL]',
+        startCamera: '启动摄像头',
+        stopCamera: '停止摄像头',
+        setBrightness: '设置亮度 [VALUE]',
+        brightness: '亮度'
+      };
+
+      const en = {
+        name: 'Maker+',
+        openCodeEditor: 'Open Code Editor',
+        runCode: 'Run Code',
+        selectBoard: 'Select Board [BOARD]',
+        currentBoard: 'Current Board',
+        connect: 'Connect at [BAUD] baud',
+        disconnect: 'Disconnect',
+        isConnected: 'Connected?',
+        setPinMode: 'Set pin [PIN] to [MODE]',
+        digitalWrite: 'Pin [PIN] write [VALUE]',
+        digitalRead: 'Read pin [PIN] digital',
+        analogRead: 'Read pin [PIN] analog',
+        analogWrite: 'Pin [PIN] PWM [VALUE]',
+        sendSerial: 'Send serial [DATA]',
+        readSerial: 'Read serial data',
+        servoWrite: 'Servo pin [PIN] to [ANGLE]deg',
+        delay: 'Wait [MS] ms',
+        pinInfo: 'Pin info [PIN]',
+        input: 'Input',
+        output: 'Output',
+        inputPullup: 'Input Pullup',
+        inputPulldown: 'Input Pulldown',
+        high: 'High',
+        low: 'Low',
+        openDisplayEditor: 'Open Display Editor',
+        sendDisplayData: 'Send Display Data',
+        clearDisplay: 'Clear Display',
+        displayText: 'Display Text [TEXT]',
+        displayImage: 'Display Image [URL]',
+        startCamera: 'Start Camera',
+        stopCamera: 'Stop Camera',
+        setBrightness: 'Set Brightness [VALUE]',
+        brightness: 'Brightness'
+      };
+
+      return this.language === 'zh' ? zh : en;
+    }
+
+    getInfo() {
+      const s = this.getStrings();
+
+      return {
+        id: 'makerplus',
+        name: s.name,
+        color1: '#4a90d9',
+        color2: '#3a7bc8',
+        color3: '#2a5ba8',
+        docsURI: 'https://docs.turbowarp.org/',
+        blocks: [
+          {
+            opcode: 'openCodeEditor',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.openCodeEditor
+          },
+          {
+            opcode: 'runCode',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.runCode,
+            arguments: {
+              CODE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'digitalWrite(2, HIGH)'
+              }
+            }
+          },
+          {
+            opcode: 'selectBoard',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.selectBoard,
+            arguments: {
+              BOARD: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'BOARD_TYPES'
+              }
+            }
+          },
+          {
+            opcode: 'getCurrentBoard',
+            blockType: Scratch.BlockType.REPORTER,
+            text: s.currentBoard
+          },
+          '---',
+          {
+            opcode: 'connect',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.connect,
+            arguments: {
+              BAUD: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'BAUD_RATES',
+                defaultValue: '115200'
+              }
+            }
+          },
+          {
+            opcode: 'disconnect',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.disconnect
+          },
+          {
+            opcode: 'checkConnected',
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: s.isConnected
+          },
+          '---',
+          {
+            opcode: 'setPinMode',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.setPinMode,
+            arguments: {
+              PIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 2
+              },
+              MODE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'PIN_MODES'
+              }
+            }
+          },
+          {
+            opcode: 'digitalWrite',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.digitalWrite,
+            arguments: {
+              PIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 2
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.STRING,
+                menu: 'DIGITAL_VALUES'
+              }
+            }
+          },
+          {
+            opcode: 'digitalRead',
+            blockType: Scratch.BlockType.REPORTER,
+            text: s.digitalRead,
+            arguments: {
+              PIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0
+              }
+            }
+          },
+          {
+            opcode: 'analogRead',
+            blockType: Scratch.BlockType.REPORTER,
+            text: s.analogRead,
+            arguments: {
+              PIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 34
+              }
+            }
+          },
+          {
+            opcode: 'analogWrite',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.analogWrite,
+            arguments: {
+              PIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 5
+              },
+              VALUE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 128
+              }
+            }
+          },
+          {
+            opcode: 'servoWrite',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.servoWrite,
+            arguments: {
+              PIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 15
+              },
+              ANGLE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 90
+              }
+            }
+          },
+          {
+            opcode: 'delay',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.delay,
+            arguments: {
+              MS: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1000
+              }
+            }
+          },
+          '---',
+          {
+            opcode: 'sendSerial',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.sendSerial,
+            arguments: {
+              DATA: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'hello'
+              }
+            }
+          },
+          {
+            opcode: 'readSerial',
+            blockType: Scratch.BlockType.REPORTER,
+            text: s.readSerial
+          },
+          {
+            opcode: 'pinInfo',
+            blockType: Scratch.BlockType.REPORTER,
+            text: s.pinInfo,
+            arguments: {
+              PIN: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 2
+              }
+            }
+          },
+          '---',
+          {
+            opcode: 'openDisplayEditor',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.openDisplayEditor
+          },
+          {
+            opcode: 'sendDisplayData',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.sendDisplayData
+          },
+          {
+            opcode: 'clearDisplay',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.clearDisplay
+          },
+          {
+            opcode: 'displayText',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.displayText,
+            arguments: {
+              TEXT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'Hello'
+              }
+            }
+          },
+          {
+            opcode: 'displayImage',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.displayImage,
+            arguments: {
+              URL: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: 'https://example.com/image.png'
+              }
+            }
+          },
+          {
+            opcode: 'startCamera',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.startCamera
+          },
+          {
+            opcode: 'stopCamera',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.stopCamera
+          },
+          {
+            opcode: 'setBrightness',
+            blockType: Scratch.BlockType.COMMAND,
+            text: s.setBrightness,
+            arguments: {
+              VALUE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100
+              }
+            }
+          }
+        ],
+        menus: {
+          BAUD_RATES: {
+            acceptReporters: false,
+            items: ['9600', '19200', '38400', '57600', '115200', '230400']
+          },
+          BOARD_TYPES: {
+            acceptReporters: false,
+            items: this.language === 'zh'
+              ? ['ESP32', 'STM32', '树莓派', '香橙派', 'Arduino', 'NodeMCU']
+              : ['ESP32', 'STM32', 'Raspberry Pi', 'Orange Pi', 'Arduino', 'NodeMCU']
+          },
+          PIN_MODES: {
+            acceptReporters: false,
+            items: this.language === 'zh'
+              ? ['输入', '输出', '上拉输入', '下拉输入']
+              : ['Input', 'Output', 'Input Pullup', 'Input Pulldown']
+          },
+          DIGITAL_VALUES: {
+            acceptReporters: false,
+            items: this.language === 'zh'
+              ? ['高电平', '低电平']
+              : ['High', 'Low']
+          }
+        }
+      };
+    }
+
+    openCodeEditor() {
+      const html = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Courier New', monospace; background: #1e1e1e; color: #d4d4d4; padding: 10px; }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #3c3c3c; }
+.title { font-size: 16px; font-weight: bold; color: #4a90d9; }
+.buttons { display: flex; gap: 8px; }
+button { padding: 6px 12px; background: #4a90d9; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+button:hover { background: #3a7bc8; }
+button.run { background: #00b894; }
+button.run:hover { background: #00a383; }
+button.close { background: #e17055; }
+button.close:hover { background: #d63031; }
+button.compile { background: #fdcb6e; color: #2d3436; }
+button.compile:hover { background: #f39c12; }
+.output { width: 100%; height: 150px; background: #1e1e1e; border: 1px solid #3c3c3c; border-radius: 4px; padding: 10px; font-family: 'Courier New', monospace; font-size: 12px; color: #d4d4d4; overflow-y: auto; margin-top: 10px; }
+.error { color: #e17055; }
+.success { color: #00b894; }
+.info { color: #fdcb6e; }
+textarea { width: 100%; height: calc(100vh - 280px); background: #252526; border: 1px solid #3c3c3c; border-radius: 4px; padding: 10px; font-family: 'Courier New', monospace; font-size: 14px; color: #d4d4d4; resize: none; }
+textarea:focus { outline: none; border-color: #4a90d9; }
+.hint { font-size: 11px; color: #6a6a6a; margin-top: 5px; }
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="title">Code Editor - Maker+</div>
+  <div class="buttons">
+    <button class="compile" onclick="compileCode()">🔧 Compile</button>
+    <button class="run" onclick="runCode()" disabled>▶ Run</button>
+    <button onclick="clearCode()">Clear</button>
+    <button class="close" onclick="closeWindow()">Close</button>
+  </div>
+</div>
+<textarea id="codeEditor" placeholder="// Enter your code&#10;// Example:&#10;digitalWrite(2, HIGH)&#10;delay(1000)&#10;digitalWrite(2, LOW)&#10;delay(1000)">// Maker+ Code Editor
+// Supported commands:
+// digitalWrite(pin, HIGH/LOW)   - Digital output
+// digitalRead(pin)             - Digital input
+// analogRead(pin)              - Analog input
+// analogWrite(pin, value)      - PWM output (0-255)
+// pinMode(pin, INPUT/OUTPUT)   - Set pin mode
+// servoWrite(pin, angle)       - Servo control (0-180)
+// delay(ms)                    - Delay in milliseconds
+
+// Example: Blink LED
+pinMode(2, OUTPUT)
+digitalWrite(2, HIGH)
+delay(1000)
+digitalWrite(2, LOW)
+delay(1000)</textarea>
+<div class="hint">Tip: Use semicolons or newlines to separate commands</div>
+<div class="output" id="output">Output will appear here...</div>
+<script>
+var compiledCode = [];
+var isValid = false;
+
+function log(msg, type) {
+  var output = document.getElementById('output');
+  var timestamp = new Date().toLocaleTimeString();
+  var colorClass = type || 'info';
+  output.innerHTML += '<span class="' + colorClass + '">[' + timestamp + ']</span> ' + msg + '<br>';
+  output.scrollTop = output.scrollHeight;
+}
+
+function compileCode() {
+  var code = document.getElementById('codeEditor').value;
+  var runBtn = document.querySelector('.run');
+
+  compiledCode = [];
+  isValid = false;
+
+  document.getElementById('output').innerHTML = '';
+  log('=== Compilation Started ===', 'info');
+
+  var lines = code.split('\n');
+  var errors = [];
+  var warnings = [];
+
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].trim();
+    var lineNum = i + 1;
+
+    if (line === '' || line.startsWith('//')) continue;
+
+    var cleanLine = line.replace(/;/g, '').trim();
+    if (cleanLine === '') continue;
+
+    var match = cleanLine.match(/^(\w+)\s*\((.*)\)$/);
+    if (!match) {
+      errors.push('Line ' + lineNum + ': Invalid syntax - "' + line + '"');
+      continue;
+    }
+
+    var cmd = match[1];
+    var args = match[2].split(',').map(function(a) { return a.trim(); });
+
+    var validCommands = ['digitalWrite', 'digitalRead', 'analogRead', 'analogWrite', 'pinMode', 'servoWrite', 'delay'];
+
+    if (validCommands.indexOf(cmd) === -1) {
+      errors.push('Line ' + lineNum + ': Unknown command - "' + cmd + '"');
+      continue;
+    }
+
+    switch(cmd) {
+      case 'digitalWrite':
+        if (args.length !== 2) {
+          errors.push('Line ' + lineNum + ': digitalWrite requires 2 arguments (pin, HIGH/LOW)');
+        } else if (!/^\d+$/.test(args[0])) {
+          errors.push('Line ' + lineNum + ': Pin must be a number - "' + args[0] + '"');
+        } else if (args[1] !== 'HIGH' && args[1] !== 'LOW') {
+          errors.push('Line ' + lineNum + ': Value must be HIGH or LOW - "' + args[1] + '"');
+        } else {
+          compiledCode.push(cleanLine);
+        }
+        break;
+      case 'digitalRead':
+        if (args.length !== 1) {
+          errors.push('Line ' + lineNum + ': digitalRead requires 1 argument (pin)');
+        } else if (!/^\d+$/.test(args[0])) {
+          errors.push('Line ' + lineNum + ': Pin must be a number - "' + args[0] + '"');
+        } else {
+          compiledCode.push(cleanLine);
+        }
+        break;
+      case 'analogRead':
+        if (args.length !== 1) {
+          errors.push('Line ' + lineNum + ': analogRead requires 1 argument (pin)');
+        } else if (!/^\d+$/.test(args[0])) {
+          errors.push('Line ' + lineNum + ': Pin must be a number - "' + args[0] + '"');
+        } else {
+          compiledCode.push(cleanLine);
+        }
+        break;
+      case 'analogWrite':
+        if (args.length !== 2) {
+          errors.push('Line ' + lineNum + ': analogWrite requires 2 arguments (pin, value)');
+        } else if (!/^\d+$/.test(args[0])) {
+          errors.push('Line ' + lineNum + ': Pin must be a number - "' + args[0] + '"');
+        } else if (!/^\d+$/.test(args[1])) {
+          errors.push('Line ' + lineNum + ': Value must be a number (0-255) - "' + args[1] + '"');
+        } else if (parseInt(args[1]) < 0 || parseInt(args[1]) > 255) {
+          warnings.push('Line ' + lineNum + ': Value out of range (0-255) - will be clamped');
+          compiledCode.push(cleanLine);
+        } else {
+          compiledCode.push(cleanLine);
+        }
+        break;
+      case 'pinMode':
+        if (args.length !== 2) {
+          errors.push('Line ' + lineNum + ': pinMode requires 2 arguments (pin, mode)');
+        } else if (!/^\d+$/.test(args[0])) {
+          errors.push('Line ' + lineNum + ': Pin must be a number - "' + args[0] + '"');
+        } else if (args[1] !== 'INPUT' && args[1] !== 'OUTPUT' && args[1] !== 'INPUT_PULLUP' && args[1] !== 'INPUT_PULLDOWN') {
+          errors.push('Line ' + lineNum + ': Mode must be INPUT/OUTPUT/INPUT_PULLUP/INPUT_PULLDOWN - "' + args[1] + '"');
+        } else {
+          compiledCode.push(cleanLine);
+        }
+        break;
+      case 'servoWrite':
+        if (args.length !== 2) {
+          errors.push('Line ' + lineNum + ': servoWrite requires 2 arguments (pin, angle)');
+        } else if (!/^\d+$/.test(args[0])) {
+          errors.push('Line ' + lineNum + ': Pin must be a number - "' + args[0] + '"');
+        } else if (!/^\d+$/.test(args[1])) {
+          errors.push('Line ' + lineNum + ': Angle must be a number (0-180) - "' + args[1] + '"');
+        } else if (parseInt(args[1]) < 0 || parseInt(args[1]) > 180) {
+          warnings.push('Line ' + lineNum + ': Angle out of range (0-180) - will be clamped');
+          compiledCode.push(cleanLine);
+        } else {
+          compiledCode.push(cleanLine);
+        }
+        break;
+      case 'delay':
+        if (args.length !== 1) {
+          errors.push('Line ' + lineNum + ': delay requires 1 argument (milliseconds)');
+        } else if (!/^\d+$/.test(args[0])) {
+          errors.push('Line ' + lineNum + ': Delay must be a number - "' + args[0] + '"');
+        } else {
+          compiledCode.push(cleanLine);
+        }
+        break;
+      default:
+        compiledCode.push(cleanLine);
+    }
+  }
+
+  warnings.forEach(function(w) { log(w, 'info'); });
+  errors.forEach(function(e) { log(e, 'error'); });
+
+  if (errors.length === 0) {
+    isValid = true;
+    runBtn.disabled = false;
+    log('=== Compilation Successful! ===', 'success');
+    log('Compiled ' + compiledCode.length + ' command(s)', 'success');
+    log('Ready to run on device.', 'success');
+  } else {
+    isValid = false;
+    runBtn.disabled = true;
+    log('=== Compilation Failed with ' + errors.length + ' error(s) ===', 'error');
+  }
+}
+
+function runCode() {
+  if (!isValid) {
+    log('Please compile first!', 'error');
+    return;
+  }
+
+  var code = compiledCode.join('\n');
+  window.opener.postMessage({ type: 'runCode', code: code }, '*');
+  log('Code sent to device!', 'success');
+}
+
+function clearCode() {
+  document.getElementById('codeEditor').value = '';
+  document.getElementById('output').innerHTML = 'Output will appear here...';
+  document.querySelector('.run').disabled = true;
+  compiledCode = [];
+  isValid = false;
+}
+
+function closeWindow() {
+  window.close();
+}
+</script>
+</body>
+</html>`;
+
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank', 'width=800,height=600,top=100,left=100');
+    }
+
+    openDisplayEditor() {
+      const html = `
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Arial, sans-serif; background: #1e1e1e; color: #d4d4d4; padding: 15px; display: flex; gap: 20px; flex-wrap: wrap; }
+.panel { background: #252526; border: 1px solid #3c3c3c; border-radius: 8px; padding: 15px; }
+h2 { font-size: 14px; color: #4a90d9; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #3c3c3c; }
+.grid-container { display: flex; flex-direction: column; gap: 2px; }
+.grid-row { display: flex; gap: 2px; }
+.grid-cell { width: 40px; height: 40px; border: 2px solid #3c3c3c; border-radius: 4px; cursor: pointer; transition: all 0.2s; background: #1e1e1e; }
+.grid-cell:hover { border-color: #4a90d9; }
+.grid-cell.selected { border-color: #00b894; box-shadow: 0 0 8px rgba(0, 184, 148, 0.5); }
+.color-picker { display: flex; flex-direction: column; gap: 8px; }
+.color-label { font-size: 12px; color: #888; }
+.color-input { width: 100%; padding: 5px; background: #1e1e1e; border: 1px solid #3c3c3c; border-radius: 4px; color: #d4d4d4; }
+input[type="range"] { width: 100%; height: 6px; -webkit-appearance: none; background: #3c3c3c; border-radius: 3px; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: #4a90d9; border-radius: 50%; cursor: pointer; }
+.hex-input { width: 100%; padding: 5px; font-family: monospace; font-size: 12px; }
+.preview-box { width: 60px; height: 60px; border-radius: 4px; border: 1px solid #3c3c3c; }
+.controls { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+button { padding: 8px 16px; background: #4a90d9; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; transition: background 0.2s; }
+button:hover { background: #3a7bc8; }
+button.send { background: #00b894; }
+button.send:hover { background: #00a383; }
+button.clear { background: #e17055; }
+button.clear:hover { background: #d63031; }
+.upload-section { margin-top: 15px; padding-top: 15px; border-top: 1px solid #3c3c3c; }
+.url-input { width: 100%; padding: 8px; background: #1e1e1e; border: 1px solid #3c3c3c; border-radius: 4px; color: #d4d4d4; font-size: 12px; margin-bottom: 8px; }
+.camera-section { margin-top: 15px; padding-top: 15px; border-top: 1px solid #3c3c3c; }
+video { width: 200px; height: 150px; border: 1px solid #3c3c3c; border-radius: 4px; background: #000; display: none; }
+canvas { display: none; }
+.brightness-control { margin-top: 15px; padding-top: 15px; border-top: 1px solid #3c3c3c; }
+</style>
+</head>
+<body>
+<div class="panel" style="width: 240px;">
+  <h2>5x5 Pixel Grid</h2>
+  <div class="grid-container" id="grid"></div>
+</div>
+<div class="panel" style="width: 200px;">
+  <h2>RGB Color Picker</h2>
+  <div class="color-picker">
+    <div class="color-label">Red (R)</div>
+    <input type="range" id="rSlider" min="0" max="255" value="255">
+    <input type="number" class="color-input" id="rValue" value="255" min="0" max="255">
+
+    <div class="color-label">Green (G)</div>
+    <input type="range" id="gSlider" min="0" max="255" value="0">
+    <input type="number" class="color-input" id="gValue" value="0" min="0" max="255">
+
+    <div class="color-label">Blue (B)</div>
+    <input type="range" id="bSlider" min="0" max="255" value="0">
+    <input type="number" class="color-input" id="bValue" value="0" min="0" max="255">
+
+    <div class="color-label">Hex Code</div>
+    <input type="text" class="hex-input" id="hexValue" value="#FF0000">
+
+    <div style="margin-top: 10px; display: flex; align-items: center; gap: 10px;">
+      <div class="preview-box" id="colorPreview"></div>
+      <div class="color-label">Preview</div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="send" onclick="sendDisplayData()">Send to Display</button>
+    <button class="clear" onclick="clearGrid()">Clear Grid</button>
+  </div>
+</div>
+<div class="panel" style="width: 250px;">
+  <h2>Image Upload</h2>
+  <div class="upload-section">
+    <input type="text" class="url-input" id="imageUrl" placeholder="Enter image URL..." value="https://via.placeholder.com/100">
+    <button onclick="loadImage()">Load Image</button>
+    <div style="margin-top: 10px; text-align: center;">
+      <img id="previewImage" src="" style="max-width: 200px; max-height: 150px; border-radius: 4px; display: none;">
+    </div>
+  </div>
+</div>
+<div class="panel" style="width: 250px;">
+  <h2>Camera Stream</h2>
+  <div class="camera-section">
+    <button onclick="startCamera()">Start Camera</button>
+    <button onclick="stopCamera()" style="background: #e17055;">Stop Camera</button>
+    <video id="cameraVideo" autoplay playsinline></video>
+    <canvas id="cameraCanvas"></canvas>
+    <button onclick="sendCameraFrame()" style="margin-top: 10px; background: #00b894;">Send Frame</button>
+  </div>
+</div>
+<div class="panel" style="width: 200px;">
+  <h2>Brightness Control</h2>
+  <div class="brightness-control">
+    <div class="color-label">Brightness</div>
+    <input type="range" id="brightnessSlider" min="0" max="100" value="100">
+    <input type="number" class="color-input" id="brightnessValue" value="100" min="0" max="100">
+    <button onclick="setBrightness()">Apply Brightness</button>
+  </div>
+</div>
+<script>
+var grid = [];
+var selectedCell = null;
+var currentColor = { r: 255, g: 0, b: 0 };
+var cameraStream = null;
+var brightness = 100;
+
+for (var row = 0; row < 5; row++) {
+  grid[row] = [];
+  var rowDiv = document.createElement('div');
+  rowDiv.className = 'grid-row';
+  for (var col = 0; col < 5; col++) {
+    var cell = document.createElement('div');
+    cell.className = 'grid-cell';
+    cell.dataset.row = row;
+    cell.dataset.col = col;
+    cell.style.backgroundColor = '#1e1e1e';
+    grid[row][col] = { r: 0, g: 0, b: 0 };
+
+    cell.addEventListener('click', function() {
+      var r = parseInt(this.dataset.row);
+      var c = parseInt(this.dataset.col);
+      grid[r][c] = { ...currentColor };
+      this.style.backgroundColor = rgbToHex(currentColor.r, currentColor.g, currentColor.b);
+
+      document.querySelectorAll('.grid-cell').forEach(function(c) { c.classList.remove('selected'); });
+      this.classList.add('selected');
+      selectedCell = { row: r, col: c };
+    });
+
+    rowDiv.appendChild(cell);
+  }
+  document.getElementById('grid').appendChild(rowDiv);
+}
+
+function updateColor() {
+  var r = parseInt(document.getElementById('rSlider').value);
+  var g = parseInt(document.getElementById('gSlider').value);
+  var b = parseInt(document.getElementById('bSlider').value);
+
+  currentColor = { r, g, b };
+
+  document.getElementById('rValue').value = r;
+  document.getElementById('gValue').value = g;
+  document.getElementById('bValue').value = b;
+  document.getElementById('hexValue').value = rgbToHex(r, g, b);
+  document.getElementById('colorPreview').style.backgroundColor = rgbToHex(r, g, b);
+}
+
+function updateFromHex() {
+  var hex = document.getElementById('hexValue').value;
+  var rgb = hexToRgb(hex);
+  if (rgb) {
+    document.getElementById('rSlider').value = rgb.r;
+    document.getElementById('gSlider').value = rgb.g;
+    document.getElementById('bSlider').value = rgb.b;
+    updateColor();
+  }
+}
+
+function rgbToHex(r, g, b) {
+  return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+}
+
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
+}
+
+document.getElementById('rSlider').addEventListener('input', updateColor);
+document.getElementById('gSlider').addEventListener('input', updateColor);
+document.getElementById('bSlider').addEventListener('input', updateColor);
+document.getElementById('hexValue').addEventListener('change', updateFromHex);
+
+function clearGrid() {
+  for (var row = 0; row < 5; row++) {
+    for (var col = 0; col < 5; col++) {
+      grid[row][col] = { r: 0, g: 0, b: 0 };
+      var cell = document.querySelector('.grid-cell[data-row="' + row + '"][data-col="' + col + '"]');
+      cell.style.backgroundColor = '#1e1e1e';
+    }
+  }
+}
+
+function sendDisplayData() {
+  var data = JSON.stringify(grid);
+  window.opener.postMessage({ type: 'displayData', data: data }, '*');
+  alert('Display data sent!');
+}
+
+function loadImage() {
+  var url = document.getElementById('imageUrl').value;
+  var img = document.getElementById('previewImage');
+  img.src = url;
+  img.style.display = 'block';
+
+  img.onload = function() {
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    canvas.width = 5;
+    canvas.height = 5;
+    ctx.drawImage(img, 0, 0, 5, 5);
+
+    for (var row = 0; row < 5; row++) {
+      for (var col = 0; col < 5; col++) {
+        var pixel = ctx.getImageData(col, row, 1, 1).data;
+        grid[row][col] = { r: pixel[0], g: pixel[1], b: pixel[2] };
+        var cell = document.querySelector('.grid-cell[data-row="' + row + '"][data-col="' + col + '"]');
+        cell.style.backgroundColor = rgbToHex(pixel[0], pixel[1], pixel[2]);
+      }
+    }
+    alert('Image loaded and converted to 5x5 grid!');
+  };
+}
+
+async function startCamera() {
+  try {
+    cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    document.getElementById('cameraVideo').srcObject = cameraStream;
+    document.getElementById('cameraVideo').style.display = 'block';
+  } catch (error) {
+    alert('Camera access denied: ' + error.message);
+  }
+}
+
+function stopCamera() {
+  if (cameraStream) {
+    cameraStream.getTracks().forEach(function(track) {
+      track.stop();
+    });
+    cameraStream = null;
+    document.getElementById('cameraVideo').style.display = 'none';
+  }
+}
+
+function sendCameraFrame() {
+  var video = document.getElementById('cameraVideo');
+  var canvas = document.getElementById('cameraCanvas');
+  var ctx = canvas.getContext('2d');
+
+  canvas.width = 5;
+  canvas.height = 5;
+  ctx.drawImage(video, 0, 0, 5, 5);
+
+  for (var row = 0; row < 5; row++) {
+    for (var col = 0; col < 5; col++) {
+      var pixel = ctx.getImageData(col, row, 1, 1).data;
+      grid[row][col] = { r: pixel[0], g: pixel[1], b: pixel[2] };
+      var cell = document.querySelector('.grid-cell[data-row="' + row + '"][data-col="' + col + '"]');
+      cell.style.backgroundColor = rgbToHex(pixel[0], pixel[1], pixel[2]);
+    }
+  }
+
+  sendDisplayData();
+}
+
+function setBrightness() {
+  brightness = parseInt(document.getElementById('brightnessSlider').value);
+  document.getElementById('brightnessValue').value = brightness;
+  window.opener.postMessage({ type: 'setBrightness', value: brightness }, '*');
+  alert('Brightness set to ' + brightness + '%');
+}
+
+document.getElementById('brightnessSlider').addEventListener('input', function() {
+  document.getElementById('brightnessValue').value = this.value;
+});
+</script>
+</body>
+</html>`;
+
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank', 'width=1200,height=500,top=100,left=100');
+    }
+
+    runCode(args) {
+      if (!this.isConnected) return;
+      const code = args.CODE;
+      const commands = code.split(/[;\n]/).filter(c => c.trim());
+      commands.forEach(cmd => {
+        this.sendCommand(`CODE:${cmd.trim()}`);
+      });
+    }
+
+    selectBoard(args) {
+      this.boardType = args.BOARD;
+    }
+
+    getCurrentBoard() {
+      return this.boardType || (this.language === 'zh' ? '未选择' : 'Not selected');
+    }
+
+    async connect(args) {
+      try {
+        this.port = await navigator.serial.requestPort();
+        const baudRate = parseInt(args.BAUD);
+        await this.port.open({ baudRate: baudRate });
+
+        this.writer = this.port.writable.getWriter();
+        this.isConnected = true;
+
+        await this.sendCommand('INIT');
+        await this.sendCommand(`BOARD:${this.boardType}`);
+
+        this.readLoop();
+
+        return new Promise(resolve => setTimeout(resolve, 500));
+      } catch (error) {
+        console.error('Connection failed:', error);
+        this.isConnected = false;
+      }
+    }
+
+    async disconnect() {
+      try {
+        if (this.reader) {
+          await this.reader.cancel();
+          this.reader = null;
+        }
+        if (this.writer) {
+          await this.writer.close();
+          this.writer = null;
+        }
+        if (this.port) {
+          await this.port.close();
+          this.port = null;
+        }
+        this.isConnected = false;
+        this.sensorData = {};
+      } catch (error) {
+        console.error('Disconnect failed:', error);
+      }
+    }
+
+    checkConnected() {
+      return this.isConnected;
+    }
+
+    async setPinMode(args) {
+      if (!this.isConnected) return;
+      const pin = args.PIN;
+      const mode = args.MODE;
+      let modeCode = 'OUTPUT';
+
+      if (mode === '输入' || mode === 'Input') modeCode = 'INPUT';
+      else if (mode === '输出' || mode === 'Output') modeCode = 'OUTPUT';
+      else if (mode === '上拉输入' || mode === 'Input Pullup') modeCode = 'INPUT_PULLUP';
+      else if (mode === '下拉输入' || mode === 'Input Pulldown') modeCode = 'INPUT_PULLDOWN';
+
+      await this.sendCommand(`PIN_MODE:${pin}:${modeCode}`);
+    }
+
+    async digitalWrite(args) {
+      if (!this.isConnected) return;
+      const pin = args.PIN;
+      const value = (args.VALUE === '高电平' || args.VALUE === 'High') ? 'HIGH' : 'LOW';
+      await this.sendCommand(`DIGITAL_WRITE:${pin}:${value}`);
+    }
+
+    async digitalRead(args) {
+      if (!this.isConnected) return 0;
+      const pin = args.PIN;
+      await this.sendCommand(`DIGITAL_READ:${pin}`);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      return this.sensorData[`D${pin}`] || 0;
+    }
+
+    async analogRead(args) {
+      if (!this.isConnected) return 0;
+      const pin = args.PIN;
+      await this.sendCommand(`ANALOG_READ:${pin}`);
+      await new Promise(resolve => setTimeout(resolve, 100));
+      return this.sensorData[`A${pin}`] || 0;
+    }
+
+    async analogWrite(args) {
+      if (!this.isConnected) return;
+      const pin = args.PIN;
+      const value = args.VALUE;
+      await this.sendCommand(`ANALOG_WRITE:${pin}:${value}`);
+    }
+
+    async servoWrite(args) {
+      if (!this.isConnected) return;
+      const pin = args.PIN;
+      const angle = args.ANGLE;
+      await this.sendCommand(`SERVO_WRITE:${pin}:${angle}`);
+    }
+
+    async delay(args) {
+      const ms = args.MS;
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async sendSerial(args) {
+      if (!this.isConnected) return;
+      const data = args.DATA;
+      await this.sendCommand(`SERIAL_SEND:${data}`);
+    }
+
+    readSerial() {
+      return this.sensorData['SERIAL'] || '';
+    }
+
+    pinInfo(args) {
+      const pin = args.PIN;
+      const pinMaps = {
+        ESP32: {
+          zh: {
+            0: 'GPIO0 - 启动按钮',
+            1: 'GPIO1 - TXD0',
+            2: 'GPIO2 - 内置LED',
+            3: 'GPIO3 - RXD0',
+            4: 'GPIO4 - 通用IO',
+            5: 'GPIO5 - SPICLK',
+            12: 'GPIO12 - SPIMISO',
+            13: 'GPIO13 - SPIMOSI',
+            14: 'GPIO14 - SPICS0',
+            15: 'GPIO15 - SPICS1',
+            21: 'GPIO21 - I2C SDA',
+            22: 'GPIO22 - I2C SCL',
+            34: 'GPIO34 - ADC(仅输入)',
+            35: 'GPIO35 - ADC(仅输入)',
+            36: 'GPIO36 - ADC(仅输入)',
+            39: 'GPIO39 - ADC(仅输入)'
+          },
+          en: {
+            0: 'GPIO0 - Boot Button',
+            1: 'GPIO1 - TXD0',
+            2: 'GPIO2 - Built-in LED',
+            3: 'GPIO3 - RXD0',
+            4: 'GPIO4 - General IO',
+            5: 'GPIO5 - SPICLK',
+            12: 'GPIO12 - SPIMISO',
+            13: 'GPIO13 - SPIMOSI',
+            14: 'GPIO14 - SPICS0',
+            15: 'GPIO15 - SPICS1',
+            21: 'GPIO21 - I2C SDA',
+            22: 'GPIO22 - I2C SCL',
+            34: 'GPIO34 - ADC(input only)',
+            35: 'GPIO35 - ADC(input only)',
+            36: 'GPIO36 - ADC(input only)',
+            39: 'GPIO39 - ADC(input only)'
+          }
+        },
+        STM32: {
+          zh: {
+            PA0: 'PA0 - ADC1_CH0',
+            PA1: 'PA1 - ADC1_CH1',
+            PA2: 'PA2 - USART2_TX',
+            PA3: 'PA3 - USART2_RX',
+            PA4: 'PA4 - SPI1_NSS',
+            PB0: 'PB0 - ADC1_CH8',
+            PB1: 'PB1 - ADC1_CH9',
+            PB6: 'PB6 - I2C1_SCL',
+            PB7: 'PB7 - I2C1_SDA',
+            PC13: 'PC13 - 内置LED'
+          },
+          en: {
+            PA0: 'PA0 - ADC1_CH0',
+            PA1: 'PA1 - ADC1_CH1',
+            PA2: 'PA2 - USART2_TX',
+            PA3: 'PA3 - USART2_RX',
+            PA4: 'PA4 - SPI1_NSS',
+            PB0: 'PB0 - ADC1_CH8',
+            PB1: 'PB1 - ADC1_CH9',
+            PB6: 'PB6 - I2C1_SCL',
+            PB7: 'PB7 - I2C1_SDA',
+            PC13: 'PC13 - Built-in LED'
+          }
+        },
+        '树莓派': {
+          zh: {
+            1: 'GPIO1 - I2C SDA',
+            2: 'GPIO2 - I2C SCL',
+            3: 'GPIO3 - UART TX',
+            4: 'GPIO4 - UART RX',
+            14: 'GPIO14 - SPI SCK',
+            15: 'GPIO15 - SPI MISO',
+            16: 'GPIO16 - SPI MOSI',
+            18: 'GPIO18 - PWM0',
+            22: 'GPIO22 - 通用IO',
+            23: 'GPIO23 - 通用IO'
+          },
+          en: {
+            1: 'GPIO1 - I2C SDA',
+            2: 'GPIO2 - I2C SCL',
+            3: 'GPIO3 - UART TX',
+            4: 'GPIO4 - UART RX',
+            14: 'GPIO14 - SPI SCK',
+            15: 'GPIO15 - SPI MISO',
+            16: 'GPIO16 - SPI MOSI',
+            18: 'GPIO18 - PWM0',
+            22: 'GPIO22 - General IO',
+            23: 'GPIO23 - General IO'
+          }
+        },
+        'Raspberry Pi': {
+          zh: {
+            1: 'GPIO1 - I2C SDA',
+            2: 'GPIO2 - I2C SCL',
+            3: 'GPIO3 - UART TX',
+            4: 'GPIO4 - UART RX',
+            14: 'GPIO14 - SPI SCK',
+            15: 'GPIO15 - SPI MISO',
+            16: 'GPIO16 - SPI MOSI',
+            18: 'GPIO18 - PWM0',
+            22: 'GPIO22 - 通用IO',
+            23: 'GPIO23 - 通用IO'
+          },
+          en: {
+            1: 'GPIO1 - I2C SDA',
+            2: 'GPIO2 - I2C SCL',
+            3: 'GPIO3 - UART TX',
+            4: 'GPIO4 - UART RX',
+            14: 'GPIO14 - SPI SCK',
+            15: 'GPIO15 - SPI MISO',
+            16: 'GPIO16 - SPI MOSI',
+            18: 'GPIO18 - PWM0',
+            22: 'GPIO22 - General IO',
+            23: 'GPIO23 - General IO'
+          }
+        },
+        '香橙派': {
+          zh: {
+            0: 'PA0 - UART TX',
+            1: 'PA1 - UART RX',
+            2: 'PA2 - I2C SDA',
+            3: 'PA3 - I2C SCL',
+            6: 'PA6 - SPI CS',
+            7: 'PA7 - SPI SCK',
+            8: 'PA8 - SPI MISO',
+            9: 'PA9 - SPI MOSI',
+            10: 'PA10 - PWM',
+            11: 'PA11 - 通用IO'
+          },
+          en: {
+            0: 'PA0 - UART TX',
+            1: 'PA1 - UART RX',
+            2: 'PA2 - I2C SDA',
+            3: 'PA3 - I2C SCL',
+            6: 'PA6 - SPI CS',
+            7: 'PA7 - SPI SCK',
+            8: 'PA8 - SPI MISO',
+            9: 'PA9 - SPI MOSI',
+            10: 'PA10 - PWM',
+            11: 'PA11 - General IO'
+          }
+        },
+        'Orange Pi': {
+          zh: {
+            0: 'PA0 - UART TX',
+            1: 'PA1 - UART RX',
+            2: 'PA2 - I2C SDA',
+            3: 'PA3 - I2C SCL',
+            6: 'PA6 - SPI CS',
+            7: 'PA7 - SPI SCK',
+            8: 'PA8 - SPI MISO',
+            9: 'PA9 - SPI MOSI',
+            10: 'PA10 - PWM',
+            11: 'PA11 - 通用IO'
+          },
+          en: {
+            0: 'PA0 - UART TX',
+            1: 'PA1 - UART RX',
+            2: 'PA2 - I2C SDA',
+            3: 'PA3 - I2C SCL',
+            6: 'PA6 - SPI CS',
+            7: 'PA7 - SPI SCK',
+            8: 'PA8 - SPI MISO',
+            9: 'PA9 - SPI MOSI',
+            10: 'PA10 - PWM',
+            11: 'PA11 - General IO'
+          }
+        },
+        Arduino: {
+          zh: {
+            0: 'D0 - RX',
+            1: 'D1 - TX',
+            2: 'D2 - 外部中断0',
+            3: 'D3 - 外部中断1/PWM',
+            4: 'D4 - 通用IO',
+            5: 'D5 - PWM',
+            6: 'D6 - PWM',
+            7: 'D7 - 通用IO',
+            8: 'D8 - 通用IO',
+            A0: 'A0 - ADC0',
+            A1: 'A1 - ADC1',
+            A2: 'A2 - ADC2',
+            A3: 'A3 - ADC3',
+            A4: 'A4 - ADC4/I2C SDA',
+            A5: 'A5 - ADC5/I2C SCL'
+          },
+          en: {
+            0: 'D0 - RX',
+            1: 'D1 - TX',
+            2: 'D2 - INT0',
+            3: 'D3 - INT1/PWM',
+            4: 'D4 - General IO',
+            5: 'D5 - PWM',
+            6: 'D6 - PWM',
+            7: 'D7 - General IO',
+            8: 'D8 - General IO',
+            A0: 'A0 - ADC0',
+            A1: 'A1 - ADC1',
+            A2: 'A2 - ADC2',
+            A3: 'A3 - ADC3',
+            A4: 'A4 - ADC4/I2C SDA',
+            A5: 'A5 - ADC5/I2C SCL'
+          }
+        },
+        NodeMCU: {
+          zh: {
+            0: 'GPIO0 - 启动按钮',
+            2: 'GPIO2 - 内置LED',
+            4: 'GPIO4 - 通用IO',
+            5: 'GPIO5 - 通用IO',
+            12: 'GPIO12 - MISO',
+            13: 'GPIO13 - MOSI',
+            14: 'GPIO14 - SCK',
+            15: 'GPIO15 - CS',
+            16: 'GPIO16 - 通用IO'
+          },
+          en: {
+            0: 'GPIO0 - Boot Button',
+            2: 'GPIO2 - Built-in LED',
+            4: 'GPIO4 - General IO',
+            5: 'GPIO5 - General IO',
+            12: 'GPIO12 - MISO',
+            13: 'GPIO13 - MOSI',
+            14: 'GPIO14 - SCK',
+            15: 'GPIO15 - CS',
+            16: 'GPIO16 - General IO'
+          }
+        }
+      };
+
+      const board = this.boardType || 'ESP32';
+      const map = pinMaps[board];
+
+      if (map) {
+        const langMap = this.language === 'zh' ? map.zh : map.en;
+        return langMap[pin] || (this.language === 'zh' ? '引脚' + pin + ' - 未知' : 'Pin ' + pin + ' - Unknown');
+      }
+
+      return this.language === 'zh' ? 'GPIO' + pin + ' - 未知引脚' : 'GPIO' + pin + ' - Unknown pin';
+    }
+
+    sendDisplayData() {
+      if (!this.isConnected) return;
+      window.addEventListener('message', (event) => {
+        if (event.data.type === 'displayData') {
+          const grid = JSON.parse(event.data.data);
+          let dataStr = 'DISPLAY:';
+          for (let row = 0; row < 5; row++) {
+            for (let col = 0; col < 5; col++) {
+              const pixel = grid[row][col];
+              dataStr += `${pixel.r},${pixel.g},${pixel.b};`;
+            }
+          }
+          this.sendCommand(dataStr);
+        } else if (event.data.type === 'setBrightness') {
+          this.sendCommand(`BRIGHTNESS:${event.data.value}`);
+        }
+      });
+    }
+
+    async clearDisplay() {
+      if (!this.isConnected) return;
+      await this.sendCommand('DISPLAY:CLEAR');
+    }
+
+    async displayText(args) {
+      if (!this.isConnected) return;
+      const text = args.TEXT;
+      await this.sendCommand(`DISPLAY:TEXT:${text}`);
+    }
+
+    async displayImage(args) {
+      if (!this.isConnected) return;
+      const url = args.URL;
+      await this.sendCommand(`DISPLAY:IMAGE:${url}`);
+    }
+
+    async startCamera() {
+      window.addEventListener('message', (event) => {
+        if (event.data.type === 'displayData') {
+          this.sendDisplayData();
+        }
+      });
+    }
+
+    async stopCamera() {
+      await this.clearDisplay();
+    }
+
+    async setBrightness(args) {
+      if (!this.isConnected) return;
+      const value = args.VALUE;
+      await this.sendCommand(`BRIGHTNESS:${value}`);
+    }
+
+    async sendCommand(command) {
+      if (!this.writer) return;
+      try {
+        await this.writer.write(this.encoder.encode(command + '\n'));
+      } catch (error) {
+        console.error('Send command failed:', error);
+      }
+    }
+
+    async readLoop() {
+      if (!this.port) return;
+      try {
+        this.reader = this.port.readable.getReader();
+        while (true) {
+          const { value, done } = await this.reader.read();
+          if (done) break;
+          const text = this.decoder.decode(value);
+          this.parseData(text);
+        }
+      } catch (error) {
+        console.error('Read failed:', error);
+      } finally {
+        this.reader = null;
+      }
+    }
+
+    parseData(text) {
+      const lines = text.split('\n');
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+
+        if (trimmed.startsWith('D:')) {
+          const parts = trimmed.substring(2).split(':');
+          if (parts.length >= 2) {
+            this.sensorData['D' + parts[0]] = parseInt(parts[1]);
+          }
+        } else if (trimmed.startsWith('A:')) {
+          const parts = trimmed.substring(2).split(':');
+          if (parts.length >= 2) {
+            this.sensorData['A' + parts[0]] = parseInt(parts[1]);
+          }
+        } else if (trimmed.startsWith('SERIAL:')) {
+          this.sensorData['SERIAL'] = trimmed.substring(7);
+        }
+      }
+    }
+  }
+
+  Scratch.extensions.register(new MakerPlusExtension());
+
+/*
+===========================================================================
+                        Usage Instructions
+===========================================================================
+
+  Important Notes:
+
+  1. Unsandboxed Mode Requirement:
+     - This extension needs serial port access, so it must run in unsandboxed mode
+     - Check "Run extension without sandbox" when adding the extension
+     - If not checked, the extension cannot connect to devices
+
+  2. Browser Requirements:
+     - Must use Chrome, Edge, Brave or other Chromium browsers
+     - Firefox and Safari do not support Web Serial API
+
+  3. Usage Steps:
+     a) Upload ESP32_TurboWarp_Firmware.ino to your board
+     b) Connect the board to your computer via USB
+     c) Use "Select Board" to choose your board type
+     d) Use "Connect" to select the serial device
+     e) Start using the control blocks
+
+  4. Code Editor:
+     - Click "Open Code Editor" to open a separate code editing window
+     - Supports Arduino-like syntax:
+       digitalWrite(pin, HIGH/LOW)
+       digitalRead(pin)
+       analogRead(pin)
+       analogWrite(pin, value)
+       pinMode(pin, INPUT/OUTPUT)
+       servoWrite(pin, angle)
+       delay(ms)
+
+  5. Supported Boards:
+     - ESP32 (ESP32-WROOM, ESP32-S, ESP32-C3, etc.)
+     - STM32 (STM32F103, STM32F4, etc.)
+     - Raspberry Pi
+     - Orange Pi
+     - Arduino (Uno, Nano, etc.)
+     - NodeMCU (ESP8266)
+
+  6. Pin Information:
+     - Use "Pin Info" block to check pin functions for each board
+     - Different boards have different pin definitions
+
+===========================================================================
+*/
+})(Scratch);
