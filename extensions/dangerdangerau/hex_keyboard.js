@@ -1,6 +1,6 @@
 // Name: Hex Keyboard
 // ID: hexkeyboard
-// Description: Returns the hex keycode of the key currently being pressed
+// Description: Returns the hex keycode of the key currently being pressed, or the letter, number, or symbol of a given hex keycode.
 // By: dangerdangerau
 // License: MPL-2.0
 

@@ -1,6 +1,6 @@
-// Name: Js Math
+// Name: JS Math
 // ID: jsmath
-// Description: Exposes all of the JavaScript math functions
+// Description: Exposes all of the JavaScript math functions.
 // By: dangerdangerau
 // License: MPL-2.0
 (function (Scratch) {
