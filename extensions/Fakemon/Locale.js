@@ -29,11 +29,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
    */
   let languageNameAndCodeLookupTableGLOBALIZED;
   /*
-<<<<<<< Updated upstream
-  TODO: Make a version of Locale with this value filled (possibly with a build script but idk how to do that)
-=======
   TODO: Make a version of Locale with this value auto-filled (possibly with a build script) for use in environments like the desktop app
->>>>>>> Stashed changes
   It isn't needed when getting the code from the official gallery since the user is already connected to the Internet,
   but static environments that won't always be connected (like the Desktop app) will benefit from having the table built-in.
   */
@@ -197,9 +193,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
           {
             opcode: "delLangFromJSON",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "delete language code [LANG]"
-            ),
+            text: Scratch.translate("delete language code [LANG]"),
             hideFromPalette: !showRecreatableBlocks,
             arguments: {
               LANG: {
@@ -374,49 +368,25 @@ Locale can be confusing to some users, so accurate documentation should help exp
           {
             opcode: "getallAttemptedTranslations",
             blockType: Scratch.BlockType.REPORTER,
-<<<<<<< Updated upstream
-            text: Scratch.translate(
-              "all strings with attempted translations as strings"
-            ),
-=======
             text: Scratch.translate("attempted translations as strings"),
->>>>>>> Stashed changes
             hideFromPalette: !showRecreatableBlocks,
           },
           {
             opcode: "getallAttemptedTranslationsObj",
             blockType: Scratch.BlockType.REPORTER,
-<<<<<<< Updated upstream
-            text: Scratch.translate(
-              "all strings with attempted translations as objects"
-            ),
-=======
             text: Scratch.translate("attempted translations as objects"),
->>>>>>> Stashed changes
             hideFromPalette: !showRecreatableBlocks,
           },
           {
             opcode: "getAllFailedTranslations",
             blockType: Scratch.BlockType.REPORTER,
-<<<<<<< Updated upstream
-            text: Scratch.translate(
-              "all strings with failed translations as strings"
-            ),
-=======
             text: Scratch.translate("failed translations as strings"),
->>>>>>> Stashed changes
             hideFromPalette: !showRecreatableBlocks,
           },
           {
             opcode: "getAllFailedTranslationsObj",
             blockType: Scratch.BlockType.REPORTER,
-<<<<<<< Updated upstream
-            text: Scratch.translate(
-              "all strings with failed translations as objects"
-            ),
-=======
             text: Scratch.translate("failed translations as objects"),
->>>>>>> Stashed changes
             hideFromPalette: !showRecreatableBlocks,
           },
         ],
@@ -527,7 +497,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
      * @param {{ LANG: string; }} args
      */
     delLangFromJSON(args) {
-let backupLocaleObject = localeObject; // Save a backup in case something breaks
+      let backupLocaleObject = localeObject; // Save a backup in case something breaks
       try {
         delete localeObject[args.LANG];
       } catch {
@@ -592,17 +562,12 @@ let backupLocaleObject = localeObject; // Save a backup in case something breaks
         }
         return translation || args.TEXT;
       } catch (error) {
-<<<<<<< Updated upstream
-        // Fallback to default language
-        allFailedTranslations.push({ ...translationLogInfo, error: error });
-=======
         // Just return the input
         allFailedTranslations.push({
           ...translationLogInfo,
           // @ts-ignore
           error: error.message,
         });
->>>>>>> Stashed changes
         return args.TEXT;
       }
     }
