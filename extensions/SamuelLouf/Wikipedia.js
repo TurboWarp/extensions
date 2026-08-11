@@ -81,14 +81,19 @@
     },
   ];
 
-  const hasOwn = (obj, property) =>
+  const hasOwn = (/** @type {any} */ obj, /** @type {any} */ property) =>
     Object.prototype.hasOwnProperty.call(obj, property);
 
+  /**
+   * @param {string} key
+   * @param {string | any[]} json
+   */
   function json_array_filter(key, json) {
     json = JSON.stringify(json);
     try {
       json = JSON.parse(json);
-      return json.map((x) => {
+      // @ts-ignore
+      return json.map((/** @type {{ [x: string]: any; }} */ x) => {
         if (hasOwn(x, key)) {
           return x[key];
         }
@@ -99,6 +104,10 @@
     }
   }
 
+  /**
+   * @param {string} language
+   * @param {string | number | boolean} name
+   */
   function fetchWikipedia(language, name) {
     return Scratch.fetch(
       `https://${language}.wikipedia.org/w/api.php?action=query&prop=extracts&exlimit=1&titles=${encodeURIComponent(name)}&explaintext=1&exsectionformat=plain&format=json&origin=*`
@@ -140,9 +149,23 @@
             },
           },
           {
-            opcode: "fetchShortSentence",
+            opcode: "fetchFirstSentence",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("short sentence about [NAME]"),
+            text: Scratch.translate("first sentence on [NAME]'s article"),
+            disableMonitor: true,
+            arguments: {
+              NAME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: Scratch.translate(
+                  "Scratch (programming language)"
+                ),
+              },
+            },
+          },
+          {
+            opcode: "fetchFullArticle",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("[NAME]'s full article"),
             disableMonitor: true,
             arguments: {
               NAME: {
@@ -223,6 +246,9 @@
       };
     }
 
+    /**
+     * @param {{ NAME: string | number | boolean; }} args
+     */
     async fetchFirstParagraph(args) {
       var data = await fetchWikipedia(this.wikipediaLanguages, args.NAME);
       if (data == "") return "";
@@ -242,20 +268,42 @@
       return result;
     }
 
-    async fetchShortSentence(args) {
+    /**
+     * @param {{ NAME: string | number | boolean; }} args
+     */
+    async fetchFirstSentence(args) {
       var data = await fetchWikipedia(this.wikipediaLanguages, args.NAME);
       if (data == "") return "";
       const pageId = Object.keys(data.query.pages)[0];
       let extract = data.query.pages[pageId].extract;
       if (extract == undefined) return "";
       extract = extract.replace(/\s{2,}/g, " ");
-      return extract.split(".").slice(0, 2).join(".") + ".";
+      return extract.split(".").slice(0, 1).join(".") + ".";
     }
 
+    /**
+     * @param {{ NAME: string | number | boolean; }} args
+     */
+    async fetchFullArticle(args) {
+      var data = await fetchWikipedia(this.wikipediaLanguages, args.NAME);
+      if (data == "") return "";
+      const pageId = Object.keys(data.query.pages)[0];
+      let extract = data.query.pages[pageId].extract;
+      if (extract == undefined) return "";
+      extract = extract.replace(/\s{2,}/g, " ");
+      return extract;
+    }
+
+    /**
+     * @param {{ NAME: string; }} args
+     */
     getPageURL(args) {
       return `https://${this.wikipediaLanguages}.wikipedia.org/wiki/${args.NAME.replace(/\s/g, "_")}`;
     }
 
+    /**
+     * @param {{ NAME: string | number | boolean; }} args
+     */
     async doesPageExists(args) {
       var data = await fetchWikipedia(this.wikipediaLanguages, args.NAME);
       if (data == "") return "";
@@ -265,16 +313,22 @@
     // ---
     // ---
 
+    /**
+     * @param {{ text: string; value: string; }} args
+     */
     addLanguage(args) {
       languages_list.push(args);
       Scratch.vm.extensionManager.refreshBlocks();
     }
 
+    /**
+     * @param {{ LANGUAGE: string; }} args
+     */
     selectLanguage(args) {
       this.wikipediaLanguages = args.LANGUAGE;
     }
 
-    getLanguage(args) {
+    getLanguage() {
       try {
         return json_array_filter("text", languages_list)[
           json_array_filter("value", languages_list).indexOf(
