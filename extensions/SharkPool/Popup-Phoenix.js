@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.1
+// Version V.1.0.11
 
 (function (Scratch) {
   "use strict";
@@ -13,6 +13,7 @@
 
   const menuIconURI =
     "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4Ny41MzIiIGhlaWdodD0iODcuNTMyIiB2aWV3Qm94PSIwIDAgODcuNTMyIDg3LjUzMiI+PGcgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0uMDAxIDQzLjc2N0MuMDAxIDE5LjU5NSAxOS41OTQuMDAxIDQzLjc2Ni4wMDFzNDMuNzY2IDE5LjU5NCA0My43NjYgNDMuNzY2LTE5LjU5NCA0My43NjYtNDMuNzY2IDQzLjc2NlMwIDY3LjkzOSAwIDQzLjc2NyIgZmlsbD0iIzgyMTliZiIvPjxwYXRoIGQ9Ik01LjE2NSA0My43NjdjMC0yMS4zMiAxNy4yODItMzguNjAyIDM4LjYwMi0zOC42MDJzMzguNjAyIDE3LjI4MiAzOC42MDIgMzguNjAyLTE3LjI4MiAzOC42MDItMzguNjAyIDM4LjYwMlM1LjE2NSA2NS4wODcgNS4xNjUgNDMuNzY3IiBmaWxsPSIjYTgxMmZmIi8+PHBhdGggZD0ibTQwLjM5NyA1OC4wODctMy44NS42MDctLjE4MSA0Ljg3LTMuMTYgMS44MjUtMS40NDQtNi4yMS00LjEzOS0yLjU1NiAxLjkwNC0zLjMzNCA0LjQ3NiAyLjAwOCA0LjQ3NS0xLjQ0MS0zLjM4NC00LjUyNi0yLjY4OSAyLjAwMS00LjkyNy0uODc0IDIuNDY1LTMuNTktOC40NjUgMi4yOTItMi41NTYtNC4wNDUgOC4wNi0xLjgyOC0xMC4wNjgtLjc2My0xLjg0Ni01LjQ1MSAxMC4yOTEgMS4yMjctMTAuMzYtMy45OC45Ny02Ljc3OCA5LjQ4MyA1LjkzNC04LjA3NS05Ljc0NSAzLjI5Ni01LjM1NiAxMi40MjYgMTQuODA4LS4zNzQgNy41OCA1LjMzOSAxLjAyMSA1LjM2NS0xMS4xOTggOC4wMDMgMS41ODQtLjI5IDQuMzk3LTIuODk5LTEuMDM1LS4yMzMgMy43MSAxLjgzNSAyLjU0MiA0Ljc1Ny0xLjEtLjE2Mi02LjY5NCA3LjAyMy03LjY2OCA1LjI5Ny03LjQwOCAzLjI3MiAzLjkzNS03LjgxMSAxMS4yNDcgOS4xNzUtNy4wNi4xODggNy40MzMtOS40MDEgNC4yNTEgMTAuMzUtMS41My0xLjYyMSA2LjAzLTEwLjEzMy4xNDkgOS4xMTUgMS41Ni0zLjkwNyA0Ljc0OC04LjktMi45MTYgMi4zNDggMy4zODctNC43MDMgMS41Mi0yLjI4LTIuMjIzLTMuNjc5IDQuOTU0IDQuMTQ3LjcwMiA1LjEwNy0yLjMgMS41NjUgMy44NC00LjMyMyAyLS45NzEgNi41MzgtMy41ODgtMS4xMzMuMDM5LTUuMDY1LTMuOTM3LS42MzMuNDMgMi43MDMgNC4zIDYuNTI4LTIuODMyIDMuMzQtMi45NzMtMy4wMjMuNzUgNS4zNy0zLjE5NyAyLjg5NC0yLjk0LTIuOTYuNTI2LTUuMjk3LTIuNzggMy4xNTUtMi41NjQtMy42NCA0LjM2OS02LjU2NHoiIGZpbGw9IiNmZmYiLz48L2c+PC9zdmc+";
+
   const getBlockIcon = (name) => {
     // lower file size moment
     const start =
@@ -201,9 +202,9 @@
         optionsDiv.appendChild(option);
 
         option.addEventListener("click", (e) => {
-          if (e.target.tagName === "PRE")
+          if (e.target.tagName === "PRE") {
             e.target.parentNode.querySelector("input").click();
-          else if (e.target.tagName === "INPUT") {
+          } else if (e.target.tagName === "INPUT") {
             if (e.target.checked) response.push(selectors[i]);
             else response.splice(response.indexOf(selectors[i]), 1);
             setElementValue(response);
@@ -275,6 +276,7 @@
 
     element.setAttribute("style", compileStyles(id, "input"));
     inputHolder.appendChild(element);
+
     return {
       type: "input",
       data: { id, type, options },
@@ -442,6 +444,7 @@
     Object.entries(styleObj).forEach((style) => {
       styleString += `${style[0]}: ${style[1]};`;
     });
+
     return styleString;
   };
 
@@ -456,8 +459,10 @@
       "position: fixed; width: 100%; height: 100%;"
     );
     popupContainer.style.pointerEvents = boxInfo.focused ? "auto" : "none";
-    if (boxInfo.focused)
+    if (boxInfo.focused) {
       popupContainer.style.backgroundColor = "rgba(0,0,0,0.5)";
+    }
+
     if (boxInfo.isWindowed) popupContainer.style.zIndex = "9999";
     else {
       popupContainer.style.left = "-50%";
@@ -532,18 +537,20 @@
         ).DOMelement;
         item.DOMelement = element;
       }
+
       popupPanel.appendChild(element);
 
       // add event listeners
       if (item.type === "input") {
         element.addEventListener("change", compileInputValues);
-        if (boxInfo.forceKey !== undefined)
+        if (boxInfo.forceKey !== undefined) {
           element.addEventListener("keydown", (e) => {
             if (boxInfo.forceKey === keyUtil._keyStringToScratchKey(e.key)) {
               handleClose();
               e.preventDefault();
             }
           });
+        }
       } else if (item.type === "buttonRow") {
         element.addEventListener("click", (e) => {
           if (e.target.tagName === "BUTTON") handleClose(e);
@@ -559,8 +566,9 @@
     boxInfo.DOMelement = popupContainer;
 
     // extra event listeners
-    if (boxInfo.forceKey !== undefined)
+    if (boxInfo.forceKey !== undefined) {
       runtime.on("KEY_PRESSED", forceKeyHandler);
+    }
   };
 
   const closeBox = (id, optForce) => {
@@ -862,6 +870,7 @@
               },
               ARRAY: {
                 type: Scratch.ArgumentType.STRING,
+                exemptFromNormalization: true,
                 defaultValue: Scratch.translate(
                   `["Option 1", "Option 2", "Option 3"]`
                 ),
@@ -1462,9 +1471,11 @@
     getPos(args) {
       const id = Cast.toString(args.ID);
       const styles = styleStorage.popups[id] ?? genDefaultStyles(id, "popup");
-      if (args.TYPE === "x")
+      if (args.TYPE === "x") {
         return parseFloat(styles.left.replace("calc(50% + ", ""));
-      else return parseFloat(styles.top.replace("calc(50% + ", "")) * -1;
+      } else {
+        return parseFloat(styles.top.replace("calc(50% + ", "")) * -1;
+      }
     }
 
     /* labels */
@@ -1510,14 +1521,25 @@
     }
 
     setDropOptions(args) {
+      const isRawArray = Array.isArray(args.ARRAY); // Swift JSON
+      let array;
+
       try {
-        const array = JSON.parse(args.ARRAY);
+        if (isRawArray) array = args.ARRAY;
+        else {
+          array = JSON.parse(args.ARRAY);
+          if (!Array.isArray(array)) {
+            throw new Error("Invalid array!");
+          }
+        }
+
         if (array.length === 0) array.push("no options created");
+
         const id = Cast.toString(args.ID);
         const input = elementStorage.inputs[id];
         if (input) input.data.options.selectors = array;
       } catch {
-        console.warn("Failed to set Dropdown Options, invalid Array!");
+        console.warn("Failed to set Dropdown Options, invalid array!");
       }
     }
 
@@ -1525,9 +1547,11 @@
       const popup = elementStorage.popups[Cast.toString(args.POP_ID)];
       const dropID = Cast.toString(args.DROP_ID);
       if (popup === undefined || !popup.waiting) return false;
-      const dropdown = popup.elements.find((e) => {
-        return e.type === "input" && e.data.id === dropID;
-      });
+
+      const dropdown = popup.elements.find((e) =>
+        e.type === "input" && e.data.id === dropID
+      );
+
       if (dropdown) return dropdown.data.options.menuOpened ?? false;
       return false;
     }
@@ -1740,12 +1764,14 @@
       const path =
         this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
       const styles = styleStorage[path][id] ?? genDefaultStyles(id, path);
-      if (path === "labels")
+      if (path === "labels") {
         styles["text-shadow"] =
           `${args.COLOR} ${pos[0]}px ${pos[1]}px ${weight[0]}px`;
-      else
+      } else {
         styles["box-shadow"] =
           `${args.COLOR} ${pos[0]}px ${pos[1]}px ${weight[0]}px ${weight[1]}px`;
+      }
+
       updateBoxVisuals(id, path);
     }
 
@@ -1821,6 +1847,7 @@
       const path =
         this.getElementPath(Cast.toString(args.ELEMENT), true, true) + "s";
       const styles = styleStorage[path][id] ?? genDefaultStyles(id, path);
+
       return styles["SPstorage"][effect] ?? "";
     }
   }
