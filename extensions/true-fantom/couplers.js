@@ -2,6 +2,7 @@
 // ID: truefantomcouplers
 // Description: A few adapter blocks.
 // By: TrueFantom <https://scratch.mit.edu/users/TrueFantom/>
+// License: MIT
 
 ((Scratch) => {
   "use strict";
@@ -15,13 +16,14 @@
     getInfo() {
       return {
         id: "truefantomcouplers",
-        name: "Couplers",
+        name: Scratch.translate("Couplers"),
 
         color1: "#404040",
 
         menuIconURI: icon,
 
         blocks: [
+          /* eslint-disable extension/should-translate */
           {
             opcode: "value1_or_value2_block",
             blockType: Scratch.BlockType.REPORTER,
@@ -39,6 +41,7 @@
                 defaultValue: "banana",
               },
             },
+            allowDropAnywhere: true,
           },
           {
             opcode: "boolean_block",
@@ -73,17 +76,18 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
           {
             opcode: "true_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "true",
+            text: Scratch.translate("true"),
             hideFromPalette: true,
             disableMonitor: true,
           },
           {
             opcode: "false_block",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "false",
+            text: Scratch.translate("false"),
             hideFromPalette: true,
             disableMonitor: true,
           },
@@ -93,7 +97,7 @@
           {
             opcode: "color_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "color [COLOUR]",
+            text: Scratch.translate("color [COLOUR]"),
             arguments: {
               COLOUR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -104,7 +108,7 @@
           {
             opcode: "angle_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "angle [ANGLE]",
+            text: Scratch.translate("angle [ANGLE]"),
             arguments: {
               ANGLE: {
                 type: Scratch.ArgumentType.ANGLE,
@@ -115,7 +119,7 @@
           {
             opcode: "matrix_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "matrix [MATRIX]",
+            text: Scratch.translate("matrix [MATRIX]"),
             arguments: {
               MATRIX: {
                 type: Scratch.ArgumentType.MATRIX,
@@ -126,7 +130,7 @@
           {
             opcode: "note_block",
             blockType: Scratch.BlockType.REPORTER,
-            text: "note [NOTE]",
+            text: Scratch.translate("note [NOTE]"),
             arguments: {
               NOTE: {
                 type: Scratch.ArgumentType.NOTE,

@@ -2,6 +2,7 @@
 // ID: zxmushroom63searchparams
 // Description: Interact with URL search parameters: the part of the URL after a question mark.
 // By: ZXMushroom63
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -13,7 +14,7 @@
     getInfo() {
       return {
         id: "zxmushroom63searchparams",
-        name: "Search Params",
+        name: Scratch.translate("Search Params"),
         color1: "#b4b4b4",
         color2: "#9c9c9c",
         color3: "#646464",
@@ -21,7 +22,7 @@
           {
             opcode: "searchparam",
             blockType: Scratch.BlockType.REPORTER,
-            text: "value of search parameter [ID]",
+            text: Scratch.translate("value of search parameter [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -32,7 +33,7 @@
           {
             opcode: "occurencesofsearchparam",
             blockType: Scratch.BlockType.REPORTER,
-            text: "occurences of search parameter [ID]",
+            text: Scratch.translate("occurrences of search parameter [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -43,7 +44,7 @@
           {
             opcode: "indexedsearchparam",
             blockType: Scratch.BlockType.REPORTER,
-            text: "index [I] of search parameters [ID]",
+            text: Scratch.translate("index [I] of search parameters [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -58,7 +59,7 @@
           {
             opcode: "setsearchparam",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set search parameter [ID] to [VAL]",
+            text: Scratch.translate("set search parameter [ID] to [VAL]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -73,7 +74,7 @@
           {
             opcode: "deletesearchparam",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete search parameter [ID]",
+            text: Scratch.translate("delete search parameter [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -84,7 +85,9 @@
           {
             opcode: "appendsearchparam",
             blockType: Scratch.BlockType.COMMAND,
-            text: "append search parameter [ID] with value [VAL]",
+            text: Scratch.translate(
+              "append search parameter [ID] with value [VAL]"
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -99,7 +102,7 @@
           {
             opcode: "hassearchparam",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "has search parameter [ID]",
+            text: Scratch.translate("has search parameter [ID]?"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -110,12 +113,12 @@
           {
             opcode: "searchparamslength",
             blockType: Scratch.BlockType.REPORTER,
-            text: "length of search parameters",
+            text: Scratch.translate("length of search parameters"),
           },
           {
             opcode: "searchparamatindex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "search parameter [PARAM] at index [I]",
+            text: Scratch.translate("search parameter [PARAM] at index [I]"),
             arguments: {
               PARAM: {
                 type: Scratch.ArgumentType.STRING,
@@ -131,7 +134,10 @@
         menus: {
           PARAM: {
             acceptReporters: true,
-            items: ["value", "name"],
+            items: [
+              { text: Scratch.translate("value"), value: "value" },
+              { text: Scratch.translate("name"), value: "name" },
+            ],
           },
         },
       };

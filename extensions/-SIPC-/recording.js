@@ -18,14 +18,14 @@
           {
             opcode: "startRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Start recording"),
+            text: Scratch.translate("start recording"),
             blockIconURI: icon,
             arguments: {},
           },
           {
             opcode: "stopRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("Stop recording"),
+            text: Scratch.translate("stop recording"),
             blockIconURI: icon,
             arguments: {},
           },
@@ -33,7 +33,7 @@
             opcode: "stopRecordingAndDownload",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "Stop recording and download with [name] as filename"
+              "stop recording and download with [name] as filename"
             ),
             blockIconURI: icon,
             arguments: {
@@ -50,7 +50,7 @@
           {
             opcode: "isRecording",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("Recording?"),
+            text: Scratch.translate("recording?"),
             blockIconURI: icon,
             arguments: {},
           },
@@ -96,17 +96,17 @@
         return;
       }
       console.log("Stop recording");
-      mediaRecorder.addEventListener("stop", function () {
+      mediaRecorder.addEventListener("stop", async function () {
         const blob = new Blob(recordedChunks, { type: "audio/wav" });
-        const url = URL.createObjectURL(blob);
-        const downloadLink = document.createElement("a");
-        downloadLink.href = url;
-        downloadLink.download = name;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        URL.revokeObjectURL(url);
         recordedChunks = [];
+
+        const url = URL.createObjectURL(blob);
+        try {
+          await Scratch.download(url, name);
+        } catch (e) {
+          console.error(e);
+        }
+        URL.revokeObjectURL(url);
       });
       mediaRecorder.stop();
       mediaRecorder = null;

@@ -1,7 +1,8 @@
 // Name: Variable and list
 // ID: qxsckvarandlist
 // Description: More blocks related to variables and lists.
-// By: qxsck
+// By: qxsck <https://scratch.mit.edu/users/qxsck/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -10,6 +11,8 @@
       return {
         id: "qxsckvarandlist",
         name: Scratch.translate({ id: "name", default: "Variable and list" }),
+        color1: "#FF661A",
+        color2: "#EE6521",
         blocks: [
           {
             opcode: "getVar",
@@ -24,6 +27,7 @@
                 defaultValue: "variable",
               },
             },
+            extensions: ["colours_data"],
           },
           {
             opcode: "seriVarsToJson",
@@ -38,6 +42,7 @@
                 defaultValue: "variable",
               },
             },
+            extensions: ["colours_data"],
           },
           {
             opcode: "setVar",
@@ -56,6 +61,7 @@
                 defaultValue: "value",
               },
             },
+            extensions: ["colours_data"],
           },
           {
             opcode: "getList",
@@ -70,6 +76,7 @@
                 defaultValue: "list",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "getValueOfList",
@@ -88,6 +95,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "seriListsToJson",
@@ -102,6 +110,7 @@
                 defaultValue: "list",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "clearList",
@@ -116,6 +125,7 @@
                 defaultValue: "list",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "deleteOfList",
@@ -134,6 +144,7 @@
                 defaultValue: "1",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "addValueInList",
@@ -152,6 +163,7 @@
                 defaultValue: "value",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "replaceOfList",
@@ -174,6 +186,7 @@
                 defaultValue: "thing",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "getIndexOfList",
@@ -192,6 +205,7 @@
                 defaultValue: "thing",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "getIndexesOfList",
@@ -210,6 +224,7 @@
                 defaultValue: "thing",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "length",
@@ -224,6 +239,7 @@
                 defaultValue: "list",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "listContains",
@@ -242,6 +258,7 @@
                 defaultValue: "thing",
               },
             },
+            extensions: ["colours_data_lists"],
           },
           {
             opcode: "copyList",
@@ -260,6 +277,7 @@
                 defaultValue: "list2",
               },
             },
+            extensions: ["colours_data_lists"],
           },
         ],
       };

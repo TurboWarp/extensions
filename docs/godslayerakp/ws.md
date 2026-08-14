@@ -15,7 +15,8 @@ The URL should start with `ws://` or `wss://`. For security reasons, `ws://` URL
 
 Something simple to play with is the echo server: `wss://echoserver.redman13.repl.co`. Any message you send to it, it'll send right back to you.
 
-Note that connections are **per sprite**. Each sprite (or clone) can connect to one server at a time. Multiple sprites can connect to the same or different servers as much as your computer allows, but note those will all be separate connections.
+> [!NOTE] 
+> Connections are **per sprite**. Each sprite (or clone) can connect to one server at a time. Multiple sprites can connect to the same or different servers as much as your computer allows, but note those will all be separate connections.
 
 ---
 

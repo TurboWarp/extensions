@@ -1,6 +1,9 @@
 // Name: Asset Manager
 // ID: lmsAssets
 // Description: Add, remove, and get data from various types of assets.
+// By: LilyMakesThings <https://scratch.mit.edu/users/LilyMakesThings/>
+// By: Mio <https://scratch.mit.edu/users/0znzw/>
+// License: MIT AND LGPL-3.0
 
 // TheShovel is so epic and cool and awesome
 
@@ -21,19 +24,35 @@
     return true;
   };
 
+  /**
+   * @param {Blob} blob
+   * @returns {Promise<string>}
+   */
+  const readAsDataURL = (blob) =>
+    new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.onerror = (e) => reject(e);
+      fr.readAsDataURL(blob);
+    });
+
   class Assets {
     getInfo() {
+      const dataURIOption = Scratch.translate({
+        default: "dataURI",
+        description: "Menu option called dataURI",
+      });
       return {
         id: "lmsAssets",
         color1: "#5779ca",
         color2: "#4e6db6",
         color3: "#4661a2",
-        name: "Asset Manager",
+        name: Scratch.translate("Asset Manager"),
         blocks: [
           {
             opcode: "addSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add sprite from URL [URL]",
+            text: Scratch.translate("add sprite from URL [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -43,7 +62,7 @@
           {
             opcode: "addCostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add costume from URL [URL] named [NAME]",
+            text: Scratch.translate("add costume from URL [URL] named [NAME]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -57,7 +76,7 @@
           {
             opcode: "addSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "add sound from URL [URL] named [NAME]",
+            text: Scratch.translate("add sound from URL [URL] named [NAME]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -72,7 +91,7 @@
           {
             opcode: "renameSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "rename sprite [TARGET] to [NAME]",
+            text: Scratch.translate("rename sprite [TARGET] to [NAME]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -87,7 +106,7 @@
           {
             opcode: "renameCostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: "rename costume [COSTUME] to [NAME]",
+            text: Scratch.translate("rename costume [COSTUME] to [NAME]"),
             arguments: {
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
@@ -101,7 +120,7 @@
           {
             opcode: "renameSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "rename sound [SOUND] to [NAME]",
+            text: Scratch.translate("rename sound [SOUND] to [NAME]"),
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
@@ -116,43 +135,31 @@
           {
             opcode: "deleteSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete sprite [TARGET]",
+            text: Scratch.translate("delete sprite [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "targets",
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "Sprite1",
               },
             },
           },
           {
             opcode: "deleteCostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete costume [COSTUME]",
+            text: Scratch.translate("delete costume [COSTUME]"),
             arguments: {
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "costume1",
               },
             },
           },
           {
             opcode: "deleteSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete sound [SOUND]",
+            text: Scratch.translate("delete sound [SOUND]"),
             arguments: {
               SOUND: {
                 type: Scratch.ArgumentType.SOUND,
-              },
-              NAME: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "sound1",
               },
             },
           },
@@ -160,28 +167,67 @@
           {
             opcode: "getAllSprites",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all sprites",
+            text: Scratch.translate("all sprites"),
           },
           {
             opcode: "getAllCostumes",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all costumes",
+            text: Scratch.translate("all costumes"),
           },
           {
             opcode: "getAllSounds",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all sounds",
+            text: Scratch.translate("all sounds"),
           },
           {
+            // Legacy block
+            hideFromPalette: true,
             opcode: "getSpriteName",
             blockType: Scratch.BlockType.REPORTER,
-            text: "sprite name",
+            text: Scratch.translate("sprite name"),
+          },
+          {
+            disableMonitor: true,
+            opcode: "getSpriteValue2",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "lmsAssets.getSpriteValueTarget",
+              default: "sprite [TARGET] [EXPORT]",
+              description:
+                "Reports information about a sprite. [TARGET] is a menu of sprite names. [EXPORT] is a menu with the options 'name' and 'dataURI'.",
+            }),
+            arguments: {
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "targets",
+              },
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "sprite",
+              },
+            },
+          },
+          {
+            // Legacy block
+            disableMonitor: true,
+            opcode: "getSpriteValue",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("sprite [EXPORT]"),
+            hideFromPalette: true,
+            arguments: {
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "sprite",
+              },
+            },
           },
           "---",
           {
             opcode: "reorderCostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reorder costume # [INDEX1] to index [INDEX2]",
+            text: Scratch.translate(
+              "reorder costume # [INDEX1] to index [INDEX2]"
+            ),
             arguments: {
               INDEX1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -196,7 +242,9 @@
           {
             opcode: "reorderSound",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reorder sound # [INDEX1] to index [INDEX2]",
+            text: Scratch.translate(
+              "reorder sound # [INDEX1] to index [INDEX2]"
+            ),
             arguments: {
               INDEX1: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -212,7 +260,7 @@
           {
             opcode: "getSoundData",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[ATTRIBUTE] of [SOUND]",
+            text: Scratch.translate("[ATTRIBUTE] of [SOUND]"),
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -226,7 +274,7 @@
           {
             opcode: "getCostumeData",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[ATTRIBUTE] of [COSTUME]",
+            text: Scratch.translate("[ATTRIBUTE] of [COSTUME]"),
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -241,7 +289,7 @@
           {
             opcode: "getCostumeAtIndex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "name of costume # [INDEX]",
+            text: Scratch.translate("name of costume # [INDEX]"),
             arguments: {
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -252,7 +300,7 @@
           {
             opcode: "getSoundAtIndex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "name of sound # [INDEX]",
+            text: Scratch.translate("name of sound # [INDEX]"),
             arguments: {
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -264,7 +312,7 @@
           {
             opcode: "openProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: "open project from URL [URL]",
+            text: Scratch.translate("open project from URL [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -272,15 +320,29 @@
             },
           },
           {
+            // Legacy block
+            hideFromPalette: true,
             opcode: "getProjectJSON",
             blockType: Scratch.BlockType.REPORTER,
-            text: "project JSON",
+            text: Scratch.translate("project JSON"),
+          },
+          {
+            disableMonitor: true,
+            opcode: "getProjectValue",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("project [EXPORT]"),
+            arguments: {
+              EXPORT: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "project",
+              },
+            },
           },
           "---",
           {
             opcode: "loadExtension",
             blockType: Scratch.BlockType.COMMAND,
-            text: "load extension from URL [URL]",
+            text: Scratch.translate("load extension from URL [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -292,7 +354,7 @@
           {
             opcode: "getLoadedExtensions",
             blockType: Scratch.BlockType.REPORTER,
-            text: "loaded extensions",
+            text: Scratch.translate("loaded extensions"),
           },
         ],
         menus: {
@@ -302,7 +364,54 @@
           },
           attribute: {
             acceptReporters: false,
-            items: ["index", "dataURI", "format", "header", "asset ID"],
+            items: [
+              {
+                text: Scratch.translate("index"),
+                value: "index",
+              },
+              {
+                text: dataURIOption,
+                value: "dataURI",
+              },
+              {
+                text: Scratch.translate("format"),
+                value: "format",
+              },
+              {
+                text: Scratch.translate("header"),
+                value: "header",
+              },
+              {
+                text: Scratch.translate("asset ID"),
+                value: "asset ID",
+              },
+            ],
+          },
+          project: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("JSON"),
+                value: "JSON",
+              },
+              {
+                text: dataURIOption,
+                value: "dataURI",
+              },
+            ],
+          },
+          sprite: {
+            acceptReporters: false,
+            items: [
+              {
+                text: Scratch.translate("name"),
+                value: "name",
+              },
+              {
+                text: dataURIOption,
+                value: "dataURI",
+              },
+            ],
           },
         },
       };
@@ -336,8 +445,14 @@
       const assetType = this._typeIsBitmap(blob.type)
         ? runtime.storage.AssetType.ImageBitmap
         : runtime.storage.AssetType.ImageVector;
+
+      // Bitmap data format is not actually enforced, but setting it to something that isn't in scratch-parser's
+      // known format list will throw an error when someone tries to load the project.
+      // (https://github.com/scratchfoundation/scratch-parser/blob/665f05d739a202d565a4af70a201909393d456b2/lib/sb3_definitions.json#L51)
       const dataType =
-        blob.type === "image/svg+xml" ? "svg" : blob.type.split("/")[1];
+        blob.type === "image/svg+xml"
+          ? runtime.storage.DataFormat.SVG
+          : runtime.storage.DataFormat.PNG;
 
       const arrayBuffer = await new Promise((resolve, reject) => {
         const fr = new FileReader();
@@ -431,7 +546,7 @@
     }
 
     deleteSprite(args, util) {
-      const target = this._getTargetFromMenu(args.TARGET);
+      const target = this._getTargetFromMenu(args.TARGET, util);
       if (!target || target.isStage) return;
 
       Scratch.vm.deleteSprite(target.id);
@@ -491,6 +606,29 @@
 
     getSpriteName(args, util) {
       return util.target.sprite.name ?? "";
+    }
+
+    getSpriteValue2(args, util) {
+      const target = this._getTargetFromMenu(args.TARGET, util);
+      if (!target || target.isStage) return "";
+
+      const option = Cast.toString(args.EXPORT);
+      if (option === "name") {
+        return target.sprite.name ?? "";
+      } else if (option === "dataURI") {
+        return (async () => {
+          const blob = await Scratch.vm.exportSprite(target.id);
+          return readAsDataURL(blob);
+        })().catch((e) => {
+          console.error(e);
+          return "";
+        });
+      }
+    }
+
+    getSpriteValue(args, util) {
+      args.TARGET = "_myself_";
+      return this.getSpriteValue2(args, util);
     }
 
     reorderCostume(args, util) {
@@ -602,8 +740,24 @@
       return Scratch.vm.toJSON();
     }
 
+    getProjectValue(args) {
+      const option = Cast.toString(args.EXPORT);
+      if (option === "JSON") {
+        return Scratch.vm.toJSON();
+      } else if (option === "dataURI") {
+        return (async () => {
+          const blob = await Scratch.vm.saveProjectSb3();
+          return readAsDataURL(blob);
+        })().catch((e) => {
+          console.error(e);
+          return "";
+        });
+      }
+    }
+
     async loadExtension(args) {
       const url = Cast.toString(args.URL);
+      if (!(await vm.securityManager.canLoadExtensionFromProject(url))) return;
       await vm.extensionManager.loadExtensionURL(url);
     }
 

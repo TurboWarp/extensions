@@ -1,7 +1,9 @@
 // Name: Navigator
 // ID: navigatorinfo
 // Description: Details about the user's browser and operating system.
+// By: GarboMuffin
 // Context: "Navigator" refers to someone's browser
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
