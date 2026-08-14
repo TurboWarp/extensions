@@ -40,7 +40,7 @@
    * Source: https://github.com/TurboWarp/packager/blob/master/src/addons/pause.js
    * License: Mozilla Public License Version 2.0
    */
-  const pauseInitializer = await Scratch.external.importModule("https://cdn.jsdelivr.net/gh/TurboWarp/packager/src/addons/pause.js")
+  const pauseInitializer = await Scratch.external.importModule("https://raw.githubusercontent.com/TurboWarp/packager/719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js");
 
   // This function expects 'scaffolding', but only accesses vm.
   // We can use the Scratch object since it contains the vm.
