@@ -1552,8 +1552,8 @@
       const dropID = Cast.toString(args.DROP_ID);
       if (popup === undefined || !popup.waiting) return false;
 
-      const dropdown = popup.elements.find((e) =>
-        e.type === "input" && e.data.id === dropID
+      const dropdown = popup.elements.find(
+        (e) => e.type === "input" && e.data.id === dropID
       );
 
       if (dropdown) return dropdown.data.options.menuOpened ?? false;
