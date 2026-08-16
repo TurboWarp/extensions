@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.1.0.11
+// Version V.1.0.12
 
 (function (Scratch) {
   "use strict";
@@ -287,7 +287,10 @@
   const createButtonRow = (id) => {
     const buttonRow = document.createElement("div");
     buttonRow.id = xmlEscape(id);
-    buttonRow.style.width = "max-content";
+    buttonRow.setAttribute(
+      "style",
+      `width: 100%; display: flex; flex-wrap: wrap; justify-content: inherit;`
+    );
 
     return {
       type: "buttonRow",
@@ -340,6 +343,7 @@
         color: "#000",
         "text-shadow": "none",
         "-webkit-text-stroke-width": "0px",
+        overflow: "auto",
         transform: "",
         filter: "",
       };
@@ -1548,8 +1552,8 @@
       const dropID = Cast.toString(args.DROP_ID);
       if (popup === undefined || !popup.waiting) return false;
 
-      const dropdown = popup.elements.find(
-        (e) => e.type === "input" && e.data.id === dropID
+      const dropdown = popup.elements.find((e) =>
+        e.type === "input" && e.data.id === dropID
       );
 
       if (dropdown) return dropdown.data.options.menuOpened ?? false;
