@@ -541,12 +541,15 @@
         const namesTxt = Cast.toString(args.MESSAGES);
         let parsedNames;
         try {
-          // try parsing and removing duplicates
-          parsedNames = [...new Set(JSON.parse(namesTxt))];
+          parsedNames = JSON.parse(namesTxt);
         } catch (e) {
           console.warn(e);
           return;
         }
+        if (!Array.isArray(parsedNames)) {
+          return;
+        }
+        parsedNames = [...new Set(parsedNames.map((i) => Cast.toString(i)))];
         let newThreads = [];
         for (const name of parsedNames) {
           newThreads = newThreads.concat(
