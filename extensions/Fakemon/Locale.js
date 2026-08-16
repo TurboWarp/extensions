@@ -716,7 +716,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
      * @param {string} matchKey
      */
     _filterArray(array, matchKey) {
-      if (array != []) {
+      if (array && Array.isArray(array)) {
         return array.map((/** @type {{ [x: string]: any; }} */ value) => {
           try {
             if (value) {
@@ -728,9 +728,10 @@ Locale can be confusing to some users, so accurate documentation should help exp
             }
           } catch (error) {
             console.warn("Locale:", error);
+            return null;
           }
         });
-      }
+      } else return [];
     }
     /**
      * @param {string | any[]} languageArray
