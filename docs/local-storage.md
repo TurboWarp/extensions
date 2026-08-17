@@ -44,11 +44,19 @@ Or delete everything stored in the namespace:
 delete storage :: #0FBD8C
 ```
 
-If you ever loose track of what variables you previously set in storage, you can use the below block. It will return an array of all variables (or 'keys') in storage.
+These next blocks are used to inspect and iterate through all namespace items.
 
 ```scratch
-(all keys from storage :: #0FBD8C)
+(number of keys in storage :: #0FBD8C)
 ```
+
+This block reports the total number of stored variables.
+
+```scratch
+(key # [1] in storage :: #0FBD8C)
+```
+
+This block reports the name of a key at a specific index position.
 
 ## Performance
 
