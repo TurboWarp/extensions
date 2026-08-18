@@ -39,22 +39,22 @@
             opcode: "curvesQuadraticBezier",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "quadratic Bézier from [A] through [B] to [C] at [P]%"
+              "quadratic Bézier from [START] with control [CONTROL] to [END] at [PROGRESS]%"
             ),
             arguments: {
-              A: {
+              START: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 0,
               },
-              B: {
+              CONTROL: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 30,
               },
-              C: {
+              END: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 100,
               },
-              P: {
+              PROGRESS: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 50,
               },
@@ -64,26 +64,26 @@
             opcode: "curvesCubicBezier",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate(
-              "cubic Bézier from [A] through [B] [C] to [D] at [P]%"
+              "cubic Bézier from [START] with controls [CONTROL1] [CONTROL2] to [END] at [PROGRESS]%"
             ),
             arguments: {
-              A: {
+              START: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 0,
               },
-              B: {
+              CONTROL1: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 30,
               },
-              C: {
+              CONTROL2: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 90,
               },
-              D: {
+              END: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 100,
               },
-              P: {
+              PROGRESS: {
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: 50,
               },
@@ -94,22 +94,22 @@
     }
 
     curvesQuadraticBezier(args) {
-      const a = Cast.toNumber(args.A);
-      const b = Cast.toNumber(args.B);
-      const c = Cast.toNumber(args.C);
-      const progress = Cast.toNumber(args.P) / 100;
+      const start = Cast.toNumber(args.START);
+      const control = Cast.toNumber(args.CONTROL);
+      const end = Cast.toNumber(args.END);
+      const progress = Cast.toNumber(args.PROGRESS) / 100;
 
-      return quadraticBezier(a, b, c, progress);
+      return quadraticBezier(start, control, end, progress);
     }
 
     curvesCubicBezier(args) {
-      const a = Cast.toNumber(args.A);
-      const b = Cast.toNumber(args.B);
-      const c = Cast.toNumber(args.C);
-      const d = Cast.toNumber(args.D);
-      const progress = Cast.toNumber(args.P) / 100;
+      const start = Cast.toNumber(args.START);
+      const control1 = Cast.toNumber(args.CONTROL1);
+      const control2 = Cast.toNumber(args.CONTROL2);
+      const end = Cast.toNumber(args.END);
+      const progress = Cast.toNumber(args.PROGRESS) / 100;
 
-      return cubicBezier(a, b, c, d, progress);
+      return cubicBezier(start, control1, control2, end, progress);
     }
   }
 
