@@ -1,6 +1,6 @@
 // Name: Curves
 // ID: luyifei2011Curves
-// Description: Create smooth paths and custom transitions with quadratic and cubic Bézier curves.
+// Description: Create smooth paths and custom transitions with Bézier and Catmull-Rom curves.
 // By: LuYifei2011
 // License: MIT
 
@@ -27,6 +27,19 @@
     const e = lerp(b, c, t);
 
     return lerp(d, e, t);
+  }
+
+  function uniformCatmullRom(p0, p1, p2, p3, t) {
+    const t2 = t * t;
+    const t3 = t2 * t;
+
+    return (
+      0.5 *
+      (2 * p1 +
+        (-p0 + p2) * t +
+        (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 +
+        (-p0 + 3 * p1 - 3 * p2 + p3) * t3)
+    );
   }
 
   class Curves {
@@ -89,6 +102,35 @@
               },
             },
           },
+          {
+            opcode: "curvesUniformCatmullRom",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate(
+              "uniform Catmull-Rom from [START] to [END] with neighbors [PREVIOUS] [NEXT] at [PROGRESS]%"
+            ),
+            arguments: {
+              PREVIOUS: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              START: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 30,
+              },
+              END: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 90,
+              },
+              NEXT: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 100,
+              },
+              PROGRESS: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 50,
+              },
+            },
+          },
         ],
       };
     }
@@ -110,6 +152,16 @@
       const progress = Cast.toNumber(args.PROGRESS) / 100;
 
       return cubicBezier(start, control1, control2, end, progress);
+    }
+
+    curvesUniformCatmullRom(args) {
+      const previous = Cast.toNumber(args.PREVIOUS);
+      const start = Cast.toNumber(args.START);
+      const end = Cast.toNumber(args.END);
+      const next = Cast.toNumber(args.NEXT);
+      const progress = Cast.toNumber(args.PROGRESS) / 100;
+
+      return uniformCatmullRom(previous, start, end, next, progress);
     }
   }
 
