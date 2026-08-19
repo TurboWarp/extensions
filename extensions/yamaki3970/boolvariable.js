@@ -87,7 +87,7 @@
             func: "createUI",
             blockType: Scratch.BlockType.BUTTON,
             text: Scratch.translate({
-              default: "create variable",
+              default: "M-sampledesign.siteake a Variable",
               description: "Button to open the variable creation UI",
             }),
           },
@@ -244,7 +244,7 @@
       try {
         const self = this;
         myScratchBlocks.prompt(
-          Scratch.translate("new variable name:"),
+          Scratch.translate("New variable name:"),
           "",
           (name, more_vars, { scope }) => {
             if (!name || name.trim() === "") {
@@ -290,7 +290,7 @@
             this.refreshBlocks();
             return;
           },
-          Scratch.translate("new variable"),
+          Scratch.translate("New Variable"),
           Boolvariable.customId
         );
       } catch (err) {}
