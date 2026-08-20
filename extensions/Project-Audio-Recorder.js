@@ -1,5 +1,5 @@
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   let mediaRecorder = null;
   let audioChunks = [];
@@ -10,47 +10,47 @@
   class ProjectAudioRecorder {
     getInfo() {
       return {
-        id: 'projectAudioRecorder',
-        name: Scratch.translate('Project Audio Recorder'),
-        color1: '#202d40',
+        id: "projectAudioRecorder",
+        name: Scratch.translate("Project Audio Recorder"),
+        color1: "#202d40",
         blocks: [
           {
-            opcode: 'startRecording',
+            opcode: "startRecording",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('Start recording project audio')
+            text: Scratch.translate("Start recording project audio"),
           },
           {
-            opcode: 'stopAndDownloadMp3',
+            opcode: "stopAndDownloadMp3",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              'Stop recording and download .mp3 file name [NAME]'
+              "Stop recording and download .mp3 file name [NAME]"
             ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'My Audio'
-              }
-            }
+                defaultValue: "My Audio",
+              },
+            },
           },
           {
-            opcode: 'stopAndDownloadWav',
+            opcode: "stopAndDownloadWav",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              'Stop recording and download .wav file name [NAME]'
+              "Stop recording and download .wav file name [NAME]"
             ),
             arguments: {
               NAME: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: 'My Audio'
-              }
-            }
+                defaultValue: "My Audio",
+              },
+            },
           },
           {
-            opcode: 'isRecording',
+            opcode: "isRecording",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate('Is recording?')
-          }
-        ]
+            text: Scratch.translate("Is recording?"),
+          },
+        ],
       };
     }
 
@@ -65,7 +65,7 @@
       const audioEngine = vm.runtime.audioEngine;
       const audioCtx = audioEngine.audioContext;
 
-      if (audioCtx && audioCtx.state === 'suspended') {
+      if (audioCtx && audioCtx.state === "suspended") {
         audioCtx.resume();
       }
 
@@ -103,16 +103,16 @@
       if (!mediaRecorder || !isRecording) return;
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(audioChunks, { type: 'audio/wav' });
+        const blob = new Blob(audioChunks, { type: "audio/wav" });
         const reader = new FileReader();
 
         reader.onloadend = () => {
           const base64data = reader.result;
-          const a = document.createElement('a');
-          a.style.display = 'none';
+          const a = document.createElement("a");
+          a.style.display = "none";
           a.href = base64data;
 
-          const safeName = fileName || 'My Audio';
+          const safeName = fileName || "My Audio";
           a.download = `${safeName}.${ext}`;
 
           document.body.appendChild(a);
@@ -138,12 +138,12 @@
 
     stopAndDownloadMp3(args) {
       const name = Scratch.Cast.toString(args.NAME);
-      this._stopAndDownload(name, 'mp3');
+      this._stopAndDownload(name, "mp3");
     }
 
     stopAndDownloadWav(args) {
       const name = Scratch.Cast.toString(args.NAME);
-      this._stopAndDownload(name, 'wav');
+      this._stopAndDownload(name, "wav");
     }
 
     isRecording() {
