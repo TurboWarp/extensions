@@ -321,16 +321,12 @@ const run = async () => {
     ...metadata.resourceProblems,
   ].sort();
 
-  // This file is read by the workflow that opens the auto-generated PR so that
-  // the skipped strings are mentioned in the commit message and PR body.
   let warnings = "";
   if (allProblems.length > 0) {
-    const noun = allProblems.length === 1 ? "string" : "strings";
     warnings = [
-      `# ${allProblems.length} ${noun} skipped due to translation errors`,
+      `# ${allProblems.length} ${allProblems.length === 1 ? "string" : "strings"} skipped due to translation errors`,
       "",
       ...allProblems.map((problem) => ` * ${problem}`),
-      "",
     ].join("\n");
     console.warn(warnings);
   }
