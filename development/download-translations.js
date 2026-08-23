@@ -327,6 +327,7 @@ const run = async () => {
       `# ${allProblems.length} ${allProblems.length === 1 ? "string" : "strings"} skipped due to translation errors`,
       "",
       ...allProblems.map((problem) => ` * ${problem}`),
+      "",
     ].join("\n");
     console.warn(warnings);
   }
