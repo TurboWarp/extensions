@@ -30,7 +30,7 @@
     "@turbowarp/json": "^0.1.2",
     "@turbowarp/scratchblocks": "^3.6.7",
     "@turbowarp/types": "git+https://github.com/TurboWarp/types-tw.git#tw",
-    "adm-zip": "^0.5.16",
+    "adm-zip": "^0.6.0",
     "chokidar": "^4.0.3",
     "ejs": "^3.1.10",
     "eslint": "^9.39.1",
