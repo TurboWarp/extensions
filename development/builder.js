@@ -26,6 +26,35 @@ import generateBuildSnippetJS from "./build-snippets.js";
  * @typedef {'development'|'production'|'desktop'} Mode
  */
 
+const DEFAULT_ORIGIN = "https://extensions.turbowarp.org/";
+
+/**
+ * Resolve the deployment origin for the given mode.
+ *
+ * The origin may be configured with the EXTENSIONS_ORIGIN environment variable.
+ * It must use `https:` in production and is normalized to have exactly one
+ * trailing `/`.
+ *
+ * @param {Mode} mode
+ * @returns {string}
+ */
+const resolveOrigin = (mode) => {
+  if (mode === "development") {
+    return "http://localhost:8000/";
+  }
+
+  const rawOrigin = process.env.EXTENSIONS_ORIGIN || DEFAULT_ORIGIN;
+  const origin = rawOrigin.endsWith("/") ? rawOrigin : `${rawOrigin}/`;
+
+  if (!origin.startsWith("https://")) {
+    throw new Error(
+      `Deployment origin for ${mode} mode must use https://, got: ${origin}`
+    );
+  }
+
+  return origin;
+};
+
 /**
  * @typedef TranslatableString
  * @property {string} string The English version of the string
@@ -366,10 +395,7 @@ class HomepageFile extends BuildFile {
     /** @type {Mode} */
     this.mode = mode;
 
-    this.host =
-      mode === "development"
-        ? "http://localhost:8000/"
-        : "https://extensions.turbowarp.org/";
+    this.host = resolveOrigin(mode);
   }
 
   getType() {
@@ -559,9 +585,10 @@ IMAGE_FORMATS.set(".jpg", ImageFile);
 IMAGE_FORMATS.set(".svg", SVGFile);
 
 class SitemapFile extends BuildFile {
-  constructor(build) {
+  constructor(build, host) {
     super(null);
     this.build = build;
+    this.host = host;
   }
 
   getType() {
@@ -581,7 +608,7 @@ class SitemapFile extends BuildFile {
         if (a.length > b.length) return 1;
         return a - b;
       })
-      .map((path) => `https://extensions.turbowarp.org${path}`)
+      .map((path) => `${this.host}${path.substring(1)}`)
       .map((absoluteURL) => `<url><loc>${absoluteURL}</loc></url>`)
       .join("\n");
 
@@ -591,14 +618,15 @@ class SitemapFile extends BuildFile {
 }
 
 class DocsFile extends BuildFile {
-  constructor(absolutePath, extensionSlug) {
+  constructor(absolutePath, extensionSlug, host) {
     super(absolutePath);
     this.extensionSlug = extensionSlug;
+    this.host = host;
   }
 
   async read() {
     const markdown = (await super.read()).toString("utf-8");
-    return renderDocs(markdown, this.extensionSlug);
+    return renderDocs(markdown, this.extensionSlug, this.host);
   }
 
   getType() {
@@ -607,6 +635,11 @@ class DocsFile extends BuildFile {
 }
 
 class SampleFile extends BuildFile {
+  constructor(source, host) {
+    super(source);
+    this.host = host;
+  }
+
   getSlug() {
     return pathUtil.basename(this.sourcePath);
   }
@@ -634,10 +667,7 @@ class SampleFile extends BuildFile {
     }
 
     for (const url of urls) {
-      if (
-        !url.startsWith("https://extensions.turbowarp.org/") ||
-        !url.endsWith(".js")
-      ) {
+      if (!url.startsWith(this.host) || !url.endsWith(".js")) {
         throw new Error(`Invalid extension URL for sample: ${url}`);
       }
     }
@@ -753,6 +783,7 @@ class Builder {
       this.mode = mode;
     }
 
+    this.host = resolveOrigin(this.mode);
     this.extensionsRoot = pathUtil.join(import.meta.dirname, "../extensions");
     this.websiteRoot = pathUtil.join(import.meta.dirname, "../website");
     this.imagesRoot = pathUtil.join(import.meta.dirname, "../images");
@@ -844,7 +875,7 @@ class Builder {
         continue;
       }
 
-      const file = new SampleFile(absolutePath);
+      const file = new SampleFile(absolutePath, this.host);
       for (const url of file.getExtensionURLs()) {
         const slug = new URL(url).pathname.substring(1).replace(".js", "");
         if (samples.has(slug)) {
@@ -869,7 +900,7 @@ class Builder {
         continue;
       }
       const extensionSlug = filename.split(".")[0];
-      const file = new DocsFile(absolutePath, extensionSlug);
+      const file = new DocsFile(absolutePath, extensionSlug, this.host);
       extensionsWithDocs.add(extensionSlug);
       build.files[`/${extensionSlug}.html`] = file;
     }
@@ -891,7 +922,7 @@ class Builder {
       samples,
       this.mode
     );
-    build.files["/sitemap.xml"] = new SitemapFile(build);
+    build.files["/sitemap.xml"] = new SitemapFile(build, this.host);
 
     build.files["/generated-metadata/extensions-v0.json"] =
       new JSONMetadataFile(
