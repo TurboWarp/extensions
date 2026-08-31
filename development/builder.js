@@ -32,6 +32,8 @@ const DEFAULT_ORIGIN = "https://extensions.turbowarp.org/";
  * Resolve the deployment origin for the given mode.
  *
  * The origin may be configured with the EXTENSIONS_ORIGIN environment variable.
+ * In development mode, the port can be configured with the EXTENSIONS_PORT
+ * environment variable (defaults to 8000).
  * It must use `https:` in production and is normalized to have exactly one
  * trailing `/`.
  *
@@ -40,7 +42,8 @@ const DEFAULT_ORIGIN = "https://extensions.turbowarp.org/";
  */
 const resolveOrigin = (mode) => {
   if (mode === "development") {
-    return "http://localhost:8000/";
+    const port = process.env.EXTENSIONS_PORT || 8000;
+    return `http://localhost:${port}/`;
   }
 
   const rawOrigin = process.env.EXTENSIONS_ORIGIN || DEFAULT_ORIGIN;
