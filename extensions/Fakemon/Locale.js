@@ -572,11 +572,14 @@ Locale can be confusing to some users, so accurate documentation should help exp
       }
     }
     getLanguageCode() {
+      // @ts-ignore
       return Scratch.vm?.getLocale() ?? navigator.languages[0];
     }
     getLanguageArray() {
+      // @ts-ignore
       if (navigator.languages?.includes(Scratch.vm?.getLocale())) return JSON.stringify(navigator.languages);
-      
+
+      // @ts-ignore
       return JSON.stringify([Scratch.vm?.getLocale(), ...navigator.languages]);
     }
     /**
