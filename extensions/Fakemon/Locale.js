@@ -572,33 +572,12 @@ Locale can be confusing to some users, so accurate documentation should help exp
       }
     }
     getLanguageCode() {
-      try {
-        // @ts-ignore
-        // eslint-disable-next-line no-undef
-        return ReduxStore?.getState().locales.locale || navigator.languages[0];
-      } catch {
-        return navigator.languages[0];
-      }
+      return Scratch.vm?.getLocale() ?? navigator.languages[0];
     }
     getLanguageArray() {
-      try {
-        if (
-          // @ts-ignore
-          // eslint-disable-next-line no-undef
-          navigator.languages.includes(ReduxStore?.getState().locales.locale)
-        ) {
-          return JSON.stringify(navigator.languages);
-        } else {
-          return JSON.stringify([
-            // @ts-ignore
-            // eslint-disable-next-line no-undef
-            ReduxStore?.getState().locales.locale,
-            ...navigator.languages,
-          ]);
-        }
-      } catch {
-        return JSON.stringify(navigator.languages);
-      }
+      if (navigator.languages?.includes(Scratch.vm?.getLocale())) return JSON.stringify(navigator.languages);
+      
+      return JSON.stringify([Scratch.vm?.getLocale(), ...navigator.languages]);
     }
     /**
      * @param {{ LANG: any; }} args
@@ -716,22 +695,22 @@ Locale can be confusing to some users, so accurate documentation should help exp
      * @param {string} matchKey
      */
     _filterArray(array, matchKey) {
-      if (array && Array.isArray(array)) {
-        return array.map((/** @type {{ [x: string]: any; }} */ value) => {
-          try {
-            if (value) {
-              if (Object.prototype.hasOwnProperty.call(value, matchKey)) {
-                if (value[matchKey]) {
-                  return value[matchKey];
-                }
+      if (!array || !Array.isArray(array)) return [];
+      
+      return array?.map((/** @type {{ [x: string]: any; }} */ value) => {
+        try {
+          if (value) {
+            if (Object.prototype.hasOwnProperty.call(value, matchKey)) {
+              if (value[matchKey]) {
+                return value[matchKey];
               }
             }
-          } catch (error) {
-            console.warn("Locale:", error);
-            return null;
           }
-        });
-      } else return [];
+        } catch (error) {
+          console.warn("Locale:", error);
+          return null;
+        }
+      });
     }
     /**
      * @param {string | any[]} languageArray
