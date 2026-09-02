@@ -573,7 +573,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
     }
     getLanguageCode() {
       // @ts-ignore
-      return Scratch.vm?.getLocale() ?? navigator.languages[0];
+      return Scratch.vm?.getLocale() || navigator.languages[0];
     }
     getLanguageArray() {
       // @ts-ignore
