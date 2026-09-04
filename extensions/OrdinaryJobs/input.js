@@ -1,3 +1,4 @@
+// !format
 // Name: Text Input
 // ID: textinput
 // Description: A draggable text input box per sprite that replaces the sprite when shown, can be typed into directly.
