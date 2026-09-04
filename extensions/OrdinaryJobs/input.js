@@ -23,7 +23,7 @@
       document.addEventListener("mousemove", (e) => this._onMouseMove(e));
       document.addEventListener("mouseup", () => this._onMouseUp());
       document.addEventListener("fullscreenchange", () =>
-        this._updateCursors(),
+        this._updateCursors()
       );
     }
 
