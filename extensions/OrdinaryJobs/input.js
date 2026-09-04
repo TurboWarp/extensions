@@ -45,7 +45,6 @@
       }
     }
 
-
     _getStageCanvas() {
       const r = vm.renderer;
       if (r) {
