@@ -201,7 +201,6 @@
         color1: "#e40000",
         blocks: [
           {
-
             opcode: "show",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("show input box"),
