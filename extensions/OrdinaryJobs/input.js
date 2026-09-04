@@ -32,7 +32,7 @@
       const rect = canvas.getBoundingClientRect();
       return (
         rect.top <= window.innerHeight * 0.1 &&
-        rect.height >= window.innerHeight * 0.9,
+        rect.height >= window.innerHeight * 0.9
       );
     }
 
