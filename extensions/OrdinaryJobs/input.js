@@ -87,7 +87,6 @@
       container.appendChild(input);
       document.body.appendChild(container);
 
-
       const box = {
         container,
         input,
