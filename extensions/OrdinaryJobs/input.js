@@ -30,11 +30,9 @@
       const canvas = this._getStageCanvas();
       if (!canvas) return false;
       const rect = canvas.getBoundingClientRect();
-      // 舞台垂直占满窗口即视为最大化(全屏时 4:3 舞台在宽屏会左右留黑边,
-      // 宽度不占满,但高度占满;编辑器里舞台上下有顶栏/积木区,高度不会占满)
       return (
         rect.top <= window.innerHeight * 0.1 &&
-        rect.height >= window.innerHeight * 0.9
+        rect.height >= window.innerHeight * 0.9,
       );
     }
 
