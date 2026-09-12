@@ -12,6 +12,7 @@
   "runtime-options",
   "fetch",
   "text",
+  "Fakemon/Locale",
   "local-storage",
   "true-fantom/base",
   "bitwise",
