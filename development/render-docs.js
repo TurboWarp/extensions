@@ -105,9 +105,10 @@ md.block.ruler.before(
 /**
  * @param {string} markdownSource Markdown code
  * @param {string} slug Path slug like 'TestMuffin/fetch'
+ * @param {string} host Deployment origin with a trailing `/`
  * @returns {string} HTML source code
  */
-const renderDocs = (markdownSource, slug) => {
+const renderDocs = (markdownSource, slug, host) => {
   const env = {};
   const tokens = md.parse(markdownSource, env);
 
@@ -142,6 +143,7 @@ const renderDocs = (markdownSource, slug) => {
 
   return renderTemplate(path.join(import.meta.dirname, "docs-template.ejs"), {
     slug,
+    host,
     headerHTML,
     headerText,
     bodyHTML,
