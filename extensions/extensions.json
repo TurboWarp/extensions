@@ -103,5 +103,6 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
+  "davinichi/esp32-education",
   "Lily/McUtils" // McUtils should always be the last item.
 ]
