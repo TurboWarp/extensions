@@ -1,27 +1,25 @@
 # TurboTranslate
 
-TurboTranslate is an extension designed to make localizing and translating TurboWarp games effortless. Forget about tedious list lookups, manual delimiter splits, and endless nested if-else blocks.
+TurboTranslate is an extension for localizing Scratch projects into different languages.
 
-TurboTranslate gives you visual blocks to manage multilingual dictionaries, dynamic variable substitution, smart pluralization (e.g. 1 item, 2 items), system language auto-detection, and reactive language-change events.
+Instead of writing custom list parsers or nested checks for each language, you can store translations in a dictionary and look them up with blocks.
 
-## Features
+## Key Concepts
 
-- **13 Built-in Languages**: English, Russian, Spanish, French, German, Chinese, Japanese, Korean, Portuguese, Italian, Polish, Turkish, and Ukrainian supported out-of-the-box.
-- **Custom Languages**: Easily add regional dialects or fictional languages (like Elvish or Klingon).
-- **Default Current Language**: All translation lookup blocks default to `current language`, so you don't have to specify the language repeatedly.
-- **Smart Pluralization**: Natural plural handling for both 2-form languages (English, German, Spanish, etc.) and complex 3-form Slavic languages (Russian, Ukrainian, Polish).
-- **Event-Driven UI**: `when language changed` instantly alerts your sprites to update their text.
-- **Export & Import**: Full JSON backup and restore so you can package or fetch translation packs.
+- **Languages**: 13 common languages are included by default (English, Russian, Spanish, French, German, Ukrainian, Japanese, Chinese, etc.). Custom languages can be added at any time.
+- **Language code vs Name**: Languages are identified by standard codes like `en` or `ru`, but also have human-readable names like `English` or `Русский`.
+- **Fallbacks**: If a translation is missing in the current language, TurboTranslate falls back to English.
+- **Plurals**: Supports grammatical plural forms (`.one`, `.few`, `.many`, `.other`) with `{n}` replacement for numbers.
 
 ## Blocks
 
-### Language Management
+### Language Settings
 
 ```scratch
 set language to [en v] :: #4361ee
 ```
 
-Sets the active game language and triggers the `when language changed` hat event across all sprites.
+Sets the current language and triggers the `when language changed` event.
 
 ---
 
@@ -29,7 +27,7 @@ Sets the active game language and triggers the `when language changed` hat event
 (current language :: #4361ee)
 ```
 
-Returns the ISO 639-1 code of the current language (e.g. `en`, `ru`, `es`).
+Returns the active language code (for example: `en` or `ru`).
 
 ---
 
@@ -37,7 +35,7 @@ Returns the ISO 639-1 code of the current language (e.g. `en`, `ru`, `es`).
 (current language name :: #4361ee)
 ```
 
-Returns the full native name of the active language (e.g. `English`, `Русский`, `Español`).
+Returns the display name of the current language (for example: `English` or `Русский`).
 
 ---
 
@@ -45,7 +43,7 @@ Returns the full native name of the active language (e.g. `English`, `Русск
 when language changed :: #4361ee hat
 ```
 
-An event block that automatically triggers whenever `set language to [...]` is called. Use this in your UI sprites to instantly redraw text without messy broadcasts.
+Fires across all sprites when `set language to [...]` changes the language. Use this to update text costumes or redraw text labels.
 
 ---
 
@@ -53,7 +51,7 @@ An event block that automatically triggers whenever `set language to [...]` is c
 (system language :: #4361ee)
 ```
 
-Auto-detects the player's device or browser language code (e.g. `en`, `ru`, `fr`). Useful for automatically choosing the best language when the game starts.
+Returns the language reported by the player's browser (e.g. `ru` or `en`).
 
 ---
 
@@ -61,7 +59,7 @@ Auto-detects the player's device or browser language code (e.g. `en`, `ru`, `fr`
 add language [es] with name [Español] :: #4361ee
 ```
 
-Registers a new language into the game database.
+Adds a new language code and its display name.
 
 ---
 
@@ -69,7 +67,7 @@ Registers a new language into the game database.
 remove language [es v] :: #4361ee
 ```
 
-Removes a registered language and its associated translations.
+Deletes a language and all of its translations.
 
 ---
 
@@ -77,7 +75,7 @@ Removes a registered language and its associated translations.
 (name of language [en v] :: #4361ee)
 ```
 
-Returns the display name of a given language code.
+Gets the display name for a language code.
 
 ---
 
@@ -93,17 +91,17 @@ Returns a comma-separated list of all registered language codes.
 <language [en] exists? :: #4361ee>
 ```
 
-Returns `true` if the specified language is currently registered in the database.
+Checks if a language code is registered.
 
 ---
 
-### Translations & Lookups
+### Translations
 
 ```scratch
-set translation [welcome] to [Welcome to our game!] for [en v] :: #4361ee
+set translation [welcome] to [Welcome to the game!] for [en v] :: #4361ee
 ```
 
-Stores a translation string for a given key and language.
+Sets a translation for a key in a specific language.
 
 ---
 
@@ -111,7 +109,7 @@ Stores a translation string for a given key and language.
 (value for [welcome] in [current v] :: #4361ee)
 ```
 
-Retrieves the translation for the specified key. Defaults to the active language. If the key is missing in that language, it automatically falls back to English.
+Gets the translation for a key. Defaults to the current language. If not found, falls back to English.
 
 ---
 
@@ -119,7 +117,7 @@ Retrieves the translation for the specified key. Defaults to the active language
 (value for [greet] replacing [{player}] with (username) in [current v] :: #4361ee)
 ```
 
-Retrieves the translation and replaces the specified tag (such as `{player}` or `{score}`) with the replacement value.
+Gets a translation and replaces a placeholder tag (like `{player}`) with the given value.
 
 ---
 
@@ -127,10 +125,10 @@ Retrieves the translation and replaces the specified tag (such as `{player}` or 
 (value for [coins] with count (10) in [current v] :: #4361ee)
 ```
 
-Handles grammatical plurals dynamically based on the language rules:
-- Reads the subkeys for plurals: `coins.one`, `coins.other`, `coins.few`, `coins.many`, `coins.zero`.
-- Automatically substitutes `{n}` in the translated text with the given number.
-- Falls back to regular `coins` if specific plural subkeys are not set.
+Picks the appropriate plural form for a number and replaces `{n}` with the count:
+- Looks up subkeys like `coins.one`, `coins.few`, `coins.many`, `coins.other`.
+- Uses language-specific rules (for example, Russian uses different endings for 1, 2-4, and 5-20).
+- If no plural subkeys exist, falls back to the main key `coins`.
 
 ---
 
@@ -138,7 +136,7 @@ Handles grammatical plurals dynamically based on the language rules:
 <has translation for [welcome] in [current v]? :: #4361ee>
 ```
 
-Returns `true` if a translation exists for the given key in the specified language (or in fallback).
+Checks if a key exists in the specified language (or in fallback).
 
 ---
 
@@ -146,7 +144,7 @@ Returns `true` if a translation exists for the given key in the specified langua
 remove key [welcome] from [en v] :: #4361ee
 ```
 
-Deletes a translation key from a specific language.
+Deletes a key from a language.
 
 ---
 
@@ -154,7 +152,7 @@ Deletes a translation key from a specific language.
 clear translations for [en v] :: #4361ee
 ```
 
-Clears all translations for a single language while keeping the language registered.
+Deletes all translations for one language.
 
 ---
 
@@ -162,17 +160,17 @@ Clears all translations for a single language while keeping the language registe
 clear all translations :: #4361ee
 ```
 
-Clears all stored translation keys across all languages.
+Deletes all translations across all languages.
 
 ---
 
-### Import & Export
+### Saving and Loading
 
 ```scratch
 (export data :: #4361ee)
 ```
 
-Exports the entire translation database as a clean JSON string.
+Exports all registered languages and translations as a JSON string.
 
 ---
 
@@ -180,4 +178,4 @@ Exports the entire translation database as a clean JSON string.
 import data [{}] :: #4361ee
 ```
 
-Restores or merges a previously exported JSON translation dataset.
+Loads a previously exported JSON string.
