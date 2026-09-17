@@ -11,6 +11,9 @@ Locale can be confusing to some users, so accurate documentation should help exp
 
 (async function (Scratch) {
   "use strict";
+  if (!Scratch.extensions.unsandboxed) {
+    throw new Error("The Locale extension must run unsandboxed!");
+  }
   /**
    * @type {any[]}
    */
@@ -40,8 +43,17 @@ Locale can be confusing to some users, so accurate documentation should help exp
       fetchResult = await Scratch.fetch(
         "https://raw.githubusercontent.com/TurboWarp/scratch-translate-extension-languages-mirror/main/package/languages.json" // TurboWarp's mirror of the supported Translate extension languages
       );
-    } catch {
-      fetchResult = null;
+    } catch (error) {
+      if (
+        confirm(
+          // @ts-ignore
+          `${Scratch.translate("Locale: Unable to load language information. Would you like to retry? The error was as follows:")} ${error.message}`
+        )
+      ) {
+        return await getLanguageNameAndCodeLookupTableGLOBALIZED(); // Retry on user request only
+      } else {
+        fetchResult = null;
+      }
     }
 
     if (fetchResult) {
@@ -62,9 +74,6 @@ Locale can be confusing to some users, so accurate documentation should help exp
   let showRecreatableBlocks = true; // Whether or not to show blocks that can be recreated with other extensions
   let hasToggledRecreatableBlocks = false; // Whether or not the previous variable has been toggled so the explanation only shows once
 
-  if (!Scratch.extensions.unsandboxed) {
-    throw new Error("The Locale extension must run unsandboxed!");
-  }
   let localeObject =
     // @ts-ignore
     Scratch.vm.runtime.extensionStorage["fakemonLocale"]?.localeObject || {};
@@ -79,30 +88,32 @@ Locale can be confusing to some users, so accurate documentation should help exp
        */
       let arrayThusFar = [];
       // @ts-ignore
-      if (languageNameAndCodeLookupTableGLOBALIZED.menuMap) {
-        languageNameAndCodeLookupTableGLOBALIZED.menuMap[
-          this._matchLanguages(
-            Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap),
-            JSON.parse(this.getLanguageArray())
-          )[0] || "en"
-        ].forEach((/** @type {{ name: any; code: any; }} */ entry) => {
-          // Heavily inspired by https://github.com/TurboWarp/scratch-vm/blob/develop/src/extensions/scratch3_translate/index.js
-          const obj = { name: entry.name, code: entry.code };
-          try {
-            if (obj) {
-              // @ts-ignore
-              if (!this._filterArray(arrayThusFar, "code").includes(obj.code)) {
-                arrayThusFar.push(obj);
+      try {
+        if (languageNameAndCodeLookupTableGLOBALIZED.menuMap) {
+          languageNameAndCodeLookupTableGLOBALIZED.menuMap[
+            this._matchLanguages(
+              Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap),
+              JSON.parse(this.getLanguageArray())
+            )[0] || "en"
+          ].forEach((/** @type {{ name: any; code: any; }} */ entry) => {
+            // Heavily inspired by https://github.com/TurboWarp/scratch-vm/blob/develop/src/extensions/scratch3_translate/index.js
+            const obj = { name: entry.name, code: entry.code };
+            try {
+              if (obj) {
+                // @ts-ignore
+                if (
+                  !this._filterArray(arrayThusFar, "code").includes(obj.code)
+                ) {
+                  arrayThusFar.push(obj);
+                }
               }
+            } catch (error) {
+              console.warn("Locale:", error);
             }
-          } catch (error) {
-            console.warn("Locale:", error);
-          }
-        });
-      } else {
-        console.warn(
-          "Locale: languageNameAndCodeLookupTableGLOBALIZED does not contain a menuMap key or it lacks a value."
-        );
+          });
+        }
+      } catch (error) {
+        console.warn(error); // Probably just didn't get loaded properly and the user didn't care
       }
       languageNameAndCodeLookupTable = arrayThusFar;
     }
@@ -733,28 +744,40 @@ Locale can be confusing to some users, so accurate documentation should help exp
       return matchedLanguages;
     }
     _getLanguageNames(lang = this.getLanguageCode()) {
-      return this._filterArray(
-        languageNameAndCodeLookupTableGLOBALIZED.menuMap[lang],
-        "name"
-      );
+      try {
+        return this._filterArray(
+          languageNameAndCodeLookupTableGLOBALIZED.menuMap[lang],
+          "name"
+        );
+      } catch {
+        return null;
+      }
     }
     _getLanguageCodes() {
-      return this._filterArray(languageNameAndCodeLookupTable, "code");
+      try {
+        return this._filterArray(languageNameAndCodeLookupTable, "code");
+      } catch {
+        return null;
+      }
     }
     _makeLanguageNameMenu() {
       // Since the language names are being translated, we need a consistent way to refer to them.
-      const names = this._getLanguageNames();
-      const codes = this._getLanguageCodes();
-      let menuThusFar = [];
-      // @ts-ignore
-      for (let i = 0; i < names.length; i++) {
+      try {
+        const names = this._getLanguageNames() || [];
+        const codes = this._getLanguageCodes() || [];
+        let menuThusFar = [];
         // @ts-ignore
-        if (names[i] && codes[i]) {
+        for (let i = 0; i < names.length; i++) {
           // @ts-ignore
-          menuThusFar.push({ text: names[i], value: codes[i] });
+          if (names[i] && codes[i]) {
+            // @ts-ignore
+            menuThusFar.push({ text: names[i], value: codes[i] });
+          }
         }
+        return menuThusFar;
+      } catch {
+        return [];
       }
-      return menuThusFar;
     }
   }
   // @ts-ignore
