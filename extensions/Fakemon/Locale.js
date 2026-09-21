@@ -57,7 +57,11 @@ Locale can be confusing to some users, so accurate documentation should help exp
     }
 
     if (fetchResult) {
-      return JSON.parse(await fetchResult.text());
+      try {
+        return await fetchResult.json();
+      } catch {
+        return backupTable;
+      }
     } else {
       return backupTable;
     }
@@ -93,7 +97,8 @@ Locale can be confusing to some users, so accurate documentation should help exp
           languageNameAndCodeLookupTableGLOBALIZED.menuMap[
             this._matchLanguages(
               Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap),
-              JSON.parse(this.getLanguageArray())
+              // @ts-ignore
+              this.getLanguageArray(true)
             )[0] || "en"
           ].forEach((/** @type {{ name: any; code: any; }} */ entry) => {
             // Heavily inspired by https://github.com/TurboWarp/scratch-vm/blob/develop/src/extensions/scratch3_translate/index.js
@@ -439,19 +444,15 @@ Locale can be confusing to some users, so accurate documentation should help exp
       function doToggle() {
         showRecreatableBlocks = !showRecreatableBlocks;
         hasToggledRecreatableBlocks = true;
-        Scratch.vm.extensionManager.refreshBlocks();
+        // @ts-ignore
+        Scratch.vm.extensionManager.refreshBlocks("fakemonLocale");
       }
       if (!hasToggledRecreatableBlocks) {
         // If the user hasn't used this button before, tell them what it does
-        alert(
-          Scratch.translate(
-            `This button will ${showRecreatableBlocks ? "hide" : "show"} blocks that can be recreated with other extensions or require values set by these blocks.`
-          )
-        );
         if (
           confirm(
             Scratch.translate(
-              "Existing blocks in the project will not be affected, and you can undo this at any time. Is this okay?"
+              `This button will ${showRecreatableBlocks ? "hide" : "show"} blocks that can be recreated with other extensions or require values set by these blocks.\n\nExisting blocks in the project will not be affected, and you can undo this at any time. Is this okay?`
             )
           )
         ) {
@@ -586,30 +587,58 @@ Locale can be confusing to some users, so accurate documentation should help exp
       // @ts-ignore
       return Scratch.vm?.getLocale() || navigator.languages[0];
     }
-    getLanguageArray() {
+    /**
+     *
+     * @param {boolean} raw Whether or not to return the raw JSON (for internal use) instead of the stringified version
+     * @returns {string | string[]}
+     */
+    getLanguageArray(raw = false) {
       // @ts-ignore
       if (navigator.languages?.includes(Scratch.vm?.getLocale()))
-        return JSON.stringify(navigator.languages);
+        if (raw)
+          // @ts-ignore
+          return navigator.languages;
+        else return JSON.stringify(navigator.languages);
 
       // @ts-ignore
-      return JSON.stringify([Scratch.vm?.getLocale(), ...navigator.languages]);
+      if (raw) return [Scratch.vm?.getLocale(), ...navigator.languages];
+      else
+        return JSON.stringify([
+          // @ts-ignore
+          Scratch.vm?.getLocale(),
+          ...navigator.languages,
+        ]);
     }
     /**
      * @param {{ LANG: any; }} args
      */
     isLanguagePreferred(args) {
-      return JSON.parse(this.getLanguageArray()).includes(args.LANG);
+      return this.getLanguageArray(true).includes(args.LANG);
     }
-    supportedLanguages() {
-      return JSON.stringify(Object.keys(localeObject));
+    /**
+     *
+     * @param {boolean} raw Whether or not to return the raw JSON (for internal use) instead of the stringified version
+     * @returns {string | string[]}
+     */
+    supportedLanguages(raw = false) {
+      if (raw) return Object.keys(localeObject);
+      else return JSON.stringify(Object.keys(localeObject));
     }
-    supportedPreferredLanguages() {
-      return JSON.stringify(
-        this._matchLanguages(
-          JSON.parse(this.getLanguageArray()),
-          JSON.parse(this.supportedLanguages())
-        )
-      );
+    supportedPreferredLanguages(raw = false) {
+      if (raw)
+        return this._matchLanguages(
+          this.getLanguageArray(true),
+          // @ts-ignore
+          this.supportedLanguages(true)
+        );
+      else
+        return JSON.stringify(
+          this._matchLanguages(
+            this.getLanguageArray(true),
+            // @ts-ignore
+            this.supportedLanguages(true)
+          )
+        );
     }
     /**
      * @param {{ CODE: any; }} args
@@ -650,7 +679,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
     codeFromName(args) {
       // @ts-ignore
       if (this._getLanguageCodes().includes(args.NAME)) {
-        // The menu allows any reporter to be inserted, including those that don't match a menu. Remember, args.NAME will return the *value* of the menu, which, in this case, is the language code.
+        // The menu allows any reporter to be inserted, including those that don't match a menu option. Remember, args.NAME will return the *value* of the menu, which, if using the menu's default options, is the language code.
         return args.NAME;
       } else {
         args.NAME = args.NAME.toString().trim().toLowerCase();
