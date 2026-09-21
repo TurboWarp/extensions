@@ -73,20 +73,29 @@ jobs:
           # Commit
           date="$(date -u "+%Y-%m-%d")"
           title="[Automated] Update translations $date"
+          warnings="$(cat download-warnings.txt)"
           git add .
           git config --global user.name "DangoCat[bot]"
           git config --global user.email "dangocat@users.noreply.github.com"
-          git commit -m "$title"
+          if [ -n "$warnings" ]; then
+            git commit -m "$title" -m "$warnings"
+          else
+            git commit -m "$title"
+          fi
 
           # Push
           git push origin "$new_branch"
 
           # Create pull request
+          body="This pull request was made by a robot."
+          if [ -n "$warnings" ]; then
+            body="$body"$'\n\n'"$warnings"
+          fi
           GH_TOKEN="$UPSTREAM_GH_TOKEN" gh pr create \
             --head "dangocat:$new_branch" \
             --repo "$UPSTREAM_REPO" \
             --title "$title" \
-            --body "This pull request was made by a robot."
+            --body "$body"
         env:
           FORK_REPO: "DangoCat/extensions"
           # This token has contents write permissions on fork repository
