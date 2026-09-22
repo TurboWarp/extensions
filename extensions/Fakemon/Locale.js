@@ -488,7 +488,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
       try {
         let mergedJson = JSON.parse(args.JSON);
         if (Object.getPrototypeOf(mergedJson) === Object.prototype) {
-          localeObject = { ...localeObject, ...JSON.parse(args.JSON) };
+          localeObject = { ...localeObject, ...mergedJson };
         }
       } catch {
         localeObject = backupLocaleObject;
@@ -505,7 +505,10 @@ Locale can be confusing to some users, so accurate documentation should help exp
     setPerLangLocaleJSON(args) {
       let backupLocaleObject = localeObject; // Save a backup in case something breaks
       try {
-        localeObject[args.LANG] = JSON.parse(args.JSON);
+        let mergedJson = JSON.parse(args.JSON);
+        if (Object.getPrototypeOf(mergedJson) === Object.prototype) {
+          localeObject[args.LANG] = mergedJson;
+        }
       } catch {
         localeObject = backupLocaleObject;
       }
@@ -533,7 +536,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
         if (Object.getPrototypeOf(mergedJson) === Object.prototype) {
           localeObject[args.LANG] = {
             ...localeObject[args.LANG],
-            ...mergedJson,
+            ...mergedJson
           };
         }
       } catch {
