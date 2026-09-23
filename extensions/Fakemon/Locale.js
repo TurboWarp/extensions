@@ -80,7 +80,8 @@ Locale can be confusing to some users, so accurate documentation should help exp
 
   let localeObject =
     // @ts-ignore
-    Scratch.vm.runtime.extensionStorage["fakemonLocale"]?.localeObject || {};
+    Scratch.vm.runtime.extensionStorage["fakemonLocale"]?.localeObject ||
+    Object.create(null);
   let blockExtensionIcon =
     "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUyIiBoZWlnaHQ9IjE1MiIgdmlld0JveD0iMCAwIDE1MiAxNTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgY2xpcC1wYXRoPSJ1cmwoI2EpIj48ZyBmaWx0ZXI9InVybCgjYikiPjxwYXRoIGQ9Ik0xMDAuNDM5IDQwLjMzNmE2IDYgMCAwIDEgNiA2djYxLjE3OGE2IDYgMCAwIDEtNiA2SDQxLjM5NEwzMS45MDYgMTIzbC05LjUxNi05LjUxN2E2IDYgMCAwIDEtNS4zOS01Ljk2OVY0Ni4zMzdhNiA2IDAgMCAxIDYtNi4wMDF6IiBmaWxsPSIjZmZmIi8+PC9nPjxwYXRoIGQ9Im0xMDAuNDM5IDQwLjMzNi4wMDEtMi41aC0uMDAxem0wIDczLjE3OHYyLjVoLjAwMXptLTU5LjA0NSAwdi0yLjVoLTEuMDM2bC0uNzMyLjczMnpNMzEuOTA2IDEyM2wtMS43NjcgMS43NjggMS43NjcgMS43NjcgMS43NjgtMS43Njd6bS05LjUxNi05LjUxNyAxLjc2Ny0xLjc2Ny0uNjMtLjYzLS44ODYtLjA5em03OC4wNDktNzMuMTQ3djIuNWEzLjUgMy41IDAgMCAxIDMuNSAzLjVoNWE4LjUgOC41IDAgMCAwLTguNDk5LTguNXptNiA2aC0yLjV2NjEuMTc4aDVWNDYuMzM3em0wIDYxLjE3OGgtMi41YTMuNSAzLjUgMCAwIDEtMy41IDMuNXYyLjVsLjAwMSAyLjVhOC41IDguNSAwIDAgMCA4LjQ5OS04LjV6bS02IDZ2LTIuNUg0MS4zOTR2NWg1OS4wNDV6bS01OS4wNDUgMC0xLjc2OC0xLjc2OC05LjQ4NyA5LjQ4NkwzMS45MDYgMTIzbDEuNzY4IDEuNzY4IDkuNDg3LTkuNDg2ek0zMS45MDYgMTIzbDEuNzY4LTEuNzY4LTkuNTE3LTkuNTE2LTEuNzY3IDEuNzY3LTEuNzY4IDEuNzY4IDkuNTE3IDkuNTE3em0tOS41MTYtOS41MTcuMjUtMi40ODdhMy41IDMuNSAwIDAgMS0zLjE0LTMuNDgyaC01YTguNSA4LjUgMCAwIDAgNy42MzggOC40NTd6TTE3IDEwNy41MTRoMi41VjQ2LjMzN2gtNXY2MS4xNzd6bTAtNjEuMTc3aDIuNWEzLjUgMy41IDAgMCAxIDMuNS0zLjUwMXYtNWE4LjUgOC41IDAgMCAwLTguNSA4LjV6bTYtNi4wMDF2Mi41aDc3LjQzOXYtNUgyM3oiIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iLjE1Ii8+PGcgZmlsdGVyPSJ1cmwoI2MpIj48cGF0aCBkPSJNMTI4LjE5NiAyOGE2IDYgMCAwIDEgNiA2djYxLjE3OGE2IDYgMCAwIDEtNiA2SDY5LjE0OWwtOS40ODYgOS40ODYtOS41MTYtOS41MThhNiA2IDAgMCAxLTUuMzktNS45NjhWMzRhNiA2IDAgMCAxIDYtNnoiIGZpbGw9IiM0MzhmZWIiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyIvPjxwYXRoIGQ9Ik0xMjguMTk2IDI4di0yLjV6bTYgNjcuMTc4aDIuNXptLTYgNnYyLjV6bS01OS4wNDcgMHYtMi41aC0xLjAzNWwtLjczMi43MzJ6bS05LjQ4NiA5LjQ4Ni0xLjc2OCAxLjc2OCAxLjc2OCAxLjc2OCAxLjc2OC0xLjc2OHptLTkuNTE2LTkuNTE4IDEuNzY3LTEuNzY3LS42My0uNjMtLjg4Ni0uMDl6bS01LjM5LTUuOTY4aC0yLjV6bTAtNjEuMTc4aC0yLjV6bTYtNnYtMi41em03Ny40MzkgMHYyLjVhMy41IDMuNSAwIDAgMSAzLjUgMy41aDVhOC41IDguNSAwIDAgMC04LjUtOC41em02IDZoLTIuNXY2MS4xNzhoNVYzNHptMCA2MS4xNzhoLTIuNWEzLjUgMy41IDAgMCAxLTMuNSAzLjV2NWE4LjUgOC41IDAgMCAwIDguNS04LjV6bS02IDZ2LTIuNUg2OS4xNDl2NWg1OS4wNDd6bS01OS4wNDcgMC0xLjc2Ny0xLjc2OC05LjQ4NyA5LjQ4NiAxLjc2OCAxLjc2OCAxLjc2OCAxLjc2OCA5LjQ4Ni05LjQ4NnptLTkuNDg2IDkuNDg2IDEuNzY4LTEuNzY4LTkuNTE3LTkuNTE3LTEuNzY3IDEuNzY3LTEuNzY4IDEuNzY4IDkuNTE2IDkuNTE4em0tOS41MTYtOS41MTguMjUtMi40ODdhMy41IDMuNSAwIDAgMS0zLjE0LTMuNDgxaC01YzAgNC40MDQgMy4zNDggOC4wMjIgNy42MzggOC40NTZ6bS01LjM5LTUuOTY4aDIuNVYzNGgtNXY2MS4xNzh6bTAtNjEuMTc4aDIuNWEzLjUgMy41IDAgMCAxIDMuNS0zLjV2LTVhOC41IDguNSAwIDAgMC04LjUgOC41em02LTZ2Mi41aDc3LjQzOXYtNWgtNzcuNDR6IiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9Ii4xNSIvPjwvZz48L2c+PGRlZnM+PGZpbHRlciBpZD0iYiIgeD0iMTQuNSIgeT0iMzcuODM2IiB3aWR0aD0iOTQuNDM5IiBoZWlnaHQ9IjkyLjciIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj48ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPjxmZUJsZW5kIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPjxmZUNvbG9yTWF0cml4IGluPSJTb3VyY2VBbHBoYSIgdmFsdWVzPSIwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAxMjcgMCIgcmVzdWx0PSJoYXJkQWxwaGEiLz48ZmVPZmZzZXQgZHk9IjQiLz48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyIi8+PGZlQ29tcG9zaXRlIGluMj0iaGFyZEFscGhhIiBvcGVyYXRvcj0iYXJpdGhtZXRpYyIgazI9Ii0xIiBrMz0iMSIvPjxmZUNvbG9yTWF0cml4IHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMC4yNSAwIi8+PGZlQmxlbmQgaW4yPSJzaGFwZSIgcmVzdWx0PSJlZmZlY3QxX2lubmVyU2hhZG93XzEzMV80OCIvPjwvZmlsdGVyPjxmaWx0ZXIgaWQ9ImMiIHg9IjM4LjI1NyIgeT0iMjUuNSIgd2lkdGg9IjEwMi40MzkiIGhlaWdodD0iOTYuNyIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+PGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDEyNyAwIiByZXN1bHQ9ImhhcmRBbHBoYSIvPjxmZU9mZnNldCBkeT0iNCIvPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjIiLz48ZmVDb21wb3NpdGUgaW4yPSJoYXJkQWxwaGEiIG9wZXJhdG9yPSJvdXQiLz48ZmVDb2xvck1hdHJpeCB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAuMjUgMCIvPjxmZUJsZW5kIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdDFfZHJvcFNoYWRvd18xMzFfNDgiLz48ZmVCbGVuZCBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJlZmZlY3QxX2Ryb3BTaGFkb3dfMTMxXzQ4IiByZXN1bHQ9InNoYXBlIi8+PC9maWx0ZXI+PGNsaXBQYXRoIGlkPSJhIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMCAwaDE1MnYxNTJIMHoiLz48L2NsaXBQYXRoPjwvZGVmcz48L3N2Zz4=";
   let menuExtensionIcon =
@@ -99,7 +100,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
               Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap),
               // @ts-ignore
               this.getLanguageArray(true)
-            )[0] || "en"
+            )?.at(0) || "en"
           ].forEach((/** @type {{ name: any; code: any; }} */ entry) => {
             // Heavily inspired by https://github.com/TurboWarp/scratch-vm/blob/develop/src/extensions/scratch3_translate/index.js
             const obj = { name: entry.name, code: entry.code };
@@ -471,6 +472,9 @@ Locale can be confusing to some users, so accurate documentation should help exp
       let backupLocaleObject = localeObject; // Save a backup in case something breaks
       try {
         localeObject = JSON.parse(args.JSON);
+        if (Object.getPrototypeOf(localeObject) !== Object.prototype) {
+          localeObject = backupLocaleObject;
+        }
       } catch {
         localeObject = backupLocaleObject;
       }
@@ -483,7 +487,10 @@ Locale can be confusing to some users, so accurate documentation should help exp
     mergeFullLocaleJSON(args) {
       let backupLocaleObject = localeObject; // Save a backup in case something breaks
       try {
-        localeObject = { ...localeObject, ...JSON.parse(args.JSON) };
+        let mergedJson = JSON.parse(args.JSON);
+        if (Object.getPrototypeOf(mergedJson) === Object.prototype) {
+          localeObject = { ...localeObject, ...mergedJson };
+        }
       } catch {
         localeObject = backupLocaleObject;
       }
@@ -499,7 +506,10 @@ Locale can be confusing to some users, so accurate documentation should help exp
     setPerLangLocaleJSON(args) {
       let backupLocaleObject = localeObject; // Save a backup in case something breaks
       try {
-        localeObject[args.LANG] = JSON.parse(args.JSON);
+        let mergedJson = JSON.parse(args.JSON);
+        if (Object.getPrototypeOf(mergedJson) === Object.prototype) {
+          localeObject[args.LANG] = mergedJson;
+        }
       } catch {
         localeObject = backupLocaleObject;
       }
@@ -511,7 +521,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
     delLangFromJSON(args) {
       let backupLocaleObject = localeObject; // Save a backup in case something breaks
       try {
-        delete localeObject[args.LANG];
+        Reflect.deleteProperty(localeObject, args.LANG);
       } catch {
         localeObject = backupLocaleObject;
       }
@@ -523,10 +533,13 @@ Locale can be confusing to some users, so accurate documentation should help exp
     mergePerLangLocaleJSON(args) {
       let backupLocaleObject = localeObject; // Save a backup in case something breaks
       try {
-        localeObject[args.LANG] = {
-          ...localeObject[args.LANG],
-          ...JSON.parse(args.JSON),
-        };
+        let mergedJson = JSON.parse(args.JSON);
+        if (Object.getPrototypeOf(mergedJson) === Object.prototype) {
+          localeObject[args.LANG] = {
+            ...localeObject[args.LANG],
+            ...mergedJson,
+          };
+        }
       } catch {
         localeObject = backupLocaleObject;
       }
@@ -539,7 +552,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
     setPerWordTranslation(args) {
       if (!Object.prototype.hasOwnProperty.call(localeObject, args.LANG)) {
         // VS Code got mad when I tried to do it the normal way.
-        localeObject[args.LANG] = {};
+        localeObject[args.LANG] = Object.create(null);
       }
       localeObject[args.LANG][args.TEXTIN] = args.TEXTOUT;
       this._updateLocaleInfo();
@@ -572,7 +585,9 @@ Locale can be confusing to some users, so accurate documentation should help exp
             error: `The ${args.LANG} translation object does not contain an entry for ${args.TEXT}`,
           });
         }
-        return translation || args.TEXT;
+        if (translation instanceof String) {
+          return translation || args.TEXT;
+        }
       } catch (error) {
         // Just return the input
         allFailedTranslations.push({
@@ -595,19 +610,12 @@ Locale can be confusing to some users, so accurate documentation should help exp
     getLanguageArray(raw = false) {
       // @ts-ignore
       if (navigator.languages?.includes(Scratch.vm?.getLocale()))
-        if (raw)
-          // @ts-ignore
-          return navigator.languages;
-        else return JSON.stringify(navigator.languages);
+        // @ts-ignore
+        return raw ? navigator.languages : JSON.stringify(navigator.languages);
 
       // @ts-ignore
-      if (raw) return [Scratch.vm?.getLocale(), ...navigator.languages];
-      else
-        return JSON.stringify([
-          // @ts-ignore
-          Scratch.vm?.getLocale(),
-          ...navigator.languages,
-        ]);
+      let languages = [Scratch.vm?.getLocale(), ...navigator.languages];
+      return raw ? languages : JSON.stringify(languages);
     }
     /**
      * @param {{ LANG: any; }} args
@@ -621,37 +629,25 @@ Locale can be confusing to some users, so accurate documentation should help exp
      * @returns {string | string[]}
      */
     supportedLanguages(raw = false) {
-      if (raw) return Object.keys(localeObject);
-      else return JSON.stringify(Object.keys(localeObject));
+      let languages = Object.keys(localeObject);
+
+      return raw ? languages : JSON.stringify(languages);
     }
     supportedPreferredLanguages(raw = false) {
-      if (raw)
-        return this._matchLanguages(
-          this.getLanguageArray(true),
-          // @ts-ignore
-          this.supportedLanguages(true)
-        );
-      else
-        return JSON.stringify(
-          this._matchLanguages(
-            this.getLanguageArray(true),
-            // @ts-ignore
-            this.supportedLanguages(true)
-          )
-        );
+      let matches = this._matchLanguages(
+        this.getLanguageArray(true),
+        // @ts-ignore
+        this.supportedLanguages(true)
+      );
+
+      return raw ? matches : JSON.stringify(matches);
     }
     /**
      * @param {{ CODE: any; }} args
      */
     nameFromCode(args) {
       // @ts-ignore
-      let codeIndex = this._getLanguageCodes().indexOf(args.CODE);
-      if (codeIndex != -1) {
-        // @ts-ignore
-        return this._getLanguageNames()[codeIndex];
-      } else {
-        return "";
-      }
+      return this._getLanguageCodes().includes(args.CODE) ? args.CODE : "";
     }
     /**
      * @param {{ NAME: string | number; CODE: any; }} args
@@ -663,12 +659,11 @@ Locale can be confusing to some users, so accurate documentation should help exp
           languageNameAndCodeLookupTableGLOBALIZED.menuMap[args.NAME],
           "code"
         ).indexOf(args.CODE); // Language codes are in alphabetical order for the target language, not based on the code or native name.
-        if (codeIndex != -1) {
-          // @ts-ignore
-          return this._getLanguageNames(args.NAME)[codeIndex];
-        } else {
-          return "";
-        }
+
+        // @ts-ignore
+        return codeIndex >= 0
+          ? this._getLanguageNames(args.NAME).at(codeIndex)
+          : "";
       } catch {
         return ""; // The lookup table isn't perfect so there might not always be a translation of a language name
       }
@@ -679,10 +674,11 @@ Locale can be confusing to some users, so accurate documentation should help exp
     codeFromName(args) {
       // @ts-ignore
       if (this._getLanguageCodes().includes(args.NAME)) {
-        // The menu allows any reporter to be inserted, including those that don't match a menu option. Remember, args.NAME will return the *value* of the menu, which, if using the menu's default options, is the language code.
+        // The menu allows any reporter to be inserted, including those that don't match a menu option.
+        // Remember, args.NAME will return the *value* of the menu, which, if using the menu's default options, is the language code.
         return args.NAME;
       } else {
-        args.NAME = args.NAME.toString().trim().toLowerCase();
+        args.NAME = Scratch.Cast.toString(args.NAME).trim().toLowerCase();
         if (
           Object.prototype.hasOwnProperty.call(
             languageNameAndCodeLookupTableGLOBALIZED.nameMap,
@@ -692,19 +688,17 @@ Locale can be confusing to some users, so accurate documentation should help exp
           // This is to ensure the actual name value can be used via inputs. This implementation is inspired by the Translate extension's.
           return languageNameAndCodeLookupTableGLOBALIZED.nameMap[args.NAME];
           // @ts-ignore
-        } else if (this._getLanguageNames().includes(args.NAME)) {
-          // Fallback
-          // @ts-ignore
-          let nameIndex = this._getLanguageNames().indexOf(args.NAME);
-          if (nameIndex != -1) {
-            // @ts-ignore
-            return this._getLanguageCodes()[nameIndex];
-          } else {
-            return "";
-          }
-        } else {
-          return "";
         }
+
+        if (!this._getLanguageNames().includes(args.NAME)) return "";
+
+        // Fallback
+        // @ts-ignore
+        let nameIndex = this._getLanguageNames().indexOf(args.NAME);
+        if (nameIndex != -1)
+          // @ts-ignore
+          return this._getLanguageCodes().at(nameIndex);
+        return "";
       }
     }
     getallAttemptedTranslations() {
@@ -728,7 +722,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
         Scratch.vm.runtime.extensionStorage["fakemonLocale"] = {
           // @ts-ignore
           ...Scratch.vm.runtime.extensionStorage["fakemonLocale"],
-          ...{ localeObject: localeObject },
+          localeObject: localeObject,
         };
       } catch (error) {
         console.warn("Locale:", error);
@@ -743,13 +737,11 @@ Locale can be confusing to some users, so accurate documentation should help exp
 
       return array?.map((/** @type {{ [x: string]: any; }} */ value) => {
         try {
-          if (value) {
-            if (Object.prototype.hasOwnProperty.call(value, matchKey)) {
-              if (value[matchKey]) {
-                return value[matchKey];
-              }
-            }
-          }
+          if (!value) return;
+          if (!Object.prototype.hasOwnProperty.call(value, matchKey)) return;
+          if (!value[matchKey]) return;
+
+          return value[matchKey];
         } catch (error) {
           console.warn("Locale:", error);
           return null;
@@ -764,13 +756,15 @@ Locale can be confusing to some users, so accurate documentation should help exp
       /**
        * @type {any[]}
        */
-      const matchedLanguages = [];
-      supportedLanguages.forEach((/** @type {any} */ value) => {
-        if (languageArray.includes(value)) {
-          matchedLanguages.push(value);
-        }
-      });
-      return matchedLanguages;
+      return supportedLanguages?.reduce(
+        (/** @type {any[]} */ accumulator, /** @type {any} */ value) => {
+          if (languageArray.includes(value) && !accumulator.includes(value))
+            return accumulator.concat(value);
+
+          return accumulator;
+        },
+        []
+      );
     }
     _getLanguageNames(lang = this.getLanguageCode()) {
       try {
@@ -794,16 +788,22 @@ Locale can be confusing to some users, so accurate documentation should help exp
       try {
         const names = this._getLanguageNames() || [];
         const codes = this._getLanguageCodes() || [];
-        let menuThusFar = [];
-        // @ts-ignore
-        for (let i = 0; i < names.length; i++) {
-          // @ts-ignore
-          if (names[i] && codes[i]) {
-            // @ts-ignore
-            menuThusFar.push({ text: names[i], value: codes[i] });
-          }
-        }
-        return menuThusFar;
+        return names?.reduce(
+          (
+            /** @type {any[]} */ accumulator,
+            /** @type {any} */ nameValue,
+            /** @type {Number} */ index
+          ) => {
+            if (nameValue && codes[index])
+              return accumulator.concat({
+                text: nameValue,
+                value: codes[index],
+              });
+
+            return accumulator;
+          },
+          []
+        );
       } catch {
         return [];
       }
