@@ -100,7 +100,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
               Object.keys(languageNameAndCodeLookupTableGLOBALIZED.menuMap),
               // @ts-ignore
               this.getLanguageArray(true)
-            )[0] || "en"
+            )?.at(0) || "en"
           ].forEach((/** @type {{ name: any; code: any; }} */ entry) => {
             // Heavily inspired by https://github.com/TurboWarp/scratch-vm/blob/develop/src/extensions/scratch3_translate/index.js
             const obj = { name: entry.name, code: entry.code };
@@ -662,7 +662,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
 
         // @ts-ignore
         return codeIndex >= 0
-          ? this._getLanguageNames(args.NAME).get(codeIndex)
+          ? this._getLanguageNames(args.NAME).at(codeIndex)
           : "";
       } catch {
         return ""; // The lookup table isn't perfect so there might not always be a translation of a language name
@@ -697,7 +697,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
         let nameIndex = this._getLanguageNames().indexOf(args.NAME);
         if (nameIndex != -1)
           // @ts-ignore
-          return this._getLanguageCodes()[nameIndex];
+          return this._getLanguageCodes().at(nameIndex);
         return "";
       }
     }
