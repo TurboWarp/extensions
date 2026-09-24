@@ -6152,6 +6152,7 @@
         "gamepad@_button [b] on pad [i] pressed?": "パッド[i]のボタン[b]が押された",
         "gamepad@_direction of axes [axis] on pad [pad]": "パッド[pad]の[axis]の軸方向",
         "gamepad@_gamepad [pad] connected?": "ゲームパッド[pad]が接続された",
+        "gamepad@_magnitude of axes [axis] on pad [pad]": "パッド[pad]の[axis]の軸の大きさ",
         "gamepad@_value of axis [b] on pad [i]": "パッド[i]の[b]軸の値",
         "gamepad@_value of button [b] on pad [i]": "パッド[i]のボタン[b]の値",
         "godslayerakp/http@_Request": "リクエスト",
