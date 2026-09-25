@@ -23,7 +23,7 @@
         getInfo() {
             return {
                 id: "ElectraGPT",
-                name: "ElectraLlama",
+                name: Scratch.translate("ElectraLlama"),
                 menuIconURI: extIcon,
                 blockIconURI: gptIcon,
                 color1: '#00ff7b',
