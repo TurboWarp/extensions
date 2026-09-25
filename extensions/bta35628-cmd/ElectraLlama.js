@@ -46,7 +46,7 @@
                 {
                     opcode: 'setModel',
                     blockType: Scratch.BlockType.COMMAND,
-                    text: 'Set Model to [MODEL]',
+                    text: Scratch.translate('Set Model to [MODEL]'),
                     arguments: {
                         MODEL: {
                             type: Scratch.ArgumentType.STRING,
