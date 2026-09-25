@@ -346,7 +346,7 @@
     }
 
     setModel(args) {
-        this.model = args.MODEL
+        this.model = args.MODEL;
     }
 
     setApiUrl(args) {
@@ -455,7 +455,7 @@
             })
             .then(data => {
                 let targetUrl = data.data[0].url;
-                fetch(targetUrl)
+                Scratch.fetch(targetUrl)
                     .then((r) => r.arrayBuffer())
                     .then((arrayBuffer) => {
                         const storage = vm.runtime.storage;
