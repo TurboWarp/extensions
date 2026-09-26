@@ -5,5 +5,5 @@ website
 *.json
 *.yml
 *.md
-extensions/docs-examples
-build-snippets
+extensions/tianLemon/backgroundremover.js
+
