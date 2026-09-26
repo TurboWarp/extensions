@@ -5,10 +5,10 @@
 // License: MPL-2.0
 
 (function (Scratch) {
-  'use strict';
+  "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error('Tiles must run unsandboxed.');
+    throw new Error("Tiles must run unsandboxed.");
   }
 
   const vm = Scratch.vm;
@@ -53,11 +53,11 @@
   // set up (fields are still null).
   function destroyRenderResources(state) {
     if (state.stampDrawableId !== null) {
-      runtime.renderer.destroyDrawable(state.stampDrawableId, 'pen');
+      runtime.renderer.destroyDrawable(state.stampDrawableId, "pen");
       state.stampDrawableId = null;
     }
     if (state.penDrawableId !== null) {
-      runtime.renderer.destroyDrawable(state.penDrawableId, 'pen');
+      runtime.renderer.destroyDrawable(state.penDrawableId, "pen");
       state.penDrawableId = null;
     }
     if (state.penSkinId !== null) {
@@ -72,7 +72,7 @@
   // in our own `maps` Map. `targetWasRemoved` fires for both sprites being
   // deleted and clones being deleted, confirmed against @turbowarp/types'
   // RuntimeEventMap (`targetWasRemoved: [Target]`).
-  runtime.on('targetWasRemoved', (target) => {
+  runtime.on("targetWasRemoved", (target) => {
     const state = maps.get(target);
     if (!state) return;
     destroyRenderResources(state);
@@ -95,7 +95,7 @@
         // skinId -> [scaleXPercent, scaleYPercent], so we only call
         // getSkinSize() once per distinct costume instead of every tile,
         // every frame.
-        scaleCache: new Map()
+        scaleCache: new Map(),
       };
       maps.set(target, state);
     }
@@ -125,7 +125,7 @@
     );
     if (!costume) return null;
 
-    return typeof costume.skinId === 'number' ? costume.skinId : null;
+    return typeof costume.skinId === "number" ? costume.skinId : null;
   }
 
   // Returns [scaleXPercent, scaleYPercent] so that this skin renders at
@@ -139,7 +139,7 @@
     const nativeSize = runtime.renderer.getSkinSize(skinId); // [width, height] in px
     scale = [
       (state.tileSize / nativeSize[0]) * 100,
-      (state.tileSize / nativeSize[1]) * 100
+      (state.tileSize / nativeSize[1]) * 100,
     ];
     state.scaleCache.set(skinId, scale);
     return scale;
@@ -155,10 +155,10 @@
     if (state.penSkinId !== null) return;
 
     state.penSkinId = runtime.renderer.createPenSkin();
-    state.penDrawableId = runtime.renderer.createDrawable('pen');
+    state.penDrawableId = runtime.renderer.createDrawable("pen");
     runtime.renderer.updateDrawableSkinId(state.penDrawableId, state.penSkinId);
 
-    state.stampDrawableId = runtime.renderer.createDrawable('pen');
+    state.stampDrawableId = runtime.renderer.createDrawable("pen");
     // Park it off-stage. It only ever moves onto the stage for the instant
     // it takes to call penStamp(), then immediately moves back off-stage
     // in the same synchronous pass, before the renderer's next real
@@ -166,7 +166,7 @@
     runtime.renderer.updateDrawableVisible(state.stampDrawableId, true);
     runtime.renderer.updateDrawablePosition(state.stampDrawableId, [
       OFFSTAGE_X,
-      OFFSTAGE_Y
+      OFFSTAGE_Y,
     ]);
   }
 
@@ -175,7 +175,10 @@
   // ---------------------------------------------------------------------
 
   function createTilemap(args, util) {
-    const columns = Math.max(1, Math.round(Scratch.Cast.toNumber(args.COLUMNS)));
+    const columns = Math.max(
+      1,
+      Math.round(Scratch.Cast.toNumber(args.COLUMNS))
+    );
     const rows = Math.max(1, Math.round(Scratch.Cast.toNumber(args.ROWS)));
     const tileSize = Math.max(1, Scratch.Cast.toNumber(args.TILESIZE));
 
@@ -192,7 +195,7 @@
     const id = Math.round(Scratch.Cast.toNumber(args.ID));
     state.tileset.set(id, {
       targetName: Scratch.Cast.toString(args.SPRITE),
-      costumeName: Scratch.Cast.toString(args.COSTUME)
+      costumeName: Scratch.Cast.toString(args.COSTUME),
     });
     // Whatever costume this tile id used to point to, its cached scale is
     // no longer trustworthy: the costume's artwork may have been repainted
@@ -226,7 +229,7 @@
   function setSolid(args, util) {
     const state = getOrCreateState(util.target);
     const id = Math.round(Scratch.Cast.toNumber(args.ID));
-    if (Scratch.Cast.toString(args.SOLID) === 'solid') {
+    if (Scratch.Cast.toString(args.SOLID) === "solid") {
       state.solidIds.add(id);
     } else {
       state.solidIds.delete(id);
@@ -376,7 +379,7 @@
         );
         runtime.renderer.updateDrawablePosition(state.stampDrawableId, [
           worldX,
-          worldY
+          worldY,
         ]);
         runtime.renderer.penStamp(state.penSkinId, state.stampDrawableId);
       }
@@ -385,7 +388,7 @@
     // Park the helper back off-stage before the next real frame renders.
     runtime.renderer.updateDrawablePosition(state.stampDrawableId, [
       OFFSTAGE_X,
-      OFFSTAGE_Y
+      OFFSTAGE_Y,
     ]);
   }
 
@@ -396,164 +399,214 @@
   class Tiles {
     getInfo() {
       return {
-        id: 'tiles',
-        name: Scratch.translate('Tiles'),
-        color1: '#5C7CFA',
+        id: "tiles",
+        name: Scratch.translate("Tiles"),
+        color1: "#5C7CFA",
         blocks: [
           {
-            opcode: 'createTilemap',
+            opcode: "createTilemap",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              'create tilemap [COLUMNS] columns x [ROWS] rows, tile size [TILESIZE]'
+              "create tilemap [COLUMNS] columns x [ROWS] rows, tile size [TILESIZE]"
             ),
             arguments: {
               COLUMNS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 20 },
               ROWS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
-              TILESIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 24 }
-            }
+              TILESIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 24 },
+            },
           },
           {
-            opcode: 'setTilesetCostume',
+            opcode: "setTilesetCostume",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('set tile [ID] to costume [COSTUME] of [SPRITE]'),
+            text: Scratch.translate(
+              "set tile [ID] to costume [COSTUME] of [SPRITE]"
+            ),
             arguments: {
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-              COSTUME: { type: Scratch.ArgumentType.STRING, defaultValue: 'costume1' },
-              SPRITE: { type: Scratch.ArgumentType.STRING, defaultValue: 'Sprite1' }
-            }
+              COSTUME: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "costume1",
+              },
+              SPRITE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "Sprite1",
+              },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'setTile',
+            opcode: "setTile",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('set tile at column [COLUMN] row [ROW] to [ID]'),
+            text: Scratch.translate(
+              "set tile at column [COLUMN] row [ROW] to [ID]"
+            ),
             arguments: {
               COLUMN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
-            }
+              ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+            },
           },
           {
-            opcode: 'getTile',
+            opcode: "getTile",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('tile at column [COLUMN] row [ROW]'),
+            text: Scratch.translate("tile at column [COLUMN] row [ROW]"),
             arguments: {
               COLUMN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            }
+              ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
           },
           {
-            opcode: 'fillTiles',
+            opcode: "fillTiles",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              'fill tiles from column [COLUMN1] row [ROW1] to column [COLUMN2] row [ROW2] with [ID]'
+              "fill tiles from column [COLUMN1] row [ROW1] to column [COLUMN2] row [ROW2] with [ID]"
             ),
             arguments: {
               COLUMN1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               ROW1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               COLUMN2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 9 },
               ROW2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 9 },
-              ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
-            }
+              ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'setSolid',
+            opcode: "setSolid",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('set tile [ID] solid? [SOLID]'),
+            text: Scratch.translate("set tile [ID] solid? [SOLID]"),
             arguments: {
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
               SOLID: {
                 type: Scratch.ArgumentType.STRING,
-                menu: 'SOLID_MENU',
-                defaultValue: 'solid'
-              }
-            }
+                menu: "SOLID_MENU",
+                defaultValue: "solid",
+              },
+            },
           },
           {
-            opcode: 'isSolid',
+            opcode: "isSolid",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate('is solid at column [COLUMN] row [ROW]?'),
+            text: Scratch.translate("is solid at column [COLUMN] row [ROW]?"),
             arguments: {
               COLUMN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            }
+              ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
           },
-          '---',
+          "---",
           {
-            opcode: 'columnAtX',
+            opcode: "columnAtX",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('column at x: [X]'),
-            arguments: { X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } }
-          },
-          {
-            opcode: 'rowAtY',
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('row at y: [Y]'),
-            arguments: { Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } }
-          },
-          {
-            opcode: 'xAtColumn',
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('x at column [COLUMN]'),
-            arguments: { COLUMN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } }
-          },
-          {
-            opcode: 'yAtRow',
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('y at row [ROW]'),
-            arguments: { ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 } }
-          },
-          {
-            opcode: 'tilemapWidth',
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('tilemap width in pixels')
-          },
-          {
-            opcode: 'tilemapHeight',
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate('tilemap height in pixels')
-          },
-          '---',
-          {
-            opcode: 'drawTilemap',
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('draw tilemap with tile (0,0) at x: [X] y: [Y]'),
+            text: Scratch.translate("column at x: [X]"),
             arguments: {
               X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
-            }
+            },
           },
           {
-            opcode: 'hideTilemap',
+            opcode: "rowAtY",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("row at y: [Y]"),
+            arguments: {
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
+          },
+          {
+            opcode: "xAtColumn",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("x at column [COLUMN]"),
+            arguments: {
+              COLUMN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
+          },
+          {
+            opcode: "yAtRow",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("y at row [ROW]"),
+            arguments: {
+              ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
+          },
+          {
+            opcode: "tilemapWidth",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("tilemap width in pixels"),
+          },
+          {
+            opcode: "tilemapHeight",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("tilemap height in pixels"),
+          },
+          "---",
+          {
+            opcode: "drawTilemap",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate('hide tilemap')
-          }
+            text: Scratch.translate(
+              "draw tilemap with tile (0,0) at x: [X] y: [Y]"
+            ),
+            arguments: {
+              X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
+          },
+          {
+            opcode: "hideTilemap",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("hide tilemap"),
+          },
         ],
         menus: {
           SOLID_MENU: {
             acceptReporters: false,
-            items: ['solid', 'not solid']
-          }
-        }
+            items: ["solid", "not solid"],
+          },
+        },
       };
     }
 
-    createTilemap(args, util) { createTilemap(args, util); }
-    setTilesetCostume(args, util) { setTilesetCostume(args, util); }
-    setTile(args, util) { setTile(args, util); }
-    getTile(args, util) { return getTile(args, util); }
-    fillTiles(args, util) { fillTiles(args, util); }
-    setSolid(args, util) { setSolid(args, util); }
-    isSolid(args, util) { return isSolid(args, util); }
-    columnAtX(args, util) { return columnAtX(args, util); }
-    rowAtY(args, util) { return rowAtY(args, util); }
-    xAtColumn(args, util) { return xAtColumn(args, util); }
-    yAtRow(args, util) { return yAtRow(args, util); }
-    tilemapWidth(args, util) { return tilemapWidth(args, util); }
-    tilemapHeight(args, util) { return tilemapHeight(args, util); }
-    drawTilemap(args, util) { drawTilemap(args, util); }
-    hideTilemap(args, util) { hideTilemap(args, util); }
+    createTilemap(args, util) {
+      createTilemap(args, util);
+    }
+    setTilesetCostume(args, util) {
+      setTilesetCostume(args, util);
+    }
+    setTile(args, util) {
+      setTile(args, util);
+    }
+    getTile(args, util) {
+      return getTile(args, util);
+    }
+    fillTiles(args, util) {
+      fillTiles(args, util);
+    }
+    setSolid(args, util) {
+      setSolid(args, util);
+    }
+    isSolid(args, util) {
+      return isSolid(args, util);
+    }
+    columnAtX(args, util) {
+      return columnAtX(args, util);
+    }
+    rowAtY(args, util) {
+      return rowAtY(args, util);
+    }
+    xAtColumn(args, util) {
+      return xAtColumn(args, util);
+    }
+    yAtRow(args, util) {
+      return yAtRow(args, util);
+    }
+    tilemapWidth(args, util) {
+      return tilemapWidth(args, util);
+    }
+    tilemapHeight(args, util) {
+      return tilemapHeight(args, util);
+    }
+    drawTilemap(args, util) {
+      drawTilemap(args, util);
+    }
+    hideTilemap(args, util) {
+      hideTilemap(args, util);
+    }
   }
 
   Scratch.extensions.register(new Tiles());
