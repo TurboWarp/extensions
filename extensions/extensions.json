@@ -103,5 +103,12 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
+  "fachu2012/twtoolsplus-math",
+  "fachu2012/twtoolsplus-text",
+  "fachu2012/twtoolsplus-data",
+  "fachu2012/twtoolsplus-sprite",
+  "fachu2012/twtoolsplus-time",
+  "fachu2012/twtoolsplus-bullets",
+  "fachu2012/twtoolsplus-extra",
   "Lily/McUtils" // McUtils should always be the last item.
 ]
