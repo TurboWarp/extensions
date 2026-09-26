@@ -1,4 +1,4 @@
-//!format
+/* !format */
 // Name: Background Crop (背景提取)
 // ID: backgroundcrop
 // Description: Extract a region of the stage background and show it as a floating panel with effects: liquid glass refraction, blur, and rounded corners. Liquid glass and blur can be enabled at the same time.
