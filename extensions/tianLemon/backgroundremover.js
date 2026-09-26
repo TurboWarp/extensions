@@ -54,23 +54,16 @@
     getInfo() {
       return {
         id: "backgroundcrop",
-        name: Scratch.translate({
-          id: "backgroundcrop",
-          default: "Background Crop",
-          description: "Name of the extension",
-        }),
+        name: Scratch.translate("Background Crop"),
         color1: "#4285F4",
         color2: "#2962FF",
         blocks: [
           {
             opcode: "getBackgroundRegion",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "getBackgroundRegion",
-              default: "get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]",
-              description:
-                "Block text. [X1], [Y1], [X2] and [Y2] are number inputs for the two corners of the region.",
-            }),
+            text: Scratch.translate(
+              "get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]",
+            ),
             arguments: {
               X1: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
               Y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
@@ -81,22 +74,13 @@
           {
             opcode: "clearCrop",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "clearCrop",
-              default: "clear extraction",
-              description: "Block text",
-            }),
+            text: Scratch.translate("clear extraction"),
           },
           "---",
           {
             opcode: "setEffectMode",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "setEffectMode",
-              default: "apply effect [EFFECT] to extracted area",
-              description:
-                "Block text. [EFFECT] is a dropdown menu of effect modes.",
-            }),
+            text: Scratch.translate("apply effect [EFFECT] to extracted area"),
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -108,11 +92,7 @@
           {
             opcode: "setLiquidEnabled",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "setLiquidEnabled",
-              default: "set liquid glass distortion to [ON]",
-              description: "Block text. [ON] is a dropdown menu: on or off.",
-            }),
+            text: Scratch.translate("set liquid glass distortion to [ON]"),
             arguments: {
               ON: {
                 type: Scratch.ArgumentType.STRING,
@@ -124,11 +104,7 @@
           {
             opcode: "setBlurEnabled",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "setBlurEnabled",
-              default: "set blur to [ON]",
-              description: "Block text. [ON] is a dropdown menu: on or off.",
-            }),
+            text: Scratch.translate("set blur to [ON]"),
             arguments: {
               ON: {
                 type: Scratch.ArgumentType.STRING,
@@ -140,20 +116,12 @@
           {
             opcode: "clearEffects",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "clearEffects",
-              default: "clear all effects",
-              description: "Block text",
-            }),
+            text: Scratch.translate("clear all effects"),
           },
           {
             opcode: "setShape",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "setShape",
-              default: "set extraction shape to [SHAPE]",
-              description: "Block text. [SHAPE] is a dropdown menu of shapes.",
-            }),
+            text: Scratch.translate("set extraction shape to [SHAPE]"),
             arguments: {
               SHAPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -166,11 +134,7 @@
           {
             opcode: "setRadius",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "setRadius",
-              default: "set corner radius to [R]",
-              description: "Block text. [R] is a number input.",
-            }),
+            text: Scratch.translate("set corner radius to [R]"),
             arguments: {
               R: { type: Scratch.ArgumentType.NUMBER, defaultValue: 12 },
             },
@@ -178,11 +142,7 @@
           {
             opcode: "setLiquidStrength",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "setLiquidStrength",
-              default: "set liquid distortion strength to [S]",
-              description: "Block text. [S] is a number input.",
-            }),
+            text: Scratch.translate("set liquid distortion strength to [S]"),
             arguments: {
               S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
@@ -190,11 +150,7 @@
           {
             opcode: "setBlurStrength",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "setBlurStrength",
-              default: "set blur strength to [S]",
-              description: "Block text. [S] is a number input.",
-            }),
+            text: Scratch.translate("set blur strength to [S]"),
             arguments: {
               S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 6 },
             },
@@ -202,11 +158,7 @@
           {
             opcode: "setEffectStrength",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate({
-              id: "setEffectStrength",
-              default: "set effect strength to [S]",
-              description: "Block text. [S] is a number input.",
-            }),
+            text: Scratch.translate("set effect strength to [S]"),
             arguments: {
               S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
             },
@@ -216,82 +168,28 @@
           EFFECT_MENU: {
             acceptReporters: false,
             items: [
+              { text: Scratch.translate("default"), value: "default" },
               {
-                text: Scratch.translate({
-                  id: "effectDefault",
-                  default: "default",
-                  description:
-                    "Effect menu item: show the extracted area unchanged.",
-                }),
-                value: "default",
-              },
-              {
-                text: Scratch.translate({
-                  id: "effectLiquid",
-                  default: "liquid glass distortion",
-                  description: "Effect menu item: liquid glass refraction.",
-                }),
+                text: Scratch.translate("liquid glass distortion"),
                 value: "liquid",
               },
-              {
-                text: Scratch.translate({
-                  id: "effectBlur",
-                  default: "blur",
-                  description: "Effect menu item: blur.",
-                }),
-                value: "blur",
-              },
-              {
-                text: Scratch.translate({
-                  id: "off",
-                  default: "off",
-                  description: "Menu item: off.",
-                }),
-                value: "none",
-              },
+              { text: Scratch.translate("blur"), value: "blur" },
+              { text: Scratch.translate("off"), value: "none" },
             ],
           },
           ON_MENU: {
             acceptReporters: false,
             items: [
-              {
-                text: Scratch.translate({
-                  id: "on",
-                  default: "on",
-                  description: "Menu item: on.",
-                }),
-                value: "on",
-              },
+              { text: Scratch.translate("on"), value: "on" },
               { text: Scratch.translate("off"), value: "off" },
             ],
           },
           SHAPE_MENU: {
             acceptReporters: false,
             items: [
-              {
-                text: Scratch.translate({
-                  id: "shapeRound",
-                  default: "rounded rectangle",
-                  description: "Shape menu item: rounded rectangle.",
-                }),
-                value: "round",
-              },
-              {
-                text: Scratch.translate({
-                  id: "shapeSquare",
-                  default: "square",
-                  description: "Shape menu item: square.",
-                }),
-                value: "square",
-              },
-              {
-                text: Scratch.translate({
-                  id: "shapeCircle",
-                  default: "circle",
-                  description: "Shape menu item: circle.",
-                }),
-                value: "circle",
-              },
+              { text: Scratch.translate("rounded rectangle"), value: "round" },
+              { text: Scratch.translate("square"), value: "square" },
+              { text: Scratch.translate("circle"), value: "circle" },
             ],
           },
         },
@@ -538,8 +436,7 @@
       this.pending = true;
       const id = ++this.snapshotId;
       vm.renderer.requestSnapshot((dataURL) => {
-        // dataURL is a data: URL generated by vm.renderer.requestSnapshot,
-        // not a remote resource, so no canFetch permission check is needed.
+        // 加载的是本地 dataURL（非网络请求），无需 Scratch.canFetch
         // eslint-disable-next-line extension/check-can-fetch
         const img = new Image();
         img.onload = () => {
@@ -573,7 +470,7 @@
           0,
           0,
           this.overlayCanvas.width,
-          this.overlayCanvas.height
+          this.overlayCanvas.height,
         );
       }
       this.snapshotId++; // 作废进行中的快照（其回调已兜底 resolve，不卡脚本）
@@ -710,7 +607,7 @@
           h,
           this.shape,
           this.radius,
-          this.liquidStrength
+          this.liquidStrength,
         );
       }
 
