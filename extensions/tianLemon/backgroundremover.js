@@ -55,10 +55,10 @@
       return {
         id: "backgroundcrop",
         name: Scratch.translate({
-              id: "backgroundcrop",
-              default: "Background Crop",
-              description: "Name of the extension",
-            }),
+          id: "backgroundcrop",
+          default: "Background Crop",
+          description: "Name of the extension",
+        }),
         color1: "#4285F4",
         color2: "#2962FF",
         blocks: [
@@ -68,7 +68,8 @@
             text: Scratch.translate({
               id: "getBackgroundRegion",
               default: "get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]",
-              description: "Block text. [X1], [Y1], [X2] and [Y2] are number inputs for the two corners of the region.",
+              description:
+                "Block text. [X1], [Y1], [X2] and [Y2] are number inputs for the two corners of the region.",
             }),
             arguments: {
               X1: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
@@ -93,7 +94,8 @@
             text: Scratch.translate({
               id: "setEffectMode",
               default: "apply effect [EFFECT] to extracted area",
-              description: "Block text. [EFFECT] is a dropdown menu of effect modes.",
+              description:
+                "Block text. [EFFECT] is a dropdown menu of effect modes.",
             }),
             arguments: {
               EFFECT: {
@@ -214,60 +216,82 @@
           EFFECT_MENU: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({
-              id: "effectDefault",
-              default: "default",
-              description: "Effect menu item: show the extracted area unchanged.",
-            }), value: "default" },
               {
                 text: Scratch.translate({
-              id: "effectLiquid",
-              default: "liquid glass distortion",
-              description: "Effect menu item: liquid glass refraction.",
-            }),
+                  id: "effectDefault",
+                  default: "default",
+                  description:
+                    "Effect menu item: show the extracted area unchanged.",
+                }),
+                value: "default",
+              },
+              {
+                text: Scratch.translate({
+                  id: "effectLiquid",
+                  default: "liquid glass distortion",
+                  description: "Effect menu item: liquid glass refraction.",
+                }),
                 value: "liquid",
               },
-              { text: Scratch.translate({
-              id: "effectBlur",
-              default: "blur",
-              description: "Effect menu item: blur.",
-            }), value: "blur" },
-              { text: Scratch.translate({
-              id: "off",
-              default: "off",
-              description: "Menu item: off.",
-            }), value: "none" },
+              {
+                text: Scratch.translate({
+                  id: "effectBlur",
+                  default: "blur",
+                  description: "Effect menu item: blur.",
+                }),
+                value: "blur",
+              },
+              {
+                text: Scratch.translate({
+                  id: "off",
+                  default: "off",
+                  description: "Menu item: off.",
+                }),
+                value: "none",
+              },
             ],
           },
           ON_MENU: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({
-              id: "on",
-              default: "on",
-              description: "Menu item: on.",
-            }), value: "on" },
+              {
+                text: Scratch.translate({
+                  id: "on",
+                  default: "on",
+                  description: "Menu item: on.",
+                }),
+                value: "on",
+              },
               { text: Scratch.translate("off"), value: "off" },
             ],
           },
           SHAPE_MENU: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate({
-              id: "shapeRound",
-              default: "rounded rectangle",
-              description: "Shape menu item: rounded rectangle.",
-            }), value: "round" },
-              { text: Scratch.translate({
-              id: "shapeSquare",
-              default: "square",
-              description: "Shape menu item: square.",
-            }), value: "square" },
-              { text: Scratch.translate({
-              id: "shapeCircle",
-              default: "circle",
-              description: "Shape menu item: circle.",
-            }), value: "circle" },
+              {
+                text: Scratch.translate({
+                  id: "shapeRound",
+                  default: "rounded rectangle",
+                  description: "Shape menu item: rounded rectangle.",
+                }),
+                value: "round",
+              },
+              {
+                text: Scratch.translate({
+                  id: "shapeSquare",
+                  default: "square",
+                  description: "Shape menu item: square.",
+                }),
+                value: "square",
+              },
+              {
+                text: Scratch.translate({
+                  id: "shapeCircle",
+                  default: "circle",
+                  description: "Shape menu item: circle.",
+                }),
+                value: "circle",
+              },
             ],
           },
         },
@@ -549,7 +573,7 @@
           0,
           0,
           this.overlayCanvas.width,
-          this.overlayCanvas.height,
+          this.overlayCanvas.height
         );
       }
       this.snapshotId++; // 作废进行中的快照（其回调已兜底 resolve，不卡脚本）
@@ -686,7 +710,7 @@
           h,
           this.shape,
           this.radius,
-          this.liquidStrength,
+          this.liquidStrength
         );
       }
 
