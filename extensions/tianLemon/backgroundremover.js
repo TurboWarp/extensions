@@ -4,12 +4,83 @@
 // By: 田柠檬
 // License: MIT
 
+/* generated l10n code */
+Scratch.translate.setup({
+  "en": {
+    "_Background Crop": "Background Crop",
+    "_get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]": "get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]",
+    "_clear extraction": "clear extraction",
+    "_apply effect [EFFECT] to extracted area": "apply effect [EFFECT] to extracted area",
+    "_set corner radius to [R]": "set corner radius to [R]",
+    "_set liquid distortion strength to [S]": "set liquid distortion strength to [S]",
+    "_set blur strength to [S]": "set blur strength to [S]",
+    "_set effect strength to [S]": "set effect strength to [S]",
+    "_set liquid glass distortion to [ON]": "set liquid glass distortion to [ON]",
+    "_set blur to [ON]": "set blur to [ON]",
+    "_clear all effects": "clear all effects",
+    "_default": "default",
+    "_liquid glass distortion": "liquid glass distortion",
+    "_blur": "blur",
+    "_off": "off",
+    "_on": "on",
+    "_set extraction shape to [SHAPE]": "set extraction shape to [SHAPE]",
+    "_rounded rectangle": "rounded rectangle",
+    "_square": "square",
+    "_circle": "circle"
+  },
+  "zh-cn": {
+    "_Background Crop": "背景提取",
+    "_get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]": "获取背景第一个x[X1]y[Y1]到第二个x[X2]y[Y2]",
+    "_clear extraction": "清除提取",
+    "_apply effect [EFFECT] to extracted area": "为提取区域增加特效[EFFECT]",
+    "_set corner radius to [R]": "设置圆角强度[R]",
+    "_set liquid distortion strength to [S]": "设置液态扭曲强度[S]",
+    "_set blur strength to [S]": "设置模糊强度[S]",
+    "_set effect strength to [S]": "设置特效强度[S]",
+    "_set liquid glass distortion to [ON]": "开启液态玻璃扭曲[ON]",
+    "_set blur to [ON]": "开启模糊[ON]",
+    "_clear all effects": "清除所有特效",
+    "_default": "默认",
+    "_liquid glass distortion": "液态玻璃扭曲",
+    "_blur": "模糊",
+    "_off": "关",
+    "_on": "开",
+    "_set extraction shape to [SHAPE]": "设置提取形状[SHAPE]",
+    "_rounded rectangle": "圆角矩形",
+    "_square": "正方形",
+    "_circle": "圆形"
+  },
+  "zh-tw": {
+    "_Background Crop": "背景擷取",
+    "_get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]": "擷取背景第一個x[X1]y[Y1]到第二個x[X2]y[Y2]",
+    "_clear extraction": "清除擷取",
+    "_apply effect [EFFECT] to extracted area": "為擷取區域增加特效[EFFECT]",
+    "_set corner radius to [R]": "設定圓角強度[R]",
+    "_set liquid distortion strength to [S]": "設定液態扭曲強度[S]",
+    "_set blur strength to [S]": "設定模糊強度[S]",
+    "_set effect strength to [S]": "設定特效強度[S]",
+    "_set liquid glass distortion to [ON]": "開啟液態玻璃扭曲[ON]",
+    "_set blur to [ON]": "開啟模糊[ON]",
+    "_clear all effects": "清除所有特效",
+    "_default": "預設",
+    "_liquid glass distortion": "液態玻璃扭曲",
+    "_blur": "模糊",
+    "_off": "關",
+    "_on": "開",
+    "_set extraction shape to [SHAPE]": "設定擷取形狀[SHAPE]",
+    "_rounded rectangle": "圓角矩形",
+    "_square": "正方形",
+    "_circle": "圓形"
+  }
+});
+/* end generated l10n code */
+
 (function (Scratch) {
-  "use strict";
+  'use strict';
 
   // 必须非沙盒运行（要访问 vm.renderer 内部 API）
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Background Crop extension must run unsandboxed");
+    throw new Error('Background Crop extension must run unsandboxed');
   }
 
   const vm = Scratch.vm;
@@ -21,22 +92,22 @@
       this.overlayCanvas = null;
       this.overlayCtx = null;
       // 特效中间层（在它上面做像素运算）
-      this.tmpCanvas = document.createElement("canvas");
-      this.tmpCtx = this.tmpCanvas.getContext("2d");
+      this.tmpCanvas = document.createElement('canvas');
+      this.tmpCtx = this.tmpCanvas.getContext('2d');
       // 归一化的舞台底图（480×360），每次截图更新
-      this.refCanvas = document.createElement("canvas");
+      this.refCanvas = document.createElement('canvas');
       this.refCanvas.width = 480;
       this.refCanvas.height = 360;
-      this.refCtx = this.refCanvas.getContext("2d");
+      this.refCtx = this.refCanvas.getContext('2d');
       // 当前提取区域（Scratch 舞台坐标，中心 0,0）
       this.crop = { minX: 0, minY: 0, maxX: 0, maxY: 0, w: 0, h: 0 };
       // 特效状态：liquidOn 和 blurOn 是独立开关，可同时开启
       this.liquidOn = false;
       this.blurOn = false;
-      this.radius = 12; // 圆角强度
+      this.radius = 12;      // 圆角强度
       this.liquidStrength = 5; // 液态(折射)强度
       this.blurStrength = 6; // 模糊强度
-      this.shape = "round"; // 提取形状：round(圆角矩形) / circle(正圆形透镜)
+      this.shape = 'round';  // 提取形状：round(圆角矩形) / circle(正圆形透镜)
       // 固定噪声种子：保证液态折射"不动"
       this.liquidSeed = 13731;
       // 幂等状态：已截图区域、有效快照标志、快照序号（用于丢弃过期快照）
@@ -46,153 +117,140 @@
       // 软清除标志：清除提取后保持画面透明，防止参数改动让画面"复活"
       this.cleared = false;
       // 实时更新循环
-      this.loopTimer = null; // 更新循环句柄
-      this.pending = false; // 是否有快照请求进行中（防止回调堆积）
+      this.loopTimer = null;   // 更新循环句柄
+      this.pending = false;    // 是否有快照请求进行中（防止回调堆积）
       this.refreshInterval = 100; // 更新间隔（毫秒）：时时跟随舞台画面
     }
 
     getInfo() {
       return {
-        id: "backgroundcrop",
-        name: Scratch.translate("Background Crop"),
-        color1: "#4285F4",
-        color2: "#2962FF",
+        id: 'backgroundcrop',
+        name: Scratch.translate('Background Crop'),
+        color1: '#4285F4',
+        color2: '#2962FF',
         blocks: [
           {
-            opcode: "getBackgroundRegion",
+            opcode: 'getBackgroundRegion',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]"
-            ),
+            text: Scratch.translate('get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]'),
             arguments: {
               X1: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
               Y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
               X2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
-              Y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
-            },
+              Y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 }
+            }
           },
           {
-            opcode: "clearCrop",
+            opcode: 'clearCrop',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("clear extraction"),
+            text: Scratch.translate('clear extraction')
           },
-          "---",
+          '---',
           {
-            opcode: "setEffectMode",
+            opcode: 'setEffectMode',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("apply effect [EFFECT] to extracted area"),
+            text: Scratch.translate('apply effect [EFFECT] to extracted area'),
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "EFFECT_MENU",
-                defaultValue: "default",
-              },
-            },
+                menu: 'EFFECT_MENU',
+                defaultValue: 'default'
+              }
+            }
           },
           {
-            opcode: "setLiquidEnabled",
+            opcode: 'setLiquidEnabled',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set liquid glass distortion to [ON]"),
+            text: Scratch.translate('set liquid glass distortion to [ON]'),
             arguments: {
               ON: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "ON_MENU",
-                defaultValue: "on",
-              },
-            },
+                menu: 'ON_MENU',
+                defaultValue: 'on'
+              }
+            }
           },
           {
-            opcode: "setBlurEnabled",
+            opcode: 'setBlurEnabled',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set blur to [ON]"),
+            text: Scratch.translate('set blur to [ON]'),
             arguments: {
               ON: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "ON_MENU",
-                defaultValue: "on",
-              },
-            },
+                menu: 'ON_MENU',
+                defaultValue: 'on'
+              }
+            }
           },
           {
-            opcode: "clearEffects",
+            opcode: 'clearEffects',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("clear all effects"),
+            text: Scratch.translate('clear all effects')
           },
           {
-            opcode: "setShape",
+            opcode: 'setShape',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set extraction shape to [SHAPE]"),
+            text: Scratch.translate('set extraction shape to [SHAPE]'),
             arguments: {
               SHAPE: {
                 type: Scratch.ArgumentType.STRING,
-                menu: "SHAPE_MENU",
-                defaultValue: "round",
-              },
-            },
+                menu: 'SHAPE_MENU',
+                defaultValue: 'round'
+              }
+            }
           },
-          "---",
+          '---',
           {
-            opcode: "setRadius",
+            opcode: 'setRadius',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set corner radius to [R]"),
-            arguments: {
-              R: { type: Scratch.ArgumentType.NUMBER, defaultValue: 12 },
-            },
+            text: Scratch.translate('set corner radius to [R]'),
+            arguments: { R: { type: Scratch.ArgumentType.NUMBER, defaultValue: 12 } }
           },
           {
-            opcode: "setLiquidStrength",
+            opcode: 'setLiquidStrength',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set liquid distortion strength to [S]"),
-            arguments: {
-              S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-            },
+            text: Scratch.translate('set liquid distortion strength to [S]'),
+            arguments: { S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 } }
           },
           {
-            opcode: "setBlurStrength",
+            opcode: 'setBlurStrength',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set blur strength to [S]"),
-            arguments: {
-              S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 6 },
-            },
+            text: Scratch.translate('set blur strength to [S]'),
+            arguments: { S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 6 } }
           },
           {
-            opcode: "setEffectStrength",
+            opcode: 'setEffectStrength',
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("set effect strength to [S]"),
-            arguments: {
-              S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
-            },
-          },
+            text: Scratch.translate('set effect strength to [S]'),
+            arguments: { S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 } }
+          }
         ],
         menus: {
           EFFECT_MENU: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate("default"), value: "default" },
-              {
-                text: Scratch.translate("liquid glass distortion"),
-                value: "liquid",
-              },
-              { text: Scratch.translate("blur"), value: "blur" },
-              { text: Scratch.translate("off"), value: "none" },
-            ],
+              { text: Scratch.translate('default'), value: 'default' },
+              { text: Scratch.translate('liquid glass distortion'), value: 'liquid' },
+              { text: Scratch.translate('blur'), value: 'blur' },
+              { text: Scratch.translate('off'), value: 'none' }
+            ]
           },
           ON_MENU: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate("on"), value: "on" },
-              { text: Scratch.translate("off"), value: "off" },
-            ],
+              { text: Scratch.translate('on'), value: 'on' },
+              { text: Scratch.translate('off'), value: 'off' }
+            ]
           },
           SHAPE_MENU: {
             acceptReporters: false,
             items: [
-              { text: Scratch.translate("rounded rectangle"), value: "round" },
-              { text: Scratch.translate("square"), value: "square" },
-              { text: Scratch.translate("circle"), value: "circle" },
-            ],
-          },
-        },
+              { text: Scratch.translate('rounded rectangle'), value: 'round' },
+              { text: Scratch.translate('square'), value: 'square' },
+              { text: Scratch.translate('circle'), value: 'circle' }
+            ]
+          }
+        }
       };
     }
 
@@ -223,16 +281,15 @@
       const px = data.data;
       for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
-          const dist =
-            shape === "circle"
-              ? this._circleSDF(x, y, w, h)
-              : this._roundRectSDF(x, y, w, h, r);
+          const dist = (shape === 'circle')
+            ? this._circleSDF(x, y, w, h)
+            : this._roundRectSDF(x, y, w, h, r);
           if (dist > 0) {
             // 形状外：完全透明
             px[(y * w + x) * 4 + 3] = 0;
           } else if (dist > -1) {
             // 边缘 1px 抗锯齿过渡
-            px[(y * w + x) * 4 + 3] *= 1 + dist;
+            px[(y * w + x) * 4 + 3] *= (1 + dist);
           }
         }
       }
@@ -289,14 +346,13 @@
     _applyGlassHighlight(data, w, h, shape, radius, strength) {
       const r = Math.max(0, Math.min(radius, w / 2, h / 2));
       const px = data.data;
-      const hlWidth = 3; // 高光带宽度（像素）
+      const hlWidth = 3;      // 高光带宽度（像素）
       const bright = 0.4 * Math.min(1, 0.5 + strength / 5);
       for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
-          const dist =
-            shape === "circle"
-              ? this._circleSDF(x, y, w, h)
-              : this._roundRectSDF(x, y, w, h, r);
+          const dist = (shape === 'circle')
+            ? this._circleSDF(x, y, w, h)
+            : this._roundRectSDF(x, y, w, h, r);
           if (dist > -hlWidth && dist < 0) {
             const t = 1 + dist / hlWidth; // 边缘1 → 内部0
             const a = t * bright;
@@ -317,15 +373,9 @@
       const d = out.data;
       for (let y = 0; y < h; y++) {
         for (let x = 0; x < w; x++) {
-          let rSum = 0,
-            gSum = 0,
-            bSum = 0,
-            aSum = 0,
-            count = 0;
-          const y0 = Math.max(0, y - r),
-            y1 = Math.min(h - 1, y + r);
-          const x0 = Math.max(0, x - r),
-            x1 = Math.min(w - 1, x + r);
+          let rSum = 0, gSum = 0, bSum = 0, aSum = 0, count = 0;
+          const y0 = Math.max(0, y - r), y1 = Math.min(h - 1, y + r);
+          const x0 = Math.max(0, x - r), x1 = Math.min(w - 1, x + r);
           for (let py = y0; py <= y1; py++) {
             const row = py * w;
             for (let px = x0; px <= x1; px++) {
@@ -373,7 +423,7 @@
           const w = maxX - minX;
           const h = maxY - minY;
           if (w <= 2 || h <= 2) {
-            reject(new Error("Region too small"));
+            reject(new Error('Region too small'));
             return;
           }
 
@@ -382,15 +432,15 @@
 
           // 创建叠加层画布并加入渲染器（scale 模式 = 舞台坐标，自动缩放）
           if (!this.overlayCanvas) {
-            this.overlayCanvas = document.createElement("canvas");
-            this.overlayCtx = this.overlayCanvas.getContext("2d");
-            this.overlayCanvas.style.position = "absolute";
+            this.overlayCanvas = document.createElement('canvas');
+            this.overlayCtx = this.overlayCanvas.getContext('2d');
+            this.overlayCanvas.style.position = 'absolute';
             this._ensureOverlayContainer();
-            vm.renderer.addOverlay(this.overlayCanvas, "scale");
+            vm.renderer.addOverlay(this.overlayCanvas, 'scale');
           }
           // 舞台坐标 → 叠加层内部像素（左上原点）
-          this.overlayCanvas.style.left = minX + 240 + "px";
-          this.overlayCanvas.style.top = 180 - maxY + "px";
+          this.overlayCanvas.style.left = (minX + 240) + 'px';
+          this.overlayCanvas.style.top = (180 - maxY) + 'px';
           this.overlayCanvas.width = w;
           this.overlayCanvas.height = h;
           this.tmpCanvas.width = w;
@@ -436,8 +486,6 @@
       this.pending = true;
       const id = ++this.snapshotId;
       vm.renderer.requestSnapshot((dataURL) => {
-        // 加载的是本地 dataURL（非网络请求），无需 Scratch.canFetch
-        // eslint-disable-next-line extension/check-can-fetch
         const img = new Image();
         img.onload = () => {
           this.pending = false;
@@ -466,12 +514,7 @@
       this.cleared = true;
       this._stopUpdateLoop();
       if (this.overlayCanvas && this.overlayCtx) {
-        this.overlayCtx.clearRect(
-          0,
-          0,
-          this.overlayCanvas.width,
-          this.overlayCanvas.height
-        );
+        this.overlayCtx.clearRect(0, 0, this.overlayCanvas.width, this.overlayCanvas.height);
       }
       this.snapshotId++; // 作废进行中的快照（其回调已兜底 resolve，不卡脚本）
     }
@@ -480,11 +523,11 @@
     setEffectMode(args) {
       const mode = String(args.EFFECT);
       switch (mode) {
-        case "liquid":
+        case 'liquid':
           this.liquidOn = true;
           this.blurOn = false;
           break;
-        case "blur":
+        case 'blur':
           this.blurOn = true;
           this.liquidOn = false;
           break;
@@ -498,13 +541,13 @@
 
     // 独立开关：液态玻璃扭曲（可与模糊同时开启）
     setLiquidEnabled(args) {
-      this.liquidOn = String(args.ON) === "on";
+      this.liquidOn = (String(args.ON) === 'on');
       this._render();
     }
 
     // 独立开关：模糊（可与液态玻璃同时开启）
     setBlurEnabled(args) {
-      this.blurOn = String(args.ON) === "on";
+      this.blurOn = (String(args.ON) === 'on');
       this._render();
     }
 
@@ -518,10 +561,10 @@
     // 设置提取形状：圆角矩形(长方形) / 正方形 / 圆形透镜
     setShape(args) {
       const shape = String(args.SHAPE);
-      if (shape === "circle" || shape === "square") {
+      if (shape === 'circle' || shape === 'square') {
         this.shape = shape;
       } else {
-        this.shape = "round";
+        this.shape = 'round';
       }
       this._render();
     }
@@ -551,7 +594,7 @@
     // 按形状计算实际绘制区域：正方形模式以原区域中心居中裁方
     _effectiveRect() {
       const c = this.crop;
-      if (this.shape === "square") {
+      if (this.shape === 'square') {
         const s = Math.min(c.w, c.h);
         const cx = c.minX + c.w / 2;
         const cy = c.minY + c.h / 2;
@@ -573,8 +616,8 @@
       const { w, h } = rect;
       const ctx = this.overlayCtx;
       // 叠加层位置与尺寸随形状动态更新
-      this.overlayCanvas.style.left = rect.minX + 240 + "px";
-      this.overlayCanvas.style.top = 180 - rect.maxY + "px";
+      this.overlayCanvas.style.left = (rect.minX + 240) + 'px';
+      this.overlayCanvas.style.top = (180 - rect.maxY) + 'px';
       if (this.overlayCanvas.width !== w || this.overlayCanvas.height !== h) {
         this.overlayCanvas.width = w;
         this.overlayCanvas.height = h;
@@ -601,14 +644,7 @@
 
       // 4) 液态玻璃专属：边缘反光高光
       if (this.liquidOn) {
-        this._applyGlassHighlight(
-          data,
-          w,
-          h,
-          this.shape,
-          this.radius,
-          this.liquidStrength
-        );
+        this._applyGlassHighlight(data, w, h, this.shape, this.radius, this.liquidStrength);
       }
 
       // 5) 写回显示层
