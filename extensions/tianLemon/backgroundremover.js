@@ -573,7 +573,7 @@
           0,
           0,
           this.overlayCanvas.width,
-          this.overlayCanvas.height,
+          this.overlayCanvas.height
         );
       }
       this.snapshotId++; // 作废进行中的快照（其回调已兜底 resolve，不卡脚本）
@@ -710,7 +710,7 @@
           h,
           this.shape,
           this.radius,
-          this.liquidStrength,
+          this.liquidStrength
         );
       }
 
