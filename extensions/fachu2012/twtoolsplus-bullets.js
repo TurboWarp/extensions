@@ -30,7 +30,7 @@
     return `twtoolsplus:${key}`;
   }
   function label(text) {
-    return { blockType: Scratch.BlockType.LABEL, text };
+    return { blockType: Scratch.BlockType.LABEL, text: Scratch.translate(text) };
   }
 
   /** Remove a previously loaded extension with the same id so reloading updates it. */
@@ -1148,30 +1148,30 @@
   const core = new TWToolsPlusCore();
 
   const SHARED_MENUS = {
-    parityMenu: { items: ['even', 'odd'] },
-    gcdLcmMenu: { items: ['GCD', 'LCM'] },
-    numberFormatMenu: { items: ['Roman numeral', 'words'] },
-    caseMenu: { items: ['UPPERCASE', 'lowercase', 'Capitalized'] },
-    padSideMenu: { items: ['start', 'end'] },
-    sortModeMenu: { items: ['numeric', 'alphabetical'] },
-    minMaxMenu: { items: ['max', 'min'] },
-    sumAverageMenu: { items: ['sum', 'average'] },
-    axisMenu: { items: ['x', 'y'] },
-    dimensionMenu: { items: ['width', 'height'] },
-    boxSideMenu: { items: ['top', 'bottom', 'left', 'right'] },
-    mouseButtonMenu: { items: ['left', 'right', 'middle'] },
-    logLevelMenu: { items: ['info', 'warning', 'error'] },
-    rgbComponentMenu: { items: ['r', 'g', 'b'] },
-    keysValuesMenu: { items: ['keys', 'values'] },
-    urlEncodeMenu: { items: ['URL-encode', 'URL-decode'] },
-    escapeMenu: { items: ['escape', 'unescape'] },
-    base64Menu: { items: ['encode', 'decode'] },
+    parityMenu: { items: [Scratch.translate('even'), Scratch.translate('odd')] },
+    gcdLcmMenu: { items: [Scratch.translate('GCD'), Scratch.translate('LCM')] },
+    numberFormatMenu: { items: [Scratch.translate('Roman numeral'), Scratch.translate('words')] },
+    caseMenu: { items: [Scratch.translate('UPPERCASE'), Scratch.translate('lowercase'), Scratch.translate('Capitalized')] },
+    padSideMenu: { items: [Scratch.translate('start'), Scratch.translate('end')] },
+    sortModeMenu: { items: [Scratch.translate('numeric'), Scratch.translate('alphabetical')] },
+    minMaxMenu: { items: [Scratch.translate('max'), Scratch.translate('min')] },
+    sumAverageMenu: { items: [Scratch.translate('sum'), Scratch.translate('average')] },
+    axisMenu: { items: [Scratch.translate('x'), Scratch.translate('y')] },
+    dimensionMenu: { items: [Scratch.translate('width'), Scratch.translate('height')] },
+    boxSideMenu: { items: [Scratch.translate('top'), Scratch.translate('bottom'), Scratch.translate('left'), Scratch.translate('right')] },
+    mouseButtonMenu: { items: [Scratch.translate('left'), Scratch.translate('right'), Scratch.translate('middle')] },
+    logLevelMenu: { items: [Scratch.translate('info'), Scratch.translate('warning'), Scratch.translate('error')] },
+    rgbComponentMenu: { items: [Scratch.translate('r'), Scratch.translate('g'), Scratch.translate('b')] },
+    keysValuesMenu: { items: [Scratch.translate('keys'), Scratch.translate('values')] },
+    urlEncodeMenu: { items: [Scratch.translate('URL-encode'), Scratch.translate('URL-decode')] },
+    escapeMenu: { items: [Scratch.translate('escape'), Scratch.translate('unescape')] },
+    base64Menu: { items: [Scratch.translate('encode'), Scratch.translate('decode')] },
     compareOpMenu: { items: ['>', '>=', '<', '<=', '=='] },
     mapOpMenu: { items: ['+', '-', '*', '/'] },
-    stackOpMenu: { items: ['push', 'pop', 'peek'] },
-    stopwatchMenu: { items: ['start', 'pause', 'resume', 'read', 'reset'] },
-    easingMenu: { items: ['linear', 'ease-in', 'ease-out', 'ease-in-out'] },
-    invertGrayMenu: { items: ['invert', 'grayscale'] }
+    stackOpMenu: { items: [Scratch.translate('push'), Scratch.translate('pop'), Scratch.translate('peek')] },
+    stopwatchMenu: { items: [Scratch.translate('start'), Scratch.translate('pause'), Scratch.translate('resume'), Scratch.translate('read'), Scratch.translate('reset')] },
+    easingMenu: { items: [Scratch.translate('linear'), Scratch.translate('ease-in'), Scratch.translate('ease-out'), Scratch.translate('ease-in-out')] },
+    invertGrayMenu: { items: [Scratch.translate('invert'), Scratch.translate('grayscale')] }
   };
 
   function registerGroup(id, name, color1, color2, color3, blocks) {
@@ -1184,7 +1184,7 @@
       getInfo() {
         return {
           id,
-          name,
+          name: Scratch.translate(name),
           color1,
           color2,
           color3,
@@ -1216,7 +1216,7 @@ label('Bullets'),
       {
                   opcode: 'bulletVelocityX',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'velocity X towards ([X],[Y]) at speed [SPEED]',
+                  text: Scratch.translate('velocity X towards ([X],[Y]) at speed [SPEED]'),
                   arguments: {
                     X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1226,7 +1226,7 @@ label('Bullets'),
       {
                   opcode: 'bulletVelocityY',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'velocity Y towards ([X],[Y]) at speed [SPEED]',
+                  text: Scratch.translate('velocity Y towards ([X],[Y]) at speed [SPEED]'),
                   arguments: {
                     X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1236,7 +1236,7 @@ label('Bullets'),
       {
                   opcode: 'bulletDirectionTowards',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'direction towards ([X],[Y])',
+                  text: Scratch.translate('direction towards ([X],[Y])'),
                   arguments: {
                     X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 }
@@ -1245,7 +1245,7 @@ label('Bullets'),
       {
                   opcode: 'bulletVelocityFromDirection',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'velocity [AXIS] from direction [DIR] speed [SPEED]',
+                  text: Scratch.translate('velocity [AXIS] from direction [DIR] speed [SPEED]'),
                   arguments: {
                     AXIS: { type: Scratch.ArgumentType.STRING, menu: 'axisMenu', defaultValue: 'x' },
                     DIR: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
@@ -1255,7 +1255,7 @@ label('Bullets'),
       {
                   opcode: 'bulletSpeedFromVelocity',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'speed from velocity ([VX],[VY])',
+                  text: Scratch.translate('speed from velocity ([VX],[VY])'),
                   arguments: {
                     VX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 3 },
                     VY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 4 }
@@ -1264,7 +1264,7 @@ label('Bullets'),
       {
                   opcode: 'bulletAngleDifference',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'angle difference from [DIR1] to [DIR2]',
+                  text: Scratch.translate('angle difference from [DIR1] to [DIR2]'),
                   arguments: {
                     DIR1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     DIR2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 }
@@ -1273,7 +1273,7 @@ label('Bullets'),
       {
                   opcode: 'bulletSpreadDirection',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'spread direction [DIR] by [SPREAD] (index [I] of [N])',
+                  text: Scratch.translate('spread direction [DIR] by [SPREAD] (index [I] of [N])'),
                   arguments: {
                     DIR: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
                     SPREAD: { type: Scratch.ArgumentType.NUMBER, defaultValue: 30 },
@@ -1284,7 +1284,7 @@ label('Bullets'),
       {
                   opcode: 'bulletPointInDirectionOfMotion',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'point in direction of velocity ([VX],[VY])',
+                  text: Scratch.translate('point in direction of velocity ([VX],[VY])'),
                   arguments: {
                     VX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 3 },
                     VY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 4 }
@@ -1293,7 +1293,7 @@ label('Bullets'),
       {
                   opcode: 'bulletMoveByVelocity',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'move by velocity ([VX],[VY])',
+                  text: Scratch.translate('move by velocity ([VX],[VY])'),
                   arguments: {
                     VX: { type: Scratch.ArgumentType.NUMBER, defaultValue: 3 },
                     VY: { type: Scratch.ArgumentType.NUMBER, defaultValue: 4 }
@@ -1302,13 +1302,13 @@ label('Bullets'),
       {
                   opcode: 'bulletIsOffStage',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'is this sprite off stage (margin [MARGIN])?',
+                  text: Scratch.translate('is this sprite off stage (margin [MARGIN])?'),
                   arguments: { MARGIN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 20 } }
                 },
       {
                   opcode: 'bulletHomingDir',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'homing: turn [CURRENT] toward ([X],[Y]) max [MAX] °/frame',
+                  text: Scratch.translate('homing: turn [CURRENT] toward ([X],[Y]) max [MAX] °/frame'),
                   arguments: {
                     CURRENT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 90 },
                     X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1319,7 +1319,7 @@ label('Bullets'),
       {
                   opcode: 'bulletAccelerate',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'accelerate speed [SPEED] by [ACCEL] (max [MAX])',
+                  text: Scratch.translate('accelerate speed [SPEED] by [ACCEL] (max [MAX])'),
                   arguments: {
                     SPEED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 },
                     ACCEL: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0.2 },
@@ -1329,7 +1329,7 @@ label('Bullets'),
       {
                   opcode: 'bulletCircleDir',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'circle pattern direction index [I] of [N] (offset [OFFSET])',
+                  text: Scratch.translate('circle pattern direction index [I] of [N] (offset [OFFSET])'),
                   arguments: {
                     I: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 8 },
@@ -1339,13 +1339,13 @@ label('Bullets'),
       {
                   opcode: 'bulletSetLifetime',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'set bullet lifetime to [FRAMES] frames',
+                  text: Scratch.translate('set bullet lifetime to [FRAMES] frames'),
                   arguments: { FRAMES: { type: Scratch.ArgumentType.NUMBER, defaultValue: 120 } }
                 },
       {
                   opcode: 'bulletTickLifetime',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'bullet lifetime expired?'
+                  text: Scratch.translate('bullet lifetime expired?')
                 }
     ]
   );

@@ -30,7 +30,7 @@
     return `twtoolsplus:${key}`;
   }
   function label(text) {
-    return { blockType: Scratch.BlockType.LABEL, text };
+    return { blockType: Scratch.BlockType.LABEL, text: Scratch.translate(text) };
   }
 
   /** Remove a previously loaded extension with the same id so reloading updates it. */
@@ -1148,30 +1148,30 @@
   const core = new TWToolsPlusCore();
 
   const SHARED_MENUS = {
-    parityMenu: { items: ['even', 'odd'] },
-    gcdLcmMenu: { items: ['GCD', 'LCM'] },
-    numberFormatMenu: { items: ['Roman numeral', 'words'] },
-    caseMenu: { items: ['UPPERCASE', 'lowercase', 'Capitalized'] },
-    padSideMenu: { items: ['start', 'end'] },
-    sortModeMenu: { items: ['numeric', 'alphabetical'] },
-    minMaxMenu: { items: ['max', 'min'] },
-    sumAverageMenu: { items: ['sum', 'average'] },
-    axisMenu: { items: ['x', 'y'] },
-    dimensionMenu: { items: ['width', 'height'] },
-    boxSideMenu: { items: ['top', 'bottom', 'left', 'right'] },
-    mouseButtonMenu: { items: ['left', 'right', 'middle'] },
-    logLevelMenu: { items: ['info', 'warning', 'error'] },
-    rgbComponentMenu: { items: ['r', 'g', 'b'] },
-    keysValuesMenu: { items: ['keys', 'values'] },
-    urlEncodeMenu: { items: ['URL-encode', 'URL-decode'] },
-    escapeMenu: { items: ['escape', 'unescape'] },
-    base64Menu: { items: ['encode', 'decode'] },
+    parityMenu: { items: [Scratch.translate('even'), Scratch.translate('odd')] },
+    gcdLcmMenu: { items: [Scratch.translate('GCD'), Scratch.translate('LCM')] },
+    numberFormatMenu: { items: [Scratch.translate('Roman numeral'), Scratch.translate('words')] },
+    caseMenu: { items: [Scratch.translate('UPPERCASE'), Scratch.translate('lowercase'), Scratch.translate('Capitalized')] },
+    padSideMenu: { items: [Scratch.translate('start'), Scratch.translate('end')] },
+    sortModeMenu: { items: [Scratch.translate('numeric'), Scratch.translate('alphabetical')] },
+    minMaxMenu: { items: [Scratch.translate('max'), Scratch.translate('min')] },
+    sumAverageMenu: { items: [Scratch.translate('sum'), Scratch.translate('average')] },
+    axisMenu: { items: [Scratch.translate('x'), Scratch.translate('y')] },
+    dimensionMenu: { items: [Scratch.translate('width'), Scratch.translate('height')] },
+    boxSideMenu: { items: [Scratch.translate('top'), Scratch.translate('bottom'), Scratch.translate('left'), Scratch.translate('right')] },
+    mouseButtonMenu: { items: [Scratch.translate('left'), Scratch.translate('right'), Scratch.translate('middle')] },
+    logLevelMenu: { items: [Scratch.translate('info'), Scratch.translate('warning'), Scratch.translate('error')] },
+    rgbComponentMenu: { items: [Scratch.translate('r'), Scratch.translate('g'), Scratch.translate('b')] },
+    keysValuesMenu: { items: [Scratch.translate('keys'), Scratch.translate('values')] },
+    urlEncodeMenu: { items: [Scratch.translate('URL-encode'), Scratch.translate('URL-decode')] },
+    escapeMenu: { items: [Scratch.translate('escape'), Scratch.translate('unescape')] },
+    base64Menu: { items: [Scratch.translate('encode'), Scratch.translate('decode')] },
     compareOpMenu: { items: ['>', '>=', '<', '<=', '=='] },
     mapOpMenu: { items: ['+', '-', '*', '/'] },
-    stackOpMenu: { items: ['push', 'pop', 'peek'] },
-    stopwatchMenu: { items: ['start', 'pause', 'resume', 'read', 'reset'] },
-    easingMenu: { items: ['linear', 'ease-in', 'ease-out', 'ease-in-out'] },
-    invertGrayMenu: { items: ['invert', 'grayscale'] }
+    stackOpMenu: { items: [Scratch.translate('push'), Scratch.translate('pop'), Scratch.translate('peek')] },
+    stopwatchMenu: { items: [Scratch.translate('start'), Scratch.translate('pause'), Scratch.translate('resume'), Scratch.translate('read'), Scratch.translate('reset')] },
+    easingMenu: { items: [Scratch.translate('linear'), Scratch.translate('ease-in'), Scratch.translate('ease-out'), Scratch.translate('ease-in-out')] },
+    invertGrayMenu: { items: [Scratch.translate('invert'), Scratch.translate('grayscale')] }
   };
 
   function registerGroup(id, name, color1, color2, color3, blocks) {
@@ -1184,7 +1184,7 @@
       getInfo() {
         return {
           id,
-          name,
+          name: Scratch.translate(name),
           color1,
           color2,
           color3,
@@ -1216,7 +1216,7 @@ label('Text'),
       {
                   opcode: 'textCase',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: '[TEXT] to [CASE]',
+                  text: Scratch.translate('[TEXT] to [CASE]'),
                   arguments: {
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello world' },
                     CASE: { type: Scratch.ArgumentType.STRING, menu: 'caseMenu', defaultValue: 'UPPERCASE' }
@@ -1225,7 +1225,7 @@ label('Text'),
       {
                   opcode: 'textReplace',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'replace [FIND] with [REPLACE] in [TEXT]',
+                  text: Scratch.translate('replace [FIND] with [REPLACE] in [TEXT]'),
                   arguments: {
                     FIND: { type: Scratch.ArgumentType.STRING, defaultValue: 'cat' },
                     REPLACE: { type: Scratch.ArgumentType.STRING, defaultValue: 'dog' },
@@ -1235,7 +1235,7 @@ label('Text'),
       {
                   opcode: 'textContains',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'does [TEXT] contain [SUBSTRING]?',
+                  text: Scratch.translate('does [TEXT] contain [SUBSTRING]?'),
                   arguments: {
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello world' },
                     SUBSTRING: { type: Scratch.ArgumentType.STRING, defaultValue: 'world' }
@@ -1244,7 +1244,7 @@ label('Text'),
       {
                   opcode: 'textSplit',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'split [TEXT] by [SEPARATOR]',
+                  text: Scratch.translate('split [TEXT] by [SEPARATOR]'),
                   arguments: {
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'a,b,c' },
                     SEPARATOR: { type: Scratch.ArgumentType.STRING, defaultValue: ',' }
@@ -1253,7 +1253,7 @@ label('Text'),
       {
                   opcode: 'textJoinList',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'join list [LIST] with separator [SEPARATOR]',
+                  text: Scratch.translate('join list [LIST] with separator [SEPARATOR]'),
                   arguments: {
                     LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '["a","b","c"]' },
                     SEPARATOR: { type: Scratch.ArgumentType.STRING, defaultValue: ', ' }
@@ -1262,13 +1262,13 @@ label('Text'),
       {
                   opcode: 'textTrim',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'trim [TEXT]',
+                  text: Scratch.translate('trim [TEXT]'),
                   arguments: { TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: '  hi  ' } }
                 },
       {
                   opcode: 'textPad',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'pad [TEXT] to [N] chars with [CHAR] ([SIDE])',
+                  text: Scratch.translate('pad [TEXT] to [N] chars with [CHAR] ([SIDE])'),
                   arguments: {
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: '5' },
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 3 },
@@ -1279,7 +1279,7 @@ label('Text'),
       {
                   opcode: 'textMatchesPattern',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'does [TEXT] match pattern [REGEX]?',
+                  text: Scratch.translate('does [TEXT] match pattern [REGEX]?'),
                   arguments: {
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'abc123' },
                     REGEX: { type: Scratch.ArgumentType.STRING, defaultValue: '^[a-z]+[0-9]+$' }
@@ -1288,7 +1288,7 @@ label('Text'),
       {
                   opcode: 'textCountOccurrences',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'count occurrences of [SUBSTRING] in [TEXT]',
+                  text: Scratch.translate('count occurrences of [SUBSTRING] in [TEXT]'),
                   arguments: {
                     SUBSTRING: { type: Scratch.ArgumentType.STRING, defaultValue: 'a' },
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'banana' }
@@ -1297,13 +1297,13 @@ label('Text'),
       {
                   opcode: 'textWordCount',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'word count of [TEXT]',
+                  text: Scratch.translate('word count of [TEXT]'),
                   arguments: { TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello there world' } }
                 },
       {
                   opcode: 'textTruncate',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'truncate [TEXT] to [N] chars',
+                  text: Scratch.translate('truncate [TEXT] to [N] chars'),
                   arguments: {
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello world' },
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 }
@@ -1312,7 +1312,7 @@ label('Text'),
       {
                   opcode: 'textCenter',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'center [TEXT] in width [N]',
+                  text: Scratch.translate('center [TEXT] in width [N]'),
                   arguments: {
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'hi' },
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 }
@@ -1321,7 +1321,7 @@ label('Text'),
       {
                   opcode: 'textEscapeHtml',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: '[MODE] HTML [TEXT]',
+                  text: Scratch.translate('[MODE] HTML [TEXT]'),
                   arguments: {
                     MODE: { type: Scratch.ArgumentType.STRING, menu: 'escapeMenu', defaultValue: 'escape' },
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: '<b>hi</b>' }
@@ -1330,13 +1330,13 @@ label('Text'),
       {
                   opcode: 'textSlugify',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'slugify [TEXT]',
+                  text: Scratch.translate('slugify [TEXT]'),
                   arguments: { TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'Hello World!' } }
                 },
       {
                   opcode: 'textCompareSemver',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'compare semver [A] to [B]',
+                  text: Scratch.translate('compare semver [A] to [B]'),
                   arguments: {
                     A: { type: Scratch.ArgumentType.STRING, defaultValue: '1.2.0' },
                     B: { type: Scratch.ArgumentType.STRING, defaultValue: '1.10.0' }
@@ -1345,13 +1345,13 @@ label('Text'),
       {
                   opcode: 'textCharsToList',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'characters of [TEXT] as list',
+                  text: Scratch.translate('characters of [TEXT] as list'),
                   arguments: { TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'abc' } }
                 },
       {
                   opcode: 'textBase64',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: '[MODE] base64 [TEXT]',
+                  text: Scratch.translate('[MODE] base64 [TEXT]'),
                   arguments: {
                     MODE: { type: Scratch.ArgumentType.STRING, menu: 'base64Menu', defaultValue: 'encode' },
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello' }
@@ -1360,50 +1360,50 @@ label('Text'),
       {
                   opcode: 'textHash',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'hash of [TEXT]',
+                  text: Scratch.translate('hash of [TEXT]'),
                   arguments: { TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello' } }
                 },
       {
                   opcode: 'textRandomId',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'random id length [N]',
+                  text: Scratch.translate('random id length [N]'),
                   arguments: { N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 8 } }
                 },
       {
                   opcode: 'textFormatNumber',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'format number [N] with thousands separator',
+                  text: Scratch.translate('format number [N] with thousands separator'),
                   arguments: { N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1234567 } }
                 },
       {
                   opcode: 'textIsNumber',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'is [TEXT] a number?',
+                  text: Scratch.translate('is [TEXT] a number?'),
                   arguments: { TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: '42' } }
                 },
       label('Lists'),
       {
                   opcode: 'listReverse',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'reverse list [LIST]',
+                  text: Scratch.translate('reverse list [LIST]'),
                   arguments: { LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '["a","b","c"]' } }
                 },
       {
                   opcode: 'listShuffle',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'shuffle list [LIST]',
+                  text: Scratch.translate('shuffle list [LIST]'),
                   arguments: { LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '["a","b","c"]' } }
                 },
       {
                   opcode: 'listRemoveDuplicates',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'remove duplicates from [LIST]',
+                  text: Scratch.translate('remove duplicates from [LIST]'),
                   arguments: { LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '["a","a","b"]' } }
                 },
       {
                   opcode: 'listSort',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'sort list [LIST] ([MODE])',
+                  text: Scratch.translate('sort list [LIST] ([MODE])'),
                   arguments: {
                     LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '["3","1","2"]' },
                     MODE: { type: Scratch.ArgumentType.STRING, menu: 'sortModeMenu', defaultValue: 'numeric' }
@@ -1412,7 +1412,7 @@ label('Text'),
       {
                   opcode: 'listSublist',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'sublist of [LIST] from [I] to [J]',
+                  text: Scratch.translate('sublist of [LIST] from [I] to [J]'),
                   arguments: {
                     LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '["a","b","c","d"]' },
                     I: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
@@ -1422,7 +1422,7 @@ label('Text'),
       {
                   opcode: 'listMerge',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'merge list [LIST1] and [LIST2]',
+                  text: Scratch.translate('merge list [LIST1] and [LIST2]'),
                   arguments: {
                     LIST1: { type: Scratch.ArgumentType.STRING, defaultValue: '["a"]' },
                     LIST2: { type: Scratch.ArgumentType.STRING, defaultValue: '["b"]' }
@@ -1431,7 +1431,7 @@ label('Text'),
       {
                   opcode: 'listEquals',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'is list [LIST1] equal to [LIST2]?',
+                  text: Scratch.translate('is list [LIST1] equal to [LIST2]?'),
                   arguments: {
                     LIST1: { type: Scratch.ArgumentType.STRING, defaultValue: '["a"]' },
                     LIST2: { type: Scratch.ArgumentType.STRING, defaultValue: '["a"]' }
@@ -1440,7 +1440,7 @@ label('Text'),
       {
                   opcode: 'listIndexOfMinMax',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'index of [MODE] in [LIST]',
+                  text: Scratch.translate('index of [MODE] in [LIST]'),
                   arguments: {
                     MODE: { type: Scratch.ArgumentType.STRING, menu: 'minMaxMenu', defaultValue: 'max' },
                     LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '[1,5,3]' }
@@ -1449,7 +1449,7 @@ label('Text'),
       {
                   opcode: 'listSumAverage',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: '[MODE] of [LIST]',
+                  text: Scratch.translate('[MODE] of [LIST]'),
                   arguments: {
                     MODE: { type: Scratch.ArgumentType.STRING, menu: 'sumAverageMenu', defaultValue: 'sum' },
                     LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '[1,2,3]' }
@@ -1458,7 +1458,7 @@ label('Text'),
       {
                   opcode: 'listChunk',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'chunk list [LIST] into groups of [N]',
+                  text: Scratch.translate('chunk list [LIST] into groups of [N]'),
                   arguments: {
                     LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '[1,2,3,4]' },
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 }
@@ -1467,7 +1467,7 @@ label('Text'),
       {
                   opcode: 'listFilterGreater',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'filter [LIST] numbers [OP] [N]',
+                  text: Scratch.translate('filter [LIST] numbers [OP] [N]'),
                   arguments: {
                     LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '[1,5,3,8]' },
                     OP: { type: Scratch.ArgumentType.STRING, menu: 'compareOpMenu', defaultValue: '>' },
@@ -1477,7 +1477,7 @@ label('Text'),
       {
                   opcode: 'listMapOp',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'map [LIST] with [OP] [N]',
+                  text: Scratch.translate('map [LIST] with [OP] [N]'),
                   arguments: {
                     LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '[1,2,3]' },
                     OP: { type: Scratch.ArgumentType.STRING, menu: 'mapOpMenu', defaultValue: '+' },
@@ -1487,13 +1487,13 @@ label('Text'),
       {
                   opcode: 'listRandomIndex',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'random index of [LIST]',
+                  text: Scratch.translate('random index of [LIST]'),
                   arguments: { LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '["a","b","c"]' } }
                 },
       {
                   opcode: 'listStack',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'stack [OP] [VALUE] on [LIST]',
+                  text: Scratch.translate('stack [OP] [VALUE] on [LIST]'),
                   arguments: {
                     OP: { type: Scratch.ArgumentType.STRING, menu: 'stackOpMenu', defaultValue: 'push' },
                     VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: 'x' },
@@ -1503,7 +1503,7 @@ label('Text'),
       {
                   opcode: 'listIndexOf',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'index of [ITEM] in [LIST]',
+                  text: Scratch.translate('index of [ITEM] in [LIST]'),
                   arguments: {
                     ITEM: { type: Scratch.ArgumentType.STRING, defaultValue: 'b' },
                     LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '["a","b","c"]' }
@@ -1512,7 +1512,7 @@ label('Text'),
       {
                   opcode: 'listWeightedPick',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'weighted pick from items [ITEMS] weights [WEIGHTS]',
+                  text: Scratch.translate('weighted pick from items [ITEMS] weights [WEIGHTS]'),
                   arguments: {
                     ITEMS: { type: Scratch.ArgumentType.STRING, defaultValue: '["a","b","c"]' },
                     WEIGHTS: { type: Scratch.ArgumentType.STRING, defaultValue: '[1,2,3]' }

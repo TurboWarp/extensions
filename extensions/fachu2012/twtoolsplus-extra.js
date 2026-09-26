@@ -30,7 +30,7 @@
     return `twtoolsplus:${key}`;
   }
   function label(text) {
-    return { blockType: Scratch.BlockType.LABEL, text };
+    return { blockType: Scratch.BlockType.LABEL, text: Scratch.translate(text) };
   }
 
   /** Remove a previously loaded extension with the same id so reloading updates it. */
@@ -1148,30 +1148,30 @@
   const core = new TWToolsPlusCore();
 
   const SHARED_MENUS = {
-    parityMenu: { items: ['even', 'odd'] },
-    gcdLcmMenu: { items: ['GCD', 'LCM'] },
-    numberFormatMenu: { items: ['Roman numeral', 'words'] },
-    caseMenu: { items: ['UPPERCASE', 'lowercase', 'Capitalized'] },
-    padSideMenu: { items: ['start', 'end'] },
-    sortModeMenu: { items: ['numeric', 'alphabetical'] },
-    minMaxMenu: { items: ['max', 'min'] },
-    sumAverageMenu: { items: ['sum', 'average'] },
-    axisMenu: { items: ['x', 'y'] },
-    dimensionMenu: { items: ['width', 'height'] },
-    boxSideMenu: { items: ['top', 'bottom', 'left', 'right'] },
-    mouseButtonMenu: { items: ['left', 'right', 'middle'] },
-    logLevelMenu: { items: ['info', 'warning', 'error'] },
-    rgbComponentMenu: { items: ['r', 'g', 'b'] },
-    keysValuesMenu: { items: ['keys', 'values'] },
-    urlEncodeMenu: { items: ['URL-encode', 'URL-decode'] },
-    escapeMenu: { items: ['escape', 'unescape'] },
-    base64Menu: { items: ['encode', 'decode'] },
+    parityMenu: { items: [Scratch.translate('even'), Scratch.translate('odd')] },
+    gcdLcmMenu: { items: [Scratch.translate('GCD'), Scratch.translate('LCM')] },
+    numberFormatMenu: { items: [Scratch.translate('Roman numeral'), Scratch.translate('words')] },
+    caseMenu: { items: [Scratch.translate('UPPERCASE'), Scratch.translate('lowercase'), Scratch.translate('Capitalized')] },
+    padSideMenu: { items: [Scratch.translate('start'), Scratch.translate('end')] },
+    sortModeMenu: { items: [Scratch.translate('numeric'), Scratch.translate('alphabetical')] },
+    minMaxMenu: { items: [Scratch.translate('max'), Scratch.translate('min')] },
+    sumAverageMenu: { items: [Scratch.translate('sum'), Scratch.translate('average')] },
+    axisMenu: { items: [Scratch.translate('x'), Scratch.translate('y')] },
+    dimensionMenu: { items: [Scratch.translate('width'), Scratch.translate('height')] },
+    boxSideMenu: { items: [Scratch.translate('top'), Scratch.translate('bottom'), Scratch.translate('left'), Scratch.translate('right')] },
+    mouseButtonMenu: { items: [Scratch.translate('left'), Scratch.translate('right'), Scratch.translate('middle')] },
+    logLevelMenu: { items: [Scratch.translate('info'), Scratch.translate('warning'), Scratch.translate('error')] },
+    rgbComponentMenu: { items: [Scratch.translate('r'), Scratch.translate('g'), Scratch.translate('b')] },
+    keysValuesMenu: { items: [Scratch.translate('keys'), Scratch.translate('values')] },
+    urlEncodeMenu: { items: [Scratch.translate('URL-encode'), Scratch.translate('URL-decode')] },
+    escapeMenu: { items: [Scratch.translate('escape'), Scratch.translate('unescape')] },
+    base64Menu: { items: [Scratch.translate('encode'), Scratch.translate('decode')] },
     compareOpMenu: { items: ['>', '>=', '<', '<=', '=='] },
     mapOpMenu: { items: ['+', '-', '*', '/'] },
-    stackOpMenu: { items: ['push', 'pop', 'peek'] },
-    stopwatchMenu: { items: ['start', 'pause', 'resume', 'read', 'reset'] },
-    easingMenu: { items: ['linear', 'ease-in', 'ease-out', 'ease-in-out'] },
-    invertGrayMenu: { items: ['invert', 'grayscale'] }
+    stackOpMenu: { items: [Scratch.translate('push'), Scratch.translate('pop'), Scratch.translate('peek')] },
+    stopwatchMenu: { items: [Scratch.translate('start'), Scratch.translate('pause'), Scratch.translate('resume'), Scratch.translate('read'), Scratch.translate('reset')] },
+    easingMenu: { items: [Scratch.translate('linear'), Scratch.translate('ease-in'), Scratch.translate('ease-out'), Scratch.translate('ease-in-out')] },
+    invertGrayMenu: { items: [Scratch.translate('invert'), Scratch.translate('grayscale')] }
   };
 
   function registerGroup(id, name, color1, color2, color3, blocks) {
@@ -1184,7 +1184,7 @@
       getInfo() {
         return {
           id,
-          name,
+          name: Scratch.translate(name),
           color1,
           color2,
           color3,
@@ -1216,7 +1216,7 @@ label('Color'),
       {
                   opcode: 'colorRgbToHex',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'RGB to hex ([R],[G],[B])',
+                  text: Scratch.translate('RGB to hex ([R],[G],[B])'),
                   arguments: {
                     R: { type: Scratch.ArgumentType.NUMBER, defaultValue: 255 },
                     G: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1226,7 +1226,7 @@ label('Color'),
       {
                   opcode: 'colorHexToRgb',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'hex to RGB [HEX] ([COMPONENT])',
+                  text: Scratch.translate('hex to RGB [HEX] ([COMPONENT])'),
                   arguments: {
                     HEX: { type: Scratch.ArgumentType.STRING, defaultValue: '#ff0000' },
                     COMPONENT: { type: Scratch.ArgumentType.STRING, menu: 'rgbComponentMenu', defaultValue: 'r' }
@@ -1235,7 +1235,7 @@ label('Color'),
       {
                   opcode: 'colorMix',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'mix color [C1] and [C2] by [PERCENT] %',
+                  text: Scratch.translate('mix color [C1] and [C2] by [PERCENT] %'),
                   arguments: {
                     C1: { type: Scratch.ArgumentType.COLOR, defaultValue: '#ff0000' },
                     C2: { type: Scratch.ArgumentType.COLOR, defaultValue: '#0000ff' },
@@ -1245,24 +1245,24 @@ label('Color'),
       {
                   opcode: 'colorRandom',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'random color'
+                  text: Scratch.translate('random color')
                 },
       {
                   opcode: 'colorBrightness',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'brightness of color [C]',
+                  text: Scratch.translate('brightness of color [C]'),
                   arguments: { C: { type: Scratch.ArgumentType.COLOR, defaultValue: '#ff0000' } }
                 },
       {
                   opcode: 'colorIsLightDark',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'is color [C] light?',
+                  text: Scratch.translate('is color [C] light?'),
                   arguments: { C: { type: Scratch.ArgumentType.COLOR, defaultValue: '#ff0000' } }
                 },
       {
                   opcode: 'colorFromHsl',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'HSL ([H],[S],[L]) to hex',
+                  text: Scratch.translate('HSL ([H],[S],[L]) to hex'),
                   arguments: {
                     H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     S: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
@@ -1272,7 +1272,7 @@ label('Color'),
       {
                   opcode: 'colorInvertGray',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: '[MODE] color [C]',
+                  text: Scratch.translate('[MODE] color [C]'),
                   arguments: {
                     MODE: { type: Scratch.ArgumentType.STRING, menu: 'invertGrayMenu', defaultValue: 'invert' },
                     C: { type: Scratch.ArgumentType.COLOR, defaultValue: '#ff0000' }
@@ -1281,7 +1281,7 @@ label('Color'),
       {
                   opcode: 'colorContrast',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'contrast ratio [C1] vs [C2]',
+                  text: Scratch.translate('contrast ratio [C1] vs [C2]'),
                   arguments: {
                     C1: { type: Scratch.ArgumentType.COLOR, defaultValue: '#000000' },
                     C2: { type: Scratch.ArgumentType.COLOR, defaultValue: '#ffffff' }
@@ -1290,7 +1290,7 @@ label('Color'),
       {
                   opcode: 'colorPalette',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'palette of [N] colors from hue [H]',
+                  text: Scratch.translate('palette of [N] colors from hue [H]'),
                   arguments: {
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
                     H: { type: Scratch.ArgumentType.NUMBER, defaultValue: 200 }
@@ -1299,7 +1299,7 @@ label('Color'),
       {
                   opcode: 'colorSimilar',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'is [C1] similar to [C2] (tolerance [T])?',
+                  text: Scratch.translate('is [C1] similar to [C2] (tolerance [T])?'),
                   arguments: {
                     C1: { type: Scratch.ArgumentType.COLOR, defaultValue: '#ff0000' },
                     C2: { type: Scratch.ArgumentType.COLOR, defaultValue: '#ee1111' },
@@ -1310,13 +1310,13 @@ label('Color'),
       {
                   opcode: 'audioCurrentVolume',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'current volume of sound [SOUND]',
+                  text: Scratch.translate('current volume of sound [SOUND]'),
                   arguments: { SOUND: { type: Scratch.ArgumentType.STRING, defaultValue: 'pop' } }
                 },
       {
                   opcode: 'audioSetPlaybackRate',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'set playback rate of sound [SOUND] to [N]',
+                  text: Scratch.translate('set playback rate of sound [SOUND] to [N]'),
                   arguments: {
                     SOUND: { type: Scratch.ArgumentType.STRING, defaultValue: 'pop' },
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
@@ -1325,20 +1325,20 @@ label('Color'),
       {
                   opcode: 'audioIsPlaying',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'is sound [SOUND] currently playing?',
+                  text: Scratch.translate('is sound [SOUND] currently playing?'),
                   arguments: { SOUND: { type: Scratch.ArgumentType.STRING, defaultValue: 'pop' } }
                 },
       {
                   opcode: 'audioDuration',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'duration of sound [SOUND]',
+                  text: Scratch.translate('duration of sound [SOUND]'),
                   arguments: { SOUND: { type: Scratch.ArgumentType.STRING, defaultValue: 'pop' } }
                 },
       label('Network'),
       {
                   opcode: 'netUrlEncodeDecode',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: '[MODE] [TEXT]',
+                  text: Scratch.translate('[MODE] [TEXT]'),
                   arguments: {
                     MODE: { type: Scratch.ArgumentType.STRING, menu: 'urlEncodeMenu', defaultValue: 'URL-encode' },
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello world' }
@@ -1347,13 +1347,13 @@ label('Color'),
       {
                   opcode: 'netParseQueryString',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'parse query string [TEXT] as JSON',
+                  text: Scratch.translate('parse query string [TEXT] as JSON'),
                   arguments: { TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'a=1&b=2' } }
                 },
       {
                   opcode: 'netGetQueryParam',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'get query parameter [KEY] from URL [URL]',
+                  text: Scratch.translate('get query parameter [KEY] from URL [URL]'),
                   arguments: {
                     KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'id' },
                     URL: { type: Scratch.ArgumentType.STRING, defaultValue: 'https://example.com?id=5' }
@@ -1363,7 +1363,7 @@ label('Color'),
       {
                   opcode: 'miscDeepCopy',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'deep copy of [JSON]',
+                  text: Scratch.translate('deep copy of [JSON]'),
                   arguments: { JSON: { type: Scratch.ArgumentType.STRING, defaultValue: '{"a":[1,2,3]}' } }
                 }
     ]

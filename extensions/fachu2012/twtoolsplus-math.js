@@ -30,7 +30,7 @@
     return `twtoolsplus:${key}`;
   }
   function label(text) {
-    return { blockType: Scratch.BlockType.LABEL, text };
+    return { blockType: Scratch.BlockType.LABEL, text: Scratch.translate(text) };
   }
 
   /** Remove a previously loaded extension with the same id so reloading updates it. */
@@ -1148,30 +1148,30 @@
   const core = new TWToolsPlusCore();
 
   const SHARED_MENUS = {
-    parityMenu: { items: ['even', 'odd'] },
-    gcdLcmMenu: { items: ['GCD', 'LCM'] },
-    numberFormatMenu: { items: ['Roman numeral', 'words'] },
-    caseMenu: { items: ['UPPERCASE', 'lowercase', 'Capitalized'] },
-    padSideMenu: { items: ['start', 'end'] },
-    sortModeMenu: { items: ['numeric', 'alphabetical'] },
-    minMaxMenu: { items: ['max', 'min'] },
-    sumAverageMenu: { items: ['sum', 'average'] },
-    axisMenu: { items: ['x', 'y'] },
-    dimensionMenu: { items: ['width', 'height'] },
-    boxSideMenu: { items: ['top', 'bottom', 'left', 'right'] },
-    mouseButtonMenu: { items: ['left', 'right', 'middle'] },
-    logLevelMenu: { items: ['info', 'warning', 'error'] },
-    rgbComponentMenu: { items: ['r', 'g', 'b'] },
-    keysValuesMenu: { items: ['keys', 'values'] },
-    urlEncodeMenu: { items: ['URL-encode', 'URL-decode'] },
-    escapeMenu: { items: ['escape', 'unescape'] },
-    base64Menu: { items: ['encode', 'decode'] },
+    parityMenu: { items: [Scratch.translate('even'), Scratch.translate('odd')] },
+    gcdLcmMenu: { items: [Scratch.translate('GCD'), Scratch.translate('LCM')] },
+    numberFormatMenu: { items: [Scratch.translate('Roman numeral'), Scratch.translate('words')] },
+    caseMenu: { items: [Scratch.translate('UPPERCASE'), Scratch.translate('lowercase'), Scratch.translate('Capitalized')] },
+    padSideMenu: { items: [Scratch.translate('start'), Scratch.translate('end')] },
+    sortModeMenu: { items: [Scratch.translate('numeric'), Scratch.translate('alphabetical')] },
+    minMaxMenu: { items: [Scratch.translate('max'), Scratch.translate('min')] },
+    sumAverageMenu: { items: [Scratch.translate('sum'), Scratch.translate('average')] },
+    axisMenu: { items: [Scratch.translate('x'), Scratch.translate('y')] },
+    dimensionMenu: { items: [Scratch.translate('width'), Scratch.translate('height')] },
+    boxSideMenu: { items: [Scratch.translate('top'), Scratch.translate('bottom'), Scratch.translate('left'), Scratch.translate('right')] },
+    mouseButtonMenu: { items: [Scratch.translate('left'), Scratch.translate('right'), Scratch.translate('middle')] },
+    logLevelMenu: { items: [Scratch.translate('info'), Scratch.translate('warning'), Scratch.translate('error')] },
+    rgbComponentMenu: { items: [Scratch.translate('r'), Scratch.translate('g'), Scratch.translate('b')] },
+    keysValuesMenu: { items: [Scratch.translate('keys'), Scratch.translate('values')] },
+    urlEncodeMenu: { items: [Scratch.translate('URL-encode'), Scratch.translate('URL-decode')] },
+    escapeMenu: { items: [Scratch.translate('escape'), Scratch.translate('unescape')] },
+    base64Menu: { items: [Scratch.translate('encode'), Scratch.translate('decode')] },
     compareOpMenu: { items: ['>', '>=', '<', '<=', '=='] },
     mapOpMenu: { items: ['+', '-', '*', '/'] },
-    stackOpMenu: { items: ['push', 'pop', 'peek'] },
-    stopwatchMenu: { items: ['start', 'pause', 'resume', 'read', 'reset'] },
-    easingMenu: { items: ['linear', 'ease-in', 'ease-out', 'ease-in-out'] },
-    invertGrayMenu: { items: ['invert', 'grayscale'] }
+    stackOpMenu: { items: [Scratch.translate('push'), Scratch.translate('pop'), Scratch.translate('peek')] },
+    stopwatchMenu: { items: [Scratch.translate('start'), Scratch.translate('pause'), Scratch.translate('resume'), Scratch.translate('read'), Scratch.translate('reset')] },
+    easingMenu: { items: [Scratch.translate('linear'), Scratch.translate('ease-in'), Scratch.translate('ease-out'), Scratch.translate('ease-in-out')] },
+    invertGrayMenu: { items: [Scratch.translate('invert'), Scratch.translate('grayscale')] }
   };
 
   function registerGroup(id, name, color1, color2, color3, blocks) {
@@ -1184,7 +1184,7 @@
       getInfo() {
         return {
           id,
-          name,
+          name: Scratch.translate(name),
           color1,
           color2,
           color3,
@@ -1216,7 +1216,7 @@ label('Math'),
       {
                   opcode: 'mathRound',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'round [N] to [DECIMALS] decimal places',
+                  text: Scratch.translate('round [N] to [DECIMALS] decimal places'),
                   arguments: {
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 3.14159 },
                     DECIMALS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 2 }
@@ -1225,7 +1225,7 @@ label('Math'),
       {
                   opcode: 'mathMap',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'map [VALUE] from [A] - [B] to [C] - [D]',
+                  text: Scratch.translate('map [VALUE] from [A] - [B] to [C] - [D]'),
                   arguments: {
                     VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 },
                     A: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1237,7 +1237,7 @@ label('Math'),
       {
                   opcode: 'mathClamp',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'clamp [VALUE] between [MIN] and [MAX]',
+                  text: Scratch.translate('clamp [VALUE] between [MIN] and [MAX]'),
                   arguments: {
                     VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
                     MIN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1247,7 +1247,7 @@ label('Math'),
       {
                   opcode: 'mathDistance',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'distance from ([X1],[Y1]) to ([X2],[Y2])',
+                  text: Scratch.translate('distance from ([X1],[Y1]) to ([X2],[Y2])'),
                   arguments: {
                     X1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     Y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1258,7 +1258,7 @@ label('Math'),
       {
                   opcode: 'mathIsEvenOdd',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'is [N] [PARITY]?',
+                  text: Scratch.translate('is [N] [PARITY]?'),
                   arguments: {
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 4 },
                     PARITY: { type: Scratch.ArgumentType.STRING, menu: 'parityMenu', defaultValue: 'even' }
@@ -1267,7 +1267,7 @@ label('Math'),
       {
                   opcode: 'mathGcdLcm',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: '[MODE] of [A] and [B]',
+                  text: Scratch.translate('[MODE] of [A] and [B]'),
                   arguments: {
                     MODE: { type: Scratch.ArgumentType.STRING, menu: 'gcdLcmMenu', defaultValue: 'GCD' },
                     A: { type: Scratch.ArgumentType.NUMBER, defaultValue: 12 },
@@ -1277,13 +1277,13 @@ label('Math'),
       {
                   opcode: 'mathRandomSeed',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'random number with seed [SEED]',
+                  text: Scratch.translate('random number with seed [SEED]'),
                   arguments: { SEED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 } }
                 },
       {
                   opcode: 'mathIsBetween',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: '[N] is between [MIN] and [MAX]?',
+                  text: Scratch.translate('[N] is between [MIN] and [MAX]?'),
                   arguments: {
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
                     MIN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1293,7 +1293,7 @@ label('Math'),
       {
                   opcode: 'mathAngleBetween',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'angle between ([X1],[Y1]) and ([X2],[Y2])',
+                  text: Scratch.translate('angle between ([X1],[Y1]) and ([X2],[Y2])'),
                   arguments: {
                     X1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     Y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1304,7 +1304,7 @@ label('Math'),
       {
                   opcode: 'mathNumberToFormat',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: '[N] to [FORMAT]',
+                  text: Scratch.translate('[N] to [FORMAT]'),
                   arguments: {
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 14 },
                     FORMAT: { type: Scratch.ArgumentType.STRING, menu: 'numberFormatMenu', defaultValue: 'Roman numeral' }
@@ -1313,7 +1313,7 @@ label('Math'),
       {
                   opcode: 'mathLerp',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'lerp [A] to [B] by [T]',
+                  text: Scratch.translate('lerp [A] to [B] by [T]'),
                   arguments: {
                     A: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     B: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
@@ -1323,19 +1323,19 @@ label('Math'),
       {
                   opcode: 'mathSign',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'sign of [N]',
+                  text: Scratch.translate('sign of [N]'),
                   arguments: { N: { type: Scratch.ArgumentType.NUMBER, defaultValue: -3 } }
                 },
       {
                   opcode: 'mathPercentChance',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: '[N] % chance?',
+                  text: Scratch.translate('[N] % chance?'),
                   arguments: { N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 50 } }
                 },
       {
                   opcode: 'mathPingPong',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'ping-pong [VALUE] between [A] and [B]',
+                  text: Scratch.translate('ping-pong [VALUE] between [A] and [B]'),
                   arguments: {
                     VALUE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1.5 },
                     A: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1345,7 +1345,7 @@ label('Math'),
       {
                   opcode: 'mathSmoothDamp',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'smooth damp [CURRENT] toward [TARGET] (speed [SPEED])',
+                  text: Scratch.translate('smooth damp [CURRENT] toward [TARGET] (speed [SPEED])'),
                   arguments: {
                     CURRENT: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     TARGET: { type: Scratch.ArgumentType.NUMBER, defaultValue: 100 },
@@ -1355,7 +1355,7 @@ label('Math'),
       {
                   opcode: 'mathNoise1D',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'noise 1D at [X] seed [SEED]',
+                  text: Scratch.translate('noise 1D at [X] seed [SEED]'),
                   arguments: {
                     X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     SEED: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
@@ -1365,7 +1365,7 @@ label('Math'),
       {
                   opcode: 'geoPointInRect',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'point ([X],[Y]) inside rectangle ([X1],[Y1]) - ([X2],[Y2])?',
+                  text: Scratch.translate('point ([X],[Y]) inside rectangle ([X1],[Y1]) - ([X2],[Y2])?'),
                   arguments: {
                     X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
                     Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 5 },
@@ -1378,7 +1378,7 @@ label('Math'),
       {
                   opcode: 'geoPointInCircle',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'point ([X],[Y]) inside circle center ([CX],[CY]) radius [R]?',
+                  text: Scratch.translate('point ([X],[Y]) inside circle center ([CX],[CY]) radius [R]?'),
                   arguments: {
                     X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
                     Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
@@ -1390,7 +1390,7 @@ label('Math'),
       {
                   opcode: 'geoRectsOverlap',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'do rectangle A ([AX1],[AY1])-([AX2],[AY2]) and rectangle B ([BX1],[BY1])-([BX2],[BY2]) overlap?',
+                  text: Scratch.translate('do rectangle A ([AX1],[AY1])-([AX2],[AY2]) and rectangle B ([BX1],[BY1])-([BX2],[BY2]) overlap?'),
                   arguments: {
                     AX1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
                     AY1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1405,7 +1405,7 @@ label('Math'),
       {
                   opcode: 'geoRotatePoint',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'rotate point ([X],[Y]) around ([CX],[CY]) by [ANGLE] degrees ([AXIS])',
+                  text: Scratch.translate('rotate point ([X],[Y]) around ([CX],[CY]) by [ANGLE] degrees ([AXIS])'),
                   arguments: {
                     X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
                     Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1418,7 +1418,7 @@ label('Math'),
       {
                   opcode: 'geoMidpoint',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'midpoint [AXIS] between ([X1],[Y1]) and ([X2],[Y2])',
+                  text: Scratch.translate('midpoint [AXIS] between ([X1],[Y1]) and ([X2],[Y2])'),
                   arguments: {
                     AXIS: { type: Scratch.ArgumentType.STRING, menu: 'axisMenu', defaultValue: 'x' },
                     X1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1430,7 +1430,7 @@ label('Math'),
       {
                   opcode: 'geoNormalizeVector',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'normalize vector ([X],[Y]) [AXIS]',
+                  text: Scratch.translate('normalize vector ([X],[Y]) [AXIS]'),
                   arguments: {
                     X: { type: Scratch.ArgumentType.NUMBER, defaultValue: 3 },
                     Y: { type: Scratch.ArgumentType.NUMBER, defaultValue: 4 },

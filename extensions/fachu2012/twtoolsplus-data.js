@@ -30,7 +30,7 @@
     return `twtoolsplus:${key}`;
   }
   function label(text) {
-    return { blockType: Scratch.BlockType.LABEL, text };
+    return { blockType: Scratch.BlockType.LABEL, text: Scratch.translate(text) };
   }
 
   /** Remove a previously loaded extension with the same id so reloading updates it. */
@@ -1148,30 +1148,30 @@
   const core = new TWToolsPlusCore();
 
   const SHARED_MENUS = {
-    parityMenu: { items: ['even', 'odd'] },
-    gcdLcmMenu: { items: ['GCD', 'LCM'] },
-    numberFormatMenu: { items: ['Roman numeral', 'words'] },
-    caseMenu: { items: ['UPPERCASE', 'lowercase', 'Capitalized'] },
-    padSideMenu: { items: ['start', 'end'] },
-    sortModeMenu: { items: ['numeric', 'alphabetical'] },
-    minMaxMenu: { items: ['max', 'min'] },
-    sumAverageMenu: { items: ['sum', 'average'] },
-    axisMenu: { items: ['x', 'y'] },
-    dimensionMenu: { items: ['width', 'height'] },
-    boxSideMenu: { items: ['top', 'bottom', 'left', 'right'] },
-    mouseButtonMenu: { items: ['left', 'right', 'middle'] },
-    logLevelMenu: { items: ['info', 'warning', 'error'] },
-    rgbComponentMenu: { items: ['r', 'g', 'b'] },
-    keysValuesMenu: { items: ['keys', 'values'] },
-    urlEncodeMenu: { items: ['URL-encode', 'URL-decode'] },
-    escapeMenu: { items: ['escape', 'unescape'] },
-    base64Menu: { items: ['encode', 'decode'] },
+    parityMenu: { items: [Scratch.translate('even'), Scratch.translate('odd')] },
+    gcdLcmMenu: { items: [Scratch.translate('GCD'), Scratch.translate('LCM')] },
+    numberFormatMenu: { items: [Scratch.translate('Roman numeral'), Scratch.translate('words')] },
+    caseMenu: { items: [Scratch.translate('UPPERCASE'), Scratch.translate('lowercase'), Scratch.translate('Capitalized')] },
+    padSideMenu: { items: [Scratch.translate('start'), Scratch.translate('end')] },
+    sortModeMenu: { items: [Scratch.translate('numeric'), Scratch.translate('alphabetical')] },
+    minMaxMenu: { items: [Scratch.translate('max'), Scratch.translate('min')] },
+    sumAverageMenu: { items: [Scratch.translate('sum'), Scratch.translate('average')] },
+    axisMenu: { items: [Scratch.translate('x'), Scratch.translate('y')] },
+    dimensionMenu: { items: [Scratch.translate('width'), Scratch.translate('height')] },
+    boxSideMenu: { items: [Scratch.translate('top'), Scratch.translate('bottom'), Scratch.translate('left'), Scratch.translate('right')] },
+    mouseButtonMenu: { items: [Scratch.translate('left'), Scratch.translate('right'), Scratch.translate('middle')] },
+    logLevelMenu: { items: [Scratch.translate('info'), Scratch.translate('warning'), Scratch.translate('error')] },
+    rgbComponentMenu: { items: [Scratch.translate('r'), Scratch.translate('g'), Scratch.translate('b')] },
+    keysValuesMenu: { items: [Scratch.translate('keys'), Scratch.translate('values')] },
+    urlEncodeMenu: { items: [Scratch.translate('URL-encode'), Scratch.translate('URL-decode')] },
+    escapeMenu: { items: [Scratch.translate('escape'), Scratch.translate('unescape')] },
+    base64Menu: { items: [Scratch.translate('encode'), Scratch.translate('decode')] },
     compareOpMenu: { items: ['>', '>=', '<', '<=', '=='] },
     mapOpMenu: { items: ['+', '-', '*', '/'] },
-    stackOpMenu: { items: ['push', 'pop', 'peek'] },
-    stopwatchMenu: { items: ['start', 'pause', 'resume', 'read', 'reset'] },
-    easingMenu: { items: ['linear', 'ease-in', 'ease-out', 'ease-in-out'] },
-    invertGrayMenu: { items: ['invert', 'grayscale'] }
+    stackOpMenu: { items: [Scratch.translate('push'), Scratch.translate('pop'), Scratch.translate('peek')] },
+    stopwatchMenu: { items: [Scratch.translate('start'), Scratch.translate('pause'), Scratch.translate('resume'), Scratch.translate('read'), Scratch.translate('reset')] },
+    easingMenu: { items: [Scratch.translate('linear'), Scratch.translate('ease-in'), Scratch.translate('ease-out'), Scratch.translate('ease-in-out')] },
+    invertGrayMenu: { items: [Scratch.translate('invert'), Scratch.translate('grayscale')] }
   };
 
   function registerGroup(id, name, color1, color2, color3, blocks) {
@@ -1184,7 +1184,7 @@
       getInfo() {
         return {
           id,
-          name,
+          name: Scratch.translate(name),
           color1,
           color2,
           color3,
@@ -1216,19 +1216,19 @@ label('JSON'),
       {
                   opcode: 'jsonListToJson',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'list [LIST] to JSON',
+                  text: Scratch.translate('list [LIST] to JSON'),
                   arguments: { LIST: { type: Scratch.ArgumentType.STRING, defaultValue: '["a","b"]' } }
                 },
       {
                   opcode: 'jsonJsonToList',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'JSON [JSON] to list',
+                  text: Scratch.translate('JSON [JSON] to list'),
                   arguments: { JSON: { type: Scratch.ArgumentType.STRING, defaultValue: '["a","b","c"]' } }
                 },
       {
                   opcode: 'jsonGetPath',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'get value from [JSON] at path [PATH]',
+                  text: Scratch.translate('get value from [JSON] at path [PATH]'),
                   arguments: {
                     JSON: { type: Scratch.ArgumentType.STRING, defaultValue: '{"a":{"b":1}}' },
                     PATH: { type: Scratch.ArgumentType.STRING, defaultValue: 'a.b' }
@@ -1237,7 +1237,7 @@ label('JSON'),
       {
                   opcode: 'jsonSetPath',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'set value in [JSON] at path [PATH] to [VALUE]',
+                  text: Scratch.translate('set value in [JSON] at path [PATH] to [VALUE]'),
                   arguments: {
                     JSON: { type: Scratch.ArgumentType.STRING, defaultValue: '{}' },
                     PATH: { type: Scratch.ArgumentType.STRING, defaultValue: 'a.b' },
@@ -1247,7 +1247,7 @@ label('JSON'),
       {
                   opcode: 'jsonHasKey',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'does [JSON] have key [KEY]?',
+                  text: Scratch.translate('does [JSON] have key [KEY]?'),
                   arguments: {
                     JSON: { type: Scratch.ArgumentType.STRING, defaultValue: '{"a":1}' },
                     KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'a' }
@@ -1256,25 +1256,25 @@ label('JSON'),
       {
                   opcode: 'jsonKeys',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'keys of [JSON]',
+                  text: Scratch.translate('keys of [JSON]'),
                   arguments: { JSON: { type: Scratch.ArgumentType.STRING, defaultValue: '{"a":1,"b":2}' } }
                 },
       {
                   opcode: 'jsonPretty',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'pretty-print [JSON]',
+                  text: Scratch.translate('pretty-print [JSON]'),
                   arguments: { JSON: { type: Scratch.ArgumentType.STRING, defaultValue: '{"a":1}' } }
                 },
       label('Dictionaries'),
       {
                   opcode: 'dictCreate',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'create empty dictionary'
+                  text: Scratch.translate('create empty dictionary')
                 },
       {
                   opcode: 'dictSet',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'set dict [DICT] key [KEY] to [VALUE]',
+                  text: Scratch.translate('set dict [DICT] key [KEY] to [VALUE]'),
                   arguments: {
                     DICT: { type: Scratch.ArgumentType.STRING, defaultValue: '{}' },
                     KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'name' },
@@ -1284,7 +1284,7 @@ label('JSON'),
       {
                   opcode: 'dictGet',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'get dict [DICT] key [KEY] (default [DEFAULT])',
+                  text: Scratch.translate('get dict [DICT] key [KEY] (default [DEFAULT])'),
                   arguments: {
                     DICT: { type: Scratch.ArgumentType.STRING, defaultValue: '{}' },
                     KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'name' },
@@ -1294,7 +1294,7 @@ label('JSON'),
       {
                   opcode: 'dictDeleteKey',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'delete key [KEY] from dict [DICT]',
+                  text: Scratch.translate('delete key [KEY] from dict [DICT]'),
                   arguments: {
                     KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'name' },
                     DICT: { type: Scratch.ArgumentType.STRING, defaultValue: '{}' }
@@ -1303,7 +1303,7 @@ label('JSON'),
       {
                   opcode: 'dictHasKey',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'does dict [DICT] have key [KEY]?',
+                  text: Scratch.translate('does dict [DICT] have key [KEY]?'),
                   arguments: {
                     DICT: { type: Scratch.ArgumentType.STRING, defaultValue: '{}' },
                     KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'name' }
@@ -1312,7 +1312,7 @@ label('JSON'),
       {
                   opcode: 'dictKeysOrValues',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'dict [DICT] [MODE]',
+                  text: Scratch.translate('dict [DICT] [MODE]'),
                   arguments: {
                     DICT: { type: Scratch.ArgumentType.STRING, defaultValue: '{}' },
                     MODE: { type: Scratch.ArgumentType.STRING, menu: 'keysValuesMenu', defaultValue: 'keys' }
@@ -1322,7 +1322,7 @@ label('JSON'),
       {
                   opcode: 'storageSave',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'save [KEY] = [VALUE]',
+                  text: Scratch.translate('save [KEY] = [VALUE]'),
                   arguments: {
                     KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'highscore' },
                     VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: '0' }
@@ -1331,7 +1331,7 @@ label('JSON'),
       {
                   opcode: 'storageLoad',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'load [KEY] (default [DEFAULT])',
+                  text: Scratch.translate('load [KEY] (default [DEFAULT])'),
                   arguments: {
                     KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'highscore' },
                     DEFAULT: { type: Scratch.ArgumentType.STRING, defaultValue: '0' }
@@ -1340,19 +1340,19 @@ label('JSON'),
       {
                   opcode: 'storageDelete',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'delete [KEY]',
+                  text: Scratch.translate('delete [KEY]'),
                   arguments: { KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'highscore' } }
                 },
       {
                   opcode: 'storageHasKey',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'does key [KEY] exist?',
+                  text: Scratch.translate('does key [KEY] exist?'),
                   arguments: { KEY: { type: Scratch.ArgumentType.STRING, defaultValue: 'highscore' } }
                 },
       {
                   opcode: 'storageListKeys',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'list all saved keys'
+                  text: Scratch.translate('list all saved keys')
                 }
     ]
   );

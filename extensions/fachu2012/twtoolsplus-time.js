@@ -30,7 +30,7 @@
     return `twtoolsplus:${key}`;
   }
   function label(text) {
-    return { blockType: Scratch.BlockType.LABEL, text };
+    return { blockType: Scratch.BlockType.LABEL, text: Scratch.translate(text) };
   }
 
   /** Remove a previously loaded extension with the same id so reloading updates it. */
@@ -1148,30 +1148,30 @@
   const core = new TWToolsPlusCore();
 
   const SHARED_MENUS = {
-    parityMenu: { items: ['even', 'odd'] },
-    gcdLcmMenu: { items: ['GCD', 'LCM'] },
-    numberFormatMenu: { items: ['Roman numeral', 'words'] },
-    caseMenu: { items: ['UPPERCASE', 'lowercase', 'Capitalized'] },
-    padSideMenu: { items: ['start', 'end'] },
-    sortModeMenu: { items: ['numeric', 'alphabetical'] },
-    minMaxMenu: { items: ['max', 'min'] },
-    sumAverageMenu: { items: ['sum', 'average'] },
-    axisMenu: { items: ['x', 'y'] },
-    dimensionMenu: { items: ['width', 'height'] },
-    boxSideMenu: { items: ['top', 'bottom', 'left', 'right'] },
-    mouseButtonMenu: { items: ['left', 'right', 'middle'] },
-    logLevelMenu: { items: ['info', 'warning', 'error'] },
-    rgbComponentMenu: { items: ['r', 'g', 'b'] },
-    keysValuesMenu: { items: ['keys', 'values'] },
-    urlEncodeMenu: { items: ['URL-encode', 'URL-decode'] },
-    escapeMenu: { items: ['escape', 'unescape'] },
-    base64Menu: { items: ['encode', 'decode'] },
+    parityMenu: { items: [Scratch.translate('even'), Scratch.translate('odd')] },
+    gcdLcmMenu: { items: [Scratch.translate('GCD'), Scratch.translate('LCM')] },
+    numberFormatMenu: { items: [Scratch.translate('Roman numeral'), Scratch.translate('words')] },
+    caseMenu: { items: [Scratch.translate('UPPERCASE'), Scratch.translate('lowercase'), Scratch.translate('Capitalized')] },
+    padSideMenu: { items: [Scratch.translate('start'), Scratch.translate('end')] },
+    sortModeMenu: { items: [Scratch.translate('numeric'), Scratch.translate('alphabetical')] },
+    minMaxMenu: { items: [Scratch.translate('max'), Scratch.translate('min')] },
+    sumAverageMenu: { items: [Scratch.translate('sum'), Scratch.translate('average')] },
+    axisMenu: { items: [Scratch.translate('x'), Scratch.translate('y')] },
+    dimensionMenu: { items: [Scratch.translate('width'), Scratch.translate('height')] },
+    boxSideMenu: { items: [Scratch.translate('top'), Scratch.translate('bottom'), Scratch.translate('left'), Scratch.translate('right')] },
+    mouseButtonMenu: { items: [Scratch.translate('left'), Scratch.translate('right'), Scratch.translate('middle')] },
+    logLevelMenu: { items: [Scratch.translate('info'), Scratch.translate('warning'), Scratch.translate('error')] },
+    rgbComponentMenu: { items: [Scratch.translate('r'), Scratch.translate('g'), Scratch.translate('b')] },
+    keysValuesMenu: { items: [Scratch.translate('keys'), Scratch.translate('values')] },
+    urlEncodeMenu: { items: [Scratch.translate('URL-encode'), Scratch.translate('URL-decode')] },
+    escapeMenu: { items: [Scratch.translate('escape'), Scratch.translate('unescape')] },
+    base64Menu: { items: [Scratch.translate('encode'), Scratch.translate('decode')] },
     compareOpMenu: { items: ['>', '>=', '<', '<=', '=='] },
     mapOpMenu: { items: ['+', '-', '*', '/'] },
-    stackOpMenu: { items: ['push', 'pop', 'peek'] },
-    stopwatchMenu: { items: ['start', 'pause', 'resume', 'read', 'reset'] },
-    easingMenu: { items: ['linear', 'ease-in', 'ease-out', 'ease-in-out'] },
-    invertGrayMenu: { items: ['invert', 'grayscale'] }
+    stackOpMenu: { items: [Scratch.translate('push'), Scratch.translate('pop'), Scratch.translate('peek')] },
+    stopwatchMenu: { items: [Scratch.translate('start'), Scratch.translate('pause'), Scratch.translate('resume'), Scratch.translate('read'), Scratch.translate('reset')] },
+    easingMenu: { items: [Scratch.translate('linear'), Scratch.translate('ease-in'), Scratch.translate('ease-out'), Scratch.translate('ease-in-out')] },
+    invertGrayMenu: { items: [Scratch.translate('invert'), Scratch.translate('grayscale')] }
   };
 
   function registerGroup(id, name, color1, color2, color3, blocks) {
@@ -1184,7 +1184,7 @@
       getInfo() {
         return {
           id,
-          name,
+          name: Scratch.translate(name),
           color1,
           color2,
           color3,
@@ -1216,31 +1216,31 @@ label('Time'),
       {
                   opcode: 'timeTimer',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'timer [ID]',
+                  text: Scratch.translate('timer [ID]'),
                   arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'main' } }
                 },
       {
                   opcode: 'timeResetTimer',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'reset timer [ID]',
+                  text: Scratch.translate('reset timer [ID]'),
                   arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'main' } }
                 },
       {
                   opcode: 'timeCurrentFormatted',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'current date/time formatted [FORMAT]',
+                  text: Scratch.translate('current date/time formatted [FORMAT]'),
                   arguments: { FORMAT: { type: Scratch.ArgumentType.STRING, defaultValue: 'YYYY-MM-DD HH:mm:ss' } }
                 },
       {
                   opcode: 'timeWaitFrames',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'wait [N] frames',
+                  text: Scratch.translate('wait [N] frames'),
                   arguments: { N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 30 } }
                 },
       {
                   opcode: 'timeDaysBetween',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'days between [DATE1] and [DATE2]',
+                  text: Scratch.translate('days between [DATE1] and [DATE2]'),
                   arguments: {
                     DATE1: { type: Scratch.ArgumentType.STRING, defaultValue: '2026-01-01' },
                     DATE2: { type: Scratch.ArgumentType.STRING, defaultValue: '2026-12-31' }
@@ -1249,7 +1249,7 @@ label('Time'),
       {
                   opcode: 'timeCooldownReady',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'cooldown [ID] ready? (use [SECONDS]s)',
+                  text: Scratch.translate('cooldown [ID] ready? (use [SECONDS]s)'),
                   arguments: {
                     ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'shoot' },
                     SECONDS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0.5 }
@@ -1258,7 +1258,7 @@ label('Time'),
       {
                   opcode: 'timeStopwatch',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'stopwatch [ID] [OP]',
+                  text: Scratch.translate('stopwatch [ID] [OP]'),
                   arguments: {
                     ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'sw1' },
                     OP: { type: Scratch.ArgumentType.STRING, menu: 'stopwatchMenu', defaultValue: 'read' }
@@ -1267,7 +1267,7 @@ label('Time'),
       {
                   opcode: 'timeEveryNFrames',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'every [N] frames ([ID])?',
+                  text: Scratch.translate('every [N] frames ([ID])?'),
                   arguments: {
                     N: { type: Scratch.ArgumentType.NUMBER, defaultValue: 30 },
                     ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'tick' }
@@ -1276,7 +1276,7 @@ label('Time'),
       {
                   opcode: 'timeTween',
                   blockType: Scratch.BlockType.REPORTER,
-                  text: 'tween [ID] from [A] to [B] in [SECONDS]s ([EASING])',
+                  text: Scratch.translate('tween [ID] from [A] to [B] in [SECONDS]s ([EASING])'),
                   arguments: {
                     ID: { type: Scratch.ArgumentType.STRING, defaultValue: 't1' },
                     A: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
@@ -1288,14 +1288,14 @@ label('Time'),
       {
                   opcode: 'timeOnce',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'once [ID]?',
+                  text: Scratch.translate('once [ID]?'),
                   arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'init' } }
                 },
       label('Control flow'),
       {
                   opcode: 'controlRunAfter',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'run task [ID] after [SECONDS] seconds',
+                  text: Scratch.translate('run task [ID] after [SECONDS] seconds'),
                   arguments: {
                     ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'task1' },
                     SECONDS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 }
@@ -1304,13 +1304,13 @@ label('Time'),
       {
                   opcode: 'controlCancelTask',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'cancel scheduled task [ID]',
+                  text: Scratch.translate('cancel scheduled task [ID]'),
                   arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'task1' } }
                 },
       {
                   opcode: 'controlDebounce',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'debounce [ID]: has [SECONDS] seconds passed since last call?',
+                  text: Scratch.translate('debounce [ID]: has [SECONDS] seconds passed since last call?'),
                   arguments: {
                     ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'action1' },
                     SECONDS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0.5 }
@@ -1319,7 +1319,7 @@ label('Time'),
       {
                   opcode: 'controlThrottle',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'throttle [ID]: allow call every [SECONDS] seconds?',
+                  text: Scratch.translate('throttle [ID]: allow call every [SECONDS] seconds?'),
                   arguments: {
                     ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'action1' },
                     SECONDS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0.5 }
@@ -1328,20 +1328,20 @@ label('Time'),
       {
                   opcode: 'controlTaskExists',
                   blockType: Scratch.BlockType.BOOLEAN,
-                  text: 'is task [ID] still scheduled?',
+                  text: Scratch.translate('is task [ID] still scheduled?'),
                   arguments: { ID: { type: Scratch.ArgumentType.STRING, defaultValue: 'task1' } }
                 },
       label('Debug'),
       {
                   opcode: 'debugLog',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'log [VALUE] to console',
+                  text: Scratch.translate('log [VALUE] to console'),
                   arguments: { VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello' } }
                 },
       {
                   opcode: 'debugLogLevel',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'log [LEVEL] [VALUE]',
+                  text: Scratch.translate('log [LEVEL] [VALUE]'),
                   arguments: {
                     LEVEL: { type: Scratch.ArgumentType.STRING, menu: 'logLevelMenu', defaultValue: 'info' },
                     VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: 'hello' }
@@ -1350,7 +1350,7 @@ label('Time'),
       {
                   opcode: 'debugAssert',
                   blockType: Scratch.BlockType.COMMAND,
-                  text: 'assert [CONDITION] with message [TEXT]',
+                  text: Scratch.translate('assert [CONDITION] with message [TEXT]'),
                   arguments: {
                     CONDITION: { type: Scratch.ArgumentType.BOOLEAN, defaultValue: true },
                     TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: 'assertion failed' }
