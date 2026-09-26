@@ -4,6 +4,83 @@
 // By: 田柠檬
 // License: MIT
 
+/* generated l10n code */
+Scratch.translate.setup({
+  en: {
+    "_Background Crop": "Background Crop",
+    "_get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]":
+      "get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]",
+    "_clear extraction": "clear extraction",
+    "_apply effect [EFFECT] to extracted area":
+      "apply effect [EFFECT] to extracted area",
+    "_set corner radius to [R]": "set corner radius to [R]",
+    "_set liquid distortion strength to [S]":
+      "set liquid distortion strength to [S]",
+    "_set blur strength to [S]": "set blur strength to [S]",
+    "_set effect strength to [S]": "set effect strength to [S]",
+    "_set liquid glass distortion to [ON]":
+      "set liquid glass distortion to [ON]",
+    "_set blur to [ON]": "set blur to [ON]",
+    "_clear all effects": "clear all effects",
+    _default: "default",
+    "_liquid glass distortion": "liquid glass distortion",
+    _blur: "blur",
+    _off: "off",
+    _on: "on",
+    "_set extraction shape to [SHAPE]": "set extraction shape to [SHAPE]",
+    "_rounded rectangle": "rounded rectangle",
+    _square: "square",
+    _circle: "circle",
+  },
+  "zh-cn": {
+    "_Background Crop": "背景提取",
+    "_get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]":
+      "获取背景第一个x[X1]y[Y1]到第二个x[X2]y[Y2]",
+    "_clear extraction": "清除提取",
+    "_apply effect [EFFECT] to extracted area": "为提取区域增加特效[EFFECT]",
+    "_set corner radius to [R]": "设置圆角强度[R]",
+    "_set liquid distortion strength to [S]": "设置液态扭曲强度[S]",
+    "_set blur strength to [S]": "设置模糊强度[S]",
+    "_set effect strength to [S]": "设置特效强度[S]",
+    "_set liquid glass distortion to [ON]": "开启液态玻璃扭曲[ON]",
+    "_set blur to [ON]": "开启模糊[ON]",
+    "_clear all effects": "清除所有特效",
+    _default: "默认",
+    "_liquid glass distortion": "液态玻璃扭曲",
+    _blur: "模糊",
+    _off: "关",
+    _on: "开",
+    "_set extraction shape to [SHAPE]": "设置提取形状[SHAPE]",
+    "_rounded rectangle": "圆角矩形",
+    _square: "正方形",
+    _circle: "圆形",
+  },
+  "zh-tw": {
+    "_Background Crop": "背景擷取",
+    "_get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]":
+      "擷取背景第一個x[X1]y[Y1]到第二個x[X2]y[Y2]",
+    "_clear extraction": "清除擷取",
+    "_apply effect [EFFECT] to extracted area": "為擷取區域增加特效[EFFECT]",
+    "_set corner radius to [R]": "設定圓角強度[R]",
+    "_set liquid distortion strength to [S]": "設定液態扭曲強度[S]",
+    "_set blur strength to [S]": "設定模糊強度[S]",
+    "_set effect strength to [S]": "設定特效強度[S]",
+    "_set liquid glass distortion to [ON]": "開啟液態玻璃扭曲[ON]",
+    "_set blur to [ON]": "開啟模糊[ON]",
+    "_clear all effects": "清除所有特效",
+    _default: "預設",
+    "_liquid glass distortion": "液態玻璃扭曲",
+    _blur: "模糊",
+    _off: "關",
+    _on: "開",
+    "_set extraction shape to [SHAPE]": "設定擷取形狀[SHAPE]",
+    "_rounded rectangle": "圓角矩形",
+    _square: "正方形",
+    _circle: "圓形",
+  },
+});
+/* end generated l10n code */
+
 (function (Scratch) {
   "use strict";
 
@@ -436,8 +513,6 @@
       this.pending = true;
       const id = ++this.snapshotId;
       vm.renderer.requestSnapshot((dataURL) => {
-        // 加载的是本地 dataURL（非网络请求），无需 Scratch.canFetch
-        // eslint-disable-next-line extension/check-can-fetch
         const img = new Image();
         img.onload = () => {
           this.pending = false;
