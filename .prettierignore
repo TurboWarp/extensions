@@ -1,9 +1,1 @@
-build
-images
-licenses
-website
-*.json
-*.yml
-*.md
 extensions/tianLemon/backgroundremover.js
-
