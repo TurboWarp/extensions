@@ -62,7 +62,7 @@
             opcode: "getBackgroundRegion",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
-              "get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]",
+              "get background from x: [X1] y: [Y1] to x: [X2] y: [Y2]"
             ),
             arguments: {
               X1: { type: Scratch.ArgumentType.NUMBER, defaultValue: -100 },
@@ -470,7 +470,7 @@
           0,
           0,
           this.overlayCanvas.width,
-          this.overlayCanvas.height,
+          this.overlayCanvas.height
         );
       }
       this.snapshotId++; // 作废进行中的快照（其回调已兜底 resolve，不卡脚本）
@@ -607,7 +607,7 @@
           h,
           this.shape,
           this.radius,
-          this.liquidStrength,
+          this.liquidStrength
         );
       }
 
