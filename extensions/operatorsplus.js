@@ -298,6 +298,5 @@ class OperatorsPlus {
       return Math.log(value) / Math.log(base);
     }
   }
-}
 )
 Scratch.extensions.register(new OperatorsPlus());
