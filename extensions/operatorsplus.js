@@ -195,16 +195,6 @@ class OperatorsPlus {
               type: Scratch.ArgumentType.NUMBER, defaultValue: 8
             }
           } 
-        },
-        {
-          opcode: 'waitTicks',
-          blockType: Scratch.BlockType.COMMAND,
-          text: 'wait [TICKS] in-game ticks',
-          arguments: {
-            TICKS: {
-              type: Scratch.ArgumentType.NUMBER, defaultValue: 30
-            }
-          }
         }
       ],
       menus: {
@@ -306,11 +296,6 @@ class OperatorsPlus {
         return NaN;
       }
       return Math.log(value) / Math.log(base);
-    }
-    waitTicks(args){
-      const ticks = Number(args.TICKS);
-      const timerMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-      await timerMs(ticks*(1000/33));
     }
   }
 }
