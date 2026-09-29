@@ -13,7 +13,6 @@ class OperatorsPlus {
       color2: '#0099CC',
       color3: '#007A99',
       blocks: [
-        // --- Original Blocks ---
         { 
           opcode: 'pi',
           blockType: Scratch.BlockType.REPORTER,
@@ -308,13 +307,10 @@ class OperatorsPlus {
       }
       return Math.log(value) / Math.log(base);
     }
-    var timerMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-    async function runTimer(miliseconds) {
-      await timerMs(miliseconds);
-    };
     waitTicks(args){
       const ticks = Number(args.TICKS);
-      runTimer(ticks*(1000/33));
+      const timerMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+      await timerMs(ticks*(1000/33));
     }
   }
 }
