@@ -20,12 +20,12 @@
             opcode: "pi",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: "pi",
+            text: Scratch.Translate("pi"),
           },
           {
             opcode: "power",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[NUMBER] ^ [POWER]",
+            text: Scratch.Translate("[NUMBER] ^ [POWER]"),
             arguments: {
               NUMBER: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -40,7 +40,7 @@
           {
             opcode: "SinAndCos",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[OPERATION] of [NUMBER]",
+            text: Scratch.Translate("[OPERATION] of [NUMBER]"),
             arguments: {
               NUMBER: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -55,7 +55,7 @@
           {
             opcode: "strictEquality",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[text] strictly equals [strictText]",
+            text: Scratch.Translate("[text] strictly equals [strictText]"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -70,7 +70,7 @@
           {
             opcode: "replaceAll",
             blockType: Scratch.BlockType.REPORTER,
-            text: "replace all [text] in [original] with [replacementText]",
+            text: Scratch.Translate("replace all [text] in [original] with [replacementText]"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
