@@ -250,8 +250,8 @@ class OperatorsPlus {
   
     nearestDot(args) {
       const num = args.number;
-      const dec = Math.pow(10,parseFloat(args.decimal));
-      if (dec === 0 || isNaN(d)) return Math.round(n);
+      const dec = Math.pow(10, parseFloat(args.decimal));
+      if (dec === 0 || isNaN(dec)) return Math.round(num); 
       return Math.round(num / dec) * dec;
     }
   
