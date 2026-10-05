@@ -322,6 +322,7 @@
           {
             opcode: "goToPart",
             blockType: Scratch.BlockType.COMMAND,
+            filter: [Scratch.TargetType.SPRITE],
             text: Scratch.translate("go to [PART]"),
             arguments: {
               PART: {
@@ -334,12 +335,14 @@
           {
             blockType: Scratch.BlockType.COMMAND,
             opcode: "pointInFaceTiltDirection",
+            filter: [Scratch.TargetType.SPRITE],
             text: Scratch.translate("point in direction of face tilt"),
           },
 
           {
             blockType: Scratch.BlockType.COMMAND,
             opcode: "setSizeToFaceSize",
+            filter: [Scratch.TargetType.SPRITE],
             text: Scratch.translate("set size to face size"),
           },
 
@@ -362,6 +365,7 @@
             blockType: Scratch.BlockType.HAT,
             isEdgeActivated: true,
             opcode: "whenSpriteTouchesPart",
+            filter: [Scratch.TargetType.SPRITE],
             text: Scratch.translate("when this sprite touches a [PART]"),
             arguments: {
               PART: {
