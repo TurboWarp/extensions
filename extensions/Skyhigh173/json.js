@@ -12,30 +12,126 @@
    * Do not remove this comment
    */
 
-  const vm = Scratch.vm;
-  let objectCache = {};
-  setInterval(() => {
-    objectCache = {};
-  }, 100); // clear the cache every 0.1 second
+  let first = null;
+  let items = Object.create(null);
+  let last = null;
+  let size = 0;
+
   function parse(string) {
-    if (!objectCache[string]) {
-      objectCache[string] = JSON.parse(string);
+    const item = items[string];
+
+    if (item !== undefined) {
+      moveToEnd(item);
+      return item[3];
     }
-    return objectCache[string];
+    const parsed = JSON.parse(string);
+    set(string, parsed);
+    return parsed;
   }
   function parseRemoveCache(string) {
-    let parsed;
-    if (objectCache[string]) {
-      parsed = objectCache[string];
-      delete objectCache[string];
+    const item = items[string];
+
+    if (item !== undefined) {
+      const parsed = item[3];
+      if (item[0] !== null) {
+        item[0][1] = item[1];
+      } else {
+        first = item[1];
+      }
+
+      if (item[1] !== null) {
+        item[1][0] = item[0];
+      } else {
+        last = item[0];
+      }
+      delete items[string];
+      size -= string.length;
+      return parsed;
     } else {
-      parsed = JSON.parse(string);
+      return JSON.parse(string);
     }
-    return objectCache[string];
   }
+
+  function moveToEnd(item) {
+    item[4] = Date.now() + 200;
+    if (last === item) {
+      return;
+    }
+
+    if (item[0] !== null) {
+      item[0][1] = item[1];
+    } else {
+      first = item[1];
+    }
+
+    if (item[1] !== null) {
+      item[1][0] = item[0];
+    }
+
+    item[0] = last;
+    item[1] = null;
+    last[1] = item;
+    last = item;
+  }
+  function set(key, value) {
+    let item = items[key];
+
+    if (item !== undefined) {
+      moveToEnd(item);
+    } else {
+
+      item = items[key] = [
+        last,
+        null,
+        key,
+        value,
+        Date.now() + 200,
+      ]; // I suspect this is slow
+      if (size === 0) {
+        first = item;
+      } else {
+        last[1] = item;
+      }
+      size += key.length;
+
+      last = item;
+      if (size > 1048576) {
+        while (size > 1048576) {
+          const next = first[1];
+          const key = first[2];
+          delete items[key];
+          size -= key.lngth;
+          first = next;
+        }
+        if (first !== null) {
+          first[0] = null;
+        } else {
+          last = null;
+        }
+      }
+    }
+  }
+  const vm = Scratch.vm;
+  setInterval(() => {
+    let x = first;
+    const now = Date.now();
+    while (x !== null && x[4] < now) {
+      const next = x[1];
+      const key = x[2];
+      delete items[key];
+      size -= key.length;
+      x = next;
+    }
+    first = x;
+    if (x !== null) {
+      x[0] = null;
+    } else {
+      last = null;
+    }
+  }, 100);
   function stringify(object) {
     const string = JSON.stringify(object);
-    objectCache[string] = object;
+    set(string, object);
     return string;
   }
 
@@ -687,12 +783,44 @@
         return false;
       } else {
         try {
-          (json);
+          parse(json);
           return true;
         } catch {
           return false;
         }
       }
+    }
+    recursive_equal(obj1, obj2) {
+      if (Array.isArray(obj1)) {
+        if (Array.isArray(obj2)) {
+          if (obj1.length !== obj2.length) {
+            return false;
+          }
+          for (let i = 0; i < obj1.length; i++) {
+            if (!this.recursive_equal(obj1[i], obj2[i])) {
+              return false;
+            }
+          }
+          return true;
+        }
+      } else if (typeof obj1 === "object") {
+        if (typeof obj2 === "object") {
+          const keys1 = Object.keys(obj1);
+          const keys2 = Object.keys(obj2);
+          if (keys1.length !== keys2.length) {
+            return false;
+          }
+          for (const key of keys1) {
+            if (!this.recursive_equal(obj1[key], obj2[key])) {
+              return false;
+            }
+          }
+          return true;
+        }
+      } else {
+        return Scratch.Cast.compare(obj1, obj2) === 0;
+      }
+      return false;
     }
 
     // return object if its json else string
@@ -706,7 +834,7 @@
         return json;
       } else {
         try {
-          return (json) ?? "";
+          return parse(json) ?? "";
         } catch {
           return json;
         }
@@ -764,7 +892,9 @@
       try {
         json = parse(json);
         value = this.json_valid_return(value);
-        return json.includes(value);
+        return Object.values(json).some((v) => {
+          return this.recursive_equal(v, value);
+        });
       } catch {
         return false;
       }
@@ -774,12 +904,7 @@
       try {
         json1 = parse(json1);
         json2 = parse(json2);
-
-        const keys1 = Object.keys(json1);
-        const keys2 = Object.keys(json2);
-        const result =
-          keys1.length === keys2.length &&
-          keys1.every((key) => json1[key] === json2[key]);
+        const result = this.recursive_equal(json1, json2);
         if (equal === "=") return result;
         if (equal === "≠") return !result;
       } catch {
@@ -839,10 +964,7 @@
         json = parseRemoveCache(json);
         value = this.json_valid_return(value);
         value = this._fixInvalidJSONValues(value);
-        json = {
-          ...json,
-          [item]: value,
-        };
+        json[item] = value;
         return stringify(json);
       } catch {
         return "";
@@ -895,7 +1017,7 @@
       try {
         json = parse(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        let result = stringify(json.indexOf(item) + 1);
+        let result = json.findIndex((v) => this.recursive_equal(v, item)) + 1;
         return result;
       } catch {
         return "";
@@ -924,8 +1046,9 @@
       try {
         json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        return stringify(json.concat(item));
-      } catch {
+        json.push(item);
+        return stringify(json);
+      } catch (e) {
         return "";
       }
     }
@@ -934,7 +1057,7 @@
       try {
         json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        json = json.toSpliced(pos - 1, 0, item);
+        json.splice(pos - 1, 0, item);
         return stringify(json);
       } catch {
         return "";
@@ -944,7 +1067,7 @@
     json_array_set({ item, pos, json }) {
       try {
         json = parseRemoveCache(json);
-        json = json.toSpliced(
+        json.splice(
           pos - 1,
           1,
           this._fixInvalidJSONValues(this.json_valid_return(item))
@@ -958,7 +1081,7 @@
     json_array_delete({ item, json }) {
       try {
         json = parseRemoveCache(json);
-        json = json.toSpliced(item - 1, 1);
+        json.splice(item - 1, 1);
         return stringify(json);
       } catch {
         return "";
@@ -969,7 +1092,7 @@
       try {
         json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        return stringify(json.filter((v) => v !== item));
+        return stringify(json.filter((v) => !this.recursive_equal(v, item)));
       } catch {
         return "";
       }
@@ -1029,7 +1152,7 @@
 
     json_array_setlen({ json, len }) {
       try {
-        json = [...parseRemoveCache(json)];
+        json = parseRemoveCache(json);
         json.length = len;
         return stringify(json);
       } catch {
@@ -1077,7 +1200,7 @@
       if (!Array.isArray(list)) {
         return "";
       }
-      list = list.toSorted(
+      list.sort(
         (value1, value2) =>
           Scratch.Cast.compare(value1, value2) *
           (args.order === "ascending" ? 1 : -1)
