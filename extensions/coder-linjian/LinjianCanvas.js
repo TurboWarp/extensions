@@ -1,7 +1,7 @@
 // Name: Linjian's Canvas
 // ID: linjianCanvas
 // Description: A Canvas 2D overlay extension for drawing shapes, paths, text, and gradients directly on the stage.
-// By: Coder Linjian <https://github.com/coder-linjian>
+// By: Coder Linjian
 // License: MIT
 // Version: 1.0.0
 
