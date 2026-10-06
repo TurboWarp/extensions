@@ -20,7 +20,7 @@
     let encoded = "";
     for (let i = 0; i < str.length; ++i) {
       // Get character
-      const char = String(str.charCodeAt(i));
+      const char = Scratch.Cast.toString(str.charCodeAt(i));
       // Pad encodedChar with 0s to ensure all encodedchars are the same length
       const encodedChar = "0".repeat(MAX_CHAR_LEN - char.length) + char;
       encoded += encodedChar;

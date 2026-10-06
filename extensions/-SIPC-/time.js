@@ -291,7 +291,8 @@
     }
 
     timezone() {
-      return "UTC+" + new Date().getTimezoneOffset() / -60;
+      const offset = new Date().getTimezoneOffset() / -60;
+      return "UTC" + (offset >= 0 ? "+" : "") + offset;
     }
 
     Timedata(args) {

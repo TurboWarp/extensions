@@ -330,10 +330,8 @@
     }
 
     letters({ STRING, START, END }) {
-      return Scratch.Cast.toString(STRING).slice(
-        Math.max(1, START) - 1,
-        Math.min(STRING.length, END)
-      );
+      const str = Scratch.Cast.toString(STRING);
+      return str.slice(Math.max(1, START) - 1, Math.min(str.length, END));
     }
 
     clamp({ INPUT, MIN, MAX }) {
@@ -392,7 +390,7 @@
     }
 
     stringToBoolean({ STRING }) {
-      return STRING;
+      return Scratch.Cast.toBoolean(STRING);
     }
 
     regexReplace({ STRING, REGEX, NEWSTRING }) {

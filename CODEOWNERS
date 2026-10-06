@@ -1,0 +1,13 @@
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+# Format is file matching rule (like .gitignore), then a list of users or teams who will be pinged to review.
+# If multiple rules match, only the last one applies. File names are case sensitive.
+
+# Fallback for everything not mentioned
+* @GarboMuffin
+
+# Allow extension reviewers to approve these changes without additional codeowner
+/extensions
+/docs
+/images
+/samples
+/translations

@@ -1,6 +1,7 @@
 // Name: LZ Compress
 // ID: shovellzcompress
 // Description: Compress and decompress text using lz-string.
+// By: TheShovel
 // License: MIT
 
 (async function (Scratch) {

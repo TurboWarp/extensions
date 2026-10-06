@@ -6,6 +6,9 @@
 
 (function (Scratch) {
   "use strict";
+
+  const Cast = Scratch.Cast;
+
   const QueryImage = {
     WIDTH: "width",
     HEIGHT: "height",
@@ -214,7 +217,7 @@
     }
 
     async getImage({ IMAGEURL }) {
-      IMAGEURL = Scratch.Cast.toString(IMAGEURL);
+      IMAGEURL = Cast.toString(IMAGEURL);
       try {
         const resp = await Scratch.fetch(IMAGEURL);
         const type = resp.headers.get("Content-Type");
@@ -273,8 +276,8 @@
         img.updateVisible(false);
         img.skin = this.render._allSkins[IMG];
 
-        img.updatePosition([Number(X) || 0, Number(Y) || 0]);
-        img.updateScale([Number(XSCALE) || 0, Number(YSCALE) || 0]);
+        img.updatePosition([Cast.toNumber(X), Cast.toNumber(Y)]);
+        img.updateScale([Cast.toNumber(XSCALE), Cast.toNumber(YSCALE)]);
         this.render.penStamp(this.render._penSkinId, drawableID);
       } catch (e) {
         console.error("Error drawing image:", e);
@@ -288,13 +291,13 @@
 
     deleteImage({ IMG }) {
       try {
-        IMG = Scratch.Cast.toNumber(IMG);
+        IMG = Cast.toNumber(IMG);
         if (!this.render._allSkins[IMG] || !this.createdImages.has(IMG)) return;
 
         const targetsToReset = [];
         for (const target of this.vm.runtime.targets) {
           const drawable = this.render._allDrawables[target.drawableID];
-          if (drawable.skin.id === IMG) {
+          if (drawable && drawable.skin && drawable.skin.id === IMG) {
             targetsToReset.push(target);
           }
         }
@@ -332,7 +335,7 @@
     }
 
     switchToImage({ IMG }, util) {
-      IMG = Scratch.Cast.toNumber(IMG);
+      IMG = Cast.toNumber(IMG);
       if (!this.render._allSkins[IMG] || !this.validImages.has(IMG)) return;
 
       const drawableID = util.target.drawableID;
@@ -352,9 +355,8 @@
     }
 
     queryImage({ QUERY, IMG }) {
+      IMG = Cast.toNumber(IMG);
       if (!this.render._allSkins[IMG] || !this.validImages.has(IMG)) return "";
-
-      IMG = Scratch.Cast.toNumber(IMG);
 
       let returnValue = 0;
       let drawableID = null;

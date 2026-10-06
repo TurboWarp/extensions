@@ -1,6 +1,7 @@
 // Name: Notifications
 // ID: mdwaltersnotifications
 // Description: Display notifications.
+// By: mdwalters
 // License: MIT
 
 (function (Scratch) {

@@ -1616,11 +1616,6 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("tint triangle to [color]"),
             arguments: {
-              point: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "1",
-                menu: "pointMenu",
-              },
               color: {
                 type: Scratch.ArgumentType.COLOR,
                 defaultValue: "#0000ff",
@@ -1944,12 +1939,6 @@
                 type: Scratch.ArgumentType.STRING,
                 menu: "penPlusShaders",
               },
-              x1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              y1: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              x2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              y2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              x3: { type: Scratch.ArgumentType.NUMBER, defaultValue: 10 },
-              y3: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
             filter: "sprite",
           },
@@ -4661,7 +4650,7 @@
       //Make sure its an array
       if (!Array.isArray(converted)) return;
       converted = converted.map(function (str) {
-        return parseInt(str);
+        return parseFloat(str);
       });
 
       this.programs[shader].uniformDat[uniformName] = converted;
@@ -4734,7 +4723,7 @@
 
           const texture = renderer._allSkins[costume.skinId].getTexture();
 
-          if (texture !== text) return costume.name;
+          if (texture === text) return costume.name;
         }
       }
       return foundValue;
@@ -6005,9 +5994,9 @@
       // prettier-ignore
       if (!this.inDrawRegion) renderer.enterDrawRegion(this.penPlusDrawRegion);
 
-      const buffer = this.programs[shader].buffer;
-
       if (!this.programs[shader]) return;
+
+      const buffer = this.programs[shader].buffer;
 
       //Make sure we have the triangle data updating accordingly
       this.trianglesDrawn += listLength;

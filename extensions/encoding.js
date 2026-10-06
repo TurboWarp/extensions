@@ -618,6 +618,9 @@
     }
     Randomstrings({ position }) {
       position = Scratch.Cast.toNumber(position) || 32;
+      if (!Number.isFinite(position)) {
+        return "";
+      }
       let t = "ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678";
       let a = t.length;
       let string = "";
@@ -628,7 +631,10 @@
     }
     Fontgenerationstring({ wordbank, position }) {
       position = Scratch.Cast.toNumber(position) || 32;
-      let t = String(wordbank);
+      if (!Number.isFinite(position)) {
+        return "";
+      }
+      let t = Scratch.Cast.toString(wordbank);
       let a = t.length;
       let string = "";
       for (let i = 0; i < position; i++) {

@@ -79,7 +79,7 @@
     if (item !== undefined) {
       moveToEnd(item);
     } else {
-      item = items[key] = [last, null, key, value, Date.now() + 200]; // I suspect this is slow
+      item = items[key] = [last, null, key, value, Date.now() + 200];
       if (size === 0) {
         first = item;
       } else {
@@ -1019,7 +1019,7 @@
 
     json_array_from({ json }) {
       try {
-        return stringify(Array.from(String(json)));
+        return stringify(Array.from(Scratch.Cast.toString(json)));
       } catch {
         return "";
       }
@@ -1116,7 +1116,7 @@
     }
 
     json_array_create({ text, d }) {
-      return stringify(String(text).split(d));
+      return stringify(Scratch.Cast.String(text).split(d));
     }
 
     json_array_join({ json, d }) {

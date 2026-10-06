@@ -551,11 +551,12 @@
     }
 
     whenValueChanged(args, util) {
-      const blockId = util.thread.peekStack();
-      if (!lastValues[blockId])
-        lastValues[blockId] = Scratch.Cast.toString(args.INPUT);
-      if (lastValues[blockId] !== Scratch.Cast.toString(args.INPUT)) {
-        lastValues[blockId] = Scratch.Cast.toString(args.INPUT);
+      const cacheId = util.thread.getId();
+      if (!lastValues[cacheId]) {
+        lastValues[cacheId] = Scratch.Cast.toString(args.INPUT);
+      }
+      if (lastValues[cacheId] !== Scratch.Cast.toString(args.INPUT)) {
+        lastValues[cacheId] = Scratch.Cast.toString(args.INPUT);
         return true;
       }
       return false;

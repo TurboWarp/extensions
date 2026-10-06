@@ -8,6 +8,8 @@
   "use strict";
   let dictionaries = new Map();
 
+  const Cast = Scratch.Cast;
+
   Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
     dictionaries.clear();
   });
@@ -151,18 +153,35 @@
     }
 
     dict_parse({ OBJ, DICT }) {
-      let dict = null;
+      let parsed;
+
       try {
-        dict = JSON.parse(OBJ);
+        parsed = JSON.parse(OBJ);
       } catch (e) {
-        dict = { error: String(e) };
+        dictionaries.set(DICT, new Map([["error", Cast.toString(e)]]));
+        return;
       }
-      dictionaries.set(DICT, new Map(Object.entries(dict)));
+
+      if (parsed === null || typeof parsed !== "object") {
+        dictionaries.set(
+          DICT,
+          new Map([["error", "data must be an object or array"]])
+        );
+        return;
+      }
+
+      const dataMap = new Map(Object.entries(parsed));
+      if (Array.isArray(parsed)) {
+        // Add a length property if this is an array
+        dataMap.set("length", parsed.length);
+      }
+
+      dictionaries.set(DICT, dataMap);
     }
 
     dict_get({ KEY, DICT }) {
       if (!dictionaries.get(DICT)) return "null";
-      KEY = Scratch.Cast.toString(KEY);
+      KEY = Cast.toString(KEY);
       let dict = dictionaries.get(DICT);
       let value = dict.get(KEY);
       if (
@@ -181,13 +200,14 @@
     dict_property_defined({ KEY, DICT }) {
       if (!dictionaries.get(DICT)) return false;
       let dict = dictionaries.get(DICT);
-      KEY = Scratch.Cast.toString(KEY);
+      KEY = Cast.toString(KEY);
       return dict.get(KEY) === undefined ? false : true;
     }
 
     dict_property_null({ KEY, DICT }) {
       if (!dictionaries.get(DICT)) return false;
       let dict = dictionaries.get(DICT);
+      KEY = Scratch.Cast.toString(KEY);
       return dict.get(KEY) === null ? true : false;
     }
 
@@ -196,7 +216,7 @@
         dictionaries.set(DICT, new Map());
       }
       let dict = dictionaries.get(DICT);
-      KEY = Scratch.Cast.toString(KEY);
+      KEY = Cast.toString(KEY);
       dict.set(KEY, VAL);
     }
 
@@ -205,9 +225,10 @@
         dictionaries.set(DICT, new Map());
       }
       let dict = dictionaries.get(DICT);
-      KEY = Scratch.Cast.toString(KEY);
-      if (isNaN(+dict.get(KEY))) dict.set(KEY, 0);
-      dict.set(KEY, dict.get(KEY) + BY);
+      KEY = Cast.toString(KEY);
+
+      const oldValue = Cast.toNumber(dict.get(KEY));
+      dict.set(KEY, oldValue + Cast.toNumber(BY));
     }
 
     dict_delete({ DICT }) {
@@ -216,7 +237,7 @@
 
     dict_delete_key({ KEY, DICT }) {
       if (dictionaries.has(DICT)) {
-        KEY = Scratch.Cast.toString(KEY);
+        KEY = Cast.toString(KEY);
         dictionaries.get(DICT).delete(KEY);
       }
     }
