@@ -1116,7 +1116,7 @@
     }
 
     json_array_create({ text, d }) {
-      return stringify(Scratch.Cast.String(text).split(d));
+      return stringify(Scratch.Cast.toString(text).split(d));
     }
 
     json_array_join({ json, d }) {
