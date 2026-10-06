@@ -79,14 +79,7 @@
     if (item !== undefined) {
       moveToEnd(item);
     } else {
-
-      item = items[key] = [
-        last,
-        null,
-        key,
-        value,
-        Date.now() + 200,
-      ]; // I suspect this is slow
+      item = items[key] = [last, null, key, value, Date.now() + 200]; // I suspect this is slow
       if (size === 0) {
         first = item;
       } else {
