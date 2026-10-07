@@ -703,11 +703,13 @@
           "---",
 
           // ===== 6. Export =====
+          /*
           {
             opcode: "exportAsSprite",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("export overlay as new sprite"),
           },
+          */
           {
             opcode: "exportAsCostume",
             blockType: Scratch.BlockType.COMMAND,
@@ -1354,12 +1356,12 @@
       if (this.ctx && this.canvas) {
         this._applyFont();
         const m = this.ctx.measureText(text);
-        return m.width * (480 / this.canvas.width);
+        return m.width * (this._getStageWidth() / this.canvas.width);
       }
 
       const tmp = document.createElement("canvas");
-      tmp.width = 480;
-      tmp.height = 360;
+      tmp.width = this._getStageWidth();
+      tmp.height = this._getStageHeight();
       const tmpCtx = tmp.getContext("2d");
       tmpCtx.font = `${size}px ${family}`;
       return tmpCtx.measureText(text).width;
@@ -1840,10 +1842,10 @@
         v *
         Math.min(
           this.canvas.width / this._getStageWidth(),
-          this.canvas.height / this._getStageHeight(),
+          this.canvas.height / this._getStageHeight()
         )
       );
     }
-
+  }
   Scratch.extensions.register(new LinjianCanvasExt());
 })(Scratch);
