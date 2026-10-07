@@ -1818,12 +1818,17 @@
 
     _x(x) {
       if (!this.canvas) return 0;
-      return this.canvas.width / 2 + x * (this.canvas.width / this._getStageWidth());
+      return (
+        this.canvas.width / 2 + x * (this.canvas.width / this._getStageWidth())
+      );
     }
 
     _y(y) {
       if (!this.canvas) return 0;
-      return this.canvas.height / 2 - y * (this.canvas.height / this._getStageHeight());
+      return (
+        this.canvas.height / 2 -
+        y * (this.canvas.height / this._getStageHeight())
+      );
     }
 
     _sx(v) {
