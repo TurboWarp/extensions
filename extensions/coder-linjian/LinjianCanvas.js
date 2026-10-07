@@ -1798,31 +1798,52 @@
     // Internal helpers: Scratch coordinates -> Canvas pixels
     // ============================================================
 
+    _getStageWidth() {
+      const vm = Scratch.vm;
+      if (vm && vm.runtime && typeof vm.runtime.stageWidth === "number") {
+        return vm.runtime.stageWidth;
+      }
+      return 480;
+    }
+
+    _getStageHeight() {
+      const vm = Scratch.vm;
+      if (vm && vm.runtime && typeof vm.runtime.stageHeight === "number") {
+        return vm.runtime.stageHeight;
+      }
+      return 360;
+    }
+
     _x(x) {
       if (!this.canvas) return 0;
-      return this.canvas.width / 2 + x * (this.canvas.width / 480);
+      return this.canvas.width / 2 + x * (this.canvas.width / this._getStageWidth());
     }
 
     _y(y) {
       if (!this.canvas) return 0;
-      return this.canvas.height / 2 - y * (this.canvas.height / 360);
+      return this.canvas.height / 2 - y * (this.canvas.height / this._getStageHeight());
     }
 
     _sx(v) {
       if (!this.canvas) return 0;
-      return v * (this.canvas.width / 480);
+      return v * (this.canvas.width / this._getStageWidth());
     }
 
     _sy(v) {
       if (!this.canvas) return 0;
-      return v * (this.canvas.height / 360);
+      return v * (this.canvas.height / this._getStageHeight());
     }
 
     _sr(v) {
       if (!this.canvas) return 0;
-      return v * Math.min(this.canvas.width / 480, this.canvas.height / 360);
+      return (
+        v *
+        Math.min(
+          this.canvas.width / this._getStageWidth(),
+          this.canvas.height / this._getStageHeight(),
+        )
+      );
     }
-  }
 
   Scratch.extensions.register(new LinjianCanvasExt());
 })(Scratch);
