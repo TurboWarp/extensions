@@ -647,7 +647,10 @@ Locale can be confusing to some users, so accurate documentation should help exp
      */
     nameFromCode(args) {
       // @ts-ignore
-      return this._getLanguageCodes().includes(args.CODE) ? args.CODE : "";
+      let codeIndex = this._getLanguageCodes().indexOf(args.CODE);
+      if (codeIndex < 0) return "";
+
+      return this._getLanguageNames().at(codeIndex);
     }
     /**
      * @param {{ NAME: string | number; CODE: any; }} args
@@ -660,10 +663,10 @@ Locale can be confusing to some users, so accurate documentation should help exp
           "code"
         ).indexOf(args.CODE); // Language codes are in alphabetical order for the target language, not based on the code or native name.
 
+        if (codeIndex < 0) return "";
+
         // @ts-ignore
-        return codeIndex >= 0
-          ? this._getLanguageNames(args.NAME).at(codeIndex)
-          : "";
+        return this._getLanguageNames(args.NAME).at(codeIndex);
       } catch {
         return ""; // The lookup table isn't perfect so there might not always be a translation of a language name
       }
