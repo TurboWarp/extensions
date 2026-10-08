@@ -24,6 +24,7 @@
   "clipboard",
   "obviousAlexC/penPlus",
   "penplus",
+  "fachu2012/tiles",
   "Xeltalliv/simple3D",
   "Lily/Skins",
   "obviousAlexC/SensingPlus",
@@ -103,6 +104,5 @@
   "itchio",
   "gamejolt",
   "obviousAlexC/newgroundsIO",
-  "fachu2012/tiles",
   "Lily/McUtils" // McUtils should always be the last item.
 ]
