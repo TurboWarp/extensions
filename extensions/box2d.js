@@ -12124,14 +12124,11 @@
   var i;
   for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
 
+  const Cast = Scratch.Cast;
   const ArgumentType = Scratch.ArgumentType;
   const BlockType = Scratch.BlockType;
   // const MathUtil = require('../../util/math-util');
   // const Clone = require('../../util/clone');
-  const Cast = {
-    toNumber: (n) => +n || 0,
-  };
-  // const Cast = require('../../util/cast');
   // const Runtime = require('../../engine/runtime');
   // const RenderedTarget = require('../../sprites/rendered-target');
   // const MathUtil = require('../../util/math-util');
@@ -13181,6 +13178,37 @@
       fixDef.restitution = 0.2; // 0.2
 
       _setStageType(STAGE_TYPE_OPTIONS.BOXED);
+
+      // Patch vm.stopDrag & vm.startDrag so we can fix drag-dropped sprites with physics enabled.
+      this._lastBodyDragged = {
+        id: null,
+        body: null,
+      };
+
+      this._ogStartDrag = vm.startDrag;
+      vm.startDrag = (...args) => {
+        this._ogStartDrag.call(vm, ...args);
+
+        const spriteID = args[0];
+        if (bodies[spriteID] !== undefined) {
+          // Temporarily delete body to pause physics. Implementing a 'disabled'
+          // property would just create extra bottlenecks.
+          this._lastBodyDragged.id = spriteID;
+          this._lastBodyDragged.body = bodies[spriteID];
+          delete bodies[spriteID];
+        }
+      };
+
+      this._ogStopDrag = vm.stopDrag;
+      vm.stopDrag = (...args) => {
+        this._ogStopDrag.call(vm, ...args);
+
+        const spriteID = args[0];
+        const lastDraggedBodyID = this._lastBodyDragged.id;
+        if (lastDraggedBodyID === spriteID) {
+          bodies[spriteID] = this._lastBodyDragged.body;
+        }
+      };
     }
 
     reset() {
@@ -13996,7 +14024,7 @@
     }
 
     setTickRate(args) {
-      let rate = Scratch.Cast.toNumber(args.rate);
+      let rate = Cast.toNumber(args.rate);
       if (Number.isNaN(rate) || rate === Infinity) rate = 30;
       rate = Math.max(rate, 0.01);
 
@@ -14226,7 +14254,7 @@
     getDensity(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 100;
       }
 
       return body.GetFixtureList().GetDensity() * 100;
@@ -14245,7 +14273,7 @@
     getFriction(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 50;
       }
 
       return body.GetFixtureList().GetFriction() * 100;
@@ -14266,7 +14294,7 @@
     getRestitution(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 20;
       }
 
       return body.GetFixtureList().GetRestitution() * 100;
