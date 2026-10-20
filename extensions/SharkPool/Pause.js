@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.0
+// Version V.1.0.1
 
 /**
  * Rewrite of Pause Utilities
@@ -13,11 +13,10 @@
 
 (async function (Scratch) {
   "use strict";
-  if (!Scratch.extensions.unsandboxed)
-    throw new Error("Pause must run unsandboxed!");
+  if (!Scratch.extensions.unsandboxed) throw new Error("Pause must run unsandboxed!");
 
   const iconURI =
-    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNi41IiBoZWlnaHQ9IjM2LjUiIHZpZXdCb3g9IjAgMCAzNi41IDM2LjUiPjxnIHN0cm9rZT0iI2Q4OTQwMCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIj48cGF0aCBkPSJNMCAzNi41VjBoMzYuNXYzNi41eiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJub25lIi8+PHBhdGggZD0iTTYuMzc3IDIyLjIyVjUuMTc3aDQuNDI3djE3LjA0MXptMTIuNTQ0LTExLjEyNlY1LjE3N2g0LjQyN3Y4LjU0MXptMTEuMjAyIDEyLjAwMS0xMy43OTkgOC4yMjhWMTQuODY3eiIgZmlsbD0iI2ZmYWUwMCIvPjwvZz48L3N2Zz4=";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNi41IiBoZWlnaHQ9IjM2LjUiIHZpZXdCb3g9IjAgMCAzNi41IDM2LjUiPjxnIHN0cm9rZT0iI2Q4OTQwMCIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIj48cGF0aCBkPSJNMCAzNi41VjBoMzYuNXYzNi41eiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJub25lIi8+PHBhdGggZD0iTTYuMzc3IDIyLjIyVjUuMTc3aDQuNDI3djE3LjA0MXptMTIuNTQ0LTExLjEyNlY1LjE3N2g0LjQyN3Y4LjU0MXptMTEuMjAyIDEyLjAwMS0xMy43OTkgOC4yMjhWMTQuODY3eiIgZmlsbD0iI2ZmYWUwMCIvPjwvZz48L3N2Zz4=";
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
@@ -26,7 +25,7 @@
 
   const ThreadPauseData = Symbol("SPpauseV2_ThreadPauseData");
   const STATUS_PROMISE_WAIT = 1;
-  const STATUS_DONE = 4;
+  const STATUS_DONE = 4
   const STATUS_PAUSED = 5;
 
   /** @type {Set<String>} */
@@ -37,13 +36,13 @@
   /**
    * Add the Pause Addon code used by the Turbowarp Packager. This is the packager version,
    * so its license-compatibile. Must be initialized with a VM.
-   *
+   * 
    * Source: https://github.com/TurboWarp/packager/blob/master/src/addons/pause.js
    * License: Mozilla Public License Version 2.0
    */
-  const pauseInitializer = await Scratch.external.importModule(
-    "https://raw.githubusercontent.com/TurboWarp/packager/719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js"
-  );
+  // const pauseInitializer = await Scratch.external.importModule("https://cdn.jsdelivr.net/gh/TurboWarp/packager/src/addons/pause.js")
+  // Note: In my gallery we host raw files here:
+  const pauseInitializer = {default:function({scaffolding:t}){let e=t.vm,i=!1,r=new WeakMap,n=Promise.resolve(),s=t=>{if(i=t){for(let s of(n=n.then(()=>e.runtime.audioEngine.audioContext.suspend()),e.runtime.ioDevices.clock._paused||e.runtime.ioDevices.clock.pause(),e.runtime.threads))if(!s.updateMonitor&&!r.has(s)){let u={pauseTime:e.runtime.currentMSecs,status:s.status};r.set(s,u),s.status=1}e.runtime.emit("PROJECT_RUN_STOP"),e.runtime.emit("RUNTIME_PAUSED")}else{n=n.then(()=>e.runtime.audioEngine.audioContext.resume()),e.runtime.ioDevices.clock.resume();let a=Date.now();for(let m of e.runtime.threads){let o=r.get(m);if(o){let l=m.peekStackFrame();if(l&&l.executionContext&&l.executionContext.timer){let c=a-o.pauseTime;l.executionContext.timer.startTime+=c}if(m.compatibilityStackFrame&&m.compatibilityStackFrame.timer&&(m.compatibilityStackFrame.timer.startTime+=a-o.pauseTime),m.timer){let f=a-o.pauseTime;m.timer.startTime+=f}m.status=o.status}}r=new WeakMap,e.runtime.emit("RUNTIME_UNPAUSED")}},u=t=>{if(4===t.status)return;let e=r.get(t);e&&1!==t.status&&(e.status=t.status,t.status=1)},a=e.runtime.sequencer.stepThreads;e.runtime.sequencer.stepThreads=function(){if(i)for(let t of this.runtime.threads)u(t);return a.call(this)};let m=e.runtime.greenFlag;e.runtime.greenFlag=function(){return s(!1),m.call(this)};let o=e.runtime.startHats;e.runtime.startHats=function(...t){return i?[]:o.apply(this,t)};let l=e.runtime._getMonitorThreadCount;e.runtime._getMonitorThreadCount=function(t){let e=l.call(this,t);if(i)for(let n of t)r.has(n)&&e++;return e},e.setPaused=s,e.isPaused=()=>i}};
 
   // This function expects 'scaffolding', but only accesses vm.
   // We can use the Scratch object since it contains the vm.
@@ -87,6 +86,7 @@
     }
   };
 
+
   /**
    * Toggles pausing the project.
    * @param {Boolean} paused True to pause
@@ -108,7 +108,7 @@
     for (const clone of clones) {
       setSpritePause(paused, clone);
     }
-  };
+  }
 
   /**
    * Toggles pausing a thread.
@@ -129,7 +129,7 @@
         paused: true,
         pauseTime: Date.now(),
         oldStatus: thread.status,
-      };
+      }
 
       thread.status = STATUS_PAUSED;
       if (thread.timer) thread.timer.pause();
@@ -142,11 +142,7 @@
       const timeDiff = Date.now() - data.pauseTime;
       const stackframe = thread.peekStackFrame();
       const compatStackframe = thread.compatibilityStackFrame;
-      if (
-        stackframe &&
-        stackframe.executionContext &&
-        stackframe.executionContext.timer
-      ) {
+      if (stackframe && stackframe.executionContext && stackframe.executionContext.timer) {
         stackframe.executionContext.timer.startTime += timeDiff;
       }
       if (compatStackframe && compatStackframe.timer) {
@@ -196,7 +192,7 @@
             "SPpauseV2_whenProjectPaused",
             (script, target) => {
               runtime._pushThread(script.blockId, target);
-            }
+            },
           );
         });
       });
@@ -215,89 +211,73 @@
           {
             opcode: "pauseProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("pause project"),
+            text: Scratch.translate("pause project")
           },
           {
             opcode: "unpauseProject",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("unpause project"),
+            text: Scratch.translate("unpause project")
           },
           {
             opcode: "whenProjectPaused",
             blockType: Scratch.BlockType.EVENT,
             text: Scratch.translate("when project paused"),
-            isEdgeActivated: false,
+            isEdgeActivated: false
           },
           {
             opcode: "whenProjectUnpaused",
             blockType: Scratch.BlockType.EVENT,
             text: Scratch.translate("when project unpaused"),
             restartExistingThreads: true,
-            isEdgeActivated: false,
+            isEdgeActivated: false
           },
           {
             opcode: "isProjectPaused",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: Scratch.translate("is project paused?"),
+            text: Scratch.translate("is project paused?")
           },
           "---",
           {
             opcode: "pauseOtherScripts",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("pause other scripts in sprite"),
+            text: Scratch.translate("pause other scripts in sprite")
           },
           {
             opcode: "pauseSprite",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("pause [SPRITE]"),
             arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-            },
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            }
           },
           {
             opcode: "unpauseSprite",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("unpause [SPRITE]"),
             arguments: {
-              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
-            },
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" }
+            }
           },
           "---",
           {
             opcode: "pauseClones",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "pause clones of [SPRITE] with [VAR] set to [VALUE]"
-            ),
+            text: Scratch.translate("pause clones of [SPRITE] with [VAR] set to [VALUE]"),
             arguments: {
-              SPRITE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "CLONEABLE_TARGETS",
-              },
-              VAR: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("my variable"),
-              },
-              VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: "0" },
-            },
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "CLONEABLE_TARGETS" },
+              VAR: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("my variable") },
+              VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: "0" }
+            }
           },
           {
             opcode: "unpauseClones",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "unpause clones of [SPRITE] with [VAR] set to [VALUE]"
-            ),
+            text: Scratch.translate("unpause clones of [SPRITE] with [VAR] set to [VALUE]"),
             arguments: {
-              SPRITE: {
-                type: Scratch.ArgumentType.STRING,
-                menu: "CLONEABLE_TARGETS",
-              },
-              VAR: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("my variable"),
-              },
-              VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: "0" },
-            },
+              SPRITE: { type: Scratch.ArgumentType.STRING, menu: "CLONEABLE_TARGETS" },
+              VAR: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("my variable") },
+              VALUE: { type: Scratch.ArgumentType.STRING, defaultValue: "0" }
+            }
           },
           "---",
           {
@@ -305,27 +285,21 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("pause this script using ID [ID]"),
             arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("my script"),
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("my script") }
+            }
           },
           {
             opcode: "unpauseScript",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("unpause script with ID [ID]"),
             arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("my script"),
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("my script") }
+            }
           },
           {
             opcode: "unpauseAllScripts",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("unpause all scripts"),
+            text: Scratch.translate("unpause all scripts")
           },
           "---",
           {
@@ -333,23 +307,31 @@
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("script with ID [ID] paused?"),
             arguments: {
-              ID: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: Scratch.translate("my script"),
-              },
-            },
+              ID: { type: Scratch.ArgumentType.STRING, defaultValue: Scratch.translate("my script") }
+            }
           },
           {
             opcode: "allPausedScripts",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("all paused scripts"),
-            disableMonitor: true,
+            disableMonitor: true
+          },
+          "---",
+          {
+            opcode: "pauseAudioEngine",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("pause audio engine")
+          },
+          {
+            opcode: "unpauseAudioEngine",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("unpause audio engine")
           },
         ],
         menus: {
-          TARGETS: { acceptReporters: true, items: "_getTargets" },
-          CLONEABLE_TARGETS: { acceptReporters: true, items: "_getCloneables" },
-        },
+          TARGETS: { acceptReporters: true, items: "_getTargets"},
+          CLONEABLE_TARGETS: { acceptReporters: true, items: "_getCloneables" }
+        }
       };
     }
 
@@ -357,7 +339,7 @@
     _getTargets() {
       const list = [
         { text: Scratch.translate("myself"), value: "_myself_" },
-        { text: Scratch.translate("Stage"), value: "_stage_" },
+        { text: Scratch.translate("Stage"), value: "_stage_" }
       ];
 
       for (const target of runtime.targets) {
@@ -375,7 +357,7 @@
     }
 
     _getTarget(query, util) {
-      if (query === "_myself_") return util.target;
+      if (query=== "_myself_") return util.target;
       if (query === "_stage_") return runtime.getTargetForStage();
       return runtime.getSpriteTargetByName(query);
     }
@@ -408,7 +390,7 @@
         if (myThreadId === thread.getId()) continue;
 
         setThreadPause(true, thread);
-      }
+      };
     }
 
     pauseSprite(args, util) {
@@ -462,6 +444,20 @@
 
     allPausedScripts() {
       return JSON.stringify(Array.from(pausedScripts));
+    }
+
+    pauseAudioEngine() {
+      const audioCtx = runtime.audioEngine.audioContext;
+      if (audioCtx.state === "running") {
+        audioCtx.suspend();
+      }
+    }
+
+    unpauseAudioEngine() {
+      const audioCtx = runtime.audioEngine.audioContext;
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
     }
   }
 
