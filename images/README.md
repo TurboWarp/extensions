@@ -329,3 +329,8 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## NishiOwO/dectalk.png
  - Created by [@Dogo6647](https://github.com/Dogo6647)
  - Used Arimo from Google Fonts.
+
+## turbotranslate.svg
+ - Created by [@calloradc](https://github.com/calloradc)
+
+
