@@ -37,12 +37,10 @@
    * Add the Pause Addon code used by the Turbowarp Packager. This is the packager version,
    * so its license-compatibile. Must be initialized with a VM.
    * 
-   * Source: https://github.com/TurboWarp/packager/blob/master/src/addons/pause.js
+   * Source: https://raw.githubusercontent.com/TurboWarp/packager/719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js
    * License: Mozilla Public License Version 2.0
    */
-  // const pauseInitializer = await Scratch.external.importModule("https://cdn.jsdelivr.net/gh/TurboWarp/packager/src/addons/pause.js")
-  // Note: In my gallery we host raw files here:
-  const pauseInitializer = {default:function({scaffolding:t}){let e=t.vm,i=!1,r=new WeakMap,n=Promise.resolve(),s=t=>{if(i=t){for(let s of(n=n.then(()=>e.runtime.audioEngine.audioContext.suspend()),e.runtime.ioDevices.clock._paused||e.runtime.ioDevices.clock.pause(),e.runtime.threads))if(!s.updateMonitor&&!r.has(s)){let u={pauseTime:e.runtime.currentMSecs,status:s.status};r.set(s,u),s.status=1}e.runtime.emit("PROJECT_RUN_STOP"),e.runtime.emit("RUNTIME_PAUSED")}else{n=n.then(()=>e.runtime.audioEngine.audioContext.resume()),e.runtime.ioDevices.clock.resume();let a=Date.now();for(let m of e.runtime.threads){let o=r.get(m);if(o){let l=m.peekStackFrame();if(l&&l.executionContext&&l.executionContext.timer){let c=a-o.pauseTime;l.executionContext.timer.startTime+=c}if(m.compatibilityStackFrame&&m.compatibilityStackFrame.timer&&(m.compatibilityStackFrame.timer.startTime+=a-o.pauseTime),m.timer){let f=a-o.pauseTime;m.timer.startTime+=f}m.status=o.status}}r=new WeakMap,e.runtime.emit("RUNTIME_UNPAUSED")}},u=t=>{if(4===t.status)return;let e=r.get(t);e&&1!==t.status&&(e.status=t.status,t.status=1)},a=e.runtime.sequencer.stepThreads;e.runtime.sequencer.stepThreads=function(){if(i)for(let t of this.runtime.threads)u(t);return a.call(this)};let m=e.runtime.greenFlag;e.runtime.greenFlag=function(){return s(!1),m.call(this)};let o=e.runtime.startHats;e.runtime.startHats=function(...t){return i?[]:o.apply(this,t)};let l=e.runtime._getMonitorThreadCount;e.runtime._getMonitorThreadCount=function(t){let e=l.call(this,t);if(i)for(let n of t)r.has(n)&&e++;return e},e.setPaused=s,e.isPaused=()=>i}};
+  const pauseInitializer = await Scratch.external.importModule("https://raw.githubusercontent.com/TurboWarp/packager/719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js");
 
   // This function expects 'scaffolding', but only accesses vm.
   // We can use the Scratch object since it contains the vm.
