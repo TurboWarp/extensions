@@ -10,6 +10,43 @@
     throw new Error("SearchParams must be run unsandboxed.");
   }
 
+  /**
+   * scratch-gui URL parameters whose changing might invoke a fetch.
+   * The value is the implied protocol if none is provided.
+   * @type {Record<string, string>}
+   */
+  const SENSITIVE_GUI_PARAMS = {
+    cloud_host: "wss://",
+    project_url: "https://",
+    extension: "https://",
+  };
+
+  /**
+   * Runs callback if setting the parameter is allowed. Only returns a promise when a permission
+   * check is needed so that other parameters are set without forcing a delay.
+   * @param {string} name
+   * @param {string} value
+   * @param {() => void} callback
+   * @returns {void|Promise<void>}
+   */
+  const withSetPermission = (name, value, callback) => {
+    if (
+      !Scratch.gui ||
+      !Object.prototype.hasOwnProperty.call(SENSITIVE_GUI_PARAMS, name)
+    ) {
+      // Not in scratch-gui or it's a safe parameter - just let through.
+      return callback();
+    }
+    const url = /^[a-z][a-z0-9+.-]*:/i.test(value)
+      ? value
+      : SENSITIVE_GUI_PARAMS[name] + value;
+    return Scratch.canFetch(url).then((allowed) => {
+      if (allowed) {
+        callback();
+      }
+    });
+  };
+
   class SearchApi {
     getInfo() {
       return {
@@ -162,9 +199,11 @@
     }
 
     setsearchparam({ ID, VAL }) {
-      var s = new URLSearchParams(location.search);
-      s.set(ID.toString(), VAL.toString());
-      history.replaceState("", "", "?" + s.toString());
+      return withSetPermission(ID.toString(), VAL.toString(), () => {
+        var s = new URLSearchParams(location.search);
+        s.set(ID.toString(), VAL.toString());
+        history.replaceState("", "", "?" + s.toString());
+      });
     }
 
     searchparamslength() {
@@ -180,9 +219,11 @@
     }
 
     appendsearchparam({ ID, VAL }) {
-      var s = new URLSearchParams(location.search);
-      s.append(ID.toString(), VAL.toString());
-      history.replaceState("", "", "?" + s.toString());
+      return withSetPermission(ID.toString(), VAL.toString(), () => {
+        var s = new URLSearchParams(location.search);
+        s.append(ID.toString(), VAL.toString());
+        history.replaceState("", "", "?" + s.toString());
+      });
     }
 
     hassearchparam({ ID }) {
