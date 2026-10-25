@@ -201,6 +201,7 @@
           },
 
           {
+            hideFromPalette: true,
             opcode: "consoleLog",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate(
@@ -369,10 +370,7 @@
     }
 
     consoleLog(args) {
-      console.log(
-        `%c${args.input}`,
-        `color:${args.color}; font-family:${args.font}; font-size: ${args.size}px;`
-      );
+      console.log(args.input);
     }
 
     consoleClear() {
