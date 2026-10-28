@@ -104,6 +104,86 @@ const removeUnchangedTranslations = (source, translated) => {
 };
 
 /**
+ * @param {string} string
+ * @returns {Set<string>} All placeholders in the string.
+ */
+const getPlaceholders = (string) => {
+  const result = new Set();
+  for (const match of string.matchAll(/\[(.+?)\]/g)) {
+    result.add(match[1]);
+  }
+  return result;
+};
+
+/**
+ * @param {string} source
+ * @param {string} translated
+ * @returns {string[]} Human-readable issues.
+ */
+const validateTranslation = (source, translated) => {
+  const stringProblems = [];
+
+  const sourcePlaceholders = getPlaceholders(source);
+  const translatedPlaceholders = getPlaceholders(translated);
+
+  for (const placeholder of sourcePlaceholders) {
+    if (!translatedPlaceholders.has(placeholder)) {
+      stringProblems.push(`Missing placeholder [${placeholder}]`);
+    }
+  }
+
+  for (const placeholder of translatedPlaceholders) {
+    if (!sourcePlaceholders.has(placeholder)) {
+      stringProblems.push(`Using unknown placeholder [${placeholder}]`);
+    }
+  }
+
+  return stringProblems;
+};
+
+/**
+ * @param {object} source
+ * @param {object} translated
+ * @returns {object}
+ */
+const removeBrokenTranslations = (source, translated) => {
+  const validatedStrings = {};
+  const localeProblems = [];
+
+  for (const [key, translatedValue] of Object.entries(translated)) {
+    const sourceValue = source[key];
+    if (typeof translatedValue === "object") {
+      const recursiveResult = removeBrokenTranslations(
+        sourceValue,
+        translatedValue
+      );
+      if (Object.keys(recursiveResult.validatedStrings).length > 0) {
+        validatedStrings[key] = recursiveResult.validatedStrings;
+      }
+      for (const p of recursiveResult.localeProblems) {
+        localeProblems.push(`${key} / ${p}`);
+      }
+    } else if (typeof sourceValue !== "string") {
+      localeProblems.push(`${key} / No matching source string`);
+    } else {
+      const stringProblems = validateTranslation(sourceValue, translatedValue);
+      if (stringProblems.length === 0) {
+        validatedStrings[key] = translatedValue;
+      } else {
+        for (const p of stringProblems) {
+          localeProblems.push(`${key} / ${p}`);
+        }
+      }
+    }
+  }
+
+  return {
+    validatedStrings,
+    localeProblems,
+  };
+};
+
+/**
  * @param {number} ms
  * @returns {Promise<void>}
  */
@@ -177,7 +257,7 @@ const downloadTranslatedResource = async (resource, locale) => {
 
 /**
  * @param {string} resource
- * @returns {Promise<object>}
+ * @returns {Promise<{strings: object; resourceProblems: string[]}>}
  */
 const downloadAllResourceTranslations = async (resource) => {
   const transifexStatistics = await getResourceStatistics(resource);
@@ -201,18 +281,31 @@ const downloadAllResourceTranslations = async (resource) => {
   );
 
   const sourceStrings = entries.find((i) => i[0] === SOURCE_LOCALE)[1];
-  const result = {};
-  for (const [locale, strings] of entries) {
+  const strings = {};
+  const resourceProblems = [];
+
+  for (const [locale, localeStrings] of entries) {
     if (locale !== SOURCE_LOCALE) {
-      const withoutUnchangedStrings = removeUnchangedTranslations(
+      const filteredStrings = removeUnchangedTranslations(
         sourceStrings,
-        strings
+        localeStrings
+      );
+      const { validatedStrings, localeProblems } = removeBrokenTranslations(
+        sourceStrings,
+        filteredStrings
       );
       const normalizedLocale = locale.toLowerCase().replace(/_/g, "-");
-      result[normalizedLocale] = withoutUnchangedStrings;
+      strings[normalizedLocale] = validatedStrings;
+      for (const p of localeProblems) {
+        resourceProblems.push(`${resource} / ${locale} / ${p}`);
+      }
     }
   }
-  return result;
+
+  return {
+    strings,
+    resourceProblems,
+  };
 };
 
 const run = async () => {
@@ -223,12 +316,32 @@ const run = async () => {
     downloadAllResourceTranslations(METADATA_RESOURCE),
   ]);
 
+  const allProblems = [
+    ...runtime.resourceProblems,
+    ...metadata.resourceProblems,
+  ].sort();
+
+  let warnings = "";
+  if (allProblems.length > 0) {
+    warnings = [
+      `# ${allProblems.length} ${allProblems.length === 1 ? "string" : "strings"} skipped due to translation errors`,
+      "",
+      ...allProblems.map((problem) => ` * ${problem}`),
+      "",
+    ].join("\n");
+    console.warn(warnings);
+  }
+  fs.writeFileSync(
+    pathUtil.join(import.meta.dirname, "../download-warnings.txt"),
+    warnings
+  );
+
   fs.writeFileSync(
     pathUtil.join(
       import.meta.dirname,
       "../translations/extension-runtime.json"
     ),
-    JSON.stringify(runtime, null, 4)
+    JSON.stringify(runtime.strings, null, 4)
   );
 
   fs.writeFileSync(
@@ -236,7 +349,7 @@ const run = async () => {
       import.meta.dirname,
       "../translations/extension-metadata.json"
     ),
-    JSON.stringify(metadata, null, 4)
+    JSON.stringify(metadata.strings, null, 4)
   );
 };
 

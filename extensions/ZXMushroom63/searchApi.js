@@ -10,6 +10,54 @@
     throw new Error("SearchParams must be run unsandboxed.");
   }
 
+  /**
+   * scratch-gui URL parameters that might have some security implications to change.
+   * @type {Record<string, {canModify: false} | {canModify: true, defaultProtocol: string}>}
+   */
+  const SENSITIVE_GUI_PARAMS = {
+    cloud_host: {
+      canModify: true,
+      defaultProtocol: "wss://",
+    },
+    project_url: {
+      canModify: true,
+      defaultProtocol: "https://",
+    },
+    extension: {
+      canModify: false,
+    },
+  };
+
+  /**
+   * Runs callback if setting the parameter is allowed. Only returns a promise when a permission
+   * check is needed so that other parameters are set without forcing a delay.
+   * @param {string} name
+   * @param {string} value
+   * @param {() => void} callback
+   * @returns {void|Promise<void>}
+   */
+  const withSetPermission = (name, value, callback) => {
+    if (
+      !Scratch.gui ||
+      !Object.prototype.hasOwnProperty.call(SENSITIVE_GUI_PARAMS, name)
+    ) {
+      // Not in scratch-gui or it's a safe parameter - just let through.
+      return callback();
+    }
+    const param = SENSITIVE_GUI_PARAMS[name];
+    if (!param.canModify) {
+      return;
+    }
+    const url = /^[a-z][a-z0-9+.-]*:/i.test(value)
+      ? value
+      : param.defaultProtocol + value;
+    return Scratch.canFetch(url).then((allowed) => {
+      if (allowed) {
+        callback();
+      }
+    });
+  };
+
   class SearchApi {
     getInfo() {
       return {
@@ -162,9 +210,11 @@
     }
 
     setsearchparam({ ID, VAL }) {
-      var s = new URLSearchParams(location.search);
-      s.set(ID.toString(), VAL.toString());
-      history.replaceState("", "", "?" + s.toString());
+      return withSetPermission(ID.toString(), VAL.toString(), () => {
+        var s = new URLSearchParams(location.search);
+        s.set(ID.toString(), VAL.toString());
+        history.replaceState("", "", "?" + s.toString());
+      });
     }
 
     searchparamslength() {
@@ -180,9 +230,11 @@
     }
 
     appendsearchparam({ ID, VAL }) {
-      var s = new URLSearchParams(location.search);
-      s.append(ID.toString(), VAL.toString());
-      history.replaceState("", "", "?" + s.toString());
+      return withSetPermission(ID.toString(), VAL.toString(), () => {
+        var s = new URLSearchParams(location.search);
+        s.append(ID.toString(), VAL.toString());
+        history.replaceState("", "", "?" + s.toString());
+      });
     }
 
     hassearchparam({ ID }) {
