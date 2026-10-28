@@ -1,7 +1,8 @@
 // Name: Voice Recorder
 // ID: voicerecorder
-// Description: Record audio from your microphone directly within TurboWarp and return it as a DataURL. Requires Unsandboxed mode.
+// Description: Record audio from your microphone directly within TurboWarp and return it as a DataURL. 
 // By: Kavanoz43 <https://github.com>
+// License: MPL-2.0
 
 (function(Scratch) {
     'use strict';
