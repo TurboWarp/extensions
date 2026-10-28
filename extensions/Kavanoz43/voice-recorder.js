@@ -1,6 +1,8 @@
-/**
- * TurboWarp Voice Recorder Extension
- */
+// Name: Voice Recorder
+// ID: voicerecorder
+// Description: Record audio from your microphone directly within TurboWarp and return it as a DataURL. Requires Unsandboxed mode.
+// By: Kavanoz43 <https://github.com>
+
 (function(Scratch) {
     'use strict';
 
