@@ -1,3 +1,8 @@
+// Name: Imaginary Numbers
+// ID: imagnums
+// Description: Explore the world of complex numbers and quaternions!
+// By: legospider15 <https://github.com/legospider15>
+// License: MPL-2.0
 
 (function (Scratch) {
     'use strict'
@@ -159,7 +164,7 @@
     class ImaginaryNumbersExtension {
         getInfo() {
             return {
-                id: 'imagNums',
+                id: 'imagnums',
                 name: 'Imaginary Numbers',
                 color1: '#ff0000',
                 color2: '#cc0000',
@@ -293,7 +298,56 @@
                             },
                             VALUE2: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i)'
+                                defaultValue: '(100 + 200i)'
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'goToPos',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'goto complex position [POS]',
+                        arguments: {
+                            POS: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '(50 + 25i)',
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'moveBy',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'move by compex number [VALUE]',
+                        arguments: {
+                            VALUE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '(50 + 25i)',
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'mulPos',
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: 'multipy position by compex number [VALUE]',
+                        arguments: {
+                            VALUE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '(50 + 25i)',
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'convertPos',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'convert position x: [X], y: [Y] to a complex number',
+                        arguments: {
+                            X: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 50
+                            },
+                            Y: {
+                                type: Scratch.ArgumentType.NUMBER,
+                                defaultValue: 25
                             }
                         }
                     },
@@ -674,6 +728,38 @@
                 console.log(error)
                 return ''
             }
+        }
+
+        goToPos(args, util) {
+            try {
+                const [x, y] = strToComplex(args.POS)
+                util.target.setXY(x, y)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        moveBy(args, util) {
+            try {
+                const [x, y] = strToComplex(args.POS)
+                util.target.setXY(util.target.x + x, util.target.y + y)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        mulPos(args, util) {
+            try {
+                const [a, b] = [util.target.x, util.target.y]
+                const [c, d] = strToComplex(args.VALUE)
+                util.target.setXY(a * c - b * d, a * d + b * c)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        convertPos(args) {
+            return complexToStr([args.X, args.Y])
         }
 
         // quaternions
