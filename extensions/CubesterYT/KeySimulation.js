@@ -70,6 +70,18 @@
     // don't return a Promise at all, otherwise the block waits for 1 frame
   };
 
+  const heldKeys = new Set();
+  const releaseAllHeldKeys = () => {
+    for (const key of heldKeys) {
+      Scratch.vm.postIOData("keyboard", {
+        key,
+        isDown: false,
+      });
+    }
+    heldKeys.clear();
+  };
+  Scratch.vm.runtime.on("PROJECT_STOP_ALL", releaseAllHeldKeys);
+
   class KeySimulation {
     getInfo() {
       return {
@@ -99,6 +111,28 @@
               AND_WAIT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "AND_WAIT",
+              },
+            },
+          },
+          {
+            opcode: "holdKey",
+            text: Scratch.translate("hold [KEY] down"),
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "KEYS",
+              },
+            },
+          },
+          {
+            opcode: "releaseKey",
+            text: Scratch.translate("release [KEY]"),
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "KEYS",
               },
             },
           },
@@ -273,6 +307,24 @@
           key: Scratch.Cast.toString(args.KEY),
           isDown: false,
         });
+      });
+    }
+
+    holdKey(args) {
+      const key = Scratch.Cast.toString(args.KEY);
+      heldKeys.add(key);
+      Scratch.vm.postIOData("keyboard", {
+        key,
+        isDown: true,
+      });
+    }
+
+    releaseKey(args) {
+      const key = Scratch.Cast.toString(args.KEY);
+      heldKeys.delete(key);
+      Scratch.vm.postIOData("keyboard", {
+        key,
+        isDown: false,
       });
     }
 
