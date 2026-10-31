@@ -71,7 +71,8 @@
   };
 
   const heldKeys = new Set();
-  const releaseAllHeldKeys = () => {
+  const heldMouseButtons = new Set();
+  const releaseAllHeldInputs = () => {
     for (const key of heldKeys) {
       Scratch.vm.postIOData("keyboard", {
         key,
@@ -79,8 +80,16 @@
       });
     }
     heldKeys.clear();
+
+    for (const button of heldMouseButtons) {
+      postMouseData({
+        isDown: false,
+        button,
+      });
+    }
+    heldMouseButtons.clear();
   };
-  Scratch.vm.runtime.on("PROJECT_STOP_ALL", releaseAllHeldKeys);
+  Scratch.vm.runtime.on("PROJECT_STOP_ALL", releaseAllHeldInputs);
 
   class KeySimulation {
     getInfo() {
@@ -162,6 +171,38 @@
               AND_WAIT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "AND_WAIT",
+              },
+            },
+          },
+          {
+            opcode: "holdMouse",
+            text: Scratch.translate(
+              "hold [BUTTON] mouse button at x: [X] y: [Y]"
+            ),
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              BUTTON: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "BUTTONS",
+              },
+              X: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              Y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+            },
+          },
+          {
+            opcode: "releaseMouse",
+            text: Scratch.translate("release [BUTTON] mouse button"),
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              BUTTON: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "BUTTONS",
               },
             },
           },
@@ -341,6 +382,26 @@
           isDown: false,
           button: Scratch.Cast.toNumber(args.BUTTON),
         });
+      });
+    }
+
+    holdMouse(args) {
+      simulatedX = Scratch.Cast.toNumber(args.X);
+      simulatedY = Scratch.Cast.toNumber(args.Y);
+      const button = Scratch.Cast.toNumber(args.BUTTON);
+      heldMouseButtons.add(button);
+      postMouseData({
+        isDown: true,
+        button,
+      });
+    }
+
+    releaseMouse(args) {
+      const button = Scratch.Cast.toNumber(args.BUTTON);
+      heldMouseButtons.delete(button);
+      postMouseData({
+        isDown: false,
+        button,
       });
     }
 
