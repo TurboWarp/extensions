@@ -385,7 +385,7 @@
         const sort = document.getElementById("search-sort");
 
         const url = new URL(window.location.href);
-        const search = url.searchParams.get("q");
+        const search = url.searchParams.get("q").toLowerCase();
 
         if (search) {
           document.getElementById("search-bar").value = search;
