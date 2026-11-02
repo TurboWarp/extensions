@@ -1,6 +1,6 @@
 // Name: MIDI
-// ID: extmidi
-// Description: An extension to use the WebMidi API for midi input/output.
+// ID: lseldenMidi
+// Description: An extension to use the WebMIDI API for MIDI input/output.
 // By: lselden
 // By: CHCAT1320
 // License: MPL-2.0
@@ -9,10 +9,10 @@
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("Midi must be run unsandboxed");
+    throw new Error("MIDI must be run unsandboxed");
   }
 
-  const EXT_ID = "extmidi";
+  const EXT_ID = "lseldenMidi";
   //#region utils
 
   /**
