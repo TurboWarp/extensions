@@ -1,361 +1,58 @@
 // Name: Imaginary Numbers
 // ID: imagnums
 // Description: Explore the world of complex numbers and quaternions!
-// By: legospider15 <https://github.com/legospider15>
-// License: MPL-2.0
+// By: legospider15
+// License: MIT
+
+// from quaternion.js
+// not my code
+'use strict';(function(C){function n(a,b,c,e){const d=Object.create(m.prototype);d.w=a;d.x=b;d.y=c;d.z=e;return d}function u(a,b,c,e){const d=Object.create(m.prototype),f=1/Math.sqrt(a*a+b*b+c*c+e*e);d.w=a*f;d.x=b*f;d.y=c*f;d.z=e*f;return d}function z(a,b){const c=Math.max(Math.abs(a),Math.abs(b));if(c===0)return-Infinity;a/=c;b/=c;return Math.log(c)+.5*Math.log(a*a+b*b)}function t(a,b,c,e,d){if(d!==void 0)a.w=b,a.x=c,a.y=e,a.z=d;else{if(typeof b==="object"&&e===void 0){if("w"in b||"x"in b||"y"in
+b||"z"in b){a.w=b.w||0;a.x=b.x||0;a.y=b.y||0;a.z=b.z||0;return}if("re"in b&&"im"in b){a.w=b.re;a.x=b.im;a.y=0;a.z=0;return}if(b.length===4){a.w=b[0];a.x=b[1];a.y=b[2];a.z=b[3];return}if(b.length===3){a.w=0;a.x=b[0];a.y=b[1];a.z=b[2];return}throw Error("Invalid object");}if(typeof b==="string"&&e===void 0){b=b.toLowerCase().match(/\d+\.?\d*e[+-]?\d+|\d+\.?\d*|\.\d+|./g);var f=1;c=0;e={i:"x",j:"y",k:"z"};if(b===null)throw Error("Parse error");a.w=a.x=a.y=a.z=0;for(d=0;d<b.length;d++){let g=b[d],h=b[d+
+1];if(g!==" "&&g!=="\t"&&g!=="\n")if(g==="+")f++;else if(g==="-")c++;else{if(f+c===0)throw Error("Parse error"+g);f=e[g];if(f!==void 0)h===" "||isNaN(h)?g="1":(g=h,d++);else{if(isNaN(g))throw Error("Parser error");f=e[h];f!==void 0&&d++}a[f||"w"]+=parseFloat((c%2?"-":"")+g);f=c=0}}if(f+c>0)throw Error("Parser error");}else b===void 0&&a!==k?(a.w=1,a.x=a.y=a.z=0):(a.w=b||0,c&&c.length===3?(a.x=c[0],a.y=c[1],a.z=c[2]):(a.x=c||0,a.y=e||0,a.z=d||0))}}function y(a,b,c){let e="";if(a!==0){c!==""?e+=a<0?
+" - ":" + ":a<0&&(e+="-");a=Math.abs(a);if(1!==a||b==="")e+=a;e+=b}return e}function m(a,b,c,e){if(this instanceof m)t(this,a,b,c,e);else{const d=Object.create(m.prototype);t(d,a,b,c,e);return d}}const k=Object.create(m.prototype);m.prototype={w:1,x:0,y:0,z:0,add:function(a,b,c,e){t(k,a,b,c,e);return n(this.w+k.w,this.x+k.x,this.y+k.y,this.z+k.z)},sub:function(a,b,c,e){t(k,a,b,c,e);return n(this.w-k.w,this.x-k.x,this.y-k.y,this.z-k.z)},neg:function(){return n(-this.w,-this.x,-this.y,-this.z)},norm:function(){const a=
+this.w,b=this.x,c=this.y,e=this.z;return Math.sqrt(a*a+b*b+c*c+e*e)},normSq:function(){const a=this.w,b=this.x,c=this.y,e=this.z;return a*a+b*b+c*c+e*e},normalize:function(){const a=this.w,b=this.x,c=this.y,e=this.z;let d=Math.sqrt(a*a+b*b+c*c+e*e);if(d<1E-12)return m.ZERO;d=1/d;return n(a*d,b*d,c*d,e*d)},mul:function(a,b,c,e){t(k,a,b,c,e);a=this.w;b=this.x;c=this.y;e=this.z;const d=k.w,f=k.x,g=k.y,h=k.z;return f===0&&g===0&&h===0?n(this.w*d,this.x*d,this.y*d,this.z*d):n(a*d-b*f-c*g-e*h,a*f+b*d+c*
+h-e*g,a*g+c*d+e*f-b*h,a*h+e*d+b*g-c*f)},scale:function(a){return n(this.w*a,this.x*a,this.y*a,this.z*a)},dot:function(a,b,c,e){t(k,a,b,c,e);return this.w*k.w+this.x*k.x+this.y*k.y+this.z*k.z},inverse:function(){const a=this.w,b=this.x,c=this.y,e=this.z;let d=a*a+b*b+c*c+e*e;if(d===0)return m.ZERO;d=1/d;return n(a*d,-b*d,-c*d,-e*d)},div:function(a,b,c,e){t(k,a,b,c,e);a=this.w;b=this.x;c=this.y;e=this.z;const d=k.w,f=k.x,g=k.y,h=k.z;let l=d*d+f*f+g*g+h*h;if(l===0)return m.ZERO;l=1/l;return n((a*d+b*
+f+c*g+e*h)*l,(b*d-a*f-c*h+e*g)*l,(c*d-a*g-e*f+b*h)*l,(e*d-a*h-b*g+c*f)*l)},conjugate:function(){return n(this.w,-this.x,-this.y,-this.z)},exp:function(){const a=this.x,b=this.y,c=this.z,e=Math.sqrt(a*a+b*b+c*c),d=Math.exp(this.w);if(e===0)return n(d,0,0,0);const f=e<1E-8?d*(1-e*e/6):d*Math.sin(e)/e;return n(d*Math.cos(e),a*f,b*f,c*f)},log:function(){const a=this.w,b=this.x,c=this.y,e=this.z;if(c===0&&e===0)return n(z(a,b),Math.atan2(b,a),0,0);var d=Math.sqrt(b*b+c*c+e*e);d=d<1E-12?1/Math.max(1,a):
+Math.atan2(d,a)/d;return n(Math.log(b*b+c*c+e*e+a*a)*.5,b*d,c*d,e*d)},pow:function(a,b,c,e){t(k,a,b,c,e);if(k.y===0&&k.z===0){if(k.w===1&&k.x===0)return this;if(k.w===0&&k.x===0)return m.ONE;if(this.y===0&&this.z===0){a=this.w;b=this.x;if(a===0&&b===0)return m.ZERO;c=Math.atan2(b,a);e=z(a,b);if(k.x===0&&b===0&&a>=0)return n(Math.pow(a,k.w),0,0,0);a=Math.exp(k.w*e-k.x*c);b=k.x*e+k.w*c;return n(a*Math.cos(b),a*Math.sin(b),0,0)}}return this.log().mul(k).exp()},equals:function(a,b,c,e){t(k,a,b,c,e);return Math.abs(k.w-
+this.w)<1E-12&&Math.abs(k.x-this.x)<1E-12&&Math.abs(k.y-this.y)<1E-12&&Math.abs(k.z-this.z)<1E-12},isUnit:function(){const a=this.w*this.w+this.x*this.x+this.y*this.y+this.z*this.z;return Math.abs(a-1)<1E-12*Math.max(1,a)},isFinite:function(){return isFinite(this.w)&&isFinite(this.x)&&isFinite(this.y)&&isFinite(this.z)},isNaN:function(){return isNaN(this.w)||isNaN(this.x)||isNaN(this.y)||isNaN(this.z)},toString:function(){var a=this.w;const b=this.x,c=this.y,e=this.z;if(isNaN(a)||isNaN(b)||isNaN(c)||
+isNaN(e))return"NaN";a=y(a,"","");a+=y(b,"i",a);a+=y(c,"j",a);a+=y(e,"k",a);return""===a?"0":a},real:function(){return this.w},imag:function(){return[this.x,this.y,this.z]},toVector:function(){return[this.w,this.x,this.y,this.z]},toMatrix:function(a){var b=this.w,c=this.x,e=this.y,d=this.z;const f=b*c,g=b*e;b*=d;const h=c*c,l=c*e;c*=d;const p=e*e;e*=d;d*=d;return a?[[1-2*(p+d),2*(l-b),2*(c+g)],[2*(l+b),1-2*(h+d),2*(e-f)],[2*(c-g),2*(e+f),1-2*(h+p)]]:[1-2*(p+d),2*(l-b),2*(c+g),2*(l+b),1-2*(h+d),2*
+(e-f),2*(c-g),2*(e+f),1-2*(h+p)]},toMatrix4:function(a){var b=this.w,c=this.x,e=this.y,d=this.z;const f=b*c,g=b*e;b*=d;const h=c*c,l=c*e;c*=d;const p=e*e;e*=d;d*=d;return a?[[1-2*(p+d),2*(l-b),2*(c+g),0],[2*(l+b),1-2*(h+d),2*(e-f),0],[2*(c-g),2*(e+f),1-2*(h+p),0],[0,0,0,1]]:[1-2*(p+d),2*(l-b),2*(c+g),0,2*(l+b),1-2*(h+d),2*(e-f),0,2*(c-g),2*(e+f),1-2*(h+p),0,0,0,0,1]},toCSSTransform:function(){var a=Math.max(-1,Math.min(1,this.w));let b=2*Math.acos(a);a=1-a*a;a<1E-12?(b=0,a=1):a=1/Math.sqrt(a);return"rotate3d("+
+this.x*a+","+this.y*a+","+this.z*a+","+b+"rad)"},toAxisAngle:function(){const a=Math.max(-1,Math.min(1,this.w));var b=1-a*a;if(b<1E-12)return[[this.x,this.y,this.z],0];b=1/Math.sqrt(b);return[[this.x*b,this.y*b,this.z*b],2*Math.acos(a)]},toEuler:function(a){function b(v){return v>=1?Math.PI/2:v<=-1?-Math.PI/2:Math.asin(v)}var c=this.w,e=this.x,d=this.y,f=this.z;const g=c*e,h=c*d;c*=f;const l=e*e,p=e*d;e*=f;const q=d*d;d*=f;f*=f;return a===void 0||a==="ZXY"?[-Math.atan2(2*(p-c),1-2*(l+f)),b(2*(d+g)),
+-Math.atan2(2*(e-h),1-2*(l+q))]:a==="XYZ"||a==="RPY"?[-Math.atan2(2*(d-g),1-2*(l+q)),b(2*(e+h)),-Math.atan2(2*(p-c),1-2*(q+f))]:a==="YXZ"?[Math.atan2(2*(e+h),1-2*(l+q)),-b(2*(d-g)),Math.atan2(2*(p+c),1-2*(l+f))]:a==="ZYX"||a==="YPR"?[Math.atan2(2*(p+c),1-2*(q+f)),-b(2*(e-h)),Math.atan2(2*(d+g),1-2*(l+q))]:a==="YZX"?[-Math.atan2(2*(e-h),1-2*(q+f)),b(2*(p+c)),-Math.atan2(2*(d-g),1-2*(l+f))]:a==="XZY"?[Math.atan2(2*(d+g),1-2*(l+f)),-b(2*(p-c)),Math.atan2(2*(e+h),1-2*(q+f))]:null},clone:function(){return n(this.w,
+this.x,this.y,this.z)},rotateVector:function(a){var b=this.w;const c=this.x,e=this.y;var d=this.z,f=a.x??a[0];const g=a.y??a[1],h=a.z??a[2];let l=e*h-d*g,p=d*f-c*h,q=c*g-e*f;l+=l;p+=p;q+=q;f=f+b*l+e*q-d*p;d=g+b*p+d*l-c*q;b=h+b*q+c*p-e*l;return Array.isArray(a)?[f,d,b]:{x:f,y:d,z:b}},slerp:function(a,b,c,e){t(k,a,b,c,e);let d=this.w,f=this.x,g=this.y,h=this.z,l=k.w,p=k.x,q=k.y,v=k.z,x=d*l+f*p+g*q+h*v;x<0&&(d=-d,f=-f,g=-g,h=-h,x=-x);if(x>=1-1E-12)return function(r){return u(d+r*(l-d),f+r*(p-f),g+r*
+(q-g),h+r*(v-h))};let A=Math.acos(x),B=Math.sin(A);return function(r){var w=A*r;r=Math.sin(w);w=Math.cos(w)-x*r/B;r/=B;return n(w*d+r*l,w*f+r*p,w*g+r*q,w*h+r*v)}}};m.ZERO=n(0,0,0,0);m.ONE=n(1,0,0,0);m.I=n(0,1,0,0);m.J=n(0,0,1,0);m.K=n(0,0,0,1);Object.freeze(m.ZERO);Object.freeze(m.ONE);Object.freeze(m.I);Object.freeze(m.J);Object.freeze(m.K);m.fromAxisAngle=function(a,b){const c=a[0],e=a[1];a=a[2];var d=c*c+e*e+a*a;if(d===0)return m.ONE;b*=.5;d=Math.sin(b)/Math.sqrt(d);return n(Math.cos(b),c*d,e*
+d,a*d)};m.fromVectors=function(a,b){let c=a[0],e=a[1];a=a[2];let d=b[0],f=b[1];b=b[2];var g=Math.sqrt(c*c+e*e+a*a);const h=Math.sqrt(d*d+f*f+b*b);g>0&&(c/=g,e/=g,a/=g);h>0&&(d/=h,f/=h,b/=h);g=c*d+e*f+a*b;return g>=1-1E-12?m.ONE:1+g<=1E-12?Math.abs(c)>Math.abs(a)?u(0,-e,c,0):u(0,0,-a,e):u(1+g,e*b-a*f,a*d-c*b,c*f-e*d)};m.random=function(){var a=Math.random();const b=Math.random(),c=Math.random(),e=Math.sqrt(1-a);a=Math.sqrt(a);return n(a*Math.cos(2*Math.PI*c),e*Math.sin(2*Math.PI*b),e*Math.cos(2*Math.PI*
+b),a*Math.sin(2*Math.PI*c))};m.fromEulerLogical=function(a,b,c,e){return m.fromEuler(c,b,a,e!==void 0?e[2]+e[1]+e[0]:e)};m.fromEuler=function(a,b,c,e){var d=a*.5,f=b*.5,g=c*.5;c=Math.cos(d);b=Math.cos(f);a=Math.cos(g);d=Math.sin(d);f=Math.sin(f);g=Math.sin(g);return e===void 0||e==="ZXY"?n(c*b*a-d*f*g,f*c*a-d*g*b,d*f*a+g*c*b,d*b*a+f*g*c):e==="XYZ"||e==="RPY"?n(c*b*a-d*f*g,d*b*a+f*g*c,f*c*a-d*g*b,d*f*a+g*c*b):e==="YXZ"?n(d*f*g+c*b*a,d*g*b+f*c*a,d*b*a-f*g*c,g*c*b-d*f*a):e==="ZYX"||e==="YPR"?n(d*f*g+
+c*b*a,g*c*b-d*f*a,d*g*b+f*c*a,d*b*a-f*g*c):e==="YZX"?n(c*b*a-d*f*g,d*f*a+g*c*b,d*b*a+f*g*c,f*c*a-d*g*b):e==="XZY"?n(d*f*g+c*b*a,d*b*a-f*g*c,g*c*b-d*f*a,d*g*b+f*c*a):e==="ZYZ"?n(c*b*a-d*g*b,f*g*c-d*f*a,d*f*g+f*c*a,d*b*a+g*c*b):e==="ZXZ"?n(c*b*a-d*g*b,d*f*g+f*c*a,d*f*a-f*g*c,d*b*a+g*c*b):e==="YXY"?n(c*b*a-d*g*b,d*f*g+f*c*a,d*b*a+g*c*b,f*g*c-d*f*a):e==="YZY"?n(c*b*a-d*g*b,d*f*a-f*g*c,d*b*a+g*c*b,d*f*g+f*c*a):e==="XYX"?n(c*b*a-d*g*b,d*b*a+g*c*b,d*f*g+f*c*a,d*f*a-f*g*c):e==="XZX"?n(c*b*a-d*g*b,d*b*a+g*
+c*b,f*g*c-d*f*a,d*f*g+f*c*a):null};m.fromMatrix=function(a){let b,c,e,d,f,g,h,l;a.length===9?(b=a[0],c=a[1],e=a[2],d=a[3],f=a[4],g=a[5],h=a[6],l=a[7],a=a[8]):(b=a[0][0],c=a[0][1],e=a[0][2],d=a[1][0],f=a[1][1],g=a[1][2],h=a[2][0],l=a[2][1],a=a[2][2]);const p=b+f+a;return p>0?u(p+1,l-g,e-h,d-c):b>f&&b>a?u(l-g,1+b-f-a,c+d,e+h):f>a?u(e-h,c+d,1+f-b-a,g+l):u(d-c,e+h,g+l,1+a-b-f)};C.Quaternion=m})(this);
+
+// please tell me about bugs
 
 (function (Scratch) {
     'use strict'
 
     const cast = Scratch.Cast
+    const Quaternion = globalThis.Quaternion
 
     const makeLabel = (text) => ({
         blockType: 'label',
         text: text,
     })
 
-    const strToComplex = (str) => {
-        const castString = cast.toString(str).replace(/−/g, '-') // handle unicode minus sign
-        if (castString.endsWith('i)')) {
-            const newString = castString.slice(1, -2)
-            const parts = newString.split(' + ')
-
-            if (parts.length !== 2) {
-                throw new Error('Invalid complex number format')
-            }
-            return [cast.toNumber(parts[0]), cast.toNumber(parts[1])]
-        }
-
-        return [cast.toNumber(castString), 0]
-        
-    }
-
-    const complexToStr = (array) => {
-        return '(' + String(array[0]) + ' + ' + String(array[1]) + 'i)'
-    }
-
-    const getComplexPower = (number, power) => {
-                const [a, b] = strToComplex(number)
-                const [c, d] = strToComplex(power)
-                const r = Math.hypot(a, b)
-                const lnr = Math.log(r)
-                const O = Math.atan2(b, a)
-                const A = c * lnr - d * O
-                const B = c * O + d * lnr
-                const eUpA = Math.exp(A)
-    
-                return complexToStr([
-                   eUpA * Math.cos(B),
-                   eUpA * Math.sin(B)
-                ])
-    }
-
-    const divideComplex = (numeratior, denominatior) => {
-        const [a, b] = strToComplex(numeratior)
-        const [c, d] = strToComplex(denominatior)
-        const newDenominator = c * c + d * d
-
-        if (newDenominator === 0) {
-            throw new Error('Division by zero')
-        }
-
-        return complexToStr([(a * c + b * d) / newDenominator, (b * c - a * d) / newDenominator])
-    }
-
-    const strToQuaternion = (str) => {
-        const castString = cast.toString(str).replace(/−/g, '-') // handle unicode minus sign
-
-        if (castString.endsWith('k)')) {
-            const newString = castString.slice(1, -2)
-            const parts = newString.split(' + ')
-
-            if (parts.length !== 4) {
-                throw new Error('Invalid quaternion number format')
-            }
-            return [cast.toNumber(parts[0]), cast.toNumber(parts[1].slice(0, -1)),
-             cast.toNumber(parts[2].slice(0, -1)), cast.toNumber(parts[3])]
-        }
-
-        if (castString.endsWith('i)')) {
-            const newString = castString.slice(1, -2)
-            const parts = newString.split(' + ')
-
-            if (parts.length !== 2) {
-                throw new Error('Invalid complex number format')
-            }
-
-            return [cast.toNumber(parts[0]), cast.toNumber(parts[1]), 0, 0]
-        }
-        return [cast.toNumber(castString), 0, 0, 0]
-    }
-
-    const quaternionToStr = (array) => {
-        return '(' + String(array[0]) + ' + ' + String(array[1]) +  'i + ' + 
-        String(array[2]) + 'j + ' + String(array[3]) + 'k)'
-    }
-
-    const getQuaternionPower = (number, power) => {
-                const [a, b, c, d] = strToQuaternion(number)
-                const [e, f, g, h] = strToQuaternion(power)
-                const r = Math.hypot(a, b, c, d)
-                if (r === 0) {
-                    if (e > 0 && f === 0 && g === 0 && h === 0) {
-                        return quaternionToStr([0, 0, 0, 0]);
-                    }
-                    throw new Error("Quaternion power is undefined for this zero base");
-                }
-                const s = Math.hypot(b, c, d)
-                const O = Math.acos(Math.max(-1, Math.min(1, a / r)));
-                const L = Math.log(r)
-                if (s === 0 && a > 0) {
-                    const r = a;
-                    const L = Math.log(r);
-                    const A = e * L;
-                    const B = f * L;
-                    const C = g * L;
-                    const D = h * L;
-                    const T = Math.hypot(B, C, D);
-                    const sinT = T === 0 ? 1 : Math.sin(T) / T;
-                    const scale = Math.exp(A);
-
-                    return quaternionToStr([
-                        scale * Math.cos(T),
-                        scale * sinT * B,
-                        scale * sinT * C,
-                        scale * sinT * D
-                    ]);
-                }
-                const u = b * O / s
-                const v = c * O / s
-                const w = d * O / s
-                const A = e * L - f * u - g * v - h * w
-                const B = e * u + f * L + g * w - h * v
-                const C = e * v - f * w + g * L + h * u
-                const D = e * w + f * v - g * u + h * L
-                const T = Math.hypot(B, C, D)
-                const sinT = T !== 0 ? Math.sin(T) / T : 1
-                const eUpA = Math.exp(A)
-
-                return quaternionToStr([
-                    eUpA * Math.cos(T),
-                    eUpA * sinT * B,
-                    eUpA * sinT * C,
-                    eUpA * sinT * D
-                ])
-    }
-
-    const divideQuaternion = (numerator, denominator) => {
-        const [a, b, c, d] = strToQuaternion(numerator)
-        const [e, f, g, h] = strToQuaternion(denominator)
-        const newDenominator = e * e + f * f + g * g + h * h;
-
-        if (newDenominator === 0) {
-            throw new Error('Division by zero');
-        }
-
-        return quaternionToStr([
-            (a * e + b * f + c * g + d * h) / newDenominator,
-            (b * e - a * f - c * h + d * g) / newDenominator,
-            (c * e - a * g + b * h - d * f) / newDenominator,
-            (d * e - a * h - b * g + c * f) / newDenominator
-        ])
-    }
-
-    class ImaginaryNumbersExtension {
+    class QuaternionExtension {
         getInfo() {
             return {
-                id: 'imagnums',
-                name: 'Imaginary Numbers',
+                id: 'quaternions',
+                name: 'Quaternions',
                 color1: '#ff0000',
-                color2: '#cc0000',
+                color2: '#ff0000',
+                color3: '#cc0000',
 
                 blocks: [
-                    "---",
-                    makeLabel("Complex Numbers"),
                     {
                         opcode: 'i',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'i',
-                    },
-                    '---',
-                    {
-                        opcode: 'makeComplex',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: '([REAL] + [IMAG]i)',
-                        arguments: {
-                            REAL: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: 1
-                            },
-                            IMAG: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: 2
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'complexMath',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'complex math [VALUE1] [OP] [VALUE2]',
-                        arguments: {
-                            VALUE1: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i)',
-                            },
-                            OP: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '+',
-                                menu: 'ops'
-                            },
-                            VALUE2: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(2 + 3i)'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'complexPower',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'complex powers [VALUE1] [POWER] [VALUE2]',
-                        arguments: {
-                            VALUE1: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i)',
-                            },
-                            POWER: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '^',
-                                menu: 'powers'
-                            },
-                            VALUE2: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '2'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'complexMinus',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'complex -[VALUE]',
-                        arguments: {
-                            VALUE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i)',
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'complexAbs',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'complex abs [VALUE]',
-                        arguments: {
-                            VALUE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i)',
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'complexStuff',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'get [THING] of complex number [VALUE]',
-                        arguments: {
-                            THING: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'conjugate',
-                                menu: 'thing'
-                            },
-                            VALUE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i)',
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'complexNormalization',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'normalize complex number [VALUE]',
-                        arguments: {
-                            VALUE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i)'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'complexCompare',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'complex comparison [VALUE1] [COMPARISON] [VALUE2]',
-                        arguments: {
-                            VALUE1: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i)',
-                            },
-                            COMPARISON: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '=',
-                                menu: 'comparisons'
-                            },
-                            VALUE2: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(100 + 200i)'
-                            }
-                        }
-                    },
-                    '---',
-                    {
-                        opcode: 'goToPos',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'goto complex position [POS]',
-                        arguments: {
-                            POS: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(50 + 25i)',
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'moveBy',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'move by compex number [VALUE]',
-                        arguments: {
-                            VALUE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(50 + 25i)',
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'mulPos',
-                        blockType: Scratch.BlockType.COMMAND,
-                        text: 'multipy position by compex number [VALUE]',
-                        arguments: {
-                            VALUE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(50 + 25i)',
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'convertPos',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'convert position x: [X], y: [Y] to a complex number',
-                        arguments: {
-                            X: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: 50
-                            },
-                            Y: {
-                                type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: 25
-                            }
-                        }
-                    },
-                    makeLabel('Quaternions'),
-                    {
-                        opcode: 'quaternionI',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'i (quaternion)',
                     },
                     {
                         opcode: 'j',
@@ -369,9 +66,9 @@
                     },
                     '---',
                     {
-                        opcode: 'makeQuaternion',
+                        opcode: 'make_quaternion',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: '([REAL] + [I]i + [J]j + [K]k)',
+                        text: '[REAL] + [I]i + [J]j + [K]k',
                         arguments: {
                             REAL: {
                                 type: Scratch.ArgumentType.NUMBER,
@@ -379,26 +76,26 @@
                             },
                             I: {
                                 type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: 2
+                                defaultValue: 0
                             },
                             J: {
                                 type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: 3
+                                defaultValue: 0
                             },
                             K: {
                                 type: Scratch.ArgumentType.NUMBER,
-                                defaultValue: 4
+                                defaultValue: 0
                             }
                         }
                     },
                     {
-                        opcode: 'quaternionMath',
+                        opcode: 'math',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'quaternion math [VALUE1] [OP] [VALUE2]',
+                        text: '[VALUE1] [OP] [VALUE2]',
                         arguments: {
                             VALUE1: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)',
+                                defaultValue: '1 + 2i + 3j + 4k',
                             },
                             OP: {
                                 type: Scratch.ArgumentType.STRING,
@@ -407,18 +104,18 @@
                             },
                             VALUE2: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(2 + 3i + 4j + 5k)'
+                                defaultValue: '2 + 3i + 4j + 5k'
                             }
                         }
                     },
                     {
-                        opcode: 'quaternionPower',
+                        opcode: 'power',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'quaternion power [VALUE1] [POWER] [VALUE2]',
+                        text: '[VALUE1] [POWER] [VALUE2]',
                         arguments: {
                             VALUE1: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)',
+                                defaultValue: '1 + 2i + 3j + 4k',
                             },
                             POWER: {
                                 type: Scratch.ArgumentType.STRING,
@@ -432,62 +129,82 @@
                         }
                     },
                     {
-                        opcode: 'quaternionMinus',
+                        opcode: 'minus',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'quaternion -[VALUE]',
+                        text: '-[VALUE]',
                         arguments: {
                             VALUE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)',
+                                defaultValue: '1 + 2i + 3j + 4k',
                             }
                         }
                     },
                     {
-                        opcode: 'quaternionAbs',
+                        opcode: 'stuff',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'quaternion abs [VALUE]',
+                        text: 'get [STUFF] of [VALUE]',
                         arguments: {
-                            VALUE: {
+                            STUFF: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)',
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'quaternionStuff',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'get [THING] of quaternion [VALUE]',
-                        arguments: {
-                            THING: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: 'conjugate',
-                                menu: 'thing'
+                                defaultValue: 'abs',
+                                menu: 'stuff'
                             },
                             VALUE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)'
+                                defaultValue: '1 + 2i + 3j + 4k'
                             }
                         }
                     },
                     {
-                        opcode: 'quaternionNormalization',
+                        opcode: 'normalize',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'normalize quaterion [VALUE]',
+                        text: 'normalize [VALUE]',
                         arguments: {
                             VALUE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)'
+                                defaultValue: '1 + 2i + 3j + 4k'
                             }
                         }
                     },
                     {
-                        opcode: 'quaternionCompare',
+                        opcode: 'exp',
                         blockType: Scratch.BlockType.REPORTER,
-                        text: 'quaternion comparison [VALUE1] [COMPARISON] [VALUE2]',
+                        text: 'e^[VALUE]',
+                        arguments: {
+                            VALUE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1 + 2i + 3j + 4k'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'thing',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: 'calculate the [THING] of [VALUE1] and [VALUE2]',
+                        arguments: {
+                            THING: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: 'dot product',
+                                menu: 'thing' // bad name, I know
+                            },
+                            VALUE1: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1 + 2i + 3j + 4k'
+                            },
+                            VALUE2: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '2 + 3i + 4j + 5k'
+                            }
+                        }
+                    },
+                    {
+                        opcode: 'compare',
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: '[VALUE1] [COMPARISON] [VALUE2]',
                         arguments: {
                             VALUE1: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)',
+                                defaultValue: '1 + 2i + 3j + 4k',
                             },
                             COMPARISON: {
                                 type: Scratch.ArgumentType.STRING,
@@ -496,508 +213,274 @@
                             },
                             VALUE2: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)'
+                                defaultValue: '1 + 2i + 3j + 4k'
                             }
                         }
                     },
                     makeLabel('Convertions'),
                     {
-                        opcode: 'toReal',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'covert [VALUE] to real number',
-                        arguments: {
-                            VALUE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'toComplex',
-                        blockType: Scratch.BlockType.REPORTER,
-                        text: 'covert [VALUE] to complex number',
-                        arguments: {
-                            VALUE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '7'
-                            }
-                        }
-                    },
-                    {
-                        opcode: 'toQuaternion',
+                        opcode: 'to_quaternion',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'convert [VALUE] to quaternion',
                         arguments: {
                             VALUE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i)'
+                                defaultValue: '1'
                             }
                         }
                     },
                     {
-                        opcode: 'getReal',
+                        opcode: 'get_real',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'get real part of [VALUE]',
                         arguments: {
                             VALUE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)'
+                                defaultValue: '1 + 2i + 3j + 4k'
                             }
                         }
                     },
                     {
-                        opcode: 'getI',
+                        opcode: 'get_i',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'get i of [VALUE]',
                         arguments: {
                             VALUE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)'
+                                defaultValue: '1 + 2i + 3j + 4k'
                             }
                         }
                     },
                     {
-                        opcode: 'getJ',
+                        opcode: 'get_j',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'get j of [VALUE]',
                         arguments: {
                             VALUE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)'
+                                defaultValue: '1 + 2i + 3j + 4k'
                             }
                         }
                     },
                     {
-                        opcode: 'getK',
+                        opcode: 'get_k',
                         blockType: Scratch.BlockType.REPORTER,
                         text: 'get k of [VALUE]',
                         arguments: {
                             VALUE: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: '(1 + 2i + 3j + 4k)'
+                                defaultValue: '1 + 2i + 3j + 4k'
+                            }
+                        }
+                    },
+                    '---',
+                    {
+                        opcode: 'is_normalized',
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: 'is [VALUE] normilzed?',
+                        arguments: {
+                            VALUE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1 + 2i + 3j + 4k'
+                            }
+                        }
+                    },
+                    makeLabel('vectors'),
+                    {
+                        opcode: 'vec3',
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: '',
+                        arguments: {
+                            VALUE: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: '1 + 2i + 3j + 4k'
                             }
                         }
                     },
                 ],
                 menus: {
                     ops: {
+                        acceptReporters: true, // this is so that you can clikc the block to get the output
                         items: ['+', '-', '*', '/']
                     },
                     comparisons: {
-                        items: ['=', '≠', '≈']
+                        acceptReporters: true, // without it, there is no space in the block to click
+                        items: ['=', '≠']
                     },
                     powers: {
+                        acceptReporters: true,
                         items: ['^', '√']
                     },
+                    stuff: {
+                        items: ['abs', 'conjugate', 'reciprocal', 'argument (degrees)', 'argument (radians)', 'log']
+                    },
                     thing: {
-                        items: ['conjugate', 'reciprocal', 'argument (degrees)', 'argument (radians)', 'log']
+                        items: ['dot product', 'cross product', 'unit geodesic distance']
                     }
                 }
             }
         }
 
-        // complex numbers
-
         i() {
-            return '(0 + 1i)'
-        }
-
-        makeComplex(args)  {
-            try {
-                return complexToStr([cast.toNumber(args.REAL), cast.toNumber(args.IMAG)])
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
-
-        complexMath(args) {
-            try {
-                const [a, b] = strToComplex(args.VALUE1)
-                const [c, d] = strToComplex(args.VALUE2)
-                switch (args.OP) {
-                    case '+':
-                        return complexToStr([a + c, b + d])
-                    
-                    case '-':
-                        return complexToStr([a - c, b - d])
-                    
-                    case '*':
-                        return complexToStr([a * c - b * d, a * d + b * c])
-                    
-                    case '/':
-                        return divideComplex(args.VALUE1, args.VALUE2)
-            }
-            } catch (error) {
-                    console.log(error)
-                    return ''
-            }
-        }
-
-        complexMinus(args) {
-            try {
-                const [a, b] = strToComplex(args.VALUE)
-                return complexToStr([-a, -b])
-             } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
-
-        complexAbs(args) {
-            try {
-                const [a, b] = strToComplex(args.VALUE)
-                return Math.hypot(a, b)
-             } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
-
-        complexStuff(args) {
-            try {
-                const [a, b] = strToComplex(args.VALUE)
-                switch (args.THING) {
-                    case 'conjugate':
-                        return complexToStr([a, -b])
-                    
-                    case 'reciprocal':
-                        return divideComplex(1, args.VALUE)
-                    
-                    case 'argument (radians)':
-                        return Math.atan2(b, a)
-                    
-                        case 'argument (degrees)':
-                        const rad = Math.atan2(b, a)
-                        return rad * 180 / Math.PI
-                    
-                    case 'log':
-                        const r = Math.hypot(a, b )
-
-                        if (r === 0) return ''
-
-                        const O = Math.atan2(b, a)
-                        return complexToStr([
-                            Math.log(r),
-                            O
-                        ])
-                }
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
-
-        complexNormalization(args) {
-            try {
-                const [a, b] = strToComplex(args.VALUE)
-                return divideComplex(args.VALUE, Math.hypot(a, b ))
-             } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
-
-        complexPower(args) {
-            try {
-                if (args.POWER === '^') {
-                    return getComplexPower(cast.toString(args.VALUE1), cast.toString(args.VALUE2))
-                }
-                return getComplexPower(cast.toString(args.VALUE2), divideComplex(1, cast.toString(args.VALUE1)))
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
-
-        complexCompare(args) {
-            try {
-                const [a, b] = strToComplex(args.VALUE1)
-                const [c, d] = strToComplex(args.VALUE2)
-                switch (args.COMPARISON) {
-                    case '=':
-                        return (a === c) && (b === d)
-                    
-                    case '≠':
-                         return (a !== c) || (b !== d)
-                    
-                    case '≈':
-                        return Math.hypot(a - c, b - d) < 1e-9
-                }
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
-
-        goToPos(args, util) {
-            try {
-                const [x, y] = strToComplex(args.POS)
-                util.target.setXY(x, y)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
-        moveBy(args, util) {
-            try {
-                const [x, y] = strToComplex(args.POS)
-                util.target.setXY(util.target.x + x, util.target.y + y)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
-        mulPos(args, util) {
-            try {
-                const [a, b] = [util.target.x, util.target.y]
-                const [c, d] = strToComplex(args.VALUE)
-                util.target.setXY(a * c - b * d, a * d + b * c)
-            } catch (error) {
-                console.log(error)
-            }
-        }
-
-        convertPos(args) {
-            return complexToStr([args.X, args.Y])
-        }
-
-        // quaternions
-
-        quaternionI() {
-            return '(0 + 1i + 0j + 0k)'
+            return '0 + 1i'
         }
 
         j() {
-            return '(0 + 0i + 1j + 0k)'
+            return '0 + 0i + 1j'
         }
 
         k() {
-            return '(0 + 0i + 0j + 1k)'
+            return '0 + 0i + 0j + 1k'
         }
 
-        makeQuaternion(args)  {
-            try {
-                return quaternionToStr([cast.toNumber(args.REAL), cast.toNumber(args.I),
-                     cast.toNumber(args.J), cast.toNumber(args.K)])
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
+        make_quaternion(args) {
+            return Quaternion(args.REAL, args.I, args.J, args.K).toString()
         }
 
-        quaternionMath(args) {
-            try {
-                const [a, b, c, d] = strToQuaternion(args.VALUE1)
-                const [e, f, g, h] = strToQuaternion(args.VALUE2)
-                switch (args.OP) {
-                    case '+':
-                        return quaternionToStr([a + e, b + f, c + g, d + h])
-                    
-                    case '-':
-                        return quaternionToStr([a - e, b - f, c - g, d - h])
-                    
-                    case '*':
-                        return quaternionToStr([
-                            a * e - b * f - c * g - d * h,
-                            a * f + b * e + c * h - d * g,
-                            a * g - b * h + c * e + d * f,
-                            a * h + b * g - c * f + d * e
-                        ]);
-                    
-                    case '/':
-                        return divideQuaternion(args.VALUE1, args.VALUE2)
-            }
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
+        math(args) {
+            const q1 = Quaternion(args.VALUE1)
+            const q2 = Quaternion(args.VALUE2)
 
-        quaternionMinus(args) {
-            try {
-                const [a, b, c, d] = strToQuaternion(args.VALUE)
-                return quaternionToStr([-a, -b, -c, -d])
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
+            switch (args.OP) {
 
-        quaternionAbs(args) {
-            try {
-                const [a, b, c, d] = strToQuaternion(args.VALUE)
-                return Math.hypot(a, b, c, d)
-             } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
-
-        quaternionStuff(args) {
-            try {
-                const [a, b, c, d] = strToQuaternion(args.VALUE)
-
-                switch (args.THING) {
-                    case 'conjugate':
-                        return quaternionToStr([a, -b, -c, -d])
-
-                    case 'reciprocal':
-                        return divideQuaternion(1, args.VALUE)
-
-                    case 'argument (radians)': {
-                        return Math.atan2(Math.hypot(b, c, d), a)
-                    }
-
-                    case 'argument (degrees)': {
-                        const rad = Math.atan2(Math.hypot(b, c, d), a)
-                        return rad * 180 / Math.PI
-                    }
-
-                    case 'log': {
-                        const r = Math.hypot(a, b, c, d)
-
-                        if (r === 0) return ''
-
-                        const s = Math.hypot(b, c, d)
-
-                        if (s === 0) {
-                            if (a > 0) {
-                                return quaternionToStr([
-                                    Math.log(a), 0, 0, 0
-                                ])
-                            }
-
-                            return quaternionToStr([
-                                Math.log(-a), Math.PI, 0, 0
-                            ])
-                        }
-
-                        const O = Math.atan2(s, a)
-                        const OoverS = O / s
-
-                        return quaternionToStr([
-                            Math.log(r),
-                            OoverS * b,
-                            OoverS * c,
-                            OoverS * d
-                        ])
-                    }
+                case '+': {
+                    return q1.add(q2).toString()
                 }
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
 
-        quaternionNormalization(args) {
-            try {
-                const [a, b, c, d] = strToQuaternion(args.VALUE)
-                return divideQuaternion(args.VALUE, Math.hypot(a, b, c, d))
-             } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
-
-        quaternionPower(args) {
-            try {
-                if (args.POWER === '^') {
-                    return getQuaternionPower(cast.toString(args.VALUE1), cast.toString(args.VALUE2))
+                case '-': {
+                    return q1.sub(q2).toString()
                 }
-                return getQuaternionPower(cast.toString(args.VALUE2), divideQuaternion(1 ,cast.toString(args.VALUE1)))
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
-        }
 
-        quaternionCompare(args) {
-            try {
-                const [a, b, c ,d] = strToQuaternion(args.VALUE1)
-                const [e, f, g, h] = strToQuaternion(args.VALUE2)
-                switch (args.COMPARISON) {
-                    case '=':
-                        return (a === e) && (b === f) && (c === g) && (d === h)
-                    
-                    case '≠':
-                         return (a !== e) || (b !== f) || (c !== g) || (d !== h)
-                    
-                    case '≈':
-                        return Math.hypot(a - e, b - f, c - g, d - h) < 1e-9
+                case '*': {
+                    return q1.mul(q2).toString()
                 }
-            } catch (error) {
-                console.log(error)
-                return ''
+
+                case '/': {
+                    return q1.div(q2).toString()
+                } 
             }
         }
 
-        // convertions
+        power(args) {
+            const q1 = Quaternion(args.VALUE1)
+            const q2 = Quaternion(args.VALUE2)
 
-        toQuaternion(args) {
-            try {
-                return quaternionToStr(strToQuaternion(args.VALUE))
-            } catch (error) {
-                console.log(error)
-                return ''
+            switch (args.POWER) {
+                
+                 case '^': {
+                    return q1.pow(q2).toString()
+                }
+
+                 case '√': {
+                    return q1.pow(q2.inverse()).toString()
+                }
+
             }
         }
 
-        toComplex(args) {
-            try {
-            const [a, b, c, d] = strToQuaternion(args.VALUE)
-                return complexToStr([a, b])
-            } catch (error) {
-                console.log(error)
-                return ''
+        minus(args) {
+            return Quaternion(args.VALUE).neg().toString()
+        }
+    
+        stuff(args) {
+            const q = Quaternion(args.VALUE)
+
+            switch (args.THING) {
+
+                case 'abs': {
+                    return q.norm()
+                }
+
+                 case 'conjugate': {
+                    return q.conjugate().toString()
+                }
+
+                 case 'reciprocal': {
+                    return q.inverse().toString()
+                }
+
+                 case 'argument (degrees)': {
+                    return q.toAxisAngle()[1] * (180 / Math.PI)
+                 }
+
+                 case 'argument (radians)': {
+                    return q.toAxisAngle()[1]
+                }
+
+                case 'log': {
+                    return q.log().toString()
+                }  
             }
         }
 
-        toReal(args) {
-            try {
-                return strToQuaternion(args.VALUE)[0]
-            } catch (error) {
-                console.log(error)
-                return ''
+        normalize(args) {
+            return Quaternion(args.VALUE).normalize().toString()
+        }
+
+        exp(args) {
+            return Quaternion(args.VALUE).exp().toString()
+        }
+
+        thing(args) {
+            const q1 = Quaternion(args.VALUE1)
+            const q2 = Quaternion(args.VALUE2)
+
+            switch (args.THING) {
+
+                case 'dot product': {
+                    return q1.dot(q2)
+                }
+
+                case 'cross product': {
+                    return 'how does a cross product work?' // please, some one tell me
+                }
+
+                case 'unit geodesic distance': {
+                    return 2 * Math.acos(q1.mul(q2).norm())
+                }
             }
         }
 
-        getReal(args) {
-            try {
-                return strToQuaternion(args.VALUE)[0]
-            } catch (error) {
-                console.log(error)
-                return ''
+        compare(args) {
+            const q1 = Quaternion(args.VALUE1)
+            const q2 = Quaternion(args.VALUE2)
+
+            switch (args.COMPARISON) {
+
+                case '=': {
+                    return q1.equals(q2)
+                }
+
+                case '≠': {
+                    return !q1.equals(q2)
+                }
             }
         }
 
-        getI(args) {
-            try {
-                return strToQuaternion(args.VALUE)[1]
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
+        to_quaternion(args) {
+            return Quaternion(args.VALUE).toString()
         }
 
-        getJ(args) {
-            try {
-                return strToQuaternion(args.VALUE)[2]
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
+        get_real(args) {
+            return Quaternion(args.VALUE).w
         }
 
-        getK(args) {
-            try {
-                return strToQuaternion(args.VALUE)[3]
-            } catch (error) {
-                console.log(error)
-                return ''
-            }
+        get_i(args) {
+            return Quaternion(args.VALUE).x
         }
+
+        get_j(args) {
+            return Quaternion(args.VALUE).y
+        }
+
+        get_k(args) {
+            return Quaternion(args.VALUE).z
+        } 
+
+        is_normalized(args) {
+            return abs(Quaternion(args.VALUE).norm() - 1) <= 1E-12
+        } 
     }
 
-    Scratch.extensions.register(new ImaginaryNumbersExtension())
+    Scratch.extensions.register(new QuaternionExtension())
 })(Scratch);
