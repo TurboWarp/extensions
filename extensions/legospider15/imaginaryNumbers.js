@@ -285,18 +285,6 @@ c*b,f*g*c-d*f*a,d*f*g+f*c*a):null};m.fromMatrix=function(a){let b,c,e,d,f,g,h,l;
                             }
                         }
                     },
-                    makeLabel('vectors'),
-                    {
-                        opcode: 'vec3',
-                        blockType: Scratch.BlockType.BOOLEAN,
-                        text: '',
-                        arguments: {
-                            VALUE: {
-                                type: Scratch.ArgumentType.STRING,
-                                defaultValue: '1 + 2i + 3j + 4k'
-                            }
-                        }
-                    },
                 ],
                 menus: {
                     ops: {
