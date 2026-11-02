@@ -373,7 +373,7 @@ c*b,f*g*c-d*f*a,d*f*g+f*c*a):null};m.fromMatrix=function(a){let b,c,e,d,f,g,h,l;
         stuff(args) {
             const q = Quaternion(args.VALUE)
 
-            switch (args.THING) {
+            switch (args.STUFF) {
 
                 case 'abs': {
                     return q.norm()
