@@ -322,7 +322,7 @@ c*b,f*g*c-d*f*a,d*f*g+f*c*a):null};m.fromMatrix=function(a){let b,c,e,d,f,g,h,l;
         }
 
         make_quaternion(args) {
-            return Quaternion(args.REAL, args.I, args.J, args.K).toString()
+            return Quaternion(args.REAL, args.I, args.J, args.K)
         }
 
         math(args) {
@@ -332,19 +332,19 @@ c*b,f*g*c-d*f*a,d*f*g+f*c*a):null};m.fromMatrix=function(a){let b,c,e,d,f,g,h,l;
             switch (args.OP) {
 
                 case '+': {
-                    return q1.add(q2).toString()
+                    return q1.add(q2)
                 }
 
                 case '-': {
-                    return q1.sub(q2).toString()
+                    return q1.sub(q2)
                 }
 
                 case '*': {
-                    return q1.mul(q2).toString()
+                    return q1.mul(q2)
                 }
 
                 case '/': {
-                    return q1.div(q2).toString()
+                    return q1.div(q2)
                 } 
             }
         }
@@ -356,18 +356,18 @@ c*b,f*g*c-d*f*a,d*f*g+f*c*a):null};m.fromMatrix=function(a){let b,c,e,d,f,g,h,l;
             switch (args.POWER) {
                 
                  case '^': {
-                    return q1.pow(q2).toString()
+                    return q1.pow(q2)
                 }
 
                  case '√': {
-                    return q1.pow(q2.inverse()).toString()
+                    return q1.pow(q2.inverse())
                 }
 
             }
         }
 
         minus(args) {
-            return Quaternion(args.VALUE).neg().toString()
+            return Quaternion(args.VALUE).neg()
         }
     
         stuff(args) {
@@ -380,11 +380,11 @@ c*b,f*g*c-d*f*a,d*f*g+f*c*a):null};m.fromMatrix=function(a){let b,c,e,d,f,g,h,l;
                 }
 
                  case 'conjugate': {
-                    return q.conjugate().toString()
+                    return q.conjugate()
                 }
 
                  case 'reciprocal': {
-                    return q.inverse().toString()
+                    return q.inverse()
                 }
 
                  case 'argument (degrees)': {
@@ -396,17 +396,17 @@ c*b,f*g*c-d*f*a,d*f*g+f*c*a):null};m.fromMatrix=function(a){let b,c,e,d,f,g,h,l;
                 }
 
                 case 'log': {
-                    return q.log().toString()
+                    return q.log()
                 }  
             }
         }
 
         normalize(args) {
-            return Quaternion(args.VALUE).normalize().toString()
+            return Quaternion(args.VALUE).normalize()
         }
 
         exp(args) {
-            return Quaternion(args.VALUE).exp().toString()
+            return Quaternion(args.VALUE).exp()
         }
 
         thing(args) {
@@ -446,7 +446,7 @@ c*b,f*g*c-d*f*a,d*f*g+f*c*a):null};m.fromMatrix=function(a){let b,c,e,d,f,g,h,l;
         }
 
         to_quaternion(args) {
-            return Quaternion(args.VALUE).toString()
+            return Quaternion(args.VALUE)
         }
 
         get_real(args) {
@@ -466,7 +466,7 @@ c*b,f*g*c-d*f*a,d*f*g+f*c*a):null};m.fromMatrix=function(a){let b,c,e,d,f,g,h,l;
         } 
 
         is_normalized(args) {
-            return abs(Quaternion(args.VALUE).norm() - 1) <= 1E-12
+            return Math.abs(Quaternion(args.VALUE).norm() - 1) <= 1E-12
         } 
     }
 
