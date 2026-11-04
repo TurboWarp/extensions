@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.04
+// Version V.1.0.05
 
 (function (Scratch) {
   "use strict";
@@ -97,8 +97,7 @@
     if (!opcode) return null;
     if (opcode.startsWith("SPspriteEffectsV2_") && !opcode.endsWith("applyCustom")) {
       // this is safe.
-      // applyCustom is the only block that has user inputted filters
-      //filterString
+      // applyCustom is the only block that has user-inputted filters
     } else {
       filterString = DOMPurify.sanitize(filterString, purifySettings);
     }
@@ -127,10 +126,23 @@
     canvasFilterString = cssString;
   };
 
+  const cssToHex = (value) => {
+    if (value.startsWith("#")) return value;
+
+    const rgbValues = value.match(/\d+(\.\d+)?/g);
+    if (!rgbValues) return null;
+
+    const alpha = rgbValues[3] === undefined ? "" : Math.round(rgbValues[3] * 255)
+      .toString(16).padStart(2, "0");
+    return `#${(1 << 24 | rgbValues[0] << 16 | rgbValues[1] << 8 | rgbValues[2])
+      .toString(16).slice(1)}${alpha}`;
+  };
+
   const sanitizeColor = function (value) {
     StyleSanitizer.color = Cast.toString(value);
 
-    return StyleSanitizer.color || "#000000";
+    const browserColor = StyleSanitizer.color;
+    return cssToHex(browserColor) || "#000000";
   };
 
   const genMenuItem = (itemText, itemValue) => {
