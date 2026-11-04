@@ -436,6 +436,7 @@
         "DNin/wake-lock@description": "Impedisce al tuo computer di andare in standby.",
         "DNin/wake-lock@name": "Blocco Standby",
         "DT/cameracontrols@description": "Sposta la parte visibile dello Stage.",
+        "DT/cameracontrols@name": "Camera V1 (Mobile)",
         "DogeisCut/FormatNumbers@description": "Permette di formattare i numeri di molte cifre usando lo standard AD, la virgola fissa, la virgola fissa con migliaia separate da virgole, o la notazione scientifica.",
         "DogeisCut/FormatNumbers@name": "Formattazione Numeri",
         "JeremyGamer13/tween@description": "Metodi di interpolazione per rendere più fluide le animazioni.",
