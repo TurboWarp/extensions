@@ -386,6 +386,6 @@ Ammo Physics will report errors that have occurred. To see these errors, open th
 
 ## More Resources <a name="more-resources"></a>
 
-If you want to report a bug or suggest a new feature, please give feedback to me on my <a href="https://scratch.mit.edu/users/-MasterMath-">Scratch profile comments.</a>
+If you want to report a bug or suggest a new feature, please open an issue on the <a href="https://scratch.mit.edu/users/-MasterMath-">GitHub repository.</a>
 
-Sample projects coming soon.
+A sample project is coming soon.
