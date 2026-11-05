@@ -452,10 +452,10 @@
         );
         let argNames =
           String(text)
-            .match(/\[\s*[^(\[\])]+\s*\]/g)
+            .match(/\[\s*[^\[\]]+\s*\]/g)
             ?.valueOf()
             ?.filter((i) => i !== "[scopeList]" || !scopeListArgs) ?? [];
-        if (Boolean(scopeListArgs)) {
+        if (scopeListArgs) {
           text = String(text).replace("[scopeList]", "[SCOPE] list [LIST]");
         }
         let newBlock = {
@@ -769,18 +769,18 @@
             if (!frameData) return; //block does nothing if not used in a loop
             const block = frameData.block;
             const afterLoop = thread.blockContainer.getBlock(
-              frameData.block
+              block
             ).next;
             if (args.MODE === "continue") {
               while (
                 thread.stack[0] &&
-                thread.stack.at(-1) !== frameData.block
+                thread.stack.at(-1) !== block
               ) {
                 thread.popStack();
               }
               thread.status = thread.constructor.STATUS_YIELD;
             } else {
-              while (thread.stack.at(-1) !== frameData.block) thread.popStack();
+              while (thread.stack.at(-1) !== block) thread.popStack();
               thread.popStack();
               if (afterLoop) thread.pushStack(afterLoop);
             }
