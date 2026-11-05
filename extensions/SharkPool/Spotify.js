@@ -3,7 +3,7 @@
 // Description: Play songs and get metadata from Spotify.
 // By: SharkPool
 
-// Version 1.3.0
+// Version 1.3.01
 
 (function (Scratch) {
   "use strict";
@@ -25,7 +25,13 @@
   const EMBED_REGEX = /<script id="__NEXT_DATA__"[^>]*>([\s\S]*?)<\/script>/;
   const TOKEN_EXPIRES = 60 * 60 * 1000;
 
-  const proxy = "https://reef-proxy.onrender.com/"; // this is my proxy, managed by me
+  /**
+   * To prevent server stress, we will cache fetch results.
+   */
+  const proxies = [
+    "https://reef-proxy.onrender.com/get?url=", // this is my proxy, managed by me.
+    "https://cors.mubilop.com/?url=", // @cicerorph's hosted proxy
+  ];
 
   const SpotifyCache = new Map();
 
@@ -78,8 +84,8 @@
       this.gainNode = this.audioNode.context.createGain();
       this.gainNode.gain.value = 1;
       this.gainNode.connect(this.audioNode);
-      runtime.on("PROJECT_STOP_ALL", this.stopAll);
-      runtime.on("RUNTIME_DISPOSED", SpotifyCache.clear);
+      runtime.on("PROJECT_STOP_ALL", () => this.stopAll());
+      runtime.on("RUNTIME_DISPOSED", () => SpotifyCache.clear());
 
       this.playerInstances = [];
     }
@@ -303,6 +309,7 @@
         const token = await this._newAccessToken(type, id);
         if (!token) return null;
 
+        // eslint-disable-next-line
         const response = await Scratch.fetch(SPOTIFY_API + endpoint, {
           method: "GET",
           headers: {
@@ -334,6 +341,7 @@
         const token = await this._newAccessToken(type, id);
         if (!token) return null;
 
+        // eslint-disable-next-line
         const response = await Scratch.fetch(SPOTIFY_DB, {
           method: "POST",
           headers: {
@@ -375,29 +383,33 @@
       const cached = getFromCache(endpoint);
       if (cached) return cached;
 
-      try {
-        const response = await Scratch.fetch(`${proxy}get?url=${SPOTIFY_EMBED}${endpoint}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+      // try each proxy in the array, falling back to the next one if it fails
+      for (const proxy of proxies) {
+        try {
+          // eslint-disable-next-line
+          const response = await Scratch.fetch(`${proxy}${SPOTIFY_EMBED}${endpoint}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
 
-        const embed = await response.text();
-        const dataMatch = embed.match(EMBED_REGEX);
-        if (dataMatch) {
-          const embedData = JSON.parse(dataMatch[1]);
-          const targetData = embedData.props.pageProps.state;
-          setCache(endpoint, targetData);
-          return targetData;
+          const embed = await response.text();
+          const dataMatch = embed.match(EMBED_REGEX);
+          if (dataMatch) {
+            const embedData = JSON.parse(dataMatch[1]);
+            const targetData = embedData.props.pageProps.state;
+            setCache(endpoint, targetData);
+            return targetData;
+          }
+        } catch (error) {
+          console.warn("Failed to fetch from Spotify:", error);
         }
-
-        return null;
-      } catch (error) {
-        console.warn("Failed to fetch from Spotify:", error);
-        return null;
       }
+
+      return null;
     }
 
     async _getTrackAudioBuffer(url) {
+      // eslint-disable-next-line
       const response = await Scratch.fetch(url);
       if (!response.ok) return null;
 
@@ -517,7 +529,6 @@
         case "top 5 songs":
         case "top songs":
           urlPath = "/top-tracks";
-          /* fallthrough */
         default:
           artistData = await this._fetchFromSpotify(
             "artist", args.URL, { urlPath }
