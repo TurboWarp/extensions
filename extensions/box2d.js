@@ -14025,7 +14025,11 @@
         const position = body.GetPosition();
 
         if (draggedIds.has(targetID)) {
-          prevPos[targetID] = { x: target.x, y: target.y, dir: target.direction };
+          prevPos[targetID] = {
+            x: target.x,
+            y: target.y,
+            dir: target.direction,
+          };
           continue;
         }
 
@@ -14075,7 +14079,10 @@
           // velocity so nothing accumulates while dragging.
           this._setPosition(
             body,
-            new b2Vec2((target.x + _scroll.x) / zoom, (target.y + _scroll.y) / zoom)
+            new b2Vec2(
+              (target.x + _scroll.x) / zoom,
+              (target.y + _scroll.y) / zoom
+            )
           );
           if (!fixedRotation) {
             body.SetAngle((90 - target.direction) * toRad);
