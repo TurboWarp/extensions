@@ -357,7 +357,7 @@
       }
       getListEnvironment(args, util, scope = "SCOPE", name = "LIST") {
         switch (args[scope]) {
-          case "0": //THREAD
+          case "0": { //THREAD
             const thread = util.thread;
             if (!thread.lists) {
               thread.lists = Object.create(null);
@@ -365,7 +365,8 @@
             if (!this.isListInEnvironment(args, util, scope, name))
               thread.lists[args[name]] = [];
             return thread.lists[args[name]];
-          case "1": //SCOPED
+          }
+          case "1": { //SCOPED
             const id = util.target.id;
             if (!this.scopedLists) {
               this.resetScopedLists();
@@ -376,26 +377,29 @@
             if (!this.isListInEnvironment(args, util, scope, name))
               this.scopedLists[id][args[name]] = [];
             return this.scopedLists[id][args[name]];
-          case "2": //RUNTIME
+          }
+          case "2": { //RUNTIME
             if (!this.runtimeLists) {
               this.resetRuntimeLists();
             }
             if (!this.isListInEnvironment(args, util, scope, name))
               this.runtimeLists[args[name]] = [];
             return this.runtimeLists[args[name]];
+          }
           default:
             return [];
         }
       }
       isListInEnvironment(args, util, scope = "SCOPE", name = "LIST") {
         switch (args[scope]) {
-          case "0": //THREAD
+          case "0": { //THREAD
             const thread = util.thread;
             if (!thread.lists) {
               thread.lists = Object.create(null);
             }
             return args[name] in thread.lists;
-          case "1": //SCOPED
+          }
+          case "1": { //SCOPED
             const id = util.target.id;
             if (!this.scopedLists) {
               this.resetScopedLists();
@@ -404,11 +408,13 @@
               this.scopedLists[id] = Object.create(null);
             }
             return args[name] in this.scopedLists[id];
-          case "2": //RUNTIME
+          }
+          case "2": { //RUNTIME
             if (!this.runtimeLists) {
               this.resetRuntimeLists();
             }
             return args[name] in this.runtimeLists;
+          }
           default:
             return "";
         }
@@ -674,14 +680,16 @@
       deleteTempList(args, util) {
         if (this.isListInEnvironment(args, util)) {
           switch (args.SCOPE) {
-            case "0": //THREAD
+            case "0": { //THREAD
               const thread = util.thread;
               delete thread.lists[args.LIST];
               break;
-            case "1": //SCOPED
+            }
+            case "1": { //SCOPED
               const id = util.target.id;
               delete this.scopedLists[id][args.LIST];
               break;
+            }
             case "2": //RUNTIME
               delete this.runtimeLists[args.LIST];
               break;
@@ -692,17 +700,20 @@
       }
       deleteAllTempLists(args, util) {
         switch (args.SCOPE) {
-          case "0": //THREAD
+          case "0": { //THREAD
             const thread = util.thread;
             delete thread.lists;
             break;
-          case "1": //SCOPED
+          }
+          case "1": { //SCOPED
             const id = util.target.id;
             delete this.scopedLists[id];
             break;
-          case "2": //RUNTIME
+          }
+          case "2": { //RUNTIME
             delete this.runtimeLists;
             break;
+          }
           default:
             break;
         }
@@ -850,13 +861,14 @@
           Object.keys(
             (() => {
               switch (args.SCOPE) {
-                case "0": //THREAD
+                case "0": { //THREAD
                   const thread = util.thread;
                   if (!thread.lists) {
                     thread.lists = Object.create(null);
                   }
                   return thread.lists;
-                case "1": //SCOPED
+                }
+                case "1": { //SCOPED
                   const id = util.target.id;
                   if (!this.scopedLists) {
                     this.resetScopedLists();
@@ -865,6 +877,7 @@
                     this.scopedLists[id] = Object.create(null);
                   }
                   return this.scopedLists?.[id];
+                }
                 case "2":
                   return this.runtimeLists; //RUNTIME
                 default:
