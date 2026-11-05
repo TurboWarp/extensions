@@ -44,6 +44,20 @@ Or delete everything stored in the namespace:
 delete storage :: #0FBD8C
 ```
 
+These next blocks are used to inspect and iterate through all namespace items.
+
+```scratch
+(number of keys in storage :: #0FBD8C)
+```
+
+This block reports the total number of stored variables.
+
+```scratch
+(key # [1] in storage :: #0FBD8C)
+```
+
+This block reports the name of a key at a specific index position.
+
 ## Performance
 
 The local storage extension is inevitably slower than regular variables.
