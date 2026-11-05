@@ -1,6 +1,8 @@
 // Name: Local Storage
 // ID: localstorage
 // Description: Store data persistently. Like cookies, but better.
+// By: infernostars
+// By: GarboMuffin
 // License: MIT AND MPL-2.0
 
 (function (Scratch) {
@@ -202,6 +204,25 @@
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("delete storage"),
           },
+          "---",
+          {
+            opcode: "keyCount",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("number of keys in storage"),
+            disableMonitor: true,
+          },
+          {
+            opcode: "itemOfKey",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("key # [NUM] in storage"),
+            arguments: {
+              NUM: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+            },
+          },
+          "---",
           {
             opcode: "whenChanged",
             blockType: Scratch.BlockType.EVENT,
@@ -256,12 +277,37 @@
       saveToLocalStorage();
     }
 
+    getAll() {
+      if (!validNamespace()) {
+        return "";
+      }
+
+      return JSON.stringify(Object.keys(namespaceValues));
+    }
+
     removeAll() {
       if (!validNamespace()) {
         return "";
       }
       namespaceValues = Object.create(null);
       saveToLocalStorage();
+    }
+
+    keyCount() {
+      if (!validNamespace()) {
+        return 0;
+      }
+
+      return Object.keys(namespaceValues).length;
+    }
+
+    itemOfKey(args) {
+      if (!validNamespace()) {
+        return "";
+      }
+
+      const keys = Object.keys(namespaceValues);
+      return keys[Scratch.Cast.toNumber(args.NUM) - 1] ?? "";
     }
   }
 

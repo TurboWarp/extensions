@@ -24,9 +24,9 @@
         case "&":
           return "&amp;";
         case '"':
-          return "&apos;";
-        case "'":
           return "&quot;";
+        case "'":
+          return "&apos;";
         case ">":
           return "&gt;";
         case "<":

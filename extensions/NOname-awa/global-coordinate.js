@@ -442,6 +442,8 @@
         if (isNaN(y)) {
           y = 0;
         }
+        gx[screen - 1] = x;
+        gy[screen - 1] = y;
       }
     }
     Set_GX({ x, screen }) {

@@ -1,4 +1,4 @@
-// Name: Camera V1
+// Name: Camera V1 (Buggy)
 // ID: DTcameracontrols
 // Description: Move the visible part of the stage.
 // By: DT
@@ -235,7 +235,7 @@
     getInfo() {
       return {
         id: "DTcameracontrols",
-        name: Scratch.translate("Camera V1"),
+        name: Scratch.translate("Camera V1 (Buggy)"),
 
         color1: "#ff4da7",
         color2: "#de4391",

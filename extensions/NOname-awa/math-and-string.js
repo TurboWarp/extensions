@@ -85,10 +85,6 @@
                 type: Scratch.ArgumentType.NUMBER,
                 defaultValue: "1",
               },
-              C: {
-                type: Scratch.ArgumentType.NUMBER,
-                defaultValue: "100",
-              },
             },
           },
           "---",
@@ -492,6 +488,7 @@
           {
             opcode: "startsWith",
             blockType: Scratch.BlockType.BOOLEAN,
+            hideFromPalette: true,
             text: Scratch.translate("does [a] begin with a text?"),
             arguments: {
               a: {
@@ -951,7 +948,8 @@
           repeat_i_inc >= 0 ? repeat_i <= args.n : repeat_i >= args.n;
           repeat_i += repeat_i_inc
         ) {
-          repeat_j = String(repeat_j) + String(args.text);
+          repeat_j =
+            Scratch.Cast.toString(repeat_j) + Scratch.Cast.toString(args.text);
         }
         return repeat_j;
       }
@@ -996,6 +994,7 @@
       return replaceText(args.text, args.o, args.n);
     }
     startsWith(args) {
+      // Legacy unused block - we don't know what the intention was so we just hide this one now
       if (typeof args.a === "string" && args.a.startsWith(args.a)) {
         return true;
       } else {
@@ -1180,14 +1179,14 @@
   };
 
   const parseEnglish = (text) => {
-    const words = text.toLowerCase().match(/\b\w+\b/g);
+    const words = text.toLowerCase().match(/\b\w+\b/g) || [];
     const uniques = Array.from(new Set(words));
     uniques.sort();
     return uniques;
   };
 
   const parseChinese = (text) => {
-    const words = text.match(/[^\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+/g);
+    const words = text.match(/[^\u4e00-\u9fa5]+|[\u4e00-\u9fa5]+/g) || [];
     const uniques = Array.from(new Set(words));
     uniques.sort(function (a, b) {
       return a.localeCompare(b, "zh-Hans-CN", { sensitivity: "accent" });

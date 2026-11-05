@@ -1,6 +1,7 @@
 // Name: Ping Cloud Data
 // ID: clouddataping
 // Description: Determine whether a cloud variable server is probably up.
+// By: GarboMuffin
 // Original: TheShovel
 // License: MIT AND MPL-2.0
 

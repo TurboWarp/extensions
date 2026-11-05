@@ -70,6 +70,27 @@
     // don't return a Promise at all, otherwise the block waits for 1 frame
   };
 
+  const heldKeys = new Set();
+  const heldMouseButtons = new Set();
+  const releaseAllHeldInputs = () => {
+    for (const key of heldKeys) {
+      Scratch.vm.postIOData("keyboard", {
+        key,
+        isDown: false,
+      });
+    }
+    heldKeys.clear();
+
+    for (const button of heldMouseButtons) {
+      postMouseData({
+        isDown: false,
+        button,
+      });
+    }
+    heldMouseButtons.clear();
+  };
+  Scratch.vm.runtime.on("PROJECT_STOP_ALL", releaseAllHeldInputs);
+
   class KeySimulation {
     getInfo() {
       return {
@@ -103,6 +124,28 @@
             },
           },
           {
+            opcode: "holdKey",
+            text: Scratch.translate("hold [KEY] down"),
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "KEYS",
+              },
+            },
+          },
+          {
+            opcode: "releaseKey",
+            text: Scratch.translate("release [KEY]"),
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              KEY: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "KEYS",
+              },
+            },
+          },
+          {
             opcode: "clickMouse",
             text: Scratch.translate(
               "click [BUTTON] mouse button at x: [X] y: [Y] for [SECONDS] seconds and [AND_WAIT]"
@@ -128,6 +171,38 @@
               AND_WAIT: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "AND_WAIT",
+              },
+            },
+          },
+          {
+            opcode: "holdMouse",
+            text: Scratch.translate(
+              "hold [BUTTON] mouse button at x: [X] y: [Y]"
+            ),
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              BUTTON: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "BUTTONS",
+              },
+              X: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+              Y: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: "0",
+              },
+            },
+          },
+          {
+            opcode: "releaseMouse",
+            text: Scratch.translate("release [BUTTON] mouse button"),
+            blockType: Scratch.BlockType.COMMAND,
+            arguments: {
+              BUTTON: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "BUTTONS",
               },
             },
           },
@@ -276,6 +351,24 @@
       });
     }
 
+    holdKey(args) {
+      const key = Scratch.Cast.toString(args.KEY);
+      heldKeys.add(key);
+      Scratch.vm.postIOData("keyboard", {
+        key,
+        isDown: true,
+      });
+    }
+
+    releaseKey(args) {
+      const key = Scratch.Cast.toString(args.KEY);
+      heldKeys.delete(key);
+      Scratch.vm.postIOData("keyboard", {
+        key,
+        isDown: false,
+      });
+    }
+
     clickMouse(args) {
       simulatedX = Scratch.Cast.toNumber(args.X);
       simulatedY = Scratch.Cast.toNumber(args.Y);
@@ -289,6 +382,26 @@
           isDown: false,
           button: Scratch.Cast.toNumber(args.BUTTON),
         });
+      });
+    }
+
+    holdMouse(args) {
+      simulatedX = Scratch.Cast.toNumber(args.X);
+      simulatedY = Scratch.Cast.toNumber(args.Y);
+      const button = Scratch.Cast.toNumber(args.BUTTON);
+      heldMouseButtons.add(button);
+      postMouseData({
+        isDown: true,
+        button,
+      });
+    }
+
+    releaseMouse(args) {
+      const button = Scratch.Cast.toNumber(args.BUTTON);
+      heldMouseButtons.delete(button);
+      postMouseData({
+        isDown: false,
+        button,
       });
     }
 

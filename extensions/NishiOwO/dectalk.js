@@ -90,6 +90,7 @@
           }
         } else {
           res();
+          return;
         }
 
         const audioBuffer = audioContext.createBuffer(1, b, 11025);
