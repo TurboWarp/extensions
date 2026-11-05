@@ -1,21 +1,28 @@
 // Name: Variables Expanded
 // ID: DICandSPmonitorsPlus
 // Description: Expansion of Monitor Types and Variable Blocks.
-// By: SharkPool and DogeIsCut
+// By: SharkPool
+// By: DogeIsCut
+// License: MIT
 
-// Version 1.4.2
+// Version 1.5.01
 
 (function (Scratch) {
   "use strict";
   if (!Scratch.extensions.unsandboxed) throw new Error("Variables Expanded must run unsandboxed!");
 
+  const Cast = Scratch.Cast;
   const vm = Scratch.vm;
   const runtime = vm.runtime;
+  const isPM = Scratch.extensions.isPenguinMod;
 
   const menuIconURI =
-"data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIzMjEiIGhlaWdodD0iMzIxIiB2aWV3Qm94PSIwLDAsMzIxLDMyMSI+PGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoLTc5LjUsLTE5LjUpIj48ZyBkYXRhLXBhcGVyLWRhdGE9InsmcXVvdDtpc1BhaW50aW5nTGF5ZXImcXVvdDs6dHJ1ZX0iIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNOTQsMTgwYzAsLTgwLjYzMzU3IDY1LjM2NjQyLC0xNDYgMTQ2LC0xNDZjODAuNjMzNTgsMCAxNDYsNjUuMzY2NDMgMTQ2LDE0NmMwLDgwLjYzMzU4IC02NS4zNjY0MiwxNDYgLTE0NiwxNDZjLTgwLjYzMzU4LDAgLTE0NiwtNjUuMzY2NDIgLTE0NiwtMTQ2eiIgZmlsbD0iI2ZmOGMxYSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIvPjxwYXRoIGQ9Ik0xNjkuMDg3MzIsODQuMDM5NzRjNi4yMTQ2MSwyLjczMDg3IDkuMDQ1MDIsOS45Nzc2MyA2LjMyNjQyLDE2LjE5NzYxYy05LjQ4MDc2LDIxLjc0MDEgLTE0LjM1NDY2LDQ1LjIwODYxIC0xNC4zMTQ0NSw2OC45MjYwMmMwLDI0LjUzMDI3IDUuMTIwMjEsNDcuODI5NzMgMTQuMzI2NzYsNjguOTI2MDJjMi40NzI4OSw2LjE3MzU1IC0wLjQwNTQxLDEzLjE5NDk2IC02LjUwMDA2LDE1Ljg1NjM4Yy02LjA5NDY0LDIuNjYxNDIgLTEzLjIwMTE4LDAuMDAwMTkgLTE2LjA0ODYxLC02LjAwOTgxYy0xMC44NDQ4LC0yNC44NDQwMiAtMTYuNDI2ODYsLTUxLjY2NDc3IC0xNi4zOTQ1NCwtNzguNzcyNTljMCwtMjcuOTg4ODggNS44NDY0LC01NC42NDg0OCAxNi4zOTQ1NCwtNzguNzcyNTljMS4zMDY4OCwtMi45OTIxOSAzLjc0OTEzLC01LjM0MjQ2IDYuNzg5MjgsLTYuNTMzNThjMy4wNDAxMiwtMS4xOTExMiA2LjQyODk2LC0xLjEyNTQ2IDkuNDIwNjYsMC4xODI1NHpNMjcxLjM4MDkyLDEzMi4yMzg3MmMtMTEuMjE0NjcsMC4wMDI1MiAtMjEuODIwNDIsNS4xMDE2MiAtMjguODI1ODUsMTMuODU5MDZsLTQuMDM3MSw1LjA0NjM2bC0xLjM2NjIxLC0zLjQzMzk5Yy0zLjczNzYsLTkuMzQwOCAtMTIuNzgzMjIsLTE1LjQ2NzA3IC0yMi44NDQwNiwtMTUuNDcxNDNoLTMuOTc1NTZjLTYuNzk3NjQsMCAtMTIuMzA4MjIsNS41MTA1OCAtMTIuMzA4MjIsMTIuMzA4MjJjMCw2Ljc5NzY0IDUuNTEwNTgsMTIuMzA4MjIgMTIuMzA4MjIsMTIuMzA4MjJoMy45NzU1Nmw2LjU0Nzk3LDE2LjM2OTkybC0xMi43MzksMTUuOTM5MTRjLTIuMzM2ODUsMi45MTg3MyAtNS44NzM3NSw0LjYxNjk5IC05LjYxMjcyLDQuNjE1NTloLTAuNDgwMDJjLTYuNzk3NjQsMCAtMTIuMzA4MjIsNS41MTA1NyAtMTIuMzA4MjIsMTIuMzA4MjJjMCw2Ljc5NzY0IDUuNTEwNTcsMTIuMzA4MjIgMTIuMzA4MjIsMTIuMzA4MjJoMC40ODAwMmMxMS4yMTQ2NywtMC4wMDI1MiAyMS44MjA0MSwtNS4xMDE2MiAyOC44MjU4NSwtMTMuODU5MDZsNC4wMzcxLC01LjA0NjM2bDEuMzY2MjIsMy40MzRjMy43MzkyNiw5LjM0NDk2IDEyLjc5MTA0LDE1LjQ3MjExIDIyLjg1NjM3LDE1LjQ3MTQzaDMuOTc1NTVjNi43OTc2NCwwIDEyLjMwODIyLC01LjUxMDU4IDEyLjMwODIyLC0xMi4zMDgyMmMwLC02Ljc5NzY0IC01LjUxMDU4LC0xMi4zMDgyMiAtMTIuMzA4MjIsLTEyLjMwODIyaC0zLjk3NTU1bC02LjU0Nzk4LC0xNi4zNjk5MmwxMi43MzkwMSwtMTUuOTM5MTNjMi4zMzY4NiwtMi45MTg3MyA1Ljg3Mzc2LC00LjYxNjk4IDkuNjEyNzMsLTQuNjE1NTloMC40ODAwMWM2Ljc5NzY1LDAgMTIuMzA4MjIsLTUuNTEwNTggMTIuMzA4MjIsLTEyLjMwODIyYzAsLTYuNzk3NjQgLTUuNTEwNTcsLTEyLjMwODIyIC0xMi4zMDgyMiwtMTIuMzA4MjJoLTAuNDgwMDF6TTI5NC40NDY1MSwxMDAuMjM3MzdjLTIuNjc2MjMsLTYuMjIxMTEgMC4xNzYxNCwtMTMuNDM1NTMgNi4zODMwNiwtMTYuMTQ0NTFjNi4yMDY5MywtMi43MDg5NyAxMy40MzYyNywwLjEwNTM0IDE2LjE3NzksNi4yOTc5M2MxMC44NDkwMiwyNC44NDMxMSAxNi40MzUzLDUxLjY2MzkxIDE2LjQwNjg2LDc4Ljc3MjZjMCwyNy45ODg4OCAtNS44NDYzOSw1NC42NDg0OCAtMTYuMzk0NTQsNzguNzcyNmMtMS42Njg2Niw0LjE2NTc0IC01LjQ3MjI0LDcuMDkzMTggLTkuOTI2MzMsNy42Mzk4M2MtNC40NTQwOSwwLjU0NjY1IC04Ljg1MjcsLTEuMzc0MTQgLTExLjQ3OTE3LC01LjAxMjczYy0yLjYyNjQ3LC0zLjYzODYxIC0zLjA2NDUsLTguNDE4MjggLTEuMTQzMTUsLTEyLjQ3MzY3YzkuNDg1MzIsLTIxLjczOTA4IDE0LjM2MzQ1LC00NS4yMDc3MSAxNC4zMjY3OCwtNjguOTI2MDFjMCwtMjQuNTMwMjcgLTUuMTIwMjIsLTQ3LjgyOTc0IC0xNC4zMzkwOCwtNjguOTI2MDJ6IiBmaWxsPSIjZmZmZmZmIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIxIi8+PGcgZmlsbC1ydWxlPSJub256ZXJvIj48cGF0aCBkPSJNMjk1LjEwNTIxLDMwOC45OTEwMmMtMTAuMjYxNjgsMCAtMTguNTgwNDIsLTguMzE4NzMgLTE4LjU4MDQyLC0xOC41ODA0MXYtOTAuNDI0NjdjMCwtMTAuMjYxNjggOC4zMTg3MywtMTguNTgwNDEgMTguNTgwNDIsLTE4LjU4MDQxaDEuMjM4N2MxMC4yNjE2OCwwIDE4LjU4MDQxLDguMzE4NzMgMTguNTgwNDEsMTguNTgwNDF2OTAuNDI0NjdjMCwxMC4yNjE2OCAtOC4zMTg3MywxOC41ODA0MSAtMTguNTgwNDEsMTguNTgwNDF6IiBmaWxsPSIjZmY4YzFhIiBzdHJva2U9IiNmZjhjMWEiIHN0cm9rZS13aWR0aD0iMTIuNSIvPjxwYXRoIGQ9Ik0yMzEuOTMxODIsMjQ0LjU3ODkzYzAsLTEwLjI2MTY4IDguMzE4NzQsLTE4LjU4MDQyIDE4LjU4MDQxLC0xOC41ODA0Mmg5MC40MjQ2NmMxMC4yNjE2OCwwIDE4LjU4MDQsOC4zMTg3MyAxOC41ODA0LDE4LjU4MDQydjEuMjM4N2MwLDEwLjI2MTY5IC04LjMxODcyLDE4LjU4MDQgLTE4LjU4MDQsMTguNTgwNGgtOTAuNDI0NjZjLTEwLjI2MTY3LDAgLTE4LjU4MDQxLC04LjMxODczIC0xOC41ODA0MSwtMTguNTgwNHoiIGZpbGw9IiNmZjhjMWEiIHN0cm9rZT0iI2ZmOGMxYSIgc3Ryb2tlLXdpZHRoPSIxMi41Ii8+PHBhdGggZD0iTTIzOS44ODAxMiwyNDQuNzkwMDZjMCwtNi43NjM1MSA1LjQ4MjkxLC0xMi4yNDY0MSAxMi4yNDY0MiwtMTIuMjQ2NDFoODcuMjk5M2M2Ljc2MzUxLDAgMTIuMjQ2NDIsNS40ODI5IDEyLjI0NjQyLDEyLjI0NjQxdjAuODE2NDVjMCw2Ljc2MzUxIC01LjQ4MjkxLDEyLjI0NjQyIC0xMi4yNDY0MiwxMi4yNDY0MmgtODcuMjk5M2MtNi43NjM1MSwwIC0xMi4yNDY0MiwtNS40ODI5MiAtMTIuMjQ2NDIsLTEyLjI0NjQyeiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIiLz48cGF0aCBkPSJNMjk2LjE4NDM5LDE4OS4zMDIxOWM2Ljc2MzUxLDAgMTIuMjQ2NDEsNS40ODI5MSAxMi4yNDY0MSwxMi4yNDY0MXY4Ny4yOTkzYzAsNi43NjM1MSAtNS40ODI5LDEyLjI0NjQyIC0xMi4yNDY0MSwxMi4yNDY0MmgtMC44MTY0NWMtNi43NjM1MSwwIC0xMi4yNDY0MiwtNS40ODI5MSAtMTIuMjQ2NDEsLTEyLjI0NjQyYzAsMCAwLC00OS4yMzE5NSAwLC02NC44NjIyN2MwLC04Ljg0ODEzIDAsLTIyLjQzNzA0IDAsLTIyLjQzNzA0YzAsLTYuNzYzNTEgNS40ODI5MSwtMTIuMjQ2NDEgMTIuMjQ2NDIsLTEyLjI0NjQyeiIgZmlsbD0iI2ZmZmZmZiIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjIiLz48L2c+PHBhdGggZD0iTTg3LDE4MGMwLC04NC40OTk1NyA2OC41MDA0MywtMTUzIDE1MywtMTUzYzg0LjQ5OTU3LDAgMTUzLDY4LjUwMDQzIDE1MywxNTNjMCw4NC40OTk1NyAtNjguNTAwNDMsMTUzIC0xNTMsMTUzYy04NC40OTk1NywwIC0xNTMsLTY4LjUwMDQzIC0xNTMsLTE1M3oiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSIjZGI2ZTAwIiBzdHJva2Utd2lkdGg9IjE1Ii8+PC9nPjwvZz48L3N2Zz4=";
+"data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMjEiIGhlaWdodD0iMzIxIiB2aWV3Qm94PSIwIDAgMzIxIDMyMSI+PGcgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIj48cGF0aCBkPSJNMTQuNSAxNjAuNWMwLTgwLjYzNCA2NS4zNjYtMTQ2IDE0Ni0xNDZzMTQ2IDY1LjM2NiAxNDYgMTQ2LTY1LjM2NiAxNDYtMTQ2IDE0Ni0xNDYtNjUuMzY2LTE0Ni0xNDYiIGZpbGw9IiNmZjhjMWEiLz48cGF0aCBkPSJNODkuNTg3IDY0LjU0YzYuMjE1IDIuNzMgOS4wNDUgOS45NzcgNi4zMjcgMTYuMTk3YTE3MS43IDE3MS43IDAgMCAwLTE0LjMxNSA2OC45MjZjMCAyNC41MyA1LjEyIDQ3LjgzIDE0LjMyNyA2OC45MjYgMi40NzMgNi4xNzQtLjQwNSAxMy4xOTUtNi41IDE1Ljg1N3MtMTMuMjAxIDAtMTYuMDQ5LTYuMDFhMTk2LjMgMTk2LjMgMCAwIDEtMTYuMzk0LTc4Ljc3M2MwLTI3Ljk4OSA1Ljg0Ni01NC42NDggMTYuMzk0LTc4Ljc3MmExMi4zMSAxMi4zMSAwIDAgMSAxNi4yMS02LjM1MW0xMDIuMjk0IDQ4LjE5OWEzNi45MiAzNi45MiAwIDAgMC0yOC44MjYgMTMuODU5bC00LjAzNyA1LjA0Ni0xLjM2Ni0zLjQzNGEyNC42MiAyNC42MiAwIDAgMC0yMi44NDQtMTUuNDcxaC0zLjk3NmMtNi43OTcgMC0xMi4zMDggNS41MS0xMi4zMDggMTIuMzA4czUuNTEgMTIuMzA4IDEyLjMwOCAxMi4zMDhoMy45NzZsNi41NDggMTYuMzctMTIuNzQgMTUuOTRhMTIuMyAxMi4zIDAgMCAxLTkuNjEyIDQuNjE1aC0uNDhjLTYuNzk4IDAtMTIuMzA4IDUuNTEtMTIuMzA4IDEyLjMwOHM1LjUxIDEyLjMwOCAxMi4zMDggMTIuMzA4aC40OGEzNi45MiAzNi45MiAwIDAgMCAyOC44MjYtMTMuODU5bDQuMDM3LTUuMDQ2IDEuMzY2IDMuNDM0YTI0LjYyIDI0LjYyIDAgMCAwIDIyLjg1NiAxNS40NzFoMy45NzZjNi43OTggMCAxMi4zMDgtNS41MSAxMi4zMDgtMTIuMzA4cy01LjUxLTEyLjMwOC0xMi4zMDgtMTIuMzA4aC0zLjk3NmwtNi41NDctMTYuMzcgMTIuNzM5LTE1Ljk0YTEyLjMgMTIuMyAwIDAgMSA5LjYxMi00LjYxNWguNDhjNi43OTggMCAxMi4zMDgtNS41MSAxMi4zMDgtMTIuMzA4cy01LjUxLTEyLjMwOC0xMi4zMDgtMTIuMzA4aC0uNDh6bTIzLjA2Ni0zMi4wMDJjLTIuNjc3LTYuMjIuMTc2LTEzLjQzNSA2LjM4My0xNi4xNDQgNi4yMDctMi43MSAxMy40MzYuMTA1IDE2LjE3NyA2LjI5OGExOTYuMyAxOTYuMyAwIDAgMSAxNi40MDcgNzguNzcyYzAgMjcuOTktNS44NDYgNTQuNjQ5LTE2LjM5NCA3OC43NzNhMTIuMzA4IDEyLjMwOCAwIDEgMS0yMi41NDktOS44NDcgMTcxLjcgMTcxLjcgMCAwIDAgMTQuMzI3LTY4LjkyNmMwLTI0LjUzLTUuMTItNDcuODMtMTQuMzQtNjguOTI2eiIgZmlsbD0iI2ZmZiIgZmlsbC1ydWxlPSJldmVub2RkIi8+PHBhdGggZD0iTTIxNS42MDUgMjg5LjQ5MWMtMTAuMjYxIDAtMTguNTgtOC4zMTktMTguNTgtMTguNTh2LTkwLjQyNWMwLTEwLjI2MiA4LjMxOS0xOC41OCAxOC41OC0xOC41OGgxLjIzOWMxMC4yNjIgMCAxOC41OCA4LjMxOCAxOC41OCAxOC41OHY5MC40MjVjMCAxMC4yNjEtOC4zMTggMTguNTgtMTguNTggMTguNTh6IiBmaWxsPSIjZmY4YzFhIiBzdHJva2U9IiNmZjhjMWEiIHN0cm9rZS13aWR0aD0iMTIuNSIvPjxwYXRoIGQ9Ik0xNTIuNDMyIDIyNS4wNzljMC0xMC4yNjIgOC4zMTktMTguNTggMTguNTgtMTguNThoOTAuNDI1YzEwLjI2MiAwIDE4LjU4IDguMzE4IDE4LjU4IDE4LjU4djEuMjM5YzAgMTAuMjYxLTguMzE4IDE4LjU4LTE4LjU4IDE4LjU4aC05MC40MjVjLTEwLjI2MSAwLTE4LjU4LTguMzE5LTE4LjU4LTE4LjU4eiIgZmlsbD0iI2ZmOGMxYSIgc3Ryb2tlPSIjZmY4YzFhIiBzdHJva2Utd2lkdGg9IjEyLjUiLz48cGF0aCBkPSJNMTYwLjM4IDIyNS4yOWMwLTYuNzYzIDUuNDgzLTEyLjI0NiAxMi4yNDctMTIuMjQ2aDg3LjI5OWM2Ljc2MyAwIDEyLjI0NiA1LjQ4MyAxMi4yNDYgMTIuMjQ2di44MTdjMCA2Ljc2My01LjQ4MyAxMi4yNDYtMTIuMjQ2IDEyLjI0NmgtODcuM2MtNi43NjMgMC0xMi4yNDYtNS40ODMtMTIuMjQ2LTEyLjI0NnoiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTIxNi42ODQgMTY5LjgwMmM2Ljc2NCAwIDEyLjI0NyA1LjQ4MyAxMi4yNDcgMTIuMjQ3djg3LjI5OWMwIDYuNzYzLTUuNDgzIDEyLjI0Ni0xMi4yNDcgMTIuMjQ2aC0uODE2Yy02Ljc2NCAwLTEyLjI0Ni01LjQ4My0xMi4yNDYtMTIuMjQ2di04Ny4yOTljMC02Ljc2NCA1LjQ4Mi0xMi4yNDcgMTIuMjQ2LTEyLjI0N3oiIGZpbGw9IiNmZmYiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIyIi8+PHBhdGggZD0iTTcuNSAxNjAuNWMwLTg0LjUgNjguNS0xNTMgMTUzLTE1M3MxNTMgNjguNSAxNTMgMTUzLTY4LjUgMTUzLTE1MyAxNTMtMTUzLTY4LjUtMTUzLTE1M3oiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2RiNmUwMCIgc3Ryb2tlLXdpZHRoPSIxNSIvPjwvZz48L3N2Zz4=";
 
-  const builtInFonts = ["Sans Serif", "Serif", "Handwriting", "Marker", "Curly", "Pixel", "Scratch"];
+  const BUILT_IN_FONTS = [...new Set(
+    Array.from(document.fonts).map(f => f.family)
+  )].map((f) => ({ text: Scratch.translate(f), value: f }));
+
   let monitorButtons = {};
   let varUpdateListener = {};
   runtime.on("BEFORE_EXECUTE", () => { runtime.startHats("DICandSPmonitorsPlus_whenButtonPressed") });
@@ -40,7 +47,7 @@
     }
   });
 
-  class MonitorsPlus {
+  class VariablesExpanded {
     getInfo() {
       return {
         id: "DICandSPmonitorsPlus",
@@ -81,7 +88,7 @@
             blockType: Scratch.BlockType.COMMAND,
             text: "set [VARIABLE] to [STRING]",
             arguments: {
-              STRING: { type: Scratch.ArgumentType.STRING, defaultValue: 0 },
+              STRING: { type: Scratch.ArgumentType.STRING, defaultValue: 0, exemptFromNormalization: true },
               VARIABLE: { type: Scratch.ArgumentType.STRING, menu: "variableMenu" }
             },
           },
@@ -306,49 +313,29 @@
       }
     }
 
-    // Helper Functions
+    // Helper Funcs
     getVariables() {
       const globalVars = Object.values(runtime.getTargetForStage().variables).filter((x) => x.type == "");
       const localVars = Object.values(vm.editingTarget.variables).filter((x) => x.type == "");
       const uniqueVars = [...new Set([...globalVars, ...localVars])];
       if (uniqueVars.length === 0) return ["make a variable"];
-      return uniqueVars.map((i) => (Scratch.Cast.toString(i.name)));
+      return uniqueVars.map((i) => Cast.toString(i.name));
     }
 
     getFonts() {
-      const customFonts = runtime.fontManager ? runtime.fontManager.getFonts().map((i) => ({text: i.name, value: i.family})) : [];
-      return [ ...builtInFonts, ...customFonts ];
-    }
-
-    findVariable(varName, sprite) {
-      //support for all variable types (Cloud, Sprite-Only, Global)
-      varName = Scratch.Cast.toString(varName);
-      const cloudID = runtime.getTargetForStage().lookupVariableByNameAndType(Scratch.Cast.toString("ÃƒÂ¢Ã‹ÂœÃ‚Â " + varName), "");
-      if (cloudID) return cloudID.id;
-      let varFind = "";
-      for (const name of Object.getOwnPropertyNames(sprite.target.variables)) {
-        varFind = sprite.target.variables[name].name;
-        if (varFind === varName) return sprite.target.variables[name].id;
-      }
-      const ID = runtime.getTargetForStage().lookupVariableByNameAndType(varName, "");
-      if (!ID) return "";
-      return ID.id;
-    }
-
-    setValue(variableN, value, util) {
-      const variable = util.target.lookupOrCreateVariable(variableN, variableN);
-      variable.value = value;
+      const customFonts = runtime.fontManager ? runtime.fontManager.getFonts().map((i) => ({ text: i.name, value: i.family })) : [];
+      return [ ...BUILT_IN_FONTS, ...customFonts ];
     }
 
     refresh() {
-      // Use to refresh the toolbox to show new/deleted variables
+      // Use to force refresh the toolbox to show new/deleted variables
       if (typeof scaffolding === "undefined") {
         vm.emitWorkspaceUpdate();
         const workspace = ScratchBlocks.getMainWorkspace();
         workspace.toolboxRefreshEnabled_ = true;
         workspace.refreshToolboxSelection_();
         workspace.toolboxRefreshEnabled_ = false;
-        setTimeout(() => { runtime.requestBlocksUpdate() }, 10);
+        setTimeout(() => runtime.requestBlocksUpdate(), 10);
       }
     }
 
@@ -356,8 +343,23 @@
       // Used for creating IDs for variables
       const soup = "!#%()*+,-./:;=?@[]^_`{|}~ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       const id = [];
-      for (let i = 0; i < 20; i++) { id[i] = soup.charAt(Math.random() * soup.length) }
+      for (let i = 0; i < 20; i++) id.push(soup.charAt(Math.random() * soup.length));
       return id.join("");
+    }
+    
+    findVariable(varName, sprite) {
+      // support for all variable types (Cloud, Sprite-Only, Global)
+      varName = Cast.toString(varName);
+      const cloudID = runtime.getTargetForStage().lookupVariableByNameAndType(Cast.toString("ÃƒÂ¢Ã‹ÂœÃ‚Â " + varName), "");
+      if (cloudID) return cloudID.id;
+      let varFind = "";
+      for (const name of Object.getOwnPropertyNames(sprite.target.variables)) {
+        varFind = sprite.target.variables[name].name;
+        if (varFind === varName) return sprite.target.variables[name].id;
+      }
+
+      const variable = runtime.getTargetForStage().lookupVariableByNameAndType(varName, "");
+      return variable ? variable.id : "";
     }
 
     resetEffects(variableId, curTransform) {
@@ -368,8 +370,8 @@
       varMonitor.style.transform = matches ? `translate(${matches[1]}, ${matches[2]})` : "";
     }
 
-    getMonitor(variable, util) {
-      const varId = this.findVariable(variable, util);
+    getMonitor(varName, util) {
+      const varId = this.findVariable(varName, util);
       const varMonitor = document.querySelector(`div[data-id="${varId}"][class*="monitor"]`);
       if (!varMonitor) return "normal readout";
       const inputcheck = varMonitor.querySelector("input");
@@ -393,11 +395,13 @@
         "month", "time", "button", "file", "image", "audio"
       ];
       const isHexRegex = /^#([0-9A-F]{3}){1,2}$/i;
-      const addVarListener = (id, inp, func) => { varUpdateListener[id] = { inp, func } }
+      const addVarListener = (id, inp, func) => {
+        varUpdateListener[id] = { inp, func };
+      };
       const buttonClick = (ID, down) => {
         if (down) monitorButtons[ID] = { varName : ID, isDown : down, timeClick : Date.now() };
         else delete monitorButtons[ID];
-      }
+      };
 
       let varId = this.findVariable(nameID, util);
       if (!varId) return;
@@ -406,6 +410,7 @@
       const varMonitor = document.querySelector(`div[data-id="${varId}"][class*="monitor"]`);
       if (!varMonitor) return;
       let container, input;
+
       // Do Not Change This Class Name. We want to Preserve CSS Attributes
       container = varMonitor.querySelector(`div[class^="monitor_default-monitor_SPmonitorPlus"`);
       if (container) varMonitor.removeChild(container);
@@ -422,10 +427,10 @@
           child.style.display = "none";
         });
 
-        // Listners
+        // Listeners
         const normUpdate = (inp) => { inp.value = variable.value };
         const srcUpdate = (inp) => { inp.src = variable.value };
-        const checkUpdate = (inp) => { inp.checked = Scratch.Cast.toBoolean(variable.value) };
+        const checkUpdate = (inp) => { inp.checked = Cast.toBoolean(variable.value) };
 
         // Label Creation
         const label = document.createElement("div");
@@ -450,7 +455,7 @@
         } else {
           input = document.createElement("input");
           input.type = type;
-          if (type === "checkbox") input.checked = Scratch.Cast.toBoolean(variable.value);
+          if (type === "checkbox") input.checked = Cast.toBoolean(variable.value);
           else if (type === "button") input.value = input.value = nameID;
           else if (type === "file") input.value = "";
           else if (type === "color") {
@@ -474,7 +479,7 @@
             `;
             input.append(colorStyle);
           } else if (type === "number") {
-            input.value = Scratch.Cast.toNumber(variable.value);
+            input.value = Cast.toNumber(variable.value);
             input.max = state.get("sliderMax");
             input.min = state.get("sliderMin");
           } else { input.value = variable.value }
@@ -518,8 +523,12 @@
                 if (file) {
                   const reader = new FileReader();
                   reader.readAsDataURL(file);
-                  reader.onload = () => { variable.value = reader.result };
-                  reader.onerror = (e) => { console.error(e) };
+                  reader.onload = () => {
+                    variable.value = reader.result
+                  };
+                  reader.onerror = (e) => {
+                    console.error(e)
+                  };
                 }
               } else variable.value = input.value;
             });
@@ -529,17 +538,21 @@
       } else {
         varMonitor.firstChild.style.display = "";
         if (baseMonitors[type] === undefined) type = "normal readout";
-        runtime.requestUpdateMonitor(state.set("mode", baseMonitors[type]));
+        if (isPM) {
+          runtime.requestUpdateMonitor(state.set("mode", baseMonitors[type]));
+        } else {
+          runtime.requestUpdateMonitor({ "id": varId, "mode": baseMonitors[type] });
+        }
       }
     }
 
-    // Block Functions
+    // Block Funcs
     isShowing(args, util) {
       const info = runtime.getMonitorState().get(this.findVariable(args.VARIABLE, util));
       return info ? (info.get("visible") !== undefined && info.get("visible") !== false) : false;
     }
 
-    exists(args, util) { return Scratch.Cast.toBoolean(this.findVariable(args.VARIABLE, util)) }
+    exists(args, util) { return Cast.toBoolean(this.findVariable(args.VARIABLE, util)) }
 
     setVis(args, util) {
       const variable = util.target.lookupVariableByNameAndType(args.VAR, "");
@@ -549,14 +562,18 @@
       }, runtime);
     }
 
-    setString(args, util) { this.setValue(args.VARIABLE, args.STRING, util) }
-    setColor(args, util) { this.setValue(args.VARIABLE, args.COLOR, util) }
+    setString(args, util) {
+      const variable = util.target.lookupOrCreateVariable("", Cast.toString(args.VARIABLE));
+      variable.value = args.STRING;
+    }
+    setColor(args, util) {
+      const variable = util.target.lookupOrCreateVariable("", Cast.toString(args.VARIABLE));
+      variable.value = args.COLOR, util;
+    }
 
     swapVars(args, util) {
-      let var1 = Scratch.Cast.toString(args.VAR1);
-      let var2 = Scratch.Cast.toString(args.VAR2);
-      var1 = util.target.lookupOrCreateVariable(var1, var1);
-      var2 = util.target.lookupOrCreateVariable(var2, var2);
+      const var1 = util.target.lookupOrCreateVariable("", Cast.toString(args.VAR1));
+      const var2 = util.target.lookupOrCreateVariable("", Cast.toString(args.VAR2));
       const temp = var1.value;
       var1.value = var2.value;
       var2.value = temp;
@@ -569,8 +586,8 @@
     }
 
     makeVariable(args, util) {
-      const name = Scratch.Cast.toString(args.VARIABLE);
-      if (args.TYPE === "for this sprite only") util.target.lookupOrCreateVariable(this.generateId(), name, "");
+      const name = Cast.toString(args.VARIABLE);
+      if (args.TYPE === "for this sprite only") util.target.createVariable(this.generateId(), name, "", false);
       else runtime.createNewGlobalVariable(name, "");
       return this.refresh();
     }
@@ -589,11 +606,11 @@
       const varId = this.findVariable(args.VARIABLE, util);
       const varMonitor = document.querySelector(`div[data-id="${varId}"][class*="monitor"]`);
       if (!varMonitor) return;
-      varMonitor.setAttribute("SPposition", `[${Scratch.Cast.toNumber(args.X)}, ${Scratch.Cast.toNumber(args.Y)}]`);
-      let x = Scratch.Cast.toNumber(args.X) + canvas[0] - (varMonitor.offsetWidth / 2);
-      let y = (Scratch.Cast.toNumber(args.Y) - canvas[1] + (varMonitor.offsetHeight / 2)) * -1;
-      x = x - (parseInt(varMonitor.style.left) || 5);
-      y = y - (parseInt(varMonitor.style.top) || 5);
+      varMonitor.setAttribute("SPposition", `[${Cast.toNumber(args.X)}, ${Cast.toNumber(args.Y)}]`);
+      let x = Cast.toNumber(args.X) + canvas[0] - (varMonitor.offsetWidth / 2);
+      let y = (Cast.toNumber(args.Y) - canvas[1] + (varMonitor.offsetHeight / 2)) * -1;
+      x = x - (parseFloat(varMonitor.style.left) || 5);
+      y = y - (parseFloat(varMonitor.style.top) || 5);
 
       let styleAtts = varMonitor.getAttribute("style");
       const transformRegex = /transform:([^;]+);/;
@@ -619,15 +636,15 @@
       if (!styleAttribute) return "";
       const match = styleAttribute.match(/transform\s*:\s*translate\((-?\d+(?:\.\d+)?px),\s*(-?\d+(?:\.\d+)?px)\)/);
       if (match) {
-        if (args.POSITION === "x") return Math.round(parseInt(match[1]) - canvas[0] + (varMonitor.offsetWidth / 2)) + parseInt(varMonitor.style.left);
-        else return Math.round(((parseInt(match[2]) * -1) + canvas[1]) - (varMonitor.offsetHeight / 2) - parseInt(varMonitor.style.top)) - 1;
+        if (args.POSITION === "x") return Math.round(parseFloat(match[1]) - canvas[0] + (varMonitor.offsetWidth / 2)) + parseFloat(varMonitor.style.left);
+        else return Math.round(((parseFloat(match[2]) * -1) + canvas[1]) - (varMonitor.offsetHeight / 2) - parseFloat(varMonitor.style.top)) - 1;
       }
     }
 
     setSliderMinMaxOfVaribleTo(args, util) {
       const varId = this.findVariable(args.VARIABLE, util);
       if (!varId) return;
-      const margins = [Scratch.Cast.toNumber(args.MIN), Scratch.Cast.toNumber(args.MAX)];
+      const margins = [Cast.toNumber(args.MIN), Cast.toNumber(args.MAX)];
       const moniType = this.getMonitor(args.VARIABLE, util);
       if (moniType === "number") {
         const input = document.getElementById(`number_${varId}`);
@@ -644,11 +661,20 @@
         }
         var state = runtime.getMonitorState().get(varId);
         if (!state) return;
-        state = state.set("mode", "slider");
-        runtime.requestUpdateMonitor(state);
-        runtime.requestUpdateMonitor(new Map([
-          ["id", varId], ["sliderMin", margins[0]], ["sliderMax", margins[1]]
-        ]));
+
+        if (isPM) {
+          state = state.set("mode", "slider");
+          runtime.requestUpdateMonitor(state);
+          runtime.requestUpdateMonitor(new Map([
+            ["id", varId], ["sliderMin", margins[0]], ["sliderMax", margins[1]]
+          ]));
+        } else {
+          runtime.requestUpdateMonitor({
+            "id": varId,
+            "mode": "slider",
+            "sliderMin": margins[0], "sliderMax": margins[1]
+          });
+        }
       }
     }
 
@@ -701,7 +727,7 @@
     setFontSize(args, util) {
       const varId = this.findVariable(args.VARIABLE, util);
       const varMonitor = document.querySelector(`div[data-id="${varId}"][class*="monitor"]`);
-      if (varMonitor) varMonitor.style.fontSize = `${Scratch.Cast.toNumber(args.SIZE)}px`;
+      if (varMonitor) varMonitor.style.fontSize = `${Cast.toNumber(args.SIZE)}px`;
     }
 
     setInpColor(args, util) {
@@ -711,7 +737,7 @@
       let inputs = [
         ...varMonitor.querySelectorAll("input"), ...varMonitor.querySelectorAll("img")
       ];
-      const value = Scratch.Cast.toString(args.VALUE);
+      const value = Cast.toString(args.VALUE);
       if (args.THING === "input") {
         varMonitor.style.accentColor = value;
         Array.from(inputs).forEach(input => { input.style.background = value });
@@ -792,5 +818,5 @@
     }
   }
 
-  Scratch.extensions.register(new MonitorsPlus());
+  Scratch.extensions.register(new VariablesExpanded());
 })(Scratch);
