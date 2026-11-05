@@ -1,6 +1,6 @@
 // Name: Ammo Physics
 // ID: masterMathAmmoPhysics
-// Description: Advanced three dimensional rigid body physics and collision detection.
+// Description: Advanced 3D rigid body physics and collision detection.
 // By: -MasterMath- <https://scratch.mit.edu/users/-MasterMath-/>
 // License: MPL-2.0 AND MIT
 
