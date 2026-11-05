@@ -22,7 +22,7 @@
 >[!IMPORTANT]
 > In Ammo Physics, units matter. Proper usage of units will ensure the expected result.
 
-**While Ammo Physics doesn't enforce specific units**, it assumes the use of **Standard International (SI)** units. As such, using especially large or small arbitrary values to match custom 3D renderers may result in unexpected behavior. So, to ensure the best experience, follow these Metric standards:
+**Ammo Physics doesn't enforce specific units**. However, using **Standard International (SI)** units is strongly recommended. Using especially large or small arbitrary values to match custom 3D renderers may result in unexpected behavior. So, to ensure the best experience, follow these Metric standards:
 - Length/Distance/Position: meters
 - Mass: kilograms
 - Time: seconds
@@ -30,9 +30,9 @@
 - Torque: newton-meters (n•m)
 - Rotation: degrees
 
-While most users will likely be using Simple3D, some Scratch-based 3D engines use large unitless values for scale, but because the Ammo.js library uses single-precision floats, **large values can cause loss of precision, instability, or solver issues**, like jittery or inaccurate collisions, or objects tunneling through each other.
+While most users will likely be using Simple3D, some Scratch-based 3D engines use large unitless values for scale, but because the Ammo.js library uses single-precision floats, **very small or large values can contribute to loss of precision, instability, or solver issues**, like jittery or inaccurate collisions.
 
-Generally speaking, **values in between 0.01-1000 are safe**. If you must scale outside SI units, make sure to scale units proportionally and consistently to avoid unexpected behavior.
+The most important thing to remember is to have consistency across units. Wide ranges of reasonable scales should work if units are scaled consistently.
 
 ## Optimization <a name="optimization"></a>
 
