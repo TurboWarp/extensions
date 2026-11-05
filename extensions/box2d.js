@@ -14285,10 +14285,13 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      body
-        .GetFixtureList()
-        .SetRestitution(Cast.toNumber(args.restitution) / 100.0);
-      body.ResetMassData();
+      const value = Cast.toNumber(args.restitution);
+      if (value !== this.getRestitution(args, util)) {
+        body
+          .GetFixtureList()
+          .SetRestitution(value / 100.0);
+        body.ResetMassData();
+      }
     }
 
     getRestitution(args, util) {
