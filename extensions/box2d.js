@@ -12167,6 +12167,9 @@
   // let ujidSeq = 0;
 
   const prevPos = {};
+
+  const draggedIds = new Set();
+
   /**
    * Active b2Body/s in the world.
    * @type {Object.<string,*>}
@@ -13179,23 +13182,16 @@
 
       _setStageType(STAGE_TYPE_OPTIONS.BOXED);
 
-      // Patch vm.stopDrag & vm.startDrag so we can fix drag-dropped sprites with physics enabled.
-      this._lastBodyDragged = {
-        id: null,
-        body: null,
-      };
-
+      // Patch vm.stopDrag & vm.startDrag so drag-dropped sprites with physics behave.
+      // The body stays in `bodies` (so other blocks never create a duplicate body),
+      // but is pinned to the sprite and has its velocity zeroed while dragged.
       this._ogStartDrag = vm.startDrag;
       vm.startDrag = (...args) => {
         this._ogStartDrag.call(vm, ...args);
 
         const spriteID = args[0];
         if (bodies[spriteID] !== undefined) {
-          // Temporarily delete body to pause physics. Implementing a 'disabled'
-          // property would just create extra bottlenecks.
-          this._lastBodyDragged.id = spriteID;
-          this._lastBodyDragged.body = bodies[spriteID];
-          delete bodies[spriteID];
+          draggedIds.add(spriteID);
         }
       };
 
@@ -13204,9 +13200,26 @@
         this._ogStopDrag.call(vm, ...args);
 
         const spriteID = args[0];
-        const lastDraggedBodyID = this._lastBodyDragged.id;
-        if (lastDraggedBodyID === spriteID) {
-          bodies[spriteID] = this._lastBodyDragged.body;
+        if (draggedIds.delete(spriteID)) {
+          const body = bodies[spriteID];
+          const target = this.runtime.getTargetById(spriteID);
+          if (body && target) {
+            this._setPosition(
+              body,
+              new b2Vec2(
+                (target.x + _scroll.x) / zoom,
+                (target.y + _scroll.y) / zoom
+              )
+            );
+            body.SetLinearVelocity(new b2Vec2(0, 0));
+            body.SetAngularVelocity(0);
+            body.SetAwake(true);
+            prevPos[spriteID] = {
+              x: target.x,
+              y: target.y,
+              dir: target.direction,
+            };
+          }
         }
       };
     }
@@ -13221,6 +13234,7 @@
         delete bodies[body];
         delete prevPos[body];
       }
+
       tickRate = 30;
       // todo: delete joins?
     }
@@ -14010,6 +14024,11 @@
 
         const position = body.GetPosition();
 
+        if (draggedIds.has(targetID)) {
+          prevPos[targetID] = { x: target.x, y: target.y, dir: target.direction };
+          continue;
+        }
+
         _setXY(
           target,
           position.x * zoom - _scroll.x,
@@ -14050,6 +14069,22 @@
         const prev = prevPos[targetID];
         const fixedRotation =
           target.rotationStyle !== ROTATION_STYLE_ALL_AROUND;
+
+        if (draggedIds.has(targetID)) {
+          // Follow the sprite every tick, even if it's held still, and kill any
+          // velocity so nothing accumulates while dragging.
+          this._setPosition(
+            body,
+            new b2Vec2((target.x + _scroll.x) / zoom, (target.y + _scroll.y) / zoom)
+          );
+          if (!fixedRotation) {
+            body.SetAngle((90 - target.direction) * toRad);
+          }
+          body.SetLinearVelocity(new b2Vec2(0, 0));
+          body.SetAngularVelocity(0);
+          body.SetAwake(true);
+          continue;
+        }
 
         if (prev && (prev.x !== target.x || prev.y !== target.y)) {
           const pos = new b2Vec2(
