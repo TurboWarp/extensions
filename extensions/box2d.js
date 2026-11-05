@@ -14287,9 +14287,7 @@
 
       const value = Cast.toNumber(args.restitution);
       if (value !== this.getRestitution(args, util)) {
-        body
-          .GetFixtureList()
-          .SetRestitution(value / 100.0);
+        body.GetFixtureList().SetRestitution(value / 100.0);
         body.ResetMassData();
       }
     }
