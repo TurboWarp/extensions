@@ -309,7 +309,6 @@
         const token = await this._newAccessToken(type, id);
         if (!token) return null;
 
-        // eslint-disable-next-line
         const response = await Scratch.fetch(SPOTIFY_API + endpoint, {
           method: "GET",
           headers: {
@@ -341,7 +340,6 @@
         const token = await this._newAccessToken(type, id);
         if (!token) return null;
 
-        // eslint-disable-next-line
         const response = await Scratch.fetch(SPOTIFY_DB, {
           method: "POST",
           headers: {
@@ -386,7 +384,6 @@
       // try each proxy in the array, falling back to the next one if it fails
       for (const proxy of proxies) {
         try {
-          // eslint-disable-next-line
           const response = await Scratch.fetch(`${proxy}${SPOTIFY_EMBED}${endpoint}`);
           if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -409,7 +406,6 @@
     }
 
     async _getTrackAudioBuffer(url) {
-      // eslint-disable-next-line
       const response = await Scratch.fetch(url);
       if (!response.ok) return null;
 
