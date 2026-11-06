@@ -2,6 +2,9 @@
 
 This extension allows you to create powerful and efficient particle engines without the use of clones.
 
+> **Note:** Particle systems can have differences in behavior across browsers due to differences in rendering performance.
+> Safari, in particular, has a tendency to degrade the performance of particle engines if they are running at higher frame rates (FPS).
+
 ## Engine Setup
 
 The first step in setting up your particle engine is to create an engine.
