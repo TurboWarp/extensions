@@ -458,7 +458,7 @@
         );
         let argNames =
           String(text)
-            .match(/\[\s*[^\[\]]+\s*\]/g)
+            .match(/\[\s*[^\u005B\u005D]+\s*\]/g)
             ?.valueOf()
             ?.filter((i) => i !== "[scopeList]" || !scopeListArgs) ?? [];
         if (scopeListArgs) {
