@@ -396,6 +396,7 @@ void main() {
     twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
 
     gl.enable(gl.BLEND);
+    gl.blendEquation(gl.FUNC_ADD);
     gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
 
     for (const key in emitters) {
@@ -581,10 +582,10 @@ void main() {
     engine.renderHeight = engine.stageHeight * quality;
     engine.skin.size = [engine.renderWidth, engine.renderHeight];
 
-    const inverse = 1 / quality;
+    const factor = (2 / quality);
     engine.drawable.updateScale([
-      engine.drawableScale[0] * inverse,
-      engine.drawableScale[1] * inverse,
+      engine.drawableScale[0] * factor,
+      engine.drawableScale[1] * factor,
     ]);
   };
 
@@ -617,7 +618,7 @@ void main() {
     if (wasHighQualityEnabled === isEnabled) return;
     wasHighQualityEnabled = isEnabled;
 
-    const quality = isEnabled ? 5 : 1;
+    const quality = isEnabled ? 4 : 2;
     allEngines.forEach((engine) => applyEngineQuality(engine, quality));
   });
 
