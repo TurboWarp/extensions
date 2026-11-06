@@ -582,7 +582,7 @@ void main() {
     engine.renderHeight = engine.stageHeight * quality;
     engine.skin.size = [engine.renderWidth, engine.renderHeight];
 
-    const factor = (2 / quality);
+    const factor = 2 / quality;
     engine.drawable.updateScale([
       engine.drawableScale[0] * factor,
       engine.drawableScale[1] * factor,
