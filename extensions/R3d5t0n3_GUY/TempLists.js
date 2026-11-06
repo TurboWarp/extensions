@@ -357,7 +357,8 @@
       }
       getListEnvironment(args, util, scope = "SCOPE", name = "LIST") {
         switch (args[scope]) {
-          case "0": { //THREAD
+          case "0": {
+            //THREAD
             const thread = util.thread;
             if (!thread.lists) {
               thread.lists = Object.create(null);
@@ -366,7 +367,8 @@
               thread.lists[args[name]] = [];
             return thread.lists[args[name]];
           }
-          case "1": { //SCOPED
+          case "1": {
+            //SCOPED
             const id = util.target.id;
             if (!this.scopedLists) {
               this.resetScopedLists();
@@ -378,7 +380,8 @@
               this.scopedLists[id][args[name]] = [];
             return this.scopedLists[id][args[name]];
           }
-          case "2": { //RUNTIME
+          case "2": {
+            //RUNTIME
             if (!this.runtimeLists) {
               this.resetRuntimeLists();
             }
@@ -392,14 +395,16 @@
       }
       isListInEnvironment(args, util, scope = "SCOPE", name = "LIST") {
         switch (args[scope]) {
-          case "0": { //THREAD
+          case "0": {
+            //THREAD
             const thread = util.thread;
             if (!thread.lists) {
               thread.lists = Object.create(null);
             }
             return args[name] in thread.lists;
           }
-          case "1": { //SCOPED
+          case "1": {
+            //SCOPED
             const id = util.target.id;
             if (!this.scopedLists) {
               this.resetScopedLists();
@@ -409,7 +414,8 @@
             }
             return args[name] in this.scopedLists[id];
           }
-          case "2": { //RUNTIME
+          case "2": {
+            //RUNTIME
             if (!this.runtimeLists) {
               this.resetRuntimeLists();
             }
@@ -680,12 +686,14 @@
       deleteTempList(args, util) {
         if (this.isListInEnvironment(args, util)) {
           switch (args.SCOPE) {
-            case "0": { //THREAD
+            case "0": {
+              //THREAD
               const thread = util.thread;
               delete thread.lists[args.LIST];
               break;
             }
-            case "1": { //SCOPED
+            case "1": {
+              //SCOPED
               const id = util.target.id;
               delete this.scopedLists[id][args.LIST];
               break;
@@ -700,17 +708,20 @@
       }
       deleteAllTempLists(args, util) {
         switch (args.SCOPE) {
-          case "0": { //THREAD
+          case "0": {
+            //THREAD
             const thread = util.thread;
             delete thread.lists;
             break;
           }
-          case "1": { //SCOPED
+          case "1": {
+            //SCOPED
             const id = util.target.id;
             delete this.scopedLists[id];
             break;
           }
-          case "2": { //RUNTIME
+          case "2": {
+            //RUNTIME
             delete this.runtimeLists;
             break;
           }
@@ -779,14 +790,9 @@
               : false;
             if (!frameData) return; //block does nothing if not used in a loop
             const block = frameData.block;
-            const afterLoop = thread.blockContainer.getBlock(
-              block
-            ).next;
+            const afterLoop = thread.blockContainer.getBlock(block).next;
             if (args.MODE === "continue") {
-              while (
-                thread.stack[0] &&
-                thread.stack.at(-1) !== block
-              ) {
+              while (thread.stack[0] && thread.stack.at(-1) !== block) {
                 thread.popStack();
               }
               thread.status = thread.constructor.STATUS_YIELD;
@@ -861,14 +867,16 @@
           Object.keys(
             (() => {
               switch (args.SCOPE) {
-                case "0": { //THREAD
+                case "0": {
+                  //THREAD
                   const thread = util.thread;
                   if (!thread.lists) {
                     thread.lists = Object.create(null);
                   }
                   return thread.lists;
                 }
-                case "1": { //SCOPED
+                case "1": {
+                  //SCOPED
                   const id = util.target.id;
                   if (!this.scopedLists) {
                     this.resetScopedLists();
