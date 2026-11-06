@@ -67,7 +67,7 @@
     eCol: { val: "#0000ff", inf: 0 },
   };
 
-  // ripped from Clipping and Blening extension
+  // ripped from Clipping and Blending extension
   const Blendings = Object.assign(Object.create(null), {
     default: [
       gl.ONE,
