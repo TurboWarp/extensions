@@ -5,7 +5,7 @@ The status quo of having GarboMuffin review everything is an abject failure. The
 The requirements for merging a pull request are:
 
  - Pass the automated checks
- - Get two reviewers to approve it
+ - Get a reviewer to approve it
 
 **That's it. If GitHub will let you merge it, go ahead and do it.** The rest of this document will try to define what it means to approve a pull request.
 
