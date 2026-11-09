@@ -1273,11 +1273,13 @@ void main() {
       return new Promise((resolve) => {
         if (target[engineTag].interpolate) {
           callback = () => {
-            if (emitter.data.size > 0) {
+            if (emitter.data.size > 0 && target[engineTag]) {
               requestAnimationFrame(callback);
             } else {
-              gl.deleteTexture(emitter.texture.texture);
-              delete target[engineTag].emitters[args.NAME];
+              if (target[engineTag]) {
+                gl.deleteTexture(emitter.texture.texture);
+                delete target[engineTag].emitters[args.NAME];
+              }
               resolve();
             }
           };
@@ -1285,10 +1287,12 @@ void main() {
           callback();
         } else {
           callback = () => {
-            if (emitter.data.size < 1) {
+            if (emitter.data.size < 1 || !target[engineTag]) {
               runtime.off("BEFORE_EXECUTE", callback);
-              gl.deleteTexture(emitter.texture.texture);
-              delete target[engineTag].emitters[args.NAME];
+              if (target[engineTag]) {
+                gl.deleteTexture(emitter.texture.texture);
+                delete target[engineTag].emitters[args.NAME];
+              }
               resolve();
             }
           };
