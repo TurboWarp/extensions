@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.2.0.5
+// Version V.2.0.51
 
 (function (Scratch) {
   "use strict";
@@ -21,92 +21,6 @@
   const gl = render.gl;
   const { Drawable, Skin, twgl } = render.exports;
   const engineTag = Symbol("particleEngine");
-
-  const shapeStartString =
-    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI";
-  const PRESET_SHAPES = Object.assign(Object.create(null), {
-    square:
-      "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBkPSJNMCA1MC41VjBoNTB2NTAuNXoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
-    circle:
-      "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDQ5LjUgNDkuNSI+PHBhdGggZD0iTTAgMjQuNTVDMCAxMC45OTIgMTAuOTkyIDAgMjQuNTUgMFM0OS4xIDEwLjk5MiA0OS4xIDI0LjU1IDM4LjEwOCA0OS4xIDI0LjU1IDQ5LjEgMCAzOC4xMDggMCAyNC41NSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
-    triangle:
-      "0OS4wOTgiIGhlaWdodD0iNDIuNTIiIHZpZXdCb3g9IjAgMCA0OS4wOTggNDIuNTIiPjxwYXRoIGQ9Ik0wIDQyLjUyIDI0LjU1IDAgNDkuMSA0Mi41MnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
-    star: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDEuNSAxLjUiPjxwYXRoIGQ9Ik0xLjM3NS42MTNBLjA2LjA2IDAgMCAwIDEuMzIzLjU3TC45NjcuNTIxLjgwNS4yMmEuMDYzLjA2MyAwIDAgMC0uMTEgMEwuNTM2LjUyMS4xOC41N2EuMDYuMDYgMCAwIDAtLjA1MS4wNDMuMDYuMDYgMCAwIDAgLjAxOC4wNjNsLjI1Ni4yMzMtLjA2My4zMjhhLjA2My4wNjMgMCAwIDAgLjA5MS4wN2wuMzE5LS4xNTguMzIuMTU4YS4xLjEgMCAwIDAgLjAyOC4wMDYuMDYzLjA2MyAwIDAgMCAuMDYzLS4wNzRMMS4wOTguOTExbC4yNTYtLjIzM2EuMDYuMDYgMCAwIDAgLjAyMS0uMDY1IiBmaWxsPSIjZmZmIi8+PC9zdmc+",
-  });
-  for (const key in PRESET_SHAPES)
-    PRESET_SHAPES[key] = shapeStartString + PRESET_SHAPES[key];
-
-  const DEFAULT_BEHAVIOURS = {
-    maxP: { val: 50, inf: 0 },
-    emission: { val: 1, inf: 0 },
-    time: { val: 0.4, inf: 0.1 },
-    speed: { val: 15, inf: 0 },
-    xPos: { val: 10, inf: 0 },
-    yPos: { val: 0, inf: 0 },
-    gravX: { val: 0, inf: 0 },
-    gravY: { val: -1.5, inf: 0 },
-    sDir: { val: 0, inf: 25 },
-    eDir: { val: 0, inf: 0 },
-    sSpin: { val: 0, inf: 0 },
-    eSpin: { val: 45, inf: 135 },
-    sSize: { val: 25, inf: 10 },
-    eSize: { val: 15, inf: 5 },
-    sStreX: { val: 100, inf: 0 },
-    eStreX: { val: 100, inf: 0 },
-    sStreY: { val: 100, inf: 0 },
-    eStreY: { val: 100, inf: 0 },
-    accelRad: { val: 0, inf: 0 },
-    accelTan: { val: 0, inf: 0 },
-    sinW: { val: 0, inf: 0 },
-    cosW: { val: 0, inf: 0 },
-    sinS: { val: 1, inf: 0 },
-    cosS: { val: 1, inf: 0 },
-    fIn: { val: 0, inf: 5 },
-    fOut: { val: 15, inf: 2 },
-    sCol: { val: "#ff00ff", inf: 0 },
-    eCol: { val: "#0000ff", inf: 0 },
-  };
-
-  // ripped from Clipping and Blending extension
-  const Blendings = Object.assign(Object.create(null), {
-    default: [
-      gl.ONE,
-      gl.ONE_MINUS_SRC_ALPHA,
-      gl.ONE,
-      gl.ONE_MINUS_SRC_ALPHA,
-      gl.FUNC_ADD,
-    ],
-    additive: [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
-    "additive with alpha": [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_ADD],
-    subtract: [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
-    "subtract with alpha": [
-      gl.ONE,
-      gl.ONE,
-      gl.ONE,
-      gl.ONE,
-      gl.FUNC_REVERSE_SUBTRACT,
-    ],
-    multiply: [
-      gl.DST_COLOR,
-      gl.ONE_MINUS_SRC_ALPHA,
-      gl.DST_COLOR,
-      gl.ONE_MINUS_SRC_ALPHA,
-      gl.FUNC_ADD,
-    ],
-    invert: [
-      gl.ONE_MINUS_DST_COLOR,
-      gl.ONE_MINUS_SRC_COLOR,
-      gl.ZERO,
-      gl.ONE,
-      gl.FUNC_ADD,
-    ],
-    mask: [gl.ZERO, gl.SRC_ALPHA, gl.ZERO, gl.SRC_ALPHA, gl.FUNC_ADD],
-  });
-
-  let deltaTime = 0;
-  let prevTime = 0;
-
-  const allEngines = new Map();
 
   // Custom Skin using framebuffers
   class particleSkin extends Skin {
@@ -188,12 +102,94 @@
     }
   }
 
-  // Patch to allow opacity and blends in our engine
+  // Shape Presets
+  const _base64SvgHeader =
+    "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI";
+  const PRESET_SHAPES = Object.assign(Object.create(null), {
+    square:
+      "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDUwIDUwIj48cGF0aCBkPSJNMCA1MC41VjBoNTB2NTAuNXoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
+    circle:
+      "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDQ5LjUgNDkuNSI+PHBhdGggZD0iTTAgMjQuNTVDMCAxMC45OTIgMTAuOTkyIDAgMjQuNTUgMFM0OS4xIDEwLjk5MiA0OS4xIDI0LjU1IDM4LjEwOCA0OS4xIDI0LjU1IDQ5LjEgMCAzOC4xMDggMCAyNC41NSIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==",
+    triangle:
+      "0OS4wOTgiIGhlaWdodD0iNDIuNTIiIHZpZXdCb3g9IjAgMCA0OS4wOTggNDIuNTIiPjxwYXRoIGQ9Ik0wIDQyLjUyIDI0LjU1IDAgNDkuMSA0Mi41MnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=",
+    star: "1MCIgaGVpZ2h0PSI1MCIgdmlld0JveD0iMCAwIDEuNSAxLjUiPjxwYXRoIGQ9Ik0xLjM3NS42MTNBLjA2LjA2IDAgMCAwIDEuMzIzLjU3TC45NjcuNTIxLjgwNS4yMmEuMDYzLjA2MyAwIDAgMC0uMTEgMEwuNTM2LjUyMS4xOC41N2EuMDYuMDYgMCAwIDAtLjA1MS4wNDMuMDYuMDYgMCAwIDAgLjAxOC4wNjNsLjI1Ni4yMzMtLjA2My4zMjhhLjA2My4wNjMgMCAwIDAgLjA5MS4wN2wuMzE5LS4xNTguMzIuMTU4YS4xLjEgMCAwIDAgLjAyOC4wMDYuMDYzLjA2MyAwIDAgMCAuMDYzLS4wNzRMMS4wOTguOTExbC4yNTYtLjIzM2EuMDYuMDYgMCAwIDAgLjAyMS0uMDY1IiBmaWxsPSIjZmZmIi8+PC9zdmc+",
+  });
+  for (const key in PRESET_SHAPES)
+    PRESET_SHAPES[key] = _base64SvgHeader + PRESET_SHAPES[key];
+
+  const DEFAULT_BEHAVIOURS = {
+    maxP: { val: 50, inf: 0 },
+    emission: { val: 1, inf: 0 },
+    time: { val: 0.4, inf: 0.1 },
+    speed: { val: 15, inf: 0 },
+    xPos: { val: 10, inf: 0 },
+    yPos: { val: 0, inf: 0 },
+    gravX: { val: 0, inf: 0 },
+    gravY: { val: -1.5, inf: 0 },
+    sDir: { val: 0, inf: 25 },
+    eDir: { val: 0, inf: 0 },
+    sSpin: { val: 0, inf: 0 },
+    eSpin: { val: 45, inf: 135 },
+    sSize: { val: 25, inf: 10 },
+    eSize: { val: 15, inf: 5 },
+    sStreX: { val: 100, inf: 0 },
+    eStreX: { val: 100, inf: 0 },
+    sStreY: { val: 100, inf: 0 },
+    eStreY: { val: 100, inf: 0 },
+    accelRad: { val: 0, inf: 0 },
+    accelTan: { val: 0, inf: 0 },
+    sinW: { val: 0, inf: 0 },
+    cosW: { val: 0, inf: 0 },
+    sinS: { val: 1, inf: 0 },
+    cosS: { val: 1, inf: 0 },
+    fIn: { val: 0, inf: 5 },
+    fOut: { val: 15, inf: 2 },
+    sCol: { val: "#ff00ff", inf: 0 },
+    eCol: { val: "#0000ff", inf: 0 },
+  };
+
+  // Ripped from the Clipping & Blending extension.
+  const BLENDINGS = Object.assign(Object.create(null), {
+    default: [
+      gl.ONE,
+      gl.ONE_MINUS_SRC_ALPHA,
+      gl.ONE,
+      gl.ONE_MINUS_SRC_ALPHA,
+      gl.FUNC_ADD,
+    ],
+    additive: [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_ADD],
+    "additive with alpha": [gl.ONE, gl.ONE, gl.ONE, gl.ONE, gl.FUNC_ADD],
+    subtract: [gl.ONE, gl.ONE, gl.ZERO, gl.ONE, gl.FUNC_REVERSE_SUBTRACT],
+    "subtract with alpha": [
+      gl.ONE,
+      gl.ONE,
+      gl.ONE,
+      gl.ONE,
+      gl.FUNC_REVERSE_SUBTRACT,
+    ],
+    multiply: [
+      gl.DST_COLOR,
+      gl.ONE_MINUS_SRC_ALPHA,
+      gl.DST_COLOR,
+      gl.ONE_MINUS_SRC_ALPHA,
+      gl.FUNC_ADD,
+    ],
+    invert: [
+      gl.ONE_MINUS_DST_COLOR,
+      gl.ONE_MINUS_SRC_COLOR,
+      gl.ZERO,
+      gl.ONE,
+      gl.FUNC_ADD,
+    ],
+    mask: [gl.ZERO, gl.SRC_ALPHA, gl.ZERO, gl.SRC_ALPHA, gl.FUNC_ADD],
+  });
+
+  // Patch to allow opacity and blends in our engine.
   const gu = Drawable.prototype.getUniforms;
   Drawable.prototype.getUniforms = function () {
     const gl = this._renderer.gl;
     if (this[engineTag]) {
-      const blend = Blendings[this[engineTag]] ?? Blendings.default;
+      const blend = BLENDINGS[this[engineTag]] ?? BLENDINGS.default;
       gl.blendEquation(blend[4]);
       gl.blendFuncSeparate(blend[0], blend[1], blend[2], blend[3]);
     } else {
@@ -205,7 +201,15 @@
     return gu.call(this);
   };
 
+  let deltaTime = 0;
+  let prevTime = 0;
+
+  let CURRENT_QUALITY = render.useHighQualityRender ? 4 : 2;
+
+  const allEngines = new Map();
+
   // Constants
+  const MAX_DELTA = 3; // Prevents jumps after tab inactivity.
   const FPS_NORM = 100 / 3; // 33.333 FPS
   const radianConvert = Math.PI / 180;
   const vertices = [
@@ -213,7 +217,7 @@
   ];
   const texcoords = [0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1];
 
-  /* allows sin/cos computations to be faster */
+  /* allows sin/cos computations to be a bit faster */
   const TWO_PI = Math.PI * 2;
   const INV_TWO_PI = 8192 / TWO_PI;
   const sinTable = new Float32Array(8192);
@@ -347,27 +351,37 @@ void main() {
     render.updateDrawableSkinId(drawableId, skinId);
     drawable.customDrawableName = `${targetName} Particle Engine (SP)`;
     drawable[engineTag] = "default";
-    drawable.onStageSZChange = ((event) => {
-      const size = event.newSize;
+    drawable._onStageSZChange = ((event) => {
+      const [width, height] = event.newSize;
 
-      skin.size = size;
-      engine.stageWidth = size[0];
-      engine.stageHeight = size[1];
-      engine.renderWidth = size[0];
-      engine.renderHeight = size[1];
-      engine.projection = twgl.m4.ortho(0, size[0], size[1], 0, -1, 1);
+      skin.size = event.newSize;
+      engine.stageWidth = width;
+      engine.stageHeight = height;
+      engine.renderWidth = width;
+      engine.renderHeight = height;
+      engine.projection = twgl.m4.ortho(0, width, height, 0, -1, 1);
     }).bind(this);
-    render.on("NativeSizeChanged", drawable.onStageSZChange);
+
+    if (CURRENT_QUALITY !== 2) {
+      applyEngineQuality(engine, CURRENT_QUALITY);
+    }
+
+    render.on("NativeSizeChanged", drawable._onStageSZChange);
     runtime.requestRedraw();
   };
 
   const disposeEngine = (target) => {
     const engine = target[engineTag];
     if (!engine) return;
-    render.removeListener("NativeSizeChanged", engine.drawable.onStageSZChange);
+
+    render.removeListener("NativeSizeChanged", engine.drawable._onStageSZChange);
     render.destroyDrawable(engine.drawableId, "sprite");
     render.destroySkin(engine.skinId);
     runtime.requestRedraw();
+
+    for (const emitter of Object.values(engine.emitters)) {
+      gl.deleteTexture(emitter.texture.texture);
+    }
 
     target[engineTag] = undefined;
     allEngines.delete(target.getName());
@@ -403,7 +417,7 @@ void main() {
       const emitter = emitters[key];
       if (!emitter.texture) continue;
 
-      const { pos, opts, tintCache, data, texture } = emitter;
+      const { pos, opts, data, texture } = emitter;
       const { tWidth, tHeight } = texture;
       emitter.frameCnt++;
 
@@ -450,6 +464,11 @@ void main() {
             ogPos: [],
           };
           obj.ogPos = [obj.x, obj.y];
+          obj.dir0 = obj.dir;
+          obj.spin0 = obj.spin;
+          obj.size0 = obj.size;
+          obj.streX0 = obj.streX;
+          obj.streY0 = obj.streY;
           data.add(obj);
         }
       }
@@ -458,42 +477,27 @@ void main() {
       gl.bindTexture(gl.TEXTURE_2D, texture.texture);
 
       for (const particle of data) {
-        let {
-          ind,
-          conLife,
-          life,
-          x,
-          y,
-          ogPos,
-          dir,
-          eDir,
-          size,
-          eSize,
-          spin,
-          eSpin,
-          speed,
-          gravX,
-          gravY,
-          streX,
-          eStreX,
-          streY,
-          eStreY,
-          accelRad,
-          accelTan,
-          sinW,
-          sinS,
-          cosW,
-          cosS,
-          fIn,
-          fOut,
-          sCol,
-          eCol,
+        const {
+          ind, conLife, life, x, y, ogPos,
+          dir0, eDir, size0, eSize, spin0, eSpin,
+          speed, gravX, gravY,
+          streX0, eStreX, streY0, eStreY,
+          accelRad, accelTan, sinW, sinS, cosW, cosS,
+          fIn, fOut, sCol, eCol,
         } = particle;
+
         /* do not draw if dead */
         if (particle.life - lifeRate <= 0) {
           data.delete(particle);
           continue;
         }
+
+        const t = Math.max(0, Math.min(ind / Math.max(conLife, Number.EPSILON), 1));
+        const dir = dir0 + (eDir - dir0) * t;
+        const spin = spin0 + (eSpin - spin0) * t;
+        const size = size0 + (eSize - size0) * t;
+        const streX = streX0 + (eStreX - streX0) * t;
+        const streY = streY0 + (eStreY - streY0) * t;
 
         const dx = x - (pos[0] + width * 0.5);
         const dy = y - (pos[1] + height * 0.5);
@@ -519,20 +523,10 @@ void main() {
         particle.x = ogPos[0] + fastSin(waveT * sinS) * sinW;
         particle.y = ogPos[1] + fastCos(waveT * cosS) * cosW;
 
-        const fadeIn = ind * (1 / fIn);
-        const fadeOut = (conLife - ind) * (1 / fOut);
+        const fadeIn = ind * Math.max(Number.EPSILON, 1 / fIn);
+        const fadeOut = (conLife - ind) * Math.max(Number.EPSILON, 1 / fOut);
         const opacity = Math.max(Math.min(fadeIn, fadeOut, 1), 0);
-
-        const tintKey = life.toFixed(4);
-        let tint = tintCache.get(tintKey);
-        if (!tint) {
-          tint = createTint(
-            sCol[0],
-            eCol[0],
-            Math.max(0, Math.min(ind / conLife, 1))
-          );
-          tintCache.set(tintKey, tint);
-        }
+        const tint = createTint(sCol[0], eCol[0], t);
 
         particle.ind += delta;
         particle.life -= lifeRate;
@@ -562,13 +556,6 @@ void main() {
           u_tintColor: [...tint, opacity],
         });
         twgl.drawBufferInfo(gl, bufferInfo);
-
-        const progress = delta / conLife;
-        particle.dir += (eDir - dir) * progress;
-        particle.spin += (eSpin - spin) * progress;
-        particle.size += (eSize - size) * progress;
-        particle.streX += (eStreX - streX) * progress;
-        particle.streY += (eStreY - streY) * progress;
       }
     }
 
@@ -595,7 +582,6 @@ void main() {
       for (const entry of emitters) {
         const emitter = entry[1];
         emitter.data.clear();
-        emitter.tintCache.clear();
         delete engine.emitters[entry[0]];
       }
     });
@@ -614,12 +600,12 @@ void main() {
 
   let wasHighQualityEnabled;
   render.on("UseHighQualityRenderChanged", (isEnabled) => {
-    // toggle high-quality rendering for all enginges
+    // toggle high-quality rendering for all enginges.
     if (wasHighQualityEnabled === isEnabled) return;
     wasHighQualityEnabled = isEnabled;
 
-    const quality = isEnabled ? 4 : 2;
-    allEngines.forEach((engine) => applyEngineQuality(engine, quality));
+    CURRENT_QUALITY = isEnabled ? 4 : 2;
+    allEngines.forEach((engine) => applyEngineQuality(engine, CURRENT_QUALITY));
   });
 
   // update non-interpolated engines
@@ -634,14 +620,18 @@ void main() {
     });
   });
 
-  // update interpolated engines
+  // Update interpolated engines.
   function interpolateEngines(deltaFrame) {
     if (runtime.ioDevices.clock._paused) {
+      prevTime = deltaFrame;
       requestAnimationFrame(interpolateEngines);
       return;
     }
 
-    deltaTime = prevTime === 0 ? 0 : (deltaFrame - prevTime) * 0.033;
+    deltaTime =
+      prevTime === 0
+        ? 0
+        : Math.min((deltaFrame - prevTime) / FPS_NORM, MAX_DELTA);
     prevTime = deltaFrame;
 
     let hasReasonToRefresh = false;
@@ -651,10 +641,7 @@ void main() {
       hasReasonToRefresh = true;
     });
 
-    if (hasReasonToRefresh) {
-      render.dirty = true;
-    }
-
+    if (hasReasonToRefresh) render.dirty = true;
     requestAnimationFrame(interpolateEngines);
   }
   requestAnimationFrame(interpolateEngines);
@@ -1147,8 +1134,8 @@ void main() {
 
     setEngineSize(args) {
       const target = this.getSprite(args.TARGET);
-      const engine = target[engineTag];
-      if (target && engine) {
+      if (target && target[engineTag]) {
+        const engine = target[engineTag];
         const scale = [Cast.toNumber(args.x), Cast.toNumber(args.y) * -1];
         engine.drawableScale = scale;
         applyEngineQuality(engine, engine.quality);
@@ -1157,8 +1144,8 @@ void main() {
 
     setCanvasQuality(args) {
       const target = this.getSprite(args.TARGET);
-      const engine = target[engineTag];
-      if (target && engine) {
+      if (target && target[engineTag]) {
+        const engine = target[engineTag];
         const quality = Math.max(1, Cast.toNumber(args.QUALITY)) / 25;
         applyEngineQuality(engine, quality);
       }
@@ -1219,7 +1206,6 @@ void main() {
         rawPos: [0, 0],
         opts: structuredClone(DEFAULT_BEHAVIOURS),
         frameCnt: 0,
-        tintCache: new Map(),
         data: new Set(),
       };
       newTexture(PRESET_SHAPES["square"], (t) => {
@@ -1234,6 +1220,10 @@ void main() {
     deleteEmitter(args) {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
+        const emitter = target[engineTag].emitters[args.NAME];
+        if (!emitter) return;
+
+        gl.deleteTexture(emitter.texture.texture);
         delete target[engineTag].emitters[args.NAME];
       }
     }
@@ -1257,6 +1247,7 @@ void main() {
             if (emitter.data.size > 0) {
               requestAnimationFrame(callback);
             } else {
+              gl.deleteTexture(emitter.texture.texture);
               delete target[engineTag].emitters[args.NAME];
               resolve();
             }
@@ -1267,6 +1258,7 @@ void main() {
           callback = () => {
             if (emitter.data.size < 1) {
               runtime.off("BEFORE_EXECUTE", callback);
+              gl.deleteTexture(emitter.texture.texture);
               delete target[engineTag].emitters[args.NAME];
               resolve();
             }
@@ -1313,10 +1305,11 @@ void main() {
       const target = this.getSprite(args.TARGET);
       if (target && target[engineTag]) {
         const engine = target[engineTag];
-        const space = engine.emitters[args.NAME];
-        if (space) {
+        const emitter = engine.emitters[args.NAME];
+        if (emitter) {
           newTexture(args.IMG, (texture) => {
-            space.texture = texture;
+            gl.deleteTexture(emitter.texture.texture);
+            emitter.texture = texture;
           });
           runtime.requestRedraw();
         }
@@ -1336,21 +1329,17 @@ void main() {
         const engine = target[engineTag];
         const emitter = engine.emitters[args.NAME];
         if (emitter) {
-          let type,
-            val,
-            shouldResetCache = false;
+          let type;
+          let val;
           if (args.TOCOL) {
             type = args.TYPE === "sCol" ? "sCol" : "eCol";
             val = Cast.toString(args.VAL);
-            shouldResetCache = true;
           } else {
             type = Cast.toString(args.TYPE);
-            if (type === "time") shouldResetCache = true;
             val = Cast.toNumber(args.VAL);
           }
           if (emitter.opts[type]) {
             emitter.opts[type] = { val, inf: Cast.toNumber(args.INT) };
-            if (shouldResetCache) emitter.tintCache.clear();
           }
         }
       }
@@ -1376,23 +1365,28 @@ void main() {
         if (emitter) {
           try {
             const rawOpts = JSON.parse(args.DATA);
-            if (rawOpts.constructor.name !== "Object") return;
-            const whiteKeys = Object.keys(DEFAULT_BEHAVIOURS);
-            const entries = Object.entries(rawOpts);
-            if (whiteKeys.length !== entries.length) return;
-            for (let i = 0; i < entries.length; i++) {
-              const entry = entries[i][1];
+            if (typeof rawOpts !== "object" || Array.isArray(rawOpts)) return;
+
+            const whitelistKeys = Object.keys(DEFAULT_BEHAVIOURS);
+            const rawKeys = Object.keys(rawOpts);
+            const rawValues = Object.values(rawOpts);
+
+            const hasRequiredKeys = whitelistKeys.every((key) => rawKeys.includes(key));
+            if (!hasRequiredKeys) return;
+
+            for (let i = 0; i < rawKeys.length; i++) {
+              const option = rawValues[i];
               if (
-                typeof entry.inf === "number" &&
-                (entries[i][0].includes("Col")
-                  ? typeof entry.val === "string"
-                  : typeof entry.val === "number")
+                typeof option.inf === "number" &&
+                (rawKeys[i].includes("Col")
+                  ? typeof option.val === "string"
+                  : typeof option.val === "number")
               )
                 continue;
               else return;
             }
+
             emitter.opts = rawOpts;
-            emitter.tintCache.clear();
           } catch {}
         }
       }
