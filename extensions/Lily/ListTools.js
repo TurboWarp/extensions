@@ -608,7 +608,8 @@
         "list"
       );
       if (!list2) return;
-      list1.value = list2.value;
+
+      list1.value = [...list2.value];
     }
 
     joinLists(args, util) {
