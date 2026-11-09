@@ -374,7 +374,10 @@ void main() {
     const engine = target[engineTag];
     if (!engine) return;
 
-    render.removeListener("NativeSizeChanged", engine.drawable._onStageSZChange);
+    render.removeListener(
+      "NativeSizeChanged",
+      engine.drawable._onStageSZChange
+    );
     render.destroyDrawable(engine.drawableId, "sprite");
     render.destroySkin(engine.skinId);
     runtime.requestRedraw();
@@ -478,12 +481,35 @@ void main() {
 
       for (const particle of data) {
         const {
-          ind, conLife, life, x, y, ogPos,
-          dir0, eDir, size0, eSize, spin0, eSpin,
-          speed, gravX, gravY,
-          streX0, eStreX, streY0, eStreY,
-          accelRad, accelTan, sinW, sinS, cosW, cosS,
-          fIn, fOut, sCol, eCol,
+          ind,
+          conLife,
+          life,
+          x,
+          y,
+          ogPos,
+          dir0,
+          eDir,
+          size0,
+          eSize,
+          spin0,
+          eSpin,
+          speed,
+          gravX,
+          gravY,
+          streX0,
+          eStreX,
+          streY0,
+          eStreY,
+          accelRad,
+          accelTan,
+          sinW,
+          sinS,
+          cosW,
+          cosS,
+          fIn,
+          fOut,
+          sCol,
+          eCol,
         } = particle;
 
         /* do not draw if dead */
@@ -492,7 +518,10 @@ void main() {
           continue;
         }
 
-        const t = Math.max(0, Math.min(ind / Math.max(conLife, Number.EPSILON), 1));
+        const t = Math.max(
+          0,
+          Math.min(ind / Math.max(conLife, Number.EPSILON), 1)
+        );
         const dir = dir0 + (eDir - dir0) * t;
         const spin = spin0 + (eSpin - spin0) * t;
         const size = size0 + (eSize - size0) * t;
@@ -1371,7 +1400,9 @@ void main() {
             const rawKeys = Object.keys(rawOpts);
             const rawValues = Object.values(rawOpts);
 
-            const hasRequiredKeys = whitelistKeys.every((key) => rawKeys.includes(key));
+            const hasRequiredKeys = whitelistKeys.every((key) =>
+              rawKeys.includes(key)
+            );
             if (!hasRequiredKeys) return;
 
             for (let i = 0; i < rawKeys.length; i++) {
