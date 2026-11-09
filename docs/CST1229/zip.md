@@ -31,7 +31,7 @@ Creates and opens an empty archive with nothing in it. The name is used for deal
 ---
 
 ```scratch
-open archive from zip from (URL v) [https://extensions.turbowarp.org] named [archive] :: #a49a3a
+open archive from zip from (URL v) [https://extensions.turbowarp.org/hello.zip] named [archive] :: #a49a3a
 ```
 Creates and opens an archive from a .zip (or .sb3 or .sprite3...) file.
 
@@ -45,7 +45,8 @@ The type can be one of the following:
 
 The name is used for dealing with multiple archives at time; it can be any non-empty string and does *not* have to be the archive's filename.
 
-If the file is not of zip format (like RAR or 7z) or is password-protected, it won't be opened. Make sure to check if it loaded successfully with the `error opening archive?` block. 
+> [!TIP]
+> If the file is not of zip format (like RAR or 7z) or is password-protected, it won't be opened. Make sure to check if it loaded successfully with the `error opening archive?` block. 
 
 ---
 

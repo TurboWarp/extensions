@@ -1,6 +1,7 @@
 // Name: Steamworks
 // ID: steamworks
 // Description: Connect your project to Steamworks APIs.
+// By: GarboMuffin
 // License: MPL-2.0
 // Context: Probably don't translate the word "Steamworks".
 

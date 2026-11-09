@@ -21,6 +21,7 @@
   let recognizedSpeech = "";
   let recording = false;
   let initializedSpeechRecognition = false;
+  let inflightSpeechRecognitionInit = null;
   let speechRecognition = null;
   const initializeSpeechRecognition = async () => {
     if (initializedSpeechRecognition) {
@@ -900,8 +901,16 @@
       return originalTarget.sprite.clones.length - 1;
     }
 
-    recording({ toggle }) {
-      initializeSpeechRecognition();
+    async recording({ toggle }) {
+      if (inflightSpeechRecognitionInit === null) {
+        inflightSpeechRecognitionInit = initializeSpeechRecognition();
+      }
+      try {
+        await inflightSpeechRecognitionInit;
+      } catch (e) {
+        // ignore
+      }
+      inflightSpeechRecognitionInit = null;
       if (!speechRecognition) {
         return;
       }

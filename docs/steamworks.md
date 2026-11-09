@@ -27,9 +27,10 @@ You can run the packaged executable directly as usual; you don't need to start t
 
 ## Security considerations
 
-Using the Steamworks extension will not prevent people from pirating your game.
-
-The Steamworks extension is also inherently client-side, so a cheater could manipulate all of the Steamworks blocks to return whatever they want. You shouldn't use them for things that are security critical.
+> [!CAUTION]
+> **Using the Steamworks extension will not prevent people from pirating your game.**
+>
+> The Steamworks extension is also inherently client-side, so a cheater could manipulate all of the Steamworks blocks to return whatever they want. You shouldn't use them for things that are security critical.
 
 ## Demo game <a name="demo-game"></a>
 

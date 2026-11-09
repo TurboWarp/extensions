@@ -1,4 +1,4 @@
-// Name: Camera V1
+// Name: Camera V1 (Buggy)
 // ID: DTcameracontrols
 // Description: Move the visible part of the stage.
 // By: DT
@@ -74,7 +74,7 @@
   // tell resize to update camera as well
   vm.runtime.on("STAGE_SIZE_CHANGED", (_) => updateCamera());
 
-  vm.runtime.on("RUNTIME_DISPOSED", (_) => {
+  vm.runtime.on("RUNTIME_DISPOSED", () => {
     cameraX = 0;
     cameraY = 0;
     cameraZoom = 100;
@@ -235,7 +235,7 @@
     getInfo() {
       return {
         id: "DTcameracontrols",
-        name: Scratch.translate("Camera V1"),
+        name: Scratch.translate("Camera V1 (Buggy)"),
 
         color1: "#ff4da7",
         color2: "#de4391",

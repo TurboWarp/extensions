@@ -25,7 +25,7 @@ jobs:
       )
     steps:
       - name: Checkout upstream
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v7
         with:
           repository: TurboWarp/extensions
           persist-credentials: false
@@ -35,18 +35,19 @@ jobs:
           PR_NUM: "${{ github.event.issue.number }}"
           GH_TOKEN: "${{ github.token }}"
       - name: Install Node.js
-        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
       - name: Install dependencies
         run: npm ci
       - name: Format
         run: npm run format
       - name: Upload formatted code
-        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b
+        uses: actions/upload-artifact@v7
         with:
           name: comment-format-untrusted-artifact
           path: extensions/
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
 
@@ -60,7 +61,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout upstream
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v7
         with:
           repository: TurboWarp/extensions
           # Can't use the default workflow token because commits made by it won't cause more
@@ -79,8 +80,13 @@ jobs:
         env:
           PR_NUM: "${{ github.event.issue.number }}"
           GH_TOKEN: "${{ github.token }}"
+      - name: Delete unformatted code
+        # if the PR makes extensions/ contain a symlink, then download-artifact follows that symlink and
+        # overwrites whatever the symlink points to, which could be a file outside the artifact's extraction
+        # folder.
+        run: rm -rf extensions
       - name: Download formatted code
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16
+        uses: actions/download-artifact@v8
         with:
           name: comment-format-untrusted-artifact
           path: extensions
