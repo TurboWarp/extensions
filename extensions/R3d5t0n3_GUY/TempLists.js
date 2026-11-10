@@ -792,24 +792,22 @@
 
       iterateOverTempList(args, util, mode) {
         let list = this.getListEnvironment(args, util);
-        if (list.length > 0) {
-          if (list.length > 0 && !this.isDependencyNotLoaded()) {
-            const thread = util.thread;
-            const listLength = list.length;
-            if (!thread.variables) thread.variables = {};
-            const vars = thread.variables;
+        if (list.length > 0 && !this.isDependencyNotLoaded()) {
+          const thread = util.thread;
+          const listLength = list.length;
+          if (!thread.variables) thread.variables = {};
+          const vars = thread.variables;
 
-            if (typeof util.stackFrame.index === "undefined") {
-              util.stackFrame.index = 0;
-            }
+          if (typeof util.stackFrame.index === "undefined") {
+            util.stackFrame.index = 0;
+          }
 
-            if (util.stackFrame.index < listLength) {
-              util.stackFrame.index++;
-              if (mode !== "forOf") vars[args.IDX] = util.stackFrame.index;
-              if (mode !== "forIn")
-                vars[args.ITEM] = list[util.stackFrame.index - 1];
-              return true;
-            }
+          if (util.stackFrame.index < listLength) {
+            util.stackFrame.index++;
+            if (mode !== "forOf") vars[args.IDX] = util.stackFrame.index;
+            if (mode !== "forIn")
+              vars[args.ITEM] = list[util.stackFrame.index - 1];
+            return true;
           }
         }
       }
