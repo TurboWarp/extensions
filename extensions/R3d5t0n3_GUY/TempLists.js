@@ -27,9 +27,7 @@
           this.resetTemporaryLists();
         });
         Scratch.vm.runtime.on("targetWasRemoved", (target) => {
-          if (!this.scopedLists) {
-            this.resetScopedLists();
-          }
+          this.scopedLists = this?.scopedLists ?? Object.create(null);
           const id = target.id;
           delete this.scopedLists[id];
         });
@@ -306,7 +304,7 @@
               acceptReporters: false,
               items: [
                 { text: Scratch.translate("thread"), value: "0" },
-                { text: Scratch.translate("scoped"), value: "1" },
+                { text: Scratch.translate("sprite"), value: "1" },
                 { text: Scratch.translate("runtime"), value: "2" },
               ],
             },
@@ -330,14 +328,8 @@
 
       // EXTENSION CONSTRUCTION
       resetTemporaryLists() {
-        this.resetRuntimeLists();
-        this.resetScopedLists();
-      }
-      resetRuntimeLists() {
-        this.runtimeLists = Object.create(null);
-      }
-      resetScopedLists() {
         this.scopedLists = Object.create(null);
+        this.runtimeLists = Object.create(null);
       }
       getListObjectFromName(name, util) {
         const runtime = Scratch.vm.runtime;
@@ -354,22 +346,22 @@
           case "0": {
             //THREAD
             const thread = util.thread;
-            thread.lists ??= Object.create(null);
-            thread.lists[args[name]] ??= [];
+            thread.lists = thread?.lists ?? Object.create(null);
+            thread.lists[args[name]] = thread.lists?.[args[name]] ?? [];
             return thread.lists[args[name]];
           }
           case "1": {
             //SPRITE
             const id = util.target.id;
-            this.scopedLists ??= [];
-            this.scopedLists[id] ??= Object.create(null);
-            this.scopedLists[id][args[name]] ??= [];
+            this.scopedLists = this?.scopedLists ?? Object.create(null);
+            this.scopedLists[id] = this.scopedLists?.[id] ?? Object.create(null);
+            this.scopedLists[id][args[name]] = this.scopedLists[id]?.[args[name]] ?? [];
             return this.scopedLists[id][args[name]];
           }
           case "2": {
             //RUNTIME
-            this.runtimeLists ??= Object.create(null);
-            this.runtimeLists[args[name]] ??= [];
+            this.runtimeLists = this?.runtimeLists ?? Object.create(null);
+            this.runtimeLists[args[name]] = this.runtimeLists?.[args[name]] ?? [];
             return this.runtimeLists[args[name]];
           }
           default:
@@ -381,19 +373,19 @@
           case "0": {
             //THREAD
             const thread = util.thread;
-            thread.lists ??= Object.create(null);
+            thread.lists = thread?.lists ?? Object.create(null);
             return args[name] in thread.lists;
           }
           case "1": {
-            //SCOPED
+            //SPRITE
             const id = util.target.id;
-            this.scopedLists ??= Object.create(null);
-            this.scopedLists[id] ??= Object.create(null);
+            this.scopedLists = this?.scopedLists ?? Object.create(null);
+            this.scopedLists[id] = this.scopedLists?.[id] ?? Object.create(null);
             return args[name] in this.scopedLists[id];
           }
           case "2": {
             //RUNTIME
-            this.runtimeLists ??= Object.create(null);
+            this.runtimeLists = this?.runtimeLists ?? Object.create(null);
             return args[name] in this.runtimeLists;
           }
           default:
@@ -464,8 +456,7 @@
           }
         }
         if (scopeListArgs) {
-          if (!(newBlock?.arguments ?? false))
-            newBlock.arguments = Object.create(null);
+          newBlock.arguments = newBlock?.arguments ?? Object.create(null);
           newBlock.arguments.SCOPE = this.fieldParamTemplate("menu", "scope");
           newBlock.arguments.LIST = this.fieldParamTemplate("string", "list");
         }
@@ -654,7 +645,7 @@
               break;
             }
             case "1": {
-              //SCOPED
+              //SPRITE
               const id = util.target.id;
               delete this.scopedLists[id][args.LIST];
               break;
@@ -831,14 +822,14 @@
                 case "0": {
                   //THREAD
                   const thread = util.thread;
-                  thread.lists ??= Object.create(null);
+                  thread.lists = thread?.lists ?? Object.create(null);
                   return thread.lists;
                 }
                 case "1": {
                   //SCOPED
                   const id = util.target.id;
-                  this.scopedLists ??= Object.create(null);
-                  this.scopedLists[id] ??= Object.create(null);
+                  this.scopedLists = this?.scopedLists ?? Object.create(null);
+                  this.scopedLists[id] = this.scopedLists?.[id] ?? Object.create(null);
                   return this.scopedLists?.[id];
                 }
                 case "2":
