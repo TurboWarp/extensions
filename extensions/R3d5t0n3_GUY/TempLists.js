@@ -655,10 +655,8 @@
       deleteItemsFromTempList(args, util) {
         let list = this.getListEnvironment(args, util);
         if (list.length > 0) {
-          let l = [args.IDX1, args.IDX2].valueOf(),
-            [i, j] = l.map((k) => {
-              return Scratch.Cast.toNumber(k);
-            });
+          let i = Scratch.Cast.toNumber(args.IDX1),
+            j = Scratch.Cast.toNumber(args.IDX2);
           let START = Math.max(1, Math.min(Math.floor(i), Math.floor(j))),
             END = Math.min(list.length, Math.max(Math.floor(i), Math.floor(j)));
           let bound1 = i >= 1 && list.length + 1 > i,
