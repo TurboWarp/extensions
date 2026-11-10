@@ -52,6 +52,10 @@
       "sha256": "6518882687ffbbb43c3af5a5a4f4381ca2a2efb0d2db4d456d232af0f08a0b07",
       "contentType": "text/plain; charset=utf-8"
     },
+    "https://raw.githubusercontent.com/TurboWarp/packager/719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js": {
+      "sha256": "04a624609269242d4b8f24176b22f63ddc8852759e35fb0793df1c8b014eeaa0",
+      "contentType": "application/javascript; charset=utf-8"
+    },
     "https://raw.githubusercontent.com/dectalk/tw-dectalk/b387df5a1133dd08a8f3af94d7899dec3f507fd8/dtc.js": {
       "sha256": "de29c298d3e260d348e9f8eed74e644258e8222fdf741a55665400d560876e8b",
       "contentType": "application/octet-stream"
