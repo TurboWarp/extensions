@@ -312,8 +312,14 @@
               items: [
                 { text: Scratch.translate("ascending order"), value: "A-Z" },
                 { text: Scratch.translate("descending order"), value: "Z-A" },
-                { text: Scratch.translate("increasing frequency"), value: "frequency" },
-                { text: Scratch.translate("decreasing frequency"), value: "rarity" },
+                {
+                  text: Scratch.translate("increasing frequency"),
+                  value: "frequency",
+                },
+                {
+                  text: Scratch.translate("decreasing frequency"),
+                  value: "rarity",
+                },
                 { text: Scratch.translate("reverse order"), value: "reverse" },
                 { text: Scratch.translate("randomicity"), value: "shuffle" },
               ],
@@ -354,14 +360,17 @@
             //SPRITE
             const id = util.target.id;
             this.scopedLists = this?.scopedLists ?? Object.create(null);
-            this.scopedLists[id] = this.scopedLists?.[id] ?? Object.create(null);
-            this.scopedLists[id][args[name]] = this.scopedLists[id]?.[args[name]] ?? [];
+            this.scopedLists[id] =
+              this.scopedLists?.[id] ?? Object.create(null);
+            this.scopedLists[id][args[name]] =
+              this.scopedLists[id]?.[args[name]] ?? [];
             return this.scopedLists[id][args[name]];
           }
           case "2": {
             //RUNTIME
             this.runtimeLists = this?.runtimeLists ?? Object.create(null);
-            this.runtimeLists[args[name]] = this.runtimeLists?.[args[name]] ?? [];
+            this.runtimeLists[args[name]] =
+              this.runtimeLists?.[args[name]] ?? [];
             return this.runtimeLists[args[name]];
           }
           default:
@@ -380,7 +389,8 @@
             //SPRITE
             const id = util.target.id;
             this.scopedLists = this?.scopedLists ?? Object.create(null);
-            this.scopedLists[id] = this.scopedLists?.[id] ?? Object.create(null);
+            this.scopedLists[id] =
+              this.scopedLists?.[id] ?? Object.create(null);
             return args[name] in this.scopedLists[id];
           }
           case "2": {
@@ -488,8 +498,9 @@
         list.push(args.ITEM);
       }
       deleteFromTempList(args, util) {
-        let list = this.getListEnvironment(args, util), i = Scratch.Cast.toNumber(args.IDX);
-        if (list.length > 0 ? (1 <= i && i < list.length + 1) : false) {
+        let list = this.getListEnvironment(args, util),
+          i = Scratch.Cast.toNumber(args.IDX);
+        if (list.length > 0 ? 1 <= i && i < list.length + 1 : false) {
           list.splice(Math.floor(i - 1), 1);
         }
       }
@@ -498,7 +509,8 @@
         list.splice(0, list.length);
       }
       insertIntoTempList(args, util) {
-        let list = this.getListEnvironment(args, util), i = Scratch.Cast.toNumber(args.IDX);
+        let list = this.getListEnvironment(args, util),
+          i = Scratch.Cast.toNumber(args.IDX);
         if (list.length > 0) {
           if (1 <= i && i < list.length + 1) {
             list.splice(Math.floor(i - 1), 0, args.ITEM);
@@ -509,7 +521,7 @@
       }
       replaceItemOfTempList(args, util) {
         let list = this.getListEnvironment(args, util),
-            i = Scratch.Cast.toNumber(args.IDX);
+          i = Scratch.Cast.toNumber(args.IDX);
         if (list.length > 0) {
           if (1 <= i && i < list.length + 1) {
             list.splice(Math.floor(i - 1), 1, args.ITEM);
@@ -829,7 +841,8 @@
                   //SCOPED
                   const id = util.target.id;
                   this.scopedLists = this?.scopedLists ?? Object.create(null);
-                  this.scopedLists[id] = this.scopedLists?.[id] ?? Object.create(null);
+                  this.scopedLists[id] =
+                    this.scopedLists?.[id] ?? Object.create(null);
                   return this.scopedLists?.[id];
                 }
                 case "2":
