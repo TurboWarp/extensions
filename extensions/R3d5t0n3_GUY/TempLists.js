@@ -53,7 +53,7 @@
                 ITEM: this.fieldParamTemplate("string", "thing"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "deleteFromTempList",
@@ -63,7 +63,7 @@
                 IDX: this.fieldParamTemplate("index", "1"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "deleteAllOfTempList",
@@ -72,29 +72,33 @@
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "insertIntoTempList",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("insert [ITEM] at [IDX] of [SCOPE] list [LIST]"),
+              text: Scratch.translate(
+                "insert [ITEM] at [IDX] of [SCOPE] list [LIST]"
+              ),
               arguments: {
                 ITEM: this.fieldParamTemplate("string", "thing"),
                 IDX: this.fieldParamTemplate("index", "1"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "replaceItemOfTempList",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("replace item [IDX] of [SCOPE] list [LIST] with [ITEM]"),
+              text: Scratch.translate(
+                "replace item [IDX] of [SCOPE] list [LIST] with [ITEM]"
+              ),
               arguments: {
                 IDX: this.fieldParamTemplate("index", "1"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-                ITEM: this.fieldParamTemplate("string", "thing")
-              }
+                ITEM: this.fieldParamTemplate("string", "thing"),
+              },
             },
             {
               opcode: "itemOfTempList",
@@ -104,7 +108,7 @@
                 IDX: this.fieldParamTemplate("index", "1"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "indexInTempList",
@@ -114,7 +118,7 @@
                 ITEM: this.fieldParamTemplate("string", "thing"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "lengthOfTempList",
@@ -123,7 +127,7 @@
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "tempListContains",
@@ -133,7 +137,7 @@
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
                 ITEM: this.fieldParamTemplate("string", "thing"),
-              } 
+              },
             },
 
             "---",
@@ -141,34 +145,40 @@
             {
               opcode: "deleteItemsFromTempList",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("delete items [IDX1] to [IDX2] from [SCOPE] list [LIST]"),
+              text: Scratch.translate(
+                "delete items [IDX1] to [IDX2] from [SCOPE] list [LIST]"
+              ),
               arguments: {
                 IDX1: this.fieldParamTemplate("index", "1"),
                 IDX2: this.fieldParamTemplate("index", "3"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "deleteAllInstancesFromTempList",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("delete all instances of [ITEM] in [SCOPE] list [LIST]"),
+              text: Scratch.translate(
+                "delete all instances of [ITEM] in [SCOPE] list [LIST]"
+              ),
               arguments: {
                 ITEM: this.fieldParamTemplate("string", "thing"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "replaceAllInstancesInTempList",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("replace all [ITEM1] with [ITEM2] in [SCOPE] list [LIST]"),
+              text: Scratch.translate(
+                "replace all [ITEM1] with [ITEM2] in [SCOPE] list [LIST]"
+              ),
               arguments: {
                 ITEM1: this.fieldParamTemplate("string", "apple"),
                 ITEM2: this.fieldParamTemplate("string", "banana"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "sortTempList",
@@ -178,7 +188,7 @@
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
                 METHOD: this.fieldParamTemplate("menu", "sortMethod"),
-              }
+              },
             },
             {
               opcode: "deleteTempList",
@@ -187,7 +197,7 @@
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "deleteAllTempLists",
@@ -211,36 +221,42 @@
             {
               opcode: "forOfLoop",
               blockType: Scratch.BlockType.LOOP,
-              text: Scratch.translate("for each value [ITEM] of [SCOPE] list [LIST]"),
+              text: Scratch.translate(
+                "for each value [ITEM] of [SCOPE] list [LIST]"
+              ),
               hideFromPalette: this.isDependencyNotLoaded(),
               arguments: {
                 ITEM: this.fieldParamTemplate("string", "thing"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "forInLoop",
               blockType: Scratch.BlockType.LOOP,
-              text: Scratch.translate("for each # [IDX] in [SCOPE] list [LIST]"),
+              text: Scratch.translate(
+                "for each # [IDX] in [SCOPE] list [LIST]"
+              ),
               hideFromPalette: this.isDependencyNotLoaded(),
               arguments: {
                 IDX: this.fieldParamTemplate("string", "index"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "forEachLoop",
               blockType: Scratch.BlockType.LOOP,
-              text: Scratch.translate("for each value [ITEM] # [IDX] in [SCOPE] list [LIST]"),
+              text: Scratch.translate(
+                "for each value [ITEM] # [IDX] in [SCOPE] list [LIST]"
+              ),
               hideFromPalette: this.isDependencyNotLoaded(),
               arguments: {
                 ITEM: this.fieldParamTemplate("string", "thing"),
                 IDX: this.fieldParamTemplate("string", "index"),
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "loopFlowControl",
@@ -259,13 +275,15 @@
             {
               opcode: "setTempList1ToTempList2",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("set [SCOPE1] list [LIST1] to [SCOPE2] list [LIST2]"),
+              text: Scratch.translate(
+                "set [SCOPE1] list [LIST1] to [SCOPE2] list [LIST2]"
+              ),
               arguments: {
                 SCOPE1: this.fieldParamTemplate("menu", "scope"),
                 LIST1: this.fieldParamTemplate("string", "list1"),
                 SCOPE2: this.fieldParamTemplate("menu", "scope"),
                 LIST2: this.fieldParamTemplate("string", "list2"),
-              }
+              },
             },
             {
               opcode: "setTempListToList",
@@ -280,33 +298,45 @@
             {
               opcode: "splitStringToTempList",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("set [SCOPE] list [LIST] to [STRING] split by [DELIMITER]"),
+              text: Scratch.translate(
+                "set [SCOPE] list [LIST] to [STRING] split by [DELIMITER]"
+              ),
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-                STRING: this.fieldParamTemplate("string", "apple,banana,cherry,durian,elderberry"),
+                STRING: this.fieldParamTemplate(
+                  "string",
+                  "apple,banana,cherry,durian,elderberry"
+                ),
                 DELIMITER: this.fieldParamTemplate("string", ","),
-              }
+              },
             },
             {
               opcode: "joinTempListToString",
               blockType: Scratch.BlockType.REPORTER,
-              text: Scratch.translate("join [SCOPE] list [LIST] by [DELIMITER]"),
+              text: Scratch.translate(
+                "join [SCOPE] list [LIST] by [DELIMITER]"
+              ),
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-                DELIMITER: this.fieldParamTemplate("string", ",")
+                DELIMITER: this.fieldParamTemplate("string", ","),
               },
             },
             {
               opcode: "setTempListToArray",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("set [SCOPE] list [LIST] to array [ARRAY]"),
+              text: Scratch.translate(
+                "set [SCOPE] list [LIST] to array [ARRAY]"
+              ),
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-                ARRAY: this.fieldParamTemplate("string", '["apple","banana", ["cherry", "durian", ["elderberry"]]]'),
-              }
+                ARRAY: this.fieldParamTemplate(
+                  "string",
+                  '["apple","banana", ["cherry", "durian", ["elderberry"]]]'
+                ),
+              },
             },
             {
               opcode: "getTempListAsArray",
@@ -315,16 +345,17 @@
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
-            { //can't just use 'isListInEnvironment' here
+            {
+              //can't just use 'isListInEnvironment' here
               opcode: "tempListExists",
               blockType: Scratch.BlockType.BOOLEAN,
               text: Scratch.translate("[SCOPE] list [LIST] exists?"),
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
                 LIST: this.fieldParamTemplate("string", "list"),
-              }
+              },
             },
             {
               opcode: "listTempLists",
@@ -333,7 +364,7 @@
               disableMonitor: true,
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
-              }
+              },
             },
           ].filter((i) => i),
           menus: {
@@ -379,7 +410,6 @@
         };
         return blockInfo;
       }
-
 
       /*--------FUNCTIONS--------*/
 
