@@ -312,8 +312,14 @@
               items: [
                 { text: Scratch.translate("ascending order"), value: "A-Z" },
                 { text: Scratch.translate("descending order"), value: "Z-A" },
-                { text: Scratch.translate("increasing frequency"), value: "frequency" },
-                { text: Scratch.translate("decreasing frequency"), value: "rarity" },
+                {
+                  text: Scratch.translate("increasing frequency"),
+                  value: "frequency",
+                },
+                {
+                  text: Scratch.translate("decreasing frequency"),
+                  value: "rarity",
+                },
                 { text: Scratch.translate("reverse order"), value: "reverse" },
                 { text: Scratch.translate("random order"), value: "shuffle" },
               ],
