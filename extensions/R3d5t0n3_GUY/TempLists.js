@@ -314,14 +314,8 @@
               items: [
                 { text: Scratch.translate("ascending order"), value: "A-Z" },
                 { text: Scratch.translate("descending order"), value: "Z-A" },
-                {
-                  text: Scratch.translate("increasing frequency"),
-                  value: "rarest first",
-                },
-                {
-                  text: Scratch.translate("decreasing frequency"),
-                  value: "popular first",
-                },
+                { text: Scratch.translate("increasing frequency"), value: "frequency" },
+                { text: Scratch.translate("decreasing frequency"), value: "rarity" },
                 { text: Scratch.translate("reverse order"), value: "reverse" },
                 { text: Scratch.translate("randomicity"), value: "shuffle" },
               ],
@@ -360,33 +354,22 @@
           case "0": {
             //THREAD
             const thread = util.thread;
-            if (!thread.lists) {
-              thread.lists = Object.create(null);
-            }
-            if (!this.isListInEnvironment(args, util, scope, name))
-              thread.lists[args[name]] = [];
+            thread.lists ??= Object.create(null);
+            thread.lists[args[name]] ??= [];
             return thread.lists[args[name]];
           }
           case "1": {
-            //SCOPED
+            //SPRITE
             const id = util.target.id;
-            if (!this.scopedLists) {
-              this.resetScopedLists();
-            }
-            if (!this.scopedLists[id]) {
-              this.scopedLists[id] = Object.create(null);
-            }
-            if (!this.isListInEnvironment(args, util, scope, name))
-              this.scopedLists[id][args[name]] = [];
+            this.scopedLists ??= [];
+            this.scopedLists[id] ??= Object.create(null);
+            this.scopedLists[id][args[name]] ??= [];
             return this.scopedLists[id][args[name]];
           }
           case "2": {
             //RUNTIME
-            if (!this.runtimeLists) {
-              this.resetRuntimeLists();
-            }
-            if (!this.isListInEnvironment(args, util, scope, name))
-              this.runtimeLists[args[name]] = [];
+            this.runtimeLists ??= Object.create(null);
+            this.runtimeLists[args[name]] ??= [];
             return this.runtimeLists[args[name]];
           }
           default:
@@ -398,27 +381,19 @@
           case "0": {
             //THREAD
             const thread = util.thread;
-            if (!thread.lists) {
-              thread.lists = Object.create(null);
-            }
+            thread.lists ??= Object.create(null);
             return args[name] in thread.lists;
           }
           case "1": {
             //SCOPED
             const id = util.target.id;
-            if (!this.scopedLists) {
-              this.resetScopedLists();
-            }
-            if (!this.scopedLists[id]) {
-              this.scopedLists[id] = Object.create(null);
-            }
+            this.scopedLists ??= Object.create(null);
+            this.scopedLists[id] ??= Object.create(null);
             return args[name] in this.scopedLists[id];
           }
           case "2": {
             //RUNTIME
-            if (!this.runtimeLists) {
-              this.resetRuntimeLists();
-            }
+            this.runtimeLists ??= Object.create(null);
             return args[name] in this.runtimeLists;
           }
           default:
@@ -522,14 +497,9 @@
         list.push(args.ITEM);
       }
       deleteFromTempList(args, util) {
-        if (this.isListInEnvironment(args, util)) {
-          let list = this.getListEnvironment(args, util),
-            i = Scratch.Cast.toNumber(args.IDX);
-          if (1 <= i && i < list.length + 1) {
-            list.splice(Math.floor(i - 1), 1);
-          }
-        } else {
-          this.deleteAllOfTempList(args, util);
+        let list = this.getListEnvironment(args, util), i = Scratch.Cast.toNumber(args.IDX);
+        if (list.length > 0 ? (1 <= i && i < list.length + 1) : false) {
+          list.splice(Math.floor(i - 1), 1);
         }
       }
       deleteAllOfTempList(args, util) {
@@ -537,27 +507,24 @@
         list.splice(0, list.length);
       }
       insertIntoTempList(args, util) {
-        if (this.isListInEnvironment(args, util)) {
-          let list = this.getListEnvironment(args, util),
-            i = Scratch.Cast.toNumber(args.IDX);
+        let list = this.getListEnvironment(args, util), i = Scratch.Cast.toNumber(args.IDX);
+        if (list.length > 0) {
           if (1 <= i && i < list.length + 1) {
             list.splice(Math.floor(i - 1), 0, args.ITEM);
           }
         } else {
-          let list = this.getListEnvironment(args, util);
-          list.splice(0, list.length, args.ITEM);
+          list.push(args.ITEM);
         }
       }
       replaceItemOfTempList(args, util) {
-        if (this.isListInEnvironment(args, util)) {
-          let list = this.getListEnvironment(args, util),
+        let list = this.getListEnvironment(args, util),
             i = Scratch.Cast.toNumber(args.IDX);
+        if (list.length > 0) {
           if (1 <= i && i < list.length + 1) {
-            list[i - 1] = args.ITEM;
+            list.splice(Math.floor(i - 1), 1, args.ITEM);
           }
         } else {
-          let list = this.getListEnvironment(args, util);
-          list.splice(0, list.length, args.ITEM);
+          list.push(args.ITEM);
         }
       }
       itemOfTempList(args, util) {
@@ -600,8 +567,8 @@
 
       // ADVANCED
       deleteItemsFromTempList(args, util) {
-        if (this.isListInEnvironment(args, util)) {
-          let list = this.getListEnvironment(args, util);
+        let list = this.getListEnvironment(args, util);
+        if (list.length > 0) {
           let l = [args.IDX1, args.IDX2].valueOf(),
             [i, j] = l.map((k) => {
               return Scratch.Cast.toNumber(k);
@@ -611,31 +578,25 @@
           let bound1 = i >= 1 && list.length + 1 > i,
             bound2 = j >= 1 && list.length + 1 > j;
           if (bound1 && bound2) list.splice(START - 1, END - START + 1);
-        } else {
-          this.deleteAllOfTempList(args, util);
         }
       }
       deleteAllInstancesFromTempList(args, util) {
-        if (this.isListInEnvironment(args, util)) {
-          let list = this.getListEnvironment(args, util);
+        let list = this.getListEnvironment(args, util);
+        if (list.length > 0) {
           let filtered = list.filter((i) => i !== args.ITEM);
           list.splice(0, list.length, ...filtered);
-        } else {
-          this.deleteAllOfTempList(args, util);
         }
       }
       replaceAllInstancesInTempList(args, util) {
-        if (this.isListInEnvironment(args, util)) {
-          let list = this.getListEnvironment(args, util);
+        let list = this.getListEnvironment(args, util);
+        if (list.length > 0) {
           let filtered = list.map((i) => (i === args.ITEM1 ? args.ITEM2 : i));
           list.splice(0, list.length, ...filtered);
-        } else {
-          this.deleteAllOfTempList(args, util);
         }
       }
       sortTempList(args, util) {
-        if (this.isListInEnvironment) {
-          let list = this.getListEnvironment(args, util);
+        let list = this.getListEnvironment(args, util);
+        if (list.length > 0) {
           let newList = list.valueOf();
           let freqs = {};
           switch (args.METHOD) {
@@ -646,7 +607,7 @@
               newList.sort();
               newList.reverse();
               break;
-            case "rarest first":
+            case "frequency":
               for (let i of newList) {
                 freqs[i] = (freqs?.[i] ?? 0) + 1;
               }
@@ -657,7 +618,7 @@
                 return `${a}`.localeCompare(`${b}`);
               });
               break;
-            case "popular first":
+            case "rarity":
               for (let i of newList) {
                 freqs[i] = (freqs?.[i] ?? 0) + 1;
               }
@@ -744,8 +705,8 @@
       }
 
       iterateOverTempList(args, util, mode) {
-        if (this.isListInEnvironment(args, util)) {
-          let list = this.getListEnvironment(args, util);
+        let list = this.getListEnvironment(args, util);
+        if (list.length > 0) {
           if (list.length > 0 && !this.isDependencyNotLoaded()) {
             const thread = util.thread;
             const listLength = list.length;
@@ -870,20 +831,14 @@
                 case "0": {
                   //THREAD
                   const thread = util.thread;
-                  if (!thread.lists) {
-                    thread.lists = Object.create(null);
-                  }
+                  thread.lists ??= Object.create(null);
                   return thread.lists;
                 }
                 case "1": {
                   //SCOPED
                   const id = util.target.id;
-                  if (!this.scopedLists) {
-                    this.resetScopedLists();
-                  }
-                  if (!this.scopedLists[id]) {
-                    this.scopedLists[id] = Object.create(null);
-                  }
+                  this.scopedLists ??= Object.create(null);
+                  this.scopedLists[id] ??= Object.create(null);
                   return this.scopedLists?.[id];
                 }
                 case "2":
