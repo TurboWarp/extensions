@@ -28,6 +28,8 @@
     longList: '["apple","banana","orange"]',
     intList: "[1,2,3,4]",
     floatList: "[5.23, 214, 522, 61, 5.24, 62.2, 1, 51212, 0, 0]",
+    mergeLeft: '{"key":"value"}',
+    mergeRight: '{"key2":"value2"}'
   };
 
   class JSONS {
@@ -53,7 +55,7 @@
           {
             opcode: "json_err_msg",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("error message of [json]"),
+            text: Scratch.translate("parse error from [json]"),
             arguments: {
               json: {
                 type: Scratch.ArgumentType.STRING,
@@ -508,6 +510,23 @@
               },
             },
           },
+          "---",
+          {
+            opcode: "json_merge",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("merge [json1] and [json2]"),
+            arguments: {
+              json1: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: sampleJSON.mergeLeft,
+              },
+              json2: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: sampleJSON.mergeRight,
+              },
+            },
+          },
+          "---",
           {
             // requested by sharkpool, I will improve it when theres lambda function
             opcode: "json_array_textfilter",
@@ -1282,6 +1301,21 @@
       return "";
     }
 
+    json_merge({ json1, json2 }) {
+      try {
+        json1 = JSON.parse(json1);
+        json2 = JSON.parse(json2);
+
+        if (Array.isArray(json1) && Array.isArray(json2)) {
+          return JSON.stringify([ ...json1, ...json2 ]);
+        } else {
+          return JSON.stringify({ ...json1, ...json2 });
+        }
+      } catch {
+        return "";
+      }
+    }
+
     json_array_textfilter(args) {
       try {
         const option = args.options;
@@ -1293,25 +1327,25 @@
         const text = Scratch.Cast.toString(args.text);
         const out = args.type;
 
+        let method;
         switch (option) {
           case "includes":
-            list = list.filter(
-              (x) => typeof x[1] === "string" && x[1].includes(text)
-            );
+            method = "includes";
             break;
           case "starts with":
-            list = list.filter(
-              (x) => typeof x[1] === "string" && x[1].startsWith(text)
-            );
+            method = "startsWith";
             break;
           case "ends with":
-            list = list.filter(
-              (x) => typeof x[1] === "string" && x[1].endsWith(text)
-            );
+            method = "endsWith";
             break;
           default:
             return ""; // shouldn't happen
         }
+
+        list = list.filter(
+          (x) => typeof x[1] === "string" && x[1][method](text)
+        );
+
         if (out === "Object") {
           // if array, convert to scratch index
           if (isArray) list = list.map(([k, v]) => [Number(k) + 1, v]);
