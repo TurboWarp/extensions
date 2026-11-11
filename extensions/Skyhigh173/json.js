@@ -93,7 +93,7 @@
           const next = first[1];
           const key = first[2];
           delete items[key];
-          size -= key.lngth;
+          size -= key.length;
           first = next;
         }
         if (first !== null) {
