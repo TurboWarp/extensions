@@ -29,7 +29,7 @@
     intList: "[1,2,3,4]",
     floatList: "[5.23, 214, 522, 61, 5.24, 62.2, 1, 51212, 0, 0]",
     mergeLeft: '{"key":"value"}',
-    mergeRight: '{"key2":"value2"}'
+    mergeRight: '{"key2":"value2"}',
   };
 
   class JSONS {
@@ -1307,7 +1307,7 @@
         json2 = JSON.parse(json2);
 
         if (Array.isArray(json1) && Array.isArray(json2)) {
-          return JSON.stringify([ ...json1, ...json2 ]);
+          return JSON.stringify([...json1, ...json2]);
         } else {
           return JSON.stringify({ ...json1, ...json2 });
         }
