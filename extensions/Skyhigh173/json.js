@@ -12,7 +12,122 @@
    * Do not remove this comment
    */
 
+  let first = null;
+  let items = Object.create(null);
+  let last = null;
+  let size = 0;
+
+  function parse(string) {
+    const item = items[string];
+
+    if (item !== undefined) {
+      moveToEnd(item);
+      return item[3];
+    }
+    const parsed = JSON.parse(string);
+    set(string, parsed);
+    return parsed;
+  }
+  function parseRemoveCache(string) {
+    const item = items[string];
+
+    if (item !== undefined) {
+      const parsed = item[3];
+      if (item[0] !== null) {
+        item[0][1] = item[1];
+      } else {
+        first = item[1];
+      }
+
+      if (item[1] !== null) {
+        item[1][0] = item[0];
+      } else {
+        last = item[0];
+      }
+      delete items[string];
+      size -= string.length;
+      return parsed;
+    } else {
+      return JSON.parse(string);
+    }
+  }
+
+  function moveToEnd(item) {
+    item[4] = Date.now() + 200;
+    if (last === item) {
+      return;
+    }
+
+    if (item[0] !== null) {
+      item[0][1] = item[1];
+    } else {
+      first = item[1];
+    }
+
+    if (item[1] !== null) {
+      item[1][0] = item[0];
+    }
+
+    item[0] = last;
+    item[1] = null;
+    last[1] = item;
+    last = item;
+  }
+  function set(key, value) {
+    let item = items[key];
+
+    if (item !== undefined) {
+      moveToEnd(item);
+    } else {
+      item = items[key] = [last, null, key, value, Date.now() + 200];
+      if (size === 0) {
+        first = item;
+      } else {
+        last[1] = item;
+      }
+      size += key.length;
+
+      last = item;
+      if (size > 1048576) {
+        while (size > 1048576) {
+          const next = first[1];
+          const key = first[2];
+          delete items[key];
+          size -= key.length;
+          first = next;
+        }
+        if (first !== null) {
+          first[0] = null;
+        } else {
+          last = null;
+        }
+      }
+    }
+  }
   const vm = Scratch.vm;
+  setInterval(() => {
+    let x = first;
+    const now = Date.now();
+    while (x !== null && x[4] < now) {
+      const next = x[1];
+      const key = x[2];
+      delete items[key];
+      size -= key.length;
+      x = next;
+    }
+    first = x;
+    if (x !== null) {
+      x[0] = null;
+    } else {
+      last = null;
+    }
+  }, 100);
+  function stringify(object) {
+    const string = JSON.stringify(object);
+    set(string, object);
+    return string;
+  }
+
   const hasOwn = (obj, property) =>
     Object.prototype.hasOwnProperty.call(obj, property);
 
@@ -811,12 +926,44 @@
         return false;
       } else {
         try {
-          JSON.parse(json);
+          parse(json);
           return true;
         } catch {
           return false;
         }
       }
+    }
+    recursive_equal(obj1, obj2) {
+      if (Array.isArray(obj1)) {
+        if (Array.isArray(obj2)) {
+          if (obj1.length !== obj2.length) {
+            return false;
+          }
+          for (let i = 0; i < obj1.length; i++) {
+            if (!this.recursive_equal(obj1[i], obj2[i])) {
+              return false;
+            }
+          }
+          return true;
+        }
+      } else if (typeof obj1 === "object") {
+        if (typeof obj2 === "object") {
+          const keys1 = Object.keys(obj1);
+          const keys2 = Object.keys(obj2);
+          if (keys1.length !== keys2.length) {
+            return false;
+          }
+          for (const key of keys1) {
+            if (!this.recursive_equal(obj1[key], obj2[key])) {
+              return false;
+            }
+          }
+          return true;
+        }
+      } else {
+        return Scratch.Cast.compare(obj1, obj2) === 0;
+      }
+      return false;
     }
 
     /**
@@ -829,7 +976,7 @@
         return json;
       } else {
         try {
-          return JSON.parse(json) ?? "";
+          return parse(json) ?? "";
         } catch {
           return json;
         }
@@ -838,7 +985,7 @@
 
     json_err_msg({ json }) {
       try {
-        JSON.parse(json);
+        parse(json);
         return "";
       } catch (e) {
         return e.toString();
@@ -848,7 +995,7 @@
     json_is({ json, types }) {
       if (!this.json_is_valid({ json: json })) return false;
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         switch (types) {
           case "Object":
             return !Array.isArray(json);
@@ -863,7 +1010,7 @@
 
     json_minify({ json }) {
       try {
-        return JSON.stringify(JSON.parse(json));
+        return stringify(JSON.parse(json));
       } catch {
         return "";
       }
@@ -871,7 +1018,7 @@
 
     json_length({ json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         return Object.keys(json).length;
       } catch {
         return " ";
@@ -892,8 +1039,7 @@
     json_has_key({ json, key }) {
       try {
         return (
-          this._fixInvalidJSONValues(this.json_valid_return(key)) in
-          JSON.parse(json)
+          this._fixInvalidJSONValues(this.json_valid_return(key)) in parse(json)
         );
       } catch {
         return false;
@@ -902,9 +1048,11 @@
 
     json_has_value({ json, value }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         value = this.json_valid_return(value);
-        return json.includes(value);
+        return Object.values(json).some((v) => {
+          return this.recursive_equal(v, value);
+        });
       } catch {
         return false;
       }
@@ -912,7 +1060,7 @@
 
     json_flip({ json }) {
       try {
-        json = Object.entries(JSON.parse(json));
+        json = Object.entries(parse(json));
         let result = {};
         let store = (key, val) => {
           // invalid key
@@ -939,7 +1087,7 @@
             store(i[1], i[0]);
           }
         }
-        return JSON.stringify(result);
+        return stringify(result);
       } catch {
         return "";
       }
@@ -947,14 +1095,9 @@
 
     json_equal({ json1, equal, json2 }) {
       try {
-        json1 = JSON.parse(json1);
-        json2 = JSON.parse(json2);
-
-        const keys1 = Object.keys(json1);
-        const keys2 = Object.keys(json2);
-        const result =
-          keys1.length === keys2.length &&
-          Object.keys(json1).every((key) => json1[key] === json2[key]);
+        json1 = parse(json1);
+        json2 = parse(json2);
+        const result = this.recursive_equal(json1, json2);
         if (equal === "=") return result;
         if (equal === "≠") return !result;
       } catch {
@@ -965,14 +1108,14 @@
 
     json_get_all({ Stype, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         switch (Stype) {
           case "keys":
-            return JSON.stringify(Object.keys(json));
+            return stringify(Object.keys(json));
           case "values":
-            return JSON.stringify(Object.values(json));
+            return stringify(Object.values(json));
           case "datas":
-            return JSON.stringify(Object.entries(json));
+            return stringify(Object.entries(json));
           default:
             return "";
         }
@@ -983,11 +1126,11 @@
 
     json_get({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         if (hasOwn(json, item)) {
           const result = json[item] ?? "";
           if (typeof result === "object") {
-            return JSON.stringify(result);
+            return stringify(result);
           } else {
             return result;
           }
@@ -1009,11 +1152,11 @@
 
     json_set({ item, value, json }) {
       try {
-        json = JSON.parse(json);
+        json = parseRemoveCache(json);
         value = this.json_valid_return(value);
         value = this._fixInvalidJSONValues(value);
         json[item] = value;
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1021,9 +1164,9 @@
 
     json_delete({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parseRemoveCache(json);
         delete json[item];
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1036,11 +1179,11 @@
 
     json_get_path({ path, json }) {
       try {
-        path = JSON.parse(path);
+        path = parse(path);
         if (!Array.isArray(path)) {
           return "";
         }
-        json = JSON.parse(json);
+        json = parse(json);
         for (let key of path) {
           if (!hasOwn(json, key)) {
             return "";
@@ -1054,7 +1197,7 @@
           json = json[key];
         }
         if (typeof json == "object") {
-          return JSON.stringify(json);
+          return stringify(json);
         } else {
           return json;
         }
@@ -1065,11 +1208,11 @@
 
     json_set_path({ path, json, data }) {
       try {
-        path = JSON.parse(path);
+        path = parse(path);
         if (!Array.isArray(path)) {
           return "";
         }
-        json = JSON.parse(json);
+        json = parse(json);
         let obj = json;
         data = this.json_valid_return(data);
         let count = path.length;
@@ -1091,7 +1234,7 @@
             }
           }
         }
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1100,7 +1243,7 @@
     json_array_get({ item, json }) {
       // 1...length : array content, -1...-length : reverse array content, 0 : ERROR
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         item = Scratch.Cast.toNumber(item);
         if (item == 0) return "";
         if (item > 0) item--;
@@ -1109,7 +1252,7 @@
 
         let result = json[item];
         if (typeof result == "object") {
-          return JSON.stringify(result);
+          return stringify(result);
         } else {
           return result;
         }
@@ -1120,9 +1263,9 @@
 
     json_array_itemH({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        let result = JSON.stringify(json.indexOf(item) + 1);
+        let result = json.findIndex((v) => this.recursive_equal(v, item)) + 1;
         return result;
       } catch {
         return "";
@@ -1131,7 +1274,7 @@
 
     json_array_from({ json }) {
       try {
-        return JSON.stringify(Array.from(Scratch.Cast.toString(json)));
+        return stringify(Array.from(Scratch.Cast.toString(json)));
       } catch {
         return "";
       }
@@ -1139,9 +1282,9 @@
 
     json_array_concat({ json, json2 }) {
       try {
-        json = JSON.parse(json);
-        json2 = JSON.parse(json2);
-        return JSON.stringify(json.concat(json2));
+        json = parse(json);
+        json2 = parse(json2);
+        return stringify(json.concat(json2));
       } catch {
         return "";
       }
@@ -1149,21 +1292,21 @@
 
     json_array_push({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
         json.push(item);
-        return JSON.stringify(json);
-      } catch {
+        return stringify(json);
+      } catch (e) {
         return "";
       }
     }
 
     json_array_insert({ item, pos, json }) {
       try {
-        json = JSON.parse(json);
+        json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
         json.splice(pos - 1, 0, item);
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1171,11 +1314,13 @@
 
     json_array_set({ item, pos, json }) {
       try {
-        json = JSON.parse(json);
-        json[pos - 1] = this._fixInvalidJSONValues(
-          this.json_valid_return(item)
+        json = parseRemoveCache(json);
+        json.splice(
+          pos - 1,
+          1,
+          this._fixInvalidJSONValues(this.json_valid_return(item))
         );
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1183,9 +1328,9 @@
 
     json_array_delete({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parseRemoveCache(json);
         json.splice(item - 1, 1);
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1193,17 +1338,9 @@
 
     json_array_remove_all({ item, json }) {
       try {
-        json = JSON.parse(json);
+        json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        let i = 0;
-        while (i < json.length) {
-          if (json[i] === item) {
-            json.splice(i, 1);
-          } else {
-            ++i;
-          }
-        }
-        return JSON.stringify(json);
+        return stringify(json.filter((v) => !this.recursive_equal(v, item)));
       } catch {
         return "";
       }
@@ -1211,7 +1348,7 @@
 
     json_array_fromto({ json, item, item2 }) {
       try {
-        return JSON.stringify(JSON.parse(json).slice(item - 1, item2));
+        return stringify(parse(json).slice(item - 1, item2));
       } catch {
         return "";
       }
@@ -1219,7 +1356,7 @@
 
     json_array_reverse({ json }) {
       try {
-        return JSON.stringify(JSON.parse(json).reverse());
+        return stringify(parse(json).reverse());
       } catch {
         return "";
       }
@@ -1227,19 +1364,19 @@
 
     json_array_flat({ json, depth }) {
       try {
-        return JSON.stringify(JSON.parse(json).flat(depth));
+        return stringify(parse(json).flat(depth));
       } catch {
         return "";
       }
     }
 
     json_array_create({ text, d }) {
-      return JSON.stringify(Scratch.Cast.toString(text).split(d));
+      return stringify(Scratch.Cast.toString(text).split(d));
     }
 
     json_array_join({ json, d }) {
       try {
-        return JSON.parse(json).join(d);
+        return parseRemoveCache(json).join(d);
       } catch {
         return "";
       }
@@ -1247,8 +1384,8 @@
 
     json_array_filter({ key, json }) {
       try {
-        json = JSON.parse(json);
-        return JSON.stringify(
+        json = parse(json);
+        return stringify(
           json.map((x) => {
             if (hasOwn(x, key)) {
               return x[key];
@@ -1263,9 +1400,9 @@
 
     json_array_setlen({ json, len }) {
       try {
-        json = JSON.parse(json);
+        json = parseRemoveCache(json);
         json.length = len;
-        return JSON.stringify(json);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1275,7 +1412,7 @@
       try {
         let listVariable = this.lookupList(list, util);
         if (listVariable) {
-          return JSON.stringify(listVariable.value);
+          return stringify(listVariable.value);
         }
       } catch (e) {
         // ignore
@@ -1286,10 +1423,10 @@
       try {
         let listVariable = this.lookupList(list, util);
         if (listVariable) {
-          const array = JSON.parse(json);
+          const array = parse(json);
           if (Array.isArray(array)) {
             const safeArray = array.map((i) => {
-              if (typeof i === "object") return JSON.stringify(i);
+              if (typeof i === "object") return stringify(i);
               return i ?? "";
             });
             listVariable.value = safeArray;
@@ -1303,13 +1440,13 @@
 
     json_merge({ json1, json2 }) {
       try {
-        json1 = JSON.parse(json1);
-        json2 = JSON.parse(json2);
+        json1 = parse(json1);
+        json2 = parse(json2);
 
         if (Array.isArray(json1) && Array.isArray(json2)) {
-          return JSON.stringify([...json1, ...json2]);
+          return stringify([...json1, ...json2]);
         } else {
-          return JSON.stringify({ ...json1, ...json2 });
+          return stringify({ ...json1, ...json2 });
         }
       } catch {
         return "";
@@ -1319,7 +1456,7 @@
     json_array_textfilter(args) {
       try {
         const option = args.options;
-        let list = JSON.parse(args.list);
+        let list = parse(args.list);
         // check type
         const isArray = Array.isArray(list);
         // [[0, a], [1, b], [2, c]]
@@ -1349,9 +1486,9 @@
         if (out === "Object") {
           // if array, convert to scratch index
           if (isArray) list = list.map(([k, v]) => [Number(k) + 1, v]);
-          return JSON.stringify(Object.fromEntries(list));
+          return stringify(Object.fromEntries(list));
         }
-        if (out === "Array") return JSON.stringify(list.map((x) => x[1]));
+        if (out === "Array") return stringify(list.map((x) => x[1]));
       } catch {
         // ignore
       }
@@ -1361,7 +1498,7 @@
     json_array_sort(args) {
       let list;
       try {
-        list = JSON.parse(args.list);
+        list = parseRemoveCache(args.list);
       } catch {
         return "";
       }
@@ -1369,7 +1506,7 @@
 
       list.sort(Scratch.Cast.compare);
       if (args.order === "descending") list.reverse();
-      return JSON.stringify(list);
+      return stringify(list);
     }
 
     json_vm_export_var(_, util) {
@@ -1382,12 +1519,12 @@
 
       const global = getVariables(vm.runtime.getTargetForStage());
       const local = getVariables(util.target);
-      return JSON.stringify({ ...global, ...local });
+      return stringify({ ...global, ...local });
     }
 
     json_vm_import_var({ json }, util) {
       try {
-        json = JSON.parse(json);
+        json = parse(json);
         Object.entries(json).forEach(([k, v]) => {
           util.target.lookupVariableByNameAndType(k, "").value = v;
         });
@@ -1397,7 +1534,7 @@
     json_array_analysis(args) {
       let list;
       try {
-        list = JSON.parse(args.list);
+        list = parse(args.list);
       } catch {
         return 0;
       }
