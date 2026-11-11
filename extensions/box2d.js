@@ -14252,6 +14252,17 @@
       const offset = drawable.skin.rotationCenter;
       let allHulls = null;
 
+      if (points.length === 0) {
+        // The sprite is hidden, enter empty points instead of exiting early.
+        // All blocks rely on this function if a sprite has no physics body.
+        points.push([1, 1]);
+        points.push([0, 1]);
+        points.push([0, 0]);
+        points.push([1, 0]);
+        points.push([1, 1]);
+        return;
+      }
+
       if (shape === SHAPE_TYPE_OPTIONS.CIRCLE) {
         fixDef.shape = new b2CircleShape();
         const size = drawable.skin.size;
