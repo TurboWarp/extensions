@@ -47,6 +47,7 @@ jobs:
         with:
           name: comment-format-untrusted-artifact
           path: extensions/
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 7
 
@@ -79,6 +80,11 @@ jobs:
         env:
           PR_NUM: "${{ github.event.issue.number }}"
           GH_TOKEN: "${{ github.token }}"
+      - name: Delete unformatted code
+        # if the PR makes extensions/ contain a symlink, then download-artifact follows that symlink and
+        # overwrites whatever the symlink points to, which could be a file outside the artifact's extraction
+        # folder.
+        run: rm -rf extensions
       - name: Download formatted code
         uses: actions/download-artifact@v8
         with:
