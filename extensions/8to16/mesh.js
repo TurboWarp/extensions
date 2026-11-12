@@ -15,7 +15,7 @@
   // Init the broadcastchannel
   const bc = new BroadcastChannel("extensions.turbowarp.org/8to16/mesh");
   let connectedUsers = 0;
-  let finishedWaits = {};
+  let finishedWaits = Object.create(null);
 
   if (!vm.runtime.extensionStorage["8to16mesh"])
     vm.runtime.extensionStorage["8to16mesh"] = { messages: [], variables: {} };
