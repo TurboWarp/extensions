@@ -23,7 +23,7 @@
     vm.runtime.extensionStorage["8to16mesh"] = { messages: [], variables: {} };
   });
   vm.runtime.on("PROJECT_LOADED", () => {
-    vm.runtime.extensionManager.refreshBlocks();
+    vm.extensionManager.refreshBlocks("eightxtwoMesh");
   });
 
   // Message utilities
@@ -36,14 +36,14 @@
       ...getMeshages(),
       name,
     ];
-    vm.extensionManager.refreshBlocks();
+    vm.extensionManager.refreshBlocks("eightxtwoMesh");
   };
   const delMeshage = (name) => {
     if (!getMeshages().includes(name)) return;
     vm.runtime.extensionStorage["8to16mesh"].messages = getMeshages().filter(
       (n) => n !== name
     );
-    vm.extensionManager.refreshBlocks();
+    vm.extensionManager.refreshBlocks("eightxtwoMesh");
   };
 
   // Var utilities
@@ -56,14 +56,14 @@
       ...getMeshVars(),
       [name]: "",
     };
-    vm.extensionManager.refreshBlocks();
+    vm.extensionManager.refreshBlocks("eightxtwoMesh");
   };
   const delMeshVar = (name) => {
     if (Object.keys(getMeshVars()).includes(name)) return;
     vm.runtime.extensionStorage["8to16mesh"].variables = Object.fromEntries(
       Object.entries(getMeshVars()).filter((v) => v[0] !== name)
     );
-    vm.extensionManager.refreshBlocks();
+    vm.extensionManager.refreshBlocks("eightxtwoMesh");
   };
 
   // Handle messages on the broadcastchannel
