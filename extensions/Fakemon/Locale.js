@@ -37,8 +37,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
   async function getLanguageNameAndCodeLookupTableGLOBALIZED() {
     let fetchResult;
     try {
-      // @ts-ignore
-      fetchResult = await Scratch.external.fetch(
+      fetchResult = await Scratch.fetch(
         "https://raw.githubusercontent.com/TurboWarp/scratch-translate-extension-languages-mirror/main/package/languages.json" // TurboWarp's mirror of the supported Translate extension languages
       );
     } catch (error) {
