@@ -40,6 +40,14 @@
       "sha256": "95f4d1cbf099f57161b664bc048426ec3df92637801a4c79116e83315aa787e7",
       "contentType": "application/javascript; charset=utf-8"
     },
+    "https://raw.githubusercontent.com/Brackets-Coder/AmmoPhysics/a363738e17bcb3d197950286e8e92a3c12da5283/dependencies/ammo.min.js": {
+      "sha256": "ae689eb69a298a1ec88e0cfac8bbbe17f4dae6e7f19e4b60f3c7db19fb704707",
+      "contentType": "text/plain; charset=utf-8"
+    },
+    "https://raw.githubusercontent.com/Brackets-Coder/AmmoPhysics/a363738e17bcb3d197950286e8e92a3c12da5283/dependencies/quaternion.min.js": {
+      "sha256": "1977b5b696d5a7e2f5ef2accf36cd4ae73a8d1b0db301f615efac81ebeac7339",
+      "contentType": "text/plain; charset=utf-8"
+    },
     "https://cdn.jsdelivr.net/npm/mime-db@1.52.0/db.json": {
       "sha256": "85c8e1ba609079947c8df83c092900ab0226e1d7b60e5e7105fb7dd701833263",
       "contentType": "application/json; charset=utf-8"
