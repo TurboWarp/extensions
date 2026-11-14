@@ -85,7 +85,7 @@
       } else {
         last[1] = item;
       }
-      size += key.length;
+      size += Scratch.parse.toString(key.length);
 
       last = item;
       if (size > 1048576) {
@@ -254,7 +254,28 @@
             },
           },
           {
+            hideFromPalete: true,
             opcode: "json_equal",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate("[json1] [equal] [json2]"),
+            arguments: {
+              json1: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"a":0,"b":1}',
+              },
+              json2: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: '{"b":1,"a":0}',
+              },
+              equal: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "=",
+                menu: "equal",
+              },
+            },
+          },
+          {
+            opcode: "json_equal_new",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("[json1] [equal] [json2]"),
             arguments: {
@@ -934,7 +955,9 @@
       }
     }
     recursive_equal(obj1, obj2) {
-      if (Array.isArray(obj1)) {
+      if (obj1 === null || obj2 === null) {
+        return obj1 === obj2;
+      } else if (Array.isArray(obj1)) {
         if (Array.isArray(obj2)) {
           if (obj1.length !== obj2.length) {
             return false;
@@ -1092,8 +1115,24 @@
         return "";
       }
     }
-
     json_equal({ json1, equal, json2 }) {
+      try {
+        json1 = JSON.parse(json1);
+        json2 = JSON.parse(json2);
+
+        const keys1 = Object.keys(json1);
+        const keys2 = Object.keys(json2);
+        const result =
+          keys1.length === keys2.length &&
+          Object.keys(json1).every((key) => json1[key] === json2[key]);
+        if (equal === "=") return result;
+        if (equal === "≠") return !result;
+      } catch {
+        // ignore
+      }
+      return false;
+    }
+    json_equal_new({ json1, equal, json2 }) {
       try {
         json1 = parse(json1);
         json2 = parse(json2);
@@ -1208,7 +1247,7 @@
 
     json_set_path({ path, json, data }) {
       try {
-        path = parse(path);
+        path = parseRemoveCache(path);
         if (!Array.isArray(path)) {
           return "";
         }
@@ -1352,7 +1391,7 @@
 
     json_array_reverse({ json }) {
       try {
-        return stringify(parse(json).reverse());
+        return stringify(parse(json).toReversed());
       } catch {
         return "";
       }
