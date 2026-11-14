@@ -310,7 +310,6 @@
       return Object.keys(data.query.pages)[0] != "-1";
     }
 
-  
     // ---
     // ---
 
