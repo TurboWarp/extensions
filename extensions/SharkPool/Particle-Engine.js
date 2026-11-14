@@ -621,7 +621,7 @@ void main() {
     allEngines.forEach((engine) => disposeEngine(engine.target))
   );
   runtime.on("INTERPOLATION_CHANGED", (isEnabled) => {
-    // toggle interpolation for all enginges
+    // toggle interpolation for all engines
     allEngines.forEach((engine) => {
       engine.interpolate = isEnabled;
     });
