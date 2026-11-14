@@ -307,9 +307,10 @@
     async doesPageExist(args) {
       var data = await fetchWikipedia(this.wikipediaLanguages, args.NAME);
       if (data == "") return "";
-      return Object.keys(data.query.pages).length > 0;
+      return Object.keys(data.query.pages)[0] != "-1";
     }
 
+  
     // ---
     // ---
 
