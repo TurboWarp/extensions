@@ -641,7 +641,12 @@ void main() {
   runtime.on("AFTER_EXECUTE", () => {
     if (runtime.ioDevices.clock._paused) return;
     allEngines.forEach((engine) => {
-      if (engine.paused || engine.interpolate || runtime.frameLoop.framerate === 0) return;
+      if (
+        engine.paused ||
+        engine.interpolate ||
+        runtime.frameLoop.framerate === 0
+      )
+        return;
 
       // 30 FPS is a normal delta, anything else would need normalization
       const normalizedDelta = runtime.currentStepTime / FPS_NORM;
@@ -665,7 +670,11 @@ void main() {
 
     let hasReasonToRefresh = false;
     allEngines.forEach((engine) => {
-      if (engine.paused || (!engine.interpolate && runtime.frameLoop.framerate > 0)) return;
+      if (
+        engine.paused ||
+        (!engine.interpolate && runtime.frameLoop.framerate > 0)
+      )
+        return;
       updateEngine(engine, deltaTime);
       hasReasonToRefresh = true;
     });
