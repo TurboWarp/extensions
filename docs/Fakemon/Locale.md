@@ -170,6 +170,47 @@ This block returns every translation that has failed since the most recent green
 
 This block is the same as the above but it provides the text being translated, the language being translated to, and the error message that explains why the translation failed.
 
+## Configuration
+
+Locale also provides some configuration blocks to read and write to some settings that change the way translations work.
+
+```scratch
+(get configuration ::#2a5fa0)
+```
+
+This block returns all configuration information as an object.
+
+```scratch
+set Boolean configuration [... v] to [true v] ::#2a5fa0
+```
+This block sets a configuration key to a Boolean (true or false) value. The keys that can be set will be covered later.
+
+```scratch
+<get Boolean configuration [... v] ::#2a5fa0>
+```
+This block gets a Boolean configuration value.
+
+```scratch
+set string configuration [... v] to [...] ::#2a5fa0
+```
+This block sets a configuration key to a string (text) value. The keys that can be set will be covered later.
+
+```scratch
+(get string configuration [... v] ::#2a5fa0)
+```
+This block sets a string configuration value.
+
+### Boolean Values
+|Display Name|Internal Name|Default Value|Description|
+|------------|-------------|-------------|-----------|
+|return an error instead of the input when a translation fails|`throwErrorOnFail`|`false`|When a translation fails, return the error that occurred instead of falling back to the input.|
+
+### String Values
+|Display Name|Internal Name|Default Value|Description|
+|------------|-------------|-------------|-----------|
+|special translation prefix|`specialPrefix`|`_`|The prefix that denotes a special translation that contains a non-string value like an object or array, useful for when you have a specific data format that your code expects.
+|special translation fallback language|`specialFallback`|`en`|The language that a failed special translation falls back to, useful for when you still need a value for the data. Note that `throwErrorOnFail` has priority over this key.|
+
 ## Example
 
 This is an example of a simple project that uses the Locale extension:
