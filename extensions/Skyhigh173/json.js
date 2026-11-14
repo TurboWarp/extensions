@@ -1010,7 +1010,7 @@
 
     json_minify({ json }) {
       try {
-        return stringify(JSON.parse(json));
+        return stringify(parse(json));
       } catch {
         return "";
       }
@@ -1156,7 +1156,7 @@
         value = this.json_valid_return(value);
         value = this._fixInvalidJSONValues(value);
         json[item] = value;
-        return stringify(json);
+        return stringify(Object.assign({[item]: value}, json));
       } catch {
         return "";
       }
@@ -1164,7 +1164,7 @@
 
     json_delete({ item, json }) {
       try {
-        json = parseRemoveCache(json);
+        json = Object.assign({}, parseRemoveCache(json));
         delete json[item];
         return stringify(json);
       } catch {
@@ -1225,7 +1225,7 @@
           }
           count--;
           if (count === 0) {
-            obj[key] = data;
+            obj = Object.assign({[key]: data}, obj);
           } else {
             if (hasOwn(obj, key)) {
               obj = obj[key];
@@ -1284,7 +1284,7 @@
       try {
         json = parse(json);
         json2 = parse(json2);
-        return stringify(json.concat(json2));
+        return stringify([...json, ...json2]);
       } catch {
         return "";
       }
@@ -1294,8 +1294,7 @@
       try {
         json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        json.push(item);
-        return stringify(json);
+        return stringify([...json, item]);
       } catch (e) {
         return "";
       }
@@ -1305,8 +1304,7 @@
       try {
         json = parseRemoveCache(json);
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        json.splice(pos - 1, 0, item);
-        return stringify(json);
+        return stringify(json.toSpliced(pos - 1, 0, item));
       } catch {
         return "";
       }
@@ -1315,12 +1313,11 @@
     json_array_set({ item, pos, json }) {
       try {
         json = parseRemoveCache(json);
-        json.splice(
+        return stringify(json.toSpliced(
           pos - 1,
           1,
           this._fixInvalidJSONValues(this.json_valid_return(item))
-        );
-        return stringify(json);
+        ));
       } catch {
         return "";
       }
@@ -1329,8 +1326,7 @@
     json_array_delete({ item, json }) {
       try {
         json = parseRemoveCache(json);
-        json.splice(item - 1, 1);
-        return stringify(json);
+        return stringify(json.toSpliced(item - 1, 1));
       } catch {
         return "";
       }
@@ -1400,7 +1396,7 @@
 
     json_array_setlen({ json, len }) {
       try {
-        json = parseRemoveCache(json);
+        json = [...parseRemoveCache(json)];
         json.length = len;
         return stringify(json);
       } catch {
@@ -1503,8 +1499,7 @@
         return "";
       }
       if (!Array.isArray(list)) return "";
-
-      list.sort(Scratch.Cast.compare);
+      list = list.toSorted(Scratch.Cast.compare)
       if (args.order === "descending") list.reverse();
       return stringify(list);
     }
