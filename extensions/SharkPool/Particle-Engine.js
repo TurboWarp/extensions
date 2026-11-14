@@ -629,7 +629,7 @@ void main() {
 
   let wasHighQualityEnabled;
   render.on("UseHighQualityRenderChanged", (isEnabled) => {
-    // toggle high-quality rendering for all enginges.
+    // toggle high-quality rendering for all engines.
     if (wasHighQualityEnabled === isEnabled) return;
     wasHighQualityEnabled = isEnabled;
 
