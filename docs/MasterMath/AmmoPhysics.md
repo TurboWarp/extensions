@@ -30,7 +30,7 @@
 - Torque: newton-meters (n•m)
 - Rotation: degrees
 
-While most users will likely be using Simple3D, some Scratch-based 3D engines use large unitless values for scale, but because the Ammo.js library uses single-precision floats, **very small or large values can contribute to loss of precision, instability, or solver issues**, like jittery or inaccurate collisions.
+While most users will likely be using Simple3D, some Scratch-based 3D engines use large unitless values for scale. Because the Ammo.js library uses single-precision floats, **very small or large values can contribute to loss of precision, instability, or solver issues**, like jittery or inaccurate collisions.
 
 The most important thing to remember is to have consistency across units. Wide ranges of reasonable scales should work if units are scaled consistently.
 
@@ -220,7 +220,7 @@ This block allows you to set a body's physical material properties. A float from
 
 Friction 0 means entirely frictionless (for example, something like ice should have a friction of ≈0.02). The default is 0.5. This type of friction is linear or sliding friction. More complex materials that have differing types of friction in different directions (e.g., ice skates have 0 friction forward but 1 friction side to side) or rolling friction aren't yet supported but may be upon enough user request.
 
-By default bounciness (elasticity/restitution) is 0, so if you want a body to be bouncy you have to increase it. You might wonder why your body isn't more bouncy after you increase it:  **you also have to increase the bounciness of the reacting/colliding object (for example the ground) to see an effect.**
+By default, bounciness (elasticity/restitution) is 0, so if you want a body to be bouncy, you have to increase it. You might wonder why your body isn't more bouncy after you increase it:  **you also have to increase the bounciness of the reacting/colliding object (for example the ground) to see an effect.**
 
 ```scratch
 set [linear v] factor of body [body] to x: [1] y: [1] z: [1] :: #0fbd8c
@@ -320,7 +320,7 @@ This block fires a ray with the specified name from point A to point B.
 ```scratch
 cast ray with name [ray] from x: (0) y: (0) z: (0) with pitch: (45) yaw: (45) distance: (5) :: #0fbd8c
 ```
-This block fires a ray with the specified name. Unlike the block above, it accepts a starting point and pitch/yaw **in degrees**, and will move along that rotation until it hits a body or reaches the max distance. Roll (or z-rotation) is unnaccounted for since it does not affect the direction of the ray. **_This block assumes facing -Z is forward._**
+This block fires a ray with the specified name. Unlike the block above, it accepts a starting point and pitch/yaw **in degrees**, and will move along that rotation until it hits a body or reaches the max distance. Roll (or z-rotation) is unaccounted for since it does not affect the direction of the ray. **_This block assumes facing -Z is forward._**
 
 ```scratch
 cast ray with name [ray] from x: (0) y: (0) z: (0) towards coordinate x: (7) y: (15) z: (12) distance: (5) :: #0fbd8c
@@ -330,9 +330,9 @@ This type of ray is fired from the given starting point towards another coordina
 ```scratch
 (hit [x v] [position v] of ray [ray] :: #0fbd8c)
 ```
-If the specified ray has hit a body, then position returns the X, Y, or Z hit point and normal returns the X, Y, or Z surface normal (direction, not rotation) of the hit point.
+If the specified ray has hit a body, then position returns the X, Y, or Z hit point. Normal returns the X, Y, or Z surface normal (direction, not rotation) of the hit point.
 
-If the specified ray has _not_ hit a body, then position returns the X, Y, or Z end point of the ray and normal returns null.
+If the specified ray has _not_ hit a body, then position returns the X, Y, or Z end point of the ray, and normal returns null.
 
 ```scratch
 (body touching ray [ray] :: #0fbd8c)
@@ -386,6 +386,6 @@ Ammo Physics will report errors that have occurred. To see these errors, open th
 
 ## More Resources <a name="more-resources"></a>
 
-If you want to report a bug or suggest a new feature, please open an issue on the <a href="https://scratch.mit.edu/users/-MasterMath-">GitHub repository.</a>
+If you want to report a bug or suggest a new feature, please open an issue on the <a href="https://github.com/Brackets-Coder/AmmoPhysics">GitHub repository.</a>
 
 A sample project is coming soon.
