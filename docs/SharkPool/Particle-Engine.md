@@ -2,7 +2,9 @@
 
 This extension allows you to create powerful and efficient particle engines without the use of clones.
 
-> **Note:** Particle systems can have differences in behavior across browsers due to differences in rendering.
+> [!NOTE]
+> Particle systems can have differences in behavior across browsers due to differences in rendering.
+> 
 > Safari, in particular, has a tendency to visually slow down particles if they are running at higher frame rates (FPS).
 
 ## Engine Setup
@@ -43,8 +45,7 @@ set quality of (Stage v) engine to (50) ::#2474ff
 ```
 This block sets the quality of the specified engine.
 
-You can use this block to increase the quality of your particles, however do note this might
-affect performance on low-end devices.
+You can use this block to increase the quality of your particles, however, do note this might affect performance on low-end devices.
 
 ```scratch
 set layer of (Stage v) engine to (1) ::#2474ff
@@ -73,7 +74,8 @@ This block will set the blend mode of the engine. Changes the appearance of part
 
 The next step in setting up your particle engine is creating an emitter and setting its emission behaviours.
 
-_Tip: Using fewer engines with multiple emitters is more efficient than using multiple engines._
+> [!TIP]
+> Using fewer engines with multiple emitters is more efficient than using multiple engines.
 
 ```scratch
 create emitter named [emit-1] for (Stage v) ::#2474ff
@@ -189,10 +191,7 @@ This block will not work if JSON is malformed, not in the right format (see the 
 ```
 This block will return JSON representing the behaviour settings for a specified emitter in an engine.
 
-## IMPORTANT
-
-This extension uses canvas contexts to display particles, per engine. It is advised you do **not** use many
-engines at once since it could affect performance or cause visual issues with the stage.
-
-For safety, this extension will give you warning alert in the editor when the number of engines reaches 7.
-
+> [!IMPORTANT]
+> This extension uses canvas contexts to display particles, per engine. It is advised you do **not** use many engines at once since it could affect performance or cause visual issues with the stage.
+>
+> For safety, this extension will give you warning alert in the editor when the number of engines reaches 7.
