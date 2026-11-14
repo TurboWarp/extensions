@@ -373,6 +373,58 @@
   }));
 
   /**
+   * @param {string} extract
+   * @returns {string}
+   */
+  function getFirstParagraph(extract) {
+    // Split into lines before tidying whitespace so that the heading of the
+    // next section can not end up as part of the paragraph.
+    const paragraph = extract.split("\n").find((line) => line.trim() !== "");
+    return paragraph ? paragraph.replace(/\s{2,}/g, " ").trim() : "";
+  }
+
+  const OPENING_BRACKETS = "([{（［｛";
+  const CLOSING_BRACKETS = ")]}）］｝";
+
+  /**
+   * @param {string} paragraph
+   * @param {string} language
+   * @returns {string}
+   */
+  function getFirstSentence(paragraph, language) {
+    if (typeof Intl.Segmenter !== "function") {
+      // Old browser. Assume the first period is the end of the sentence.
+      return paragraph.split(".")[0] + ".";
+    }
+
+    // The browser already knows how sentences end in each language.
+    let segmenter;
+    try {
+      segmenter = new Intl.Segmenter(language, { granularity: "sentence" });
+    } catch (e) {
+      // Not every Wikipedia language code is a valid locale.
+      segmenter = new Intl.Segmenter(undefined, { granularity: "sentence" });
+    }
+
+    // Articles often start like "Scratch (abbr. something) is ...", so a sentence
+    // is only allowed to end when all of its brackets have been closed.
+    let result = "";
+    let depth = 0;
+    for (const { segment } of segmenter.segment(paragraph)) {
+      result += segment;
+      for (const char of segment) {
+        if (OPENING_BRACKETS.includes(char)) {
+          depth++;
+        } else if (CLOSING_BRACKETS.includes(char) && depth > 0) {
+          depth--;
+        }
+      }
+      if (depth === 0) break;
+    }
+    return result.trim();
+  }
+
+  /**
    * @param {string} language
    * @param {string | number | boolean} name
    */
@@ -507,17 +559,7 @@
       const pageId = Object.keys(data.query.pages)[0];
       let extract = data.query.pages[pageId].extract;
       if (extract == undefined) return "";
-      extract = extract.replace(/\s{2,}/g, " ");
-      var paragraph = extract.split("\n")[0];
-      var split_paragraph = paragraph.split(".");
-      var result = "";
-      for (var i in split_paragraph) {
-        // @ts-ignore
-        if (i != split_paragraph.length - 1) {
-          result = result + split_paragraph[i] + ".";
-        }
-      }
-      return result;
+      return getFirstParagraph(extract);
     }
 
     /**
@@ -529,8 +571,10 @@
       const pageId = Object.keys(data.query.pages)[0];
       let extract = data.query.pages[pageId].extract;
       if (extract == undefined) return "";
-      extract = extract.replace(/\s{2,}/g, " ");
-      return extract.split(".").slice(0, 1).join(".") + ".";
+      return getFirstSentence(
+        getFirstParagraph(extract),
+        this.wikipediaLanguages
+      );
     }
 
     /**
