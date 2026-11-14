@@ -1437,7 +1437,7 @@
       try {
         json = [...parseRemoveCache(json)];
         json.length = len;
-        return stringify(json);
+        return JSON.stringify(json);
       } catch {
         return "";
       }
