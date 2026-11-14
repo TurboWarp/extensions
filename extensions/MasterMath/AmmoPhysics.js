@@ -67,22 +67,22 @@
         mass = Cast.toNumber(mass);
         name = Cast.toString(name);
 
-        let body = bodies[name];
-        if (body) {
-          world.removeRigidBody(body);
-          world.removeCollisionObject(body);
-          Ammo.destroy(body.getMotionState());
-          Ammo.destroy(body.getCollisionShape());
-          Ammo.destroy(body);
-          delete bodies[name];
+        if (bodies[name]) {
+          const body = bodies[name];
+          if (body) {
+            world.removeRigidBody(body);
+            world.removeCollisionObject(body);
+            Ammo.destroy(body.getMotionState());
+            Ammo.destroy(body.getCollisionShape());
+            Ammo.destroy(body);
+            delete bodies[name];
+          }
         }
-
         const localInertia = new Ammo.btVector3(0, 0, 0);
         shape.calculateLocalInertia(mass, localInertia);
 
         const transform = new Ammo.btTransform();
         transform.setIdentity();
-        transform.setOrigin(new Ammo.btVector3(0, 0, 0));
 
         const motionState = new Ammo.btDefaultMotionState(transform);
         const rbInfo = new Ammo.btRigidBodyConstructionInfo(
@@ -91,7 +91,7 @@
           shape,
           localInertia
         );
-        body = new Ammo.btRigidBody(rbInfo);
+        const body = new Ammo.btRigidBody(rbInfo);
         body.userData = name;
         world.addRigidBody(body);
         bodies[name] = body;
@@ -158,6 +158,7 @@
           console.warn(
             `Attempted to process nonexistent vertex list "${list}"`
           );
+          return;
         }
         return points;
       }
@@ -185,12 +186,15 @@
               const c = points[indices[2]];
 
               if (a && b && c) {
-                mesh.addTriangle(
-                  new Ammo.btVector3(a.x(), a.y(), a.z()),
-                  new Ammo.btVector3(b.x(), b.y(), b.z()),
-                  new Ammo.btVector3(c.x(), c.y(), c.z()),
-                  true
-                );
+                let point1 = new Ammo.btVector3(a.x(), a.y(), a.z()),
+                  point2 = new Ammo.btVector3(b.x(), b.y(), b.z()),
+                  point3 = new Ammo.btVector3(c.x(), c.y(), c.z());
+
+                mesh.addTriangle(point1, point2, point3, true);
+
+                Ammo.destroy(point1);
+                Ammo.destroy(point2);
+                Ammo.destroy(point3);
               }
             }
           }
@@ -248,7 +252,6 @@
           const ray = rays[key];
           if (!ray) continue;
 
-          if (ray.endpoint) Ammo.destroy(ray.endpoint);
           Ammo.destroy(ray);
           delete rays[key];
         }
@@ -391,9 +394,9 @@
               },
               {
                 opcode: "stepWith",
-                type: Scratch.BlockType.COMMAND,
+                blockType: Scratch.BlockType.COMMAND,
                 text: Scratch.translate(
-                  "step simulation with delta time: [dt] max substeps: [maxSubsteps] fixed time step: [fixedTimeStep]"
+                  "step simulation with delta time: [dt] max substeps: [substeps] fixed time step: [fixedTimeStep]"
                 ),
                 hideFromPalette: !this.folders.simControl,
                 arguments: {
@@ -401,7 +404,7 @@
                     type: Scratch.ArgumentType.NUMBER,
                     defaultValue: 0.016,
                   },
-                  maxSubsteps: {
+                  substeps: {
                     type: Scratch.ArgumentType.NUMBER,
                     defaultValue: 10,
                   },
@@ -1166,6 +1169,7 @@
               },
               {
                 opcode: "deleteBody",
+                blockType: Scratch.BlockType.COMMAND,
                 text: Scratch.translate("delete body [name]"),
                 hideFromPalette: !this.folders.bodies,
                 arguments: {
@@ -1464,10 +1468,6 @@
                 hideFromPalette: !this.folders.raycasting,
                 blockIconURI: raycastIcon,
                 arguments: {
-                  index: {
-                    type: Scratch.ArgumentType.NUMBER,
-                    defaultValue: 1,
-                  },
                   xyz: {
                     type: Scratch.ArgumentType.STRING,
                     menu: "xyzMenu",
@@ -1924,13 +1924,17 @@
           }
         }
 
-        stepWith({ dt, maxSubSteps, fixedTimeStep }) {
+        stepWith({ dt, substeps, fixedTimeStep }) {
+          dt = Cast.toNumber(dt);
+          substeps = Cast.toNumber(substeps);
+          fixedTimeStep = Cast.toNumber(fixedTimeStep);
+
           for (const key in bodies) {
             bodies[key].collisions = [];
           }
 
           if (dt != 0 && fixedTimeStep != 0) {
-            world.stepSimulation(dt, maxSubSteps, fixedTimeStep);
+            world.stepSimulation(dt, substeps, fixedTimeStep);
           } else {
             if (runtime.frameLoop.framerate != 0) {
               world.stepSimulation(
@@ -1973,13 +1977,15 @@
         }
 
         setGravity({ x, y, z }) {
-          world.setGravity(
-            new Ammo.btVector3(
-              Cast.toNumber(x),
-              Cast.toNumber(y),
-              Cast.toNumber(z)
-            )
+          let gravity = new Ammo.btVector3(
+            Cast.toNumber(x),
+            Cast.toNumber(y),
+            Cast.toNumber(z)
           );
+
+          world.setGravity(gravity);
+
+          Ammo.destroy(gravity);
         }
 
         getGravity({ xyz }) {
@@ -2040,10 +2046,16 @@
         }
 
         createCapsuleBody({ name, mass, radius, height }) {
+          let r = Cast.toNumber(radius);
+
+          if (r <= 0) {
+            return;
+          }
+
           createShapeBody(
             new Ammo.btCapsuleShape(
-              Cast.toNumber(radius),
-              Cast.toNumber(height) + 2 * radius
+              r,
+              Math.max(0, Cast.toNumber(height) - 2 * r)
             ),
             Cast.toNumber(mass),
             Cast.toString(name)
@@ -2079,14 +2091,15 @@
 
           if (list) {
             const shape = new Ammo.btConvexHullShape();
-            list.forEach((i) => shape.addPoint(i, true));
+            list.forEach((i) => shape.addPoint(i, false));
+
+            shape.recalcLocalAabb();
 
             const localInertia = new Ammo.btVector3(0, 0, 0);
             if (mass > 0) shape.calculateLocalInertia(mass, localInertia);
 
             const transform = new Ammo.btTransform();
             transform.setIdentity();
-            transform.setOrigin(new Ammo.btVector3(0, 0, 0));
 
             const motionState = new Ammo.btDefaultMotionState(transform);
             const rbInfo = new Ammo.btRigidBodyConstructionInfo(
@@ -2162,7 +2175,6 @@
 
           const transform = new Ammo.btTransform();
           transform.setIdentity();
-          transform.setOrigin(new Ammo.btVector3(0, 0, 0));
           const motionState = new Ammo.btDefaultMotionState(transform);
           const localInertia = new Ammo.btVector3(0, 0, 0);
 
@@ -2219,17 +2231,33 @@
             target.lookupVariableByNameAndType(obj, "list").value
           );
 
+          if (!objFile) {
+            console.warn(
+              `Attempted to create OBJ body from invalid OBJ file "${obj}"`
+            );
+            return;
+          }
+
           if (type == "btConvexHullShape") {
             const points = processVertices(objFile.vertices);
+
+            if (!points) {
+              console.warn(
+                `Attempted to create convex hull body from invalid OBJ file "${obj}"`
+              );
+              return;
+            }
+
             const shape = new Ammo.btConvexHullShape();
-            points.forEach((i) => shape.addPoint(i, true));
+            points.forEach((i) => shape.addPoint(i, false));
+
+            shape.recalcLocalAabb();
 
             const localInertia = new Ammo.btVector3(0, 0, 0);
             if (mass > 0) shape.calculateLocalInertia(mass, localInertia);
 
             const transform = new Ammo.btTransform();
             transform.setIdentity();
-            transform.setOrigin(new Ammo.btVector3(0, 0, 0));
 
             const motionState = new Ammo.btDefaultMotionState(transform);
             const rbInfo = new Ammo.btRigidBodyConstructionInfo(
@@ -2276,7 +2304,6 @@
 
             const transform = new Ammo.btTransform();
             transform.setIdentity();
-            transform.setOrigin(new Ammo.btVector3(0, 0, 0));
             const motionState = new Ammo.btDefaultMotionState(transform);
             const localInertia = new Ammo.btVector3(0, 0, 0);
 
@@ -2428,12 +2455,18 @@
           { target }
         ) {
           name = Cast.toString(name);
+
+          let r = Cast.toNumber(radius);
+          if (r <= 0) {
+            return;
+          }
+
           if (compoundShapes[name]) {
             addCompoundShape(
               name,
               new Ammo.btCapsuleShape(
-                Cast.toNumber(radius),
-                Cast.toNumber(height) + 2 * radius
+                r,
+                Math.max(0, Cast.toNumber(height) - 2 * r)
               ),
               x1,
               y1,
@@ -2446,12 +2479,24 @@
             shapeWarning(target, name);
           }
         }
-        // TODO: =-=-=-=-=-=-=-=
 
         //* Compound bodies technically support meshes via btGImpactCompoundShape but I haven't added this
 
         createCompoundBody({ name, mass }, { target }) {
           name = Cast.toString(name);
+
+          if (bodies[name]) {
+            const body = bodies[name];
+            if (body) {
+              world.removeRigidBody(body);
+              world.removeCollisionObject(body);
+              Ammo.destroy(body.getMotionState());
+              Ammo.destroy(body.getCollisionShape());
+              Ammo.destroy(body);
+              delete bodies[name];
+            }
+          }
+
           mass = Cast.toNumber(mass);
           if (compoundShapes[name]) {
             const localInertia = new Ammo.btVector3(0, 0, 0);
@@ -2651,6 +2696,8 @@
                 break;
             }
 
+            bodies[name].activate(true);
+
             bodies[name].setWorldTransform(tempTransform);
             bodies[name].getMotionState().setWorldTransform(tempTransform);
             Ammo.destroy(tempTransform);
@@ -2768,17 +2815,21 @@
         }
 
         bodyTouchingBody({ body, body2 }) {
-          return bodies[Cast.toString(body)]?.collisions.includes(
-            Cast.toString(body2)
+          return (
+            bodies[Cast.toString(body)]?.collisions.includes(
+              Cast.toString(body2)
+            ) || false
           );
         }
 
         bodyTouchingAny({ body }) {
-          return bodies[Cast.toString(body)]?.collisions.length > 0;
+          return bodies[Cast.toString(body)]?.collisions.length > 0 || false;
         }
 
         allBodiesTouchingBody({ body }) {
-          return JSON.stringify(bodies[Cast.toString(body)]?.collisions);
+          return (
+            JSON.stringify(bodies[Cast.toString(body)]?.collisions) || false
+          );
         }
 
         rayCast({ name, x, y, z, x2, y2, z2 }) {
@@ -2858,7 +2909,7 @@
           const from = new Ammo.btVector3(x, y, z);
           const dir = new Ammo.btVector3(x2 - x, y2 - y, z2 - z);
           dir.normalize();
-          dir.op_mul(distance);
+          dir.op_mul(Cast.toNumber(distance));
           const to = new Ammo.btVector3(
             from.x() + dir.x(),
             from.y() + dir.y(),
@@ -2925,10 +2976,10 @@
             if (bodies[body]) {
               return (
                 bodies[body].userData ==
-                Ammo.castObject(
-                  rays[name]?.get_m_collisionObject(),
-                  Ammo.btRigidBody
-                ).userData
+                  Ammo.castObject(
+                    rays[name]?.get_m_collisionObject(),
+                    Ammo.btRigidBody
+                  ).userData || false
               );
             } else {
               console.warn(
@@ -2945,7 +2996,7 @@
         rayTouchingAny({ name }, { target }) {
           name = Cast.toString(name);
           if (rays[name]) {
-            return rays[name]?.hasHit();
+            return rays[name]?.hasHit() || false;
           } else {
             console.warn(
               `Attempted to get properties of nonexistent ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
@@ -2965,8 +3016,6 @@
           }
         }
 
-        // TODO: include blocks that can apply forces based on direction and magnitude
-        // TODO: do I want to support local transformation possibilities? e.g., push (body) forward (x) amount in the direction it's facing
         pushForce({ name, force, x, y, z, x2, y2, z2 }, { target }) {
           name = Cast.toString(name);
           x = Cast.toNumber(x);
