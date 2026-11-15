@@ -1261,7 +1261,7 @@
           if (Array.isArray(current)) {
             if (key == 0) return "";
             if (key > 0) key--;
-            key += key < 0 ? obj.length : 0;
+            key += key < 0 ? current.length : 0;
             if (key >= current.length || key < 0) return "";
           }
           if (i === path.length - 1) {
