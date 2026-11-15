@@ -12,16 +12,30 @@
 
   /**
    * scratch-gui URL parameters that might have some security implications to change.
-   * @type {Record<string, {canModify: false} | {canModify: true, defaultProtocol: string}>}
+   * toURL must exactly mirror how scratch-gui turns the parameter into a URL so that we
+   * permission check the same URL that scratch-gui will actually connect to.
+   * @type {Record<string, {canModify: false} | {canModify: true, toURL: (value: string) => string, protocols: string[]}>}
    */
   const SENSITIVE_GUI_PARAMS = {
     cloud_host: {
       canModify: true,
-      defaultProtocol: "wss://",
+      // Must match scratch-gui/src/lib/cloud-provider.js
+      toURL: (value) =>
+        value.includes("ws://") || value.includes("wss://")
+          ? value
+          : (location.protocol === "http:" ? "ws://" : "wss://") + value,
+      protocols: ["ws:", "wss:"],
     },
     project_url: {
       canModify: true,
-      defaultProtocol: "https://",
+      // Must match scratch-gui/src/lib/project-fetcher-hoc.jsx
+      toURL: (value) =>
+        value.startsWith("http:") ||
+        value.startsWith("https:") ||
+        value.startsWith("data:")
+          ? value
+          : "https://" + value,
+      protocols: ["http:", "https:", "data:"],
     },
     extension: {
       canModify: false,
@@ -48,10 +62,24 @@
     if (!param.canModify) {
       return;
     }
-    const url = /^[a-z][a-z0-9+.-]*:/i.test(value)
-      ? value
-      : param.defaultProtocol + value;
-    return Scratch.canFetch(url).then((allowed) => {
+
+    let parsed;
+    try {
+      parsed = new URL(param.toURL(value));
+    } catch (e) {
+      return;
+    }
+
+    if (
+      !param.protocols.includes(parsed.protocol) ||
+      parsed.username ||
+      parsed.password
+    ) {
+      // Some weird invalid URL - don't let it through
+      return;
+    }
+
+    return Scratch.canFetch(parsed.href).then((allowed) => {
       if (allowed) {
         callback();
       }
