@@ -267,7 +267,8 @@
 
     async getPositionOnce() {
       const startGeneration = currentGeneration;
-      if (!(await canGeolocate()) || currentGeneration !== startGeneration) return;
+      if (!(await canGeolocate()) || currentGeneration !== startGeneration)
+        return;
       const result = await getGeolocation(options);
       if (result && currentGeneration === startGeneration) {
         updatePosition(result);
