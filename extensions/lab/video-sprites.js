@@ -191,6 +191,24 @@
        * @type {Uint8ClampedArray|null}
        */
       this._outData = null;
+
+      /**
+       * True if the camera texture needs to be regenerated.
+       * @type {boolean}
+       */
+      this._textureDirty = true;
+
+      /**
+       * The silhouette data that the camera texture was last generated from. If the parent's silhouette
+       * changes (new costume, different resolution, etc.), we need to regenerate the texture.
+       * @type {Uint8ClampedArray|null}
+       */
+      this._textureSilhouetteData = null;
+    }
+
+    emitWasAltered() {
+      this._textureDirty = true;
+      super.emitWasAltered();
     }
 
     dispose() {
@@ -279,6 +297,14 @@
         return parentTexture;
       }
 
+      if (
+        this._texture &&
+        !this._textureDirty &&
+        this._textureSilhouetteData === silhouetteData
+      ) {
+        return this._texture;
+      }
+
       if (workCanvas.width !== width || workCanvas.height !== height) {
         workCanvas.width = width;
         workCanvas.height = height;
@@ -360,6 +386,9 @@
         new ImageData(outData, width, height)
       );
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+
+      this._textureDirty = false;
+      this._textureSilhouetteData = silhouetteData;
 
       return this._texture;
     }
