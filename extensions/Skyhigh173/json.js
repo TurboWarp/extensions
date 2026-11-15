@@ -85,7 +85,7 @@
       } else {
         last[1] = item;
       }
-      size += Scratch.parse.toString(key.length);
+      size += Scratch.Cast.toString(key).length;
 
       last = item;
       if (size > 1048576) {
@@ -254,7 +254,7 @@
             },
           },
           {
-            hideFromPalete: true,
+            hideFromPalette: true,
             opcode: "json_equal",
             blockType: Scratch.BlockType.BOOLEAN,
             text: Scratch.translate("[json1] [equal] [json2]"),
@@ -1247,34 +1247,39 @@
 
     json_set_path({ path, json, data }) {
       try {
-        path = parseRemoveCache(path);
+        path = parse(path);
         if (!Array.isArray(path)) {
           return "";
         }
-        json = parse(json);
-        let obj = json;
+        const outer = Object.assign({}, parseRemoveCache(json));
+        let current;
+        let next = outer;
         data = this.json_valid_return(data);
-        let count = path.length;
+        let i = 0;
         for (let key of path) {
-          if (Array.isArray(obj)) {
+          current = next;
+          if (Array.isArray(current)) {
             if (key == 0) return "";
             if (key > 0) key--;
             key += key < 0 ? obj.length : 0;
-            if (key >= obj.length || key < 0) return "";
+            if (key >= current.length || key < 0) return "";
           }
-          count--;
-          if (count === 0) {
-            obj = Object.assign({[key]: data}, obj);
-          } else {
-            if (hasOwn(obj, key)) {
-              obj = obj[key];
+          if (i === path.length - 1) {
+            next = data;
+          } else if (hasOwn(current, key)) {
+            if (Array.isArray(current[key])) {
+              next = Object.assign([], current[key]);
             } else {
-              return "";
+              next = Object.assign({}, current[key]);
             }
+          } else {
+            return '';
           }
+          current[key] = next;
+          i++;
         }
-        return stringify(json);
-      } catch {
+        return stringify(outer);
+      } catch (e) {
         return "";
       }
     }
@@ -1323,7 +1328,7 @@
       try {
         json = parse(json);
         json2 = parse(json2);
-        return stringify([...json, ...json2]);
+        return stringify(json.concat(json2));
       } catch {
         return "";
       }
@@ -1341,9 +1346,10 @@
 
     json_array_insert({ item, pos, json }) {
       try {
-        json = parseRemoveCache(json);
+        json = [...parseRemoveCache(json)];
         item = this._fixInvalidJSONValues(this.json_valid_return(item));
-        return stringify(json.toSpliced(pos - 1, 0, item));
+        json.splice(pos - 1, 0, item);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1351,12 +1357,9 @@
 
     json_array_set({ item, pos, json }) {
       try {
-        json = parseRemoveCache(json);
-        return stringify(json.toSpliced(
-          pos - 1,
-          1,
-          this._fixInvalidJSONValues(this.json_valid_return(item))
-        ));
+        json = [...parseRemoveCache(json)];
+        json[pos - 1] = this._fixInvalidJSONValues(this.json_valid_return(item));
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1364,8 +1367,9 @@
 
     json_array_delete({ item, json }) {
       try {
-        json = parseRemoveCache(json);
-        return stringify(json.toSpliced(item - 1, 1));
+        json = [...parseRemoveCache(json)];
+        json.splice(item - 1, 1);
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1391,7 +1395,9 @@
 
     json_array_reverse({ json }) {
       try {
-        return stringify(parse(json).toReversed());
+        json = [...parse(json)]
+        json.reverse();
+        return stringify(json);
       } catch {
         return "";
       }
@@ -1533,12 +1539,12 @@
     json_array_sort(args) {
       let list;
       try {
-        list = parseRemoveCache(args.list);
+        list = [...parseRemoveCache(args.list)];
       } catch {
         return "";
       }
       if (!Array.isArray(list)) return "";
-      list = list.toSorted(Scratch.Cast.compare)
+      list.sort(Scratch.Cast.compare)
       if (args.order === "descending") list.reverse();
       return stringify(list);
     }
