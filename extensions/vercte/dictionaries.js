@@ -1,12 +1,10 @@
 // Name: Dictionaries
 // ID: verctedictionaries
 // Description: Use the power of dictionaries in your project.
-// By: Vercte <https://scratch.mit.edu/users/lolecksdeehaha/>
-// By: LSPECTRONIZTAR <https://scratch.mit.edu/users/LSPECTRONIZTAR/>
-// License: MPL-2.0
+// By: Vercte <https://scratch.mit.edu/users/lolecksdeehaha/>, LSPECTRONIZTAR <https://scratch.mit.edu/users/LSPECTRONIZTAR/>
+// License: MIT
 
-/* generated l10n code */ Scratch.translate();
-/* end generated l10n code */ (function (Scratch) {
+(function (Scratch) {
   "use strict";
   let dictionaries = new Map();
 
@@ -43,9 +41,7 @@
           {
             opcode: "dict_stringify_better",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "get dictionary [DICT] as JSON [STRINGIFIED]"
-            ),
+            text: Scratch.translate("get dictionary [DICT] as JSON [STRINGIFIED]"),
             arguments: {
               DICT: {
                 type: Scratch.ArgumentType.STRING,
@@ -155,7 +151,16 @@
         menus: {
           stringify: {
             acceptReporters: true,
-            items: ["stringified", "parsed"],
+            items: [
+              {
+                text: Scratch.translate("stringified"),
+                value: "stringified"
+              },
+              {
+                text: Scratch.translate("parsed"),
+                value: "parsed"
+              },
+            ]
           },
         },
       };
@@ -186,7 +191,7 @@
       };
       if (!dictionaries.get(DICT)) return "{}";
       const rObj = mapToObj(dictionaries.get(DICT));
-      return STRINGIFIED == "stringified" ? JSON.stringify(rObj) : rObj;
+      return (STRINGIFIED == "stringified") ? JSON.stringify(rObj) : rObj;
     }
 
     dict_parse({ OBJ, DICT }) {
@@ -214,7 +219,7 @@
       if (value === undefined) {
         return "undefined";
       }
-      return JSON.stringify(value);
+      return value;
     }
 
     dict_property_defined({ KEY, DICT }) {
