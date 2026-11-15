@@ -182,7 +182,7 @@
             },
             {
               opcode: "sortTempList",
-              BlockType: Scratch.BlockType.COMMAND,
+              blockType: Scratch.BlockType.COMMAND,
               text: Scratch.translate("sort [SCOPE] list [LIST] by [METHOD]"),
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
@@ -192,7 +192,7 @@
             },
             {
               opcode: "deleteTempList",
-              BlockType: Scratch.BlockType.COMMAND,
+              blockType: Scratch.BlockType.COMMAND,
               text: Scratch.translate("delete [SCOPE] list [LIST]"),
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
@@ -201,7 +201,7 @@
             },
             {
               opcode: "deleteAllTempLists",
-              BlockType: Scratch.BlockType.COMMAND,
+              blockType: Scratch.BlockType.COMMAND,
               text: Scratch.translate("delete all [SCOPE] lists"),
               arguments: {
                 SCOPE: this.fieldParamTemplate("menu", "scope"),
@@ -490,7 +490,7 @@
           ) || false
         );
       }
-      fieldParamTemplate(argType, text, hidden = false, translate = true) {
+      fieldParamTemplate(argType = "", text = "", hidden = false, translate = true) {
         switch (argType) {
           case "string":
             return {
@@ -582,9 +582,9 @@
       }
       deleteFromTempList(args, util) {
         let list = this.getListEnvironment(args, util),
-          i = Scratch.Cast.toNumber(args.IDX);
+          i = Math.floor(Scratch.Cast.toNumber(args.IDX));
         if (list.length > 0 ? 1 <= i && i < list.length + 1 : false) {
-          list.splice(Math.floor(i - 1), 1);
+          list.splice(i - 1, 1);
         }
       }
       deleteAllOfTempList(args, util) {
@@ -593,10 +593,10 @@
       }
       insertIntoTempList(args, util) {
         let list = this.getListEnvironment(args, util),
-          i = Scratch.Cast.toNumber(args.IDX);
+          i = Math.floor(Scratch.Cast.toNumber(args.IDX));
         if (list.length > 0) {
           if (1 <= i && i < list.length + 1) {
-            list.splice(Math.floor(i - 1), 0, args.ITEM);
+            list.splice(i - 1, 0, args.ITEM);
           }
         } else {
           list.push(args.ITEM);
@@ -604,10 +604,10 @@
       }
       replaceItemOfTempList(args, util) {
         let list = this.getListEnvironment(args, util),
-          i = Scratch.Cast.toNumber(args.IDX);
+          i = Math.floor(Scratch.Cast.toNumber(args.IDX));
         if (list.length > 0) {
           if (1 <= i && i < list.length + 1) {
-            list.splice(Math.floor(i - 1), 1, args.ITEM);
+            list.splice(i - 1, 1, args.ITEM);
           }
         } else {
           list.push(args.ITEM);
@@ -616,7 +616,7 @@
       itemOfTempList(args, util) {
         if (this.isListInEnvironment(args, util)) {
           let list = this.getListEnvironment(args, util),
-            i = Scratch.Cast.toNumber(args.IDX);
+            i = Math.floor(Scratch.Cast.toNumber(args.IDX));
           if (1 <= i && i < list.length + 1) {
             return list?.[i - 1] ?? "";
           } else {
@@ -655,10 +655,10 @@
       deleteItemsFromTempList(args, util) {
         let list = this.getListEnvironment(args, util);
         if (list.length > 0) {
-          let i = Scratch.Cast.toNumber(args.IDX1),
-            j = Scratch.Cast.toNumber(args.IDX2);
-          let START = Math.max(1, Math.min(Math.floor(i), Math.floor(j))),
-            END = Math.min(list.length, Math.max(Math.floor(i), Math.floor(j)));
+          let i = Math.floor(Scratch.Cast.toNumber(args.IDX1)),
+            j = Math.floor(Scratch.Cast.toNumber(args.IDX2));
+          let START = Math.max(1, Math.min(i, j)),
+            END = Math.min(list.length, Math.max(i, j));
           let bound1 = i >= 1 && list.length + 1 > i,
             bound2 = j >= 1 && list.length + 1 > j;
           if (bound1 && bound2) list.splice(START - 1, END - START + 1);
@@ -668,27 +668,29 @@
         let list = this.getListEnvironment(args, util);
         if (list.length > 0) {
           let filtered = list.filter((i) => i !== args.ITEM);
-          list.splice(0, list.length, ...filtered);
+          list.splice(0, list.length);
+          for (let i of filtered) list.push(i);
         }
       }
       replaceAllInstancesInTempList(args, util) {
         let list = this.getListEnvironment(args, util);
         if (list.length > 0) {
           let filtered = list.map((i) => (i === args.ITEM1 ? args.ITEM2 : i));
-          list.splice(0, list.length, ...filtered);
+          list.splice(0, list.length);
+          for (let i of filtered) list.push(i);
         }
       }
       sortTempList(args, util) {
         let list = this.getListEnvironment(args, util);
         if (list.length > 0) {
           let newList = list.valueOf();
-          let freqs = {};
+          let freqs = Object.create(null);
           switch (args.METHOD) {
             case "A-Z":
-              newList.sort();
+              newList.sort((a, b) => Scratch.Cast.compare(a, b));
               break;
             case "Z-A":
-              newList.sort();
+              newList.sort((a, b) => Scratch.Cast.compare(a, b));
               newList.reverse();
               break;
             case "frequency":
@@ -699,7 +701,7 @@
                 if (freqs[a] !== freqs[b]) {
                   return freqs[a] - freqs[b];
                 }
-                return `${a}`.localeCompare(`${b}`);
+                return Scratch.Cast.compare(a, b);
               });
               break;
             case "rarity":
@@ -710,7 +712,7 @@
                 if (freqs[b] !== freqs[a]) {
                   return freqs[b] - freqs[a];
                 }
-                return `${a}`.localeCompare(`${b}`);
+                return Scratch.Cast.compare(a, b);
               });
               break;
             case "reverse":
@@ -725,7 +727,8 @@
             default:
               break;
           }
-          list.splice(0, list.length, ...newList);
+          list.splice(0, list.length);
+          for (let i of newList) list.push(i);
         }
       }
       deleteTempList(args, util) {
@@ -793,7 +796,7 @@
         if (list.length > 0 && !this.isDependencyNotLoaded()) {
           const thread = util.thread;
           const listLength = list.length;
-          if (!thread.variables) thread.variables = {};
+          if (!thread.variables) thread.variables = Object.create(null);
           const vars = thread.variables;
 
           if (typeof util.stackFrame.index === "undefined") {
@@ -873,12 +876,14 @@
       }
       splitStringToTempList(args, util) {
         let list = this.getListEnvironment(args, util);
-        list.splice(0, list.length, ...args.STRING.split(args.DELIMITER));
+        let arr = Scratch.Cast.toString(args.STRING).split(Scratch.Cast.toString(args.DELIMITER));
+        list.splice(0, list.length);
+        for (let i of arr) list.push(arr);
       }
       joinTempListToString(args, util) {
         if (this.isListInEnvironment(args, util)) {
           let list = this.getListEnvironment(args, util);
-          return list.join(args.DELIMITER);
+          return list.join(Scratch.Cast.toString(args.DELIMITER));
         } else {
           return "";
         }
@@ -887,7 +892,7 @@
         let list = this.getListEnvironment(args, util),
           array;
         try {
-          array = Object.values(JSON.parse(args.ARRAY)).flat(Infinity);
+          array = Object?.values(JSON.parse(args.ARRAY))?.flat(Infinity) || [];
         } catch (e) {
           array = [];
         }
