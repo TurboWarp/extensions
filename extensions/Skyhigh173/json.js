@@ -997,6 +997,11 @@
     json_valid_return(json) {
       if (typeof json != "string") {
         return json;
+      } else if (
+        (json.slice(0, 1) != "[" || json.slice(-1) != "]") &&
+        (json.slice(0, 1) != "{" || json.slice(-1) != "}")
+      ) {
+        return json;
       } else {
         try {
           return parse(json) ?? "";
@@ -1007,12 +1012,17 @@
     }
 
     json_err_msg({ json }) {
+      json = Scratch.Cast.toString(json);
       try {
         parse(json);
-        return "";
       } catch (e) {
         return e.toString();
       }
+      if (!this.json_is_valid({ json })) {
+        // Valid JSON, but other blocks only accept objects and arrays
+        return Scratch.translate("JSON must be an object or array");
+      }
+      return "";
     }
 
     json_is({ json, types }) {
@@ -1061,9 +1071,15 @@
 
     json_has_key({ json, key }) {
       try {
-        return (
-          this._fixInvalidJSONValues(this.json_valid_return(key)) in parse(json)
-        );
+        json = parse(json);
+        if (typeof json !== "object" || json === null) {
+          return false;
+        }
+        key = String(this._fixInvalidJSONValues(this.json_valid_return(key)));
+        if (Array.isArray(json) && key === "length") {
+          return false;
+        }
+        return hasOwn(json, key);
       } catch {
         return false;
       }
@@ -1084,17 +1100,18 @@
     json_flip({ json }) {
       try {
         json = Object.entries(parse(json));
-        let result = {};
+        // null prototype so that keys like "constructor" and "__proto__" work
+        let result = Object.create(null);
         let store = (key, val) => {
           // invalid key
           if (typeof key === "object") return;
-          if (typeof result[key] == "undefined") {
+          if (!hasOwn(result, key)) {
             // new key
             result[key] = val;
           } else {
             // multiple key exists
             if (Array.isArray(result[key])) {
-              result[key] = result[key].push(val);
+              result[key].push(val);
             } else {
               result[key] = [result[key], val];
             }
@@ -1152,9 +1169,13 @@
           case "keys":
             return stringify(Object.keys(json));
           case "values":
-            return stringify(Object.values(json));
+            return stringify(
+              Object.keys(json).map((key) => json[key] ?? "")
+            );
           case "datas":
-            return stringify(Object.entries(json));
+            return stringify(
+              Object.keys(json).map((key) => [key, json[key] ?? ""])
+            );
           default:
             return "";
         }
@@ -1216,6 +1237,21 @@
       return this.json_length({ json: json });
     }
 
+    /**
+     * Convert a Scratch-style index (1 is first item, -1 is last item) to a JS array index.
+     * @param {unknown[]} array
+     * @param {unknown} index
+     * @returns {number|null} null if the index is invalid or out of bounds
+     */
+    _toArrayIndex(array, index) {
+      index = Scratch.Cast.toNumber(index);
+      if (!Number.isInteger(index) || index === 0) return null;
+      if (index > 0) index--;
+      else index += array.length;
+      if (index < 0 || index >= array.length) return null;
+      return index;
+    }
+
     json_get_path({ path, json }) {
       try {
         path = parse(path);
@@ -1224,17 +1260,18 @@
         }
         json = parse(json);
         for (let key of path) {
-          if (!hasOwn(json, key)) {
+          if (typeof json !== "object" || json === null) {
             return "";
           }
           if (Array.isArray(json)) {
-            if (key == 0) return "";
-            if (key > 0) key--;
-            key += key < 0 ? json.length : 0;
-            if (key >= json.length || key < 0) return "";
+            key = this._toArrayIndex(json, key);
+            if (key === null) return "";
+          } else if (!hasOwn(json, key)) {
+            return "";
           }
           json = json[key];
         }
+        json = json ?? "";
         if (typeof json == "object") {
           return stringify(json);
         } else {
@@ -1259,10 +1296,8 @@
         for (let key of path) {
           current = next;
           if (Array.isArray(current)) {
-            if (key == 0) return "";
-            if (key > 0) key--;
-            key += key < 0 ? current.length : 0;
-            if (key >= current.length || key < 0) return "";
+            key = this._toArrayIndex(current, key);
+            if (key === null) return "";
           }
           if (i === path.length - 1) {
             next = data;
@@ -1294,7 +1329,7 @@
         item += item < 0 ? Scratch.Cast.toNumber(json.length) : 0;
         if (item >= json.length || item < 0) return "";
 
-        let result = json[item];
+        let result = json[item] ?? "";
         if (typeof result == "object") {
           return stringify(result);
         } else {
@@ -1567,10 +1602,20 @@
     json_vm_import_var({ json }, util) {
       try {
         json = parse(json);
-        Object.entries(json).forEach(([k, v]) => {
-          util.target.lookupVariableByNameAndType(k, "").value = v;
-        });
-      } catch {}
+        for (const [name, value] of Object.entries(json)) {
+          const variable = util.target.lookupVariableByNameAndType(name, "");
+          if (!variable) continue;
+          variable.value = value;
+          if (variable.isCloud) {
+            util.ioQuery("cloud", "requestUpdateVariable", [
+              variable.name,
+              variable.value,
+            ]);
+          }
+        }
+      } catch {
+        // ignore
+      }
     }
 
     json_array_analysis(args) {
