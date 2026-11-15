@@ -37,8 +37,9 @@ Locale can be confusing to some users, so accurate documentation should help exp
   async function getLanguageNameAndCodeLookupTableGLOBALIZED() {
     let fetchResult;
     try {
+      // @ts-ignore
       fetchResult = await Scratch.fetch(
-        "https://raw.githubusercontent.com/TurboWarp/scratch-translate-extension-languages-mirror/main/package/languages.json" // TurboWarp's mirror of the supported Translate extension languages
+        "https://raw.githubusercontent.com/TurboWarp/scratch-translate-extension-languages-mirror/main/package/languages.json"
       );
     } catch (error) {
       if (
@@ -89,6 +90,18 @@ Locale can be confusing to some users, so accurate documentation should help exp
       specialPrefix: "_",
       specialFallback: "en",
     };
+  Scratch.vm.on("PROJECT_CHANGED", () => {
+    localeObject =
+    // @ts-ignore
+      Scratch.vm.runtime.extensionStorage["fakemonLocale"]?.localeObject ||
+      Object.create(null);
+    // @ts-ignore
+    config = Scratch.vm.runtime.extensionStorage["fakemonLocale"]?.config || {
+      throwErrorOnFail: false,
+      specialPrefix: "_",
+      specialFallback: "en",
+    };
+  });
   let blockExtensionIcon =
     "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUyIiBoZWlnaHQ9IjE1MiIgdmlld0JveD0iMCAwIDE1MiAxNTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgY2xpcC1wYXRoPSJ1cmwoI2EpIj48ZyBmaWx0ZXI9InVybCgjYikiPjxwYXRoIGQ9Ik0xMDAuNDM5IDQwLjMzNmE2IDYgMCAwIDEgNiA2djYxLjE3OGE2IDYgMCAwIDEtNiA2SDQxLjM5NEwzMS45MDYgMTIzbC05LjUxNi05LjUxN2E2IDYgMCAwIDEtNS4zOS01Ljk2OVY0Ni4zMzdhNiA2IDAgMCAxIDYtNi4wMDF6IiBmaWxsPSIjZmZmIi8+PC9nPjxwYXRoIGQ9Im0xMDAuNDM5IDQwLjMzNi4wMDEtMi41aC0uMDAxem0wIDczLjE3OHYyLjVoLjAwMXptLTU5LjA0NSAwdi0yLjVoLTEuMDM2bC0uNzMyLjczMnpNMzEuOTA2IDEyM2wtMS43NjcgMS43NjggMS43NjcgMS43NjcgMS43NjgtMS43Njd6bS05LjUxNi05LjUxNyAxLjc2Ny0xLjc2Ny0uNjMtLjYzLS44ODYtLjA5em03OC4wNDktNzMuMTQ3djIuNWEzLjUgMy41IDAgMCAxIDMuNSAzLjVoNWE4LjUgOC41IDAgMCAwLTguNDk5LTguNXptNiA2aC0yLjV2NjEuMTc4aDVWNDYuMzM3em0wIDYxLjE3OGgtMi41YTMuNSAzLjUgMCAwIDEtMy41IDMuNXYyLjVsLjAwMSAyLjVhOC41IDguNSAwIDAgMCA4LjQ5OS04LjV6bS02IDZ2LTIuNUg0MS4zOTR2NWg1OS4wNDV6bS01OS4wNDUgMC0xLjc2OC0xLjc2OC05LjQ4NyA5LjQ4NkwzMS45MDYgMTIzbDEuNzY4IDEuNzY4IDkuNDg3LTkuNDg2ek0zMS45MDYgMTIzbDEuNzY4LTEuNzY4LTkuNTE3LTkuNTE2LTEuNzY3IDEuNzY3LTEuNzY4IDEuNzY4IDkuNTE3IDkuNTE3em0tOS41MTYtOS41MTcuMjUtMi40ODdhMy41IDMuNSAwIDAgMS0zLjE0LTMuNDgyaC01YTguNSA4LjUgMCAwIDAgNy42MzggOC40NTd6TTE3IDEwNy41MTRoMi41VjQ2LjMzN2gtNXY2MS4xNzd6bTAtNjEuMTc3aDIuNWEzLjUgMy41IDAgMCAxIDMuNS0zLjUwMXYtNWE4LjUgOC41IDAgMCAwLTguNSA4LjV6bTYtNi4wMDF2Mi41aDc3LjQzOXYtNUgyM3oiIGZpbGw9IiMwMDAiIGZpbGwtb3BhY2l0eT0iLjE1Ii8+PGcgZmlsdGVyPSJ1cmwoI2MpIj48cGF0aCBkPSJNMTI4LjE5NiAyOGE2IDYgMCAwIDEgNiA2djYxLjE3OGE2IDYgMCAwIDEtNiA2SDY5LjE0OWwtOS40ODYgOS40ODYtOS41MTYtOS41MThhNiA2IDAgMCAxLTUuMzktNS45NjhWMzRhNiA2IDAgMCAxIDYtNnoiIGZpbGw9IiM0MzhmZWIiIHNoYXBlLXJlbmRlcmluZz0iY3Jpc3BFZGdlcyIvPjxwYXRoIGQ9Ik0xMjguMTk2IDI4di0yLjV6bTYgNjcuMTc4aDIuNXptLTYgNnYyLjV6bS01OS4wNDcgMHYtMi41aC0xLjAzNWwtLjczMi43MzJ6bS05LjQ4NiA5LjQ4Ni0xLjc2OCAxLjc2OCAxLjc2OCAxLjc2OCAxLjc2OC0xLjc2OHptLTkuNTE2LTkuNTE4IDEuNzY3LTEuNzY3LS42My0uNjMtLjg4Ni0uMDl6bS01LjM5LTUuOTY4aC0yLjV6bTAtNjEuMTc4aC0yLjV6bTYtNnYtMi41em03Ny40MzkgMHYyLjVhMy41IDMuNSAwIDAgMSAzLjUgMy41aDVhOC41IDguNSAwIDAgMC04LjUtOC41em02IDZoLTIuNXY2MS4xNzhoNVYzNHptMCA2MS4xNzhoLTIuNWEzLjUgMy41IDAgMCAxLTMuNSAzLjV2NWE4LjUgOC41IDAgMCAwIDguNS04LjV6bS02IDZ2LTIuNUg2OS4xNDl2NWg1OS4wNDd6bS01OS4wNDcgMC0xLjc2Ny0xLjc2OC05LjQ4NyA5LjQ4NiAxLjc2OCAxLjc2OCAxLjc2OCAxLjc2OCA5LjQ4Ni05LjQ4NnptLTkuNDg2IDkuNDg2IDEuNzY4LTEuNzY4LTkuNTE3LTkuNTE3LTEuNzY3IDEuNzY3LTEuNzY4IDEuNzY4IDkuNTE2IDkuNTE4em0tOS41MTYtOS41MTguMjUtMi40ODdhMy41IDMuNSAwIDAgMS0zLjE0LTMuNDgxaC01YzAgNC40MDQgMy4zNDggOC4wMjIgNy42MzggOC40NTZ6bS01LjM5LTUuOTY4aDIuNVYzNGgtNXY2MS4xNzh6bTAtNjEuMTc4aDIuNWEzLjUgMy41IDAgMCAxIDMuNS0zLjV2LTVhOC41IDguNSAwIDAgMC04LjUgOC41em02LTZ2Mi41aDc3LjQzOXYtNWgtNzcuNDR6IiBmaWxsPSIjMDAwIiBmaWxsLW9wYWNpdHk9Ii4xNSIvPjwvZz48L2c+PGRlZnM+PGZpbHRlciBpZD0iYiIgeD0iMTQuNSIgeT0iMzcuODM2IiB3aWR0aD0iOTQuNDM5IiBoZWlnaHQ9IjkyLjciIGZpbHRlclVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgY29sb3ItaW50ZXJwb2xhdGlvbi1maWx0ZXJzPSJzUkdCIj48ZmVGbG9vZCBmbG9vZC1vcGFjaXR5PSIwIiByZXN1bHQ9IkJhY2tncm91bmRJbWFnZUZpeCIvPjxmZUJsZW5kIGluPSJTb3VyY2VHcmFwaGljIiBpbjI9IkJhY2tncm91bmRJbWFnZUZpeCIgcmVzdWx0PSJzaGFwZSIvPjxmZUNvbG9yTWF0cml4IGluPSJTb3VyY2VBbHBoYSIgdmFsdWVzPSIwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAxMjcgMCIgcmVzdWx0PSJoYXJkQWxwaGEiLz48ZmVPZmZzZXQgZHk9IjQiLz48ZmVHYXVzc2lhbkJsdXIgc3RkRGV2aWF0aW9uPSIyIi8+PGZlQ29tcG9zaXRlIGluMj0iaGFyZEFscGhhIiBvcGVyYXRvcj0iYXJpdGhtZXRpYyIgazI9Ii0xIiBrMz0iMSIvPjxmZUNvbG9yTWF0cml4IHZhbHVlcz0iMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMC4yNSAwIi8+PGZlQmxlbmQgaW4yPSJzaGFwZSIgcmVzdWx0PSJlZmZlY3QxX2lubmVyU2hhZG93XzEzMV80OCIvPjwvZmlsdGVyPjxmaWx0ZXIgaWQ9ImMiIHg9IjM4LjI1NyIgeT0iMjUuNSIgd2lkdGg9IjEwMi40MzkiIGhlaWdodD0iOTYuNyIgZmlsdGVyVW5pdHM9InVzZXJTcGFjZU9uVXNlIiBjb2xvci1pbnRlcnBvbGF0aW9uLWZpbHRlcnM9InNSR0IiPjxmZUZsb29kIGZsb29kLW9wYWNpdHk9IjAiIHJlc3VsdD0iQmFja2dyb3VuZEltYWdlRml4Ii8+PGZlQ29sb3JNYXRyaXggaW49IlNvdXJjZUFscGhhIiB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDEyNyAwIiByZXN1bHQ9ImhhcmRBbHBoYSIvPjxmZU9mZnNldCBkeT0iNCIvPjxmZUdhdXNzaWFuQmx1ciBzdGREZXZpYXRpb249IjIiLz48ZmVDb21wb3NpdGUgaW4yPSJoYXJkQWxwaGEiIG9wZXJhdG9yPSJvdXQiLz48ZmVDb2xvck1hdHJpeCB2YWx1ZXM9IjAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAgMCAwIDAuMjUgMCIvPjxmZUJsZW5kIGluMj0iQmFja2dyb3VuZEltYWdlRml4IiByZXN1bHQ9ImVmZmVjdDFfZHJvcFNoYWRvd18xMzFfNDgiLz48ZmVCbGVuZCBpbj0iU291cmNlR3JhcGhpYyIgaW4yPSJlZmZlY3QxX2Ryb3BTaGFkb3dfMTMxXzQ4IiByZXN1bHQ9InNoYXBlIi8+PC9maWx0ZXI+PGNsaXBQYXRoIGlkPSJhIj48cGF0aCBmaWxsPSIjZmZmIiBkPSJNMCAwaDE1MnYxNTJIMHoiLz48L2NsaXBQYXRoPjwvZGVmcz48L3N2Zz4=";
   let menuExtensionIcon =
@@ -530,33 +543,11 @@ Locale can be confusing to some users, so accurate documentation should help exp
         menus: {
           LANG_CODE: {
             acceptReporters: true,
-            items: this._getLanguageCodes() || [
-              {
-                text: Scratch.translate(
-                  "There was a problem getting language codes."
-                ),
-                value: "none1",
-              },
-              {
-                text: Scratch.translate("Please try again later."),
-                value: "none2",
-              },
-            ],
+            items: "_getLanguageCodes",
           },
           LANG_NAME: {
             acceptReporters: true,
-            items: this._makeLanguageNameMenu() || [
-              {
-                text: Scratch.translate(
-                  "There was a problem getting language names."
-                ),
-                value: "none1",
-              },
-              {
-                text: Scratch.translate("Please try again later."),
-                value: "none2",
-              },
-            ],
+            items: "_makeLanguageNameMenu",
           },
           CONFIG_KEY_BOOL: {
             acceptReporters: true,
@@ -772,7 +763,6 @@ Locale can be confusing to some users, so accurate documentation should help exp
             let codeOption = document.createElement("option");
             codeOption.value = code;
             codeOption.textContent = code;
-
             return codeOption;
           }),
           newLangOption
@@ -797,6 +787,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
       tableHead.append(tableHeadRow);
 
       const refillTable = (newLanguage = "%all") => {
+        this._updateExtensionStorage(); // localeObject was likely just updated
         let showAllLanguages = newLanguage === "%all";
         table.setAttribute("showall", Cast.toString(showAllLanguages));
 
@@ -849,113 +840,56 @@ Locale can be confusing to some users, so accurate documentation should help exp
 
         // @ts-ignore
         tableBody.replaceChildren([]);
-        if (showAllLanguages)
-          Object.entries(sourceParentedObject).forEach((sourceEntry) => {
-            let sourceName = sourceEntry?.at(0),
-              sourceTranslations = sourceEntry?.at(1);
+        Object.entries(sourceParentedObject).forEach((sourceEntry) => {
+          let sourceName = sourceEntry?.at(0),
+            sourceTranslations = sourceEntry?.at(1);
 
-            let translationRow = document.createElement("tr");
+          let translationRow = document.createElement("tr");
 
-            let actionItem = document.createElement("td");
-            actionItem.classList.add("fakemonLocale_actionItem");
-            let actionButton = document.createElement("button");
-            actionButton.innerText = "-";
-            actionButton.classList.add(
-              "fakemonLocale_actionButton",
-              "fakemonLocale_removeButton"
-            );
-            actionButton.addEventListener("click", () => {
+          let actionItem = document.createElement("td");
+          actionItem.classList.add("fakemonLocale_actionItem");
+          let actionButton = document.createElement("button");
+          actionButton.innerText = "-";
+          actionButton.classList.add(
+            "fakemonLocale_actionButton",
+            "fakemonLocale_removeButton"
+          );
+          actionButton.title = Scratch.translate("Remove string");
+          actionButton.addEventListener("click", () => {
+            if (
+              confirm(
+                Scratch.translate(
+                  "Are you sure you want to delete this string?"
+                )
+              )
+            ) {
               Object.keys(localeObject).forEach((lang) => {
                 Reflect.deleteProperty(localeObject[lang], sourceName);
-                refillTable(viewedLanguage);
               });
-            });
-            actionItem.appendChild(actionButton);
-            translationRow.append(actionItem);
-
-            let sourceItem = document.createElement("td");
-            sourceItem.textContent = sourceName;
-
-            translationRow.append(sourceItem);
-
-            Object.keys(localeObject)?.forEach((languageCode) => {
-              let translationItem = document.createElement("td");
-              let translationSpan = document.createElement("span");
-
-              translationSpan.textContent =
-                sourceTranslations?.[languageCode] || "";
-              translationSpan.contentEditable = "true";
-
-              translationSpan.addEventListener("keydown", (event) => {
-                // Don't let the user insert newlines or tabs
-                if (event.key === "Enter" || event.key === "Tab") {
-                  event.preventDefault();
-                  //event.stopPropagation();
-                  return;
-                }
-              });
-
-              translationSpan.addEventListener("keyup", () => {
-                if (
-                  !Object.prototype.hasOwnProperty.call(
-                    localeObject,
-                    languageCode
-                  )
-                )
-                  Reflect.set(localeObject, languageCode, Object.create(null));
-
-                if (
-                  translationSpan.textContent.length > 0 &&
-                  translationSpan.textContent != "\n"
-                )
-                  Reflect.set(
-                    localeObject?.[languageCode],
-                    sourceName,
-                    translationSpan.textContent.trim()
-                  );
-              });
-
-              translationItem.append(translationSpan);
-              translationRow.append(translationItem);
-              tableBody.append(translationRow);
-            });
+              refillTable(viewedLanguage);
+            }
           });
-        else
-          Object.entries(sourceParentedObject).forEach((sourceEntry) => {
-            let sourceName = sourceEntry?.at(0),
-              sourceTranslations = sourceEntry?.at(1);
+          actionItem.appendChild(actionButton);
+          translationRow.append(actionItem);
 
-            let translationRow = document.createElement("tr");
-            let actionItem = document.createElement("td");
-            actionItem.classList.add("fakemonLocale_actionItem");
-            let actionButton = document.createElement("button");
-            actionButton.innerText = "-";
-            actionButton.classList.add(
-              "fakemonLocale_actionButton",
-              "fakemonLocale_removeButton"
-            );
-            actionButton.addEventListener("click", () => {
-              Object.keys(localeObject).forEach((lang) => {
-                Reflect.deleteProperty(localeObject[lang], sourceName);
-                refillTable(viewedLanguage);
-              });
-            });
-            actionItem.appendChild(actionButton);
-            translationRow.append(actionItem);
+          let sourceItem = document.createElement("td");
+          sourceItem.textContent = sourceName;
 
-            let sourceItem = document.createElement("td");
-            sourceItem.textContent = sourceName;
-
+          translationRow.append(sourceItem);
+          const languagesToCheck = showAllLanguages
+            ? Object.keys(localeObject)
+            : [viewedLanguage];
+          languagesToCheck?.forEach((languageCode) => {
             let translationItem = document.createElement("td");
             let translationSpan = document.createElement("span");
 
             translationSpan.textContent =
-              sourceTranslations?.[newLanguage] || "";
+              sourceTranslations?.[languageCode] || "";
             translationSpan.contentEditable = "true";
 
             translationSpan.addEventListener("keydown", (event) => {
-              // Don't let the user insert newlines or tabs
-              if (event.key === "Enter" || event.key === "Tab") {
+              // Don't let the user insert newlines
+              if (event.key === "Enter") {
                 event.preventDefault();
                 //event.stopPropagation();
                 return;
@@ -964,25 +898,30 @@ Locale can be confusing to some users, so accurate documentation should help exp
 
             translationSpan.addEventListener("keyup", () => {
               if (
-                !Object.prototype.hasOwnProperty.call(localeObject, newLanguage)
+                !Object.prototype.hasOwnProperty.call(
+                  localeObject,
+                  languageCode
+                )
               )
-                Reflect.set(localeObject, newLanguage, Object.create(null));
+                Reflect.set(localeObject, languageCode, Object.create(null));
 
               if (
                 translationSpan.textContent.length > 0 &&
                 translationSpan.textContent != "\n"
               )
                 Reflect.set(
-                  localeObject?.[newLanguage],
+                  localeObject?.[languageCode],
                   sourceName,
                   translationSpan.textContent.trim()
                 );
             });
 
             translationItem.append(translationSpan);
-            translationRow.append(sourceItem, translationItem);
+            translationRow.append(translationItem);
             tableBody.append(translationRow);
           });
+        });
+
         let finalRow = document.createElement("tr");
         let actionItem = document.createElement("td");
         let actionButton = document.createElement("button");
@@ -991,26 +930,33 @@ Locale can be confusing to some users, so accurate documentation should help exp
           "fakemonLocale_actionButton",
           "fakemonLocale_addButton"
         );
+        actionButton.title = Scratch.translate("Add string");
         actionButton.addEventListener("click", () => {
-          let string = prompt(
-            Scratch.translate(
-              "What string would you like to add for translation? (blank to cancel)"
-            )
-          );
-          if (string)
-            if (!Object.hasOwnProperty.call(sourceParentedObject, string)) {
-              Object.keys(localeObject).forEach((lang, i) => {
-                localeObject[lang][string] = "";
-              });
-            } else {
-              alert(
-                Scratch.translate("String '{string}' already exists.", {
-                  string: string,
-                })
-              );
-            }
+          if (Object.keys(localeObject).length > 0) {
+            let string = prompt(
+              Scratch.translate(
+                "What string would you like to add for translation? (blank to cancel)"
+              )
+            );
+            if (string)
+              if (!Object.hasOwnProperty.call(sourceParentedObject, string)) {
+                Object.keys(localeObject).forEach((lang, i) => {
+                  localeObject[lang][string] = "";
+                });
+              } else {
+                alert(
+                  Scratch.translate("String {string} already exists.", {
+                    string: string,
+                  })
+                );
+              }
 
-          refillTable(viewedLanguage);
+            refillTable(viewedLanguage);
+          } else {
+            alert(
+              Scratch.translate("Please add a language before adding a string.")
+            );
+          }
         });
         actionItem.appendChild(actionButton);
         finalRow.append(actionItem);
@@ -1037,7 +983,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
             Object.prototype.hasOwnProperty.call(localeObject, languageCode)
           ) {
             alert(
-              Scratch.translate("Language '{lang}' already exists.", {
+              Scratch.translate("Language {lang} already exists.", {
                 lang: languageCode,
               })
             );
@@ -1162,6 +1108,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
      * @param {{ TEXT: string; LANG: string; VARS?: any, throwErrorOnFail?: boolean }} args
      */
     translate(args) {
+      args.TEXT = Scratch.Cast.toString(args.TEXT);
       const isSpecial = args.TEXT.startsWith(config.specialPrefix);
       const throwErrorOnFail = config.throwErrorOnFail || args.throwErrorOnFail;
       const translationLogInfo = {
@@ -1170,8 +1117,8 @@ Locale can be confusing to some users, so accurate documentation should help exp
         isSpecial: isSpecial,
         vars: args.VARS
           ? Object.getPrototypeOf(args.VARS) == Object.prototype
-            ? JSON.parse(args.VARS)
-            : args.VARS
+            ? args.VARS
+            : JSON.parse(args.VARS)
           : null,
         timestamp: new Date().getTime(),
       };
@@ -1182,7 +1129,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
         let translation = localeObject[args.LANG][args.TEXT];
         if (!translation) {
           translation = throwErrorOnFail
-            ? `The ${args.LANG} translation object does not contain an entry for ${args.TEXT}`
+            ? Scratch.translate(`The {lang} translation object does not contain an entry for {text}`, {lang: args.LANG, text: args.TEXT})
             : isSpecial && args.LANG != config.specialFallback
               ? this.translate({
                   ...args,
@@ -1193,11 +1140,13 @@ Locale can be confusing to some users, so accurate documentation should help exp
 
           allFailedTranslations.push({
             ...translationLogInfo,
-            error: `The ${args.LANG} translation object does not contain an entry for ${args.TEXT}`,
+            error: Scratch.translate(`The {lang} translation object does not contain an entry for {text}`, {lang: args.LANG, text: args.TEXT}),
           });
         }
-
-        return Cast.toString(translation || args.TEXT);
+if (Object.getPrototypeOf(translation) == Object.prototype) {
+translation = JSON.stringify(translation);
+}
+        return Scratch.Cast.toString(translation || args.TEXT);
       } catch (error) {
         allFailedTranslations.push({
           ...translationLogInfo,
