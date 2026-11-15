@@ -158,23 +158,6 @@
           },
           "---",
           {
-            opcode: "joinWith",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate({
-              id: "joinwith",
-              default: "join",
-              description:
-                "Beginning of the 'join (...) with []' block. Text inputs follow after this",
-            }),
-            arguments: {},
-            mutator: "cst_extendable",
-            extensions: ["colours_operators", "cst_extendable_joinwith"],
-            disableMonitor: true,
-
-            // currently somewhat broken
-            hideFromPalette: true,
-          },
-          {
             opcode: "extendArray",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate({
@@ -334,22 +317,6 @@
         return "[]";
       }
     }
-    joinWith(args, util) {
-      const prefix = "ARG";
-      const mutation = this.getCurrentMutation(args, util);
-      const inputCount = Scratch.Cast.toNumber(mutation?.inputcount);
-      const joiner = Scratch.Cast.toString(args[prefix + inputCount]);
-      if (inputCount <= 0) return "";
-
-      let string = "";
-      for (let i = 0; i < inputCount; i++) {
-        string += Scratch.Cast.toString(args[prefix + i]);
-        if (i + 1 < inputCount) {
-          string += joiner;
-        }
-      }
-      return string;
-    }
     extendAnd(args, util) {
       const mutation = this.getCurrentMutation(args, util);
       const inputCount = Scratch.Cast.toNumber(mutation?.inputcount);
@@ -409,7 +376,7 @@
       const inputCount = Scratch.Cast.toNumber(mutation?.inputcount);
       const prefix = "CONDITION";
       for (let i = 0; i < inputCount + 1; i++) {
-        if (args[prefix + i]) {
+        if (Scratch.Cast.toBoolean(args[prefix + i])) {
           util.startBranch(i + 1);
           return;
         }
@@ -421,7 +388,7 @@
       const inputCount = Scratch.Cast.toNumber(mutation?.inputcount);
       const prefix = "CONDITION";
       for (let i = 0; i < inputCount + 1; i++) {
-        if (args[prefix + i]) {
+        if (Scratch.Cast.toBoolean(args[prefix + i])) {
           util.startBranch(i + 1);
           return;
         }
@@ -539,6 +506,10 @@
           this.prevInputCount = this.inputCount;
           // HACK: fixes alt+drag duplicate not adding blocks inside
           this.updateDisplay_(true);
+
+          setTimeout(() => {
+            if (this.workspace) this.cleanInputs();
+          }, 0);
         },
         mutationToDom() {
           const container = document.createElement("mutation");
@@ -704,12 +675,7 @@
 
           const inputs = vmBlock.inputs;
           for (const name of Object.keys(inputs)) {
-            const input = inputs[name];
             if (!usedInputs.has(name)) {
-              // @ts-ignore
-              blocks.deleteBlock(input.block);
-              // @ts-ignore
-              blocks.deleteBlock(input.shadow);
               delete inputs[name];
             }
           }
@@ -788,7 +754,11 @@
           ScratchBlocks.Events.fire(ev);
           ScratchBlocks.Events.setGroup(false);
 
-          this.cleanInputs();
+          // waits for the vm to receive the event and disconnect the block from its input list
+          // this leaves topLevel shadow blocks but they dont seem to get saved into the sb3 so whatever
+          setTimeout(() => {
+            if (this.workspace) this.cleanInputs();
+          }, 0);
         },
 
         createAllInputs_(connectionMap) {
@@ -1043,7 +1013,15 @@
     ScratchBlocks.Extensions.register("cst_extendable_if", function () {
       this.extendableDefsStart = [
         createInput(ScratchBlocks.INPUT_VALUE, "CONDITION", "Boolean"),
-        createInput(ScratchBlocks.DUMMY_INPUT, "THEN_WORD", "then"),
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "THEN_WORD", 
+          Scratch.translate({
+            default: "then",
+            description:
+              "Text inserted before a C input on the extendable if blocks. Ideally should match vanilla Scratch's strings",
+          })
+        ),
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
       this.extendableDefs = [
@@ -1090,12 +1068,20 @@
           Scratch.translate({
             default: "else",
             description:
-              "Text inserted before the last C input on the extendable if-else block. Ideally should match vanilla Scratch's strings",
+              "Text inserted before a C input on the extendable if-else block. Ideally should match vanilla Scratch's strings",
           })
         ),
       ];
       this.extendableDefs = [
-        createInput(ScratchBlocks.DUMMY_INPUT, "IF_WORD", "if"),
+        createInput(
+          ScratchBlocks.DUMMY_INPUT,
+          "IF_WORD",
+          Scratch.translate({
+            default: "then",
+            description:
+              "Text inserted before a C input on the extendable if-else block. Ideally should match vanilla Scratch's strings",
+          })
+        ),
         createInput(ScratchBlocks.INPUT_VALUE, "CONDITION", "Boolean"),
         createInput(
           ScratchBlocks.DUMMY_INPUT,
@@ -1113,7 +1099,7 @@
           Scratch.translate({
             default: "else",
             description:
-              "Text inserted before the last C input on the extendable if-else block. Ideally should match vanilla Scratch's strings",
+              "Text inserted after a C input on the extendable if-else block. Ideally should match vanilla Scratch's strings",
           })
         ),
       ];
@@ -1157,39 +1143,6 @@
         createInput(ScratchBlocks.NEXT_STATEMENT, "SUBSTACK", null),
       ];
       this.inputCount = 1;
-      this.minInputs = 0;
-    });
-    ScratchBlocks.Extensions.register("cst_extendable_joinwith", function () {
-      this.extendableDefs = [
-        createInput(
-          ScratchBlocks.INPUT_VALUE,
-          "ARG",
-          null,
-          "text",
-          "TEXT",
-          "word"
-        ),
-      ];
-      this.extendableDefsEnd = [
-        createInput(
-          ScratchBlocks.DUMMY_INPUT,
-          "WORD_WORD",
-          Scratch.translate({
-            default: "with",
-            description:
-              "Text inserted before the last input on the 'join (...) with []' block",
-          })
-        ),
-        createInput(
-          ScratchBlocks.INPUT_VALUE,
-          "ARG",
-          null,
-          "text",
-          "TEXT",
-          "_"
-        ),
-      ];
-      this.inputCount = 2;
       this.minInputs = 0;
     });
 
