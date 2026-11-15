@@ -359,6 +359,11 @@
    * @param {import("scratch-vm").Target} target
    */
   const attach = (target) => {
+    // The target may have been deleted by the time we get here
+    if (!renderer._allDrawables[target.drawableID]) {
+      return;
+    }
+
     const state = getOrCreateState(target);
     if (!state.skin) {
       const id = renderer._nextSkinId++;
