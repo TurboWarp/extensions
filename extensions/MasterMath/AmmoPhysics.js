@@ -111,9 +111,7 @@
           Cast.toNumber(z1)
         );
 
-        transform.setOrigin(
-          newPos
-        );
+        transform.setOrigin(newPos);
         Ammo.destroy(newPos);
 
         let quaternion = eulerToQuaternion(
@@ -183,7 +181,7 @@
                 );
                 return;
               }
-              
+
               const a = points[indices[0]];
               const b = points[indices[1]];
               const c = points[indices[2]];
@@ -193,12 +191,7 @@
                   point2 = new Ammo.btVector3(b.x(), b.y(), b.z()),
                   point3 = new Ammo.btVector3(c.x(), c.y(), c.z());
 
-                mesh.addTriangle(
-                  point1,
-                  point2,
-                  point3,
-                  true
-                );
+                mesh.addTriangle(point1, point2, point3, true);
 
                 Ammo.destroy(point1);
                 Ammo.destroy(point2);
@@ -211,11 +204,17 @@
       }
 
       function processOBJ(objList, isConvex) {
-        let vertices = objList.filter((line) => Cast.toString(line).startsWith("v "));
-        if (vertices) vertices = vertices.map((line) => Cast.toString(line).split("v ")[1]);
+        let vertices = objList.filter((line) =>
+          Cast.toString(line).startsWith("v ")
+        );
+        if (vertices)
+          vertices = vertices.map((line) => Cast.toString(line).split("v ")[1]);
 
-        let faces = objList.filter((line) => Cast.toString(line).startsWith("f "));
-        if (faces) faces = faces.map((line) => Cast.toString(line).split("f ")[1]);
+        let faces = objList.filter((line) =>
+          Cast.toString(line).startsWith("f ")
+        );
+        if (faces)
+          faces = faces.map((line) => Cast.toString(line).split("f ")[1]);
 
         // handle slash notation if present
         if (faces)
@@ -227,17 +226,19 @@
           );
 
         if (
-          vertices.every((item) => Cast.toString(item).split(" ").length == 3) &&
+          vertices.every(
+            (item) => Cast.toString(item).split(" ").length == 3
+          ) &&
           faces.every((item) => Cast.toString(item).split(" ").length == 3)
         ) {
           return isConvex ? vertices : { vertices, faces };
-
         } else if (
-          vertices.every((item) => Cast.toString(item).split(" ").length == 3) &&
+          vertices.every(
+            (item) => Cast.toString(item).split(" ").length == 3
+          ) &&
           !faces.every((item) => Cast.toString(item).split(" ").length == 3)
         ) {
           return vertices;
-
         } else if (isConvex) {
           // non-triangulated vertex list is okay only for convex hulls
           return vertices;
@@ -257,7 +258,8 @@
 
           world.removeRigidBody(body);
           if (body.getMotionState()) Ammo.destroy(body.getMotionState());
-          if (body.getCollisionShape() && !body.isCompound) Ammo.destroy(body.getCollisionShape());
+          if (body.getCollisionShape() && !body.isCompound)
+            Ammo.destroy(body.getCollisionShape());
           Ammo.destroy(body);
 
           delete bodies[key];
@@ -2012,9 +2014,7 @@
             Cast.toNumber(z)
           );
 
-          world.setGravity(
-            gravity
-          );
+          world.setGravity(gravity);
 
           Ammo.destroy(gravity);
         }
@@ -2078,7 +2078,7 @@
 
         createCapsuleBody({ name, mass, radius, height }) {
           let r = Cast.toNumber(radius);
-          
+
           if (r <= 0) {
             return;
           }
@@ -2261,7 +2261,8 @@
           }
 
           const objFile = processOBJ(
-            target.lookupVariableByNameAndType(obj, "list").value, type == "btConvexHullShape"
+            target.lookupVariableByNameAndType(obj, "list").value,
+            type == "btConvexHullShape"
           );
 
           if (!objFile) {
@@ -2310,7 +2311,6 @@
             Ammo.destroy(localInertia);
             Ammo.destroy(transform);
             Ammo.destroy(rbInfo);
-
           } else {
             const points = processVertices(objFile.vertices);
 
@@ -2384,8 +2384,13 @@
           if (compoundShapes[name]) {
             // prevent deletion of a compound shape that is in use by a body
             for (const key in bodies) {
-              if (Ammo.getPointer(bodies[key].getCollisionShape()) === Ammo.getPointer(compoundShapes[name])) {
-                console.warn(`Attempted to delete compound shape "${name}" that is still in use by body "${key}"`);
+              if (
+                Ammo.getPointer(bodies[key].getCollisionShape()) ===
+                Ammo.getPointer(compoundShapes[name])
+              ) {
+                console.warn(
+                  `Attempted to delete compound shape "${name}" that is still in use by body "${key}"`
+                );
                 return;
               }
             }
@@ -2728,13 +2733,14 @@
             const quaternion = eulerToQuaternion(x, y, z);
 
             switch (Cast.toString(transform)) {
-              case "position":
+              case "position": {
                 const newPos = new Ammo.btVector3(x, y, z);
                 tempTransform.setOrigin(newPos);
                 Ammo.destroy(newPos);
 
                 break;
-              case "rotation":
+              }
+              case "rotation": {
                 const newRot = new Ammo.btQuaternion(
                   quaternion.x,
                   quaternion.y,
@@ -2744,8 +2750,9 @@
 
                 tempTransform.setRotation(newRot);
                 Ammo.destroy(newRot);
-                
+
                 break;
+              }
             }
 
             bodies[name].activate(true);
@@ -2782,7 +2789,12 @@
                 break;
               case "rotation": {
                 const delta = eulerToQuaternion(x, y, z);
-                const deltaQuat = new Ammo.btQuaternion(delta.x, delta.y, delta.z, delta.w);
+                const deltaQuat = new Ammo.btQuaternion(
+                  delta.x,
+                  delta.y,
+                  delta.z,
+                  delta.w
+                );
                 const rotation = tempTransform.getRotation();
 
                 const newRotation = deltaQuat.op_mulq(rotation);
@@ -2834,7 +2846,6 @@
 
             Ammo.destroy(newTransform);
             return result || 0;
-
           } else {
             console.warn(
               `Attempted to get transformation of nonexistent body "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
@@ -2866,9 +2877,11 @@
         }
 
         bodyTouchingBody({ body, body2 }) {
-          return bodies[Cast.toString(body)]?.collisions.includes(
-            Cast.toString(body2)
-          ) || false;
+          return (
+            bodies[Cast.toString(body)]?.collisions.includes(
+              Cast.toString(body2)
+            ) || false
+          );
         }
 
         bodyTouchingAny({ body }) {
@@ -2876,7 +2889,9 @@
         }
 
         allBodiesTouchingBody({ body }) {
-          return JSON.stringify(bodies[Cast.toString(body)]?.collisions) || "[]";
+          return (
+            JSON.stringify(bodies[Cast.toString(body)]?.collisions) || "[]"
+          );
         }
 
         rayCast({ name, x, y, z, x2, y2, z2 }) {
@@ -2983,7 +2998,6 @@
             const callback = rays[name];
 
             switch (Cast.toString(property)) {
-              
               case "position":
                 return callback.hasHit()
                   ? callback.get_m_hitPointWorld()[xyz]()
@@ -2993,11 +3007,9 @@
                 return callback.hasHit()
                   ? callback.get_m_hitNormalWorld()[xyz]()
                   : 0;
-
             }
 
             return 0;
-
           } else {
             console.warn(
               `Attempted to get properties of nonexistent ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
@@ -3032,7 +3044,13 @@
           body = Cast.toString(body);
           if (rays[name]) {
             if (bodies[body]) {
-              return bodies[body].userData == Ammo.castObject(rays[name]?.get_m_collisionObject(), Ammo.btRigidBody).userData || false;
+              return (
+                bodies[body].userData ==
+                  Ammo.castObject(
+                    rays[name]?.get_m_collisionObject(),
+                    Ammo.btRigidBody
+                  ).userData || false
+              );
             } else {
               console.warn(
                 `Attempted to detect if nonexistent body "${body}" was touching ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
@@ -3129,7 +3147,6 @@
             );
           }
         }
-
       }
 
       Scratch.extensions.register(new AmmoPhysics());
