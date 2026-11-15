@@ -490,7 +490,12 @@
           ) || false
         );
       }
-      fieldParamTemplate(argType = "", text = "", hidden = false, translate = true) {
+      fieldParamTemplate(
+        argType = "",
+        text = "",
+        hidden = false,
+        translate = true
+      ) {
         switch (argType) {
           case "string":
             return {
@@ -876,7 +881,9 @@
       }
       splitStringToTempList(args, util) {
         let list = this.getListEnvironment(args, util);
-        let arr = Scratch.Cast.toString(args.STRING).split(Scratch.Cast.toString(args.DELIMITER));
+        let arr = Scratch.Cast.toString(args.STRING).split(
+          Scratch.Cast.toString(args.DELIMITER)
+        );
         list.splice(0, list.length);
         for (let i of arr) list.push(i);
       }
