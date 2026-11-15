@@ -180,8 +180,8 @@
     constructor(id, target) {
       super(id, renderer);
 
-      // Don't set private = true because we make all touching operations occur against the parent skin, not us
-      // Thus, the private video data is not visible to the project.
+      // We don't set private = true because that would make the renderer ignore the entire sprite, not just
+      // the video parts. Instead, getTexture() only returns the video when it is safe to do so.
 
       /** @type {import('scratch-vm').Target} */
       this.target = target;
@@ -240,6 +240,17 @@
 
     getTexture(scale) {
       const parentTexture = this._getParentTexture(scale);
+
+      // The video is private data, so we must make sure it is only visible to the user and not the project.
+      // We can't use the private field because that would break touching, so for GPU-path touching and
+      // screenshots, we need to handle that ourselves here.
+      if (
+        renderer._snapshotCallbacks.length > 0 ||
+        (!renderer.allowPrivateSkinAccess && gl.getParameter(gl.FRAMEBUFFER_BINDING) !== null)
+      ) {
+        return parentTexture;
+      }
+
       const parent = this._getParentSkin();
 
       const state = getState(this.target);
