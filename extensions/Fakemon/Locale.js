@@ -92,7 +92,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
     };
   Scratch.vm.on("PROJECT_CHANGED", () => {
     localeObject =
-    // @ts-ignore
+      // @ts-ignore
       Scratch.vm.runtime.extensionStorage["fakemonLocale"]?.localeObject ||
       Object.create(null);
     // @ts-ignore
@@ -1129,7 +1129,10 @@ Locale can be confusing to some users, so accurate documentation should help exp
         let translation = localeObject[args.LANG][args.TEXT];
         if (!translation) {
           translation = throwErrorOnFail
-            ? Scratch.translate(`The {lang} translation object does not contain an entry for {text}`, {lang: args.LANG, text: args.TEXT})
+            ? Scratch.translate(
+                `The {lang} translation object does not contain an entry for {text}`,
+                { lang: args.LANG, text: args.TEXT }
+              )
             : isSpecial && args.LANG != config.specialFallback
               ? this.translate({
                   ...args,
@@ -1140,12 +1143,15 @@ Locale can be confusing to some users, so accurate documentation should help exp
 
           allFailedTranslations.push({
             ...translationLogInfo,
-            error: Scratch.translate(`The {lang} translation object does not contain an entry for {text}`, {lang: args.LANG, text: args.TEXT}),
+            error: Scratch.translate(
+              `The {lang} translation object does not contain an entry for {text}`,
+              { lang: args.LANG, text: args.TEXT }
+            ),
           });
         }
-if (Object.getPrototypeOf(translation) == Object.prototype) {
-translation = JSON.stringify(translation);
-}
+        if (Object.getPrototypeOf(translation) == Object.prototype) {
+          translation = JSON.stringify(translation);
+        }
         return Scratch.Cast.toString(translation || args.TEXT);
       } catch (error) {
         allFailedTranslations.push({
