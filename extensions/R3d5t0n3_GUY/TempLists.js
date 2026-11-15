@@ -208,16 +208,14 @@
               },
             },
 
-            this.fieldParamTemplate(
-              "separator",
-              "",
-              this.isDependencyNotLoaded()
-            ),
-            this.fieldParamTemplate(
-              "label",
-              "Iteration loops",
-              this.isDependencyNotLoaded()
-            ),
+            "---",
+            this.fieldParamTemplate("label", "Iteration loops"),
+            {
+              func: "loadLoopBlocks",
+              blockType: Scratch.BlockType.BUTTON,
+              text: Scratch.translate("Load Loop blocks"),
+              hideFromPalette: !this.isDependencyNotLoaded(),
+            },
             {
               opcode: "forOfLoop",
               blockType: Scratch.BlockType.LOOP,
@@ -595,6 +593,14 @@
         if (!loopBlock) return false;
         return { block: loopBlock, index: stackIndex };
       }
+      async loadDepecency(func) {
+        if (this.isDependencyNotLoaded()) {
+          const url = Scratch.Cast.toString("https://extensions.turbowarp.org/Lily/TempVariables2.js");
+          if (!(await Scratch.vm.securityManager.canLoadExtensionFromProject(url))) return;
+          await Scratch.vm.extensionManager.loadExtensionURL(url);
+        }
+        await func();
+      }
 
       // BASIC
       addToTempList(args, util) {
@@ -800,6 +806,19 @@
       }
 
       // ITERATION LOOPS
+      loadLoopBlocks() {
+        const popup = Scratch.translate({
+          id: "loadLoopBlocks",
+          default:
+            "Using these loop blocks requires 'Temporary Variables' to be installed.\nDo you wish to install the extension automatically?"
+        });
+        if (confirm(popup)) {
+          this.loadDepecency(() => {
+            Scratch.vm.extensionManager.refreshBlocks();
+          });
+        }
+      }
+
       forOfLoop(args, util) {
         return this.iterateOverTempList(args, util, "forOf");
       }
