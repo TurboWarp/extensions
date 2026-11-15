@@ -413,7 +413,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
-                  default: `I have [apples] [apples == 1 ? "apple" : "apples"]!`,
+                  default: `I have [apples] [apples 1 == "apple" "apples" ?:]!`,
                   description:
                     "This is a demonstration of Locale's placeholder system. Since it's being viewed by the project developer, the variable name `apples` should be translated. Additionally, change the expression to match how pluralizations work in your language.",
                 }),
