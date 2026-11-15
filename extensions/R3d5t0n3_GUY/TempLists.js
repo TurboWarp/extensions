@@ -579,6 +579,22 @@
           return [""];
         }
       }
+      locateLoopBlock(thread) {
+        const stackFrames = thread.stackFrames,
+          frameCount = stackFrames.length;
+        let loopBlock = null,
+          stackIndex = -1;
+        for (let i = frameCount - 1; i >= 0; i--) {
+          //locate parent loop in surrounding block environment
+          if (i < 0) break;
+          if (!stackFrames[i].isLoop) continue;
+          loopBlock = stackFrames[i].op.id;
+          stackIndex = i;
+          break;
+        }
+        if (!loopBlock) return false;
+        return { block: loopBlock, index: stackIndex };
+      }
 
       // BASIC
       addToTempList(args, util) {
@@ -822,27 +838,13 @@
         if (!this.isDependencyNotLoaded()) {
           const thread = util.thread;
           const wasCompiled = thread.isCompiled.valueOf();
+          const willContinue = (Scratch.Cast.toString(args.MODE) == "continue");
           try {
             thread.isCompiled = false; //fallback in case compiler breaks this
-            const stackFrames = thread.stackFrames,
-              frameCount = stackFrames.length;
-            let loopBlock = null,
-              stackIndex = -1;
-            for (let i = frameCount - 1; i >= 0; i--) {
-              //locate parent loop in surrounding block environment
-              if (i < 0) break;
-              if (!stackFrames[i].isLoop) continue;
-              loopBlock = stackFrames[i].op.id;
-              stackIndex = i;
-              break;
-            }
-            const frameData = loopBlock
-              ? { block: loopBlock, index: stackIndex }
-              : false;
+            const frameData = this.locateLoopBlock(thread);
             if (!frameData) return; //block does nothing if not used in a loop
             const block = frameData.block;
-            const afterLoop = thread.blockContainer.getBlock(block).next;
-            if (args.MODE === "continue") {
+            if (willContinue) {
               while (thread.stack[0] && thread.stack.at(-1) !== block) {
                 thread.popStack();
               }
@@ -850,14 +852,14 @@
             } else {
               while (thread.stack.at(-1) !== block) thread.popStack();
               thread.popStack();
+              const afterLoop = thread.blockContainer.getBlock(block).next;
               if (afterLoop) thread.pushStack(afterLoop);
             }
           } catch (e) {
             //last resort in case all previous failsafes failed
             console.warn(e);
-          } finally {
-            thread.isCompiled = wasCompiled;
           }
+          thread.isCompiled = wasCompiled;
         }
       }
 
