@@ -426,7 +426,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
                 defaultValue: Scratch.translate({
-                  default: `I have [apples] [apples == 1 ? "apple" : "apples"]!`,
+                  default: `I have [apples] [apples 1 == "apple" "apples" ?:]!`,
                   description:
                     "This is a demonstration of Locale's placeholder system. Since it's being viewed by the project developer, the variable name `apples` should be translated. Additionally, change the expression to match how pluralizations work in your language.",
                 }),
@@ -678,7 +678,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
       #fakemonLocale_table[showall=false] td {
         max-width: 50%;
       }
-      
+
       .fakemonLocale_actionItem {
       width: 25px !important; /* Otherwise it'll take up way more space than it needs */
       }
@@ -713,7 +713,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
         content: '...';
         color: gray;
       }
-        
+
       .fakemonLocale_actionButton {
       width: 20px;
       height: 20px;
@@ -965,9 +965,9 @@ Locale can be confusing to some users, so accurate documentation should help exp
 
       refillTable(viewedLanguage);
 
-      langSelection.addEventListener("change", () => {
+      langSelection.addEventListener("change", async () => {
         if (langSelection.selectedOptions?.[0]?.value === "%new") {
-          let languageCode = prompt(
+          let languageCode = await prompt(
             Scratch.translate(
               "What should the language code be? (blank to cancel)"
             )
@@ -1167,35 +1167,23 @@ translation = JSON.stringify(translation);
       }
     }
 
-    /** @param {{ VARS?: any; TEXT: string; LANG: string; }} args */
+    /** @param {{ VARS?: any; TEXT: any; LANG: any; }} args */
     placeholderTranslate(args) {
-      const res = this.translate(args);
-      if (res) {
-        let isInPlaceholder = false;
-        let skipNextChar = false;
-        let reconstructed = "";
-        let currentExpression = "";
-        for (let i = 0; i < res.length; i++) {
-          if (!skipNextChar) {
-            if (res[i] == "\\") {
-              skipNextChar = true;
-            } else if (res[i] == "[") {
-              isInPlaceholder = true;
-            } else if (res[i] == "]") {
-              isInPlaceholder = false;
-              reconstructed += this._evaluateExpression(
-                currentExpression,
-                args.VARS
-              );
-              currentExpression = "";
-            } else {
-              if (isInPlaceholder) currentExpression += res[i];
-              else reconstructed += res[i];
-            }
-          }
+      const translated = this.translate({
+        TEXT: Cast.toString(args.TEXT),
+        LANG: Cast.toString(args.LANG),
+      });
+
+      let variables = args.VARS;
+
+      if (Object.getPrototypeOf(variables) !== Object.prototype)
+        try {
+          variables = JSON.parse(variables);
+        } catch {
+          variables = Object.create(null);
         }
-        return reconstructed;
-      } else return "";
+
+      return this._evaluatePlaceholders(translated, variables);
     }
 
     getLanguageCode() {
@@ -1468,9 +1456,9 @@ translation = JSON.stringify(translation);
      * This is different from `_evaluateExpression` which evaluates the expressions themselves.
      *
      * @param {string} translation The translation
-     * @param {any} vars Variables to use during evaluation of placeholders
+     * @param {any} variables Variables to use during evaluation of placeholders
      */
-    _evaluatePlaceholders(translation, vars) {
+    _evaluatePlaceholders(translation, variables) {
       let expressionToEvaluate = "";
       let resultingString = "";
 
@@ -1501,9 +1489,10 @@ translation = JSON.stringify(translation);
           case "expression":
             if (char === "]") {
               exprMode = "text";
+
               resultingString += this._evaluateExpression(
                 expressionToEvaluate,
-                vars
+                variables
               );
 
               expressionToEvaluate = "";
@@ -1542,7 +1531,10 @@ translation = JSON.stringify(translation);
       }
 
       if (expressionToEvaluate.length > 0)
-        resultingString += this._evaluateExpression(expressionToEvaluate, vars);
+        resultingString += this._evaluateExpression(
+          expressionToEvaluate,
+          variables
+        );
 
       return resultingString;
     }
@@ -1551,10 +1543,9 @@ translation = JSON.stringify(translation);
      * Internal function used to evaluate an expression with the given variables.
      *
      * @param {string} expression The expression
-     * @param {any} vars Variables to use during evaluation of expression
+     * @param {any} variables Variables to use during evaluation of expression
      */
-    // @ts-ignore
-    _evaluateExpression(expression, vars) {
+    _evaluateExpression(expression, variables) {
       // TODO: EXPRESSION EVALUATOR
       /* LOCALE EXPRESSIONS SPEC - v0.1-pre
       ---[OPERATORS]---
@@ -1578,7 +1569,7 @@ translation = JSON.stringify(translation);
         name(a, b, c) — Function Call: Runs a function (can be per translation, language, or global)
         ---[META STUFF]---
         name(a, b, c) => {expression} — Function Definition: Stores the expression defined as a callable function (can be stored in the translation, language, or global)
-          Examples: 
+          Examples:
             pluralize(value, singular, dual, plural, pluralMany) — Uses a value to return the pluralized form of a word based on rules defined by the language
             isSingular(value) — Returns true if the value meets the language's singular rule (should just be value = 1)
             isDual(value) — Returns true if the value meets the language's dual rule (should be value = 2 if necessary)
@@ -1589,7 +1580,344 @@ translation = JSON.stringify(translation);
         a == 1 ? thing : a > 4 ? "thingów" : "things"
       */
 
-      return "(Expressions are not implemented in this version of Locale.)";
+      class Variable {
+        constructor(/** @type {string} */ variable) {
+          this.variable = variable;
+        }
+
+        get value() {
+          return variables?.[this.variable];
+        }
+
+        set value(/** @type {any} */ newValue) {
+          Reflect.set(variables, this.variable, newValue);
+        }
+
+        toString() {
+          return Cast.toString(this.value);
+        }
+      }
+
+      const DICT_ON = Symbol("DICT_ON");
+      const LIST_ON = Symbol("LIST_ON");
+
+      const OPERATORS = "-+=*/%!^&(){}?:~";
+      const DIGITS = "1234567890.";
+      const QUOTES = "'\"";
+      const WHITESPACE = " \t\n";
+      const VARIABLE =
+        "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+
+      const stack = [];
+      let token = "";
+      let charIndex = 0;
+
+      /**
+       * Pops a value from the stack.
+       *
+       * @param {boolean} raw Should the raw value be returned?
+       * @param {boolean} numeric Should the value be casted to a number? (overriden by `raw`)
+       * @returns {any}
+       */
+      const stackPop = (raw = false, numeric = false) => {
+        let popped = stack.pop();
+
+        if (raw) return popped;
+
+        popped = popped instanceof Variable ? popped.value : popped;
+
+        return numeric ? Cast.toNumber(popped) : popped;
+      };
+
+      /**
+       * Pushes a boolean value into the stack.
+       * Booleans are represented in binary; that is, 1 for true and 0 for false.
+       *
+       * @param {any} bool The boolean to push
+       */
+      const boolPush = (bool) => stack.push(Cast.toBoolean(bool) ? 1 : 0);
+
+      while (charIndex < expression.length) {
+        let char = expression.charAt(charIndex);
+
+        if (WHITESPACE.includes(char)) {
+          charIndex++;
+          continue;
+        }
+
+        token = "";
+
+        if (OPERATORS.includes(char)) {
+          while (charIndex < expression.length && OPERATORS.includes(char)) {
+            token += char;
+
+            charIndex++;
+            char = expression.charAt(charIndex);
+          }
+
+          var operand1, operand2, operand3;
+
+          switch (token) {
+            case "+":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              stack.push(operand1 + operand2);
+              break;
+            case "-":
+              operand2 = stackPop(false, true);
+              operand1 = stackPop(false, true);
+
+              stack.push(operand1 - operand2);
+              break;
+            case "*":
+              operand2 = stackPop(false, true);
+              operand1 = stackPop(false, true);
+
+              stack.push(operand1 * operand2);
+              break;
+            case "/":
+              operand2 = stackPop(false, true);
+              operand1 = stackPop(false, true);
+
+              stack.push(operand1 / operand2);
+              break;
+            case "%":
+              operand2 = stackPop(false, true);
+              operand1 = stackPop(false, true);
+
+              stack.push(operand1 % operand2);
+              break;
+            case "**":
+              operand2 = stackPop(false, true);
+              operand1 = stackPop(false, true);
+
+              stack.push(operand1 ** operand2);
+              break;
+            case "=":
+              operand2 = stackPop();
+              operand1 = stackPop(true);
+
+              if (!(operand1 instanceof Variable))
+                operand1 = new Variable(Cast.toString(operand1));
+
+              operand1.value = operand2;
+              break;
+            case "==":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              boolPush(operand1 == operand2);
+              break;
+            case "===":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              boolPush(operand1 === operand2);
+              break;
+            case "<":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              boolPush(operand1 < operand2);
+              break;
+            case "<=":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              boolPush(operand1 <= operand2);
+              break;
+            case ">":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              boolPush(operand1 > operand2);
+              break;
+            case ">=":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              boolPush(operand1 >= operand2);
+              break;
+            case "!":
+              boolPush(!Cast.toBoolean(stackPop()));
+              break;
+            case "^":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              stack.push(operand1 ^ operand2);
+              break;
+            case "&":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              stack.push(operand1 & operand2);
+              break;
+            case "&&":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              stack.push(operand1 && operand2);
+              break;
+            case "||":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              stack.push(operand1 || operand2);
+              break;
+            case "??":
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              stack.push(operand1 ?? operand2);
+              break;
+            case "?:":
+              operand3 = stackPop();
+              operand2 = stackPop();
+              operand1 = stackPop();
+
+              stack.push(operand1 ? operand2 : operand3);
+              break;
+            case "(":
+              stack.push(LIST_ON);
+              break;
+            case ")":
+              operand1 = stack.lastIndexOf(LIST_ON);
+              if (operand1 < 0) break;
+
+              operand2 = [];
+              operand1++;
+
+              while (operand1 < stack.length) {
+                operand2.push(stack.at(operand1));
+                operand1++;
+              }
+
+              stack.push(operand2);
+              break;
+            case "{":
+              stack.push(DICT_ON);
+              break;
+            case "}":
+              operand1 = stack.lastIndexOf(DICT_ON);
+              if (operand1 < 0) break;
+
+              operand2 = Object.create(null);
+              operand1++;
+
+              while (operand1 + 1 < stack.length) {
+                Reflect.set(
+                  operand2,
+                  stack.at(operand1),
+                  stack.at(operand1 + 1)
+                );
+
+                operand1 += 2;
+              }
+
+              stack.push(operand2);
+              break;
+          }
+
+          continue;
+        }
+
+        if (DIGITS.includes(char)) {
+          let dotCount = 0;
+
+          while (charIndex < expression.length && DIGITS.includes(char)) {
+            if (char === ".") {
+              if (dotCount < 1) dotCount++;
+              else break;
+
+              continue;
+            }
+
+            token += char;
+
+            charIndex++;
+            char = expression.charAt(charIndex);
+          }
+
+          stack.push(Cast.toNumber(token));
+
+          continue;
+        }
+
+        if (QUOTES.includes(char)) {
+          token = char;
+
+          charIndex++;
+          if (charIndex >= expression.length) break;
+
+          char = expression.charAt(charIndex);
+
+          while (charIndex < expression.length) {
+            if (char === "\\") {
+              charIndex++;
+              if (charIndex >= expression.length) break;
+
+              switch (expression.charAt(charIndex)) {
+                case "n":
+                  token += "\n";
+                  break;
+                case "t":
+                  token += "\t";
+                  break;
+                case "\\":
+                  token += "\\";
+                  break;
+                case "x":
+                  if (charIndex + 2 >= expression.length) break;
+
+                  try {
+                    token += String.fromCodePoint(
+                      parseInt(
+                        expression.slice(charIndex + 1, charIndex + 3),
+                        16
+                      )
+                    );
+                  } catch {}
+
+                  break;
+                // ...
+                default:
+                  token += char;
+                  break;
+              }
+            } else if (char === token.at(0)) {
+              token = token.slice(1);
+
+              charIndex++;
+              break;
+            } else token += char;
+
+            charIndex++;
+            char = expression.charAt(charIndex);
+          }
+
+          stack.push(token);
+
+          continue;
+        }
+
+        if (!VARIABLE.includes(char)) {
+          charIndex++;
+          continue;
+        }
+
+        while (charIndex < expression.length && VARIABLE.includes(char)) {
+          token += char;
+
+          charIndex++;
+          char = expression.charAt(charIndex);
+        }
+
+        stack.push(new Variable(token));
+      }
+
+      return Cast.toString(stack.at(-1));
     }
   }
 
