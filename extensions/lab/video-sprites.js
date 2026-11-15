@@ -435,13 +435,15 @@
   const originalMakeClone = RenderedTarget.prototype.makeClone;
   RenderedTarget.prototype.makeClone = function () {
     const newClone = originalMakeClone.call(this);
-    const originalState = getState(this);
-    if (originalState && originalState.skin) {
-      const newState = getOrCreateState(newClone);
-      newState.zoom = originalState.zoom;
-      newState.mode = originalState.mode;
-      newState.maskColor = originalState.maskColor;
-      attach(newClone);
+    if (newClone) {
+      const originalState = getState(this);
+      if (originalState && originalState.skin) {
+        const newState = getOrCreateState(newClone);
+        newState.zoom = originalState.zoom;
+        newState.mode = originalState.mode;
+        newState.maskColor = originalState.maskColor;
+        attach(newClone);
+      }
     }
     return newClone;
   };
