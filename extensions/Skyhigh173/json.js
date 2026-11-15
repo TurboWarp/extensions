@@ -1169,9 +1169,7 @@
           case "keys":
             return stringify(Object.keys(json));
           case "values":
-            return stringify(
-              Object.keys(json).map((key) => json[key] ?? "")
-            );
+            return stringify(Object.keys(json).map((key) => json[key] ?? ""));
           case "datas":
             return stringify(
               Object.keys(json).map((key) => [key, json[key] ?? ""])
