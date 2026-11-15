@@ -73,7 +73,7 @@
             world.removeRigidBody(body);
             world.removeCollisionObject(body);
             Ammo.destroy(body.getMotionState());
-            Ammo.destroy(body.getCollisionShape());
+            if (!body.isCompound) Ammo.destroy(body.getCollisionShape());
             Ammo.destroy(body);
             delete bodies[name];
           }
@@ -105,13 +105,17 @@
       function addCompoundShape(name, shape, x1, y1, z1, x2, y2, z2) {
         const transform = new Ammo.btTransform();
         transform.setIdentity();
-        transform.setOrigin(
-          new Ammo.btVector3(
-            Cast.toNumber(x1),
-            Cast.toNumber(y1),
-            Cast.toNumber(z1)
-          )
+        const newPos = new Ammo.btVector3(
+          Cast.toNumber(x1),
+          Cast.toNumber(y1),
+          Cast.toNumber(z1)
         );
+
+        transform.setOrigin(
+          newPos
+        );
+        Ammo.destroy(newPos);
+
         let quaternion = eulerToQuaternion(
           Cast.toNumber(x2),
           Cast.toNumber(y2),
@@ -138,8 +142,8 @@
         const points = [];
         if (list) {
           for (let i = 0; i < list.length; i++) {
-            const item = list[i].split(" ");
-            if (list[i] != "" && item.length === 3) {
+            const item = Cast.toString(list[i]).split(" ");
+            if (Cast.toString(list[i]) != "" && item.length === 3) {
               points.push(
                 new Ammo.btVector3(
                   Cast.toNumber(item[0]),
@@ -168,8 +172,8 @@
 
         if (faceList) {
           for (let i = 0; i < faceList.length; i++) {
-            if (faceList[i] != "") {
-              const indices = faceList[i]
+            if (Cast.toString(faceList[i]) != "") {
+              const indices = Cast.toString(faceList[i])
                 ?.split(" ")
                 ?.map((n) => Cast.toNumber(n) - 1);
               // * validate triangulated mesh
@@ -179,8 +183,7 @@
                 );
                 return;
               }
-
-              // TODO: this doesn't validate the points list, only the vertex list.
+              
               const a = points[indices[0]];
               const b = points[indices[1]];
               const c = points[indices[2]];
@@ -190,7 +193,12 @@
                   point2 = new Ammo.btVector3(b.x(), b.y(), b.z()),
                   point3 = new Ammo.btVector3(c.x(), c.y(), c.z());
 
-                mesh.addTriangle(point1, point2, point3, true);
+                mesh.addTriangle(
+                  point1,
+                  point2,
+                  point3,
+                  true
+                );
 
                 Ammo.destroy(point1);
                 Ammo.destroy(point2);
@@ -202,12 +210,12 @@
         return mesh;
       }
 
-      function processOBJ(objList) {
-        let vertices = objList.filter((line) => line.startsWith("v "));
-        if (vertices) vertices = vertices.map((line) => line.split("v ")[1]);
+      function processOBJ(objList, isConvex) {
+        let vertices = objList.filter((line) => Cast.toString(line).startsWith("v "));
+        if (vertices) vertices = vertices.map((line) => Cast.toString(line).split("v ")[1]);
 
-        let faces = objList.filter((line) => line.startsWith("f "));
-        if (faces) faces = faces.map((line) => line.split("f ")[1]);
+        let faces = objList.filter((line) => Cast.toString(line).startsWith("f "));
+        if (faces) faces = faces.map((line) => Cast.toString(line).split("f ")[1]);
 
         // handle slash notation if present
         if (faces)
@@ -219,29 +227,37 @@
           );
 
         if (
-          vertices.every((item) => item.split(" ").length == 3) &&
-          faces.every((item) => item.split(" ").length == 3)
+          vertices.every((item) => Cast.toString(item).split(" ").length == 3) &&
+          faces.every((item) => Cast.toString(item).split(" ").length == 3)
         ) {
-          return { vertices, faces };
+          return isConvex ? vertices : { vertices, faces };
+
         } else if (
-          vertices.every((item) => item.split(" ").length == 3) &&
-          !faces.every((item) => item.split(" ").length == 3)
+          vertices.every((item) => Cast.toString(item).split(" ").length == 3) &&
+          !faces.every((item) => Cast.toString(item).split(" ").length == 3)
         ) {
           return vertices;
-        } else {
-          return;
+
+        } else if (isConvex) {
+          // non-triangulated vertex list is okay only for convex hulls
+          return vertices;
         }
+
+        return;
       }
 
       function resetWorld() {
-        world.setGravity(new Ammo.btVector3(0, -9.81, 0));
+        const defaultGravity = new Ammo.btVector3(0, -9.81, 0);
+        world.setGravity(defaultGravity);
+        Ammo.destroy(defaultGravity);
+
         for (const key in bodies) {
           const body = bodies[key];
           if (!body) continue;
 
           world.removeRigidBody(body);
           if (body.getMotionState()) Ammo.destroy(body.getMotionState());
-          if (body.getCollisionShape()) Ammo.destroy(body.getCollisionShape());
+          if (body.getCollisionShape() && !body.isCompound) Ammo.destroy(body.getCollisionShape());
           Ammo.destroy(body);
 
           delete bodies[key];
@@ -314,6 +330,11 @@
         if (autoReset) resetWorld();
       });
 
+      runtime.on("PROJECT_LOADED", () => {
+        // new projects from the same session get the proper default value
+        autoReset = true;
+      });
+
       // These SVG Icons from Blender source code: https://github.com/blender/blender/tree/main/release/datafiles/icons_svg
       const sphereIcon =
         "data:image/svg+xml;base64,PHN2ZyBpZD0ic3ZnMyIgaGVpZ2h0PSIxNjAwIiB2aWV3Qm94PSIwIDAgMTYwMCAxNjAwIiB3aWR0aD0iMTYwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczppbmtzY2FwZT0iaHR0cDovL3d3dy5pbmtzY2FwZS5vcmcvbmFtZXNwYWNlcy9pbmtzY2FwZSIgeG1sbnM6c29kaXBvZGk9Imh0dHA6Ly9zb2RpcG9kaS5zb3VyY2Vmb3JnZS5uZXQvRFREL3NvZGlwb2RpLTAuZHRkIj48c29kaXBvZGk6bmFtZWR2aWV3IHBhZ2Vjb2xvcj0iIzMwMzAzMCIgc2hvd2dyaWQ9InRydWUiPjxpbmtzY2FwZTpncmlkIGlkPSJncmlkNSIgdW5pdHM9InB4IiBzcGFjaW5neD0iMTAwIiBzcGFjaW5neT0iMTAwIiBjb2xvcj0iIzQ3NzJiMyIgb3BhY2l0eT0iMC4yIiB2aXNpYmxlPSJ0cnVlIiAvPjwvc29kaXBvZGk6bmFtZWR2aWV3PjxnIGZpbGw9IiNmZmYiPjxwYXRoIGlkPSJwYXRoMiIgZD0ibTM5MSAzMzBjLTEuODQ2OTIgMC0zLjUxOTU3LjI4MjYxLTQuNzc1MzkuNzY1NjItLjYyNzkxLjI0MTUxLTEuMTU0NzguNTMwNTItMS41NTA3OC44OTA2M3MtLjY3MzgzLjgyMjkyLS42NzM4MyAxLjM0Mzc1YS41MDAwNS41MDAwNSAwIDEgMCAxIDBjMC0uMTY5NTUuMDg1OC0uMzY1NDEuMzQ3NjYtLjYwMzUyLjI2MTg0LS4yMzgxLjY4Nzk1LS40ODYzNCAxLjIzNjMyLS42OTcyNiAxLjA5Njc2LS40MjE4NCAyLjY3MzA0LS42OTkyMiA0LjQxNjAyLS42OTkyMnMzLjMxOTI2LjI3NzM4IDQuNDE2MDIuNjk5MjJjLjU0ODM3LjIxMDkyLjk3NDQ4LjQ1OTE2IDEuMjM2MzIuNjk3MjYuMjYxODUuMjM4MTEuMzQ3NjYuNDMzOTcuMzQ3NjYuNjAzNTJhLjUwMDA1LjUwMDA1IDAgMSAwIDEgMGMwLS41MjA4My0uMjc3ODMtLjk4MzY0LS42NzM4My0xLjM0Mzc1cy0uOTIyODctLjY0OTEyLTEuNTUwNzgtLjg5MDYzYy0xLjI1NTgyLS40ODMwMS0yLjkyODQ3LS43NjU2Mi00Ljc3NTM5LS43NjU2MnoiIG9wYWNpdHk9Ii41IiB0cmFuc2Zvcm09Im1hdHJpeCgxMDAgMCAwIDEwMCAtMzgzMDAgLTMyNTAwKSIvPjxwYXRoIGlkPSJwYXRoMSIgZD0ibTM5MSAzODljLTMuODM4MzYtLjAwMDAxLTYuOTYwOTcgMy4xMDUzNC02Ljk5NjA5IDYuOTM1NTVhLjUwMDA1LjUwMDA1IDAgMCAwIC0uMDAzOTEuMDY0NDVjMCAzLjg2MDEyIDMuMTM5ODggNy4wMDAwMSA3IDcgLjAxNzEgMCAuMDMzNy0uMDAyLjA1MDgtLjAwMmEuNTAwMDUuNTAwMDUgMCAwIDAgLjAxLS4wMDJjMy44MzE3Ni0uMDMyOTIgNi45MzkyLTMuMTU2MzIgNi45MzkyLTYuOTk2IDAtLjAxNzEtLjAwMi0uMDMzNy0uMDAyLS4wNTA4YS41MDAwNS41MDAwNSAwIDAgMCAtLjAwMi0uMDFjLS4wMzI4LTMuODEwOTUtMy4xMjI4OS02LjkwMTY2LTYuOTMzNTktNi45MzU1NGEuNTAwMDUuNTAwMDUgMCAwIDAgLS4wNjI0MS0uMDAzNjZ6bTAgMWMzLjMxOTY4IDAgNiAyLjY4MDMyIDYgNiAwIC4xNjk1NS0uMDg1OC4zNjU0MS0uMzQ3NjYuNjAzNTItLjI2MTg0LjIzODEtLjY4Nzk1LjQ4NjM0LTEuMjM2MzIuNjk3MjYtMS4wOTY3Ni40MjE4NC0yLjY3MzA0LjY5OTIyLTQuNDE2MDIuNjk5MjItLjY1OTM5IDAtMS4yODIyMS0uMDUwOS0xLjg3Njk1LS4xMjMwNS0uMDcyMi0uNTk0NzQtLjEyMzA1LTEuMjE3NTYtLjEyMzA1LTEuODc2OTUgMC0xLjc0Mjk4LjI3NzM4LTMuMzE5MjYuNjk5MjItNC40MTYwMi4yMTA5Mi0uNTQ4MzcuNDU5MTYtLjk3NDQ4LjY5NzI2LTEuMjM2MzIuMjM4MTEtLjI2MTg1LjQzMzk3LS4zNDc2Ni42MDM1Mi0uMzQ3NjZ6bS0xLjc2MzY3LjI2MzY3Yy0uMTczMzcuMjg3MTktLjMzMjc0LjYwMjI0LS40NzA3MS45NjA5NC0uNDgzMDEgMS4yNTU4Mi0uNzY1NjIgMi45Mjg0Ny0uNzY1NjIgNC43NzUzOSAwIC41OTQ4Ni4wMzc5IDEuMTYyMjkuMDkzNyAxLjcxMjg5LS41NTg5Ny0uMTEzLTEuMDc5NTEtLjI0NjYyLTEuNTA5NzctLjQxMjExLS41NDgzNy0uMjEwOTItLjk3NDQ4LS40NTkxNi0xLjIzNjMyLS42OTcyNi0uMjYxOC0uMjM4MTEtLjM0NzYxLS40MzM5Ny0uMzQ3NjEtLjYwMzUyIDAtMi43MDU2NyAxLjc4MDM0LTQuOTg1MTIgNC4yMzYzMy01LjczNjMzem0tMy45NzI2NiA3LjVjLjI4NzE5LjE3MzM3LjYwMjI0LjMzMjc0Ljk2MDk0LjQ3MDcxLjU4NTI0LjIyNTA5IDEuMjY4MDIuNDAxNTMgMi4wMDk3Ny41MzEyNC4xMjk3Mi43NDE3NC4zMDYxNiAxLjQyNDUzLjUzMTI0IDIuMDA5NzcuMTM3OTcuMzU4Ny4yOTczNC42NzM3NS40NzA3MS45NjA5NC0xLjg5ODYzLS41ODA3NC0zLjM5MTkyLTIuMDc0MDItMy45NzI2Ni0zLjk3MjY2em0xMS40NzI2NiAwYy0uNzUxMjIgMi40NTU5OS0zLjAzMDY3IDQuMjM2MzMtNS43MzYzMyA0LjIzNjMzLS4xNjk1NSAwLS4zNjU0MS0uMDg1OC0uNjAzNTItLjM0NzY2LS4yMzgxLS4yNjE4NC0uNDg2MzQtLjY4Nzk1LS42OTcyNi0xLjIzNjMyLS4xNjU0OS0uNDMwMjYtLjI5OTExLS45NTA4LS40MTIxMS0xLjUwOTc3LjU1MDYuMDU1OSAxLjExODAzLjA5MzcgMS43MTI4OS4wOTM3IDEuODQ2OTIgMCAzLjUxOTU3LS4yODI2MiA0Ljc3NTM5LS43NjU2Mi4zNTg3LS4xMzc5Ny42NzM3NS0uMjk3MzQuOTYwOTQtLjQ3MDcxeiIgdHJhbnNmb3JtPSJtYXRyaXgoMTAwIDAgMCAxMDAgLTM4MzAwIC0zODgwMCkiLz48L2c+PC9zdmc+";
@@ -337,12 +358,13 @@
       class AmmoPhysics {
         constructor() {
           this.folders = {
-            simControl: true, // folder open by default
-            bodies: false,
-            transformations: false,
-            collisions: false,
-            raycasting: false,
-            forces: false,
+            // All folders open by default.
+            simControl: true,
+            bodies: true,
+            transformations: true,
+            collisions: true,
+            raycasting: true,
+            forces: true,
           };
 
           this.refreshPalette = () => {
@@ -711,6 +733,21 @@
                 },
               },
               {
+                opcode: "deleteCompoundShape",
+                blockType: Scratch.BlockType.COMMAND,
+                text: Scratch.translate(
+                  "delete compound shape with name: [name]"
+                ),
+                hideFromPalette: !this.folders.bodies,
+                blockIconURI: compoundIcon,
+                arguments: {
+                  name: {
+                    type: Scratch.ArgumentType.STRING,
+                    defaultValue: "shape",
+                  },
+                },
+              },
+              {
                 opcode: "compBodyAddBox",
                 blockType: Scratch.BlockType.COMMAND,
                 text: Scratch.translate(
@@ -970,12 +1007,16 @@
                 opcode: "createCompoundBody",
                 blockType: Scratch.BlockType.COMMAND,
                 text: Scratch.translate(
-                  "create rigid body from compound shape [name] with mass [mass]"
+                  "create rigid body with name [name] from compound shape [shape] with mass [mass]"
                 ),
                 blockIconURI: compoundIcon,
                 hideFromPalette: !this.folders.bodies,
                 arguments: {
                   name: {
+                    type: Scratch.ArgumentType.STRING,
+                    defaultValue: "body",
+                  },
+                  shape: {
                     type: Scratch.ArgumentType.STRING,
                     defaultValue: "shape",
                   },
@@ -1247,7 +1288,7 @@
                 },
               },
               {
-                opcode: "bodyTransformation",
+                opcode: "getBodyTransformation",
                 blockType: Scratch.BlockType.REPORTER,
                 text: Scratch.translate("[xyz] [transform] of body [name]"),
                 hideFromPalette: !this.folders.transformations,
@@ -1648,18 +1689,6 @@
                   },
                 },
               },
-              {
-                opcode: "clearForces",
-                blockType: Scratch.BlockType.COMMAND,
-                text: Scratch.translate("stop pushing [name]"),
-                hideFromPalette: !this.folders.forces,
-                arguments: {
-                  name: {
-                    type: Scratch.ArgumentType.STRING,
-                    defaultValue: "body",
-                  },
-                },
-              },
             ],
             menus: {
               xyzMenu: {
@@ -1881,7 +1910,7 @@
         }
 
         toggleAutoReset({ toggle }) {
-          autoReset = Cast.toBoolean(toggle);
+          autoReset = Cast.toString(toggle) === "enable";
         }
 
         step() {
@@ -1973,7 +2002,7 @@
         }
 
         setMaxSubSteps({ value }) {
-          maxSubSteps = Cast.toNumber(value);
+          maxSubSteps = Math.max(0, Cast.toNumber(value));
         }
 
         setGravity({ x, y, z }) {
@@ -1983,7 +2012,9 @@
             Cast.toNumber(z)
           );
 
-          world.setGravity(gravity);
+          world.setGravity(
+            gravity
+          );
 
           Ammo.destroy(gravity);
         }
@@ -2047,7 +2078,7 @@
 
         createCapsuleBody({ name, mass, radius, height }) {
           let r = Cast.toNumber(radius);
-
+          
           if (r <= 0) {
             return;
           }
@@ -2071,7 +2102,7 @@
               world.removeRigidBody(body);
               world.removeCollisionObject(body);
               Ammo.destroy(body.getMotionState());
-              Ammo.destroy(body.getCollisionShape());
+              if (!body.isCompound) Ammo.destroy(body.getCollisionShape());
               Ammo.destroy(body);
               delete bodies[name];
             }
@@ -2092,6 +2123,8 @@
           if (list) {
             const shape = new Ammo.btConvexHullShape();
             list.forEach((i) => shape.addPoint(i, false));
+
+            list.forEach((i) => Ammo.destroy(i));
 
             shape.recalcLocalAabb();
 
@@ -2135,7 +2168,7 @@
               world.removeRigidBody(body);
               world.removeCollisionObject(body);
               Ammo.destroy(body.getMotionState());
-              Ammo.destroy(body.getCollisionShape());
+              if (!body.isCompound) Ammo.destroy(body.getCollisionShape());
               Ammo.destroy(body);
               delete bodies[name];
             }
@@ -2214,7 +2247,7 @@
               world.removeRigidBody(body);
               world.removeCollisionObject(body);
               Ammo.destroy(body.getMotionState());
-              Ammo.destroy(body.getCollisionShape());
+              if (!body.isCompound) Ammo.destroy(body.getCollisionShape());
               Ammo.destroy(body);
               delete bodies[name];
             }
@@ -2228,7 +2261,7 @@
           }
 
           const objFile = processOBJ(
-            target.lookupVariableByNameAndType(obj, "list").value
+            target.lookupVariableByNameAndType(obj, "list").value, type == "btConvexHullShape"
           );
 
           if (!objFile) {
@@ -2239,7 +2272,7 @@
           }
 
           if (type == "btConvexHullShape") {
-            const points = processVertices(objFile.vertices);
+            const points = processVertices(objFile); // for convex hulls, objFile is just the vertices
 
             if (!points) {
               console.warn(
@@ -2250,6 +2283,8 @@
 
             const shape = new Ammo.btConvexHullShape();
             points.forEach((i) => shape.addPoint(i, false));
+
+            points.forEach((i) => Ammo.destroy(i));
 
             shape.recalcLocalAabb();
 
@@ -2275,6 +2310,7 @@
             Ammo.destroy(localInertia);
             Ammo.destroy(transform);
             Ammo.destroy(rbInfo);
+
           } else {
             const points = processVertices(objFile.vertices);
 
@@ -2339,18 +2375,24 @@
             Ammo.destroy(compoundShapes[name]);
             delete compoundShapes[name];
           }
-          if (bodies[name]) {
-            const body = bodies[name];
-            if (body) {
-              world.removeRigidBody(body);
-              world.removeCollisionObject(body);
-              Ammo.destroy(body.getMotionState());
-              Ammo.destroy(body.getCollisionShape());
-              Ammo.destroy(body);
-              delete bodies[name];
-            }
-          }
+
           compoundShapes[name] = new Ammo.btCompoundShape();
+        }
+
+        deleteCompoundShape({ name }) {
+          name = Cast.toString(name);
+          if (compoundShapes[name]) {
+            // prevent deletion of a compound shape that is in use by a body
+            for (const key in bodies) {
+              if (Ammo.getPointer(bodies[key].getCollisionShape()) === Ammo.getPointer(compoundShapes[name])) {
+                console.warn(`Attempted to delete compound shape "${name}" that is still in use by body "${key}"`);
+                return;
+              }
+            }
+
+            Ammo.destroy(compoundShapes[name]);
+            delete compoundShapes[name];
+          }
         }
 
         //* The casting for the position/rotation offsets is done in the addCompoundShape function
@@ -2482,8 +2524,9 @@
 
         //* Compound bodies technically support meshes via btGImpactCompoundShape but I haven't added this
 
-        createCompoundBody({ name, mass }, { target }) {
+        createCompoundBody({ name, shape, mass }, { target }) {
           name = Cast.toString(name);
+          shape = Cast.toString(shape);
 
           if (bodies[name]) {
             const body = bodies[name];
@@ -2491,16 +2534,16 @@
               world.removeRigidBody(body);
               world.removeCollisionObject(body);
               Ammo.destroy(body.getMotionState());
-              Ammo.destroy(body.getCollisionShape());
+              if (!body.isCompound) Ammo.destroy(body.getCollisionShape());
               Ammo.destroy(body);
               delete bodies[name];
             }
           }
 
           mass = Cast.toNumber(mass);
-          if (compoundShapes[name]) {
+          if (compoundShapes[shape]) {
             const localInertia = new Ammo.btVector3(0, 0, 0);
-            compoundShapes[name].calculateLocalInertia(mass, localInertia);
+            compoundShapes[shape].calculateLocalInertia(mass, localInertia);
 
             const startTransform = new Ammo.btTransform();
             startTransform.setIdentity();
@@ -2509,7 +2552,7 @@
             const rbInfo = new Ammo.btRigidBodyConstructionInfo(
               mass,
               motionState,
-              compoundShapes[name],
+              compoundShapes[shape],
               localInertia
             );
             const body = new Ammo.btRigidBody(rbInfo);
@@ -2517,8 +2560,8 @@
             world.addRigidBody(body);
             bodies[name] = body;
             bodies[name].collisions = [];
+            bodies[name].isCompound = true;
 
-            delete compoundShapes[name];
             Ammo.destroy(localInertia);
             Ammo.destroy(startTransform);
           } else {
@@ -2613,6 +2656,9 @@
               Cast.toNumber(y),
               Cast.toNumber(z)
             );
+
+            bodies[body].activate(true);
+
             bodies[body].setGravity(gravity);
             Ammo.destroy(gravity);
           } else {
@@ -2659,7 +2705,8 @@
               world.removeRigidBody(body);
               world.removeCollisionObject(body);
               Ammo.destroy(body.getMotionState());
-              Ammo.destroy(body.getCollisionShape());
+              // Compound shapes can be shared across bodies and are destroyed separately
+              if (!body.isCompound) Ammo.destroy(body.getCollisionShape());
               Ammo.destroy(body);
               delete bodies[name];
             }
@@ -2682,17 +2729,22 @@
 
             switch (Cast.toString(transform)) {
               case "position":
-                tempTransform.setOrigin(new Ammo.btVector3(x, y, z));
+                const newPos = new Ammo.btVector3(x, y, z);
+                tempTransform.setOrigin(newPos);
+                Ammo.destroy(newPos);
+
                 break;
               case "rotation":
-                tempTransform.setRotation(
-                  new Ammo.btQuaternion(
-                    quaternion.x,
-                    quaternion.y,
-                    quaternion.z,
-                    quaternion.w
-                  )
+                const newRot = new Ammo.btQuaternion(
+                  quaternion.x,
+                  quaternion.y,
+                  quaternion.z,
+                  quaternion.w
                 );
+
+                tempTransform.setRotation(newRot);
+                Ammo.destroy(newRot);
+                
                 break;
             }
 
@@ -2722,34 +2774,29 @@
               position.y() + y,
               position.z() + z
             );
-            const rotation = quaternionToEuler(tempTransform.getRotation());
 
             switch (Cast.toString(transform)) {
               case "position":
                 tempTransform.setOrigin(newPos);
+                Ammo.destroy(newPos);
                 break;
               case "rotation": {
-                const newRotation = {
-                  x: rotation.x + x,
-                  y: rotation.y + y,
-                  z: rotation.z + z,
-                };
-                let newQuaternion = eulerToQuaternion(
-                  newRotation.x,
-                  newRotation.y,
-                  newRotation.z
-                );
-                tempTransform.setRotation(
-                  new Ammo.btQuaternion(
-                    newQuaternion.x,
-                    newQuaternion.y,
-                    newQuaternion.z,
-                    newQuaternion.w
-                  )
-                );
+                const delta = eulerToQuaternion(x, y, z);
+                const deltaQuat = new Ammo.btQuaternion(delta.x, delta.y, delta.z, delta.w);
+                const rotation = tempTransform.getRotation();
+
+                const newRotation = deltaQuat.op_mulq(rotation);
+                newRotation.normalize();
+                tempTransform.setRotation(newRotation);
+
+                Ammo.destroy(deltaQuat);
+                Ammo.destroy(newRotation);
+
                 break;
               }
             }
+
+            bodies[name].activate(true);
 
             bodies[name].setWorldTransform(tempTransform);
             bodies[name].getMotionState().setWorldTransform(tempTransform);
@@ -2763,9 +2810,10 @@
           }
         }
 
-        bodyTransformation({ xyz, transform, name }, { target }) {
+        getBodyTransformation({ xyz, transform, name }, { target }) {
           name = Cast.toString(name);
           xyz = Cast.toString(xyz);
+
           if (bodies[name]) {
             const newTransform = new Ammo.btTransform();
             bodies[name].getMotionState().getWorldTransform(newTransform);
@@ -2785,11 +2833,14 @@
             }
 
             Ammo.destroy(newTransform);
-            return result;
+            return result || 0;
+
           } else {
             console.warn(
               `Attempted to get transformation of nonexistent body "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
             );
+
+            return 0;
           }
         }
 
@@ -2815,11 +2866,9 @@
         }
 
         bodyTouchingBody({ body, body2 }) {
-          return (
-            bodies[Cast.toString(body)]?.collisions.includes(
-              Cast.toString(body2)
-            ) || false
-          );
+          return bodies[Cast.toString(body)]?.collisions.includes(
+            Cast.toString(body2)
+          ) || false;
         }
 
         bodyTouchingAny({ body }) {
@@ -2827,9 +2876,7 @@
         }
 
         allBodiesTouchingBody({ body }) {
-          return (
-            JSON.stringify(bodies[Cast.toString(body)]?.collisions) || false
-          );
+          return JSON.stringify(bodies[Cast.toString(body)]?.collisions) || "[]";
         }
 
         rayCast({ name, x, y, z, x2, y2, z2 }) {
@@ -2848,7 +2895,8 @@
 
           const from = new Ammo.btVector3(x, y, z);
           const to = new Ammo.btVector3(x2, y2, z2);
-          const rayCallback = new Ammo.ClosestRayResultCallback(from, to); //* use AllHitsRayResultCallback for testing multiple intersection points along one ray; most use cases only require the first hit
+          //* use AllHitsRayResultCallback for testing multiple intersection points along one ray; most use cases only require the first hit
+          const rayCallback = new Ammo.ClosestRayResultCallback(from, to);
           world.rayTest(from, to, rayCallback);
           rays[name] = rayCallback;
           rays[name].endpoint = { x: to.x(), y: to.y(), z: to.z() };
@@ -2906,6 +2954,8 @@
             delete rays[name];
           }
 
+          if (x === x2 && y === y2 && z === z2) return;
+
           const from = new Ammo.btVector3(x, y, z);
           const dir = new Ammo.btVector3(x2 - x, y2 - y, z2 - z);
           dir.normalize();
@@ -2928,10 +2978,12 @@
         getRay({ xyz, property, name }, { target }) {
           name = Cast.toString(name);
           xyz = Cast.toString(xyz);
+
           if (rays[name]) {
             const callback = rays[name];
 
             switch (Cast.toString(property)) {
+              
               case "position":
                 return callback.hasHit()
                   ? callback.get_m_hitPointWorld()[xyz]()
@@ -2940,14 +2992,18 @@
               case "normal":
                 return callback.hasHit()
                   ? callback.get_m_hitNormalWorld()[xyz]()
-                  : null;
+                  : 0;
+
             }
 
-            return null;
+            return 0;
+
           } else {
             console.warn(
               `Attempted to get properties of nonexistent ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
             );
+
+            return 0;
           }
         }
 
@@ -2966,6 +3022,8 @@
             console.warn(
               `Attempted to get body touching nonexistent ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
             );
+
+            return "";
           }
         }
 
@@ -2974,22 +3032,20 @@
           body = Cast.toString(body);
           if (rays[name]) {
             if (bodies[body]) {
-              return (
-                bodies[body].userData ==
-                  Ammo.castObject(
-                    rays[name]?.get_m_collisionObject(),
-                    Ammo.btRigidBody
-                  ).userData || false
-              );
+              return bodies[body].userData == Ammo.castObject(rays[name]?.get_m_collisionObject(), Ammo.btRigidBody).userData || false;
             } else {
               console.warn(
                 `Attempted to detect if nonexistent body "${body}" was touching ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
               );
+
+              return false;
             }
           } else {
             console.warn(
               `Attempted to get body touching nonexistent ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
             );
+
+            return false;
           }
         }
 
@@ -3001,6 +3057,8 @@
             console.warn(
               `Attempted to get properties of nonexistent ray "${name}" in ${target.isStage ? "Stage" : 'Sprite "' + target.sprite.name}"`
             );
+
+            return false;
           }
         }
 
@@ -3072,18 +3130,8 @@
           }
         }
 
-        clearForces({ name }, { target }) {
-          name = Cast.toString(name);
-          if (bodies[name]) {
-            bodies[name].clearForces();
-            bodies[name].activate(true);
-          } else {
-            console.warn(
-              `Attempted to clear forces of nonexistent body "${name}" in ${target.isStage ? "Stage" : `Sprite "${target.sprite.name}"`}`
-            );
-          }
-        }
       }
+
       Scratch.extensions.register(new AmmoPhysics());
     })
     .catch((error) => {

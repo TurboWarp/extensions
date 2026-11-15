@@ -60,7 +60,7 @@ This block enables or disables the automatic resetting of the world when the pro
 step simulation :: #0fbd8c
 ```
 
-This block increases the physics simulation by one step forward in time. You should put it in your game loop or tick event. It implicitly takes the delta time, max substeps, and current target frame rate. Generally speaking, the higher the frame rate, the higher the quality your physics simulation will be.
+This block increases the physics simulation by one step forward in time. You should put it in your game loop or tick event. It should be called once per frame. It implicitly takes the delta time, max substeps, and current target frame rate. Generally speaking, the higher the frame rate, the higher the quality your physics simulation will be.
 
 If TurboWarp's runtime frame rate is set to 0, Ammo Physics will use your screen's refresh rate, just like TurboWarp will. 
 
@@ -309,7 +309,7 @@ Returns true if the specified body is touching any other body.
 ```scratch
 (get all bodies touching [body] :: #0fbd8c)
 ```
-Returns all bodies touching the specified body in a comma-delimited string.
+Returns all bodies touching the specified body in a JSON array.
 
 ### Raycasting <a name="raycasting"></a>
 ```scratch
@@ -332,7 +332,7 @@ This type of ray is fired from the given starting point towards another coordina
 ```
 If the specified ray has hit a body, then position returns the X, Y, or Z hit point. Normal returns the X, Y, or Z surface normal (direction, not rotation) of the hit point.
 
-If the specified ray has _not_ hit a body, then position returns the X, Y, or Z end point of the ray, and normal returns null.
+If the specified ray has _not_ hit a body, then position returns the X, Y, or Z end point of the ray, and normal returns 0.
 
 ```scratch
 (body touching ray [ray] :: #0fbd8c)
@@ -359,7 +359,7 @@ Forces are interesting and helpful as they allow you to control a body's movemen
 
 Before we get started, let's define a few terms:
 
-1. **Force**: A force applied to a body over a period of time (every simulation step). E.g., an aircraft's thrust.
+1. **Force**: A force applied to a body continuously, e.g., an aircraft's thrust. Should be applied every simulation step the force is "running".
 2. **Impulse**: A force applied to a body immediately, such as the firing of a bullet or the jumping of a character.
 3. **Torque**: A rotational force that applies pure rotational force around the center of mass.
 
