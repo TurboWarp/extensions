@@ -510,25 +510,27 @@
     }
 
     async videoSpriteFillSprite(args, util) {
+      const target = util.target;
       if (!(await ensureCamera())) {
         return;
       }
 
-      const state = getOrCreateState(util.target);
+      const state = getOrCreateState(target);
       state.mode = "mask";
       state.maskColor = null;
-      attach(util.target);
+      attach(target);
     }
 
     async videoSpriteFillColor(args, util) {
+      const target = util.target;
       if (!(await ensureCamera())) {
         return;
       }
 
-      const state = getOrCreateState(util.target);
+      const state = getOrCreateState(target);
       state.mode = "color";
       state.maskColor = Scratch.Cast.toRgbColorList(args.COLOR);
-      attach(util.target);
+      attach(target);
     }
 
     changeCameraBy(args, util) {
