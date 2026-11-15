@@ -536,13 +536,14 @@
 
     async videoSpriteFillColor(args, util) {
       const target = util.target;
+      const color = Scratch.Cast.toRgbColorList(args.COLOR);
       if (!(await ensureCamera())) {
         return;
       }
 
       const state = getOrCreateState(target);
       state.mode = "color";
-      state.maskColor = Scratch.Cast.toRgbColorList(args.COLOR);
+      state.maskColor = color;
       attach(target);
     }
 
