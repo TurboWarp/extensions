@@ -878,7 +878,7 @@
         let list = this.getListEnvironment(args, util);
         let arr = Scratch.Cast.toString(args.STRING).split(Scratch.Cast.toString(args.DELIMITER));
         list.splice(0, list.length);
-        for (let i of arr) list.push(arr);
+        for (let i of arr) list.push(i);
       }
       joinTempListToString(args, util) {
         if (this.isListInEnvironment(args, util)) {
