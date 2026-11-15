@@ -384,9 +384,9 @@
             scope: {
               acceptReporters: false,
               items: [
-                { text: Scratch.translate("thread"), value: "0" },
-                { text: Scratch.translate("sprite"), value: "1" },
-                { text: Scratch.translate("runtime"), value: "2" },
+                { text: Scratch.translate("thread"), value: "thread" },
+                { text: Scratch.translate("sprite"), value: "scope" },
+                { text: Scratch.translate("runtime"), value: "runtime" },
               ],
             },
             sortMethod: {
@@ -430,14 +430,14 @@
       }
       getListEnvironment(args, util, scope = "SCOPE", name = "LIST") {
         switch (args[scope]) {
-          case "0": {
+          case "thread": {
             //THREAD
             const thread = util.thread;
             thread.lists = thread?.lists ?? Object.create(null);
             thread.lists[args[name]] = thread.lists?.[args[name]] ?? [];
             return thread.lists[args[name]];
           }
-          case "1": {
+          case "scope": {
             //SPRITE
             const id = util.target.id;
             this.scopedLists = this?.scopedLists ?? Object.create(null);
@@ -447,7 +447,7 @@
               this.scopedLists[id]?.[args[name]] ?? [];
             return this.scopedLists[id][args[name]];
           }
-          case "2": {
+          case "runtime": {
             //RUNTIME
             this.runtimeLists = this?.runtimeLists ?? Object.create(null);
             this.runtimeLists[args[name]] =
@@ -460,13 +460,13 @@
       }
       isListInEnvironment(args, util, scope = "SCOPE", name = "LIST") {
         switch (args[scope]) {
-          case "0": {
+          case "thread": {
             //THREAD
             const thread = util.thread;
             thread.lists = thread?.lists ?? Object.create(null);
             return args[name] in thread.lists;
           }
-          case "1": {
+          case "scope": {
             //SPRITE
             const id = util.target.id;
             this.scopedLists = this?.scopedLists ?? Object.create(null);
@@ -474,7 +474,7 @@
               this.scopedLists?.[id] ?? Object.create(null);
             return args[name] in this.scopedLists[id];
           }
-          case "2": {
+          case "runtime": {
             //RUNTIME
             this.runtimeLists = this?.runtimeLists ?? Object.create(null);
             return args[name] in this.runtimeLists;
@@ -731,19 +731,19 @@
       deleteTempList(args, util) {
         if (this.isListInEnvironment(args, util)) {
           switch (args.SCOPE) {
-            case "0": {
+            case "thread": {
               //THREAD
               const thread = util.thread;
               delete thread.lists[args.LIST];
               break;
             }
-            case "1": {
+            case "scope": {
               //SPRITE
               const id = util.target.id;
               delete this.scopedLists[id][args.LIST];
               break;
             }
-            case "2": //RUNTIME
+            case "runtime": //RUNTIME
               delete this.runtimeLists[args.LIST];
               break;
             default:
@@ -753,19 +753,19 @@
       }
       deleteAllTempLists(args, util) {
         switch (args.SCOPE) {
-          case "0": {
+          case "thread": {
             //THREAD
             const thread = util.thread;
             delete thread.lists;
             break;
           }
-          case "1": {
+          case "scope": {
             //SCOPED
             const id = util.target.id;
             delete this.scopedLists[id];
             break;
           }
-          case "2": {
+          case "runtime": {
             //RUNTIME
             delete this.runtimeLists;
             break;
@@ -910,13 +910,13 @@
           Object.keys(
             (() => {
               switch (args.SCOPE) {
-                case "0": {
+                case "thread": {
                   //THREAD
                   const thread = util.thread;
                   thread.lists = thread?.lists ?? Object.create(null);
                   return thread.lists;
                 }
-                case "1": {
+                case "scope": {
                   //SCOPED
                   const id = util.target.id;
                   this.scopedLists = this?.scopedLists ?? Object.create(null);
@@ -924,7 +924,7 @@
                     this.scopedLists?.[id] ?? Object.create(null);
                   return this.scopedLists?.[id];
                 }
-                case "2":
+                case "runtime":
                   return this.runtimeLists; //RUNTIME
                 default:
                   return null;
