@@ -35,7 +35,8 @@
   let askBoxIcon = "";
   let askInputText = "";
   let askQuestionText = "";
-  let askButtonImage = "";
+  let askButtonImage = ""; // User-provided URL, unchanged
+  let askButtonImageCSS = ""; // URL-resolved version of askButtonImage that actually gets fetched via CSS
   let askInputBorder = "";
 
   // CSS selectors
@@ -196,10 +197,8 @@
     if (askInputBorderWidth >= 0) {
       css += `${askBoxInner} { border-width: ${askInputBorderWidth}px !important; }`;
     }
-    if (askButtonImage) {
-      css += `${askBoxButton} { background-image: url("${encodeURI(
-        askButtonImage
-      )}") !important; background-repeat: no-repeat; background-size: contain; }`;
+    if (askButtonImageCSS) {
+      css += `${askBoxButton} { background-image: url("${escapeCSSString(askButtonImageCSS)}") !important; background-repeat: no-repeat; background-size: contain; }`;
       css += `${askBoxIcon} { visibility: hidden; }`;
     }
     if (askInputBorder) {
@@ -238,6 +237,7 @@
     askInputText = "";
     askQuestionText = "";
     askButtonImage = "";
+    askButtonImageCSS = "";
     askInputBorder = "";
 
     applyCSS();
@@ -282,6 +282,9 @@
       setMonitorPosition(variable.id, x, y);
     }
   };
+
+  const escapeCSSString = (str) =>
+    str.replace(/["\\\n\r\f]/g, (c) => `\\${c.charCodeAt(0).toString(16)} `);
 
   const parseColor = (color, callback) => {
     color = Scratch.Cast.toString(color);
@@ -949,9 +952,27 @@
     }
 
     setAskURI(args) {
-      return Scratch.canFetch(args.URL).then((allowed) => {
+      const rawURL = Scratch.Cast.toString(args.URL);
+
+      // Empty URL removes the image. Don't let new URL() resolve it to the page itself.
+      if (!rawURL) {
+        askButtonImage = "";
+        askButtonImageCSS = "";
+        applyCSS();
+        return;
+      }
+
+      let cssURL;
+      try {
+        cssURL = new URL(encodeURI(rawURL), location.href).href;
+      } catch (e) {
+        return;
+      }
+
+      return Scratch.canFetch(cssURL).then((allowed) => {
         if (allowed) {
-          askButtonImage = args.URL;
+          askButtonImage = rawURL;
+          askButtonImageCSS = cssURL;
           applyCSS();
         }
       });
