@@ -838,7 +838,7 @@
         if (!this.isDependencyNotLoaded()) {
           const thread = util.thread;
           const wasCompiled = thread.isCompiled.valueOf();
-          const willContinue = (Scratch.Cast.toString(args.MODE) == "continue");
+          const willContinue = Scratch.Cast.toString(args.MODE) == "continue";
           try {
             thread.isCompiled = false; //fallback in case compiler breaks this
             const frameData = this.locateLoopBlock(thread);
