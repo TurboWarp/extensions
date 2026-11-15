@@ -595,8 +595,13 @@
       }
       async loadDepecency(func) {
         if (this.isDependencyNotLoaded()) {
-          const url = Scratch.Cast.toString("https://extensions.turbowarp.org/Lily/TempVariables2.js");
-          if (!(await Scratch.vm.securityManager.canLoadExtensionFromProject(url))) return;
+          const url = Scratch.Cast.toString(
+            "https://extensions.turbowarp.org/Lily/TempVariables2.js"
+          );
+          if (
+            !(await Scratch.vm.securityManager.canLoadExtensionFromProject(url))
+          )
+            return;
           await Scratch.vm.extensionManager.loadExtensionURL(url);
         }
         await func();
@@ -810,7 +815,7 @@
         const popup = Scratch.translate({
           id: "loadLoopBlocks",
           default:
-            "Using these loop blocks requires 'Temporary Variables' to be installed.\nDo you wish to install the extension automatically?"
+            "Using these loop blocks requires 'Temporary Variables' to be installed.\nDo you wish to install the extension automatically?",
         });
         if (confirm(popup)) {
           this.loadDepecency(() => {
