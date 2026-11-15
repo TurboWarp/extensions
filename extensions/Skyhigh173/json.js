@@ -1195,7 +1195,7 @@
         value = this.json_valid_return(value);
         value = this._fixInvalidJSONValues(value);
         json[item] = value;
-        return stringify(Object.assign({[item]: value}, json));
+        return stringify(Object.assign({ [item]: value }, json));
       } catch {
         return "";
       }
@@ -1273,7 +1273,7 @@
               next = Object.assign({}, current[key]);
             }
           } else {
-            return '';
+            return "";
           }
           current[key] = next;
           i++;
@@ -1358,7 +1358,9 @@
     json_array_set({ item, pos, json }) {
       try {
         json = [...parseRemoveCache(json)];
-        json[pos - 1] = this._fixInvalidJSONValues(this.json_valid_return(item));
+        json[pos - 1] = this._fixInvalidJSONValues(
+          this.json_valid_return(item)
+        );
         return stringify(json);
       } catch {
         return "";
@@ -1395,7 +1397,7 @@
 
     json_array_reverse({ json }) {
       try {
-        json = [...parse(json)]
+        json = [...parse(json)];
         json.reverse();
         return stringify(json);
       } catch {
@@ -1544,7 +1546,7 @@
         return "";
       }
       if (!Array.isArray(list)) return "";
-      list.sort(Scratch.Cast.compare)
+      list.sort(Scratch.Cast.compare);
       if (args.order === "descending") list.reverse();
       return stringify(list);
     }
