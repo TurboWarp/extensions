@@ -437,13 +437,8 @@
     return res;
   };
 
-  function patchSB() {
-    // @ts-ignore
-    const ScratchBlocks = window?.ScratchBlocks;
+  function patchSB(ScratchBlocks) {
     if (!ScratchBlocks) return;
-
-    Scratch.vm.removeListener("EXTENSION_ADDED", patchSB);
-    Scratch.vm.removeListener("BLOCKSINFO_UPDATE", patchSB);
 
     const leftArrowIcon = `data:image/svg+xml;base64,PHN2ZyBkYXRhLW5hbWU9IkxheWVyIDEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDEwIDEzIiB0cmFuc2Zvcm09InNjYWxlKC0xLCAxKSI+PHBhdGggZD0iTTMuNjUuMTQ1YTIuNDEgMi40MSAwIDAgMSAxLjcyLjcxbDMuOTIgMy45MmEyLjQ1IDIuNDUgMCAwIDEgMCAzLjQ1bC0zLjkyIDMuOTFhMi40MiAyLjQyIDAgMCAxLTEuNzIuNzIgMi40OCAyLjQ4IDAgMCAxLTEuNzMtLjcxYy0uMjQtLjI5LS43MS0uNzItLjcxLTUuNjUgMC00LjkzLjQ2LTUuMzkuNzEtNS42NGEyLjQ0IDIuNDQgMCAwIDEgMS43My0uNzF6IiBmaWxsPSIjMjMxZjIwIiBvcGFjaXR5PSIuMSIvPjxwYXRoIGQ9Ik04Ljk4NSA2LjUxYTEuNDMgMS40MyAwIDAgMS0uNDIgMWwtMy45MiAzLjk0YTEuNDQgMS40NCAwIDAgMS0yIDBjLS41Ni0uNTYtLjU2LTkuMzEgMC05Ljg3YTEuNDQgMS40NCAwIDAgMSAyIDBsMy45MiAzLjkyYTEuNDMgMS40MyAwIDAgMSAuNDIgMS4wMXoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=`;
     const rightArrowIcon = `data:image/svg+xml;base64,PHN2ZyBkYXRhLW5hbWU9IkxheWVyIDEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDEwIDEzIj48cGF0aCBkPSJNMy42NS4xNDVhMi40MSAyLjQxIDAgMCAxIDEuNzIuNzFsMy45MiAzLjkyYTIuNDUgMi40NSAwIDAgMSAwIDMuNDVsLTMuOTIgMy45MWEyLjQyIDIuNDIgMCAwIDEtMS43Mi43MiAyLjQ4IDIuNDggMCAwIDEtMS43My0uNzFjLS4yNC0uMjktLjcxLS43Mi0uNzEtNS42NSAwLTQuOTMuNDYtNS4zOS43MS01LjY0YTIuNDQgMi40NCAwIDAgMSAxLjczLS43MXoiIGZpbGw9IiMyMzFmMjAiIG9wYWNpdHk9Ii4xIi8+PHBhdGggZD0iTTguOTg1IDYuNTFhMS40MyAxLjQzIDAgMCAxLS40MiAxbC0zLjkyIDMuOTRhMS40NCAxLjQ0IDAgMCAxLTIgMGMtLjU2LS41Ni0uNTYtOS4zMSAwLTkuODdhMS40NCAxLjQ0IDAgMCAxIDIgMGwzLjkyIDMuOTJhMS40MyAxLjQzIDAgMCAxIC40MiAxLjAxeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==`;
@@ -1158,8 +1153,7 @@
 
   // https://github.com/LilyMakesThings/extensions/blob/5b9ce572683e403933cab3b23c4a9bbb2a08ecf9/extensions/Lily/Dictionaries.js#L37C1-L45
   if (!("scaffolding" in window)) {
-    Scratch.vm.on("EXTENSION_ADDED", patchSB);
-    Scratch.vm.on("BLOCKSINFO_UPDATE", patchSB);
+    Scratch.gui.getBlockly().then(patchSB);
   }
 
   // @ts-ignore
