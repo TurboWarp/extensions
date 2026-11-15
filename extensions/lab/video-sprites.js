@@ -241,13 +241,23 @@
     getTexture(scale) {
       const parentTexture = this._getParentTexture(scale);
 
+      const framebuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+
       // The video is private data, so we must make sure it is only visible to the user and not the project.
       // We can't use the private field because that would break touching, so for GPU-path touching and
-      // screenshots, we need to handle that ourselves here.
+      // screenshots, we need to handle that ourselves here. We can tell if we're rendering to the stage
+      // because the framebuffer is null and there's no callbacks waiting for a snapshot. Eventually we
+      // should make a renderer API to support this properly.
       if (
         renderer._snapshotCallbacks.length > 0 ||
-        (!renderer.allowPrivateSkinAccess && gl.getParameter(gl.FRAMEBUFFER_BINDING) !== null)
+        (!renderer.allowPrivateSkinAccess && framebuffer !== null)
       ) {
+        return parentTexture;
+      }
+
+      // Touching queries on the CPU only see the parent skin's silhouette, so make the GPU path
+      // (which renders to the query buffer) consistent with that.
+      if (framebuffer === renderer._queryBufferInfo?.framebuffer) {
         return parentTexture;
       }
 
