@@ -65,7 +65,7 @@
 
     let parsed;
     try {
-      parsed = new URL(param.toURL(value));
+      parsed = new URL(param.toURL(value), location.href);
     } catch (e) {
       return;
     }
