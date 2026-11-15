@@ -1223,16 +1223,17 @@ Locale can be confusing to some users, so accurate documentation should help exp
     placeholderTranslate(args) {
       const translated = this.translate({
         TEXT: Cast.toString(args.TEXT),
-        LANG: Cast.toString(args.LANG)
+        LANG: Cast.toString(args.LANG),
       });
 
       let variables = args.VARS;
 
-      if (Object.getPrototypeOf(variables) !== Object.prototype) try {
-        variables = JSON.parse(variables);
-      } catch {
-        variables = Object.create(null);
-      }
+      if (Object.getPrototypeOf(variables) !== Object.prototype)
+        try {
+          variables = JSON.parse(variables);
+        } catch {
+          variables = Object.create(null);
+        }
 
       return this._evaluatePlaceholders(translated, variables);
     }
@@ -1582,7 +1583,10 @@ Locale can be confusing to some users, so accurate documentation should help exp
       }
 
       if (expressionToEvaluate.length > 0)
-        resultingString += this._evaluateExpression(expressionToEvaluate, variables);
+        resultingString += this._evaluateExpression(
+          expressionToEvaluate,
+          variables
+        );
 
       return resultingString;
     }
@@ -1653,7 +1657,8 @@ Locale can be confusing to some users, so accurate documentation should help exp
       const DIGITS = "1234567890.";
       const QUOTES = "'\"";
       const WHITESPACE = " \t\n";
-      const VARIABLE = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
+      const VARIABLE =
+        "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_";
 
       const stack = [];
       let token = "";
@@ -1671,11 +1676,10 @@ Locale can be confusing to some users, so accurate documentation should help exp
 
         if (raw) return popped;
 
-        popped = popped instanceof Variable ?
-          popped.value : popped;
+        popped = popped instanceof Variable ? popped.value : popped;
 
         return numeric ? Cast.toNumber(popped) : popped;
-      }
+      };
 
       /**
        * Pushes a boolean value into the stack.
@@ -1691,7 +1695,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
         if (WHITESPACE.includes(char)) {
           charIndex++;
           continue;
-        };
+        }
 
         token = "";
 
@@ -1854,8 +1858,12 @@ Locale can be confusing to some users, so accurate documentation should help exp
               operand2 = Object.create(null);
               operand1++;
 
-              while ((operand1 + 1) < stack.length) {
-                Reflect.set(operand2, stack.at(operand1), stack.at(operand1 + 1));
+              while (operand1 + 1 < stack.length) {
+                Reflect.set(
+                  operand2,
+                  stack.at(operand1),
+                  stack.at(operand1 + 1)
+                );
 
                 operand1 += 2;
               }
@@ -1903,21 +1911,33 @@ Locale can be confusing to some users, so accurate documentation should help exp
               if (charIndex >= expression.length) break;
 
               switch (expression.charAt(charIndex)) {
-                case "n": token += "\n"; break;
-                case "t": token += "\t"; break;
-                case "\\": token += "\\"; break;
+                case "n":
+                  token += "\n";
+                  break;
+                case "t":
+                  token += "\t";
+                  break;
+                case "\\":
+                  token += "\\";
+                  break;
                 case "x":
-                  if ((charIndex + 2) >= expression.length) break;
+                  if (charIndex + 2 >= expression.length) break;
 
                   try {
                     token += String.fromCodePoint(
-                      parseInt(expression.slice(charIndex + 1, charIndex + 3), 16));
+                      parseInt(
+                        expression.slice(charIndex + 1, charIndex + 3),
+                        16
+                      )
+                    );
                   } catch {}
 
                   break;
                 // ...
-                default: token += char; break;
-              };
+                default:
+                  token += char;
+                  break;
+              }
             } else if (char === token.at(0)) {
               token = token.slice(1);
 
@@ -1934,7 +1954,7 @@ Locale can be confusing to some users, so accurate documentation should help exp
           continue;
         }
 
-        if (!(VARIABLE.includes(char))) {
+        if (!VARIABLE.includes(char)) {
           charIndex++;
           continue;
         }
