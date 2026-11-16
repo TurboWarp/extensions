@@ -971,6 +971,8 @@ class Builder {
     for (const [outputFileName, file] of Object.entries(build.files)) {
       try {
         await file.validate();
+        await file.read();
+        file.getStrings();
       } catch (e) {
         errors.push({
           outputFileName,

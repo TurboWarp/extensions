@@ -12,9 +12,9 @@ jobs:
         with:
           persist-credentials: false
       - name: Install Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 26
       - name: Install dependencies
         run: npm ci
       - name: Validate
@@ -28,9 +28,9 @@ jobs:
         with:
           persist-credentials: false
       - name: Install Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 26
       - name: Install dependencies
         run: npm ci
       - name: Lint
@@ -44,9 +44,9 @@ jobs:
         with:
           persist-credentials: false
       - name: Install Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 26
       - name: Install dependencies
         run: npm ci
       - name: Check format
@@ -68,9 +68,9 @@ jobs:
         with:
           persist-credentials: false
       - name: Install Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: 26
       - name: Install dependencies
         run: npm ci
       - name: Generate type warnings
