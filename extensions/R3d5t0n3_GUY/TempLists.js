@@ -600,9 +600,12 @@
           );
           if (
             !(await Scratch.vm.securityManager.canLoadExtensionFromProject(url))
-          )
+          ) {
+            await func();
             return;
-          await Scratch.vm.extensionManager.loadExtensionURL(url);
+          } else {
+            await Scratch.vm.extensionManager.loadExtensionURL(url);
+          }
         }
         await func();
       }
