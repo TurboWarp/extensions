@@ -595,9 +595,7 @@
       }
       async loadDepecency(func) {
         if (this.isDependencyNotLoaded()) {
-          const url = Scratch.Cast.toString(
-            "https://extensions.turbowarp.org/Lily/TempVariables2.js"
-          );
+          const url = "https://extensions.turbowarp.org/Lily/TempVariables2.js";
           if (
             !(await Scratch.vm.securityManager.canLoadExtensionFromProject(url))
           ) {
