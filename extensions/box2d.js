@@ -14246,21 +14246,22 @@
       //     hullPoints.push({x: points[i][0] - target.x, y: points[i][1] - target.y});
       // }
 
-      const points = drawable._convexHullPoints;
+      let points = drawable._convexHullPoints;
       const scaleX = drawable.scale[0] / 100;
       const scaleY = drawable.scale[1] / -100; // Flip Y for hulls
       const offset = drawable.skin.rotationCenter;
       let allHulls = null;
 
       if (points.length === 0) {
-        // The sprite is hidden, enter empty points instead of exiting early.
-        // All blocks rely on this function if a sprite has no physics body.
+        // The sprite is hidden. To avoid errors, enter fallback hull points
+        // instead of exiting early. All blocks rely on this function to work.
+        // Create a shallow copy to avoid accidentally editing the drawable hull.
+        points = [...points];
         points.push([1, 1]);
         points.push([0, 1]);
         points.push([0, 0]);
         points.push([1, 0]);
         points.push([1, 1]);
-        return;
       }
 
       if (shape === SHAPE_TYPE_OPTIONS.CIRCLE) {
