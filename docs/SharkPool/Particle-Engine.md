@@ -147,7 +147,7 @@ The ± number input will determine the random variance per-particle.
 |   Gravity y   | Determines the vertical pull force on particles |
 | Start Direction | The direction in degrees particles will move in when spawned |
 | End Direction | The direction particles will move towards in degrees |
-|   Start Spin  | Determines the rotation of a single particle when spawned in degrees |
+|   Start Spin  | Determines the rotation in degrees of a single particle when spawned |
 |    End Spin   | Determines the rotation that a single particle will turn to in degrees |
 |   Start Size  | Determines the size (in stage size) of a single particle when spawned |
 |    End Size   | Determines the size that a single particle will transform towards |
