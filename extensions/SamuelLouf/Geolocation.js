@@ -29,6 +29,24 @@
   /** @type {number|null} */
   let watcherID = null;
 
+  let currentGeneration = 0;
+
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    currentGeneration++;
+
+    if (watcherID !== null) {
+      navigator.geolocation.clearWatch(watcherID);
+      watcherID = null;
+    }
+
+    latitude = null;
+    longitude = null;
+    accuracy = null;
+
+    options.enableHighAccuracy = true;
+    options.timeout = 10000;
+  });
+
   /**
    * @param {PositionOptions} options
    * @returns {Promise<{latitude: number; longitude: number; accuracy: number}|null>}
@@ -248,9 +266,11 @@
     }
 
     async getPositionOnce() {
-      if (!(await canGeolocate())) return;
+      const startGeneration = currentGeneration;
+      if (!(await canGeolocate()) || currentGeneration !== startGeneration)
+        return;
       const result = await getGeolocation(options);
-      if (result) {
+      if (result && currentGeneration === startGeneration) {
         updatePosition(result);
       }
     }
@@ -268,9 +288,15 @@
     }
 
     async startWatching() {
+      const startGeneration = currentGeneration;
       if (watcherID !== null || !(await canGeolocate())) return;
+      if (currentGeneration !== startGeneration) return;
       watcherID = navigator.geolocation.watchPosition(
-        (pos) => updatePosition(pos.coords),
+        (pos) => {
+          if (currentGeneration === startGeneration) {
+            updatePosition(pos.coords);
+          }
+        },
         (err) => {
           console.warn(err);
         },

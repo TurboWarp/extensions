@@ -12124,14 +12124,11 @@
   var i;
   for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
 
+  const Cast = Scratch.Cast;
   const ArgumentType = Scratch.ArgumentType;
   const BlockType = Scratch.BlockType;
   // const MathUtil = require('../../util/math-util');
   // const Clone = require('../../util/clone');
-  const Cast = {
-    toNumber: (n) => +n || 0,
-  };
-  // const Cast = require('../../util/cast');
   // const Runtime = require('../../engine/runtime');
   // const RenderedTarget = require('../../sprites/rendered-target');
   // const MathUtil = require('../../util/math-util');
@@ -12170,6 +12167,9 @@
   // let ujidSeq = 0;
 
   const prevPos = {};
+
+  const draggedIds = new Set();
+
   /**
    * Active b2Body/s in the world.
    * @type {Object.<string,*>}
@@ -13181,6 +13181,47 @@
       fixDef.restitution = 0.2; // 0.2
 
       _setStageType(STAGE_TYPE_OPTIONS.BOXED);
+
+      // Patch vm.stopDrag & vm.startDrag so drag-dropped sprites with physics behave.
+      // The body stays in `bodies` (so other blocks never create a duplicate body),
+      // but is pinned to the sprite and has its velocity zeroed while dragged.
+      this._ogStartDrag = vm.startDrag;
+      vm.startDrag = (...args) => {
+        this._ogStartDrag.call(vm, ...args);
+
+        const spriteID = args[0];
+        if (bodies[spriteID] !== undefined) {
+          draggedIds.add(spriteID);
+        }
+      };
+
+      this._ogStopDrag = vm.stopDrag;
+      vm.stopDrag = (...args) => {
+        this._ogStopDrag.call(vm, ...args);
+
+        const spriteID = args[0];
+        if (draggedIds.delete(spriteID)) {
+          const body = bodies[spriteID];
+          const target = this.runtime.getTargetById(spriteID);
+          if (body && target) {
+            this._setPosition(
+              body,
+              new b2Vec2(
+                (target.x + _scroll.x) / zoom,
+                (target.y + _scroll.y) / zoom
+              )
+            );
+            body.SetLinearVelocity(new b2Vec2(0, 0));
+            body.SetAngularVelocity(0);
+            body.SetAwake(true);
+            prevPos[spriteID] = {
+              x: target.x,
+              y: target.y,
+              dir: target.direction,
+            };
+          }
+        }
+      };
     }
 
     reset() {
@@ -13193,6 +13234,7 @@
         delete bodies[body];
         delete prevPos[body];
       }
+
       tickRate = 30;
       // todo: delete joins?
     }
@@ -13982,6 +14024,15 @@
 
         const position = body.GetPosition();
 
+        if (draggedIds.has(targetID)) {
+          prevPos[targetID] = {
+            x: target.x,
+            y: target.y,
+            dir: target.direction,
+          };
+          continue;
+        }
+
         _setXY(
           target,
           position.x * zoom - _scroll.x,
@@ -13996,7 +14047,7 @@
     }
 
     setTickRate(args) {
-      let rate = Scratch.Cast.toNumber(args.rate);
+      let rate = Cast.toNumber(args.rate);
       if (Number.isNaN(rate) || rate === Infinity) rate = 30;
       rate = Math.max(rate, 0.01);
 
@@ -14022,6 +14073,25 @@
         const prev = prevPos[targetID];
         const fixedRotation =
           target.rotationStyle !== ROTATION_STYLE_ALL_AROUND;
+
+        if (draggedIds.has(targetID)) {
+          // Follow the sprite every tick, even if it's held still, and kill any
+          // velocity so nothing accumulates while dragging.
+          this._setPosition(
+            body,
+            new b2Vec2(
+              (target.x + _scroll.x) / zoom,
+              (target.y + _scroll.y) / zoom
+            )
+          );
+          if (!fixedRotation) {
+            body.SetAngle((90 - target.direction) * toRad);
+          }
+          body.SetLinearVelocity(new b2Vec2(0, 0));
+          body.SetAngularVelocity(0);
+          body.SetAwake(true);
+          continue;
+        }
 
         if (prev && (prev.x !== target.x || prev.y !== target.y)) {
           const pos = new b2Vec2(
@@ -14226,7 +14296,7 @@
     getDensity(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 100;
       }
 
       return body.GetFixtureList().GetDensity() * 100;
@@ -14245,7 +14315,7 @@
     getFriction(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 50;
       }
 
       return body.GetFixtureList().GetFriction() * 100;
@@ -14257,16 +14327,17 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      body
-        .GetFixtureList()
-        .SetRestitution(Cast.toNumber(args.restitution) / 100.0);
-      body.ResetMassData();
+      const value = Cast.toNumber(args.restitution);
+      if (value !== this.getRestitution(args, util)) {
+        body.GetFixtureList().SetRestitution(value / 100.0);
+        body.ResetMassData();
+      }
     }
 
     getRestitution(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 20;
       }
 
       return body.GetFixtureList().GetRestitution() * 100;
