@@ -1,3 +1,5 @@
+/* eslint-disable -- passing the linting step requires content not covered when this is introduced */
+
 (function(Scratch) {
   'use strict';
   class Broadcast4 {

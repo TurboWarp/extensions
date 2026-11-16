@@ -2,6 +2,7 @@
 // ID: dninwakelock
 // Description: Prevent the computer from falling asleep.
 // By: D-ScratchNinja <https://scratch.mit.edu/users/D-ScratchNinja/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";

@@ -2,6 +2,7 @@
 // ID: longvegdictionary
 // Description: Get the definitions of words from the Longman Dictionary in your projects.
 // By: veggiecan0419
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -22,27 +23,31 @@
         color3: "#3C6874",
         menuIconURI: longmamlogomenu,
         blockIconURI: longmamlogoblocks,
-        name: "Longman Dictionary",
+        name: Scratch.translate("Longman Dictionary"),
         blocks: [
           {
             opcode: "define",
             blockType: Scratch.BlockType.REPORTER,
-            text: "primary definition of [word] in the Longman Dictionary",
+            text: Scratch.translate(
+              "primary definition of [word] in the longman dictionary"
+            ),
             arguments: {
               word: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "cat",
+                defaultValue: Scratch.translate("cat"),
               },
             },
           },
           {
             opcode: "getalldefs",
             blockType: Scratch.BlockType.REPORTER,
-            text: "all definitions of [word] in the Longman Dictionary",
+            text: Scratch.translate(
+              "all definitions of [word] in the longman dictionary"
+            ),
             arguments: {
               word: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "cat",
+                defaultValue: Scratch.translate("cat"),
               },
             },
           },
@@ -77,9 +82,9 @@
           const parser = new DOMParser();
           const htmlDocument = parser.parseFromString(text, "text/html");
           const definitionElements = htmlDocument.querySelectorAll(".DEF");
-          const definitions = Array.from(definitionElements).map(
-            (element) => element.textContent
-          );
+          const definitions = Array.from(definitionElements)
+            .map((element) => element.textContent.trim())
+            .join(", ");
           return definitions;
         })
         .catch((error) => {

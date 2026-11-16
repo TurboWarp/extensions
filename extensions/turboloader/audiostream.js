@@ -15,7 +15,7 @@
     getInfo() {
       return {
         id: "audiostr",
-        name: "AudioStream 🔊",
+        name: Scratch.translate("AudioStream") + " 🔊",
         color1: "#ba45ac",
         color2: "#a8399b",
         color3: "#942c88",
@@ -23,7 +23,7 @@
           {
             opcode: "am_loadasset",
             blockType: Scratch.BlockType.COMMAND,
-            text: "load sound from project [SRC]",
+            text: Scratch.translate("load sound from project [SRC]"),
             arguments: {
               SRC: {
                 type: Scratch.ArgumentType.STRING,
@@ -34,7 +34,7 @@
           {
             opcode: "am_playfromurl",
             blockType: Scratch.BlockType.COMMAND,
-            text: "load sound from URL/URI [URL]",
+            text: Scratch.translate("load sound from URL/URI [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -45,7 +45,7 @@
           {
             opcode: "am_playnew",
             blockType: Scratch.BlockType.COMMAND,
-            text: "start playing [SRC] in a new context",
+            text: Scratch.translate("start playing [SRC] in a new context"),
             arguments: {
               SRC: {
                 type: Scratch.ArgumentType.STRING,
@@ -57,7 +57,7 @@
           {
             opcode: "am_usecontext",
             blockType: Scratch.BlockType.COMMAND,
-            text: "use [SPRITE]'s context in this sprite",
+            text: Scratch.translate("use [SPRITE]'s context in this sprite"),
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "spriteList" },
             },
@@ -66,37 +66,37 @@
           {
             opcode: "am_play",
             blockType: Scratch.BlockType.COMMAND,
-            text: "play",
+            text: Scratch.translate("play"),
             arguments: {},
           },
           {
             opcode: "am_playandwait",
             blockType: Scratch.BlockType.COMMAND,
-            text: "play and wait till the end",
+            text: Scratch.translate("play and wait till the end"),
             arguments: {},
           },
           {
             opcode: "am_resume",
             blockType: Scratch.BlockType.COMMAND,
-            text: "resume",
+            text: Scratch.translate("resume"),
             arguments: {},
           },
           {
             opcode: "am_pause",
             blockType: Scratch.BlockType.COMMAND,
-            text: "pause",
+            text: Scratch.translate("pause"),
             arguments: {},
           },
           {
             opcode: "am_stopthis",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop (this context)",
+            text: Scratch.translate("stop (this context)"),
             arguments: {},
           },
           {
             opcode: "am_stophim",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop sounds of [SPRITE]",
+            text: Scratch.translate("stop sounds of [SPRITE]"),
             arguments: {
               SPRITE: { type: Scratch.ArgumentType.STRING, menu: "spriteList" },
             },
@@ -104,20 +104,20 @@
           {
             opcode: "am_stop",
             blockType: Scratch.BlockType.COMMAND,
-            text: "stop all sounds",
+            text: Scratch.translate("stop all sounds"),
             arguments: {},
           },
           {
             opcode: "am_hasStopped",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "has stopped",
+            text: Scratch.translate("has stopped?"),
             arguments: {},
             disableMonitor: true,
           },
           {
             opcode: "am_isPaused",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is paused",
+            text: Scratch.translate("is paused?"),
             arguments: {},
             disableMonitor: true,
           },
@@ -125,13 +125,13 @@
           {
             opcode: "am_getanalyser",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get all visualizer data (slow)",
+            text: Scratch.translate("all visualizer data (slow)"),
             arguments: {},
           },
           {
             opcode: "am_getanalyserindex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get visualizer data at [INDEX]",
+            text: Scratch.translate("visualizer data at [INDEX]"),
             arguments: {
               INDEX: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -141,7 +141,9 @@
           {
             opcode: "am_analyserfft",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set visualizer read size to [VAL] (must be power of 2)",
+            text: Scratch.translate(
+              "set visualizer read size to [VAL] (must be power of 2)"
+            ),
             arguments: {
               VAL: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -153,7 +155,7 @@
           {
             opcode: "am_setvolume",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set volume to [VAL]",
+            text: Scratch.translate("set volume to [VAL]"),
             arguments: {
               VAL: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -164,14 +166,14 @@
           {
             opcode: "am_getvolume",
             blockType: Scratch.BlockType.REPORTER,
-            text: "volume",
+            text: Scratch.translate("volume"),
             arguments: {},
           },
           "---",
           {
             opcode: "am_skipToTime",
             blockType: Scratch.BlockType.COMMAND,
-            text: "skip to time [VAL]",
+            text: Scratch.translate("skip to time [VAL]"),
             arguments: {
               VAL: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -182,20 +184,20 @@
           {
             opcode: "am_songDuration",
             blockType: Scratch.BlockType.REPORTER,
-            text: "sound duration",
+            text: Scratch.translate("sound duration"),
             arguments: {},
           },
           {
             opcode: "am_songCurrent",
             blockType: Scratch.BlockType.REPORTER,
-            text: "current time",
+            text: Scratch.translate("current time"),
             arguments: {},
           },
           "---",
           {
             opcode: "am_setpitch",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set speed/pitch to [VAL]",
+            text: Scratch.translate("set speed/pitch to [VAL]"),
             arguments: {
               VAL: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -206,7 +208,7 @@
           {
             opcode: "am_setppitch",
             blockType: Scratch.BlockType.COMMAND,
-            text: "preservesPitch [VAL]",
+            text: Scratch.translate("preservesPitch [VAL]"),
             arguments: {
               VAL: {
                 type: Scratch.ArgumentType.BOOLEAN,
@@ -217,7 +219,7 @@
           {
             opcode: "am_setstereo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set pan to [VAL] (-1 to 1)",
+            text: Scratch.translate("set pan to [VAL] (-1 to 1)"),
             arguments: {
               VAL: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -228,7 +230,9 @@
           {
             opcode: "am_setfilter",
             blockType: Scratch.BlockType.COMMAND,
-            text: "(broken) filter [FIL] set frequency [FQ] quality [Q]",
+            text: Scratch.translate(
+              "(broken) filter [FIL] set frequency [FQ] quality [Q]"
+            ),
             hideFromPalette: true,
             arguments: {
               FIL: {
@@ -249,7 +253,7 @@
           {
             opcode: "am_toglefilter",
             blockType: Scratch.BlockType.COMMAND,
-            text: "(broken) filter [FIL] [STATE]",
+            text: Scratch.translate("(broken) filter [FIL] [STATE]"),
             hideFromPalette: true,
             arguments: {
               FIL: {
@@ -267,39 +271,43 @@
           {
             opcode: "am_freset",
             blockType: Scratch.BlockType.COMMAND,
-            text: "(broken) reset all filters",
+            text: Scratch.translate("(broken) reset all filters"),
             hideFromPalette: true,
             arguments: {},
           },
           {
             opcode: "am_connect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "(broken) connect [STRING] to track [TRACK]",
+            text: Scratch.translate(
+              "(broken) connect [STRING] to track [TRACK]"
+            ),
             hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "filter1",
+                defaultValue: Scratch.translate("filter1"),
               },
               TRACK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "track",
+                defaultValue: Scratch.translate("track"),
               },
             },
           },
           {
             opcode: "am_disconnect",
             blockType: Scratch.BlockType.COMMAND,
-            text: "(broken) disconnect [STRING] from track [TRACK]",
+            text: Scratch.translate(
+              "(broken) disconnect [STRING] from track [TRACK]"
+            ),
             hideFromPalette: true,
             arguments: {
               STRING: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "filter1",
+                defaultValue: Scratch.translate("filter1"),
               },
               TRACK: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "track",
+                defaultValue: Scratch.translate("track"),
               },
             },
           },
@@ -307,45 +315,45 @@
         menus: {
           filtersmenu: [
             {
-              text: "lowpass",
+              text: Scratch.translate("lowpass"),
               value: "lowpass",
             },
             {
-              text: "highpass",
+              text: Scratch.translate("highpass"),
               value: "highpass",
             },
             {
-              text: "bandpass",
+              text: Scratch.translate("bandpass"),
               value: "bandpass",
             },
             {
-              text: "lowshelf",
+              text: Scratch.translate("lowshelf"),
               value: "lowshelf",
             },
             {
-              text: "highshelf",
+              text: Scratch.translate("highshelf"),
               value: "highshelf",
             },
             {
-              text: "peaking",
+              text: Scratch.translate("peaking"),
               value: "peaking",
             },
             {
-              text: "notch",
+              text: Scratch.translate("notch"),
               value: "notch",
             },
             {
-              text: "allpass",
+              text: Scratch.translate("allpass"),
               value: "allpass",
             },
           ],
           connectOrDisconnect: [
             {
-              text: "connect",
+              text: Scratch.translate("connect"),
               value: "connect",
             },
             {
-              text: "disconnect",
+              text: Scratch.translate("disconnect"),
               value: "disconnect",
             },
           ],

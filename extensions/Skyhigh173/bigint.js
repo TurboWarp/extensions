@@ -1,7 +1,9 @@
 // Name: BigInt
 // ID: skyhigh173BigInt
 // Description: Math blocks that work on infinitely large integers (no decimals).
-// By: Skyhigh173
+// By: Skyhigh173 <https://scratch.mit.edu/users/Skyhigh173/>
+// License: MIT
+// Context: BigInt is short for "Big Integer" which can be infinitely big. "number" refers to normal numbers that have limits.
 
 (function (Scratch) {
   "use strict";
@@ -11,7 +13,12 @@
    * @returns {bigint}
    */
   const bi = (x) => {
+    if (typeof x === "bigint") {
+      return x;
+    }
     if (typeof x === "string") {
+      x = x.toLowerCase();
+
       // Try to parse things like '8n'
       if (x.charAt(x.length - 1) === "n") {
         try {
@@ -20,13 +27,35 @@
           // ignore
         }
       }
+
+      if (x.includes("e") && !x.includes("x")) {
+        // read scientific notation
+        const [mantissa, exponentStr] = x.split("e");
+        const exponent = parseInt(exponentStr, 10);
+
+        if (!isNaN(exponent) && exponent >= 0) {
+          const [integerPart, fractionalPart = ""] = mantissa.split(".");
+          if (exponent >= fractionalPart.length) {
+            // Pad with trailing zeros
+            x =
+              integerPart +
+              fractionalPart +
+              "0".repeat(exponent - fractionalPart.length);
+          } else {
+            // Shift decimal point right
+            x = integerPart + fractionalPart.slice(0, exponent);
+          }
+        }
+      }
+
       // Must remove decimal using string operations. Math.trunc will convert to float
       // which ruins the point of using bigints.
       const decimalIndex = x.indexOf(".");
-      const withoutDecimal =
+      const xWithoutDecimal =
         decimalIndex === -1 ? x : x.substring(0, decimalIndex);
+
       try {
-        return BigInt(withoutDecimal);
+        return BigInt(xWithoutDecimal);
       } catch (e) {
         return 0n;
       }
@@ -49,13 +78,14 @@
     getInfo() {
       return {
         id: "skyhigh173BigInt",
-        name: "BigInt",
+        name: Scratch.translate("BigInt"),
         color1: "#59C093",
         blocks: [
+          /* eslint-disable extension/should-translate */
           {
             opcode: "from",
             blockType: Scratch.BlockType.REPORTER,
-            text: "To BigInt [text]",
+            text: Scratch.translate("convert number [text] to BigInt"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -66,7 +96,7 @@
           {
             opcode: "to",
             blockType: Scratch.BlockType.REPORTER,
-            text: "To Number [text]",
+            text: Scratch.translate("convert BigInt [text] to number"),
             arguments: {
               text: {
                 type: Scratch.ArgumentType.STRING,
@@ -74,7 +104,7 @@
               },
             },
           },
-          makeLabel("Arithmetic"),
+          makeLabel(Scratch.translate("Arithmetic")),
           {
             opcode: "add",
             blockType: Scratch.BlockType.REPORTER,
@@ -153,7 +183,10 @@
           {
             opcode: "mod",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[a] mod [b]",
+            text: Scratch.translate({
+              default: "[a] mod [b]",
+              description: "mod refers to modulo",
+            }),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.STRING,
@@ -185,7 +218,7 @@
               },
             },
           },
-          makeLabel("Logic"),
+          makeLabel(Scratch.translate("Logic")),
           {
             opcode: "lt",
             blockType: Scratch.BlockType.BOOLEAN,
@@ -276,7 +309,7 @@
               },
             },
           },
-          makeLabel("Bitwise"),
+          makeLabel(Scratch.translate("Bitwise")),
           {
             opcode: "and",
             blockType: Scratch.BlockType.REPORTER,
@@ -363,6 +396,7 @@
               },
             },
           },
+          /* eslint-enable extension/should-translate */
         ],
         menus: {
           op: {
@@ -396,7 +430,10 @@
     }
     mod({ a, b }) {
       if (Number(b) == 0) return "NaN";
-      return (bi(a) % bi(b)).toString();
+
+      const modulo = bi(b);
+      if (modulo === 0n) return "NaN";
+      return (bi(a) % modulo).toString();
     }
 
     and({ a, b }) {

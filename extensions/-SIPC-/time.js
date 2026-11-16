@@ -3,6 +3,7 @@
 // Description: Blocks for times, dates, and time zones.
 // By: -SIPC-
 // By: SharkPool <https://scratch.mit.edu/users/DemonX5/>
+// License: MIT
 
 // If you're curious, the default dates are from the first commits of forkphorus & TurboWarp:
 // https://github.com/forkphorus/forkphorus/commit/632d3432a8a98abd627b1309f6c85f47dcc6d428
@@ -49,7 +50,7 @@
           {
             opcode: "Timedata",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get [Timedata] from [timestamp]"),
+            text: Scratch.translate("[Timedata] from [timestamp]"),
             arguments: {
               timestamp: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -290,7 +291,8 @@
     }
 
     timezone() {
-      return "UTC+" + new Date().getTimezoneOffset() / -60;
+      const offset = new Date().getTimezoneOffset() / -60;
+      return "UTC" + (offset >= 0 ? "+" : "") + offset;
     }
 
     Timedata(args) {
@@ -389,11 +391,11 @@
           ? Math.round(totalSeconds % 60)
               .toString()
               .padStart(2, "0")
-          : (totalSeconds % 60).toFixed(3);
-      const minutes = Math.round((totalSeconds / 60) % 60)
+          : (totalSeconds % 60).toFixed(3).padStart(6, "0");
+      const minutes = Math.floor((totalSeconds / 60) % 60)
         .toString()
         .padStart(2, "0");
-      const hours = Math.round(totalSeconds / 3600)
+      const hours = Math.floor(totalSeconds / 3600)
         .toString()
         .padStart(2, "0");
       return `${hours}:${minutes}:${seconds}`;
@@ -405,7 +407,7 @@
         return 0;
       }
       const monthIndex = Math.round(Scratch.Cast.toNumber(args.MONTH));
-      if (monthIndex < 0 || monthIndex >= 12) {
+      if (monthIndex < 0 || monthIndex >= 13) {
         return 0;
       }
       const date = new Date(year, monthIndex, 0);
