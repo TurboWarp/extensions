@@ -4,7 +4,7 @@
 // By: SharkPool
 // Licence: MIT
 
-// Version V.3.0.01
+// Version V.3.0.02
 
 (function (Scratch) {
   "use strict";
@@ -2010,15 +2010,15 @@
       const image = await ImageHelper.newImage(args.URI);
       if (!image) return INVALID_IMG;
 
+      ImageHelper.prepCanvas(image);
+      const { width, height } = image;
+      const data = ImageHelper.getImageData().data;
+
       const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
       svg.setAttribute("width", width);
       svg.setAttribute("height", height);
       svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-
-      ImageHelper.prepCanvas(image);
-      const { width, height } = image;
-      const data = ImageHelper.getImageData().data;
 
       const rects = [];
       let activeRuns = new Map();
