@@ -14,7 +14,7 @@
   const runtime = vm.runtime;
   const renderer = vm.renderer;
   const Cast = Scratch.Cast;
-  let videoResolution = null
+  let videoResolution = null;
 
   // In some versions of Chrome, it seems that trying to render a <video> returns pure black
   // if it's not in the DOM in a place the browser thinks is visible. That means we can't
@@ -495,7 +495,7 @@
               {
                 text: Scratch.translate("full"),
                 value: "full",
-              }
+              },
             ],
           },
         },
