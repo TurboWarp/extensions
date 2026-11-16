@@ -492,7 +492,7 @@ void main() {
     for (const emitter of engine.emitters.values()) {
       releaseEmitter(emitter);
     }
-    
+
     engine.emitters.clear();
     render.removeListener("NativeSizeChanged", engine.onStageSizeChange);
 
@@ -783,7 +783,8 @@ void main() {
     }
   };
 
-  const disposeAllEngines = () => allEngines.forEach((engine) => disposeEngine(engine.target));
+  const disposeAllEngines = () =>
+    allEngines.forEach((engine) => disposeEngine(engine.target));
   runtime.on("PROJECT_START", disposeAllEngines);
   runtime.on("PROJECT_STOP_ALL", disposeAllEngines);
   runtime.on("PROJECT_LOADED", disposeAllEngines);
@@ -1316,7 +1317,7 @@ void main() {
 
     getEngine(target) {
       return target ? target[engineTag] : undefined;
-    };
+    }
 
     getEmitterCtx(args) {
       const target = this.getSprite(args.TARGET);
@@ -1554,7 +1555,10 @@ void main() {
     setEmitPos(args) {
       const { emitter } = this.getEmitterCtx(args);
       if (emitter) {
-        emitter.rawPos = [sanitizeInt(args.x, MAX_INT), sanitizeInt(args.y, MAX_INT)];
+        emitter.rawPos = [
+          sanitizeInt(args.x, MAX_INT),
+          sanitizeInt(args.y, MAX_INT),
+        ];
         emitter.pos = [emitter.rawPos[0], emitter.rawPos[1] * -1];
       }
     }
