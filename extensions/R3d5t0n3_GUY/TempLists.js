@@ -493,7 +493,7 @@
           case "string":
             return {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: Scratch.translate(text),
+              defaultValue: Scratch.translate(`${text}`),
             };
           case "index":
             return { type: Scratch.ArgumentType.NUMBER, defaultValue: text };
@@ -502,7 +502,7 @@
           case "label":
             return {
               blockType: Scratch.BlockType.LABEL,
-              text: Scratch.translate(text),
+              text: Scratch.translate(`${text}`),
               hideFromPalette: hidden,
             };
           case "menu":
