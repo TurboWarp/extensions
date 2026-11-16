@@ -14,84 +14,95 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
 
-  // ---------------------------------------------------------------------
-  // Internal state. One tilemap per target (sprite or stage), stored in a
-  // Map keyed by the target object. Entries are removed in the
-  // `targetWasRemoved` handler below.
-  // ---------------------------------------------------------------------
-
-  /**
-   * @typedef {Object} TilemapState
-   * @property {number} columns
-   * @property {number} rows
-   * @property {number} tileSize
-   * @property {Int32Array} grid - flat array, index = row * columns + column. 0 means "empty".
-   * @property {Map<number, {targetName: string, costumeName: string}>} tileset
-   * @property {Set<number>} solidIds
-   * @property {number|null} penSkinId - our OWN pen skin, never shared with the user-facing Pen extension.
-   * @property {number|null} penDrawableId - the persistent drawable that carries penSkinId.
-   * @property {number|null} stampDrawableId - reusable helper drawable used only to "stamp" tile costumes.
-   * @property {Map<number, number[]>} scaleCache - skinId -> [scaleX%, scaleY%] that fits the skin to one tile.
-   */
-
-  /** @type {Map<any, TilemapState>} */
-  const maps = new Map();
+  // Largest grid that create tilemap will make (for example 1000 x 1000).
+  const MAX_TILES = 1000000;
 
   const OFFSTAGE_X = 1e6;
   const OFFSTAGE_Y = 1e6;
-  // Reference direction (facing right, no rotation) used when stamping so
-  // tiles never appear rotated regardless of the source sprite's current
-  // direction.
+  // Direction 90 is "facing right", so stamped tiles are never rotated.
   const NO_ROTATION_DIRECTION = 90;
+  const STORAGE_FLUSH_DELAY_MS = 500;
 
-  function getState(target) {
-    return maps.get(target) || null;
+  // The one tilemap of the project, shared by every sprite and clone.
+  // Tile (column, row) is grid[row * columns + column], and 0 means empty.
+  const state = {
+    columns: 0,
+    rows: 0,
+    tileSize: 1,
+    grid: new Int32Array(0),
+    // tile id -> { targetName, costumeName, sprite, costume }. The sprite and
+    // costume objects survive renames, so the names can be kept up to date.
+    tileset: new Map(),
+    solidIds: new Set(),
+    // skinId -> [scaleX%, scaleY%] that fits that skin to one tile
+    scaleCache: new Map(),
+  };
+
+  // Renderer objects used to draw the tilemap on its own pen skin, so the
+  // regular Pen extension's canvas is never touched. They're created the first
+  // time the tilemap is drawn and reused after that.
+  const render = {
+    penSkinId: null,
+    penDrawableId: null,
+    stampDrawableId: null,
+  };
+
+  function resetState() {
+    state.columns = 0;
+    state.rows = 0;
+    state.tileSize = 1;
+    state.grid = new Int32Array(0);
+    state.tileset.clear();
+    state.solidIds.clear();
+    state.scaleCache.clear();
   }
 
-  // Frees the renderer resources for one target's tilemap (its private pen
-  // skin and both drawables). Safe to call on a state that was never fully
-  // set up (fields are still null).
-  function destroyRenderResources(state) {
-    if (state.stampDrawableId !== null) {
-      runtime.renderer.destroyDrawable(state.stampDrawableId, "pen");
-      state.stampDrawableId = null;
+  function indexFor(column, row) {
+    if (column < 0 || row < 0 || column >= state.columns || row >= state.rows) {
+      return -1;
     }
-    if (state.penDrawableId !== null) {
-      runtime.renderer.destroyDrawable(state.penDrawableId, "pen");
-      state.penDrawableId = null;
-    }
-    if (state.penSkinId !== null) {
-      runtime.renderer.destroySkin(state.penSkinId);
-      state.penSkinId = null;
-    }
+    return row * state.columns + column;
   }
 
-  function getOrCreateState(target) {
-    let state = maps.get(target);
-    if (!state) {
-      state = {
-        columns: 0,
-        rows: 0,
-        tileSize: 1,
-        grid: new Int32Array(0),
-        tileset: new Map(),
-        solidIds: new Set(),
-        penSkinId: null,
-        penDrawableId: null,
-        stampDrawableId: null,
-        // skinId -> [scaleXPercent, scaleYPercent], so we only call
-        // getSkinSize() once per distinct costume instead of every tile,
-        // every frame.
-        scaleCache: new Map(),
-      };
-      maps.set(target, state);
-    }
-    return state;
+  // Finds a costume by sprite name and costume name.
+  function findCostume(targetName, costumeName) {
+    const target = runtime.getSpriteTargetByName(targetName);
+    if (!target) return null;
+    const costume = target.sprite.costumes.find((c) => c.name === costumeName);
+    return costume ? { sprite: target.sprite, costume } : null;
   }
 
-  // Plain-data snapshot of a tilemap, used both for "tilemap as text" and
-  // for extension storage (which gets saved inside the project file).
-  function serializeState(state) {
+  function bindEntry(entry) {
+    const found = findCostume(entry.targetName, entry.costumeName);
+    entry.sprite = found ? found.sprite : null;
+    entry.costume = found ? found.costume : null;
+  }
+
+  // Renaming a sprite or costume doesn't update the dropdowns of other
+  // extensions' blocks, so follow the renames here instead.
+  function syncTileset() {
+    let changed = false;
+    for (const entry of state.tileset.values()) {
+      if (entry.costume && entry.sprite.costumes.includes(entry.costume)) {
+        if (
+          entry.targetName !== entry.sprite.name ||
+          entry.costumeName !== entry.costume.name
+        ) {
+          entry.targetName = entry.sprite.name;
+          entry.costumeName = entry.costume.name;
+          changed = true;
+        }
+      } else {
+        // Not found yet, or the costume was deleted: look it up by name again.
+        bindEntry(entry);
+      }
+    }
+    if (changed) markDirty();
+  }
+
+  // Plain-data snapshot of the tilemap, used for "tilemap as text" and for
+  // extension storage (which is saved inside the project file).
+  function serializeState() {
     return {
       columns: state.columns,
       rows: state.rows,
@@ -106,9 +117,9 @@
     };
   }
 
-  // Returns false (and leaves the state untouched) if the data isn't a
-  // valid snapshot, so bad text never half-loads a map.
-  function restoreState(state, data) {
+  // Returns false (and leaves the tilemap untouched) if the data isn't a valid
+  // snapshot, so bad text never half-loads a map.
+  function restoreState(data) {
     if (!data || typeof data !== "object") return false;
     const { columns, rows, tileSize, grid } = data;
     if (
@@ -116,7 +127,9 @@
       !Number.isInteger(rows) ||
       columns < 1 ||
       rows < 1 ||
-      !(tileSize > 0) ||
+      columns * rows > MAX_TILES ||
+      !Number.isFinite(tileSize) ||
+      tileSize <= 0 ||
       !Array.isArray(grid) ||
       grid.length !== columns * rows
     ) {
@@ -126,14 +139,18 @@
     state.rows = rows;
     state.tileSize = tileSize;
     state.grid = Int32Array.from(grid);
-    state.tileset = new Map();
+    state.tileset.clear();
     if (Array.isArray(data.tileset)) {
-      for (const entry of data.tileset) {
-        if (Array.isArray(entry)) {
-          state.tileset.set(Number(entry[0]), {
-            targetName: String(entry[1]),
-            costumeName: String(entry[2]),
-          });
+      for (const item of data.tileset) {
+        if (Array.isArray(item)) {
+          const entry = {
+            targetName: String(item[1]),
+            costumeName: String(item[2]),
+            sprite: null,
+            costume: null,
+          };
+          bindEntry(entry);
+          state.tileset.set(Number(item[0]), entry);
         }
       }
     }
@@ -144,78 +161,55 @@
     return true;
   }
 
-  // Extension storage is saved with the project. Changes are batched so big grids aren't serialized on every block.
-  const STORAGE_FLUSH_DELAY_MS = 500;
-  const dirtyTargets = new Set();
+  // Extension storage is saved with the project. Changes are batched so big
+  // grids aren't serialized on every block.
   let flushTimeout = null;
 
   function flushStorage() {
     flushTimeout = null;
-    for (const target of dirtyTargets) {
-      const state = maps.get(target);
-      if (state && target.extensionStorage) {
-        target.extensionStorage.tiles = serializeState(state);
-      }
-    }
-    dirtyTargets.clear();
+    runtime.extensionStorage.tiles = serializeState();
   }
 
-  function markDirty(target) {
-    dirtyTargets.add(target);
+  function markDirty() {
     if (flushTimeout === null) {
       flushTimeout = setTimeout(flushStorage, STORAGE_FLUSH_DELAY_MS);
     }
   }
 
-  function restoreFromStorage() {
-    for (const target of runtime.targets) {
-      const saved = target.extensionStorage && target.extensionStorage.tiles;
-      if (saved) restoreState(getOrCreateState(target), saved);
+  function onProjectLoaded() {
+    clearTimeout(flushTimeout);
+    flushTimeout = null;
+    resetState();
+    restoreState(runtime.extensionStorage.tiles);
+    // Hide whatever the previous project left drawn.
+    if (render.penSkinId !== null) {
+      runtime.renderer.penClear(render.penSkinId);
+      runtime.renderer.updateDrawableVisible(render.penDrawableId, false);
     }
   }
 
-  runtime.on("PROJECT_LOADED", restoreFromStorage);
-  restoreFromStorage();
-
-  // Free the private pen skin and drawables when a sprite or clone is deleted.
-  runtime.on("targetWasRemoved", (target) => {
-    dirtyTargets.delete(target);
-    const state = maps.get(target);
-    if (!state) return;
-    destroyRenderResources(state);
-    maps.delete(target);
-  });
-
-  function indexFor(state, column, row) {
-    if (column < 0 || row < 0 || column >= state.columns || row >= state.rows) {
-      return -1;
-    }
-    return row * state.columns + column;
-  }
+  runtime.on("PROJECT_LOADED", onProjectLoaded);
+  vm.on("targetsUpdate", syncTileset);
+  restoreState(runtime.extensionStorage.tiles);
 
   // Looks up the render skin ID for whatever costume was registered for a
   // given tile id. Costumes get their skinId assigned by scratch-vm when
   // they finish loading (see load-costume.js: `costume.skinId = ...`).
-  function getTileSkinId(state, tileId) {
+  function getTileSkinId(tileId) {
     const entry = state.tileset.get(tileId);
     if (!entry) return null;
-
-    const spriteTarget = runtime.getSpriteTargetByName(entry.targetName);
-    if (!spriteTarget) return null;
-
-    const costume = spriteTarget.sprite.costumes.find(
-      (c) => c.name === entry.costumeName
-    );
-    if (!costume) return null;
-
-    return typeof costume.skinId === "number" ? costume.skinId : null;
+    const found = findCostume(entry.targetName, entry.costumeName);
+    if (!found) return null;
+    return typeof found.costume.skinId === "number"
+      ? found.costume.skinId
+      : null;
   }
 
   // Returns [scaleXPercent, scaleYPercent] so that this skin renders at
   // exactly tileSize x tileSize pixels, regardless of the source costume's
   // native pixel dimensions. Cached per skinId since getSkinSize() is a
   // renderer call we don't want to repeat every tile, every frame.
-  function getScaleForSkin(state, skinId) {
+  function getScaleForSkin(skinId) {
     let scale = state.scaleCache.get(skinId);
     if (scale) return scale;
 
@@ -228,20 +222,20 @@
     return scale;
   }
 
-  // Lazily sets up our own private pen skin + persistent drawable so we
-  // never touch the shared Pen extension's canvas. Also creates the
-  // reusable "stamp" drawable.
-  function ensureRenderResources(state) {
-    if (state.penSkinId !== null) return;
+  function ensureRenderResources() {
+    if (render.penSkinId !== null) return;
 
-    state.penSkinId = runtime.renderer.createPenSkin();
-    state.penDrawableId = runtime.renderer.createDrawable("pen");
-    runtime.renderer.updateDrawableSkinId(state.penDrawableId, state.penSkinId);
+    render.penSkinId = runtime.renderer.createPenSkin();
+    render.penDrawableId = runtime.renderer.createDrawable("pen");
+    runtime.renderer.updateDrawableSkinId(
+      render.penDrawableId,
+      render.penSkinId
+    );
 
-    state.stampDrawableId = runtime.renderer.createDrawable("pen");
+    render.stampDrawableId = runtime.renderer.createDrawable("pen");
     // The helper drawable stays off-stage and only moves onto the stage while a tile is stamped.
-    runtime.renderer.updateDrawableVisible(state.stampDrawableId, true);
-    runtime.renderer.updateDrawablePosition(state.stampDrawableId, [
+    runtime.renderer.updateDrawableVisible(render.stampDrawableId, true);
+    runtime.renderer.updateDrawablePosition(render.stampDrawableId, [
       OFFSTAGE_X,
       OFFSTAGE_Y,
     ]);
@@ -422,7 +416,10 @@
         menus: {
           SOLID_MENU: {
             acceptReporters: false,
-            items: ["solid", "not solid"],
+            items: [
+              { text: Scratch.translate("solid"), value: "solid" },
+              { text: Scratch.translate("not solid"), value: "not solid" },
+            ],
           },
           SPRITE_MENU: {
             acceptReporters: true,
@@ -459,81 +456,77 @@
         : [{ text: Scratch.translate("(none)"), value: "" }];
     }
 
-    createTilemap(args, util) {
+    createTilemap(args) {
       const columns = Math.max(
         1,
         Math.round(Scratch.Cast.toNumber(args.COLUMNS))
       );
       const rows = Math.max(1, Math.round(Scratch.Cast.toNumber(args.ROWS)));
       const tileSize = Math.max(1, Scratch.Cast.toNumber(args.TILESIZE));
+      // Ignore sizes that are too big (or Infinity) instead of throwing.
+      if (columns * rows > MAX_TILES || !Number.isFinite(tileSize)) return;
 
-      const state = getOrCreateState(util.target);
       state.columns = columns;
       state.rows = rows;
       state.tileSize = tileSize;
       state.grid = new Int32Array(columns * rows); // all zero = empty
       state.scaleCache.clear(); // tileSize may have changed, old scales are stale
-      markDirty(util.target);
+      markDirty();
     }
 
-    setTilesetCostume(args, util) {
-      const state = getOrCreateState(util.target);
-      const id = Math.round(Scratch.Cast.toNumber(args.ID));
-      state.tileset.set(id, {
+    setTilesetCostume(args) {
+      const entry = {
         targetName: Scratch.Cast.toString(args.SPRITE),
         costumeName: Scratch.Cast.toString(args.COSTUME),
-      });
+        sprite: null,
+        costume: null,
+      };
+      bindEntry(entry);
+      state.tileset.set(Math.round(Scratch.Cast.toNumber(args.ID)), entry);
       // The costume may have been repainted since we measured it, so drop the cached scales.
       state.scaleCache.clear();
-      markDirty(util.target);
+      markDirty();
     }
 
-    setTile(args, util) {
-      const state = getState(util.target);
-      if (!state) return;
+    setTile(args) {
       const column = Math.round(Scratch.Cast.toNumber(args.COLUMN));
       const row = Math.round(Scratch.Cast.toNumber(args.ROW));
-      const index = indexFor(state, column, row);
+      const index = indexFor(column, row);
       if (index === -1) return;
       state.grid[index] = Math.round(Scratch.Cast.toNumber(args.ID));
-      markDirty(util.target);
+      markDirty();
     }
 
-    getTile(args, util) {
-      const state = getState(util.target);
-      if (!state) return 0;
+    getTile(args) {
       const column = Math.round(Scratch.Cast.toNumber(args.COLUMN));
       const row = Math.round(Scratch.Cast.toNumber(args.ROW));
-      const index = indexFor(state, column, row);
+      const index = indexFor(column, row);
       if (index === -1) return 0;
       return state.grid[index];
     }
 
-    setSolid(args, util) {
-      const state = getOrCreateState(util.target);
+    setSolid(args) {
       const id = Math.round(Scratch.Cast.toNumber(args.ID));
+      // 0 means empty, which is never solid.
+      if (id === 0) return;
       if (Scratch.Cast.toString(args.SOLID) === "solid") {
         state.solidIds.add(id);
       } else {
         state.solidIds.delete(id);
       }
-      markDirty(util.target);
+      markDirty();
     }
 
-    isSolid(args, util) {
-      const state = getState(util.target);
-      if (!state) return false;
+    isSolid(args) {
       const column = Math.round(Scratch.Cast.toNumber(args.COLUMN));
       const row = Math.round(Scratch.Cast.toNumber(args.ROW));
-      const index = indexFor(state, column, row);
+      const index = indexFor(column, row);
       if (index === -1) return false;
-      return state.solidIds.has(state.grid[index]);
+      const id = state.grid[index];
+      return id !== 0 && state.solidIds.has(id);
     }
 
-    fillTiles(args, util) {
-      const state = getState(util.target);
-      if (!state) return;
-
+    fillTiles(args) {
       const id = Math.round(Scratch.Cast.toNumber(args.ID));
       // Accept the two corners in any order (C1 > C2, R1 > R2 is fine).
       let column1 = Math.round(Scratch.Cast.toNumber(args.COLUMN1));
@@ -555,85 +548,81 @@
           state.grid[rowStart + column] = id;
         }
       }
-      markDirty(util.target);
+      markDirty();
     }
 
-    tilemapAsText(args, util) {
-      const state = getState(util.target);
-      if (!state || state.columns === 0) return "";
-      return JSON.stringify(serializeState(state));
+    tilemapAsText() {
+      if (state.columns === 0) return "";
+      return JSON.stringify(serializeState());
     }
 
-    loadTilemap(args, util) {
+    loadTilemap(args) {
       let data;
       try {
         data = JSON.parse(Scratch.Cast.toString(args.TEXT));
       } catch (e) {
         return; // not valid JSON, ignore instead of throwing inside a block
       }
-      if (restoreState(getOrCreateState(util.target), data)) {
-        markDirty(util.target);
+      if (restoreState(data)) {
+        markDirty();
       }
     }
 
-    hideTilemap(args, util) {
-      const state = getState(util.target);
+    hideTilemap() {
       // Nothing to hide if draw was never called (no drawable exists yet).
-      if (!state || state.penDrawableId === null) return;
-      runtime.renderer.updateDrawableVisible(state.penDrawableId, false);
+      if (render.penDrawableId === null) return;
+      runtime.renderer.updateDrawableVisible(render.penDrawableId, false);
     }
 
-    columnAtX(args, util) {
-      const state = getState(util.target);
-      if (!state) return 0;
+    // The next four blocks work in "map space": the top-left corner of the
+    // tilemap is (0, 0), x grows to the right and y grows upward, so rows
+    // count downward from 0. If the map was drawn with its corner at x: X y: Y,
+    // subtract X and Y from stage coordinates before converting.
+    columnAtX(args) {
+      if (state.columns === 0) return 0;
       return Math.floor(Scratch.Cast.toNumber(args.X) / state.tileSize);
     }
 
-    rowAtY(args, util) {
-      const state = getState(util.target);
-      if (!state) return 0;
-      // Scratch's Y axis points up; row 0 is the top row of the grid, so we
-      // flip the sign here.
+    rowAtY(args) {
+      if (state.columns === 0) return 0;
       return Math.floor(-Scratch.Cast.toNumber(args.Y) / state.tileSize);
     }
 
-    xAtColumn(args, util) {
-      const state = getState(util.target);
-      if (!state) return 0;
-      return Math.round(Scratch.Cast.toNumber(args.COLUMN)) * state.tileSize;
+    // Center of the tile, which is where a sprite standing on it should go.
+    xAtColumn(args) {
+      if (state.columns === 0) return 0;
+      return (
+        (Math.round(Scratch.Cast.toNumber(args.COLUMN)) + 0.5) * state.tileSize
+      );
     }
 
-    yAtRow(args, util) {
-      const state = getState(util.target);
-      if (!state) return 0;
-      return -Math.round(Scratch.Cast.toNumber(args.ROW)) * state.tileSize;
+    yAtRow(args) {
+      if (state.columns === 0) return 0;
+      return (
+        -(Math.round(Scratch.Cast.toNumber(args.ROW)) + 0.5) * state.tileSize
+      );
     }
 
-    tilemapWidth(args, util) {
-      const state = getState(util.target);
-      if (!state) return 0;
+    tilemapWidth() {
       return state.columns * state.tileSize;
     }
 
-    tilemapHeight(args, util) {
-      const state = getState(util.target);
-      if (!state) return 0;
+    tilemapHeight() {
       return state.rows * state.tileSize;
     }
 
-    drawTilemap(args, util) {
-      const state = getState(util.target);
-      if (!state || state.columns === 0) return;
+    drawTilemap(args) {
+      if (state.columns === 0) return;
 
-      ensureRenderResources(state);
+      ensureRenderResources();
       // draw always re-shows the tilemap, in case hide tilemap was called
       // earlier. This is the "show" counterpart to hide, folded into draw
       // itself rather than a separate block.
-      runtime.renderer.updateDrawableVisible(state.penDrawableId, true);
+      runtime.renderer.updateDrawableVisible(render.penDrawableId, true);
 
-      // X/Y = exactly where tile (column 0, row 0) lands on the stage.
-      // No camera-style inversion: increasing X moves the whole map right,
-      // increasing Y moves it up, matching normal Scratch "go to x/y" logic.
+      // X/Y is where the top-left corner of tile (column 0, row 0) lands on the
+      // stage. Increasing X moves the whole map right and increasing Y moves
+      // it up, like a normal "go to x/y" block.
       const originX = Scratch.Cast.toNumber(args.X);
       const originY = Scratch.Cast.toNumber(args.Y);
 
@@ -659,35 +648,38 @@
       );
 
       // Clear only OUR OWN pen skin, never the shared Pen extension canvas.
-      runtime.renderer.penClear(state.penSkinId);
+      runtime.renderer.penClear(render.penSkinId);
 
       for (let row = minRow; row <= maxRow; row++) {
         for (let column = minColumn; column <= maxColumn; column++) {
-          const tileId = state.grid[indexFor(state, column, row)];
+          const tileId = state.grid[indexFor(column, row)];
           if (tileId === 0) continue; // 0 = empty, nothing to draw
 
-          const skinId = getTileSkinId(state, tileId);
+          const skinId = getTileSkinId(tileId);
           if (skinId === null) continue; // tileset entry missing/broken; skip silently
 
-          const worldX = column * state.tileSize + originX;
-          const worldY = -row * state.tileSize + originY;
+          // A costume is drawn around its rotation center, so stamp it at the
+          // middle of its cell. Tile costumes should have their rotation
+          // center in the middle, which is the default in the paint editor.
+          const centerX = originX + (column + 0.5) * state.tileSize;
+          const centerY = originY - (row + 0.5) * state.tileSize;
 
-          runtime.renderer.updateDrawableSkinId(state.stampDrawableId, skinId);
+          runtime.renderer.updateDrawableSkinId(render.stampDrawableId, skinId);
           runtime.renderer.updateDrawableDirectionScale(
-            state.stampDrawableId,
+            render.stampDrawableId,
             NO_ROTATION_DIRECTION,
-            getScaleForSkin(state, skinId)
+            getScaleForSkin(skinId)
           );
-          runtime.renderer.updateDrawablePosition(state.stampDrawableId, [
-            worldX,
-            worldY,
+          runtime.renderer.updateDrawablePosition(render.stampDrawableId, [
+            centerX,
+            centerY,
           ]);
-          runtime.renderer.penStamp(state.penSkinId, state.stampDrawableId);
+          runtime.renderer.penStamp(render.penSkinId, render.stampDrawableId);
         }
       }
 
       // Park the helper back off-stage before the next real frame renders.
-      runtime.renderer.updateDrawablePosition(state.stampDrawableId, [
+      runtime.renderer.updateDrawablePosition(render.stampDrawableId, [
         OFFSTAGE_X,
         OFFSTAGE_Y,
       ]);

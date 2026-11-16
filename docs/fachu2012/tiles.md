@@ -8,6 +8,8 @@ This doesn't do animation or multiple layers. It's just the grid + drawing part,
 
 Everything is column/row based. Column 0 and row 0 are the top-left of the grid, and you can't go negative — same as most tile editors. Tile id `0` always means "empty."
 
+There is one tilemap for the whole project. Every sprite and clone sees the same one, so your player sprite can ask what tile it's standing on.
+
 ```blocks
 create tilemap (20) columns x (15) rows, tile size (24)
 set tile (1) to costume [ground] of [Tileset]
@@ -20,16 +22,16 @@ That's the minimum to get something on screen: a 20x15 grid, tile id `1` pointin
 ## Blocks
 
 **`create tilemap (columns) x (rows), tile size (px)`**
-Sets up (or resets) the grid for whichever sprite/stage runs this block. Each sprite has its own independent tilemap.
+Sets up (or resets) the tilemap. A tilemap can have up to 1,000,000 tiles in total (for example 1000 × 1000); bigger sizes are ignored.
 
 **`draw tilemap with tile (0,0) at x: (x) y: (y)`**
-Draws the grid. `x`/`y` is exactly where tile (0, 0) lands — there's no hidden camera inversion, so if you want tile (0,0) at the top-left of the stage, just pass the stage's top-left coordinates directly. To follow a scrolling player, pass the negative of the player's position.
+Draws the grid. `x`/`y` is where the top-left corner of tile (0, 0) lands, so passing the stage's top-left corner (`-240`, `180` on a normal stage) puts the map right in the corner. There's no hidden camera inversion: a bigger `x` moves the whole map right and a bigger `y` moves it up. To follow a scrolling player, pass the negative of the player's position.
 
 **`hide tilemap`**
 Hides the drawn tilemap. Calling `draw tilemap` again automatically shows it again.
 
 **`set tile (id) to costume (name) of (sprite)`**
-Registers what a tile id looks like. Both the sprite and the costume are dropdowns (you can also drop a reporter in). The costume dropdown lists the costumes of every sprite, since a dropdown can't change based on which sprite you picked — just make sure the costume you choose actually belongs to that sprite. The sprite doesn't need to be visible, and it isn't moved or cloned — its costume is just used as a stamp. You can reuse the same tile id later to point it at a different costume.
+Registers what a tile id looks like. Both the sprite and the costume are dropdowns (you can also drop a reporter in). The costume dropdown lists the costumes of every sprite, since a dropdown can't change based on which sprite you picked — just make sure the costume you choose actually belongs to that sprite. The sprite doesn't need to be visible, and it isn't moved or cloned — its costume is just used as a stamp. You can reuse the same tile id later to point it at a different costume. Tile costumes should have their rotation center in the middle, which is what the paint editor does by default. If you rename the sprite or the costume, the tilemap follows the new name, but the dropdown of this block keeps showing the old one, so change it there too, or the next time the block runs it will point at a name that doesn't exist anymore.
 
 **`set tile at column (x) row (y) to (id)`** / **`tile at column (x) row (y)`**
 Read/write a single cell.
@@ -38,10 +40,10 @@ Read/write a single cell.
 Fills a rectangular range in one go — much faster than a nested loop, since it doesn't go through the block engine per cell. Corners can be given in any order.
 
 **`set tile (id) solid? (solid/not solid)`** / **`is solid at column (x) row (y)?`**
-For collision — mark which tile ids block movement, then check a cell.
+For collision — mark which tile ids block movement, then check a cell. Empty cells (tile id `0`) are never solid.
 
 **`column at x:`** / **`row at y:`** / **`x at column:`** / **`y at row:`**
-Convert between pixel coordinates and grid coordinates, using whatever tile size you set with `create tilemap`.
+Convert between pixel coordinates and grid coordinates, using whatever tile size you set with `create tilemap`. They work in map space, where the top-left corner of the tilemap is (0, 0), x grows to the right and y grows upward (so rows count downward). If you drew the map with `draw tilemap` at x: `X` y: `Y`, subtract `X` and `Y` from a position on the stage before converting it. `x at column` and `y at row` give the center of the tile, which is where a sprite standing on it should go.
 
 **`tilemap width in pixels`** / **`tilemap height in pixels`**
 Useful for camera math — e.g. centering the whole map on screen, or clamping a scrolling camera so it doesn't show past the edge of the map.
@@ -54,7 +56,7 @@ Loads a tilemap from text made by `tilemap as text`. If the text isn't valid, no
 
 ## Saving with the project
 
-The tilemap of each sprite is also stored inside the project file itself, so it's still there when you save and reopen the project. Changes are written to the project a moment (about half a second) after the last edit, rather than on every single block, to keep big maps fast. You still need to call `draw tilemap` after the project loads — the map is restored, but nothing is drawn until you ask for it.
+The tilemap is also stored inside the project file itself, so it's still there when you save and reopen the project. Changes are written to the project a moment (about half a second) after the last edit, rather than on every single block, to keep big maps fast. You still need to call `draw tilemap` after the project loads — the map is restored, but nothing is drawn until you ask for it.
 
 ## Notes
 
@@ -73,9 +75,8 @@ I tested this myself in the TurboWarp dev server before opening the PR, not just
 - Drawing with more than one tile id in the same map at once
 - A non-square source costume getting scaled to a square tile, and re-registering the costume after repainting it
 - `hide tilemap` followed by `draw tilemap` to make sure it reappears
-- Deleting a sprite (and a clone) that had an active tilemap, to make sure it doesn't leave anything behind on stage
 - The sprite and costume dropdowns, including dropping a reporter into them
 - `tilemap as text` and `load tilemap from text`, including loading text that isn't valid (nothing changes)
 - Saving the project, reopening it, and calling `draw tilemap` to get the same map back, with the same tiles still marked solid
 
-I used AI assistance (Claude) while building this, mainly for scaffolding the renderer-access parts and catching a couple of bugs I described from testing (a stale scale cache, and a memory leak on sprite deletion). I designed the block set and the coordinate system myself, and everything above is stuff I actually ran, not just read about.
+I used AI assistance (Claude) while building this, mainly for scaffolding the renderer-access parts and catching a bug I described from testing (a stale scale cache). I designed the block set and the coordinate system myself, and everything above is stuff I actually ran, not just read about.
