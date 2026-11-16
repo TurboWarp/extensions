@@ -488,11 +488,7 @@
           ) || false
         );
       }
-      fieldParamTemplate(
-        argType = "",
-        text = "",
-        hidden = false
-      ) {
+      fieldParamTemplate(argType = "", text = "", hidden = false) {
         switch (argType) {
           case "string":
             return {
