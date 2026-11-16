@@ -12,7 +12,7 @@
   const ArgumentType = Scratch.ArgumentType;
   const Cast = Scratch.Cast;
 
-  const regeneratedReporters = ["jeremygamerTweening_changeV"];
+  const regeneratedReporters = ["jeremygamerTweening_inlineTweenVal"];
   if (Scratch.gui) Scratch.gui.getBlockly().then(SB => {
     const originalCheck = SB.scratchBlocksUtils.isShadowArgumentReporter;
     SB.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
@@ -385,8 +385,8 @@
           },
           "---",
           { blockType: Scratch.BlockType.XML, xml: `
-            <block type="jeremygamerTweening_tweenC">
-              <value name="CHANGE"><shadow type="jeremygamerTweening_changeV"></shadow></value>
+            <block type="jeremygamerTweening_inlineTween">
+              <value name="CHANGE"><shadow type="jeremygamerTweening_inlineTweenVal"></shadow></value>
               <value name="SEC"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
               <value name="START"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
               <value name="END"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
@@ -395,8 +395,8 @@
             </block>`
           },
           {
-            opcode: "tweenC", blockType: Scratch.BlockType.LOOP,
-            text: "[MODE] ease [DIRECTION] [CHANGE] [START] to [END] in [SEC] secs",
+            opcode: "inlineTween", blockType: Scratch.BlockType.LOOP,
+            text: Scratch.translate("[MODE] ease [DIRECTION] [CHANGE] [START] to [END] in [SEC] secs"),
             hideFromPalette: true,
             arguments: {
               MODE: {
@@ -407,7 +407,7 @@
                 type: ArgumentType.STRING,
                 menu: "direction",
               },
-              CHANGE: { type: null },
+              CHANGE: {},
               START: {
                 type: ArgumentType.NUMBER,
                 defaultValue: 0,
@@ -423,8 +423,8 @@
             }
           },
           {
-            opcode: "changeV", blockType: Scratch.BlockType.REPORTER,
-            hideFromPalette: true, text: "tween value"
+            opcode: "inlineTweenVal", blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true, text: Scratch.translate("tween value")
           },
         ],
         menus: {
@@ -647,54 +647,69 @@
       }
     }
 
-    tweenC(args, util) {
-      const id = "loopedVal";
-      const state = util.stackFrame[id];
-      if (!state) {
-        const params = util.thread.TweenPars;
-        if (typeof params === "undefined") util.thread.stackFrames[0].TweenPars = {};
-        const durationMS = Cast.toNumber(args.SEC) * 1000;
-        const easeMethod = Cast.toString(args.MODE);
+    inlineTween(args, util) {
+      const start = Cast.toNumber(args.START);
+      const end = Cast.toNumber(args.END);
+
+      const stackFrame = util.stackFrame;
+      const threadStackFrame = util.thread.stackFrames[0];
+      if (threadStackFrame.inlineTweenQueue === undefined) {
+        threadStackFrame.inlineTweenQueue = [];
+      }
+
+      const queue = threadStackFrame.inlineTweenQueue;
+      if (stackFrame.tweenStatus === undefined) {
+        // init the loop
         const easeDirection = Cast.toString(args.DIRECTION);
-        const start = Cast.toNumber(args.START);
-        const end = Cast.toNumber(args.END);
-        util.thread.stackFrames[0].TweenPars.val = start;
-        let easingFunction;
-        if (Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) {
-          easingFunction = EasingMethods[easeMethod];
-        } else {
-          easingFunction = EasingMethods.linear;
+        let easeMethod = Cast.toString(args.MODE);
+        if (!Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) {
+          easeMethod = "linear";
         }
 
-        util.stackFrame[id] = {
-          startTimeMS: now(),
-          durationMS,
-          easingFunction,
-          easeDirection,
-          start,
-          end,
-        };
-        util.startBranch(1, true);
-      } else if (now() - state.startTimeMS >= state.durationMS) {
-        util.thread.stackFrames[0].TweenPars.val = util.stackFrame[id].end;
-        if (util.stackFrame[id].durationMS !== "stop") {
-          util.stackFrame[id].durationMS = "stop";
-          util.startBranch(1, true);
+        if (util.stackTimerNeedsInit()) {
+          const durationMS = Math.max(0, 1000 * Cast.toNumber(args.SEC));
+          util.startStackTimer(durationMS);
         }
+
+        stackFrame.tweenStatus = "running";
+        queue.push({
+          easeDirection,
+          easingFunction: EasingMethods[easeMethod],
+          value: start
+        });
+        util.startBranch(1, true);
+      } else if (stackFrame.tweenStatus === "done") {
+        // Done
+        queue.pop();
+        return;
       } else {
-        const progress = (now() - state.startTimeMS) / state.durationMS;
-        const tweened = state.easingFunction(progress, state.easeDirection);
-        util.thread.stackFrames[0].TweenPars.val = interpolate(tweened, state.start, state.end);
-        if (util.stackFrame[id].durationMS !== "stop") util.startBranch(1, true);
+        // Still running
+        const frame = queue[queue.length - 1];
+        const progress = Math.min(
+          1,
+          util.stackFrame.timer.timeElapsed() / util.stackFrame.duration
+        );
+        const tweened = frame.easingFunction(progress, frame.easeDirection);
+        frame.value = interpolate(tweened, start, end);
+
+        // Instead of checking if the timer ended, we clamp the progress to 1 so that
+        // the loop iterates one extra time at the ending value, not the value before.
+        if (progress === 1) {
+          stackFrame.tweenStatus = "done";
+        }
+
+        util.startBranch(1, true);
       }
     }
 
-    changeV(args, util) {
-      const stack = util.thread.stackFrames;
-      if (typeof stack === "undefined") return "";
-      const params = stack[0].TweenPars;
-      if (typeof params === "undefined") return "";
-      return params.val || "";
+    inlineTweenVal(_, util) {
+      const queue = util.thread.stackFrames[0]?.inlineTweenQueue;
+      if (queue) {
+        const lastFrame = queue[queue.length - 1];
+        return lastFrame ? lastFrame.value : 0;
+      }
+
+      return 0;
     }
   }
 
