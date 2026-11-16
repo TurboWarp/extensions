@@ -491,14 +491,13 @@
       fieldParamTemplate(
         argType = "",
         text = "",
-        hidden = false,
-        translate = true
+        hidden = false
       ) {
         switch (argType) {
           case "string":
             return {
               type: Scratch.ArgumentType.STRING,
-              defaultValue: translate ? Scratch.translate(text) : text,
+              defaultValue: Scratch.translate(text),
             };
           case "index":
             return { type: Scratch.ArgumentType.NUMBER, defaultValue: text };
@@ -507,7 +506,7 @@
           case "label":
             return {
               blockType: Scratch.BlockType.LABEL,
-              text: translate ? Scratch.translate(text) : text,
+              text: Scratch.translate(text),
               hideFromPalette: hidden,
             };
           case "menu":
