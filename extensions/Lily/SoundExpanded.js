@@ -180,6 +180,18 @@
             extensions: ["colours_sounds"],
           },
           {
+            opcode: "stopAllSpriteSounds",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("stop all sounds in [TARGET]"),
+            arguments: {
+              TARGET: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "preciseTargets",
+              },
+            },
+            extensions: ["colours_sounds"],
+          },
+          {
             opcode: "pauseSounds",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("pause all sounds"),
@@ -306,6 +318,10 @@
           targets: {
             acceptReporters: true,
             items: "_getTargets",
+          },
+          preciseTargets: {
+            acceptReporters: true,
+            items: "_getPreciseTargets",
           },
         },
       };
@@ -496,6 +512,37 @@
       soundBank.stop(target, soundId);
     }
 
+    stopAllSpriteSounds(args, util) {
+      const targets = [];
+      switch (args.TARGET) {
+        case "_myself_":
+          targets.push(util.target);
+          break;
+        case "_stage_":
+          targets.push(runtime.getTargetForStage());
+          break;
+        case "_myfamily_":
+          targets.push(...util.target.sprite.clones);
+          break;
+        default:
+          targets.push(runtime.getSpriteTargetByName(args.TARGET));
+      }
+
+      for (const target of targets) {
+        if (!target) continue;
+
+        const sprite = target.sprite;
+        const soundBank = sprite.soundBank;
+
+        const allSounds = Object.values(soundBank.soundPlayers);
+        for (const sound of allSounds) {
+          if (sound.isPlaying) {
+            soundBank.stop(target, sound.id);
+          }
+        }
+      }
+    }
+
     pauseSounds(args, util) {
       this._toggleSoundState(args, util, true);
     }
@@ -611,15 +658,32 @@
       return n - Math.floor((n - min) / range) * range;
     }
 
+    _populateTargetMenu() {
+      const targets = Scratch.vm.runtime.targets
+        .filter((target) => target.isOriginal && !target.isStage)
+        .map((target) => target.getName());
+
+      return targets;
+    }
+
     _getTargets() {
       let spriteNames = [
         { text: "myself", value: "_myself_" },
         { text: "Stage", value: "_stage_" },
       ];
-      const targets = Scratch.vm.runtime.targets
-        .filter((target) => target.isOriginal && !target.isStage)
-        .map((target) => target.getName());
-      spriteNames = spriteNames.concat(targets);
+
+      spriteNames = spriteNames.concat(this._populateTargetMenu());
+      return spriteNames;
+    }
+
+    _getPreciseTargets() {
+      let spriteNames = [
+        { text: "myself", value: "_myself_" },
+        { text: "myself and clones", value: "_myfamily_" },
+        { text: "Stage", value: "_stage_" },
+      ];
+
+      spriteNames = spriteNames.concat(this._populateTargetMenu());
       return spriteNames;
     }
   }

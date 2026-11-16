@@ -187,6 +187,7 @@
     // Expand the Bubble Limits to a Infinite Stage size if the camera
     // goes beyond the set stage size
     const drawable = render._allDrawables[target.drawableID];
+    if (!drawable) return;
     if (!drawable[cameraSymbol]) setupState(drawable);
     const camSystem = allCameras[drawable[cameraSymbol].name];
 

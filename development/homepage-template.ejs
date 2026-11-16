@@ -384,8 +384,27 @@
         const container = document.querySelector(".extensions");
         const sort = document.getElementById("search-sort");
 
+        const url = new URL(window.location.href);
+        const search = url.searchParams.get("q")?.toLowerCase();
+
+        if (search) {
+          document.getElementById("search-bar").value = search;
+          
+          extensionElements.forEach(extension => {
+            const h2 = extension.querySelector("h2").textContent.toLowerCase();
+            const p = extension.querySelector("p").textContent.toLowerCase();
+            if (h2.includes(search) || p.includes(search)) {
+              extension.style.removeProperty("display");
+            } else {
+              extension.style.display = "none";
+            }
+          });
+        }
+
         document.getElementById("search-bar").addEventListener("input", function (evt) {
           const searchQuery = evt.srcElement.value.toLowerCase();
+          url.searchParams.set("q", searchQuery);
+          window.history.replaceState({}, "", url);
 
           extensionElements.forEach(extension => {
             const h2 = extension.querySelector("h2").textContent.toLowerCase();

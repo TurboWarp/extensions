@@ -17,4 +17,7 @@ desktop.ini
 .vscode/*
 !.vscode/*.code-snippets
 
+# Translate download workflow
+download-warnings.txt
+
 # Tip: .git/info/exclude is your personal gitignore for things that don't belong here
