@@ -7,7 +7,7 @@
 // License: MIT AND LGPL-3.0
 
 // Attribution is not required, but greatly appreciated.
-function (Scratch) {
+(function (Scratch) {
   "use strict";
 
   const vm = Scratch.vm;
