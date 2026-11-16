@@ -13,13 +13,14 @@
   const Cast = Scratch.Cast;
 
   const regeneratedReporters = ["jeremygamerTweening_inlineTweenVal"];
-  if (Scratch.gui) Scratch.gui.getBlockly().then(SB => {
-    const originalCheck = SB.scratchBlocksUtils.isShadowArgumentReporter;
-    SB.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
-      if (originalCheck(block)) return true;
-      return block.isShadow() && regeneratedReporters.includes(block.type);
-    };
-  });
+  if (Scratch.gui)
+    Scratch.gui.getBlockly().then((SB) => {
+      const originalCheck = SB.scratchBlocksUtils.isShadowArgumentReporter;
+      SB.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
+        if (originalCheck(block)) return true;
+        return block.isShadow() && regeneratedReporters.includes(block.type);
+      };
+    });
 
   /**
    * @param {number} time should be 0-1
@@ -384,7 +385,9 @@
             },
           },
           "---",
-          { blockType: Scratch.BlockType.XML, xml: `
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: `
             <block type="jeremygamerTweening_inlineTween">
               <value name="CHANGE"><shadow type="jeremygamerTweening_inlineTweenVal"></shadow></value>
               <value name="SEC"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
@@ -392,11 +395,14 @@
               <value name="END"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
               <value name="MODE"><shadow type="jeremygamerTweening_menu_modes"><field name="modes">linear</field></shadow></value>
               <value name="DIRECTION"><shadow type="jeremygamerTweening_menu_direction"><field name="direction">in</field></shadow></value>
-            </block>`
+            </block>`,
           },
           {
-            opcode: "inlineTween", blockType: Scratch.BlockType.LOOP,
-            text: Scratch.translate("[MODE] ease [DIRECTION] [CHANGE] [START] to [END] in [SEC] secs"),
+            opcode: "inlineTween",
+            blockType: Scratch.BlockType.LOOP,
+            text: Scratch.translate(
+              "[MODE] ease [DIRECTION] [CHANGE] [START] to [END] in [SEC] secs"
+            ),
             hideFromPalette: true,
             arguments: {
               MODE: {
@@ -419,12 +425,14 @@
               SEC: {
                 type: ArgumentType.NUMBER,
                 defaultValue: 1,
-              }, 
-            }
+              },
+            },
           },
           {
-            opcode: "inlineTweenVal", blockType: Scratch.BlockType.REPORTER,
-            hideFromPalette: true, text: Scratch.translate("tween value")
+            opcode: "inlineTweenVal",
+            blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true,
+            text: Scratch.translate("tween value"),
           },
         ],
         menus: {
@@ -675,7 +683,7 @@
         queue.push({
           easeDirection,
           easingFunction: EasingMethods[easeMethod],
-          value: start
+          value: start,
         });
         util.startBranch(1, true);
       } else if (stackFrame.tweenStatus === "done") {
