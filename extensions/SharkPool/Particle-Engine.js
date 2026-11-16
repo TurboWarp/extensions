@@ -576,7 +576,7 @@ void main() {
       twgl.bindFramebufferInfo(gl, skin._framebuffer);
       gl.viewport(0, 0, engine.renderWidth, engine.renderHeight);
       if (noTrails) {
-        /* Celar canvas */
+        /* Clear canvas */
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT);
       }
