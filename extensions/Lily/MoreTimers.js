@@ -25,7 +25,8 @@
    */
   const timerValue = (timer) => {
     return (
-      ((timer.paused ? 0 : Date.now() - timer.startTime) + timer.pauseTime) /
+      ((timer.paused ? 0 : Math.floor(performance.now()) - timer.startTime) +
+        timer.pauseTime) /
       1000
     );
   };
@@ -40,7 +41,7 @@
     getInfo() {
       return {
         id: "lmsTimers",
-        name: "More Timers",
+        name: Scratch.translate("More Timers"),
         color1: "#5cb1d6",
         color2: "#428faf",
         color3: "#3281a3",
@@ -49,7 +50,7 @@
             opcode: "whenTimerOp",
             blockType: Scratch.BlockType.HAT,
             extensions: ["colours_sensing"],
-            text: "when timer [TIMER] [OP] [NUM]",
+            text: Scratch.translate("when timer [TIMER] [OP] [NUM]"),
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -72,7 +73,7 @@
             opcode: "startResetTimer",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_sensing"],
-            text: "start/reset timer [TIMER]",
+            text: Scratch.translate("start/reset timer [TIMER]"),
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -84,7 +85,7 @@
             opcode: "valueOfTimer",
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_sensing"],
-            text: "timer [TIMER]",
+            text: Scratch.translate("timer [TIMER]"),
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -99,7 +100,7 @@
             opcode: "pauseTimer",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_sensing"],
-            text: "pause timer [TIMER]",
+            text: Scratch.translate("pause timer [TIMER]"),
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -111,7 +112,7 @@
             opcode: "resumeTimer",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_sensing"],
-            text: "resume timer [TIMER]",
+            text: Scratch.translate("resume timer [TIMER]"),
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -126,7 +127,7 @@
             opcode: "setTimer",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_sensing"],
-            text: "set timer [TIMER] to [NUM]",
+            text: Scratch.translate("set timer [TIMER] to [NUM]"),
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -142,7 +143,7 @@
             opcode: "changeTimer",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_sensing"],
-            text: "change timer [TIMER] by [NUM]",
+            text: Scratch.translate("change timer [TIMER] by [NUM]"),
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -161,7 +162,7 @@
             opcode: "removeTimer",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_sensing"],
-            text: "remove timer [TIMER]",
+            text: Scratch.translate("remove timer [TIMER]"),
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -173,13 +174,13 @@
             opcode: "removeTimers",
             blockType: Scratch.BlockType.COMMAND,
             extensions: ["colours_sensing"],
-            text: "remove all timers",
+            text: Scratch.translate("remove all timers"),
           },
           {
             opcode: "timerExists",
             blockType: Scratch.BlockType.BOOLEAN,
             extensions: ["colours_sensing"],
-            text: "timer [TIMER] exists?",
+            text: Scratch.translate("timer [TIMER] exists?"),
             arguments: {
               TIMER: {
                 type: Scratch.ArgumentType.STRING,
@@ -191,7 +192,7 @@
             opcode: "listExistingTimers",
             blockType: Scratch.BlockType.REPORTER,
             extensions: ["colours_sensing"],
-            text: "list existing timers",
+            text: Scratch.translate("list existing timers"),
             disableMonitor: false,
           },
         ],
@@ -215,7 +216,7 @@
 
     startResetTimer(args) {
       timers[args.TIMER] = {
-        startTime: Date.now(),
+        startTime: Math.floor(performance.now()),
         pauseTime: 0,
         paused: false,
       };
@@ -233,7 +234,7 @@
       if (!timer) return;
       if (timer.paused === false) return;
       timer.paused = false;
-      timer.startTime = Date.now();
+      timer.startTime = Math.floor(performance.now());
     }
 
     valueOfTimer(args) {
@@ -244,7 +245,7 @@
     setTimer(args) {
       timers[args.TIMER] = {
         paused: false,
-        startTime: Date.now(),
+        startTime: Math.floor(performance.now()),
         pauseTime: Scratch.Cast.toNumber(args.NUM) * 1000,
       };
     }

@@ -9,13 +9,18 @@
 
   class CommentBlocks {
     getInfo() {
+      const defaultValue = Scratch.translate({
+        default: "comment",
+        description: "Default comment value",
+      });
       return {
         id: "lmscomments",
-        name: "Comment Blocks",
+        name: Scratch.translate("Comment Blocks"),
         color1: "#e4db8c",
         color2: "#c6be79",
         color3: "#a8a167",
         blocks: [
+          /* eslint-disable extension/should-translate */
           {
             opcode: "commentHat",
             blockType: Scratch.BlockType.HAT,
@@ -24,7 +29,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "comment",
+                defaultValue: defaultValue,
               },
             },
           },
@@ -35,7 +40,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "comment",
+                defaultValue: defaultValue,
               },
             },
           },
@@ -46,7 +51,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "comment",
+                defaultValue: defaultValue,
               },
             },
           },
@@ -58,7 +63,7 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "comment",
+                defaultValue: defaultValue,
               },
               INPUT: {
                 type: Scratch.ArgumentType.STRING,
@@ -73,13 +78,14 @@
             arguments: {
               COMMENT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "comment",
+                defaultValue: defaultValue,
               },
               INPUT: {
                 type: Scratch.ArgumentType.BOOLEAN,
               },
             },
           },
+          /* eslint-enable extension/should-translate */
         ],
       };
     }

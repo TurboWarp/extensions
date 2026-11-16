@@ -7,7 +7,7 @@
     getInfo() {
       return {
         id: "nonameawacnnumber",
-        name: "中文数字",
+        name: Scratch.translate("Chinese Numbers"),
         color1: "#cb0000",
         color2: "#a20000",
         color3: "#a20000",
@@ -16,7 +16,9 @@
             opcode: "CN_number",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: "中文数字 [a] 大写 [u]",
+            text: Scratch.translate(
+              "convert [a] to chinese number using [u] numerals"
+            ),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -34,11 +36,11 @@
             acceptReporters: true,
             items: [
               {
-                text: "关闭",
+                text: Scratch.translate("standard"),
                 value: "0",
               },
               {
-                text: "打开",
+                text: Scratch.translate("financial"),
                 value: "1",
               },
             ],
@@ -132,13 +134,14 @@
       Number_in >= 0 ? Math.floor(Number_in) : Math.ceil(Number_in)
     );
     After_decimal_point = "." + String(String(Number_in).split(".")[1]);
+    const upper = Number(uppercase);
     unit = (
-      uppercase
+      upper
         ? "个、拾、佰、仟、万、亿、兆、京"
         : "个、十、百、千、万、亿、兆、京"
     ).split("、");
     C_Number = (
-      uppercase
+      upper
         ? "壹、贰、叁、肆、伍、陆、柒、捌、玖、拾"
         : "一、二、三、四、五、六、七、八、九、十"
     ).split("、");

@@ -21,6 +21,30 @@
   };
 
   /**
+   * @param {RenderWebGL.SVGSkin} svgSkin
+   * @returns {Promise<void>}
+   */
+  const svgSkinFinishedLoading = (svgSkin) =>
+    new Promise((resolve) => {
+      if (svgSkin._svgImageLoaded) {
+        resolve();
+        return;
+      }
+
+      const handleEvent = () => {
+        cleanup();
+        resolve();
+      };
+      const cleanup = () => {
+        svgSkin._svgImage.removeEventListener("load", handleEvent);
+        svgSkin._svgImage.removeEventListener("error", handleEvent);
+      };
+
+      svgSkin._svgImage.addEventListener("load", handleEvent);
+      svgSkin._svgImage.addEventListener("error", handleEvent);
+    });
+
+  /**
    * @param {VM.BlockUtility} util
    * @param {unknown} targetName
    */
@@ -33,11 +57,13 @@
     return util.runtime.getSpriteTargetByName(nameString);
   };
 
+  const renderer = Scratch.vm.runtime.renderer;
+
   class LooksPlus {
     getInfo() {
       return {
         id: "lmsLooksPlus",
-        name: "Looks+",
+        name: Scratch.translate("Looks+"),
         color1: "#9966FF",
         color2: "#855CD6",
         color3: "#774DCB",
@@ -46,7 +72,7 @@
           {
             opcode: "showSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show [TARGET]",
+            text: Scratch.translate("show [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -58,7 +84,7 @@
           {
             opcode: "hideSprite",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide [TARGET]",
+            text: Scratch.translate("hide [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -70,7 +96,7 @@
           {
             opcode: "spriteVisible",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[TARGET] visible?",
+            text: Scratch.translate("[TARGET] visible?"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -85,7 +111,7 @@
           {
             opcode: "setLayerTo",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set layer # of [TARGET] to [LAYER]",
+            text: Scratch.translate("set layer # of [TARGET] to [LAYER]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -101,7 +127,7 @@
           {
             opcode: "spriteLayerNumber",
             blockType: Scratch.BlockType.REPORTER,
-            text: "layer # of [TARGET]",
+            text: Scratch.translate("layer # of [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -113,7 +139,7 @@
           {
             opcode: "effectValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[EFFECT] effect of [TARGET]",
+            text: Scratch.translate("[EFFECT] effect of [TARGET]"),
             arguments: {
               EFFECT: {
                 type: Scratch.ArgumentType.STRING,
@@ -133,7 +159,7 @@
           {
             opcode: "targetCostumeNumber",
             blockType: Scratch.BlockType.REPORTER,
-            text: "# of costumes in [TARGET]",
+            text: Scratch.translate("# of costumes in [TARGET]"),
             arguments: {
               TARGET: {
                 type: Scratch.ArgumentType.STRING,
@@ -145,7 +171,7 @@
           {
             opcode: "costumeAttribute",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[ATTRIBUTE] of [COSTUME]",
+            text: Scratch.translate("[ATTRIBUTE] of [COSTUME]"),
             arguments: {
               ATTRIBUTE: {
                 type: Scratch.ArgumentType.STRING,
@@ -163,7 +189,7 @@
           {
             opcode: "snapshotStage",
             blockType: Scratch.BlockType.REPORTER,
-            text: "snapshot stage",
+            text: Scratch.translate("snapshot stage"),
             disableMonitor: true,
             extensions: ["colours_looks"],
           },
@@ -173,7 +199,8 @@
           {
             opcode: "replaceCostumeContent",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [TYPE] for [COSTUME] to [CONTENT]",
+            text: Scratch.translate("set [TYPE] for [COSTUME] to [CONTENT]"),
+            hideFromPalette: true, // needed for compatibility, also superceeded by skins
             arguments: {
               TYPE: {
                 type: Scratch.ArgumentType.STRING,
@@ -191,9 +218,24 @@
             extensions: ["colours_looks"],
           },
           {
+            opcode: "replaceCostumeContentNew",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set svg for [COSTUME] to [CONTENT]"),
+            arguments: {
+              COSTUME: {
+                type: Scratch.ArgumentType.COSTUME,
+              },
+              CONTENT: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "<svg />",
+              },
+            },
+            extensions: ["colours_looks"],
+          },
+          {
             opcode: "restoreCostumeContent",
             blockType: Scratch.BlockType.COMMAND,
-            text: "restore content for [COSTUME]",
+            text: Scratch.translate("restore content for [COSTUME]"),
             arguments: {
               COSTUME: {
                 type: Scratch.ArgumentType.COSTUME,
@@ -204,7 +246,9 @@
           {
             opcode: "costumeContent",
             blockType: Scratch.BlockType.REPORTER,
-            text: "[CONTENT] of costume # [COSTUME] of [TARGET]",
+            text: Scratch.translate(
+              "[CONTENT] of costume # [COSTUME] of [TARGET]"
+            ),
             arguments: {
               CONTENT: {
                 type: Scratch.ArgumentType.STRING,
@@ -228,7 +272,7 @@
           {
             opcode: "replaceColors",
             blockType: Scratch.BlockType.REPORTER,
-            text: "replace [COLOR1] with [COLOR2] in [SVG]",
+            text: Scratch.translate("replace [COLOR1] with [COLOR2] in [SVG]"),
             arguments: {
               COLOR1: {
                 type: Scratch.ArgumentType.COLOR,
@@ -248,7 +292,7 @@
           {
             opcode: "colorHex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "hex of [COLOR]",
+            text: Scratch.translate("hex of [COLOR]"),
             arguments: {
               COLOR: {
                 type: Scratch.ArgumentType.COLOR,
@@ -264,31 +308,31 @@
             acceptReporters: false,
             items: [
               {
-                text: "color",
+                text: Scratch.translate("color"),
                 value: "color",
               },
               {
-                text: "fisheye",
+                text: Scratch.translate("fisheye"),
                 value: "fisheye",
               },
               {
-                text: "whirl",
+                text: Scratch.translate("whirl"),
                 value: "whirl",
               },
               {
-                text: "pixelate",
+                text: Scratch.translate("pixelate"),
                 value: "pixelate",
               },
               {
-                text: "mosaic",
+                text: Scratch.translate("mosaic"),
                 value: "mosaic",
               },
               {
-                text: "brightness",
+                text: Scratch.translate("brightness"),
                 value: "brightness",
               },
               {
-                text: "ghost",
+                text: Scratch.translate("ghost"),
                 value: "ghost",
               },
             ],
@@ -297,23 +341,23 @@
             acceptReporters: false,
             items: [
               {
-                text: "width",
+                text: Scratch.translate("width"),
                 value: "width",
               },
               {
-                text: "height",
+                text: Scratch.translate("height"),
                 value: "height",
               },
               {
-                text: "format",
+                text: Scratch.translate("format"),
                 value: "format",
               },
               {
-                text: "rotation center x",
+                text: Scratch.translate("rotation center x"),
                 value: "rotationCenterX",
               },
               {
-                text: "rotation center y",
+                text: Scratch.translate("rotation center y"),
                 value: "rotationCenterY",
               },
             ],
@@ -322,11 +366,11 @@
             acceptReporters: false,
             items: [
               {
-                text: "content",
+                text: Scratch.translate("content"),
                 value: "content",
               },
               {
-                text: "dataURI",
+                text: Scratch.translate("dataURI"),
                 value: "dataURI",
               },
             ],
@@ -375,10 +419,13 @@
       if (!target) {
         return;
       }
+
       const drawableID = target.drawableID;
       const layerOrder = target.getLayerOrder();
-      const newLayer = args.LAYER - layerOrder;
-      target.renderer.setDrawableOrder(drawableID, newLayer, "sprite", true);
+      const newLayer = Scratch.Cast.toNumber(args.LAYER) - layerOrder;
+      if (!isNaN(newLayer) && Number.isFinite(newLayer)) {
+        renderer.setDrawableOrder(drawableID, newLayer, "sprite", true);
+      }
     }
 
     spriteLayerNumber(args, util) {
@@ -440,7 +487,7 @@
 
     snapshotStage(args, util) {
       return new Promise((resolve) => {
-        Scratch.vm.runtime.renderer.requestSnapshot((uri) => {
+        renderer.requestSnapshot((uri) => {
           resolve(uri);
         });
       });
@@ -465,15 +512,44 @@
       const contentType = args.TYPE;
       const content = args.CONTENT;
       if (contentType === "SVG") {
-        Scratch.vm.runtime.renderer.updateSVGSkin(
-          costume.skinId,
-          Scratch.Cast.toString(content)
-        );
+        try {
+          renderer.updateSVGSkin(
+            costume.skinId,
+            Scratch.Cast.toString(content)
+          );
+          renderer._allSkins[costume.skinId].differsFromAsset = true;
+        } catch (e) {
+          console.error(e);
+        }
       } else {
         console.error("Options other than SVG are currently unavailable");
+      }
+    }
+
+    async replaceCostumeContentNew(args, util) {
+      const costumeIndex = this.getCostumeInput(args.COSTUME, util.target);
+      const costume = util.target.sprite.costumes[costumeIndex];
+      if (!costume) {
+        console.error("Costume doesn't exist");
         return;
       }
-      Scratch.vm.emitTargetsUpdate();
+
+      //This is here to ensure no changes are made to bitmap costumes, as changes are irreversible
+      //Check will be removed when it's possible to edit bitmap skins
+      const format = costume.asset.assetType.runtimeFormat;
+      if (format !== "svg") {
+        console.error("Costume is not vector");
+        return;
+      }
+
+      const content = args.CONTENT;
+      try {
+        renderer.updateSVGSkin(costume.skinId, Scratch.Cast.toString(content));
+        renderer._allSkins[costume.skinId].differsFromAsset = true;
+        await svgSkinFinishedLoading(renderer._allSkins[costume.skinId]);
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     restoreCostumeContent(args, util) {
@@ -488,21 +564,30 @@
         return;
       }
 
-      //This is here to ensure no changes are made to bitmap costumes, as changes are irreversible
-      //Check will be removed when it's possible to edit bitmap skins
+      // This is here to ensure no changes are made to bitmap costumes, as changes are irreversible
+      // Check will be removed when it's possible to edit bitmap skins
       const format = costume.asset.assetType.runtimeFormat;
       if (format !== "svg") {
         console.error("Costume is not vector");
         return;
       }
 
-      const content = costume.asset.decodeText();
-      const rotationCenterX = costume.rotationCenterX;
-      const rotationCenterY = costume.rotationCenterY;
-      util.target.renderer.updateSVGSkin(costume.skinId, content, [
-        rotationCenterX,
-        rotationCenterY,
-      ]);
+      if (!renderer._allSkins[costume.skinId].differsFromAsset) {
+        return;
+      }
+
+      try {
+        const content = costume.asset.decodeText();
+        const rotationCenterX = costume.rotationCenterX;
+        const rotationCenterY = costume.rotationCenterY;
+        renderer.updateSVGSkin(costume.skinId, content, [
+          rotationCenterX,
+          rotationCenterY,
+        ]);
+        renderer._allSkins[costume.skinId].differsFromAsset = false;
+      } catch (e) {
+        console.error(e);
+      }
     }
 
     costumeContent(args, util) {
@@ -567,12 +652,12 @@
     getSprites() {
       const spriteNames = [];
       const targets = Scratch.vm.runtime.targets;
-      const myself = Scratch.vm.runtime.getEditingTarget().getName();
+      const editingTarget = Scratch.vm.runtime.getEditingTarget();
       for (let index = 1; index < targets.length; index++) {
         const target = targets[index];
         if (target.isOriginal) {
           const targetName = target.getName();
-          if (targetName === myself) {
+          if (target === editingTarget) {
             spriteNames.unshift({
               text: "this sprite",
               value: targetName,

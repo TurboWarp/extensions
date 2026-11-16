@@ -10,11 +10,87 @@
     throw new Error("SearchParams must be run unsandboxed.");
   }
 
+  /**
+   * scratch-gui URL parameters that might have some security implications to change.
+   * toURL must exactly mirror how scratch-gui turns the parameter into a URL so that we
+   * permission check the same URL that scratch-gui will actually connect to.
+   * @type {Record<string, {canModify: false} | {canModify: true, toURL: (value: string) => string, protocols: string[]}>}
+   */
+  const SENSITIVE_GUI_PARAMS = {
+    cloud_host: {
+      canModify: true,
+      // Must match scratch-gui/src/lib/cloud-provider.js
+      toURL: (value) =>
+        value.includes("ws://") || value.includes("wss://")
+          ? value
+          : (location.protocol === "http:" ? "ws://" : "wss://") + value,
+      protocols: ["ws:", "wss:"],
+    },
+    project_url: {
+      canModify: true,
+      // Must match scratch-gui/src/lib/project-fetcher-hoc.jsx
+      toURL: (value) =>
+        value.startsWith("http:") ||
+        value.startsWith("https:") ||
+        value.startsWith("data:")
+          ? value
+          : "https://" + value,
+      protocols: ["http:", "https:", "data:"],
+    },
+    extension: {
+      canModify: false,
+    },
+  };
+
+  /**
+   * Runs callback if setting the parameter is allowed. Only returns a promise when a permission
+   * check is needed so that other parameters are set without forcing a delay.
+   * @param {string} name
+   * @param {string} value
+   * @param {() => void} callback
+   * @returns {void|Promise<void>}
+   */
+  const withSetPermission = (name, value, callback) => {
+    if (
+      !Scratch.gui ||
+      !Object.prototype.hasOwnProperty.call(SENSITIVE_GUI_PARAMS, name)
+    ) {
+      // Not in scratch-gui or it's a safe parameter - just let through.
+      return callback();
+    }
+    const param = SENSITIVE_GUI_PARAMS[name];
+    if (!param.canModify) {
+      return;
+    }
+
+    let parsed;
+    try {
+      parsed = new URL(param.toURL(value), location.href);
+    } catch (e) {
+      return;
+    }
+
+    if (
+      !param.protocols.includes(parsed.protocol) ||
+      parsed.username ||
+      parsed.password
+    ) {
+      // Some weird invalid URL - don't let it through
+      return;
+    }
+
+    return Scratch.canFetch(parsed.href).then((allowed) => {
+      if (allowed) {
+        callback();
+      }
+    });
+  };
+
   class SearchApi {
     getInfo() {
       return {
         id: "zxmushroom63searchparams",
-        name: "Search Params",
+        name: Scratch.translate("Search Params"),
         color1: "#b4b4b4",
         color2: "#9c9c9c",
         color3: "#646464",
@@ -22,7 +98,7 @@
           {
             opcode: "searchparam",
             blockType: Scratch.BlockType.REPORTER,
-            text: "value of search parameter [ID]",
+            text: Scratch.translate("value of search parameter [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -33,7 +109,7 @@
           {
             opcode: "occurencesofsearchparam",
             blockType: Scratch.BlockType.REPORTER,
-            text: "occurences of search parameter [ID]",
+            text: Scratch.translate("occurrences of search parameter [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -44,7 +120,7 @@
           {
             opcode: "indexedsearchparam",
             blockType: Scratch.BlockType.REPORTER,
-            text: "index [I] of search parameters [ID]",
+            text: Scratch.translate("index [I] of search parameters [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -59,7 +135,7 @@
           {
             opcode: "setsearchparam",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set search parameter [ID] to [VAL]",
+            text: Scratch.translate("set search parameter [ID] to [VAL]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -74,7 +150,7 @@
           {
             opcode: "deletesearchparam",
             blockType: Scratch.BlockType.COMMAND,
-            text: "delete search parameter [ID]",
+            text: Scratch.translate("delete search parameter [ID]"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -85,7 +161,9 @@
           {
             opcode: "appendsearchparam",
             blockType: Scratch.BlockType.COMMAND,
-            text: "append search parameter [ID] with value [VAL]",
+            text: Scratch.translate(
+              "append search parameter [ID] with value [VAL]"
+            ),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -100,7 +178,7 @@
           {
             opcode: "hassearchparam",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "has search parameter [ID]",
+            text: Scratch.translate("has search parameter [ID]?"),
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
@@ -111,12 +189,12 @@
           {
             opcode: "searchparamslength",
             blockType: Scratch.BlockType.REPORTER,
-            text: "length of search parameters",
+            text: Scratch.translate("length of search parameters"),
           },
           {
             opcode: "searchparamatindex",
             blockType: Scratch.BlockType.REPORTER,
-            text: "search parameter [PARAM] at index [I]",
+            text: Scratch.translate("search parameter [PARAM] at index [I]"),
             arguments: {
               PARAM: {
                 type: Scratch.ArgumentType.STRING,
@@ -132,7 +210,10 @@
         menus: {
           PARAM: {
             acceptReporters: true,
-            items: ["value", "name"],
+            items: [
+              { text: Scratch.translate("value"), value: "value" },
+              { text: Scratch.translate("name"), value: "name" },
+            ],
           },
         },
       };
@@ -157,9 +238,11 @@
     }
 
     setsearchparam({ ID, VAL }) {
-      var s = new URLSearchParams(location.search);
-      s.set(ID.toString(), VAL.toString());
-      history.replaceState("", "", "?" + s.toString());
+      return withSetPermission(ID.toString(), VAL.toString(), () => {
+        var s = new URLSearchParams(location.search);
+        s.set(ID.toString(), VAL.toString());
+        history.replaceState("", "", "?" + s.toString());
+      });
     }
 
     searchparamslength() {
@@ -175,9 +258,11 @@
     }
 
     appendsearchparam({ ID, VAL }) {
-      var s = new URLSearchParams(location.search);
-      s.append(ID.toString(), VAL.toString());
-      history.replaceState("", "", "?" + s.toString());
+      return withSetPermission(ID.toString(), VAL.toString(), () => {
+        var s = new URLSearchParams(location.search);
+        s.append(ID.toString(), VAL.toString());
+        history.replaceState("", "", "?" + s.toString());
+      });
     }
 
     hassearchparam({ ID }) {
