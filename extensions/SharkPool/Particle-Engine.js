@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.2.0.51
+// Version V.2.0.6
 
 (function (Scratch) {
   "use strict";
@@ -23,13 +23,16 @@
   const engineTag = Symbol("particleEngine");
 
   // Custom Skin using framebuffers
-  class particleSkin extends Skin {
+  class ParticleSkin extends Skin {
     constructor(id, renderer, width, height) {
       super(id, renderer);
       const gl = renderer.gl;
+      width = Math.max(1, Math.round(width));
+      height = Math.max(1, Math.round(height));
+
       this._texture = twgl.createTexture(gl, {
-        min: gl.NEAREST,
-        mag: gl.NEAREST,
+        min: gl.LINEAR,
+        mag: gl.LINEAR,
         wrap: gl.CLAMP_TO_EDGE,
         width: width,
         height: height,
@@ -63,23 +66,26 @@
       super.dispose();
     }
     set size(value) {
-      if (this._size[0] === value[0] && this._size[1] === value[1]) return;
+      const w = Math.max(1, Math.round(value[0]));
+      const h = Math.max(1, Math.round(value[1]));
+      if (this._size[0] === w && this._size[1] === h) return;
 
       const gl = this._renderer.gl;
-      this._size = value;
-      this._rotationCenter = [value[0] / 2, value[1] / 2];
+      this._size = [w, h];
+      this._rotationCenter = [w / 2, h / 2];
 
       // Recreate texture and framebuffer
       if (this._texture) gl.deleteTexture(this._texture);
-      if (this._framebuffer)
+      if (this._framebuffer) {
         gl.deleteFramebuffer(this._framebuffer.framebuffer);
+      }
 
       this._texture = twgl.createTexture(gl, {
-        mag: gl.NEAREST,
-        min: gl.NEAREST,
+        mag: gl.LINEAR,
+        min: gl.LINEAR,
         wrap: gl.CLAMP_TO_EDGE,
-        width: value[0],
-        height: value[1],
+        width: w,
+        height: h,
       });
 
       this._framebuffer = twgl.createFramebufferInfo(
@@ -90,8 +96,8 @@
             attachment: this._texture,
           },
         ],
-        value[0],
-        value[1]
+        w,
+        h
       );
     }
     get size() {
@@ -99,6 +105,12 @@
     }
     getTexture(scale) {
       return this._texture || super.getTexture();
+    }
+    isTouchingNearest() {
+      return false;
+    }
+    isTouchingLinear() {
+      return false;
     }
   }
 
@@ -118,11 +130,11 @@
     PRESET_SHAPES[key] = _base64SvgHeader + PRESET_SHAPES[key];
 
   const DEFAULT_BEHAVIOURS = {
-    maxP: { val: 50, inf: 0 },
+    maxP: { val: 100, inf: 0 },
     emission: { val: 1, inf: 0 },
-    time: { val: 0.4, inf: 0.1 },
+    time: { val: 0.8, inf: 0.4 },
     speed: { val: 15, inf: 0 },
-    xPos: { val: 10, inf: 0 },
+    xPos: { val: 0, inf: 0 },
     yPos: { val: 0, inf: 0 },
     gravX: { val: 0, inf: 0 },
     gravY: { val: -1.5, inf: 0 },
@@ -184,21 +196,42 @@
     mask: [gl.ZERO, gl.SRC_ALPHA, gl.ZERO, gl.SRC_ALPHA, gl.FUNC_ADD],
   });
 
-  // Patch to allow opacity and blends in our engine.
+  let blendDirty = false;
+  const restoreDefaultBlend = () => {
+    if (!blendDirty) return;
+
+    blendDirty = false;
+    gl.blendEquation(gl.FUNC_ADD);
+    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+  };
+
   const gu = Drawable.prototype.getUniforms;
   Drawable.prototype.getUniforms = function () {
-    const gl = this._renderer.gl;
-    if (this[engineTag]) {
-      const blend = BLENDINGS[this[engineTag]] ?? BLENDINGS.default;
-      gl.blendEquation(blend[4]);
-      gl.blendFuncSeparate(blend[0], blend[1], blend[2], blend[3]);
-    } else {
-      if (vm.extensionManager._loadedExtensions.has("xeltallivclipblend"))
-        return gu.call(this);
-      gl.blendEquation(gl.FUNC_ADD);
-      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-    }
+    if (blendDirty && !this[engineTag]) restoreDefaultBlend();
     return gu.call(this);
+  };
+
+  const ogDraw = render.draw;
+  render.draw = function (...args) {
+    try {
+      return ogDraw.apply(this, args);
+    } finally {
+      restoreDefaultBlend();
+    }
+  };
+
+  /**
+   * Helper used by engine drawables.
+   */
+  const engineGetUniforms = function () {
+    const uniforms = Drawable.prototype.getUniforms.call(this);
+    const mode = this[engineTag];
+    const blend = BLENDINGS[mode] || BLENDINGS.default;
+    gl.blendEquation(blend[4]);
+    gl.blendFuncSeparate(blend[0], blend[1], blend[2], blend[3]);
+    blendDirty = mode !== "default";
+
+    return uniforms;
   };
 
   let deltaTime = 0;
@@ -209,13 +242,22 @@
   const allEngines = new Map();
 
   // Constants
+  const EPSILON = 1e-6;
+  const MAX_INT = 1e5;
   const MAX_DELTA = 3; // Prevents jumps after tab inactivity.
-  const FPS_NORM = 100 / 3; // 33.333 FPS
+  const FPS_NORM = 100 / 3; // 33.333 ms, one "frame" at 30 FPS
   const radianConvert = Math.PI / 180;
-  const vertices = [
+  const FRAMES_PER_LIFE_UNIT = 30;
+  const MAX_PARTICLES = 200000;
+  const MAX_BATCH = 8192;
+  const MAX_TEXTURE_SIZE = gl.getParameter(gl.MAX_TEXTURE_SIZE) || 4096;
+  const VERTS_PER_PARTICLE = 6;
+  const FLOATS_PER_VERTEX = 8; // x, y, u, v, r, g, b, a
+  const STRIDE = FLOATS_PER_VERTEX * 4;
+  const QUAD_VERTS = [
     -0.5, -0.5, 0.5, -0.5, -0.5, 0.5, 0.5, -0.5, 0.5, 0.5, -0.5, 0.5,
   ];
-  const texcoords = [0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1];
+  const QUAD_UVS = [0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1];
 
   /* allows sin/cos computations to be a bit faster */
   const TWO_PI = Math.PI * 2;
@@ -233,96 +275,165 @@
   const fastCos = (rads) => cosTable[Math.floor(rads * INV_TWO_PI) & 8191];
 
   const rng = (val, inf) => val + (Math.random() * 2 - 1) * inf;
+  const isColorKey = (key) => key === "sCol" || key === "eCol";
+  const hasOwn = (obj, key) => Object.prototype.hasOwnProperty.call(obj, key);
+  const sanitizeInt = (v, limit = 1e9) => {
+    const n = Cast.toNumber(v);
+    if (isNaN(n)) return 0;
+    return Math.max(-limit, Math.min(limit, n));
+  };
 
   const newTexture = (url, callback) => {
-    Scratch.canFetch(url).then((canFetch) => {
-      if (!canFetch) return;
-      // eslint-disable-next-line extension/check-can-fetch
-      const img = new Image();
-      img.crossOrigin = "Anonymous";
-      img.src = url;
-      img.onerror = (e) => {
-        console.error("Error loading texture:", e);
-      };
-      img.onload = () => {
-        const texture = twgl.createTexture(gl, {
-          src: img,
-          flipY: true,
-          min: gl.LINEAR,
-          mag: gl.LINEAR,
-          wrap: gl.CLAMP_TO_EDGE,
-        });
+    let called = false;
+    const handleCallback = (value) => {
+      if (called) return;
+      called = true;
+      callback(value);
+    };
 
-        callback({
-          tWidth: img.width,
-          tHeight: img.height,
-          texture: texture,
-        });
-      };
-    });
+    Scratch.canFetch(url)
+      .then((canFetch) => {
+        if (!canFetch) {
+          handleCallback(null);
+          return;
+        }
+
+        // eslint-disable-next-line extension/check-can-fetch
+        const img = new Image();
+        img.crossOrigin = "Anonymous";
+        img.onerror = (e) => {
+          console.error("Error loading texture:", e);
+          handleCallback(null);
+        };
+        img.onload = () => {
+          try {
+            const texture = twgl.createTexture(gl, {
+              src: img,
+              flipY: true,
+              min: gl.LINEAR,
+              mag: gl.LINEAR,
+              wrap: gl.CLAMP_TO_EDGE,
+            });
+
+            handleCallback({
+              tWidth: Math.max(1, img.width),
+              tHeight: Math.max(1, img.height),
+              texture: texture,
+            });
+          } catch (e) {
+            console.error("Error creating texture:", e);
+            handleCallback(null);
+          }
+        };
+        img.src = url;
+      })
+      .catch(() => handleCallback(null));
   };
 
   const createParticleRGB = (color) => {
     const rgb = Cast.toRgbColorList(color.val);
-    return [
-      rgb.map((c) => Math.max(Math.min(rng(c, color.inf), 255), 0)),
-      color.val,
-    ];
-  };
-
-  const createTint = (sRGB, eRGB, time) => {
-    return eRGB.map((c, i) => (c * time + sRGB[i] * (1 - time)) / 255);
+    return rgb.map((c) => Math.max(Math.min(rng(c, color.inf), 255), 0));
   };
 
   // Engine Parts
   const engineVertShader = `
 attribute vec2 a_position;
 attribute vec2 a_texcoord;
-
-uniform mat4 u_matrix;
+attribute vec4 a_color;
 
 varying vec2 v_texcoord;
+varying vec4 v_color;
 
 void main() {
-  gl_Position = u_matrix * vec4(a_position, 0, 1);
+  gl_Position = vec4(a_position, 0, 1);
   v_texcoord = a_texcoord;
+  v_color = a_color;
 }`;
   const engineFragShader = `
 precision mediump float;
 
 uniform sampler2D u_texture;
-uniform vec4 u_tintColor;
 
 varying vec2 v_texcoord;
+varying vec4 v_color;
 
 void main() {
   vec4 tex = texture2D(u_texture, v_texcoord);
-  vec4 color = tex * u_tintColor;
+  vec4 color = tex * v_color;
   gl_FragColor = vec4(color.rgb * color.a, color.a);
 }`;
 
-  // Shared program info and buffer (created once, reused by all engines)
+  // Shared program and batch buffer (created once, reused by all engines)
   const sharedProgramInfo = twgl.createProgramInfo(gl, [
     engineVertShader,
     engineFragShader,
   ]);
-  const sharedBufferInfo = twgl.createBufferInfoFromArrays(gl, {
-    a_position: { numComponents: 2, data: vertices },
-    a_texcoord: { numComponents: 2, data: texcoords },
-  });
+  const engineProgram = sharedProgramInfo.program;
+  const aPosition = gl.getAttribLocation(engineProgram, "a_position");
+  const aTexcoord = gl.getAttribLocation(engineProgram, "a_texcoord");
+  const aColor = gl.getAttribLocation(engineProgram, "a_color");
+  const uTexture = gl.getUniformLocation(engineProgram, "u_texture");
+  const batchBuffer = gl.createBuffer();
+  const batchData = new Float32Array(
+    MAX_BATCH * VERTS_PER_PARTICLE * FLOATS_PER_VERTEX
+  );
+
+  const releaseEmitter = (emitter) => {
+    if (!emitter || emitter.released) return;
+
+    emitter.released = true;
+    emitter.data.clear();
+    if (emitter.texture) {
+      gl.deleteTexture(emitter.texture.texture);
+    }
+
+    emitter.texture = null;
+    const queue = emitter.removalQueue;
+    emitter.removalQueue = [];
+    for (const resolve of queue) resolve();
+  };
+
+  const rollMaxParticles = (emitter) => {
+    const option = emitter.opts.maxP;
+    emitter.maxP = Math.max(
+      0,
+      Math.min(MAX_PARTICLES, Math.round(rng(option.val, option.inf)))
+    );
+  };
+
+  const applyEngineQuality = (engine, quality) => {
+    const maxQuality =
+      MAX_TEXTURE_SIZE / Math.max(engine.stageWidth, engine.stageHeight, 1);
+
+    quality = Math.max(0.04, Math.min(quality, maxQuality));
+    engine.quality = quality;
+    engine.renderWidth = Math.max(1, Math.round(engine.stageWidth * quality));
+    engine.renderHeight = Math.max(1, Math.round(engine.stageHeight * quality));
+
+    const old = engine.skin.size;
+    engine.skin.size = [engine.renderWidth, engine.renderHeight];
+    if (old[0] !== engine.renderWidth || old[1] !== engine.renderHeight) {
+      engine.dirtyCanvas = false;
+    }
+
+    engine.drawable.updateScale([
+      (engine.drawableScale[0] * engine.stageWidth) / engine.renderWidth,
+      (engine.drawableScale[1] * engine.stageHeight) / engine.renderHeight,
+    ]);
+
+    engine.skin.emitWasAltered();
+    runtime.requestRedraw();
+  };
 
   const makeEngine = (target) => {
     const width = runtime.stageWidth || 480;
     const height = runtime.stageHeight || 360;
 
-    const targetName = target.getName();
     const drawableId = render.createDrawable("sprite");
     const drawable = render._allDrawables[drawableId];
     const skinId = render._nextSkinId++;
-    const skin = new particleSkin(skinId, render, width * 2, height * 2);
+    const skin = new ParticleSkin(skinId, render, width * 2, height * 2);
     render._allSkins[skinId] = skin;
-
-    const projection = twgl.m4.ortho(0, width, height, 0, -1, 1);
 
     const engine = {
       drawableId,
@@ -330,43 +441,44 @@ void main() {
       skinId,
       skin,
       target,
+      targetId: target.id,
+      disposed: false,
       quality: 2,
       stageWidth: width,
       stageHeight: height,
       renderWidth: width * 2,
       renderHeight: height * 2,
-      drawableScale: [50, -50],
-      projection,
-      programInfo: sharedProgramInfo,
-      bufferInfo: sharedBufferInfo,
-      emitters: Object.create(null),
+      drawableScale: [100, -100],
+      emitters: new Map(),
+      emitterNameTokens: new Map(),
       interpolate: runtime.interpolationEnabled,
       paused: false,
       noTrails: true,
+      dirtyCanvas: false,
+      errored: false,
     };
     target[engineTag] = engine;
-    allEngines.set(targetName, engine);
+    allEngines.set(engine.targetId, engine);
 
-    drawable.updateScale(engine.drawableScale);
+    drawable.interactive = false;
     render.updateDrawableSkinId(drawableId, skinId);
-    drawable.customDrawableName = `${targetName} Particle Engine (SP)`;
+    drawable.customDrawableName = `${target.getName()} Particle Engine (SP)`;
     drawable[engineTag] = "default";
-    drawable._onStageSZChange = ((event) => {
-      const [width, height] = event.newSize;
+    drawable.getUniforms = engineGetUniforms;
 
-      skin.size = event.newSize;
-      engine.stageWidth = width;
-      engine.stageHeight = height;
-      engine.renderWidth = width;
-      engine.renderHeight = height;
-      engine.projection = twgl.m4.ortho(0, width, height, 0, -1, 1);
-    }).bind(this);
+    engine.onStageSizeChange = (event) => {
+      const [w, h] = event.newSize;
+      engine.stageWidth = w;
+      engine.stageHeight = h;
+      applyEngineQuality(engine, engine.quality);
+    };
 
-    if (CURRENT_QUALITY !== 2) {
-      applyEngineQuality(engine, CURRENT_QUALITY);
-    }
+    applyEngineQuality(
+      engine,
+      CURRENT_QUALITY !== 2 ? CURRENT_QUALITY : engine.quality
+    );
 
-    render.on("NativeSizeChanged", drawable._onStageSZChange);
+    render.on("NativeSizeChanged", engine.onStageSizeChange);
     runtime.requestRedraw();
   };
 
@@ -374,262 +486,327 @@ void main() {
     const engine = target[engineTag];
     if (!engine) return;
 
-    render.removeListener(
-      "NativeSizeChanged",
-      engine.drawable._onStageSZChange
-    );
+    target[engineTag] = undefined;
+    allEngines.delete(engine.targetId);
+    engine.disposed = true;
+    for (const emitter of engine.emitters.values()) {
+      releaseEmitter(emitter);
+    }
+    
+    engine.emitters.clear();
+    render.removeListener("NativeSizeChanged", engine.onStageSizeChange);
+
     render.destroyDrawable(engine.drawableId, "sprite");
     render.destroySkin(engine.skinId);
     runtime.requestRedraw();
+  };
 
-    for (const emitter of Object.values(engine.emitters)) {
-      gl.deleteTexture(emitter.texture.texture);
+  const flushDeletingEmitters = (engine) => {
+    for (const [name, emitter] of engine.emitters) {
+      if (!emitter._isDeleting) continue;
+      engine.emitters.delete(name);
+      releaseEmitter(emitter);
     }
+  };
 
-    target[engineTag] = undefined;
-    allEngines.delete(target.getName());
+  const spawnParticle = (opts, px, py) => {
+    const life = rng(opts.time.val, opts.time.inf);
+    const lifeFrames = life * FRAMES_PER_LIFE_UNIT;
+    if (lifeFrames <= 0) return null;
+
+    const x = px + rng(opts.xPos.val, opts.xPos.inf);
+    const y = py + rng(opts.yPos.val * -1, opts.yPos.inf);
+    return {
+      ind: 0,
+      lifeFrames,
+      speed: rng(opts.speed.val, opts.speed.inf),
+      x,
+      y,
+      bx: x,
+      by: y,
+      ox: px,
+      oy: py,
+      dir0: rng(opts.sDir.val - 90, opts.sDir.inf),
+      eDir: rng(opts.eDir.val - 90, opts.eDir.inf),
+      spin0: rng(opts.sSpin.val - 90, opts.sSpin.inf),
+      eSpin: rng(opts.eSpin.val - 90, opts.eSpin.inf),
+      size0: rng(opts.sSize.val, opts.sSize.inf) * 0.01,
+      eSize: rng(opts.eSize.val, opts.eSize.inf) * 0.01,
+      streX0: rng(opts.sStreX.val, opts.sStreX.inf) * 0.01,
+      eStreX: rng(opts.eStreX.val, opts.eStreX.inf) * 0.01,
+      streY0: rng(opts.sStreY.val, opts.sStreY.inf) * 0.01,
+      eStreY: rng(opts.eStreY.val, opts.eStreY.inf) * 0.01,
+      gravX: rng(opts.gravX.val, opts.gravX.inf),
+      gravY: rng(opts.gravY.val, opts.gravY.inf),
+      accelRad: rng(opts.accelRad.val, opts.accelRad.inf),
+      accelTan: rng(opts.accelTan.val, opts.accelTan.inf),
+      sinW: rng(opts.sinW.val, opts.sinW.inf),
+      cosW: rng(opts.cosW.val, opts.cosW.inf),
+      sinS: rng(opts.sinS.val, opts.sinS.inf),
+      cosS: rng(opts.cosS.val, opts.cosS.inf),
+      fIn: Math.max(0, rng(opts.fIn.val, opts.fIn.inf)),
+      fOut: Math.max(0, rng(opts.fOut.val, opts.fOut.inf)),
+      sCol: createParticleRGB(opts.sCol),
+      eCol: createParticleRGB(opts.eCol),
+    };
   };
 
   const updateEngine = (engine, delta) => {
-    const { skin, programInfo, bufferInfo, projection, emitters, noTrails } =
-      engine;
+    if (engine.disposed) return false;
+
+    const { skin, emitters, noTrails } = engine;
     const width = engine.stageWidth;
     const height = engine.stageHeight;
-    const lifeRate = 0.01 * delta;
+    const invW2 = 2 / width;
+    const invH2 = 2 / height;
 
-    // update engine position
-    const drawable = render._allDrawables[engine.drawableId];
-    drawable.updatePosition([engine.target.x, engine.target.y]);
+    let glReady = false;
+    let batchCount = 0;
+    let drawn = 0;
 
-    // Clear canvas
-    twgl.bindFramebufferInfo(gl, skin._framebuffer);
-    gl.viewport(0, 0, engine.renderWidth, engine.renderHeight);
-    if (noTrails) {
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-    }
+    /**
+     * Draw only when something has to be drawn or cleared.
+     */
+    const startDraw = () => {
+      if (glReady) return;
+      glReady = true;
 
-    gl.useProgram(programInfo.program);
-    twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
+      render._doExitDrawRegion(); // Re-bind pen buffers
 
-    gl.enable(gl.BLEND);
-    gl.blendEquation(gl.FUNC_ADD);
-    gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-
-    for (const key in emitters) {
-      const emitter = emitters[key];
-      if (!emitter.texture) continue;
-
-      const { pos, opts, data, texture } = emitter;
-      const { tWidth, tHeight } = texture;
-      emitter.frameCnt++;
-
-      const maxP = Math.round(rng(opts.maxP.val, opts.maxP.inf));
-      const rPos = [pos[0] - tWidth * 0.25, pos[1] + tHeight * 0.25];
-
-      // Emit new particles
-      if (emitter.frameCnt > 1 && data.size < maxP) {
-        const count = Math.min(
-          maxP,
-          Math.round(rng(opts.emission.val, opts.emission.inf))
-        );
-        for (let i = 0; i < count; i++) {
-          const life = rng(opts.time.val, opts.time.inf);
-          const obj = {
-            ind: 0,
-            conLife: life * 100,
-            life,
-            speed: rng(opts.speed.val, opts.speed.inf),
-            x: rPos[0] + rng(opts.xPos.val, opts.xPos.inf),
-            y: rPos[1] + rng(opts.yPos.val * -1, opts.yPos.inf),
-            dir: rng(opts.sDir.val - 90, opts.sDir.inf),
-            eDir: rng(opts.eDir.val - 90, opts.eDir.inf),
-            spin: rng(opts.sSpin.val - 90, opts.sSpin.inf),
-            eSpin: rng(opts.eSpin.val - 90, opts.eSpin.inf),
-            size: rng(opts.sSize.val, opts.sSize.inf) * 0.01,
-            eSize: rng(opts.eSize.val, opts.eSize.inf) * 0.01,
-            streX: rng(opts.sStreX.val, opts.sStreX.inf) * 0.01,
-            eStreX: rng(opts.eStreX.val, opts.eStreX.inf) * 0.01,
-            streY: rng(opts.sStreY.val, opts.sStreY.inf) * 0.01,
-            eStreY: rng(opts.eStreY.val, opts.eStreY.inf) * 0.01,
-            gravX: rng(opts.gravX.val, opts.gravX.inf),
-            gravY: rng(opts.gravY.val, opts.gravY.inf),
-            accelRad: rng(opts.accelRad.val, opts.accelRad.inf),
-            accelTan: rng(opts.accelTan.val, opts.accelTan.inf),
-            sinW: rng(opts.sinW.val, opts.sinW.inf),
-            cosW: rng(opts.cosW.val, opts.cosW.inf),
-            sinS: rng(opts.sinS.val, opts.sinS.inf),
-            cosS: rng(opts.cosS.val, opts.cosS.inf),
-            fIn: rng(opts.fIn.val, opts.fIn.inf),
-            fOut: rng(opts.fOut.val, opts.fOut.inf),
-            sCol: createParticleRGB(opts.sCol),
-            eCol: createParticleRGB(opts.eCol),
-            ogPos: [],
-          };
-          obj.ogPos = [obj.x, obj.y];
-          obj.dir0 = obj.dir;
-          obj.spin0 = obj.spin;
-          obj.size0 = obj.size;
-          obj.streX0 = obj.streX;
-          obj.streY0 = obj.streY;
-          data.add(obj);
-        }
+      twgl.bindFramebufferInfo(gl, skin._framebuffer);
+      gl.viewport(0, 0, engine.renderWidth, engine.renderHeight);
+      if (noTrails) {
+        /* Celar canvas */
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
       }
 
+      gl.useProgram(engineProgram);
+      gl.bindBuffer(gl.ARRAY_BUFFER, batchBuffer);
+      gl.enableVertexAttribArray(aPosition);
+      gl.vertexAttribPointer(aPosition, 2, gl.FLOAT, false, STRIDE, 0);
+      gl.enableVertexAttribArray(aTexcoord);
+      gl.vertexAttribPointer(aTexcoord, 2, gl.FLOAT, false, STRIDE, 8);
+      gl.enableVertexAttribArray(aColor);
+      gl.vertexAttribPointer(aColor, 4, gl.FLOAT, false, STRIDE, 16);
+
+      gl.enable(gl.BLEND);
+      gl.blendEquation(gl.FUNC_ADD);
+      gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, texture.texture);
+      gl.uniform1i(uTexture, 0);
+    };
 
-      for (const particle of data) {
-        const {
-          ind,
-          conLife,
-          life,
-          x,
-          y,
-          ogPos,
-          dir0,
-          eDir,
-          size0,
-          eSize,
-          spin0,
-          eSpin,
-          speed,
-          gravX,
-          gravY,
-          streX0,
-          eStreX,
-          streY0,
-          eStreY,
-          accelRad,
-          accelTan,
-          sinW,
-          sinS,
-          cosW,
-          cosS,
-          fIn,
-          fOut,
-          sCol,
-          eCol,
-        } = particle;
+    const flush = () => {
+      if (batchCount === 0) return;
 
-        /* do not draw if dead */
-        if (particle.life - lifeRate <= 0) {
-          data.delete(particle);
-          continue;
-        }
-
-        const t = Math.max(
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        batchData.subarray(
           0,
-          Math.min(ind / Math.max(conLife, Number.EPSILON), 1)
-        );
-        const dir = dir0 + (eDir - dir0) * t;
-        const spin = spin0 + (eSpin - spin0) * t;
-        const size = size0 + (eSize - size0) * t;
-        const streX = streX0 + (eStreX - streX0) * t;
-        const streY = streY0 + (eStreY - streY0) * t;
+          batchCount * VERTS_PER_PARTICLE * FLOATS_PER_VERTEX
+        ),
+        gl.DYNAMIC_DRAW
+      );
+      gl.drawArrays(gl.TRIANGLES, 0, batchCount * VERTS_PER_PARTICLE);
+      batchCount = 0;
+    };
 
-        const dx = x - (pos[0] + width * 0.5);
-        const dy = y - (pos[1] + height * 0.5);
-        const mag = Math.hypot(dx, dy) || 1;
-        const normX = dx / mag;
-        const normY = dy / mag;
-        const dirRad = dir * radianConvert;
+    try {
+      if (emitters.size > 0) {
+        // Emitter positions are offset by the engine owner.
+        const ownerX = engine.target.x;
+        const ownerY = engine.target.y;
 
-        ogPos[0] +=
-          (fastCos(dirRad) * speed +
-            normX * accelRad * ind +
-            -normY * accelTan * ind) *
-          delta;
-        ogPos[1] +=
-          (fastSin(dirRad) * speed +
-            normY * accelRad * ind +
-            normX * accelTan * ind) *
-          delta;
-        ogPos[0] -= gravX * ind * delta;
-        ogPos[1] -= gravY * ind * delta;
+        for (const [name, emitter] of emitters) {
+          const texture = emitter.texture;
+          if (!texture) continue;
 
-        const waveT = conLife - life;
-        particle.x = ogPos[0] + fastSin(waveT * sinS) * sinW;
-        particle.y = ogPos[1] + fastCos(waveT * cosS) * cosW;
+          const { opts, data } = emitter;
+          const { tWidth, tHeight } = texture;
+          const posX = emitter.pos[0] + ownerX;
+          const posY = emitter.pos[1] - ownerY;
 
-        const fadeIn = ind * Math.max(Number.EPSILON, 1 / fIn);
-        const fadeOut = (conLife - ind) * Math.max(Number.EPSILON, 1 / fOut);
-        const opacity = Math.max(Math.min(fadeIn, fadeOut, 1), 0);
-        const tint = createTint(sCol[0], eCol[0], t);
+          if (!emitter._isDeleting) {
+            // Emit particles
+            const rate = rng(opts.emission.val, opts.emission.inf);
+            emitter.acc += rate > 0 ? rate * delta : 0;
+            const spawnCnt = Math.floor(emitter.acc);
+            emitter.acc -= spawnCnt;
+            const count = Math.min(spawnCnt, emitter.maxP - data.size);
 
-        particle.ind += delta;
-        particle.life -= lifeRate;
+            for (let i = 0; i < count; i++) {
+              const p = spawnParticle(opts, posX, posY);
+              if (p) data.add(p);
+            }
+          }
 
-        const screenX = particle.x + width * 0.5;
-        const screenY = particle.y + height * 0.5;
-        const sizeX = tWidth * size * streX;
-        const sizeY = tHeight * size * streY;
-        /* do not draw if out-of-bounds */
-        if (
-          screenX + sizeX < 0 ||
-          screenX - sizeX > width ||
-          screenY + sizeY < 0 ||
-          screenY - sizeY > height
-        )
-          continue;
+          let textureBinded = false;
+          for (const p of data) {
+            /* do not draw if dead */
+            if (p.ind >= p.lifeFrames) {
+              data.delete(p);
+              continue;
+            }
 
-        const posNDC = [particle.x + width * 0.5, particle.y + height * 0.5, 0];
+            const ind = p.ind;
+            const life = p.lifeFrames;
+            const t = Math.max(0, Math.min(ind / life, 1));
+            const dir = p.dir0 + (p.eDir - p.dir0) * t;
+            const spin = p.spin0 + (p.eSpin - p.spin0) * t;
+            const size = p.size0 + (p.eSize - p.size0) * t;
+            const streX = p.streX0 + (p.eStreX - p.streX0) * t;
+            const streY = p.streY0 + (p.eStreY - p.streY0) * t;
+            const dirRad = dir * radianConvert;
 
-        let matrix = twgl.m4.translate(projection, posNDC);
-        matrix = twgl.m4.rotateZ(matrix, spin * radianConvert);
-        matrix = twgl.m4.scale(matrix, [sizeX, sizeY, 1]);
+            const dx = p.bx - p.ox;
+            const dy = p.by - p.oy;
+            const mag = Math.hypot(dx, dy);
+            let normX;
+            let normY;
+            if (mag > EPSILON) {
+              normX = dx / mag;
+              normY = dy / mag;
+            } else {
+              normX = fastCos(dirRad);
+              normY = fastSin(dirRad);
+            }
 
-        twgl.setUniforms(programInfo, {
-          u_matrix: matrix,
-          u_texture: texture.texture,
-          u_tintColor: [...tint, opacity],
-        });
-        twgl.drawBufferInfo(gl, bufferInfo);
+            p.bx +=
+              (fastCos(dirRad) * p.speed +
+                normX * p.accelRad * ind -
+                normY * p.accelTan * ind) *
+              delta;
+            p.by +=
+              (fastSin(dirRad) * p.speed +
+                normY * p.accelRad * ind +
+                normX * p.accelTan * ind) *
+              delta;
+            p.bx -= p.gravX * ind * delta;
+            p.by -= p.gravY * ind * delta;
+
+            p.x = p.bx + fastSin(ind * p.sinS) * p.sinW;
+            p.y = p.by + (fastCos(ind * p.cosS) - 1) * p.cosW;
+
+            const fadeIn = p.fIn > 0 ? ind / p.fIn : 1;
+            const fadeOut = p.fOut > 0 ? (life - ind) / p.fOut : 1;
+            const opacity = Math.max(Math.min(fadeIn, fadeOut, 1), 0);
+
+            p.ind += delta;
+
+            const screenX = p.x + width * 0.5;
+            const screenY = p.y + height * 0.5;
+            const sizeX = tWidth * size * streX;
+            const sizeY = tHeight * size * streY;
+            /* do not draw if invisible or out-of-bounds */
+            if (
+              opacity <= 0 ||
+              screenX + sizeX < 0 ||
+              screenX - sizeX > width ||
+              screenY + sizeY < 0 ||
+              screenY - sizeY > height
+            ) {
+              continue;
+            }
+
+            if (!glReady) startDraw();
+            if (!textureBinded) {
+              gl.bindTexture(gl.TEXTURE_2D, texture.texture);
+              textureBinded = true;
+            }
+
+            const r = (p.eCol[0] * t + p.sCol[0] * (1 - t)) / 255;
+            const g = (p.eCol[1] * t + p.sCol[1] * (1 - t)) / 255;
+            const b = (p.eCol[2] * t + p.sCol[2] * (1 - t)) / 255;
+            const spinRad = spin * radianConvert;
+            const c = fastCos(spinRad);
+            const s = fastSin(spinRad);
+
+            let o = batchCount * VERTS_PER_PARTICLE * FLOATS_PER_VERTEX;
+            for (let v = 0; v < VERTS_PER_PARTICLE; v++) {
+              const lx = QUAD_VERTS[v * 2] * sizeX;
+              const ly = QUAD_VERTS[v * 2 + 1] * sizeY;
+              const px = screenX + lx * c - ly * s;
+              const py = screenY + lx * s + ly * c;
+              batchData[o++] = px * invW2 - 1;
+              batchData[o++] = 1 - py * invH2;
+              batchData[o++] = QUAD_UVS[v * 2];
+              batchData[o++] = QUAD_UVS[v * 2 + 1];
+              batchData[o++] = r;
+              batchData[o++] = g;
+              batchData[o++] = b;
+              batchData[o++] = opacity;
+            }
+
+            drawn++;
+            if (++batchCount >= MAX_BATCH) flush();
+          }
+
+          flush();
+          if (emitter._isDeleting && data.size === 0) {
+            emitters.delete(name);
+            releaseEmitter(emitter);
+          }
+        }
+      }
+
+      if (!glReady && engine.dirtyCanvas && noTrails) {
+        startDraw();
+      }
+    } finally {
+      if (glReady) {
+        twgl.bindFramebufferInfo(gl, null);
       }
     }
 
-    twgl.bindFramebufferInfo(gl, null);
+    if (!glReady) return false;
+    if (noTrails) {
+      engine.dirtyCanvas = drawn > 0;
+    } else if (drawn > 0) {
+      engine.dirtyCanvas = true;
+    }
+
     skin.emitWasAltered();
+    return true;
   };
 
-  const applyEngineQuality = (engine, quality) => {
-    engine.quality = quality;
-    engine.renderWidth = engine.stageWidth * quality;
-    engine.renderHeight = engine.stageHeight * quality;
-    engine.skin.size = [engine.renderWidth, engine.renderHeight];
-
-    const factor = 2 / quality;
-    engine.drawable.updateScale([
-      engine.drawableScale[0] * factor,
-      engine.drawableScale[1] * factor,
-    ]);
-  };
-
-  const removeAllEmitters = () => {
-    allEngines.forEach((engine) => {
-      const emitters = Object.entries(engine.emitters);
-      for (const entry of emitters) {
-        const emitter = entry[1];
-        emitter.data.clear();
-        delete engine.emitters[entry[0]];
+  const safeUpdateEngine = (engine, delta) => {
+    try {
+      return updateEngine(engine, delta);
+    } catch (e) {
+      if (!engine.errored) {
+        engine.errored = true;
+        console.error("Particle Engine update failed:", e);
       }
-    });
+
+      return false;
+    }
   };
-  runtime.on("PROJECT_START", removeAllEmitters);
-  runtime.on("PROJECT_STOP_ALL", removeAllEmitters);
-  runtime.on("PROJECT_LOADED", () =>
-    allEngines.forEach((engine) => disposeEngine(engine.target))
-  );
+
+  const disposeAllEngines = () => allEngines.forEach((engine) => disposeEngine(engine.target));
+  runtime.on("PROJECT_START", disposeAllEngines);
+  runtime.on("PROJECT_STOP_ALL", disposeAllEngines);
+  runtime.on("PROJECT_LOADED", disposeAllEngines);
   runtime.on("INTERPOLATION_CHANGED", (isEnabled) => {
     // toggle interpolation for all engines
     allEngines.forEach((engine) => {
       engine.interpolate = isEnabled;
     });
   });
+  runtime.on("targetWasRemoved", (target) => {
+    // Remove engines from a deleted sprite.
+    if (target.isOriginal) disposeEngine(target);
+  });
+  vm.on("targetsUpdate", () => {
+    // Fix engine drawable names after sprite rename
+    allEngines.forEach((engine) => {
+      engine.drawable.customDrawableName = `${engine.target.getName()} Particle Engine (SP)`;
+    });
+  });
 
+  // Toggle high-quality rendering for engines
   let wasHighQualityEnabled;
   render.on("UseHighQualityRenderChanged", (isEnabled) => {
-    // toggle high-quality rendering for all engines.
     if (wasHighQualityEnabled === isEnabled) return;
     wasHighQualityEnabled = isEnabled;
 
@@ -637,7 +814,7 @@ void main() {
     allEngines.forEach((engine) => applyEngineQuality(engine, CURRENT_QUALITY));
   });
 
-  // update non-interpolated engines
+  // Update non-interpolated engines.
   runtime.on("AFTER_EXECUTE", () => {
     if (runtime.ioDevices.clock._paused) return;
     allEngines.forEach((engine) => {
@@ -645,20 +822,22 @@ void main() {
         engine.paused ||
         engine.interpolate ||
         runtime.frameLoop.framerate === 0
-      )
+      ) {
         return;
+      }
 
       // 30 FPS is a normal delta, anything else would need normalization
       const normalizedDelta = runtime.currentStepTime / FPS_NORM;
-      updateEngine(engine, normalizedDelta);
+      safeUpdateEngine(engine, normalizedDelta);
     });
   });
 
   // Update interpolated engines.
   function interpolateEngines(deltaFrame) {
+    requestAnimationFrame(interpolateEngines);
+
     if (runtime.ioDevices.clock._paused) {
       prevTime = deltaFrame;
-      requestAnimationFrame(interpolateEngines);
       return;
     }
 
@@ -673,14 +852,15 @@ void main() {
       if (
         engine.paused ||
         (!engine.interpolate && runtime.frameLoop.framerate > 0)
-      )
+      ) {
         return;
-      updateEngine(engine, deltaTime);
-      hasReasonToRefresh = true;
+      }
+
+      const engineChanged = safeUpdateEngine(engine, deltaTime);
+      if (engineChanged) hasReasonToRefresh = true;
     });
 
     if (hasReasonToRefresh) render.dirty = true;
-    requestAnimationFrame(interpolateEngines);
   }
   requestAnimationFrame(interpolateEngines);
 
@@ -1036,8 +1216,8 @@ void main() {
           COLOR_EMIT: {
             acceptReporters: true,
             items: [
-              { text: Scratch.translate("start"), value: "sCol" },
-              { text: Scratch.translate("end"), value: "eCol" },
+              { text: Scratch.translate("start"), value: "start" },
+              { text: Scratch.translate("end"), value: "end" },
             ],
           },
           BLENDING: {
@@ -1069,20 +1249,22 @@ void main() {
       const targets = runtime.targets;
       for (let i = 1; i < targets.length; i++) {
         const target = targets[i];
-        if (target.isOriginal)
+        if (target.isOriginal) {
           items.push({ text: target.getName(), value: target.getName() });
+        }
       }
+
       return items.length > 0 ? items : [""];
     }
 
     getTargetsAll() {
-      // hey I dont like this either, id rather this be part of 'getTargets', but it has to be dynamic.
       let items = this.getTargets();
       items = [
         ...items.slice(0, 1),
         { text: Scratch.translate("all"), value: "_all_" },
         ...items.slice(1, items.length),
       ];
+
       return items;
     }
 
@@ -1115,24 +1297,61 @@ void main() {
         { text: Scratch.translate("fade in"), value: "fIn" },
         { text: Scratch.translate("fade out"), value: "fOut" },
       ];
-      if (optAll)
+      if (optAll) {
         items.push(
           { text: Scratch.translate("start color"), value: "sCol" },
           { text: Scratch.translate("end color"), value: "eCol" }
         );
+      }
+
       return items;
     }
 
     getSprite(name) {
+      name = Cast.toString(name);
       if (name === "_all_") return "_all_";
       if (name === "_stage_") return runtime.getTargetForStage();
       return runtime.getSpriteTargetByName(name);
     }
 
+    getEngine(target) {
+      return target ? target[engineTag] : undefined;
+    };
+
+    getEmitterCtx(args) {
+      const target = this.getSprite(args.TARGET);
+      const engine = this.getEngine(target);
+      if (!engine || engine.disposed) return {};
+
+      const emitter = engine.emitters.get(Cast.toString(args.NAME));
+      return { target, engine, emitter };
+    }
+
+    getEngines(target) {
+      // Return all engines for "_all_", otherwise the single engine of a target
+      if (target === "_all_") return Array.from(allEngines.values());
+      const engine = this.getEngine(target);
+      return engine ? [engine] : [];
+    }
+
+    _setOpt(args, isColor) {
+      const { emitter } = this.getEmitterCtx(args);
+      if (!emitter) return;
+
+      const type = Cast.toString(args.TYPE);
+      if (!hasOwn(DEFAULT_BEHAVIOURS, type)) return;
+      if (isColor !== isColorKey(type)) return;
+
+      const val = isColor ? Cast.toString(args.VAL) : sanitizeInt(args.VAL);
+      emitter.opts[type] = { val, inf: sanitizeInt(args.INT) };
+      if (type === "maxP") rollMaxParticles(emitter);
+    }
+
     // Block Funcs
     createEngine(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag] === undefined) {
+      if (!target || target === "_all_") return;
+      if (target[engineTag] === undefined) {
         makeEngine(target);
       }
     }
@@ -1150,75 +1369,85 @@ void main() {
 
     engineAction(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        if (args.TYPE === "visible") return target[engineTag].drawable._visible;
+      const engine = this.getEngine(target);
+      if (engine) {
+        if (args.TYPE === "visible") {
+          return engine.drawable._visible;
+        }
+
         return true;
       }
+
       return false;
     }
 
     setVisible(args) {
       const target = this.getSprite(args.TARGET);
-      if (target === "_all_") {
-        allEngines.forEach((engine) => {
-          engine.drawable.updateVisible(args.TYPE === "show");
-        });
-        return;
+      const isVisible = args.TYPE === "show";
+      for (const engine of this.getEngines(target)) {
+        engine.drawable.updateVisible(isVisible);
       }
-      if (target && target[engineTag]) {
-        target[engineTag].drawable.updateVisible(args.TYPE === "show");
-      }
+
+      runtime.requestRedraw();
     }
 
     setEngineSize(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const engine = target[engineTag];
-        const scale = [Cast.toNumber(args.x), Cast.toNumber(args.y) * -1];
-        engine.drawableScale = scale;
+      const engine = this.getEngine(target);
+      if (engine) {
+        engine.drawableScale = [
+          sanitizeInt(args.x, MAX_INT),
+          sanitizeInt(args.y, MAX_INT) * -1,
+        ];
         applyEngineQuality(engine, engine.quality);
       }
     }
 
     setCanvasQuality(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const engine = target[engineTag];
-        const quality = Math.max(1, Cast.toNumber(args.QUALITY)) / 25;
+      const engine = this.getEngine(target);
+      if (engine) {
+        const quality =
+          Math.min(150, Math.max(1, sanitizeInt(args.QUALITY))) / 25;
         applyEngineQuality(engine, quality);
       }
     }
 
     setLayer(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const ind = Cast.toNumber(args.VAL);
-        const id = target[engineTag].drawableId;
+      const engine = this.getEngine(target);
+      if (engine) {
+        const ind = sanitizeInt(args.VAL, MAX_INT);
+        const id = engine.drawableId;
         render.setDrawableOrder(
           id,
           ind - render.getDrawableOrder(id),
           "sprite",
-          true
+          true,
+          1
         );
       }
     }
 
     getLayer(args) {
       const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        return render.getDrawableOrder(target[engineTag].drawableId);
+      const engine = this.getEngine(target);
+      if (engine) {
+        return render.getDrawableOrder(engine.drawableId);
       }
+
       return "";
     }
 
     setEngineOpt(args) {
       const target = this.getSprite(args.TARGET);
-      const engine = target?.[engineTag];
-      if (target && engine) {
-        const toggle = args.TYPE === "on";
+      const toggle = args.TYPE === "on";
+
+      for (const engine of this.getEngines(target)) {
         switch (args.OPT) {
           case "freeze":
             engine.paused = toggle;
+            if (toggle) flushDeletingEmitters(engine);
             break;
           case "trails":
             engine.noTrails = !toggle;
@@ -1229,133 +1458,138 @@ void main() {
 
     setEngineBlend(args) {
       const target = this.getSprite(args.TARGET);
-      const engine = target?.[engineTag];
-      if (target && engine) {
-        engine.drawable[engineTag] = Cast.toString(args.TYPE);
+      const type = Cast.toString(args.TYPE);
+      const mode = BLENDINGS[type] ? type : "default";
+      for (const engine of this.getEngines(target)) {
+        engine.drawable[engineTag] = mode;
       }
+
+      runtime.requestRedraw();
     }
 
     createEmitter(args) {
       const target = this.getSprite(args.TARGET);
-      if (!target || !target[engineTag]) return;
-      const engine = target[engineTag];
-      engine.emitters[args.NAME] = {
-        pos: [0, 0],
-        rawPos: [0, 0],
-        opts: structuredClone(DEFAULT_BEHAVIOURS),
-        frameCnt: 0,
-        data: new Set(),
-      };
-      newTexture(PRESET_SHAPES["square"], (t) => {
-        const emitter = engine.emitters[args.NAME];
-        if (emitter) {
-          emitter.texture = t;
-        }
+      const engine = this.getEngine(target);
+      if (!engine || engine.disposed) return;
+
+      const name = Cast.toString(args.NAME);
+      const emitters = engine.emitters;
+
+      const token = (engine.emitterNameTokens.get(name) || 0) + 1;
+      engine.emitterNameTokens.set(name, token);
+
+      return new Promise((resolve) => {
+        newTexture(PRESET_SHAPES["square"], (textureObj) => {
+          if (!textureObj) {
+            resolve();
+            return;
+          }
+
+          if (
+            engine.disposed ||
+            target[engineTag] !== engine ||
+            engine.emitterNameTokens.get(name) !== token
+          ) {
+            gl.deleteTexture(textureObj.texture);
+            resolve();
+            return;
+          }
+
+          const oldEmitter = emitters.get(name);
+          if (oldEmitter) releaseEmitter(oldEmitter);
+
+          const emitter = {
+            pos: [0, 0],
+            rawPos: [0, 0],
+            opts: structuredClone(DEFAULT_BEHAVIOURS),
+            data: new Set(),
+            texture: textureObj,
+            acc: 0,
+            maxP: 0,
+            removalQueue: [],
+            released: false,
+            _isDeleting: false,
+            _texToken: 0,
+          };
+          rollMaxParticles(emitter);
+          emitters.set(name, emitter);
+
+          resolve();
+        });
       });
-      runtime.requestRedraw();
     }
 
     deleteEmitter(args) {
-      const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const emitter = target[engineTag].emitters[args.NAME];
-        if (!emitter) return;
+      const { engine, emitter } = this.getEmitterCtx(args);
+      if (!emitter) return;
 
-        gl.deleteTexture(emitter.texture.texture);
-        delete target[engineTag].emitters[args.NAME];
-      }
+      engine.emitters.delete(Cast.toString(args.NAME));
+      releaseEmitter(emitter);
     }
 
-    deleteEmitterWait(args, util) {
-      const target = this.getSprite(args.TARGET);
-      if (!target || !target[engineTag]) return;
-
-      const emitter = target[engineTag].emitters[args.NAME];
+    deleteEmitterWait(args) {
+      const { engine, emitter } = this.getEmitterCtx(args);
       if (!emitter) return;
+
       emitter.opts.emission = { val: 0, inf: 0 };
+      emitter.acc = 0;
+      emitter._isDeleting = true;
 
-      /*
-        we must return a promise, no special 'util.yield()' magic
-        as it breaks engines with interpolation
-      */
-      let callback;
+      if (engine.paused || emitter.data.size === 0) {
+        engine.emitters.delete(Cast.toString(args.NAME));
+        releaseEmitter(emitter);
+        return;
+      }
+
       return new Promise((resolve) => {
-        if (target[engineTag].interpolate) {
-          callback = () => {
-            if (emitter.data.size > 0 && target[engineTag]) {
-              requestAnimationFrame(callback);
-            } else {
-              if (target[engineTag]) {
-                gl.deleteTexture(emitter.texture.texture);
-                delete target[engineTag].emitters[args.NAME];
-              }
-              resolve();
-            }
-          };
-
-          callback();
-        } else {
-          callback = () => {
-            if (emitter.data.size < 1 || !target[engineTag]) {
-              runtime.off("BEFORE_EXECUTE", callback);
-              if (target[engineTag]) {
-                gl.deleteTexture(emitter.texture.texture);
-                delete target[engineTag].emitters[args.NAME];
-              }
-              resolve();
-            }
-          };
-
-          runtime.on("BEFORE_EXECUTE", callback);
-        }
+        emitter.removalQueue.push(resolve);
       });
     }
 
     emitterExist(args) {
-      const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        return target[engineTag].emitters[args.NAME] !== undefined;
-      }
-      return false;
+      const { emitter } = this.getEmitterCtx(args);
+      return Cast.toBoolean(emitter);
     }
 
     setEmitPos(args) {
-      const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const engine = target[engineTag];
-        const emitter = engine.emitters[args.NAME];
-        if (emitter) {
-          emitter.rawPos = [Cast.toNumber(args.x), Cast.toNumber(args.y)];
-          emitter.pos = [emitter.rawPos[0], emitter.rawPos[1] * -1];
-        }
+      const { emitter } = this.getEmitterCtx(args);
+      if (emitter) {
+        emitter.rawPos = [sanitizeInt(args.x, MAX_INT), sanitizeInt(args.y, MAX_INT)];
+        emitter.pos = [emitter.rawPos[0], emitter.rawPos[1] * -1];
       }
     }
 
     emitterPos(args) {
-      const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const engine = target[engineTag];
-        const emitter = engine.emitters[args.NAME];
-        if (emitter) {
-          return emitter.rawPos[args.TYPE === "x" ? 0 : 1];
-        }
+      const { emitter } = this.getEmitterCtx(args);
+      if (emitter) {
+        return emitter.rawPos[args.TYPE === "x" ? 0 : 1];
       }
+
       return "";
     }
 
     setEmitTexture(args) {
-      const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const engine = target[engineTag];
-        const emitter = engine.emitters[args.NAME];
-        if (emitter) {
-          newTexture(args.IMG, (texture) => {
-            gl.deleteTexture(emitter.texture.texture);
-            emitter.texture = texture;
-          });
-          runtime.requestRedraw();
+      const { engine, emitter } = this.getEmitterCtx(args);
+      if (!emitter) return;
+
+      const token = ++emitter._texToken;
+      newTexture(Cast.toString(args.IMG), (texture) => {
+        if (!texture) return;
+
+        if (
+          emitter.released ||
+          engine.disposed ||
+          emitter._texToken !== token
+        ) {
+          gl.deleteTexture(texture.texture);
+          return;
         }
-      }
+
+        if (emitter.texture) gl.deleteTexture(emitter.texture.texture);
+        emitter.texture = texture;
+      });
+
+      runtime.requestRedraw();
     }
 
     defaultTexture(args) {
@@ -1363,105 +1597,83 @@ void main() {
     }
 
     setEmitColor(args) {
-      this.setEmitMotion({ ...args, TOCOL: true });
+      if (args.TYPE === "start") args.TYPE = "sCol";
+      else if (args.TYPE === "end") args.TYPE = "eCol";
+      this._setOpt(args, true);
     }
     setEmitMotion(args) {
-      const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const engine = target[engineTag];
-        const emitter = engine.emitters[args.NAME];
-        if (emitter) {
-          let type;
-          let val;
-          if (args.TOCOL) {
-            type = args.TYPE === "sCol" ? "sCol" : "eCol";
-            val = Cast.toString(args.VAL);
-          } else {
-            type = Cast.toString(args.TYPE);
-            val = Cast.toNumber(args.VAL);
-          }
-          if (emitter.opts[type]) {
-            emitter.opts[type] = { val, inf: Cast.toNumber(args.INT) };
-          }
-        }
-      }
+      this._setOpt(args, false);
     }
 
     getBehaviour(args) {
-      const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const engine = target[engineTag];
-        if (engine.emitters[args.NAME]) {
-          const opt = engine.emitters[args.NAME].opts[args.BEHAVE];
-          if (opt) return opt[args.TYPE === "value" ? "val" : "inf"];
+      const { emitter } = this.getEmitterCtx(args);
+      if (emitter) {
+        const key = Cast.toString(args.BEHAVE);
+        if (hasOwn(emitter.opts, key)) {
+          return emitter.opts[key][args.TYPE === "value" ? "val" : "inf"];
         }
       }
       return "";
     }
 
     importEmit(args) {
-      const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const engine = target[engineTag];
-        const emitter = engine.emitters[args.NAME];
-        if (emitter) {
-          try {
-            const rawOpts = JSON.parse(args.DATA);
-            if (typeof rawOpts !== "object" || Array.isArray(rawOpts)) return;
+      const { emitter } = this.getEmitterCtx(args);
+      if (!emitter) return;
 
-            const whitelistKeys = Object.keys(DEFAULT_BEHAVIOURS);
-            const rawKeys = Object.keys(rawOpts);
-            const rawValues = Object.values(rawOpts);
+      try {
+        const raw = JSON.parse(Cast.toString(args.DATA));
+        if (!raw || typeof raw !== "object" || Array.isArray(raw)) return;
 
-            const hasRequiredKeys = whitelistKeys.every((key) =>
-              rawKeys.includes(key)
-            );
-            if (!hasRequiredKeys) return;
+        const next = Object.create(null);
+        for (const key of Object.keys(DEFAULT_BEHAVIOURS)) {
+          const option = hasOwn(raw, key) ? raw[key] : null;
+          if (!option || typeof option !== "object") return;
+          if (typeof option.inf !== "number" || !isFinite(option.inf)) return;
+          if (isColorKey(key)) {
+            if (typeof option.val !== "string") return;
+          } else if (typeof option.val !== "number" || !isFinite(option.val)) {
+            return;
+          }
 
-            for (let i = 0; i < rawKeys.length; i++) {
-              const option = rawValues[i];
-              if (
-                typeof option.inf === "number" &&
-                (rawKeys[i].includes("Col")
-                  ? typeof option.val === "string"
-                  : typeof option.val === "number")
-              )
-                continue;
-              else return;
-            }
-
-            emitter.opts = rawOpts;
-          } catch {}
+          next[key] = {
+            val: isColorKey(key) ? option.val : sanitizeInt(option.val),
+            inf: sanitizeInt(option.inf),
+          };
         }
-      }
+
+        if (emitter._isDeleting) {
+          next.emission = { val: 0, inf: 0 };
+        }
+
+        emitter.opts = Object.assign({}, next);
+        rollMaxParticles(emitter);
+      } catch {}
     }
 
     exportEmit(args) {
-      const target = this.getSprite(args.TARGET);
-      if (target && target[engineTag]) {
-        const engine = target[engineTag];
-        if (engine.emitters[args.NAME]) {
-          return JSON.stringify(engine.emitters[args.NAME].opts);
-        }
-      }
-      return "{}";
+      const { emitter } = this.getEmitterCtx(args);
+      if (emitter) return JSON.stringify(emitter.opts);
+      else return "{}";
     }
   }
 
   if (Scratch.gui)
     Scratch.gui.getBlockly().then((SB) => {
       function add2Body() {
+        if (document.getElementById("SPpartEngine-GRAD")) return;
+
         const grad =
           document.querySelector(`div[class="SPgradCache"]`) ||
           document.createElement("div");
         grad.setAttribute("class", "SPgradCache");
-        grad.innerHTML = `
-        ${grad.innerHTML}
-        <svg><defs>
+        grad.insertAdjacentHTML(
+          "beforeend",
+          `<svg><defs>
           <linearGradient x1="100" y1="0" x2="100" y2="200" id="SPpartEngine-GRAD" gradientUnits="userSpaceOnUse">
           <stop offset="0" stop-color="#0090ff"></stop><stop offset="50%" stop-color="#0000ff"></stop></linearGradient>
-        </defs></svg>`;
-        document.body.append(grad);
+        </defs></svg>`
+        );
+        if (!grad.isConnected) document.body.append(grad);
       }
       add2Body();
       if (!SB?.SPgradients?.patched) {
