@@ -728,7 +728,9 @@
       // Fix by looking at the block stack and determining how deep we are in loop.
       const container = util.thread.blockContainer;
       const thread = util.thread;
-      const id = thread.isCompiled ? thread.peekStack() : thread.peekStackFrame().op.id;
+      const id = thread.isCompiled
+        ? thread.peekStack()
+        : thread.peekStackFrame().op.id;
 
       let index = -1;
       let block = container.getBlock(id);
