@@ -407,7 +407,7 @@
                 ),
                 DELIMITER: this.fieldParamTemplate(
                   "string",
-                  Scratch.translate(",")
+                  ","
                 ),
               },
             },
@@ -827,7 +827,7 @@
       sortTempList(args, util) {
         let list = this.getListEnvironment(args, util);
         if (list.length > 0) {
-          let newList = list.valueOf();
+          let newList = Array.from(list.valueOf()); // because valueOf doesn't flat copy variables without linking them -_-
           let freqs = Object.create(null);
           switch (args.METHOD) {
             case "A-Z":
@@ -994,8 +994,9 @@
           } catch (e) {
             //last resort in case all previous failsafes failed
             console.warn(e);
+          } finally {
+            thread.isCompiled = wasCompiled;
           }
-          thread.isCompiled = wasCompiled;
         }
       }
 
