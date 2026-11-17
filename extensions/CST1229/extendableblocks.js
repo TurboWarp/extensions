@@ -39,8 +39,7 @@
           {
             opcode: "extendSum",
             blockType: Scratch.BlockType.REPORTER,
-            // This text will never actually be seen
-            // (as it is removed by the mutator)
+            // eslint-disable-next-line extension/should-translate -- not visible to users
             text: "+ extendable",
             arguments: {},
             mutator: "cst_extendable",
@@ -54,6 +53,7 @@
           {
             opcode: "extendMinus",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- not visible to users
             text: "- extendable",
             arguments: {},
             mutator: "cst_extendable",
@@ -67,6 +67,7 @@
           {
             opcode: "extendProduct",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- not visible to users
             text: "* extendable",
             arguments: {},
             mutator: "cst_extendable",
@@ -80,6 +81,7 @@
           {
             opcode: "extendDivide",
             blockType: Scratch.BlockType.REPORTER,
+            // eslint-disable-next-line extension/should-translate -- not visible to users
             text: "/ extendable",
             arguments: {},
             mutator: "cst_extendable",
@@ -94,6 +96,7 @@
           {
             opcode: "extendAnd",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate -- not visible to users
             text: "and extendable",
             arguments: {},
             mutator: "cst_extendable",
@@ -107,6 +110,7 @@
           {
             opcode: "extendOr",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate -- not visible to users
             text: "or extendable",
             arguments: {},
             mutator: "cst_extendable",
@@ -120,6 +124,7 @@
           {
             opcode: "extendLess",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate -- not visible to users
             text: "< extendable",
             arguments: {},
             mutator: "cst_extendable",
@@ -133,6 +138,7 @@
           {
             opcode: "extendEqual",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate -- not visible to users
             text: "= extendable",
             arguments: {},
             mutator: "cst_extendable",
@@ -146,6 +152,7 @@
           {
             opcode: "extendGreater",
             blockType: Scratch.BlockType.BOOLEAN,
+            // eslint-disable-next-line extension/should-translate -- not visible to users
             text: "> extendable",
             arguments: {},
             mutator: "cst_extendable",
