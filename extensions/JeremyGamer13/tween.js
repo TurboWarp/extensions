@@ -656,9 +656,6 @@
     }
 
     inlineTween(args, util) {
-      const start = Cast.toNumber(args.START);
-      const end = Cast.toNumber(args.END);
-
       const stackFrame = util.stackFrame;
       const threadStackFrame = util.thread.stackFrames[0];
       if (threadStackFrame.inlineTweenQueue === undefined) {
@@ -668,6 +665,8 @@
       const queue = threadStackFrame.inlineTweenQueue;
       if (stackFrame.tweenStatus === undefined) {
         // init the loop
+        const start = Cast.toNumber(args.START);
+        const end = Cast.toNumber(args.END);
         const easeDirection = Cast.toString(args.DIRECTION);
         let easeMethod = Cast.toString(args.MODE);
         if (!Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) {
@@ -676,6 +675,7 @@
 
         if (util.stackTimerNeedsInit()) {
           const durationMS = Math.max(0, 1000 * Cast.toNumber(args.SEC));
+          if (durationMS <= 0) return;
           util.startStackTimer(durationMS);
         }
 
@@ -683,6 +683,8 @@
         queue.push({
           easeDirection,
           easingFunction: EasingMethods[easeMethod],
+          start,
+          end,
           value: start,
         });
         util.startBranch(1, true);
@@ -698,7 +700,7 @@
           util.stackFrame.timer.timeElapsed() / util.stackFrame.duration
         );
         const tweened = frame.easingFunction(progress, frame.easeDirection);
-        frame.value = interpolate(tweened, start, end);
+        frame.value = interpolate(tweened, frame.start, frame.end);
 
         // Instead of checking if the timer ended, we clamp the progress to 1 so that
         // the loop iterates one extra time at the ending value, not the value before.
@@ -713,11 +715,39 @@
     inlineTweenVal(_, util) {
       const queue = util.thread.stackFrames[0]?.inlineTweenQueue;
       if (queue) {
-        const lastFrame = queue[queue.length - 1];
+        const lastFrame = queue[this._getQueueIndex(util)];
         return lastFrame ? lastFrame.value : 0;
       }
 
       return 0;
+    }
+
+    _getQueueIndex(util) {
+      // We cannot reliably use the last item of the queue since early exits from inline
+      // tween loops in custom blocks ('stop this script' or 'return') will abandoned it.
+      // Fix by looking at the block stack and determining how deep we are in loop.
+      const container = util.thread.blockContainer;
+      const thread = util.thread;
+      const id = thread.isCompiled ? thread.peekStack() : thread.peekStackFrame().op.id;
+
+      let index = -1;
+      let block = container.getBlock(id);
+      let prevBlockId;
+      while (true) {
+        prevBlockId = block.id;
+        block = container.getBlock(block.parent);
+        if (!block) break;
+
+        if (block.opcode === "jeremygamerTweening_inlineTween") {
+          const innerBlock = container.getBranch(block.id, 1);
+          if (innerBlock === prevBlockId) {
+            // We were in this substack.
+            index++;
+          }
+        }
+      }
+
+      return index;
     }
   }
 
