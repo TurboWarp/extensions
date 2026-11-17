@@ -1286,7 +1286,8 @@
         if (!Array.isArray(path)) {
           return "";
         }
-        const outer = Object.assign({}, parseRemoveCache(json));
+        let outer = parseRemoveCache(json);
+        outer = Object.assign(Array.isArray(outer) ? [] : {}, outer);
         let current;
         let next = outer;
         data = this.json_valid_return(data);
