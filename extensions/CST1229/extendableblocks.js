@@ -13,23 +13,23 @@
 
   const exId = "cst1229extendable";
 
-  const menuIconURI =
-    "data:image/svg+xml;charset=utf-8," +
-    encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-        <circle cx="20" cy="20" r="18" fill="#59c059" stroke="#389438" stroke-width="4" paint-order="stroke markers fill" style="font-variation-settings:normal"/>
-        <svg x="4" y="4" width="16" height="32" viewBox="0 0 10 13">
-          <g transform="matrix(-1 0 0 1 10 0)">
-            <path d="M3.65.145a2.41 2.41 0 0 1 1.72.71l3.92 3.92a2.45 2.45 0 0 1 0 3.45l-3.92 3.91a2.42 2.42 0 0 1-1.72.72 2.48 2.48 0 0 1-1.73-.71c-.24-.29-.71-.72-.71-5.65 0-4.93.46-5.39.71-5.64a2.44 2.44 0 0 1 1.73-.71z" fill="#231f20" opacity=".1"/>
-            <path d="M8.985 6.51a1.43 1.43 0 0 1-.42 1l-3.92 3.94a1.44 1.44 0 0 1-2 0c-.56-.56-.56-9.31 0-9.87a1.44 1.44 0 0 1 2 0l3.92 3.92a1.43 1.43 0 0 1 .42 1.01z" fill="#fff"/>
-          </g>
-        </svg>
-        <svg x="20" y="4" width="16" height="32" viewBox="0 0 10 13">
+  const svgToURI = (svg) => "data:image/svg+xml;base64," + btoa(svg);
+
+  const menuIconURI = svgToURI(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="18" fill="#59c059" stroke="#389438" stroke-width="4" paint-order="stroke markers fill" style="font-variation-settings:normal"/>
+      <svg x="4" y="4" width="16" height="32" viewBox="0 0 10 13">
+        <g transform="matrix(-1 0 0 1 10 0)">
           <path d="M3.65.145a2.41 2.41 0 0 1 1.72.71l3.92 3.92a2.45 2.45 0 0 1 0 3.45l-3.92 3.91a2.42 2.42 0 0 1-1.72.72 2.48 2.48 0 0 1-1.73-.71c-.24-.29-.71-.72-.71-5.65 0-4.93.46-5.39.71-5.64a2.44 2.44 0 0 1 1.73-.71z" fill="#231f20" opacity=".1"/>
           <path d="M8.985 6.51a1.43 1.43 0 0 1-.42 1l-3.92 3.94a1.44 1.44 0 0 1-2 0c-.56-.56-.56-9.31 0-9.87a1.44 1.44 0 0 1 2 0l3.92 3.92a1.43 1.43 0 0 1 .42 1.01z" fill="#fff"/>
-        </svg>
-      </svg>`
-    );
+        </g>
+      </svg>
+      <svg x="20" y="4" width="16" height="32" viewBox="0 0 10 13">
+        <path d="M3.65.145a2.41 2.41 0 0 1 1.72.71l3.92 3.92a2.45 2.45 0 0 1 0 3.45l-3.92 3.91a2.42 2.42 0 0 1-1.72.72 2.48 2.48 0 0 1-1.73-.71c-.24-.29-.71-.72-.71-5.65 0-4.93.46-5.39.71-5.64a2.44 2.44 0 0 1 1.73-.71z" fill="#231f20" opacity=".1"/>
+        <path d="M8.985 6.51a1.43 1.43 0 0 1-.42 1l-3.92 3.94a1.44 1.44 0 0 1-2 0c-.56-.56-.56-9.31 0-9.87a1.44 1.44 0 0 1 2 0l3.92 3.92a1.43 1.43 0 0 1 .42 1.01z" fill="#fff"/>
+      </svg>
+    </svg>`
+  );
 
   class ExtendableBlocks {
     getInfo() {
@@ -462,24 +462,20 @@
   function patchSB(ScratchBlocks) {
     if (!ScratchBlocks) return;
 
-    const leftArrowIcon =
-      "data:image/svg+xml;charset=utf-8," +
-      encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 13">
-          <g transform="matrix(-1 0 0 1 10 0)">
-            <path d="M3.65.145a2.41 2.41 0 0 1 1.72.71l3.92 3.92a2.45 2.45 0 0 1 0 3.45l-3.92 3.91a2.42 2.42 0 0 1-1.72.72 2.48 2.48 0 0 1-1.73-.71c-.24-.29-.71-.72-.71-5.65 0-4.93.46-5.39.71-5.64a2.44 2.44 0 0 1 1.73-.71z" fill="#231f20" opacity=".1"/>
-            <path d="M8.985 6.51a1.43 1.43 0 0 1-.42 1l-3.92 3.94a1.44 1.44 0 0 1-2 0c-.56-.56-.56-9.31 0-9.87a1.44 1.44 0 0 1 2 0l3.92 3.92a1.43 1.43 0 0 1 .42 1.01z" fill="#fff"/>
-          </g>
-        </svg>`
-      );
-    const rightArrowIcon =
-      "data:image/svg+xml;charset=utf-8," +
-      encodeURIComponent(
-        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 13">
+    const leftArrowIcon = svgToURI(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 13">
+        <g transform="matrix(-1 0 0 1 10 0)">
           <path d="M3.65.145a2.41 2.41 0 0 1 1.72.71l3.92 3.92a2.45 2.45 0 0 1 0 3.45l-3.92 3.91a2.42 2.42 0 0 1-1.72.72 2.48 2.48 0 0 1-1.73-.71c-.24-.29-.71-.72-.71-5.65 0-4.93.46-5.39.71-5.64a2.44 2.44 0 0 1 1.73-.71z" fill="#231f20" opacity=".1"/>
           <path d="M8.985 6.51a1.43 1.43 0 0 1-.42 1l-3.92 3.94a1.44 1.44 0 0 1-2 0c-.56-.56-.56-9.31 0-9.87a1.44 1.44 0 0 1 2 0l3.92 3.92a1.43 1.43 0 0 1 .42 1.01z" fill="#fff"/>
-        </svg>`
-      );
+        </g>
+      </svg>`
+    );
+    const rightArrowIcon = svgToURI(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 13">
+        <path d="M3.65.145a2.41 2.41 0 0 1 1.72.71l3.92 3.92a2.45 2.45 0 0 1 0 3.45l-3.92 3.91a2.42 2.42 0 0 1-1.72.72 2.48 2.48 0 0 1-1.73-.71c-.24-.29-.71-.72-.71-5.65 0-4.93.46-5.39.71-5.64a2.44 2.44 0 0 1 1.73-.71z" fill="#231f20" opacity=".1"/>
+        <path d="M8.985 6.51a1.43 1.43 0 0 1-.42 1l-3.92 3.94a1.44 1.44 0 0 1-2 0c-.56-.56-.56-9.31 0-9.87a1.44 1.44 0 0 1 2 0l3.92 3.92a1.43 1.43 0 0 1 .42 1.01z" fill="#fff"/>
+      </svg>`
+    );
     const arrowWidth = 16;
     const arrowHeight = 32;
 
