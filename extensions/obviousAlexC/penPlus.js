@@ -1038,6 +1038,9 @@
 
     constructor() {
       window.addEventListener("message", (event) => {
+        // Only accept messages from the shader editor window
+        if (!this.IFrame || event.source !== this.IFrame.contentWindow) return;
+
         let eventType = event.data.type;
 
         if (!eventType) return;
