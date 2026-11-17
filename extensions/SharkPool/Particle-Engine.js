@@ -208,8 +208,10 @@
   const gu = Drawable.prototype.getUniforms;
   Drawable.prototype.getUniforms = function () {
     if (
-      blendDirty && !this[engineTag] && 
-      this.blendMode === undefined && !this._blendMode
+      blendDirty &&
+      !this[engineTag] &&
+      this.blendMode === undefined &&
+      !this._blendMode
     ) {
       restoreDefaultBlend();
     }
@@ -1513,7 +1515,7 @@ void main() {
       emitters.set(name, emitter);
 
       newTexture(PRESET_SHAPES["square"], (textureObj) => {
-        if (!textureObj) return;      
+        if (!textureObj) return;
         if (
           emitter.released ||
           engine.disposed ||
