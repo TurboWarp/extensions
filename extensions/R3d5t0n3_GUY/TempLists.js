@@ -405,10 +405,7 @@
                   "string",
                   "apple,banana,cherry,durian,elderberry"
                 ),
-                DELIMITER: this.fieldParamTemplate(
-                  "string",
-                  ","
-                ),
+                DELIMITER: this.fieldParamTemplate("string", ","),
               },
             },
             {
