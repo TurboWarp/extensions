@@ -1010,7 +1010,7 @@
         createInput(ScratchBlocks.INPUT_VALUE, "CONDITION", "Boolean"),
         createInput(
           ScratchBlocks.DUMMY_INPUT,
-          "THEN_WORD", 
+          "THEN_WORD",
           Scratch.translate({
             default: "then",
             description:
@@ -1072,9 +1072,9 @@
           ScratchBlocks.DUMMY_INPUT,
           "IF_WORD",
           Scratch.translate({
-            default: "then",
+            default: "if",
             description:
-              "Text inserted before a C input on the extendable if-else block. Ideally should match vanilla Scratch's strings",
+              "Beginning of the extendable if blocks. Ideally should match vanilla Scratch's strings",
           })
         ),
         createInput(ScratchBlocks.INPUT_VALUE, "CONDITION", "Boolean"),
