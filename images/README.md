@@ -314,9 +314,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Clay/htmlEncode.svg
  - Created by [@clay-rip](https://github.com/clay-rip) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
 
-## CST1229/images.svg
- - Created by [@wiktorlaskowski](https://github.com/wiktorlaskowski) in https://github.com/TurboWarp/extensions/pull/2144
-
 ## shreder95ua/resolution.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
 
