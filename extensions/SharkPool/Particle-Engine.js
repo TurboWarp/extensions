@@ -207,7 +207,13 @@
 
   const gu = Drawable.prototype.getUniforms;
   Drawable.prototype.getUniforms = function () {
-    if (blendDirty && !this[engineTag]) restoreDefaultBlend();
+    if (
+      blendDirty && !this[engineTag] && 
+      this.blendMode === undefined && !this._blendMode
+    ) {
+      restoreDefaultBlend();
+    }
+
     return gu.call(this);
   };
 
@@ -783,11 +789,18 @@ void main() {
     }
   };
 
-  const disposeAllEngines = () =>
-    allEngines.forEach((engine) => disposeEngine(engine.target));
-  runtime.on("PROJECT_START", disposeAllEngines);
-  runtime.on("PROJECT_STOP_ALL", disposeAllEngines);
-  runtime.on("PROJECT_LOADED", disposeAllEngines);
+  const releaseAllEmitters = () => {
+    allEngines.forEach((engine) => {
+      engine.emitterNameTokens.clear();
+      for (const entry of engine.emitters) {
+        engine.emitters.delete(entry[0]);
+        releaseEmitter(entry[1]);
+      }
+    });
+  };
+  runtime.on("PROJECT_START", releaseAllEmitters);
+  runtime.on("PROJECT_STOP_ALL", releaseAllEmitters);
+  runtime.on("PROJECT_LOADED", releaseAllEmitters);
   runtime.on("INTERPOLATION_CHANGED", (isEnabled) => {
     // toggle interpolation for all engines
     allEngines.forEach((engine) => {
@@ -1425,7 +1438,7 @@ void main() {
           ind - render.getDrawableOrder(id),
           "sprite",
           true,
-          1
+          0
         );
       }
     }
@@ -1479,52 +1492,56 @@ void main() {
       const token = (engine.emitterNameTokens.get(name) || 0) + 1;
       engine.emitterNameTokens.set(name, token);
 
-      return new Promise((resolve) => {
-        newTexture(PRESET_SHAPES["square"], (textureObj) => {
-          if (!textureObj) {
-            resolve();
-            return;
-          }
+      const oldEmitter = emitters.get(name);
+      if (oldEmitter) releaseEmitter(oldEmitter);
 
-          if (
-            engine.disposed ||
-            target[engineTag] !== engine ||
-            engine.emitterNameTokens.get(name) !== token
-          ) {
-            gl.deleteTexture(textureObj.texture);
-            resolve();
-            return;
-          }
+      const emitter = {
+        pos: [0, 0],
+        rawPos: [0, 0],
+        opts: structuredClone(DEFAULT_BEHAVIOURS),
+        data: new Set(),
+        texture: null,
+        acc: 0,
+        maxP: 0,
+        removalQueue: [],
+        released: false,
+        _isDeleting: false,
+        _texToken: 0,
+      };
 
-          const oldEmitter = emitters.get(name);
-          if (oldEmitter) releaseEmitter(oldEmitter);
+      rollMaxParticles(emitter);
+      emitters.set(name, emitter);
 
-          const emitter = {
-            pos: [0, 0],
-            rawPos: [0, 0],
-            opts: structuredClone(DEFAULT_BEHAVIOURS),
-            data: new Set(),
-            texture: textureObj,
-            acc: 0,
-            maxP: 0,
-            removalQueue: [],
-            released: false,
-            _isDeleting: false,
-            _texToken: 0,
-          };
-          rollMaxParticles(emitter);
-          emitters.set(name, emitter);
+      newTexture(PRESET_SHAPES["square"], (textureObj) => {
+        if (!textureObj) return;      
+        if (
+          emitter.released ||
+          engine.disposed ||
+          target[engineTag] !== engine ||
+          engine.emitterNameTokens.get(name) !== token ||
+          emitters.get(name) !== emitter
+        ) {
+          gl.deleteTexture(textureObj.texture);
+          return;
+        }
 
-          resolve();
-        });
+        emitter.texture = textureObj;
+        runtime.requestRedraw();
       });
     }
 
     deleteEmitter(args) {
       const { engine, emitter } = this.getEmitterCtx(args);
+      if (!engine) return;
+
+      const name = Cast.toString(args.NAME);
+
+      // Invalidate any pending texture loads for this name
+      const token = (engine.emitterNameTokens.get(name) || 0) + 1;
+      engine.emitterNameTokens.set(name, token);
       if (!emitter) return;
 
-      engine.emitters.delete(Cast.toString(args.NAME));
+      engine.emitters.delete(name);
       releaseEmitter(emitter);
     }
 
