@@ -246,8 +246,12 @@
       }
     }
     generateString(args) {
+      if (Scratch.Cast.toNumber(args.NUM) < 1 || !Number.isFinite(Scratch.Cast.toNumber(args.NUM))) {
+        return;
+      }
+    
       let str = "";
-      for (let i = 0; i < args.NUM; i++) {
+      for (let i = 0; i < Scratch.Cast.toString(args.NUM); i++) {
         str += this.randomInput(args);
       }
       return str;
