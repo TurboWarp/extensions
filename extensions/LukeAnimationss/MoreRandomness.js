@@ -253,7 +253,7 @@
       return str;
     }
     jitter(args) {
-      return args.NUM + this.randomRange(-args.AMOUNT, args.AMOUNT);
+      return Scratch.Cast.toNumber(args.NUM) + this.randomRange(-args.AMOUNT, args.AMOUNT);
     }
   }
 
