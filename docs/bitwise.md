@@ -51,7 +51,7 @@ Arithmatically shifts each bit of the binary representation of _x_ to the left _
 
 Example: `32` → `0100000` → `1000000` → `64`
 
-The sign will be preserved, so negative numbers will stay negative.
+Sign may flip as the higher bits will be discarded.
 
 This is essentially the same thing as multiplying by 2^*y*.
 

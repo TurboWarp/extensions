@@ -1,6 +1,7 @@
 // Name: Numerical Encoding V2
 // ID: numericalencoding2
 // Description: Encode strings as numbers for cloud variables. Not compatible with V1 due to using much more efficient format.
+// By: GarboMuffin
 // License: MPL-2.0
 
 (function (Scratch) {
