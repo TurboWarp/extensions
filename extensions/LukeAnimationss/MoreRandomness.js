@@ -211,7 +211,7 @@
       return this.seed;
     }
     randomNum(args) {
-      return this.randomRange(min, max);
+      return this.randomRange(args.NUM1, args.NUM2);
     }
     oneInChance(args) {
       const num = Scratch.Cast.toNumber(args.NUM) || 0;
