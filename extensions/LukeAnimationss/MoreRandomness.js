@@ -233,7 +233,7 @@
     randomWord(args) {
       const str = Scratch.Cast.toString(args.STR);
       const sep = Scratch.Cast.toString(args.SEP);
-      const text = str.split(sep);
+      const text = str.split(sep).filter(item => item !== '');
       return text[this.randomRange(0, text.length - 1)];
     }
     randomInput(args) {
