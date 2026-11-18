@@ -160,7 +160,7 @@
                 text: Scratch.translate("uppercase letter"),
                 value: "uppercase letter",
               },
-              { text: Scratch.translate("number"), value: "number" },
+              { text: Scratch.translate("digit"), value: "digit" },
               { text: Scratch.translate("boolean"), value: "boolean" },
               { text: Scratch.translate("symbol"), value: "symbol" },
               {
