@@ -89,23 +89,6 @@
             },
           },
           {
-            opcode: "randomWord",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate(
-              "pick random word from [STR] separated by [SEP]"
-            ),
-            arguments: {
-              STR: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: "hello,fellow,scratchers",
-              },
-              SEP: {
-                type: Scratch.ArgumentType.STRING,
-                defaultValue: ",",
-              },
-            },
-          },
-          {
             opcode: "randomInput",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("random [INP]"),
@@ -233,15 +216,6 @@
         op += this.randomRange(min, sides);
       }
       return op;
-    }
-    randomWord(args) {
-      const str = Scratch.Cast.toString(args.STR);
-      const sep = Scratch.Cast.toString(args.SEP);
-      const text = str
-        .split(sep)
-        .map((item) => item.trim())
-        .filter((item) => item !== "");
-      return text[this.randomRange(0, text.length - 1)];
     }
     randomInput(args) {
       const chars =
