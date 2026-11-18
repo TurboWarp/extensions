@@ -197,7 +197,7 @@
       return this.randomRange(args.NUM1, args.NUM2);
     }
     oneInChance(args) {
-      const num = Scratch.Cast.toNumber(args.NUM);
+      const num = Scratch.Cast.toNumber(Math.floor(args.NUM));
 
       if (!Number.isFinite(num) || num < 1) {
         return false;
@@ -206,15 +206,15 @@
       return this.randomRange(1, num) === 1;
     }
     rollDice(args) {
-      const num = Scratch.Cast.toNumber(args.NUM) || 0;
-      const sides = Scratch.Cast.toNumber(args.SIDES) || 0;
+      const num = isFinite(Scratch.Cast.toNumber(args.NUM)) ? Scratch.Cast.toNumber(args.NUM) : 0;
+      const sides = isFinite(Scratch.Cast.toNumber(args.SIDES)) ? Scratch.Cast.toNumber(args.SIDES) : 0;
       let min = 0;
       if (sides > 0) {
         min = 1;
       }
       let op = 0;
       for (let i = 0; i < num; i++) {
-        op += this.randomRange(min, sides);
+        op += this.randomRange(min, Math.floor(sides));
       }
       return op;
     }
