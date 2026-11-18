@@ -251,7 +251,7 @@
           return let2.charAt(this.randomRange(0, let2.length - 1));
         case "uppercase letter":
           return let1.charAt(this.randomRange(0, let1.length - 1));
-        case "number":
+        case "digit":
           return nums.charAt(this.randomRange(0, nums.length - 1));
         case "boolean":
           return this.randomRange(0, 1) === 1 ? true : false;
