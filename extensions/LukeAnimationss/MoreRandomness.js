@@ -181,19 +181,20 @@
       };
     }
     randomRange(min, max) {
-      const isDecimal = min.toString().includes('.') || max.toString().includes('.');
-      
+      const isDecimal =
+        min.toString().includes(".") || max.toString().includes(".");
+
       min = Scratch.Cast.toNumber(min) || 0;
       max = Scratch.Cast.toNumber(max) || 0;
 
       if (min > max) {
-          [min, max] = [max, min];
+        [min, max] = [max, min];
       }
-      
+
       const rand = this.rng();
 
       if (isDecimal) {
-          return rand * (max - min) + min;
+        return rand * (max - min) + min;
       }
       return Math.floor(rand * (max - min + 1)) + min;
     }
