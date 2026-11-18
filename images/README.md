@@ -328,4 +328,4 @@ All images in this folder are licensed under the [GNU General Public License ver
  - Used Arimo from Google Fonts.
 
 ## LukeAnimationss/MoreRandomness.png
-- Created by [@LukeAnimationss](https://scratch.mit.edu/users/LukeAnimationss/)
+ - Created by [@LukeAnimationss](https://scratch.mit.edu/users/LukeAnimationss/)
