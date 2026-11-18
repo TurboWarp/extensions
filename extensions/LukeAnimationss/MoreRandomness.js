@@ -197,12 +197,13 @@
       return this.randomRange(args.NUM1, args.NUM2);
     }
     oneInChance(args) {
-      const num = Scratch.Cast.toNumber(args.NUM) || 0;
-      let result = false;
-      if (1 === this.randomRange(1, num)) {
-        result = true;
-      }
-      return result;
+        const num = Scratch.Cast.toNumber(args.NUM);
+
+        if (!Number.isFinite(num) || num < 1) {
+            return false;
+        }
+        
+        return this.randomRange(1, num) === 1;
     }
     rollDice(args) {
       const num = Scratch.Cast.toNumber(args.NUM) || 0;
