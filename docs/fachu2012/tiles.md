@@ -14,7 +14,7 @@ The minimum to get something on screen is a grid, a costume for tile id `1`, one
 create tilemap (20) columns x (15) rows, tile size (24) ::#5C7CFA
 set tile (1) to costume [ground v] of [Tileset v] ::#5C7CFA
 set tile at column (5) row (5) to (1) ::#5C7CFA
-draw tilemap with tile (0,0) at x: (0) y: (0) ::#5C7CFA
+draw tilemap with tile \(0,0\) at x: (0) y: (0) ::#5C7CFA
 ```
 
 That makes a 20 × 15 grid of 24-pixel tiles, points tile id `1` at the "ground" costume of a sprite called "Tileset", puts one tile at column 5, row 5, and draws it. To keep the map on screen while things change, put `draw tilemap` inside a `forever` loop.
@@ -88,7 +88,7 @@ Fills a rectangle of cells in one go. It is much faster than a nested loop, sinc
 ### Drawing
 
 ```scratch
-draw tilemap with tile (0,0) at x: (0) y: (0) ::#5C7CFA
+draw tilemap with tile \(0,0\) at x: (0) y: (0) ::#5C7CFA
 ```
 Draws the tilemap. `x` and `y` are where the top-left corner of tile (0, 0) lands, so passing the stage's top-left corner (`-240`, `180` on a normal stage) puts the map right in the corner. There's no hidden camera inversion: a bigger `x` moves the whole map right and a bigger `y` moves it up. To follow a scrolling player, pass the negative of the player's map-space position, in a `forever` loop.
 
@@ -147,7 +147,7 @@ Give each kind of floor its own id (for example `1` grass, `2` water, `3` lava),
 ```scratch
 when green flag clicked
 create tilemap (20) columns x (15) rows, tile size (24) ::#5C7CFA
-draw tilemap with tile (0,0) at x: (-240) y: (180) ::#5C7CFA
+draw tilemap with tile \(0,0\) at x: (-240) y: (180) ::#5C7CFA
 forever
   set [tile v] to (tile at column (column at x: ((x position) + (240)) ::#5C7CFA) row (row at y: ((y position) - (180)) ::#5C7CFA) ::#5C7CFA)
   if <(tile) = [3]> then
