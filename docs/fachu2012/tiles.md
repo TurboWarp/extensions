@@ -39,18 +39,14 @@ Each cell of the grid holds a whole number, the tile id. Tile id `0` always mean
 
 ### Map space
 
-The blocks that convert coordinates (`column at x`, `row at y`, `x at column`, `y at row`) work in **map space**. In map space the top-left corner of the tilemap is (0, 0), x grows to the right and y grows **upward**, so rows count downward:
+The blocks that convert coordinates (`column at x`, `row at y`, `x at column`, `y at row`) work in **map space**. In map space the top-left corner of the tilemap is (0, 0), x grows to the right and y grows **upward**, so rows count downward. With a tile size of 24, the first tiles cover:
 
-```
- map space, tile size 24
-
- x:    0       24      48
- y: 0  +-------+-------+-----
-       | (0,0) | (1,0) |
- y:-24 +-------+-------+-----
-       | (0,1) | (1,1) |
- y:-48 +-------+-------+-----
-```
+| Tile | x goes from | y goes from |
+|---|---|---|
+| column 0, row 0 | 0 to 24 | 0 down to -24 |
+| column 1, row 0 | 24 to 48 | 0 down to -24 |
+| column 0, row 1 | 0 to 24 | -24 down to -48 |
+| column 1, row 1 | 24 to 48 | -24 down to -48 |
 
 `draw tilemap` places the map on the stage. If you draw it with `draw tilemap with tile (0,0) at x: X y: Y`, a point on the stage is (x - X, y - Y) in map space. Subtract `X` and `Y` from a stage position before converting it with the blocks above.
 
