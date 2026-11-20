@@ -41,12 +41,10 @@ Each cell of the grid holds a whole number, the tile id. Tile id `0` always mean
 
 The blocks that convert coordinates (`column at x`, `row at y`, `x at column`, `y at row`) work in **map space**. In map space the top-left corner of the tilemap is (0, 0), x grows to the right and y grows **upward**, so rows count downward. With a tile size of 24, the first tiles cover:
 
-| Tile | x goes from | y goes from |
-|---|---|---|
-| column 0, row 0 | 0 to 24 | 0 down to -24 |
-| column 1, row 0 | 24 to 48 | 0 down to -24 |
-| column 0, row 1 | 0 to 24 | -24 down to -48 |
-| column 1, row 1 | 24 to 48 | -24 down to -48 |
+- Column 0, row 0: x from 0 to 24, y from 0 down to -24
+- Column 1, row 0: x from 24 to 48, y from 0 down to -24
+- Column 0, row 1: x from 0 to 24, y from -24 down to -48
+- Column 1, row 1: x from 24 to 48, y from -24 down to -48
 
 `draw tilemap` places the map on the stage. If you draw it with `draw tilemap with tile (0,0) at x: X y: Y`, a point on the stage is (x - X, y - Y) in map space. Subtract `X` and `Y` from a stage position before converting it with the blocks above.
 
@@ -105,14 +103,12 @@ Mark which tile ids block movement, then check a cell. Cells outside the grid an
 
 ### Coordinates
 
-| Block | What it reports |
-|---|---|
-| `column at x: (x)` | The column that contains map-space x |
-| `row at y: (y)` | The row that contains map-space y |
-| `x at column: (column)` | The x of the **center** of that column |
-| `y at row: (row)` | The y of the **center** of that row |
-| `tilemap width in pixels` | Columns × tile size |
-| `tilemap height in pixels` | Rows × tile size |
+- `column at x: (x)` reports the column that contains map-space x.
+- `row at y: (y)` reports the row that contains map-space y.
+- `x at column: (column)` reports the x of the **center** of that column.
+- `y at row: (row)` reports the y of the **center** of that row.
+- `tilemap width in pixels` reports columns × tile size.
+- `tilemap height in pixels` reports rows × tile size.
 
 ```scratch
 (column at x: (0) ::#5C7CFA)
