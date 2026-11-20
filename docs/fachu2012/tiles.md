@@ -50,83 +50,128 @@ The blocks that convert coordinates (`column at x`, `row at y`, `x at column`, `
 
 ## Blocks
 
-### Setting up
+Every block works the same from any sprite, clone or the Stage, because there is only one tilemap. The blocks are listed in the same order as in the palette.
+
+### Creating and drawing
 
 ```scratch
 create tilemap (20) columns x (15) rows, tile size (24) ::#5C7CFA
 ```
-Sets up (or resets) the tilemap. Columns and rows are rounded to whole numbers, and anything below 1 counts as 1. A tilemap can have up to 1,000,000 tiles in total (for example 1000 × 1000). Bigger sizes, or `Infinity`, are ignored and leave the current tilemap as it was. The tileset and the solid tiles are kept when you create a tilemap again.
+Sets up the tilemap. Columns and rows are rounded to whole numbers, and anything below 1 counts as 1. A tilemap can have up to 1,000,000 tiles in total (for example 1000 × 1000). Bigger sizes, or `Infinity`, are ignored and leave the current tilemap as it was.
 
-```scratch
-set tile (1) to costume [costume1 v] of [Sprite1 v] ::#5C7CFA
-```
-Registers what a tile id looks like. Both the sprite and the costume are dropdowns, and you can also drop a reporter into them. The costume dropdown lists the costumes of every sprite, since a dropdown can't change based on which sprite you picked, so make sure the costume you choose actually belongs to that sprite. You can reuse the same tile id later to point it at a different costume.
-
-> **Note:** If you rename the sprite or the costume, the tilemap follows the new name and saves it. The dropdown of this block keeps showing the old name, though, so change it there too, or the next time the block runs it will point at a name that doesn't exist anymore.
-
-> **Tip:** If you repaint a costume's artwork while testing, run `set tile ... to costume ...` again for that tile id so it measures the new size. Otherwise it can keep using the old proportions.
-
-### Editing tiles
-
-```scratch
-set tile at column (0) row (0) to (1) ::#5C7CFA
-(tile at column (0) row (0) ::#5C7CFA)
-```
-Write and read a single cell. Cells outside the grid are ignored when writing, and read as `0`.
-
-```scratch
-fill tiles from column (0) row (0) to column (9) row (9) with (1) ::#5C7CFA
-```
-Fills a rectangle of cells in one go. It is much faster than a nested loop, since it doesn't go through the block engine for each cell. The two corners can be given in any order, and parts outside the grid are cut off. Filling with `0` clears the area.
-
-### Drawing
+Running it again empties every tile. The tileset (which costume each tile id uses) and the solid tiles are kept.
 
 ```scratch
 draw tilemap with tile \(0,0\) at x: (0) y: (0) ::#5C7CFA
 ```
 Draws the tilemap. `x` and `y` are where the top-left corner of tile (0, 0) lands, so passing the stage's top-left corner (`-240`, `180` on a normal stage) puts the map right in the corner. There's no hidden camera inversion: a bigger `x` moves the whole map right and a bigger `y` moves it up. To follow a scrolling player, pass the negative of the player's map-space position, in a `forever` loop.
 
-Only the tiles on the stage (plus one extra tile around the edges) are drawn, and the previous drawing of the tilemap is cleared each time. Nothing happens if there is no tilemap yet. The tilemap is drawn on its own private layer, behind sprites, so the regular Pen extension's canvas is never touched: using Pen blocks in your project won't get erased by `draw tilemap`, and vice versa.
+Only the tiles on the stage (plus one extra tile around the edges) are drawn. Tiles whose id has no costume, or whose sprite or costume doesn't exist anymore, are skipped. If there is no tilemap yet, nothing happens. If the tilemap was hidden with `hide tilemap`, this block shows it again.
+
+> **Important:** Every `draw tilemap` clears what the previous one drew, so you can call it again with a new position to move or scroll the map. The tilemap is drawn on its own private layer behind the sprites, so the regular Pen extension's canvas is never touched: using Pen blocks in your project won't get erased by `draw tilemap`, and vice versa.
 
 ```scratch
 hide tilemap ::#5C7CFA
 ```
-Hides the drawn tilemap. Calling `draw tilemap` again shows it again.
+Hides the drawn tilemap. It only hides the drawing: the tiles are still there, so the blocks that read the map keep working while it's hidden. `draw tilemap` shows it again.
+
+If the tilemap was never drawn, this block does nothing.
+
+### Editing tiles
+
+```scratch
+set tile (1) to costume [costume1 v] of [Sprite1 v] ::#5C7CFA
+```
+Tells the tilemap what a tile id looks like. Both the sprite and the costume are dropdowns, and you can also drop a reporter into them. The id is rounded to a whole number. Running the block again with the same id points it at a different costume.
+
+The costume dropdown lists the costumes of every sprite, since a dropdown can't change based on which sprite you picked, so make sure the costume you choose actually belongs to that sprite.
+
+> **Note:** If you rename the sprite or the costume, the tilemap follows the new name and saves it. The dropdown of this block keeps showing the old name, though, so change it there too, or the next time the block runs it will point at a name that doesn't exist anymore.
+
+> **Tip:** If you repaint a costume's artwork while testing, run `set tile ... to costume ...` again for that tile id so it measures the new size. Otherwise it can keep using the old proportions.
+
+```scratch
+set tile at column (0) row (0) to (1) ::#5C7CFA
+```
+Puts a tile id in one cell. Use `0` to clear the cell. Cells outside the grid are ignored.
+
+The id doesn't have to have a costume yet. The cell keeps the id, and it starts to show up as soon as the id gets a costume.
+
+```scratch
+(tile at column (0) row (0) ::#5C7CFA)
+```
+Reports the tile id in that cell, not the name of its costume. Empty cells and cells outside the grid report `0`.
+
+```scratch
+fill tiles from column (0) row (0) to column (9) row (9) with (1) ::#5C7CFA
+```
+Works like `set tile at column row to`, but for a whole rectangle of cells at once. It is much faster than a nested loop, since it doesn't go through the block engine for each cell.
+
+The two corners can be given in any order, and any part of the rectangle outside the grid is cut off. Filling with `0` clears the area.
 
 ### Collision
 
 ```scratch
 set tile (1) solid? [solid v] ::#5C7CFA
+```
+Marks a tile **id** as solid or not solid, so every cell that has that id changes together. It is the id that is marked, not a single cell.
+
+Tile id `0` is empty and can't be made solid, so using it here does nothing.
+
+```scratch
 <is solid at column (0) row (0)? ::#5C7CFA>
 ```
-Mark which tile ids block movement, then check a cell. Cells outside the grid and empty cells (tile id `0`) are never solid.
+Reports true if the tile id in that cell is marked as solid. It reports false for empty cells and for cells outside the grid.
 
 ### Coordinates
 
-- `column at x: (x)` reports the column that contains map-space x.
-- `row at y: (y)` reports the row that contains map-space y.
-- `x at column: (column)` reports the x of the **center** of that column.
-- `y at row: (row)` reports the y of the **center** of that row.
-- `tilemap width in pixels` reports columns × tile size.
-- `tilemap height in pixels` reports rows × tile size.
+The first four blocks work in **map space**, explained in the Map space section above. If there is no tilemap yet, every block in this section reports `0`.
 
 ```scratch
 (column at x: (0) ::#5C7CFA)
+```
+Reports the column that contains the map-space x. Positions to the left of the map give negative columns, and positions past the right edge give columns bigger than the grid. Those are still just numbers, and `tile at column row` reports `0` for them.
+
+```scratch
 (row at y: (0) ::#5C7CFA)
+```
+Reports the row that contains the map-space y. Since rows count downward, a y below the top of the map gives a bigger row.
+
+```scratch
 (x at column: (0) ::#5C7CFA)
+```
+Reports the x of the **center** of the column, which is where a sprite standing on a tile of that column should go.
+
+```scratch
 (y at row: (0) ::#5C7CFA)
+```
+Reports the y of the **center** of the row.
+
+```scratch
 (tilemap width in pixels ::#5C7CFA)
+```
+Reports the width of the whole tilemap: columns × tile size.
+
+```scratch
 (tilemap height in pixels ::#5C7CFA)
 ```
-The center of the tile is where a sprite standing on it should go. The width and height are useful for camera math, for example centering the whole map on screen or keeping a scrolling camera from showing past the edge of the map. If there is no tilemap yet, every block here reports `0`.
+Reports the height of the whole tilemap: rows × tile size. Together with the width, it is useful for camera math, for example centering the whole map on screen or keeping a scrolling camera from showing past the edge of the map.
 
 ### Saving and loading
 
 ```scratch
 (tilemap as text ::#5C7CFA)
-load tilemap from text (saved map) ::#5C7CFA
 ```
-`tilemap as text` reports the whole tilemap (grid, tile size, which costume each tile id uses, and which ids are solid) as text, so you can keep it in a variable, a list, or a file. `load tilemap from text` loads text made by `tilemap as text`, replacing the current tilemap. If the text isn't valid, or doesn't match the size it says, nothing changes. After loading, call `draw tilemap` to see it.
+Reports the whole tilemap as text: the grid, the tile size, which costume each tile id uses, and which ids are solid. You can keep it in a variable, a list, or a file. It reports empty text if there is no tilemap yet.
+
+```scratch
+load tilemap from text [map text] ::#5C7CFA
+```
+Loads text made by `tilemap as text`, and replaces everything in the current tilemap: the grid, the tile size, the tileset and the solid tiles. If the text isn't valid, or doesn't match the size it says, nothing changes.
+
+Loading doesn't draw anything, so call `draw tilemap` to see the new map.
+
+#### Saving with the project
 
 The tilemap is also stored inside the project file itself, so it's still there when you save and reopen the project. Changes are written to the project a moment (about half a second) after the last edit, rather than on every single block, to keep big maps fast. You still need to call `draw tilemap` after the project loads. The map is restored, but nothing is drawn until you ask for it.
 
