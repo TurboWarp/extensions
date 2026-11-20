@@ -10,11 +10,11 @@ This doesn't do animation or multiple layers. It's the grid, the drawing and the
 
 The minimum to get something on screen is a grid, a costume for tile id `1`, one tile placed in the grid, and a draw:
 
-```blocks
-create tilemap (20) columns x (15) rows, tile size (24)
-set tile (1) to costume [ground v] of [Tileset v]
-set tile at column (5) row (5) to (1)
-draw tilemap with tile (0,0) at x: (0) y: (0)
+```scratch
+create tilemap (20) columns x (15) rows, tile size (24) ::#5C7CFA
+set tile (1) to costume [ground v] of [Tileset v] ::#5C7CFA
+set tile at column (5) row (5) to (1) ::#5C7CFA
+draw tilemap with tile (0,0) at x: (0) y: (0) ::#5C7CFA
 ```
 
 That makes a 20 × 15 grid of 24-pixel tiles, points tile id `1` at the "ground" costume of a sprite called "Tileset", puts one tile at column 5, row 5, and draws it. To keep the map on screen while things change, put `draw tilemap` inside a `forever` loop.
@@ -58,13 +58,13 @@ The blocks that convert coordinates (`column at x`, `row at y`, `x at column`, `
 
 ### Setting up
 
-```blocks
-create tilemap (20) columns x (15) rows, tile size (24)
+```scratch
+create tilemap (20) columns x (15) rows, tile size (24) ::#5C7CFA
 ```
 Sets up (or resets) the tilemap. Columns and rows are rounded to whole numbers, and anything below 1 counts as 1. A tilemap can have up to 1,000,000 tiles in total (for example 1000 × 1000). Bigger sizes, or `Infinity`, are ignored and leave the current tilemap as it was. The tileset and the solid tiles are kept when you create a tilemap again.
 
-```blocks
-set tile (1) to costume [costume1 v] of [Sprite1 v]
+```scratch
+set tile (1) to costume [costume1 v] of [Sprite1 v] ::#5C7CFA
 ```
 Registers what a tile id looks like. Both the sprite and the costume are dropdowns, and you can also drop a reporter into them. The costume dropdown lists the costumes of every sprite, since a dropdown can't change based on which sprite you picked, so make sure the costume you choose actually belongs to that sprite. You can reuse the same tile id later to point it at a different costume.
 
@@ -74,36 +74,36 @@ Registers what a tile id looks like. Both the sprite and the costume are dropdow
 
 ### Editing tiles
 
-```blocks
-set tile at column (0) row (0) to (1)
-(tile at column (0) row (0))
+```scratch
+set tile at column (0) row (0) to (1) ::#5C7CFA
+(tile at column (0) row (0) ::#5C7CFA)
 ```
 Write and read a single cell. Cells outside the grid are ignored when writing, and read as `0`.
 
-```blocks
-fill tiles from column (0) row (0) to column (9) row (9) with (1)
+```scratch
+fill tiles from column (0) row (0) to column (9) row (9) with (1) ::#5C7CFA
 ```
 Fills a rectangle of cells in one go. It is much faster than a nested loop, since it doesn't go through the block engine for each cell. The two corners can be given in any order, and parts outside the grid are cut off. Filling with `0` clears the area.
 
 ### Drawing
 
-```blocks
-draw tilemap with tile (0,0) at x: (0) y: (0)
+```scratch
+draw tilemap with tile (0,0) at x: (0) y: (0) ::#5C7CFA
 ```
 Draws the tilemap. `x` and `y` are where the top-left corner of tile (0, 0) lands, so passing the stage's top-left corner (`-240`, `180` on a normal stage) puts the map right in the corner. There's no hidden camera inversion: a bigger `x` moves the whole map right and a bigger `y` moves it up. To follow a scrolling player, pass the negative of the player's map-space position, in a `forever` loop.
 
 Only the tiles on the stage (plus one extra tile around the edges) are drawn, and the previous drawing of the tilemap is cleared each time. Nothing happens if there is no tilemap yet. The tilemap is drawn on its own private layer, behind sprites, so the regular Pen extension's canvas is never touched: using Pen blocks in your project won't get erased by `draw tilemap`, and vice versa.
 
-```blocks
-hide tilemap
+```scratch
+hide tilemap ::#5C7CFA
 ```
 Hides the drawn tilemap. Calling `draw tilemap` again shows it again.
 
 ### Collision
 
-```blocks
-set tile (1) solid? [solid v]
-<is solid at column (0) row (0)?>
+```scratch
+set tile (1) solid? [solid v] ::#5C7CFA
+<is solid at column (0) row (0)? ::#5C7CFA>
 ```
 Mark which tile ids block movement, then check a cell. Cells outside the grid and empty cells (tile id `0`) are never solid.
 
@@ -118,21 +118,21 @@ Mark which tile ids block movement, then check a cell. Cells outside the grid an
 | `tilemap width in pixels` | Columns × tile size |
 | `tilemap height in pixels` | Rows × tile size |
 
-```blocks
-(column at x: (0))
-(row at y: (0))
-(x at column: (0))
-(y at row: (0))
-(tilemap width in pixels)
-(tilemap height in pixels)
+```scratch
+(column at x: (0) ::#5C7CFA)
+(row at y: (0) ::#5C7CFA)
+(x at column: (0) ::#5C7CFA)
+(y at row: (0) ::#5C7CFA)
+(tilemap width in pixels ::#5C7CFA)
+(tilemap height in pixels ::#5C7CFA)
 ```
 The center of the tile is where a sprite standing on it should go. The width and height are useful for camera math, for example centering the whole map on screen or keeping a scrolling camera from showing past the edge of the map. If there is no tilemap yet, every block here reports `0`.
 
 ### Saving and loading
 
-```blocks
-(tilemap as text)
-load tilemap from text [{"columns":2,"rows":1,"tileSize":24,"grid":[1,0],"tileset":[],"solid":[]}]
+```scratch
+(tilemap as text ::#5C7CFA)
+load tilemap from text (saved map) ::#5C7CFA
 ```
 `tilemap as text` reports the whole tilemap (grid, tile size, which costume each tile id uses, and which ids are solid) as text, so you can keep it in a variable, a list, or a file. `load tilemap from text` loads text made by `tilemap as text`, replacing the current tilemap. If the text isn't valid, or doesn't match the size it says, nothing changes. After loading, call `draw tilemap` to see it.
 
@@ -144,15 +144,15 @@ The tilemap is also stored inside the project file itself, so it's still there w
 
 Give each kind of floor its own id (for example `1` grass, `2` water, `3` lava), then read the id under the sprite. This map is drawn with its corner at the stage's top-left corner (`x: -240`, `y: 180`), so the stage position is shifted by that corner before converting:
 
-```blocks
+```scratch
 when green flag clicked
-create tilemap (20) columns x (15) rows, tile size (24)
-draw tilemap with tile (0,0) at x: (-240) y: (180)
+create tilemap (20) columns x (15) rows, tile size (24) ::#5C7CFA
+draw tilemap with tile (0,0) at x: (-240) y: (180) ::#5C7CFA
 forever
-set [tile v] to (tile at column (column at x: ((x position) + (240))) row (row at y: ((y position) - (180))))
-if <(tile) = [3]> then
-say [lava!]
-end
+  set [tile v] to (tile at column (column at x: ((x position) + (240)) ::#5C7CFA) row (row at y: ((y position) - (180)) ::#5C7CFA) ::#5C7CFA)
+  if <(tile) = [3]> then
+    say [lava!]
+  end
 end
 ```
 
@@ -160,21 +160,21 @@ end
 
 Mark the ids that block movement once, then check the tile you're about to walk onto:
 
-```blocks
-set tile (1) solid? [solid v]
+```scratch
+set tile (1) solid? [solid v] ::#5C7CFA
 change x by (4)
-if <is solid at column (column at x: ((x position) + (240))) row (row at y: ((y position) - (180)))?> then
-change x by (-4)
+if <is solid at column (column at x: ((x position) + (240)) ::#5C7CFA) row (row at y: ((y position) - (180)) ::#5C7CFA)? ::#5C7CFA> then
+  change x by (-4)
 end
 ```
 
 This checks the center of the sprite. For a bigger sprite, check the corners you care about.
 
-### Saving a map to a list
+### Keeping a map in a variable
 
-```blocks
-set [saved map v] to (tilemap as text)
-load tilemap from text (saved map)
+```scratch
+set [saved map v] to (tilemap as text ::#5C7CFA)
+load tilemap from text (saved map) ::#5C7CFA
 ```
 
 ## Testing notes
