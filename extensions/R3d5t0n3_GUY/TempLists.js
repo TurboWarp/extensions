@@ -965,7 +965,7 @@
         let list1 = this.getListEnvironment(args, util, "SCOPE1", "LIST1");
         if (this.isListInEnvironment(args, util, "SCOPE2", "LIST2")) {
           let list2 = this.getListEnvironment(args, util, "SCOPE2", "LIST2");
-          list1.splice(0, list1.length); 
+          list1.splice(0, list1.length);
           for (let i of list2) list1.push(i);
         } else {
           list1.splice(0, list1.length);
@@ -978,7 +978,7 @@
           util
         );
         list1.splice(0, list1.length);
-        for (let i of (list2?.value || [])) list1.push(i);
+        for (let i of list2?.value || []) list1.push(i);
       }
       splitStringToTempList(args, util) {
         let list = this.getListEnvironment(args, util);
