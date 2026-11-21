@@ -27,6 +27,7 @@
   "penplus",
   "Xeltalliv/simple3D",
   "Lily/Skins",
+  "SharkPool/Particle-Engine",
   "obviousAlexC/SensingPlus",
   "CubesterYT/KeySimulation",
   "Lily/ClonesPlus",
@@ -105,5 +106,6 @@
   "gamejolt",
   "obviousAlexC/newgroundsIO",
   "SamuelLouf/Wikipedia",
+  "LukeAnimationss/MoreRandomness",
   "Lily/McUtils" // McUtils should always be the last item.
 ]
