@@ -928,7 +928,7 @@
       }
       loopFlowControl(args, util) {
         //Credit for this goes to SharkPool
-        if (false) { //TRYING TO FIX
+        /* if (!this.isDependencyNotLoaded()) {
           const thread = util.thread;
           const wasCompiled = thread.isCompiled.valueOf();
           const willContinue = Scratch.Cast.toString(args.MODE) == "continue";
@@ -955,6 +955,7 @@
             thread.isCompiled = wasCompiled;
           }
         }
+        */ //De-listed for strange inconsistencies; FIX ME, R3d5t0n3_GUY!!!
       }
 
       // MISC
