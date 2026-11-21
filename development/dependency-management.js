@@ -457,6 +457,12 @@ const isImmutableURL = (url) =>
   // https://raw.githubusercontent.com/TurboWarp/packager/fd233de9b1e8c1d0c2222749b7f8fff4ba83ce00/.browserslistrc
   /^https:\/\/raw\.githubusercontent\.com\/[\w-]+\/[\w-]+\/[a-f0-9]{40}\//.test(
     url
+  ) ||
+  // GitHub repository from jsdelivr, pinned to an exact commit.
+  // Examples:
+  // https://cdn.jsdelivr.net/gh/TurboWarp/packager@719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js
+  /^https:\/\/cdn\.jsdelivr\.net\/gh\/[\w-]+\/[\w.-]+@[a-f0-9]{40}\//.test(
+    url
   );
 
 /**
