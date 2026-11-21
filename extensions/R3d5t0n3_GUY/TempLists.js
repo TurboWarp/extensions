@@ -626,46 +626,6 @@
             return {};
         }
       }
-      /*
-        blockBuilder(opcode, type, text, scopeListArgs, properties, ...args) {
-          let display = Object.assign(
-            { hideFromPalette: false, disableMonitor: false, isTerminal: false },
-            Object(properties)
-          );
-          let argNames =
-            String(text)
-              .match(/\[\s*[^\u005B\u005D]+\s*\]/g)
-              ?.valueOf()
-              ?.filter((i) => i !== "[scopeList]" || !scopeListArgs) ?? [];
-          if (scopeListArgs) {
-            text = String(text).replace("[scopeList]", "[SCOPE] list [LIST]");
-          }
-          let newBlock = {
-            opcode: String(opcode),
-            blockType: Scratch.BlockType[type],
-            text: Scratch.translate(text),
-            hideFromPalette: Boolean(display?.hideFromPalette ?? false),
-            disableMonitor: Boolean(display?.disableMonitor ?? false),
-            isTerminal: Boolean(display?.isTerminal ?? false),
-          };
-          if (args) {
-            if (args.length > 0 || scopeListArgs) {
-              newBlock.arguments = Object.create(null);
-            }
-            if (args.length > 0) {
-              argNames.forEach((i, j) => {
-                newBlock.arguments[i.slice(1, -1)] = args[j];
-              });
-            }
-          }
-          if (scopeListArgs) {
-            newBlock.arguments = newBlock?.arguments ?? Object.create(null);
-            newBlock.arguments.SCOPE = this.fieldParamTemplate("menu", "scope");
-            newBlock.arguments.LIST = this.fieldParamTemplate("string", "list");
-          }
-          return newBlock;
-        }
-      */
       _getLists() {
         try {
           const lists =
@@ -1050,7 +1010,6 @@
         }
       }
       tempListExists(args, util) {
-        //opcode functions with default input values, or more than two inputs, are ignored by TW in getInfo() -_-
         return this.isListInEnvironment(args, util);
       }
       listTempLists(args, util) {
