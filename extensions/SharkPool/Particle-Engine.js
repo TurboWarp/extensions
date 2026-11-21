@@ -1572,9 +1572,8 @@ void main() {
       if (engine) {
         // To mimic the old functionality, we can use the pixelate effect.
         // It looks closely the same!
-        const quality =
-          Math.min(150, Math.max(0, sanitizeInt(args.QUALITY)));
-        engine.drawable.updateEffect("pixelate", 150 - quality); 
+        const quality = Math.min(150, Math.max(0, sanitizeInt(args.QUALITY)));
+        engine.drawable.updateEffect("pixelate", 150 - quality);
       }
     }
 
