@@ -3,7 +3,7 @@
 This extension allows you to create powerful and efficient particle engines without the use of clones.
 
 > [!NOTE]
-> Particle systems can have differences in behavior across browsers due to differences in rendering.
+> Particle systems _can_ have differences in behavior across browsers due to differences in rendering.
 > 
 > Safari, in particular, has a tendency to visually slow down particles if they are running at higher frame rates (FPS).
 
@@ -15,6 +15,8 @@ The first step in setting up your particle engine is to create an engine.
 create engine for (Stage v) ::#2474ff
 ```
 This block will initialize a new engine in the stage or the specified sprite.
+
+If the engine is not made on the stage, the positions of its particle emitters will be relative to the sprite.
 
 ```scratch
 remove engine from (Stage v) ::#2474ff
@@ -56,7 +58,7 @@ set layer of (Stage v) engine to (1) ::#2474ff
 You can use these blocks to set and get the layer order of the specified engine.
 
 ```scratch
-set [interpolation v] in (Stage v) engine [on v] ::#2474ff
+set [freeze v] in (Stage v) engine [on v] ::#2474ff
 ```
 This block will toggle various settings in the specified engine:
 
@@ -138,29 +140,29 @@ The ± number input will determine the random variance per-particle.
 | Max Particles | Determines the maximum number of particles on screen at a time |
 |    Emission   | The number of particles spawned per frame |
 |    Lifetime   | Determines how long in seconds a single particle will live |
-|     Speed     | Determines how fast a particle will move |
-|    Start x    | The start position of a particle when spawned on the x axis |
-|    Start y    | The start position of a particle when spawned on the y axis |
+|     Speed     | Determines how fast a particle will move in pixels per 30fps frame |
+|    Start x    | Relative start position of a particle on the x axis |
+|    Start y    | Relative start position of a particle on the y axis |
 |   Gravity x   | Determines the horizontal pull force on particles |
 |   Gravity y   | Determines the vertical pull force on particles |
-| Start Direction | The direction particles will move in when spawned |
-| End Direction | The direction particles will move towards |
-|   Start Spin  | Determines the rotation of a single particle when spawned |
-|    End Spin   | Determines the rotation that a single particle will turn to |
-|   Start Size  | Determines the size of a single particle when spawned |
+| Start Direction | The direction in degrees particles will move in when spawned |
+| End Direction | The direction particles will move towards in degrees |
+|   Start Spin  | Determines the rotation in degrees of a single particle when spawned |
+|    End Spin   | Determines the rotation that a single particle will turn to in degrees |
+|   Start Size  | Determines the size (in stage coordinates) of a single particle when spawned |
 |    End Size   | Determines the size that a single particle will transform towards |
 | Start Stretch x | Determines the horizontal stretch value of a single particle when spawned |
 |  End Stretch x  | Determines the horizontal stretch that a single particle will stretch towards |
 | Start Stretch y | Determines the vertical stretch value of a single particle when spawned |
-|  End Stretch y  | Determines the horizontal stretch that a single particle will stretch towards |
-| Acceleration Radius | Applies acceleration in the direction the particle is currently moving, increasing or decreasing its speed over time |
+|  End Stretch y  | Determines the vertical stretch that a single particle will stretch towards |
+| Acceleration Radius | Pushes particles away from/towards their spawn point. Positive values push away & negative values pull toward |
 | Acceleration Tan | Applies acceleration perpendicular to the particle’s movement, causing it to curve or spiral as it moves |
 | Sine Wave | Controls the amplitude of horizontal sine wave motion applied to particles |
 | Sine Speed | Determines how fast particles oscillate horizontally along the sine wave |
 | Cosine Wave | Controls the amplitude of vertical cosine wave motion applied to particles |
 | Cosine Speed | Determines how fast particles oscillate vertically along the cosine wave |
-| Fade In | Determines how fast a single particle will fade in when spawned |
-| Fade Out | Determines how fast a single particle will fade out before dying |
+| Fade In | Determines how fast a single particle will fade in when spawned. Larger values fade more slowly, & 0 means instant. |
+| Fade Out | Determines how fast a single particle will fade out before dying. Larger values fade more slowly, & 0 means instant. |
 
 ```scratch
 set (start v) color of emitter [emit-1] in (Stage v) to [#ff0000] ± (0) ::#2474ff
@@ -190,8 +192,3 @@ This block will not work if JSON is malformed, not in the right format (see the 
 (export emitter [emit-1] in (Stage v) ::#2474ff)
 ```
 This block will return JSON representing the behaviour settings for a specified emitter in an engine.
-
-> [!IMPORTANT]
-> This extension uses canvas contexts to display particles, per engine. It is advised you do **not** use many engines at once since it could affect performance or cause visual issues with the stage.
->
-> For safety, this extension will give you warning alert in the editor when the number of engines reaches 7.
