@@ -461,9 +461,7 @@ const isImmutableURL = (url) =>
   // GitHub repository from jsdelivr, pinned to an exact commit.
   // Examples:
   // https://cdn.jsdelivr.net/gh/TurboWarp/packager@719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js
-  /^https:\/\/cdn\.jsdelivr\.net\/gh\/[\w-]+\/[\w.-]+@[a-f0-9]{40}\//.test(
-    url
-  );
+  /^https:\/\/cdn\.jsdelivr\.net\/gh\/[\w-]+\/[\w.-]+@[a-f0-9]{40}\//.test(url);
 
 /**
  * @param {string} js Extension JS
