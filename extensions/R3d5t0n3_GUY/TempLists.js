@@ -343,7 +343,8 @@
                 ),
               },
             },
-            { //CURRENTLY TRYING TO FIX
+            {
+              //CURRENTLY TRYING TO FIX
               opcode: "loopFlowControl",
               blockType: Scratch.BlockType.COMMAND,
               text: Scratch.translate("[MODE] [ICON]"),
@@ -955,7 +956,8 @@
             thread.isCompiled = wasCompiled;
           }
         }
-        */ //De-listed for strange inconsistencies; FIX ME, R3d5t0n3_GUY!!!
+        */
+        //De-listed for strange inconsistencies; FIX ME, R3d5t0n3_GUY!!!
       }
 
       // MISC
