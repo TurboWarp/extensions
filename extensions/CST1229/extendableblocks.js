@@ -500,6 +500,18 @@
         this.getSvgRoot().style.cursor = "pointer";
       }
       showEditor_() {
+        if (this.sourceBlock_ && this.sourceBlock_.isInFlyout) {
+          alert(
+            Scratch.translate({
+              default:
+                "Drag the block into the code area to add or remove inputs.",
+              description:
+                "Shown when clicking the add/remove input arrows on a block in the block palette",
+            })
+          );
+          return;
+        }
+
         if (this._callback) {
           this._callback();
         }
