@@ -352,6 +352,7 @@
    * Small images (e.g. 50x50 SVGs) are rasterized larger so big particles
    * stay sharp.
    */
+  const textureCanvas = document.createElement("canvas");
   const createParticleTexture = (img) => {
     const width = Math.max(1, img.width);
     const height = Math.max(1, img.height);
@@ -364,29 +365,32 @@
 
     const contentWidth = width * contentScale;
     const contentHeight = height * contentScale;
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.max(
+    textureCanvas.width = Math.max(
       16,
       nextPowerOfTwo(contentWidth / TEXTURE_CONTENT_RATIO)
     );
-    canvas.height = Math.max(
+    textureCanvas.height = Math.max(
       16,
       nextPowerOfTwo(contentHeight / TEXTURE_CONTENT_RATIO)
     );
 
-    const ctx = canvas.getContext("2d");
+    const ctx = textureCanvas.getContext("2d");
     ctx.imageSmoothingEnabled = true;
     ctx.imageSmoothingQuality = "high";
+    ctx.save();
+    ctx.translate(textureCanvas.width, 0);
+    ctx.scale(-1, 1);
     ctx.drawImage(
       img,
-      (canvas.width - contentWidth) / 2,
-      (canvas.height - contentHeight) / 2,
+      (textureCanvas.width - contentWidth) / 2,
+      (textureCanvas.height - contentHeight) / 2,
       contentWidth,
       contentHeight
     );
+    ctx.restore();
 
     const texture = twgl.createTexture(gl, {
-      src: canvas,
+      src: textureCanvas,
       flipY: true,
       premultiplyAlpha: true,
       min: gl.LINEAR_MIPMAP_LINEAR,
@@ -401,8 +405,8 @@
       tWidth: width,
       tHeight: height,
       // How much bigger the quad is than the visible image
-      padX: canvas.width / contentWidth,
-      padY: canvas.height / contentHeight,
+      padX: textureCanvas.width / contentWidth,
+      padY: textureCanvas.height / contentHeight,
       texture,
     };
   };
