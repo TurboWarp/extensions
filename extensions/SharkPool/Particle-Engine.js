@@ -52,6 +52,9 @@
         width,
         height
       );
+
+      this._silhouetteDirty = true;
+      this._silhouetteImageData = null;
     }
     dispose() {
       const gl = this._renderer.gl;
@@ -74,11 +77,9 @@
       this._size = [w, h];
       this._rotationCenter = [w / 2, h / 2];
 
-      // Recreate texture and framebuffer
-      if (this._texture) gl.deleteTexture(this._texture);
-      if (this._framebuffer) {
-        gl.deleteFramebuffer(this._framebuffer.framebuffer);
-      }
+      // Recreate texture and framebuffer, keeping the old contents
+      const oldTexture = this._texture;
+      const oldFramebuffer = this._framebuffer;
 
       this._texture = twgl.createTexture(gl, {
         mag: gl.LINEAR,
@@ -99,6 +100,16 @@
         w,
         h
       );
+
+      if (oldTexture) {
+        blitTexture(oldTexture, this._framebuffer, w, h);
+        gl.deleteTexture(oldTexture);
+      }
+      if (oldFramebuffer) {
+        gl.deleteFramebuffer(oldFramebuffer.framebuffer);
+      }
+
+      this._silhouetteDirty = true;
     }
     get size() {
       return this._size;
@@ -106,6 +117,44 @@
     getTexture(scale) {
       return this._texture || super.getTexture();
     }
+    useNearest() {
+      return false;
+    }
+    /**
+     * Called by the renderer before CPU "touching color" checks. Like pen,
+     * read the framebuffer back so that CPU and GPU checks see the same
+     * particles. Only happens when the particles changed since last time.
+     */
+    updateSilhouette() {
+      if (!this._silhouetteDirty || !this._framebuffer) return;
+      this._silhouetteDirty = false;
+
+      const [width, height] = this._size;
+      if (
+        !this._silhouetteImageData ||
+        this._silhouetteImageData.width !== width ||
+        this._silhouetteImageData.height !== height
+      ) {
+        this._silhouetteImageData = new ImageData(width, height);
+      }
+
+      const gl = this._renderer.gl;
+      this._renderer._doExitDrawRegion();
+      twgl.bindFramebufferInfo(gl, this._framebuffer);
+      gl.readPixels(
+        0,
+        0,
+        width,
+        height,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        new Uint8Array(this._silhouetteImageData.data.buffer)
+      );
+      twgl.bindFramebufferInfo(gl, null);
+      this._silhouette.update(this._silhouetteImageData, true);
+    }
+    // Particles can still be detected with "touching color", but never
+    // count as a sprite for clicking or "touching sprite"
     isTouchingNearest() {
       return false;
     }
@@ -245,8 +294,6 @@
   let deltaTime = 0;
   let prevTime = 0;
 
-  let CURRENT_QUALITY = render.useHighQualityRender ? 4 : 2;
-
   const allEngines = new Map();
 
   // Constants
@@ -291,6 +338,75 @@
     return Math.max(-limit, Math.min(limit, n));
   };
 
+  const TEXTURE_MIN_SIZE = 256;
+  const TEXTURE_MAX_SIZE = Math.min(2048, MAX_TEXTURE_SIZE);
+  const TEXTURE_CONTENT_RATIO = 0.875; // leaves >= 1/16 transparent border per side
+  const nextPowerOfTwo = (n) => 2 ** Math.ceil(Math.log2(Math.max(1, n)));
+
+  /**
+   * Particles are anti-aliased by:
+   *  - a transparent border, so the quad's own edges are never visible and
+   *    the shape's outline is smoothed by texture filtering instead.
+   *  - power-of-two size + mipmaps, so small particles don't shimmer.
+   *  - premultiplied upload, so filtering doesn't create dark fringes.
+   * Small images (e.g. 50x50 SVGs) are rasterized larger so big particles
+   * stay sharp.
+   */
+  const createParticleTexture = (img) => {
+    const width = Math.max(1, img.width);
+    const height = Math.max(1, img.height);
+    const maxDim = Math.max(width, height);
+    const contentScale =
+      Math.min(
+        Math.max(maxDim, TEXTURE_MIN_SIZE),
+        TEXTURE_MAX_SIZE * TEXTURE_CONTENT_RATIO
+      ) / maxDim;
+
+    const contentWidth = width * contentScale;
+    const contentHeight = height * contentScale;
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(
+      16,
+      nextPowerOfTwo(contentWidth / TEXTURE_CONTENT_RATIO)
+    );
+    canvas.height = Math.max(
+      16,
+      nextPowerOfTwo(contentHeight / TEXTURE_CONTENT_RATIO)
+    );
+
+    const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(
+      img,
+      (canvas.width - contentWidth) / 2,
+      (canvas.height - contentHeight) / 2,
+      contentWidth,
+      contentHeight
+    );
+
+    const texture = twgl.createTexture(gl, {
+      src: canvas,
+      flipY: true,
+      premultiplyAlpha: true,
+      min: gl.LINEAR_MIPMAP_LINEAR,
+      mag: gl.LINEAR,
+      wrap: gl.CLAMP_TO_EDGE,
+      auto: false,
+    });
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.generateMipmap(gl.TEXTURE_2D);
+
+    return {
+      tWidth: width,
+      tHeight: height,
+      // How much bigger the quad is than the visible image
+      padX: canvas.width / contentWidth,
+      padY: canvas.height / contentHeight,
+      texture,
+    };
+  };
+
   const newTexture = (url, callback) => {
     let called = false;
     const handleCallback = (value) => {
@@ -315,19 +431,7 @@
         };
         img.onload = () => {
           try {
-            const texture = twgl.createTexture(gl, {
-              src: img,
-              flipY: true,
-              min: gl.LINEAR,
-              mag: gl.LINEAR,
-              wrap: gl.CLAMP_TO_EDGE,
-            });
-
-            handleCallback({
-              tWidth: Math.max(1, img.width),
-              tHeight: Math.max(1, img.height),
-              texture: texture,
-            });
+            handleCallback(createParticleTexture(img));
           } catch (e) {
             console.error("Error creating texture:", e);
             handleCallback(null);
@@ -366,9 +470,9 @@ varying vec2 v_texcoord;
 varying vec4 v_color;
 
 void main() {
+  // Texture is premultiplied, v_color is not
   vec4 tex = texture2D(u_texture, v_texcoord);
-  vec4 color = tex * v_color;
-  gl_FragColor = vec4(color.rgb * color.a, color.a);
+  gl_FragColor = tex * vec4(v_color.rgb * v_color.a, v_color.a);
 }`;
 
   // Shared program and batch buffer (created once, reused by all engines)
@@ -385,6 +489,44 @@ void main() {
   const batchData = new Float32Array(
     MAX_BATCH * VERTS_PER_PARTICLE * FLOATS_PER_VERTEX
   );
+
+  // Used to copy old framebuffer contents into a resized framebuffer
+  const blitProgramInfo = twgl.createProgramInfo(gl, [
+    `
+attribute vec2 a_position;
+varying vec2 v_texcoord;
+void main() {
+  gl_Position = vec4(a_position, 0, 1);
+  v_texcoord = a_position * 0.5 + 0.5;
+}`,
+    `
+precision mediump float;
+uniform sampler2D u_texture;
+varying vec2 v_texcoord;
+void main() {
+  gl_FragColor = texture2D(u_texture, v_texcoord);
+}`,
+  ]);
+  const blitBufferInfo = twgl.createBufferInfoFromArrays(gl, {
+    a_position: {
+      numComponents: 2,
+      data: [-1, -1, 1, -1, -1, 1, 1, -1, 1, 1, -1, 1],
+    },
+  });
+  const blitTexture = (texture, framebufferInfo, width, height) => {
+    render._doExitDrawRegion();
+    twgl.bindFramebufferInfo(gl, framebufferInfo);
+    gl.viewport(0, 0, width, height);
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.disable(gl.BLEND);
+    gl.useProgram(blitProgramInfo.program);
+    twgl.setBuffersAndAttributes(gl, blitProgramInfo, blitBufferInfo);
+    twgl.setUniforms(blitProgramInfo, { u_texture: texture });
+    twgl.drawBufferInfo(gl, blitBufferInfo, gl.TRIANGLES);
+    gl.enable(gl.BLEND);
+    twgl.bindFramebufferInfo(gl, null);
+  };
 
   const releaseEmitter = (emitter) => {
     if (!emitter || emitter.released) return;
@@ -409,20 +551,21 @@ void main() {
     );
   };
 
-  const applyEngineQuality = (engine, quality) => {
+  /**
+   * Like high quality pen, engines render at the canvas's actual resolution.
+   */
+  const getRenderQuality = (engine) => {
+    const quality = gl.canvas.width / Math.max(engine.stageWidth, 1);
     const maxQuality =
       MAX_TEXTURE_SIZE / Math.max(engine.stageWidth, engine.stageHeight, 1);
+    return Math.max(0, Math.min(quality, maxQuality));
+  };
 
-    quality = Math.max(0.04, Math.min(quality, maxQuality));
-    engine.quality = quality;
+  const applyEngineResolution = (engine) => {
+    const quality = getRenderQuality(engine);
     engine.renderWidth = Math.max(1, Math.round(engine.stageWidth * quality));
     engine.renderHeight = Math.max(1, Math.round(engine.stageHeight * quality));
-
-    const old = engine.skin.size;
     engine.skin.size = [engine.renderWidth, engine.renderHeight];
-    if (old[0] !== engine.renderWidth || old[1] !== engine.renderHeight) {
-      engine.dirtyCanvas = false;
-    }
 
     engine.drawable.updateScale([
       (engine.drawableScale[0] * engine.stageWidth) / engine.renderWidth,
@@ -440,7 +583,7 @@ void main() {
     const drawableId = render.createDrawable("sprite");
     const drawable = render._allDrawables[drawableId];
     const skinId = render._nextSkinId++;
-    const skin = new ParticleSkin(skinId, render, width * 2, height * 2);
+    const skin = new ParticleSkin(skinId, render, width, height);
     render._allSkins[skinId] = skin;
 
     const engine = {
@@ -451,11 +594,10 @@ void main() {
       target,
       targetId: target.id,
       disposed: false,
-      quality: 2,
       stageWidth: width,
       stageHeight: height,
-      renderWidth: width * 2,
-      renderHeight: height * 2,
+      renderWidth: width,
+      renderHeight: height,
       drawableScale: [100, -100],
       emitters: new Map(),
       emitterNameTokens: new Map(),
@@ -478,13 +620,10 @@ void main() {
       const [w, h] = event.newSize;
       engine.stageWidth = w;
       engine.stageHeight = h;
-      applyEngineQuality(engine, engine.quality);
+      applyEngineResolution(engine);
     };
 
-    applyEngineQuality(
-      engine,
-      CURRENT_QUALITY !== 2 ? CURRENT_QUALITY : engine.quality
-    );
+    applyEngineResolution(engine);
 
     render.on("NativeSizeChanged", engine.onStageSizeChange);
     runtime.requestRedraw();
@@ -631,7 +770,8 @@ void main() {
           if (!texture) continue;
 
           const { opts, data } = emitter;
-          const { tWidth, tHeight } = texture;
+          const quadWidth = texture.tWidth * texture.padX;
+          const quadHeight = texture.tHeight * texture.padY;
           const posX = emitter.pos[0] + ownerX;
           const posY = emitter.pos[1] - ownerY;
 
@@ -704,8 +844,8 @@ void main() {
 
             const screenX = p.x + width * 0.5;
             const screenY = p.y + height * 0.5;
-            const sizeX = tWidth * size * streX;
-            const sizeY = tHeight * size * streY;
+            const sizeX = quadWidth * size * streX;
+            const sizeY = quadHeight * size * streY;
             /* do not draw if invisible or out-of-bounds */
             if (
               opacity <= 0 ||
@@ -774,6 +914,7 @@ void main() {
       engine.dirtyCanvas = true;
     }
 
+    skin._silhouetteDirty = true;
     skin.emitWasAltered();
     return true;
   };
@@ -820,16 +961,6 @@ void main() {
     });
   });
 
-  // Toggle high-quality rendering for engines
-  let wasHighQualityEnabled;
-  render.on("UseHighQualityRenderChanged", (isEnabled) => {
-    if (wasHighQualityEnabled === isEnabled) return;
-    wasHighQualityEnabled = isEnabled;
-
-    CURRENT_QUALITY = isEnabled ? 4 : 2;
-    allEngines.forEach((engine) => applyEngineQuality(engine, CURRENT_QUALITY));
-  });
-
   // Update non-interpolated engines.
   runtime.on("AFTER_EXECUTE", () => {
     if (runtime.ioDevices.clock._paused) return;
@@ -849,8 +980,20 @@ void main() {
   });
 
   // Update interpolated engines.
+  let lastCanvasWidth = gl.canvas.width;
+  let lastCanvasHeight = gl.canvas.height;
   function interpolateEngines(deltaFrame) {
     requestAnimationFrame(interpolateEngines);
+
+    // The renderer has no event for canvas resizes, so check every frame
+    if (
+      gl.canvas.width !== lastCanvasWidth ||
+      gl.canvas.height !== lastCanvasHeight
+    ) {
+      lastCanvasWidth = gl.canvas.width;
+      lastCanvasHeight = gl.canvas.height;
+      allEngines.forEach((engine) => applyEngineResolution(engine));
+    }
 
     if (runtime.ioDevices.clock._paused) {
       prevTime = deltaFrame;
@@ -1415,7 +1558,7 @@ void main() {
           sanitizeInt(args.x, MAX_INT),
           sanitizeInt(args.y, MAX_INT) * -1,
         ];
-        applyEngineQuality(engine, engine.quality);
+        applyEngineResolution(engine);
       }
     }
 
@@ -1423,9 +1566,11 @@ void main() {
       const target = this.getSprite(args.TARGET);
       const engine = this.getEngine(target);
       if (engine) {
+        // To mimic the old functionality, we can use the pixelate effect.
+        // It looks closely the same!
         const quality =
-          Math.min(150, Math.max(1, sanitizeInt(args.QUALITY))) / 25;
-        applyEngineQuality(engine, quality);
+          Math.min(150, Math.max(0, sanitizeInt(args.QUALITY)));
+        engine.drawable.updateEffect("pixelate", 150 - quality); 
       }
     }
 
