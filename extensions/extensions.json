@@ -81,7 +81,7 @@
   "TheShovel/CanvasEffects",
   "Longboost/color_channels",
   "CST1229/zip",
-  "CST1229/images",
+  "CST1229/extendableblocks",
   "TheShovel/LZ-String",
   "0832/rxFS2",
   "NexusKitten/sgrab",
@@ -105,5 +105,6 @@
   "gamejolt",
   "obviousAlexC/newgroundsIO",
   "SamuelLouf/Wikipedia",
+  "LukeAnimationss/MoreRandomness",
   "Lily/McUtils" // McUtils should always be the last item.
 ]
