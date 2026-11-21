@@ -343,11 +343,11 @@
                 ),
               },
             },
-            {
+            { //CURRENTLY TRYING TO FIX
               opcode: "loopFlowControl",
               blockType: Scratch.BlockType.COMMAND,
               text: Scratch.translate("[MODE] [ICON]"),
-              hideFromPalette: this.isDependencyNotLoaded(),
+              hideFromPalette: true, //this.isDependencyNotLoaded(),
               isTerminal: true,
               arguments: {
                 MODE: this.fieldParamTemplate("menu", "loopFlowControl"),
@@ -928,7 +928,7 @@
       }
       loopFlowControl(args, util) {
         //Credit for this goes to SharkPool
-        if (!this.isDependencyNotLoaded()) {
+        if (false) { //TRYING TO FIX
           const thread = util.thread;
           const wasCompiled = thread.isCompiled.valueOf();
           const willContinue = Scratch.Cast.toString(args.MODE) == "continue";
