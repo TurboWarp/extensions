@@ -1,5 +1,5 @@
 // Name: Tiles
-// ID: tiles
+// ID: fachu2012tiles
 // Description: Create, draw, and query grid-based tile maps for 2D games.
 // By: pro2012Fachu <https://scratch.mit.edu/users/pro2012Fachu/>
 // License: MPL-2.0
@@ -13,6 +13,10 @@
 
   const vm = Scratch.vm;
   const runtime = vm.runtime;
+
+  // The extension id. It must never change once the extension is published,
+  // since projects store the tilemap under it.
+  const EXTENSION_ID = "fachu2012tiles";
 
   // Largest grid that create tilemap will make (for example 1000 x 1000).
   const MAX_TILES = 1000000;
@@ -167,7 +171,7 @@
 
   function flushStorage() {
     flushTimeout = null;
-    runtime.extensionStorage.tiles = serializeState();
+    runtime.extensionStorage[EXTENSION_ID] = serializeState();
   }
 
   function markDirty() {
@@ -191,10 +195,10 @@
   runtime.on("RUNTIME_DISPOSED", clearProject);
   runtime.on("PROJECT_LOADED", () => {
     clearProject();
-    restoreState(runtime.extensionStorage.tiles);
+    restoreState(runtime.extensionStorage[EXTENSION_ID]);
   });
   vm.on("targetsUpdate", syncTileset);
-  restoreState(runtime.extensionStorage.tiles);
+  restoreState(runtime.extensionStorage[EXTENSION_ID]);
 
   // Looks up the render skin ID for whatever costume was registered for a
   // given tile id. Costumes get their skinId assigned by scratch-vm when
@@ -248,8 +252,9 @@
   class Tiles {
     getInfo() {
       return {
-        id: "tiles",
+        id: EXTENSION_ID,
         name: Scratch.translate("Tiles"),
+        docsURI: "https://extensions.turbowarp.org/fachu2012/tiles",
         color1: "#5C7CFA",
         blocks: [
           {

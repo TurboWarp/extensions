@@ -4,8 +4,6 @@ A grid-based tilemap system for 2D games. You create a grid, tell it which sprit
 
 This doesn't do animation or multiple layers. It's the grid, the drawing and the collision queries, plus a way to save and load the grid as text. Combine it with the **Files** extension if you want to keep map data in a separate file, and with **List Tools** or plain lists if you want to build the map from external data.
 
-> **Note:** This extension runs unsandboxed. Drawing tiles without moving or cloning real sprites needs direct access to the renderer, the same kind of access the built-in Pen extension uses internally for `stamp`.
-
 ## Getting started
 
 The minimum to get something on screen is a grid, a costume for tile id `1`, one tile placed in the grid, and a draw:
@@ -213,19 +211,3 @@ This checks the center of the sprite. For a bigger sprite, check the corners you
 set [saved map v] to (tilemap as text ::#5C7CFA)
 load tilemap from text (saved map) ::#5C7CFA
 ```
-
-## Testing notes
-
-I tested this myself in the TurboWarp dev server before opening the PR, not just in theory:
-- Grid create/read/write, including out-of-range and negative columns/rows (they're safely ignored, no crash)
-- `fill tiles` with corners given in reverse order and with out-of-range corners
-- Solid/collision checks
-- All four coordinate conversion blocks
-- Drawing with more than one tile id in the same map at once
-- A non-square source costume getting scaled to a square tile, and re-registering the costume after repainting it
-- `hide tilemap` followed by `draw tilemap` to make sure it reappears
-- The sprite and costume dropdowns, including dropping a reporter into them
-- `tilemap as text` and `load tilemap from text`, including loading text that isn't valid (nothing changes)
-- Saving the project, reopening it, and calling `draw tilemap` to get the same map back, with the same tiles still marked solid
-
-I used AI assistance (Claude) while building this, mainly for scaffolding the renderer-access parts and catching a bug I described from testing (a stale scale cache). I designed the block set and the coordinate system myself, and everything above is stuff I actually ran, not just read about.
