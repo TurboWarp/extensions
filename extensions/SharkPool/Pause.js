@@ -211,7 +211,7 @@
               const threadID = `${target.id}&${script.blockId}`;
               const existingThread = runtime.threadMap.get(threadID);
               if (existingThread) {
-                runtime._restartThread(existingThread)
+                runtime._restartThread(existingThread);
               } else {
                 runtime._pushThread(script.blockId, target);
               }
@@ -228,7 +228,8 @@
         when RUNTIME_UNPAUSED runs on a paused project. Interestingly, we dont have to do
         this check if the pause button doesnt exist, since the addon controls this behaviour.
         */
-        const isActualUnpause = runtime.ioDevices.clock._paused || !guiPauseButtonExists();
+        const isActualUnpause =
+          runtime.ioDevices.clock._paused || !guiPauseButtonExists();
         if (isActualUnpause) {
           runtime.startHats("SPpauseV2_whenProjectUnpaused");
         }
@@ -447,10 +448,7 @@
       const myThreadId = util.thread.getId();
 
       for (const thread of runtime.threads) {
-        if (
-          myTarget !== thread.target.id ||
-          myThreadId === thread.getId()
-        ) {
+        if (myTarget !== thread.target.id || myThreadId === thread.getId()) {
           continue;
         }
 
