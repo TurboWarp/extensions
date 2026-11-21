@@ -347,7 +347,7 @@
               //CURRENTLY TRYING TO FIX
               opcode: "loopFlowControl",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("[MODE] [ICON]"),
+              text: Scratch.translate("this is currently under maintenance!"), //"[MODE] [ICON]",
               hideFromPalette: true, //this.isDependencyNotLoaded(),
               isTerminal: true,
               arguments: {
@@ -965,7 +965,8 @@
         let list1 = this.getListEnvironment(args, util, "SCOPE1", "LIST1");
         if (this.isListInEnvironment(args, util, "SCOPE2", "LIST2")) {
           let list2 = this.getListEnvironment(args, util, "SCOPE2", "LIST2");
-          list1.splice(0, list1.length, ...list2);
+          list1.splice(0, list1.length); 
+          for (let i of list2) list1.push(i);
         } else {
           list1.splice(0, list1.length);
         }
@@ -976,7 +977,8 @@
           Scratch.Cast.toString(args.LISTS),
           util
         );
-        list1.splice(0, list1.length, ...(list2?.value || []));
+        list1.splice(0, list1.length);
+        for (let i of (list2?.value || [])) list1.push(i);
       }
       splitStringToTempList(args, util) {
         let list = this.getListEnvironment(args, util);
@@ -1002,7 +1004,8 @@
         } catch (e) {
           array = [];
         }
-        list.splice(0, list.length, ...array);
+        list.splice(0, list.length);
+        for (let i of array) list.push(i);
       }
       getTempListAsArray(args, util) {
         if (this.isListInEnvironment(args, util)) {
