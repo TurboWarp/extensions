@@ -33,6 +33,8 @@
     columns: 0,
     rows: 0,
     tileSize: 1,
+    originX: 0,
+    originY: 0,
     grid: new Int32Array(0),
     // tile id -> { targetName, costumeName, sprite, costume }. The sprite and
     // costume objects survive renames, so the names can be kept up to date.
@@ -55,6 +57,8 @@
     state.columns = 0;
     state.rows = 0;
     state.tileSize = 1;
+    state.originX = 0;
+    state.originY = 0;
     state.grid = new Int32Array(0);
     state.tileset.clear();
     state.solidIds.clear();
@@ -589,12 +593,18 @@
     // subtract X and Y from stage coordinates before converting.
     columnAtX(args) {
       if (state.columns === 0) return 0;
-      return Math.floor(Scratch.Cast.toNumber(args.X) / state.tileSize);
+
+      return Math.floor(
+        (Scratch.Cast.toNumber(args.X) - state.originX) / state.tileSize
+      );
     }
 
     rowAtY(args) {
       if (state.columns === 0) return 0;
-      return Math.floor(-Scratch.Cast.toNumber(args.Y) / state.tileSize);
+
+      return Math.floor(
+        (state.originY - Scratch.Cast.toNumber(args.Y)) / state.tileSize
+      );
     }
 
     // Center of the tile, which is where a sprite standing on it should go.
@@ -634,6 +644,8 @@
       // it up, like a normal "go to x/y" block.
       const originX = Scratch.Cast.toNumber(args.X);
       const originY = Scratch.Cast.toNumber(args.Y);
+      state.originX = originX;
+      state.originY = originY;
 
       // Only draw the tiles on the stage, plus one extra tile around the edges.
       const stageWidth = runtime.stageWidth || 480;
