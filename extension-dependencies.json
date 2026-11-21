@@ -52,7 +52,7 @@
       "sha256": "6518882687ffbbb43c3af5a5a4f4381ca2a2efb0d2db4d456d232af0f08a0b07",
       "contentType": "text/plain; charset=utf-8"
     },
-    "https://raw.githubusercontent.com/TurboWarp/packager/719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js": {
+    "https://cdn.jsdelivr.net/gh/TurboWarp/packager@719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js": {
       "sha256": "04a624609269242d4b8f24176b22f63ddc8852759e35fb0793df1c8b014eeaa0",
       "contentType": "application/javascript; charset=utf-8"
     },
