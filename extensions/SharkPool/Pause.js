@@ -4,7 +4,7 @@
 // By: SharkPool
 // License: MIT
 
-// Version V.1.0.1
+// Version V.1.0.11
 
 /**
  * Rewrite of Pause Utilities
@@ -31,36 +31,39 @@
 
   /** @type {Set<String>} */
   const pausedScripts = new Set();
-  /** @type {Map<Thread.id, Object>} */
-  const pausedSpriteData = new Map();
 
   /**
    * Add the Pause Addon code used by the Turbowarp Packager. This is the packager version,
    * so its license-compatibile. Must be initialized with a VM.
    *
-   * Source: https://raw.githubusercontent.com/TurboWarp/packager/719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js
+   * Source: https://cdn.jsdelivr.net/gh/TurboWarp/packager@719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js
    * License: Mozilla Public License Version 2.0
    */
   const pauseInitializer = await Scratch.external.importModule(
-    "https://raw.githubusercontent.com/TurboWarp/packager/719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js"
+    "https://cdn.jsdelivr.net/gh/TurboWarp/packager@719e7521439dcc32672de0dfd5454e72db1b0f69/src/addons/pause.js"
   );
 
   // This function expects 'scaffolding', but only accesses vm.
   // We can use the Scratch object since it contains the vm.
   pauseInitializer.default({ scaffolding: Scratch });
 
-  // Check if the pause button exists, we will use that if availiable.
-  const guiPauseButton = document.querySelector(
-    typeof scaffolding !== "undefined"
-      ? `[class*="pause-button"]`
-      : "img.pause-btn.addons-display-none-pause"
-  );
+  /**
+   * Check if the pause button exists, we will use that if availiable.
+   */
+  const guiPauseButtonExists = () => {
+    return document.querySelector(
+      typeof scaffolding !== "undefined"
+        ? `[class*="pause-button"]`
+        : "img.pause-btn.addons-display-none-pause"
+    );
+  };
 
   /**
    * Toggles pausing the project.
    * @param {Boolean} paused True to pause
    */
   const setProjectPause = (paused) => {
+    const guiPauseButton = guiPauseButtonExists();
     if (guiPauseButton) {
       const isPaused = runtime.ioDevices.clock._paused;
       if (paused !== isPaused) guiPauseButton.click();
@@ -101,13 +104,23 @@
     if (varName) {
       clones = clones.filter((c) => {
         const variable = c.lookupVariableByNameAndType(varName, "");
-        return variable && variable.value === varValue;
+        return variable && Cast.compare(variable.value, varValue) === 0;
       });
     }
 
     for (const clone of clones) {
       setSpritePause(paused, clone);
     }
+  };
+
+  /**
+   * Checks if a thread is paused.
+   * @param {VM.Thread} thread
+   * @returns {Boolean} true if paused
+   */
+  const isThreadPaused = (thread) => {
+    const data = thread[ThreadPauseData] ?? {};
+    return data.paused || thread.status === STATUS_PAUSED;
   };
 
   /**
@@ -123,7 +136,7 @@
     }
 
     if (paused) {
-      if (thread.status === STATUS_PAUSED) return;
+      if (isThreadPaused(thread)) return;
 
       thread[ThreadPauseData] = {
         paused: true,
@@ -132,9 +145,8 @@
       };
 
       thread.status = STATUS_PAUSED;
-      if (thread.timer) thread.timer.pause();
     } else {
-      if (thread.status !== STATUS_PAUSED) return;
+      if (!isThreadPaused(thread)) return;
 
       const data = thread[ThreadPauseData];
       if (!data) return;
@@ -152,10 +164,12 @@
       if (compatStackframe && compatStackframe.timer) {
         compatStackframe.timer.startTime += timeDiff;
       }
+      if (thread.timer) {
+        thread.timer.startTime += timeDiff;
+      }
 
       thread.status = data.oldStatus;
       data.paused = false;
-      if (thread.timer) thread.timer.play();
     }
   };
 
@@ -187,7 +201,6 @@
     constructor() {
       runtime.on("PROJECT_STOP_ALL", () => {
         pausedScripts.clear();
-        pausedSpriteData.clear();
       });
 
       runtime.on("RUNTIME_PAUSED", () => {
@@ -195,13 +208,30 @@
           runtime.allScriptsByOpcodeDo(
             "SPpauseV2_whenProjectPaused",
             (script, target) => {
-              runtime._pushThread(script.blockId, target);
+              const threadID = `${target.id}&${script.blockId}`;
+              const existingThread = runtime.threadMap.get(threadID);
+              if (existingThread) {
+                runtime._restartThread(existingThread)
+              } else {
+                runtime._pushThread(script.blockId, target);
+              }
             }
           );
         });
       });
       runtime.on("RUNTIME_UNPAUSED", () => {
-        runtime.startHats("SPpauseV2_whenProjectUnpaused");
+        /*
+        This is a fun case. Even though in the event im about to describe, the code in
+        the event block WONT run, RUNTIME_UNPAUSED will execute if the flag was pressed.
+
+        To fix this we will check if the project is still paused since it is still 'true'
+        when RUNTIME_UNPAUSED runs on a paused project. Interestingly, we dont have to do
+        this check if the pause button doesnt exist, since the addon controls this behaviour.
+        */
+        const isActualUnpause = runtime.ioDevices.clock._paused || !guiPauseButtonExists();
+        if (isActualUnpause) {
+          runtime.startHats("SPpauseV2_whenProjectUnpaused");
+        }
       });
     }
     getInfo() {
@@ -413,18 +443,24 @@
     }
 
     pauseOtherScripts(_, util) {
+      const myTarget = util.thread.target.id;
       const myThreadId = util.thread.getId();
 
       for (const thread of runtime.threads) {
-        if (myThreadId === thread.getId()) continue;
+        if (
+          myTarget !== thread.target.id ||
+          myThreadId === thread.getId()
+        ) {
+          continue;
+        }
 
         setThreadPause(true, thread);
       }
     }
 
     pauseSprite(args, util) {
+      const target = this._getTarget(args.SPRITE, util);
       this._doAfterTick(util, () => {
-        const target = this._getTarget(args.SPRITE, util);
         if (target) setSpritePause(true, target);
       });
     }
