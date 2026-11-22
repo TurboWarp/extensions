@@ -95,6 +95,8 @@
 
     entry.loadingEmbeddedSkin = true;
 
+    // This image uses an embedded data URI, not a network URL.
+    // eslint-disable-next-line extension/check-can-fetch
     const image = new Image();
 
     image.onload = () => {
@@ -395,7 +397,11 @@
           (typeof event.data.id === "number" ||
             typeof event.data.id === "string")
         ) {
-          const translatedText = Scratch.translate(event.data.text);
+			
+        const translatedText = Scratch.translate.call(
+          Scratch,
+          event.data.text
+        );
 
           this.editorFrame.contentWindow.postMessage(
             {
