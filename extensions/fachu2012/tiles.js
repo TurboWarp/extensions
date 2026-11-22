@@ -14,55 +14,51 @@
   const vm = Scratch.vm;
   const runtime = vm.runtime;
 
-  // The extension id. It must never change once the extension is published,
-  // since projects store the tilemap under it.
   const EXTENSION_ID = "fachu2012tiles";
-
-  // Largest grid that create tilemap will make (for example 1000 x 1000).
   const MAX_TILES = 1000000;
-
   const OFFSTAGE_X = 1e6;
   const OFFSTAGE_Y = 1e6;
-  // Direction 90 is "facing right", so stamped tiles are never rotated.
   const NO_ROTATION_DIRECTION = 90;
   const STORAGE_FLUSH_DELAY_MS = 500;
+  const EDITOR_URL =
+    "http://localhost:8000/fachu2012/tiles-editor/index.html";
 
-  // The one tilemap of the project, shared by every sprite and clone.
-  // Tile (column, row) is grid[row * columns + column], and 0 means empty.
   const state = {
     columns: 0,
     rows: 0,
     tileSize: 1,
+    originalTileSize: 1,
     originX: 0,
     originY: 0,
     grid: new Int32Array(0),
-    // tile id -> { targetName, costumeName, sprite, costume }. The sprite and
-    // costume objects survive renames, so the names can be kept up to date.
     tileset: new Map(),
     solidIds: new Set(),
-    // skinId -> [scaleX%, scaleY%] that fits that skin to one tile
+    attributes: new Map(),
     scaleCache: new Map(),
   };
 
-  // Renderer objects used to draw the tilemap on its own pen skin, so the
-  // regular Pen extension's canvas is never touched. They're created the first
-  // time the tilemap is drawn and reused after that.
   const render = {
     penSkinId: null,
     penDrawableId: null,
     stampDrawableId: null,
+    lastDrawKey: null,
+    revision: 0,
   };
 
   function resetState() {
     state.columns = 0;
     state.rows = 0;
     state.tileSize = 1;
+	state.originalTileSize = 1;
     state.originX = 0;
     state.originY = 0;
     state.grid = new Int32Array(0);
     state.tileset.clear();
     state.solidIds.clear();
+    state.attributes.clear();
     state.scaleCache.clear();
+    render.lastDrawKey = null;
+    render.revision++;
   }
 
   function indexFor(column, row) {
@@ -72,7 +68,6 @@
     return row * state.columns + column;
   }
 
-  // Finds a costume by sprite name and costume name.
   function findCostume(targetName, costumeName) {
     const target = runtime.getSpriteTargetByName(targetName);
     if (!target) return null;
@@ -81,13 +76,52 @@
   }
 
   function bindEntry(entry) {
-    const found = findCostume(entry.targetName, entry.costumeName);
-    entry.sprite = found ? found.sprite : null;
-    entry.costume = found ? found.costume : null;
+  const found = findCostume(entry.targetName, entry.costumeName);
+  entry.sprite = found ? found.sprite : null;
+  entry.costume = found ? found.costume : null;
+
+  if (!found && entry.dataURI) {
+    loadEmbeddedSkin(entry);
+  }
+}
+
+  function loadEmbeddedSkin(entry) {
+    if (
+      !entry.dataURI ||
+      entry.embeddedSkinId !== null ||
+      entry.loadingEmbeddedSkin
+    ) {
+      return;
+    }
+
+    entry.loadingEmbeddedSkin = true;
+
+    const image = new Image();
+
+    image.onload = () => {
+      try {
+        entry.embeddedSkinId = runtime.renderer.createBitmapSkin(
+          image,
+          1,
+          [image.width / 2, image.height / 2]
+        );
+
+        render.revision++;
+        render.lastDrawKey = null;
+      } catch (error) {
+        entry.embeddedSkinId = null;
+      }
+
+      entry.loadingEmbeddedSkin = false;
+    };
+
+    image.onerror = () => {
+      entry.loadingEmbeddedSkin = false;
+    };
+
+    image.src = entry.dataURI;
   }
 
-  // Renaming a sprite or costume doesn't update the dropdowns of other
-  // extensions' blocks, so follow the renames here instead.
   function syncTileset() {
     let changed = false;
     for (const entry of state.tileset.values()) {
@@ -101,32 +135,33 @@
           changed = true;
         }
       } else {
-        // Not found yet, or the costume was deleted: look it up by name again.
         bindEntry(entry);
       }
     }
     if (changed) markDirty();
   }
 
-  // Plain-data snapshot of the tilemap, used for "tilemap as text" and for
-  // extension storage (which is saved inside the project file).
   function serializeState() {
     return {
       columns: state.columns,
       rows: state.rows,
       tileSize: state.tileSize,
+      originalTileSize: state.originalTileSize,
       grid: Array.from(state.grid),
       tileset: Array.from(state.tileset, ([id, entry]) => [
         id,
         entry.targetName,
         entry.costumeName,
+        entry.dataURI || "",
       ]),
       solid: Array.from(state.solidIds),
+      attributes: Array.from(state.attributes, ([id, attributes]) => [
+        id,
+        Array.from(attributes),
+      ]),
     };
   }
 
-  // Returns false (and leaves the tilemap untouched) if the data isn't a valid
-  // snapshot, so bad text never half-loads a map.
   function restoreState(data) {
     if (!data || typeof data !== "object") return false;
     const { columns, rows, tileSize, grid } = data;
@@ -143,34 +178,95 @@
     ) {
       return false;
     }
+
+    const restoredAttributes = new Map();
+    if (!Array.isArray(data.tileset)) return false;
+    const restoredTileset = new Map();
+
+    for (const item of data.tileset) {
+      if (
+        !Array.isArray(item) ||
+        (item.length !== 3 && item.length !== 4) ||
+        (typeof item[3] !== "undefined" && typeof item[3] !== "string") ||
+        !Number.isInteger(item[0]) ||
+        item[0] <= 0 ||
+        typeof item[1] !== "string" ||
+        item[1].trim() === "" ||
+        typeof item[2] !== "string" ||
+        item[2].trim() === "" ||
+        restoredTileset.has(item[0])
+      ) {
+        return false;
+      }
+      restoredTileset.set(item[0], item);
+    }
+
+    if (!grid.every((id) => Number.isInteger(id) && id >= 0)) return false;
+
+    if (
+      data.solid !== undefined &&
+      (!Array.isArray(data.solid) ||
+        !data.solid.every((id) => Number.isInteger(id) && id > 0))
+    ) {
+      return false;
+    }
+
+    if (data.attributes !== undefined) {
+      if (!Array.isArray(data.attributes)) return false;
+      for (const item of data.attributes) {
+        if (
+          !Array.isArray(item) ||
+          item.length !== 2 ||
+          !Number.isInteger(Number(item[0])) ||
+          Number(item[0]) <= 0 ||
+          !Array.isArray(item[1]) ||
+          !item[1].every(
+            (attribute) =>
+              typeof attribute === "string" && attribute.trim() !== ""
+          )
+        ) {
+          return false;
+        }
+        const id = Number(item[0]);
+        restoredAttributes.set(
+          id,
+          new Set(item[1].map((attribute) => attribute.trim().toLowerCase()))
+        );
+      }
+    }
+
     state.columns = columns;
     state.rows = rows;
     state.tileSize = tileSize;
+    state.originalTileSize =
+      Number.isFinite(data.originalTileSize) && data.originalTileSize > 0
+        ? data.originalTileSize
+        : tileSize;
     state.grid = Int32Array.from(grid);
     state.tileset.clear();
-    if (Array.isArray(data.tileset)) {
-      for (const item of data.tileset) {
-        if (Array.isArray(item)) {
-          const entry = {
-            targetName: String(item[1]),
-            costumeName: String(item[2]),
-            sprite: null,
-            costume: null,
-          };
-          bindEntry(entry);
-          state.tileset.set(Number(item[0]), entry);
-        }
-      }
+
+    for (const [id, item] of restoredTileset) {
+      const entry = {
+        targetName: item[1],
+        costumeName: item[2],
+        dataURI: item[3] || "",
+        embeddedSkinId: null,
+        loadingEmbeddedSkin: false,
+        sprite: null,
+        costume: null,
+      };
+      bindEntry(entry);
+      state.tileset.set(id, entry);
     }
-    state.solidIds = new Set(
-      Array.isArray(data.solid) ? data.solid.map(Number) : []
-    );
+
+    state.solidIds = new Set(data.solid || []);
+    state.attributes = restoredAttributes;
     state.scaleCache.clear();
+    render.lastDrawKey = null;
+    render.revision++;
     return true;
   }
 
-  // Extension storage is saved with the project. Changes are batched so big
-  // grids aren't serialized on every block.
   let flushTimeout = null;
 
   function flushStorage() {
@@ -179,13 +275,13 @@
   }
 
   function markDirty() {
+    render.revision++;
+    render.lastDrawKey = null;
     if (flushTimeout === null) {
       flushTimeout = setTimeout(flushStorage, STORAGE_FLUSH_DELAY_MS);
     }
   }
 
-  // Forget the old project's tilemap and drawing. This also cancels a pending
-  // write to extension storage, which would otherwise end up in the next project.
   function clearProject() {
     clearTimeout(flushTimeout);
     flushTimeout = null;
@@ -201,31 +297,38 @@
     clearProject();
     restoreState(runtime.extensionStorage[EXTENSION_ID]);
   });
-  vm.on("targetsUpdate", syncTileset);
+  vm.on("targetsUpdate", () => {
+    syncTileset();
+    render.lastDrawKey = null;
+    render.revision++;
+  });
   restoreState(runtime.extensionStorage[EXTENSION_ID]);
 
-  // Looks up the render skin ID for whatever costume was registered for a
-  // given tile id. Costumes get their skinId assigned by scratch-vm when
-  // they finish loading (see load-costume.js: `costume.skinId = ...`).
   function getTileSkinId(tileId) {
     const entry = state.tileset.get(tileId);
     if (!entry) return null;
-    const found = findCostume(entry.targetName, entry.costumeName);
-    if (!found) return null;
-    return typeof found.costume.skinId === "number"
-      ? found.costume.skinId
-      : null;
+
+    if (
+      entry.costume &&
+      entry.sprite &&
+      entry.sprite.costumes.includes(entry.costume) &&
+      typeof entry.costume.skinId === "number"
+    ) {
+      return entry.costume.skinId;
+    }
+
+    if (typeof entry.embeddedSkinId === "number") {
+      return entry.embeddedSkinId;
+    }
+
+    return null;
   }
 
-  // Returns [scaleXPercent, scaleYPercent] so that this skin renders at
-  // exactly tileSize x tileSize pixels, regardless of the source costume's
-  // native pixel dimensions. Cached per skinId since getSkinSize() is a
-  // renderer call we don't want to repeat every tile, every frame.
   function getScaleForSkin(skinId) {
     let scale = state.scaleCache.get(skinId);
     if (scale) return scale;
 
-    const nativeSize = runtime.renderer.getSkinSize(skinId); // [width, height] in px
+    const nativeSize = runtime.renderer.getSkinSize(skinId);
     scale = [
       (state.tileSize / nativeSize[0]) * 100,
       (state.tileSize / nativeSize[1]) * 100,
@@ -245,7 +348,6 @@
     );
 
     render.stampDrawableId = runtime.renderer.createDrawable("pen");
-    // The helper drawable stays off-stage and only moves onto the stage while a tile is stamped.
     runtime.renderer.updateDrawableVisible(render.stampDrawableId, true);
     runtime.renderer.updateDrawablePosition(render.stampDrawableId, [
       OFFSTAGE_X,
@@ -254,6 +356,359 @@
   }
 
   class Tiles {
+    constructor() {
+      this.editorFrame = null;
+      this.editorOverlay = null;
+      this.editorCloseButton = null;
+      this.editorClosing = false;
+      this.editorOpening = false;
+      this.editorHasUnsavedChanges = false;
+      this.previousBodyOverflowY = "";
+
+      window.addEventListener("message", (event) => {
+        if (
+          !this.editorFrame ||
+          event.source !== this.editorFrame.contentWindow
+        ) {
+          return;
+        }
+
+        if (event.origin !== new URL(EDITOR_URL).origin) {
+          return;
+        }
+
+        if (!event.data || typeof event.data !== "object") {
+          return;
+        }
+		
+		if (event.data.type === "EDITOR_DIRTY") {
+          this.editorHasUnsavedChanges = true;
+          return;
+        }
+
+        if (event.data.type === "EDITOR_SAVED") {
+          this.editorHasUnsavedChanges = false;
+          return;
+        }
+
+        if (
+          event.data.type === "TRANSLATE_TEXT" &&
+          typeof event.data.text === "string" &&
+          (typeof event.data.id === "number" ||
+            typeof event.data.id === "string")
+        ) {
+          const translatedText = Scratch.translate(event.data.text);
+
+          this.editorFrame.contentWindow.postMessage(
+            {
+              type: "TRANSLATION_RESULT",
+              id: event.data.id,
+              text: translatedText,
+            },
+            new URL(EDITOR_URL).origin
+          );
+
+          return;
+        }
+
+        if (event.data.type === "EDITOR_CLOSE") {
+          this.closeTilemapEditor();
+        }
+
+        if (event.data.type === "PROJECT_DATA_REQUEST") {
+          this.editorFrame.contentWindow.postMessage(
+            {
+              type: "PROJECT_DATA",
+              sprites: this.getProjectData(),
+            },
+            new URL(EDITOR_URL).origin
+          );
+          this.editorFrame.contentWindow.postMessage(
+            {
+              type: "EDITOR_TILE_PROPERTIES",
+              tiles: this.getEditorTileProperties(),
+            },
+            new URL(EDITOR_URL).origin
+          );
+        }
+
+        if (event.data.type === "EDITOR_TILE_PROPERTIES_UPDATE") {
+          this.applyEditorTileProperties(event.data.tiles);
+        }
+      });
+    }
+
+    getEditorTileProperties() {
+      return Array.from(state.tileset, ([id, entry]) => ({
+        id,
+        spriteName: entry.targetName,
+        costumeName: entry.costumeName,
+        solid: state.solidIds.has(id),
+        attributes: Array.from(state.attributes.get(id) || []),
+      }));
+    }
+
+    applyEditorTileProperties(tiles) {
+      if (!Array.isArray(tiles)) return;
+      let changed = false;
+
+      for (const tile of tiles) {
+        if (
+          !tile ||
+          typeof tile.spriteName !== "string" ||
+          typeof tile.costumeName !== "string" ||
+          typeof tile.solid !== "boolean" ||
+          !Array.isArray(tile.attributes) ||
+          !tile.attributes.every(
+            (attribute) =>
+              typeof attribute === "string" && attribute.trim() !== ""
+          )
+        ) {
+          continue;
+        }
+
+        const matchingIds = [];
+        for (const [id, entry] of state.tileset) {
+          if (
+            entry.targetName === tile.spriteName &&
+            entry.costumeName === tile.costumeName
+          ) {
+            matchingIds.push(id);
+          }
+        }
+
+        for (const id of matchingIds) {
+          if (id === 0) continue;
+          if (tile.solid) state.solidIds.add(id);
+          else state.solidIds.delete(id);
+
+          const attributes = new Set(
+            tile.attributes.map((attribute) => attribute.trim().toLowerCase())
+          );
+          if (attributes.size > 0) state.attributes.set(id, attributes);
+          else state.attributes.delete(id);
+          changed = true;
+        }
+      }
+
+      if (changed) markDirty();
+    }
+
+    getProjectData() {
+      return runtime.targets
+        .filter((target) => target.isOriginal && !target.isStage)
+        .map((target) => ({
+          name: target.getName(),
+          costumes: target.sprite.costumes.map((costume, index) => ({
+            name: costume.name,
+            index,
+            dataURI: costume.asset.encodeDataURI(),
+          })),
+        }));
+    }
+
+    async openTilemapEditor() {
+      if (this.editorFrame || this.editorOpening || this.editorClosing) return;
+      this.editorOpening = true;
+
+      let canEmbed = false;
+      try {
+        canEmbed = await Scratch.canEmbed(EDITOR_URL);
+      } catch (error) {
+        this.editorOpening = false;
+        return;
+      }
+
+      this.editorOpening = false;
+      if (!canEmbed || this.editorFrame || this.editorClosing) return;
+
+      this.previousBodyOverflowY = document.body.style.overflowY;
+
+      const overlay = document.createElement("div");
+      overlay.style.position = "fixed";
+      overlay.style.inset = "0";
+      overlay.style.backgroundColor = "rgba(120, 80, 220, 0.65)";
+      overlay.style.zIndex = "10000";
+
+      const frame = document.createElement("iframe");
+      frame.title = "Tiles Editor";
+      frame.src = EDITOR_URL;
+      frame.style.position = "absolute";
+      frame.style.left = "10%";
+      frame.style.top = "6%";
+      frame.style.width = "80%";
+      frame.style.height = "88%";
+      frame.style.border = "4px solid #8b7be8";
+      frame.style.borderRadius = "8px";
+      frame.style.backgroundColor = "white";
+      frame.style.zIndex = "10001";
+
+      frame.onload = () => {
+        frame.contentWindow.postMessage(
+          { type: "REGISTER_PARENT" },
+          new URL(EDITOR_URL).origin
+        );
+      };
+
+      const closeButton = document.createElement("button");
+      closeButton.textContent = "×";
+      closeButton.title = "Close editor";
+      closeButton.setAttribute("aria-label", "Close editor");
+
+      closeButton.style.position = "fixed";
+      closeButton.style.top = "3.5%";
+      closeButton.style.right = "8.3%";
+      closeButton.style.width = "40px";
+      closeButton.style.height = "40px";
+      closeButton.style.padding = "0";
+      closeButton.style.display = "grid";
+      closeButton.style.placeItems = "center";
+
+      closeButton.style.fontFamily = "Arial, sans-serif";
+      closeButton.style.fontSize = "27px";
+      closeButton.style.fontWeight = "400";
+      closeButton.style.lineHeight = "1";
+
+      closeButton.style.color = "#ffffff";
+      closeButton.style.backgroundColor = "rgba(30, 35, 48, 0.95)";
+      closeButton.style.border = "1px solid rgba(255, 255, 255, 0.2)";
+      closeButton.style.borderRadius = "50%";
+      closeButton.style.boxShadow = "0 4px 14px rgba(0, 0, 0, 0.3)";
+
+      closeButton.style.cursor = "pointer";
+      closeButton.style.zIndex = "10002";
+      closeButton.style.transition = "background-color 0.2s ease, transform 0.2s ease";
+
+      closeButton.addEventListener("mouseenter", () => {
+        closeButton.style.backgroundColor = "#e05252";
+        closeButton.style.transform = "scale(1.1)";
+      });
+
+      closeButton.addEventListener("mouseleave", () => {
+        closeButton.style.backgroundColor = "rgba(30, 35, 48, 0.95)";
+        closeButton.style.transform = "scale(1)";
+      });
+
+      closeButton.addEventListener("click", () => {
+        this.closeTilemapEditor();
+      });
+
+      this.editorCloseButton = closeButton;
+      this.editorOverlay = overlay;
+      this.editorFrame = frame;
+	  this.editorHasUnsavedChanges = false;
+
+      document.body.style.overflowY = "hidden";
+
+      document.body.appendChild(overlay);
+      document.body.appendChild(frame);
+      document.body.appendChild(closeButton);
+
+      overlay.animate(
+        [{ opacity: 0 }, { opacity: 1 }],
+        {
+          duration: 350,
+          easing: "ease-out",
+          fill: "forwards",
+        }
+      );
+
+      frame.animate(
+        [
+          { transform: "translateY(-45px)", opacity: 0 },
+          { transform: "translateY(0)", opacity: 1 },
+        ],
+        {
+          duration: 350,
+          easing: "ease-out",
+          fill: "both",
+        }
+      );
+
+      closeButton.animate(
+        [{ opacity: 0 }, { opacity: 1 }],
+        {
+          duration: 350,
+          easing: "ease-out",
+          fill: "forwards",
+        }
+      );
+    }
+
+    closeTilemapEditor() {
+      if (this.editorClosing) return;
+      if (!this.editorFrame && !this.editorOverlay && !this.editorCloseButton) {
+        return;
+      }
+
+      if (
+        this.editorFrame &&
+        this.editorHasUnsavedChanges &&
+        !window.confirm(
+          "If you close the editor, any unsaved changes will be lost. Do you want to close it?"
+        )
+      ) {
+        return;
+      }
+
+      this.editorClosing = true;
+
+      const frame = this.editorFrame;
+      const overlay = this.editorOverlay;
+      const closeButton = this.editorCloseButton;
+      const duration = 350;
+
+      if (frame) {
+        frame.animate(
+          [
+            { transform: "translateY(0)", opacity: 1 },
+            { transform: "translateY(-45px)", opacity: 0 },
+          ],
+          {
+            duration,
+            easing: "ease-in",
+            fill: "forwards",
+          }
+        );
+      }
+
+      if (overlay) {
+        overlay.animate(
+          [{ opacity: 1 }, { opacity: 0 }],
+          {
+            duration,
+            easing: "ease-in",
+            fill: "forwards",
+          }
+        );
+      }
+
+      if (closeButton) {
+        closeButton.animate(
+          [{ opacity: 1 }, { opacity: 0 }],
+          {
+            duration,
+            easing: "ease-in",
+            fill: "forwards",
+          }
+        );
+      }
+
+      window.setTimeout(() => {
+        if (frame) frame.remove();
+        if (overlay) overlay.remove();
+        if (closeButton) closeButton.remove();
+
+        this.editorFrame = null;
+        this.editorOverlay = null;
+        this.editorCloseButton = null;
+
+        document.body.style.overflowY = this.previousBodyOverflowY;
+        this.editorClosing = false;
+		this.editorHasUnsavedChanges = false;
+      }, duration);
+    }
+
     getInfo() {
       return {
         id: EXTENSION_ID,
@@ -262,15 +717,48 @@
         color1: "#5C7CFA",
         blocks: [
           {
-            opcode: "createTilemap",
+            blockType: Scratch.BlockType.BUTTON,
+            func: "openTilemapEditor",
+            text: Scratch.translate("Open tilemap editor"),
+          },
+		  "---",
+		  {
+            opcode: "loadTilemapFromJSONFile",
             blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate(
-              "create tilemap [COLUMNS] columns x [ROWS] rows, tile size [TILESIZE]"
-            ),
+            text: Scratch.translate("load tilemap from JSON file"),
+          },
+          {
+            opcode: "loadTilemap",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("load tilemap from JSON data [TEXT]"),
             arguments: {
-              COLUMNS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 20 },
-              ROWS: { type: Scratch.ArgumentType.NUMBER, defaultValue: 15 },
-              TILESIZE: { type: Scratch.ArgumentType.NUMBER, defaultValue: 24 },
+              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
+            },
+          },
+		  {
+            opcode: "tilemapAsText",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("tilemap JSON data"),
+          },
+		  {
+            opcode: "tileSize",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("tile size"),
+          },
+          {
+            opcode: "originalTileSize",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("original tile size"),
+          },
+          {
+            opcode: "setTileSize",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("set tile size to [SIZE]"),
+            arguments: {
+              SIZE: {
+                type: Scratch.ArgumentType.NUMBER,
+                defaultValue: 24,
+              },
             },
           },
           {
@@ -310,6 +798,7 @@
               },
             },
           },
+          "---",
           {
             opcode: "setTile",
             blockType: Scratch.BlockType.COMMAND,
@@ -320,15 +809,6 @@
               COLUMN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
-            },
-          },
-          {
-            opcode: "getTile",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("tile at column [COLUMN] row [ROW]"),
-            arguments: {
-              COLUMN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
-              ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
           },
           {
@@ -343,6 +823,15 @@
               COLUMN2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 9 },
               ROW2: { type: Scratch.ArgumentType.NUMBER, defaultValue: 9 },
               ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+            },
+          },
+          {
+            opcode: "getTile",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("tile at column [COLUMN] row [ROW]"),
+            arguments: {
+              COLUMN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
           },
           "---",
@@ -366,6 +855,40 @@
             arguments: {
               COLUMN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
               ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+            },
+          },
+          {
+            opcode: "setTileAttribute",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate(
+              "set tile [ID] attribute [ATTRIBUTE] [ACTION]"
+            ),
+            arguments: {
+              ID: { type: Scratch.ArgumentType.NUMBER, defaultValue: 1 },
+              ATTRIBUTE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "wall",
+              },
+              ACTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "ATTRIBUTE_ACTION_MENU",
+                defaultValue: "add",
+              },
+            },
+          },
+          {
+            opcode: "tileHasAttribute",
+            blockType: Scratch.BlockType.BOOLEAN,
+            text: Scratch.translate(
+              "tile at column [COLUMN] row [ROW] has attribute [ATTRIBUTE]?"
+            ),
+            arguments: {
+              COLUMN: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
+              ATTRIBUTE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "wall",
+              },
             },
           },
           "---",
@@ -396,11 +919,12 @@
           {
             opcode: "yAtRow",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("y at row [ROW]"),
+            text: Scratch.translate("y at row: [ROW]"),
             arguments: {
               ROW: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0 },
             },
           },
+          "---",
           {
             opcode: "tilemapWidth",
             blockType: Scratch.BlockType.REPORTER,
@@ -411,20 +935,6 @@
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("tilemap height in pixels"),
           },
-          "---",
-          {
-            opcode: "tilemapAsText",
-            blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("tilemap as text"),
-          },
-          {
-            opcode: "loadTilemap",
-            blockType: Scratch.BlockType.COMMAND,
-            text: Scratch.translate("load tilemap from text [TEXT]"),
-            arguments: {
-              TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
-            },
-          },
         ],
         menus: {
           SOLID_MENU: {
@@ -432,6 +942,13 @@
             items: [
               { text: Scratch.translate("solid"), value: "solid" },
               { text: Scratch.translate("not solid"), value: "not solid" },
+            ],
+          },
+          ATTRIBUTE_ACTION_MENU: {
+            acceptReporters: false,
+            items: [
+              { text: Scratch.translate("add"), value: "add" },
+              { text: Scratch.translate("remove"), value: "remove" },
             ],
           },
           SPRITE_MENU: {
@@ -446,8 +963,6 @@
       };
     }
 
-    // Menus can't depend on the other dropdown's value, so the costume menu
-    // lists every costume name from every sprite (deduplicated).
     getSpriteMenu() {
       const names = runtime.targets
         .filter((target) => target.isOriginal && !target.isStage)
@@ -469,24 +984,6 @@
         : [{ text: Scratch.translate("(none)"), value: "" }];
     }
 
-    createTilemap(args) {
-      const columns = Math.max(
-        1,
-        Math.round(Scratch.Cast.toNumber(args.COLUMNS))
-      );
-      const rows = Math.max(1, Math.round(Scratch.Cast.toNumber(args.ROWS)));
-      const tileSize = Math.max(1, Scratch.Cast.toNumber(args.TILESIZE));
-      // Ignore sizes that are too big (or Infinity) instead of throwing.
-      if (columns * rows > MAX_TILES || !Number.isFinite(tileSize)) return;
-
-      state.columns = columns;
-      state.rows = rows;
-      state.tileSize = tileSize;
-      state.grid = new Int32Array(columns * rows); // all zero = empty
-      state.scaleCache.clear(); // tileSize may have changed, old scales are stale
-      markDirty();
-    }
-
     setTilesetCostume(args) {
       const entry = {
         targetName: Scratch.Cast.toString(args.SPRITE),
@@ -496,7 +993,6 @@
       };
       bindEntry(entry);
       state.tileset.set(Math.round(Scratch.Cast.toNumber(args.ID)), entry);
-      // The costume may have been repainted since we measured it, so drop the cached scales.
       state.scaleCache.clear();
       markDirty();
     }
@@ -520,7 +1016,6 @@
 
     setSolid(args) {
       const id = Math.round(Scratch.Cast.toNumber(args.ID));
-      // 0 means empty, which is never solid.
       if (id === 0) return;
       if (Scratch.Cast.toString(args.SOLID) === "solid") {
         state.solidIds.add(id);
@@ -539,17 +1034,56 @@
       return id !== 0 && state.solidIds.has(id);
     }
 
+    setTileAttribute(args) {
+      const id = Math.round(Scratch.Cast.toNumber(args.ID));
+      const attribute = Scratch.Cast.toString(args.ATTRIBUTE)
+        .trim()
+        .toLowerCase();
+      if (id === 0 || attribute === "") return;
+
+      let attributes = state.attributes.get(id);
+      if (!attributes) {
+        attributes = new Set();
+        state.attributes.set(id, attributes);
+      }
+
+      if (Scratch.Cast.toString(args.ACTION) === "add") {
+        attributes.add(attribute);
+      } else {
+        attributes.delete(attribute);
+        if (attributes.size === 0) state.attributes.delete(id);
+      }
+      markDirty();
+    }
+
+    tileHasAttribute(args) {
+      const column = Math.round(Scratch.Cast.toNumber(args.COLUMN));
+      const row = Math.round(Scratch.Cast.toNumber(args.ROW));
+      const index = indexFor(column, row);
+      if (index === -1) return false;
+
+      const tileId = state.grid[index];
+      if (tileId === 0) return false;
+
+      const attribute = Scratch.Cast.toString(args.ATTRIBUTE)
+        .trim()
+        .toLowerCase();
+      if (attribute === "") return false;
+
+      const attributes = state.attributes.get(tileId);
+      return Boolean(attributes && attributes.has(attribute));
+    }
+
     fillTiles(args) {
       const id = Math.round(Scratch.Cast.toNumber(args.ID));
-      // Accept the two corners in any order (C1 > C2, R1 > R2 is fine).
       let column1 = Math.round(Scratch.Cast.toNumber(args.COLUMN1));
       let column2 = Math.round(Scratch.Cast.toNumber(args.COLUMN2));
       let row1 = Math.round(Scratch.Cast.toNumber(args.ROW1));
       let row2 = Math.round(Scratch.Cast.toNumber(args.ROW2));
+
       if (column1 > column2) [column1, column2] = [column2, column1];
       if (row1 > row2) [row1, row2] = [row2, row1];
 
-      // Clamp to the grid so out-of-range corners don't crash anything.
       column1 = Math.max(0, column1);
       row1 = Math.max(0, row1);
       column2 = Math.min(state.columns - 1, column2);
@@ -568,32 +1102,264 @@
       if (state.columns === 0) return "";
       return JSON.stringify(serializeState());
     }
+	
+	tileSize() {
+      return state.tileSize;
+    }
 
+    originalTileSize() {
+      return state.originalTileSize;
+    }
+
+    setTileSize(args) {
+      const newSize = Scratch.Cast.toNumber(args.SIZE);
+
+      if (!Number.isFinite(newSize) || newSize <= 0) return;
+
+      state.tileSize = newSize;
+      state.scaleCache.clear();
+      markDirty();
+    }
+	
+    
+    async loadTilemapFromJSONFile() {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = ".json,application/json";
+	  
+      const file = await new Promise((resolve) => {
+        input.addEventListener("change", () => {
+          resolve(input.files && input.files[0] ? input.files[0] : null);
+        }, { once: true });
+
+        input.addEventListener("cancel", () => {
+          resolve(null);
+        }, { once: true });
+
+        input.click();
+      });
+
+      if (!file) return;
+
+      try {
+        const data = JSON.parse(await file.text());
+        let tilemap = data;
+
+        if (
+          data &&
+          data.format === "fachu2012tiles-editor" &&
+          data.version === 1
+        ) {
+          const width = data.width;
+          const height = data.height;
+
+          if (
+            !Number.isInteger(width) ||
+            !Number.isInteger(height) ||
+            width < 1 ||
+            height < 1 ||
+            !Array.isArray(data.tiles) ||
+            !Array.isArray(data.cells) ||
+            data.cells.length !== width * height
+          ) {
+            throw new Error("Invalid modern tilemap data.");
+          }
+
+          const tileset = [];
+          const solid = [];
+          const attributes = [];
+          const grid = [];
+
+          data.tiles.forEach((tile, index) => {
+            if (
+              !tile ||
+              typeof tile.spriteName !== "string" ||
+              typeof tile.name !== "string" ||
+              !Number.isInteger(tile.costumeIndex) ||
+              typeof tile.dataURI !== "string" ||
+              !Array.isArray(tile.attributes)
+            ) {
+              throw new Error("Invalid tile data.");
+            }
+
+            const id = index + 1;
+
+            tileset.push([
+              id,
+              tile.spriteName,
+              tile.name,
+              tile.dataURI
+            ]);
+
+            if (tile.solid === true) {
+              solid.push(id);
+            }
+
+            if (tile.attributes.length > 0) {
+              attributes.push([id, tile.attributes]);
+            }
+          });
+
+          data.cells.forEach(cell => {
+            if (cell === null) {
+              grid.push(0);
+              return;
+            }
+
+            if (
+              !Number.isInteger(cell) ||
+              cell < 0 ||
+              cell >= data.tiles.length
+            ) {
+              throw new Error("Invalid cell data.");
+            }
+
+            grid.push(cell + 1);
+          });
+
+          tilemap = {
+            columns: width,
+            rows: height,
+            tileSize: Number.isFinite(data.tileSize) && data.tileSize > 0
+              ? data.tileSize
+              : 24,
+            grid,
+            tileset,
+            solid,
+            attributes
+          };
+        }
+
+        if (!restoreState(tilemap)) {
+          throw new Error("Invalid tilemap data.");
+        }
+
+        state.scaleCache.clear();
+        markDirty();
+
+      } catch (error) {
+        window.alert("Could not load tilemap: " + error.message);
+      }
+    }
+    
     loadTilemap(args) {
       let data;
+
       try {
         data = JSON.parse(Scratch.Cast.toString(args.TEXT));
       } catch (e) {
-        return; // not valid JSON, ignore instead of throwing inside a block
+        return;
       }
-      if (restoreState(data)) {
+
+      let tilemap = data;
+
+      if (
+        data &&
+        data.format === "fachu2012tiles-editor" &&
+        data.version === 1
+      ) {
+        const width = data.width;
+        const height = data.height;
+
+        if (
+          !Number.isInteger(width) ||
+          !Number.isInteger(height) ||
+          width < 1 ||
+          height < 1 ||
+          width * height > MAX_TILES ||
+          !Array.isArray(data.tiles) ||
+          !Array.isArray(data.cells) ||
+          data.cells.length !== width * height
+        ) {
+          return;
+        }
+
+        const tileset = [];
+        const solid = [];
+        const attributes = [];
+        const grid = [];
+
+        for (let index = 0; index < data.tiles.length; index++) {
+          const tile = data.tiles[index];
+
+          if (
+            !tile ||
+            typeof tile.spriteName !== "string" ||
+            typeof tile.name !== "string" ||
+            !Number.isInteger(tile.costumeIndex) ||
+            typeof tile.dataURI !== "string" ||
+            !Array.isArray(tile.attributes)
+          ) {
+            return;
+          }
+
+          const id = index + 1;
+
+          tileset.push([
+            id,
+            tile.spriteName,
+            tile.name,
+            tile.dataURI
+          ]);
+
+          if (tile.solid === true) {
+            solid.push(id);
+          }
+
+          if (tile.attributes.length > 0) {
+            attributes.push([id, tile.attributes]);
+          }
+        }
+
+        for (const cell of data.cells) {
+          if (cell === null) {
+            grid.push(0);
+            continue;
+          }
+
+          if (
+            !Number.isInteger(cell) ||
+            cell < 0 ||
+            cell >= data.tiles.length
+          ) {
+            return;
+          }
+
+          grid.push(cell + 1);
+        }
+
+        tilemap = {
+          columns: width,
+          rows: height,
+          tileSize:
+            Number.isFinite(data.tileSize) && data.tileSize > 0
+              ? data.tileSize
+              : 24,
+          originalTileSize:
+            Number.isFinite(data.originalTileSize) && data.originalTileSize > 0
+              ? data.originalTileSize
+              : Number.isFinite(data.tileSize) && data.tileSize > 0
+                ? data.tileSize
+                : 24,
+          grid,
+          tileset,
+          solid,
+          attributes
+        };
+      }
+
+      if (restoreState(tilemap)) {
         markDirty();
       }
     }
 
     hideTilemap() {
-      // Nothing to hide if draw was never called (no drawable exists yet).
       if (render.penDrawableId === null) return;
       runtime.renderer.updateDrawableVisible(render.penDrawableId, false);
     }
 
-    // The next four blocks work in "map space": the top-left corner of the
-    // tilemap is (0, 0), x grows to the right and y grows upward, so rows
-    // count downward from 0. If the map was drawn with its corner at x: X y: Y,
-    // subtract X and Y from stage coordinates before converting.
     columnAtX(args) {
       if (state.columns === 0) return 0;
-
       return Math.floor(
         (Scratch.Cast.toNumber(args.X) - state.originX) / state.tileSize
       );
@@ -601,13 +1367,11 @@
 
     rowAtY(args) {
       if (state.columns === 0) return 0;
-
       return Math.floor(
         (state.originY - Scratch.Cast.toNumber(args.Y)) / state.tileSize
       );
     }
 
-    // Center of the tile, which is where a sprite standing on it should go.
     xAtColumn(args) {
       if (state.columns === 0) return 0;
       return (
@@ -634,20 +1398,13 @@
       if (state.columns === 0) return;
 
       ensureRenderResources();
-      // draw always re-shows the tilemap, in case hide tilemap was called
-      // earlier. This is the "show" counterpart to hide, folded into draw
-      // itself rather than a separate block.
       runtime.renderer.updateDrawableVisible(render.penDrawableId, true);
 
-      // X/Y is where the top-left corner of tile (column 0, row 0) lands on the
-      // stage. Increasing X moves the whole map right and increasing Y moves
-      // it up, like a normal "go to x/y" block.
       const originX = Scratch.Cast.toNumber(args.X);
       const originY = Scratch.Cast.toNumber(args.Y);
       state.originX = originX;
       state.originY = originY;
 
-      // Only draw the tiles on the stage, plus one extra tile around the edges.
       const stageWidth = runtime.stageWidth || 480;
       const stageHeight = runtime.stageHeight || 360;
 
@@ -668,20 +1425,31 @@
         Math.ceil((originY + stageHeight / 2) / state.tileSize) + 1
       );
 
-      // Clear only OUR OWN pen skin, never the shared Pen extension canvas.
+      const drawKey = [
+        render.revision,
+        originX,
+        originY,
+        state.columns,
+        state.rows,
+        state.tileSize,
+        minColumn,
+        maxColumn,
+        minRow,
+        maxRow,
+      ].join(":");
+
+      if (render.lastDrawKey === drawKey) return;
+
       runtime.renderer.penClear(render.penSkinId);
 
       for (let row = minRow; row <= maxRow; row++) {
         for (let column = minColumn; column <= maxColumn; column++) {
           const tileId = state.grid[indexFor(column, row)];
-          if (tileId === 0) continue; // 0 = empty, nothing to draw
+          if (tileId === 0) continue;
 
           const skinId = getTileSkinId(tileId);
-          if (skinId === null) continue; // tileset entry missing/broken; skip silently
+          if (skinId === null) continue;
 
-          // A costume is drawn around its rotation center, so stamp it at the
-          // middle of its cell. Tile costumes should have their rotation
-          // center in the middle, which is the default in the paint editor.
           const centerX = originX + (column + 0.5) * state.tileSize;
           const centerY = originY - (row + 0.5) * state.tileSize;
 
@@ -699,11 +1467,11 @@
         }
       }
 
-      // Park the helper back off-stage before the next real frame renders.
       runtime.renderer.updateDrawablePosition(render.stampDrawableId, [
         OFFSTAGE_X,
         OFFSTAGE_Y,
       ]);
+      render.lastDrawKey = drawKey;
     }
   }
 

@@ -9,13 +9,13 @@ This doesn't do animation or multiple layers. It's the grid, the drawing and the
 The minimum to get something on screen is a grid, a costume for tile id `1`, one tile placed in the grid, and a draw:
 
 ```scratch
-create tilemap (20) columns x (15) rows, tile size (24) ::#5C7CFA
+load tilemap from JSON file ::#5C7CFA
 set tile (1) to costume [ground v] of [Tileset v] ::#5C7CFA
 set tile at column (5) row (5) to (1) ::#5C7CFA
 draw tilemap with tile \(0,0\) at x: (0) y: (0) ::#5C7CFA
 ```
 
-That makes a 20 × 15 grid of 24-pixel tiles, points tile id `1` at the "ground" costume of a sprite called "Tileset", puts one tile at column 5, row 5, and draws it. To keep the map on screen while things change, put `draw tilemap` inside a `forever` loop.
+This loads a tilemap from a JSON file, points tile id `1` at the "ground" costume of a sprite called "Tileset", puts that tile at column 5, row 5, and draws it. To keep the map on screen while things change, put `draw tilemap` inside a `forever` loop.
 
 ## How it works
 
@@ -53,11 +53,19 @@ Every block works the same from any sprite, clone or the Stage, because there is
 ### Creating and drawing
 
 ```scratch
-create tilemap (20) columns x (15) rows, tile size (24) ::#5C7CFA
+Open tilemap editor ::#5C7CFA
 ```
-Sets up the tilemap. Columns and rows are rounded to whole numbers, and anything below 1 counts as 1. A tilemap can have up to 1,000,000 tiles in total (for example 1000 × 1000). Bigger sizes, or `Infinity`, are ignored and leave the current tilemap as it was.
+Opens the tilemap editor.
 
-Running it again empties every tile. The tileset (which costume each tile id uses) and the solid tiles are kept.
+```scratch
+load tilemap from JSON file ::#5C7CFA
+```
+Always opens the file picker so the user can choose a JSON tilemap file. This is useful when you want people who try your project to load their own maps. If you want the project to load a specific map instead, use `load tilemap from JSON data [TEXT]` and provide that map's JSON data.
+
+```scratch
+load tilemap from JSON data [TEXT] ::#5C7CFA
+```
+Loads tilemap data from a JSON string and replaces the current tilemap. The data can use the format reported by `tilemap JSON data` or exported by the tilemap editor. If the data isn't valid, nothing changes.
 
 ```scratch
 draw tilemap with tile \(0,0\) at x: (0) y: (0) ::#5C7CFA
@@ -121,6 +129,16 @@ Tile id `0` is empty and can't be made solid, so using it here does nothing.
 ```
 Reports true if the tile id in that cell is marked as solid. It reports false for empty cells and for cells outside the grid.
 
+```scratch
+set tile (1) attribute [wall] [add v] ::#5C7CFA
+```
+Adds or removes an attribute from a tile id. The attribute is shared by every cell that uses that id.
+
+```scratch
+<tile at column (0) row (0) has attribute [wall]? ::#5C7CFA>
+```
+Reports true if the tile in that cell has the given attribute. It reports false for empty cells and for cells outside the grid.
+
 ### Coordinates
 
 The first four blocks work in **map space**, explained in the Map space section above. If there is no tilemap yet, every block in this section reports `0`.
@@ -155,17 +173,32 @@ Reports the width of the whole tilemap: columns × tile size.
 ```
 Reports the height of the whole tilemap: rows × tile size. Together with the width, it is useful for camera math, for example centering the whole map on screen or keeping a scrolling camera from showing past the edge of the map.
 
+```scratch
+(tile size ::#5C7CFA)
+```
+Reports the current tile size.
+
+```scratch
+(original tile size ::#5C7CFA)
+```
+Reports the tile size the map was originally saved with.
+
+```scratch
+set tile size to (24) ::#5C7CFA
+```
+Changes the current tile size.
+
 ### Saving and loading
 
 ```scratch
-(tilemap as text ::#5C7CFA)
+(tilemap JSON data ::#5C7CFA)
 ```
-Reports the whole tilemap as text: the grid, the tile size, which costume each tile id uses, and which ids are solid. You can keep it in a variable, a list, or a file. It reports empty text if there is no tilemap yet.
+Reports the whole tilemap JSON data: the grid, the tile size, which costume each tile id uses, and which ids are solid. You can keep it in a variable, a list, or a file. It reports empty text if there is no tilemap yet.
 
 ```scratch
-load tilemap from text [map text] ::#5C7CFA
+load tilemap from JSON data [TEXT] ::#5C7CFA
 ```
-Loads text made by `tilemap as text`, and replaces everything in the current tilemap: the grid, the tile size, the tileset and the solid tiles. If the text isn't valid, or doesn't match the size it says, nothing changes.
+Loads JSON data made by `tilemap JSON data`, and replaces everything in the current tilemap: the grid, the tile size, the tileset and the solid tiles. If the data isn't valid, or doesn't match the size it says, nothing changes.
 
 Loading doesn't draw anything, so call `draw tilemap` to see the new map.
 
@@ -177,37 +210,39 @@ The tilemap is also stored inside the project file itself, so it's still there w
 
 ### Which tile is the player on?
 
-Give each kind of floor its own id (for example `1` grass, `2` water, `3` lava), then read the id under the sprite. This map is drawn with its corner at the stage's top-left corner (`x: -240`, `y: 180`), so the stage position is shifted by that corner before converting:
+Give each floor type its own tile id (for example, `1` for grass and `3` for lava). Draw the map at `(0, 0)`, then check the tile under the player:
 
 ```scratch
 when green flag clicked
-create tilemap (20) columns x (15) rows, tile size (24) ::#5C7CFA
-draw tilemap with tile \(0,0\) at x: (-240) y: (180) ::#5C7CFA
+load tilemap from JSON file ::#5C7CFA
+draw tilemap with tile \(0,0\) at x: (0) y: (0) ::#5C7CFA
 forever
-  set [tile v] to (tile at column (column at x: ((x position) + (240)) ::#5C7CFA) row (row at y: ((y position) - (180)) ::#5C7CFA) ::#5C7CFA)
+  set [tile v] to (tile at column (column at x: (x position) ::#5C7CFA) row (row at y: (y position) ::#5C7CFA) ::#5C7CFA)
   if <(tile) = [3]> then
-    say [lava!]
+    say [Lava!]
   end
 end
 ```
 
 ### Stopping at solid tiles
 
-Mark the ids that block movement once, then check the tile you're about to walk onto:
+Mark the wall tile as solid. When the player moves, check the tile at its new position. If it is solid, undo that movement:
 
 ```scratch
 set tile (1) solid? [solid v] ::#5C7CFA
 change x by (4)
-if <is solid at column (column at x: ((x position) + (240)) ::#5C7CFA) row (row at y: ((y position) - (180)) ::#5C7CFA)? ::#5C7CFA> then
+if <is solid at column (column at x: (x position) ::#5C7CFA) row (row at y: (y position) ::#5C7CFA)? ::#5C7CFA> then
   change x by (-4)
 end
 ```
 
-This checks the center of the sprite. For a bigger sprite, check the corners you care about.
+This simple example checks the tile at the player's position.
 
 ### Keeping a map in a variable
 
+Save the tilemap JSON data in a variable, then load it whenever you want to use that map again:
+
 ```scratch
-set [saved map v] to (tilemap as text ::#5C7CFA)
-load tilemap from text (saved map) ::#5C7CFA
+set [saved map v] to (tilemap JSON data ::#5C7CFA)
+load tilemap from JSON data (saved map) ::#5C7CFA
 ```
