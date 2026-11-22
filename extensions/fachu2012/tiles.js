@@ -20,8 +20,7 @@
   const OFFSTAGE_Y = 1e6;
   const NO_ROTATION_DIRECTION = 90;
   const STORAGE_FLUSH_DELAY_MS = 500;
-  const EDITOR_URL =
-    "http://localhost:8000/fachu2012/tiles-editor/index.html";
+  const EDITOR_URL = "http://localhost:8000/fachu2012/tiles-editor/index.html";
 
   const state = {
     columns: 0,
@@ -49,7 +48,7 @@
     state.columns = 0;
     state.rows = 0;
     state.tileSize = 1;
-	state.originalTileSize = 1;
+    state.originalTileSize = 1;
     state.originX = 0;
     state.originY = 0;
     state.grid = new Int32Array(0);
@@ -76,14 +75,14 @@
   }
 
   function bindEntry(entry) {
-  const found = findCostume(entry.targetName, entry.costumeName);
-  entry.sprite = found ? found.sprite : null;
-  entry.costume = found ? found.costume : null;
+    const found = findCostume(entry.targetName, entry.costumeName);
+    entry.sprite = found ? found.sprite : null;
+    entry.costume = found ? found.costume : null;
 
-  if (!found && entry.dataURI) {
-    loadEmbeddedSkin(entry);
+    if (!found && entry.dataURI) {
+      loadEmbeddedSkin(entry);
+    }
   }
-}
 
   function loadEmbeddedSkin(entry) {
     if (
@@ -100,11 +99,10 @@
 
     image.onload = () => {
       try {
-        entry.embeddedSkinId = runtime.renderer.createBitmapSkin(
-          image,
-          1,
-          [image.width / 2, image.height / 2]
-        );
+        entry.embeddedSkinId = runtime.renderer.createBitmapSkin(image, 1, [
+          image.width / 2,
+          image.height / 2,
+        ]);
 
         render.revision++;
         render.lastDrawKey = null;
@@ -380,8 +378,8 @@
         if (!event.data || typeof event.data !== "object") {
           return;
         }
-		
-		if (event.data.type === "EDITOR_DIRTY") {
+
+        if (event.data.type === "EDITOR_DIRTY") {
           this.editorHasUnsavedChanges = true;
           return;
         }
@@ -577,7 +575,8 @@
 
       closeButton.style.cursor = "pointer";
       closeButton.style.zIndex = "10002";
-      closeButton.style.transition = "background-color 0.2s ease, transform 0.2s ease";
+      closeButton.style.transition =
+        "background-color 0.2s ease, transform 0.2s ease";
 
       closeButton.addEventListener("mouseenter", () => {
         closeButton.style.backgroundColor = "#e05252";
@@ -596,7 +595,7 @@
       this.editorCloseButton = closeButton;
       this.editorOverlay = overlay;
       this.editorFrame = frame;
-	  this.editorHasUnsavedChanges = false;
+      this.editorHasUnsavedChanges = false;
 
       document.body.style.overflowY = "hidden";
 
@@ -604,14 +603,11 @@
       document.body.appendChild(frame);
       document.body.appendChild(closeButton);
 
-      overlay.animate(
-        [{ opacity: 0 }, { opacity: 1 }],
-        {
-          duration: 350,
-          easing: "ease-out",
-          fill: "forwards",
-        }
-      );
+      overlay.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 350,
+        easing: "ease-out",
+        fill: "forwards",
+      });
 
       frame.animate(
         [
@@ -625,14 +621,11 @@
         }
       );
 
-      closeButton.animate(
-        [{ opacity: 0 }, { opacity: 1 }],
-        {
-          duration: 350,
-          easing: "ease-out",
-          fill: "forwards",
-        }
-      );
+      closeButton.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 350,
+        easing: "ease-out",
+        fill: "forwards",
+      });
     }
 
     closeTilemapEditor() {
@@ -673,25 +666,19 @@
       }
 
       if (overlay) {
-        overlay.animate(
-          [{ opacity: 1 }, { opacity: 0 }],
-          {
-            duration,
-            easing: "ease-in",
-            fill: "forwards",
-          }
-        );
+        overlay.animate([{ opacity: 1 }, { opacity: 0 }], {
+          duration,
+          easing: "ease-in",
+          fill: "forwards",
+        });
       }
 
       if (closeButton) {
-        closeButton.animate(
-          [{ opacity: 1 }, { opacity: 0 }],
-          {
-            duration,
-            easing: "ease-in",
-            fill: "forwards",
-          }
-        );
+        closeButton.animate([{ opacity: 1 }, { opacity: 0 }], {
+          duration,
+          easing: "ease-in",
+          fill: "forwards",
+        });
       }
 
       window.setTimeout(() => {
@@ -705,7 +692,7 @@
 
         document.body.style.overflowY = this.previousBodyOverflowY;
         this.editorClosing = false;
-		this.editorHasUnsavedChanges = false;
+        this.editorHasUnsavedChanges = false;
       }, duration);
     }
 
@@ -721,8 +708,8 @@
             func: "openTilemapEditor",
             text: Scratch.translate("Open tilemap editor"),
           },
-		  "---",
-		  {
+          "---",
+          {
             opcode: "loadTilemapFromJSONFile",
             blockType: Scratch.BlockType.COMMAND,
             text: Scratch.translate("load tilemap from JSON file"),
@@ -735,12 +722,12 @@
               TEXT: { type: Scratch.ArgumentType.STRING, defaultValue: "" },
             },
           },
-		  {
+          {
             opcode: "tilemapAsText",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("tilemap JSON data"),
           },
-		  {
+          {
             opcode: "tileSize",
             blockType: Scratch.BlockType.REPORTER,
             text: Scratch.translate("tile size"),
@@ -1102,8 +1089,8 @@
       if (state.columns === 0) return "";
       return JSON.stringify(serializeState());
     }
-	
-	tileSize() {
+
+    tileSize() {
       return state.tileSize;
     }
 
@@ -1120,21 +1107,28 @@
       state.scaleCache.clear();
       markDirty();
     }
-	
-    
+
     async loadTilemapFromJSONFile() {
       const input = document.createElement("input");
       input.type = "file";
       input.accept = ".json,application/json";
-	  
-      const file = await new Promise((resolve) => {
-        input.addEventListener("change", () => {
-          resolve(input.files && input.files[0] ? input.files[0] : null);
-        }, { once: true });
 
-        input.addEventListener("cancel", () => {
-          resolve(null);
-        }, { once: true });
+      const file = await new Promise((resolve) => {
+        input.addEventListener(
+          "change",
+          () => {
+            resolve(input.files && input.files[0] ? input.files[0] : null);
+          },
+          { once: true }
+        );
+
+        input.addEventListener(
+          "cancel",
+          () => {
+            resolve(null);
+          },
+          { once: true }
+        );
 
         input.click();
       });
@@ -1184,12 +1178,7 @@
 
             const id = index + 1;
 
-            tileset.push([
-              id,
-              tile.spriteName,
-              tile.name,
-              tile.dataURI
-            ]);
+            tileset.push([id, tile.spriteName, tile.name, tile.dataURI]);
 
             if (tile.solid === true) {
               solid.push(id);
@@ -1200,7 +1189,7 @@
             }
           });
 
-          data.cells.forEach(cell => {
+          data.cells.forEach((cell) => {
             if (cell === null) {
               grid.push(0);
               return;
@@ -1220,13 +1209,14 @@
           tilemap = {
             columns: width,
             rows: height,
-            tileSize: Number.isFinite(data.tileSize) && data.tileSize > 0
-              ? data.tileSize
-              : 24,
+            tileSize:
+              Number.isFinite(data.tileSize) && data.tileSize > 0
+                ? data.tileSize
+                : 24,
             grid,
             tileset,
             solid,
-            attributes
+            attributes,
           };
         }
 
@@ -1236,12 +1226,11 @@
 
         state.scaleCache.clear();
         markDirty();
-
       } catch (error) {
         window.alert("Could not load tilemap: " + error.message);
       }
     }
-    
+
     loadTilemap(args) {
       let data;
 
@@ -1295,12 +1284,7 @@
 
           const id = index + 1;
 
-          tileset.push([
-            id,
-            tile.spriteName,
-            tile.name,
-            tile.dataURI
-          ]);
+          tileset.push([id, tile.spriteName, tile.name, tile.dataURI]);
 
           if (tile.solid === true) {
             solid.push(id);
@@ -1344,7 +1328,7 @@
           grid,
           tileset,
           solid,
-          attributes
+          attributes,
         };
       }
 
