@@ -397,11 +397,10 @@
           (typeof event.data.id === "number" ||
             typeof event.data.id === "string")
         ) {
-			
-        const translatedText = Scratch.translate.call(
-          Scratch,
-          event.data.text
-        );
+          const translatedText = Scratch.translate.call(
+            Scratch,
+            event.data.text
+          );
 
           this.editorFrame.contentWindow.postMessage(
             {
