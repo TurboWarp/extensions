@@ -20,7 +20,7 @@
   const OFFSTAGE_Y = 1e6;
   const NO_ROTATION_DIRECTION = 90;
   const STORAGE_FLUSH_DELAY_MS = 500;
-  const EDITOR_URL = "https://turbowarp.org/fachu2012/tiles-editor/index.html";
+  const EDITOR_URL = "http://localhost:8000/fachu2012/tiles-editor/index.html";
 
   const state = {
     columns: 0,
@@ -159,6 +159,37 @@
         id,
         Array.from(attributes),
       ]),
+    };
+  }
+
+  function serializeModernState() {
+    const tiles = [];
+    const tileIds = new Map();
+
+    for (const [id, entry] of state.tileset) {
+      const tile = {
+        spriteName: entry.targetName,
+        name: entry.costumeName,
+        costumeIndex: 0,
+        dataURI: entry.dataURI || "",
+        solid: state.solidIds.has(id),
+        attributes: Array.from(state.attributes.get(id) || []),
+      };
+
+      tileIds.set(id, tiles.length);
+      tiles.push(tile);
+    }
+
+    return {
+      format: "fachu2012tiles-editor",
+      version: 1,
+      width: state.columns,
+      height: state.rows,
+      tileSize: state.tileSize,
+      tiles,
+      cells: Array.from(state.grid, (id) =>
+        id === 0 ? null : tileIds.has(id) ? tileIds.get(id) : null
+      ),
     };
   }
 
@@ -1092,7 +1123,7 @@
 
     tilemapAsText() {
       if (state.columns === 0) return "";
-      return JSON.stringify(serializeState());
+      return JSON.stringify(serializeModernState());
     }
 
     tileSize() {
