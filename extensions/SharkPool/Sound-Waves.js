@@ -424,21 +424,6 @@
       const data = this.waves.get(Cast.toString(args.ID));
       return data && data.playing;
     }
-
-    /* Deprecation Marker */
-    playNote(args, util) {
-      this.playNoteV2(args, util);
-    }
-    playNoteContinuously(args) {
-      this.playNoteContinuouslyV2(args);
-    }
-    convertPressedKeyToNote() {
-      return "deprecated";
-    }
-    getKeyPressedDuration() {
-      return "deprecated";
-    }
-    /* Marker End */
   }
 
   Scratch.extensions.register(new SPsoundWaves());
