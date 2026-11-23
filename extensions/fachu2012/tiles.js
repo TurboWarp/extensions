@@ -20,7 +20,8 @@
   const OFFSTAGE_Y = 1e6;
   const NO_ROTATION_DIRECTION = 90;
   const STORAGE_FLUSH_DELAY_MS = 500;
-  const EDITOR_URL = "http://localhost:8000/fachu2012/tiles-editor/index.html";
+  const EDITOR_URL =
+    "https://extensions.turbowarp.org/fachu2012/tiles-editor/index.html";
 
   const state = {
     columns: 0,
