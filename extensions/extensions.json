@@ -1,3 +1,4 @@
+[
   // This file supports comments
   "lab/text",
   "lab/face-sensing",
@@ -105,6 +106,6 @@
   "obviousAlexC/newgroundsIO",
   "SamuelLouf/Wikipedia",
   "LukeAnimationss/MoreRandomness",
-  "Lily/McUtils", // McUtils should always be the last item.
   "WinnerLoop1/cloudlist",
+  "Lily/McUtils", // McUtils should always be the last item.
 ]
