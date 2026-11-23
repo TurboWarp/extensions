@@ -207,45 +207,9 @@
                 defaultValue: 1
               },
             },
-          },
-          /* Deprecation Marker */
-          {
-            opcode: "convertPressedKeyToNote", blockType: Scratch.BlockType.REPORTER,
-            text: "pressed key to note", hideFromPalette: true
-          },
-          {
-            opcode: "getKeyPressedDuration", blockType: Scratch.BlockType.REPORTER,
-            text: "pressed key duration", hideFromPalette: true,
-          },
-          {
-            opcode: "playNote",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "play [WAVE] note [NOTE] for [DURATION] seconds with ID [ID]",
-            hideFromPalette: true,
-            arguments: {
-              WAVE: { type: Scratch.ArgumentType.STRING, menu: "WAVES2" },
-              NOTE: { type: Scratch.ArgumentType.NOTE, defaultValue: 60 },
-              DURATION: { type: Scratch.ArgumentType.NUMBER, defaultValue: 0.5 },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: 1 }
-            },
-          },
-          {
-            opcode: "playNoteContinuously",
-            blockType: Scratch.BlockType.COMMAND,
-            text: "play [WAVE] note [NOTE] continuously with ID [ID]",
-            hideFromPalette: true,
-            arguments: {
-              WAVE: { type: Scratch.ArgumentType.STRING, menu: "WAVES2" },
-              NOTE: { type: Scratch.ArgumentType.NOTE, defaultValue: 60 },
-              ID: { type: Scratch.ArgumentType.STRING, defaultValue: 1 }
-            },
-          },
-          /* Marker End */
+          }
         ],
         menus: {
-          /* Deprecation Marker */
-          WAVES2: WAVES,
-          /* Marker End */
           WAVES: { acceptReporters: true, items: WAVES }
         },
       };
