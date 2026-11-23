@@ -5,16 +5,16 @@
     getInfo() {
       return {
         id: "wpstudio01tts",
-        name: "System Text To Speech",
+        name: Scratch.translate("System Text To Speech"),
         blocks: [
           {
             opcode: "speak",
             blockType: Scratch.BlockType.COMMAND,
-            text: "speak [TEXT]",
+            text: Scratch.translate("speak [TEXT]"),
             arguments: {
               TEXT: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "Hello",
+                defaultValue: Scratch.translate("Hello"),
               },
             },
           },

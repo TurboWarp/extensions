@@ -1,27 +1,13 @@
 (function (Scratch) {
   "use strict";
 
-  let Number2,
-    null2,
-    units,
-    Number_in,
-    uppercase,
-    i,
-    N_Z,
-    o,
-    j,
-    After_decimal_point,
-    unit,
-    k,
-    C_Number,
-    m,
-    n;
+  let i, N_Z, o, j, After_decimal_point, unit, k, C_Number, m, n;
 
   class CNNUMBER {
     getInfo() {
       return {
         id: "nonameawacnnumber",
-        name: "中文数字",
+        name: Scratch.translate("Chinese Numbers"),
         color1: "#cb0000",
         color2: "#a20000",
         color3: "#a20000",
@@ -30,7 +16,9 @@
             opcode: "CN_number",
             blockType: Scratch.BlockType.REPORTER,
             disableMonitor: true,
-            text: "中文数字 [a] 大写 [u]",
+            text: Scratch.translate(
+              "convert [a] to chinese number using [u] numerals"
+            ),
             arguments: {
               a: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -48,11 +36,11 @@
             acceptReporters: true,
             items: [
               {
-                text: "关闭",
+                text: Scratch.translate("standard"),
                 value: "0",
               },
               {
-                text: "打开",
+                text: Scratch.translate("financial"),
                 value: "1",
               },
             ],
@@ -90,15 +78,15 @@
             String(Number2).slice(-j).charAt(0) == "2" && j >= 3
               ? "两"
               : k == "0"
-              ? j == 1
-                ? ""
-                : i.slice(-1) == "零"
-                ? ""
-                : String(Number2).slice(-1) == "0" &&
-                  (j != 3 || String(Number2).charAt(2) == "0")
-                ? " "
-                : "零"
-              : C_Number[k - 1]
+                ? j == 1
+                  ? ""
+                  : i.slice(-1) == "零"
+                    ? ""
+                    : String(Number2).slice(-1) == "0" &&
+                        (j != 3 || String(Number2).charAt(2) == "0")
+                      ? " "
+                      : "零"
+                : C_Number[k - 1]
           );
         i =
           String(i) +
@@ -106,8 +94,8 @@
             i.slice(-1) == "零" || i.slice(-1) == " "
               ? ""
               : unit[j - 1] == "个"
-              ? ""
-              : unit[j - 1]
+                ? ""
+                : unit[j - 1]
           );
       } else {
         if (j != 1) {
@@ -146,13 +134,14 @@
       Number_in >= 0 ? Math.floor(Number_in) : Math.ceil(Number_in)
     );
     After_decimal_point = "." + String(String(Number_in).split(".")[1]);
+    const upper = Number(uppercase);
     unit = (
-      uppercase
+      upper
         ? "个、拾、佰、仟、万、亿、兆、京"
         : "个、十、百、千、万、亿、兆、京"
     ).split("、");
     C_Number = (
-      uppercase
+      upper
         ? "壹、贰、叁、肆、伍、陆、柒、捌、玖、拾"
         : "一、二、三、四、五、六、七、八、九、十"
     ).split("、");

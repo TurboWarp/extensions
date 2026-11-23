@@ -2,14 +2,27 @@
 // ID: griffpatch
 // Description: Two dimensional physics.
 // Original: griffpatch <https://scratch.mit.edu/users/griffpatch/>
+// License: BSD-3-Clause AND MIT AND Zlib AND ISC
 
 /*!
  * This is based on https://github.com/griffpatch/scratch-vm/tree/box2d/src/extensions/scratch3_griffpatch
+ * by griffpatch, which has this license attached:
+ *
+ * Copyright (c) 2016, Massachusetts Institute of Technology
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* eslint-disable */
-
-(function (Scratch) {
+(async function (Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
@@ -17,8 +30,10 @@
   }
 
   // First we need to load the Box2D physics library that this extension uses.
-  // It's not currently advised to load more scripts in custom extensions, so we copied and pasted
-  // the source code below. Yes, this is really ugly.
+  // Scratch.external needs the library to have an established external presence that isn't going away but this
+  // library is very old and seems to be abandoned. We might have to give it a home ourselves.
+
+  /* eslint-disable */
 
   /*!
    * Copyright (c) 2006-2007 Erin Catto http://www.gphysics.com
@@ -2124,13 +2139,13 @@
         dX > 0
           ? (aabb.upperBound.x - this.p1.x) / dX
           : dX < 0
-          ? (aabb.lowerBound.x - this.p1.x) / dX
-          : Number.POSITIVE_INFINITY,
+            ? (aabb.lowerBound.x - this.p1.x) / dX
+            : Number.POSITIVE_INFINITY,
         dY > 0
           ? (aabb.upperBound.y - this.p1.y) / dY
           : dY < 0
-          ? (aabb.lowerBound.y - this.p1.y) / dY
-          : Number.POSITIVE_INFINITY
+            ? (aabb.lowerBound.y - this.p1.y) / dY
+            : Number.POSITIVE_INFINITY
       );
       this.p2.x = this.p1.x + dX * lambda;
       this.p2.y = this.p1.y + dY * lambda;
@@ -2142,13 +2157,13 @@
         dX > 0
           ? (aabb.upperBound.x - this.p2.x) / dX
           : dX < 0
-          ? (aabb.lowerBound.x - this.p2.x) / dX
-          : Number.POSITIVE_INFINITY,
+            ? (aabb.lowerBound.x - this.p2.x) / dX
+            : Number.POSITIVE_INFINITY,
         dY > 0
           ? (aabb.upperBound.y - this.p2.y) / dY
           : dY < 0
-          ? (aabb.lowerBound.y - this.p2.y) / dY
-          : Number.POSITIVE_INFINITY
+            ? (aabb.lowerBound.y - this.p2.y) / dY
+            : Number.POSITIVE_INFINITY
       );
       this.p1.x = this.p2.x + dX * lambda;
       this.p1.y = this.p2.y + dY * lambda;
@@ -4146,7 +4161,7 @@
     };
     b2Settings.b2Assert = function (a) {
       if (!a) {
-        throw "Assertion Failed";
+        throw new Error("Assertion Failed");
       }
     };
     Box2D.postDefs.push(function () {
@@ -12109,18 +12124,13 @@
   var i;
   for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
 
+  const Cast = Scratch.Cast;
   const ArgumentType = Scratch.ArgumentType;
   const BlockType = Scratch.BlockType;
   // const MathUtil = require('../../util/math-util');
   // const Clone = require('../../util/clone');
-  const Cast = {
-    toNumber: (n) => +n || 0,
-  };
-  // const Cast = require('../../util/cast');
   // const Runtime = require('../../engine/runtime');
   // const RenderedTarget = require('../../sprites/rendered-target');
-  // const formatMessage = require('format-message');
-  const formatMessage = (obj) => obj.default;
   // const MathUtil = require('../../util/math-util');
   // const Timer = require('../../util/timer');
   // const Matter = require('matterJs/matter');
@@ -12157,6 +12167,9 @@
   // let ujidSeq = 0;
 
   const prevPos = {};
+
+  const draggedIds = new Set();
+
   /**
    * Active b2Body/s in the world.
    * @type {Object.<string,*>}
@@ -12202,11 +12215,11 @@
   const SHAPE_TYPE_OPTIONS = {
     COSTUME: "costume",
     CIRCLE: "circle",
-    SVG_POLYGON: "svg",
+    POLYGON: "polygon",
     ALL: "all",
   };
 
-  const _definePolyFromHull = function (hullPoints) {
+  const definePolyFromHull = (hullPoints) => {
     fixDef.shape = new b2PolygonShape();
 
     const vertices = [];
@@ -12227,10 +12240,666 @@
     fixDef.shape.SetAsArray(vertices);
   };
 
-  const _placeBody = function (id, x, y, dir) {
-    if (bodies[id]) {
-      world.DestroyBody(bodies[id]);
+  // Polygon mode: silhouette -> marching squares -> ring/hole groups ->
+  // RDP simplify -> earcut triangulate -> Hertel-Mehlhorn merge -> fixtures.
+
+  // earcut (ISC, https://github.com/mapbox/earcut)
+  const earcut = (
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/npm/earcut@3.0.2/src/earcut.js"
+    )
+  ).default;
+
+  // Missing on older renderers; without it, effects don't shape the trace.
+  const EffectTransform = Scratch.vm.runtime.renderer?.exports?.EffectTransform;
+
+  // Silhouette sampling resolution
+  const POLY_GRID_MIN = 16;
+  const POLY_GRID_MAX = 96;
+  const POLY_GRID_STEP = 4;
+
+  // Ramer-Douglas-Peucker tolerance, in grid cells: outline points within this
+  // distance of a kept edge are discarded. Larger means fewer, coarser corners.
+  const POLY_RDP_EPSILON = 0.75;
+
+  // Contours whose area is below this many grid cells are sampling noise
+  // and will be ignored when an island or a hole.
+  const POLY_MIN_AREA = 2.0;
+
+  // Maximum number of vertices per Box2D polygon before breaking apart.
+  const POLY_MAX_VERTS = 8;
+
+  // Maximum number of Box2D fixtures polygon mode can generate before falling back.
+  const POLY_MAX_FIXTURES = 32;
+
+  /**
+   * @typedef {{ x: number, y: number }} Point
+   */
+
+  /**
+   * Clamp v to [lo, hi].
+   * @param {number} v
+   * @param {number} lo
+   * @param {number} hi
+   * @returns {number}
+   */
+  const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
+
+  /**
+   * Shoelace signed area. Positive = CCW (outer), negative = CW (hole).
+   * @param {Point[]} points
+   * @returns {number}
+   */
+  const signedArea = (points) => {
+    let area = 0;
+    for (let i = 0, n = points.length; i < n; i++) {
+      const a = points[i];
+      const b = points[(i + 1) % n];
+      area += a.x * b.y - b.x * a.y;
     }
+    return area / 2;
+  };
+
+  /**
+   * Twice the signed area of triangle abc. Positive iff a, b, c turn CCW.
+   * @param {Point} a
+   * @param {Point} b
+   * @param {Point} c
+   * @returns {number}
+   */
+  const area3 = (a, b, c) =>
+    (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+
+  /**
+   * Sample drawable silhouette into a padded binary opacity grid (1 = opaque).
+   * The 1-cell transparent border keeps every contour as a closed loop inside
+   * the grid. Effects are applied via EffectTransform when available, matching
+   * scratch-render's hull sampling.
+   * @param {import('scratch-render').Drawable} drawable
+   * @returns {{ grid: Uint8Array, gx: number, gy: number, gxI: number,
+   *   gyI: number, opaqueCount: number }} gx/gy include the border; gxI/gyI
+   *   are the interior dimensions.
+   */
+  const polySampleSilhouette = (drawable) => {
+    const skin = drawable.skin;
+    skin.updateSilhouette();
+
+    const size = skin.size;
+    const gxI = clamp(
+      Math.round(size[0] / POLY_GRID_STEP),
+      POLY_GRID_MIN,
+      POLY_GRID_MAX
+    );
+    const gyI = clamp(
+      Math.round(size[1] / POLY_GRID_STEP),
+      POLY_GRID_MIN,
+      POLY_GRID_MAX
+    );
+    const gx = gxI + 2;
+    const gy = gyI + 2;
+    const grid = new Uint8Array(gx * gy);
+    // 3-element: transformPoint's twgl.v3.copy needs a z slot.
+    const coord = [0, 0, 0];
+    const sample = [0, 0, 0];
+    let opaqueCount = 0;
+
+    const useEffects = !!EffectTransform && drawable.enabledEffects !== 0;
+
+    for (let j = 0; j < gyI; j++) {
+      coord[1] = j / (gyI - 1);
+      for (let i = 0; i < gxI; i++) {
+        coord[0] = i / (gxI - 1);
+        let lookup = coord;
+        if (useEffects) {
+          EffectTransform.transformPoint(drawable, coord, sample);
+          lookup = sample;
+        }
+        if (skin.isTouchingLinear(lookup)) {
+          grid[(j + 1) * gx + (i + 1)] = 1;
+          opaqueCount++;
+        }
+      }
+    }
+
+    return { grid, gx, gy, gxI, gyI, opaqueCount };
+  };
+
+  /**
+   * Marching-squares case table. Indexed by the 4-bit block code (see
+   * polyMarchingSquares for bit layout). Each entry is a list of segments
+   * [fromEdge, toEdge] where edges are 0=top, 1=right, 2=bottom, 3=left.
+   * Segments are oriented so the opaque region stays on one side, letting
+   * them chain head-to-tail into closed loops.
+   * @type {Array<Array<number[]>|null>}
+   */
+  const POLY_MS_TABLE = [
+    null,
+    [[0, 3]],
+    [[1, 0]],
+    [[1, 3]],
+    [[2, 1]],
+    [
+      [0, 3],
+      [2, 1],
+    ],
+    [[2, 0]],
+    [[2, 3]],
+    [[3, 2]],
+    [[0, 2]],
+    [
+      [1, 0],
+      [3, 2],
+    ],
+    [[1, 2]],
+    [[3, 1]],
+    [[0, 1]],
+    [[3, 0]],
+    null,
+  ];
+
+  /**
+   * Trace closed contour loops of a binary grid via marching squares.
+   * @param {Uint8Array} grid Padded grid from polySampleSilhouette.
+   * @param {number} gx Width in cells, including the border.
+   * @param {number} gy Height in cells, including the border.
+   * @returns {Point[][]} One loop per island and per hole, in grid coords.
+   */
+  const polyMarchingSquares = (grid, gx, gy) => {
+    // Edge midpoint for the (ci, cj) block; edge per POLY_MS_TABLE.
+    const edgePoint = (ci, cj, edge) => {
+      if (edge === 0) return { x: ci + 0.5, y: cj };
+      if (edge === 1) return { x: ci + 1, y: cj + 0.5 };
+      if (edge === 2) return { x: ci + 0.5, y: cj + 1 };
+      return { x: ci, y: cj + 0.5 };
+    };
+
+    // Midpoints fall on half-integers, so doubling gives a collision-free int
+    // key as long as coords stay well below 100000 (they do).
+    const pointKey = (p) => Math.round(p.x * 2) * 100000 + Math.round(p.y * 2);
+
+    // Pass 1: per 2x2 block, pack corners into a 4-bit code (TL=0, TR=1,
+    // BR=2, BL=3) and emit the segments the table calls for.
+    const segments = [];
+    const startMap = new Map();
+    for (let cj = 0; cj < gy - 1; cj++) {
+      for (let ci = 0; ci < gx - 1; ci++) {
+        const code =
+          grid[cj * gx + ci] |
+          (grid[cj * gx + ci + 1] << 1) |
+          (grid[(cj + 1) * gx + ci + 1] << 2) |
+          (grid[(cj + 1) * gx + ci] << 3);
+        const segs = POLY_MS_TABLE[code];
+        if (!segs) continue;
+        for (let s = 0; s < segs.length; s++) {
+          const seg = {
+            a: edgePoint(ci, cj, segs[s][0]),
+            b: edgePoint(ci, cj, segs[s][1]),
+            used: false,
+          };
+          segments.push(seg);
+          startMap.set(pointKey(seg.a), seg);
+        }
+      }
+    }
+
+    // Pass 2: chain head-to-tail via startMap until each loop closes.
+    const loops = [];
+    for (let i = 0; i < segments.length; i++) {
+      let seg = segments[i];
+      if (seg.used) continue;
+      const loop = [];
+      while (seg && !seg.used) {
+        seg.used = true;
+        loop.push(seg.a);
+        seg = startMap.get(pointKey(seg.b));
+      }
+      if (loop.length >= 3) loops.push(loop);
+    }
+
+    return loops;
+  };
+
+  /**
+   * Even-odd point-in-polygon test.
+   * @param {Point} p
+   * @param {Point[]} ring
+   * @returns {boolean}
+   */
+  const polyPointInPolygon = (p, ring) => {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const a = ring[i];
+      const b = ring[j];
+      if (
+        a.y > p.y !== b.y > p.y &&
+        p.x < ((b.x - a.x) * (p.y - a.y)) / (b.y - a.y) + a.x
+      ) {
+        inside = !inside;
+      }
+    }
+    return inside;
+  };
+
+  /**
+   * Group loops into solid regions: positive area = outer (seeds a group),
+   * negative = hole (attached to the smallest containing outer). Tiny |area|
+   * speckle and orphan holes are dropped. A positive loop inside a hole
+   * becomes its own group, modelling a solid island in a hollow.
+   * @param {Point[][]} loops From polyMarchingSquares.
+   * @returns {Array<{ outer: Point[], holes: Point[][], area: number }>}
+   */
+  const polyGroupContours = (loops) => {
+    const groups = [];
+    const holes = [];
+    for (let i = 0; i < loops.length; i++) {
+      const area = signedArea(loops[i]);
+      if (area > POLY_MIN_AREA) {
+        groups.push({ outer: loops[i], area: area, holes: [] });
+      } else if (area < -POLY_MIN_AREA) {
+        holes.push(loops[i]);
+      }
+    }
+
+    // Contours never cross, so one vertex decides containment; the smallest
+    // containing outer is the immediately enclosing one (handles nesting).
+    for (let h = 0; h < holes.length; h++) {
+      const probe = holes[h][0];
+      let best = null;
+      for (let g = 0; g < groups.length; g++) {
+        if (
+          polyPointInPolygon(probe, groups[g].outer) &&
+          (best === null || groups[g].area < best.area)
+        ) {
+          best = groups[g];
+        }
+      }
+      if (best !== null) best.holes.push(holes[h]);
+    }
+
+    return groups;
+  };
+
+  /**
+   * Ramer-Douglas-Peucker on the open polyline pts[first..last]. Kept interior
+   * points are appended to `out`; the caller supplies the endpoints.
+   * @param {Point[]} pts
+   * @param {number} first
+   * @param {number} last
+   * @param {number} epsilon Distance tolerance, in pts' units.
+   * @param {Point[]} out
+   * @returns {void}
+   */
+  const polyRdpOpen = (pts, first, last, epsilon, out) => {
+    let maxDist = -1;
+    let index = -1;
+    const a = pts[first];
+    const b = pts[last];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const lenSq = dx * dx + dy * dy;
+
+    // Squared distances throughout, so no square roots.
+    for (let i = first + 1; i < last; i++) {
+      const p = pts[i];
+      let dist;
+      if (lenSq === 0) {
+        // Degenerate chord: fall back to distance from a.
+        dist = (p.x - a.x) * (p.x - a.x) + (p.y - a.y) * (p.y - a.y);
+      } else {
+        const cross = (p.x - a.x) * dy - (p.y - a.y) * dx;
+        dist = (cross * cross) / lenSq;
+      }
+      if (dist > maxDist) {
+        maxDist = dist;
+        index = i;
+      }
+    }
+
+    if (index !== -1 && maxDist > epsilon * epsilon) {
+      polyRdpOpen(pts, first, index, epsilon, out);
+      out.push(pts[index]);
+      polyRdpOpen(pts, index, last, epsilon, out);
+    }
+  };
+
+  /**
+   * RDP-simplify a closed loop. RDP needs an open polyline, so the ring is
+   * split at two roughly antipodal vertices (farthest from loop[0], then
+   * farthest from that), keeping each half non-degenerate.
+   * @param {Point[]} loop
+   * @param {number} epsilon Distance tolerance, in grid cells.
+   * @returns {Point[]} A new simplified loop.
+   */
+  const polyRdpLoop = (loop, epsilon) => {
+    const n = loop.length;
+    if (n <= 4) return loop.slice();
+
+    let far1 = 0;
+    let best = -1;
+    for (let i = 1; i < n; i++) {
+      const d =
+        (loop[i].x - loop[0].x) * (loop[i].x - loop[0].x) +
+        (loop[i].y - loop[0].y) * (loop[i].y - loop[0].y);
+      if (d > best) {
+        best = d;
+        far1 = i;
+      }
+    }
+
+    let far2 = 0;
+    best = -1;
+    for (let i = 0; i < n; i++) {
+      const d =
+        (loop[i].x - loop[far1].x) * (loop[i].x - loop[far1].x) +
+        (loop[i].y - loop[far1].y) * (loop[i].y - loop[far1].y);
+      if (d > best) {
+        best = d;
+        far2 = i;
+      }
+    }
+
+    const lo = Math.min(far1, far2);
+    const hi = Math.max(far1, far2);
+    if (lo === hi) return loop.slice();
+    // First half lo..hi; second half hi..lo wrapping past the end.
+    const out = [];
+    out.push(loop[lo]);
+    polyRdpOpen(loop, lo, hi, epsilon, out);
+    out.push(loop[hi]);
+    const wrapped = loop.slice(hi).concat(loop.slice(0, lo + 1));
+    polyRdpOpen(wrapped, 0, wrapped.length - 1, epsilon, out);
+    return out;
+  };
+
+  /**
+   * Hertel-Mehlhorn convex merge: greedily dissolve shared edges between faces
+   * whenever the union stays convex and within maxVerts. Collapses earcut's
+   * triangles into fewer fat convex polygons for cheaper Box2D collisions.
+   * Faces must be CCW; winding is preserved.
+   * @param {Point[]} pts Shared vertex list indexed by faces.
+   * @param {number[][]} faces Index lists, mutated in place.
+   * @param {number} maxVerts Cap on any merged face's vertex count.
+   * @returns {number[][]} The same `faces` array, after merging.
+   */
+  const polyMergeConvex = (pts, faces, maxVerts) => {
+    // Faces are CCW, so any clearly negative turn marks a reflex corner.
+    const isConvexFace = (face) => {
+      const n = face.length;
+      if (n < 3) return false;
+      for (let i = 0; i < n; i++) {
+        if (
+          area3(
+            pts[face[(i - 1 + n) % n]],
+            pts[face[i]],
+            pts[face[(i + 1) % n]]
+          ) < -1e-9
+        ) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    // A shared edge runs a0->a1 in A and a1->a0 in B (same winding). The merged
+    // ring is A rotated to walk that edge last, then B's other vertices.
+    const tryMerge = (A, B) => {
+      const nA = A.length;
+      const nB = B.length;
+      for (let s = 0; s < nA; s++) {
+        const a0 = A[s];
+        const a1 = A[(s + 1) % nA];
+        for (let t = 0; t < nB; t++) {
+          if (a0 === B[(t + 1) % nB] && a1 === B[t]) {
+            const merged = [];
+            for (let k = 0; k < nA; k++) merged.push(A[(s + 1 + k) % nA]);
+            for (let k = 1; k < nB - 1; k++) merged.push(B[(t + 1 + k) % nB]);
+            if (merged.length > maxVerts) return null;
+            if (!isConvexFace(merged)) return null;
+            return merged;
+          }
+        }
+      }
+      return null;
+    };
+
+    let changed = true;
+    while (changed) {
+      changed = false;
+      for (let i = 0; i < faces.length && !changed; i++) {
+        for (let j = i + 1; j < faces.length && !changed; j++) {
+          const merged = tryMerge(faces[i], faces[j]);
+          if (merged) {
+            faces.splice(j, 1);
+            faces[i] = merged;
+            changed = true;
+          }
+        }
+      }
+    }
+
+    return faces;
+  };
+
+  /**
+   * Decompose a simple polygon (with optional holes) into convex pieces via
+   * earcut + Hertel-Mehlhorn.
+   * @param {Point[]} outer Open ring in grid space.
+   * @param {Point[][]} holes Open rings inside `outer`; <3-vertex holes dropped.
+   * @returns {Point[][]} Convex pieces, or empty if triangulation fails.
+   */
+  const polyDecomposeWithHoles = (outer, holes) => {
+    if (outer.length < 3) return [];
+
+    // Dropping a <3-vertex hole just fills it back in.
+    const validHoles = [];
+    for (let i = 0; i < holes.length; i++) {
+      if (holes[i].length >= 3) validHoles.push(holes[i]);
+    }
+
+    // earcut input: outer then holes, flat [x,y,...]; holeIndices marks starts.
+    const pts = outer.slice();
+    const holeIndices = [];
+    for (let i = 0; i < validHoles.length; i++) {
+      holeIndices.push(pts.length);
+      for (let k = 0; k < validHoles[i].length; k++) pts.push(validHoles[i][k]);
+    }
+    const coords = [];
+    for (let i = 0; i < pts.length; i++) {
+      coords.push(pts[i].x, pts[i].y);
+    }
+
+    const tris = earcut(coords, holeIndices, 2);
+    if (tris.length === 0) {
+      // No safe fill when holes are present.
+      return validHoles.length === 0 ? [outer.slice()] : [];
+    }
+
+    // earcut's winding follows the input, but the merge needs CCW — must be
+    // normalised here, or merging produces garbage.
+    const faces = [];
+    for (let t = 0; t < tris.length; t += 3) {
+      let i0 = tris[t];
+      const i1 = tris[t + 1];
+      let i2 = tris[t + 2];
+      if (area3(pts[i0], pts[i1], pts[i2]) < 0) {
+        const swap = i0;
+        i0 = i2;
+        i2 = swap;
+      }
+      faces.push([i0, i1, i2]);
+    }
+
+    const merged = polyMergeConvex(pts, faces, POLY_MAX_VERTS);
+    const out = [];
+    for (let i = 0; i < merged.length; i++) {
+      const face = merged[i];
+      const piece = [];
+      for (let k = 0; k < face.length; k++) piece.push(pts[face[k]]);
+      out.push(piece);
+    }
+
+    return out;
+  };
+
+  /**
+   * Fan-split a convex polygon over the maxVerts budget into smaller pieces,
+   * all sharing vertex 0 and overlapping by one vertex for seamless tiling.
+   * @param {Point[]} poly Convex polygon.
+   * @param {number} maxVerts
+   * @returns {Point[][]} One or more pieces, none over maxVerts.
+   */
+  const polyLimitVertices = (poly, maxVerts) => {
+    const n = poly.length;
+    if (n <= maxVerts) return [poly];
+
+    const out = [];
+    let i = 1;
+    while (i < n - 1) {
+      const end = Math.min(i + maxVerts - 2, n - 1);
+      const piece = [poly[0]];
+      for (let k = i; k <= end; k++) piece.push(poly[k]);
+      if (piece.length >= 3) out.push(piece);
+      // Resume at `end` so it's shared with the next piece's first edge.
+      i = end;
+    }
+
+    return out.length > 0 ? out : [poly];
+  };
+
+  /**
+   * Drop adjacent duplicate vertices (including the wrap-around pair).
+   * earcut's bridges and coordinate transforms can introduce them, and Box2D
+   * rejects zero-length edges.
+   * @param {Point[]} pts
+   * @returns {Point[]} New array.
+   */
+  const polyDedupe = (pts) => {
+    const eps = 1e-4;
+    const out = [];
+    for (let i = 0; i < pts.length; i++) {
+      const p = pts[i];
+      const prev = out.length > 0 ? out[out.length - 1] : null;
+      if (
+        prev &&
+        Math.abs(prev.x - p.x) < eps &&
+        Math.abs(prev.y - p.y) < eps
+      ) {
+        continue;
+      }
+      out.push(p);
+    }
+
+    while (out.length >= 2) {
+      const a = out[0];
+      const b = out[out.length - 1];
+      if (Math.abs(a.x - b.x) < eps && Math.abs(a.y - b.y) < eps) {
+        out.pop();
+      } else {
+        break;
+      }
+    }
+
+    return out;
+  };
+
+  /**
+   * Polygon-mode entry point: trace a drawable's costume into convex pieces in
+   * the same space as the "this costume" hull, ready for definePolyFromHull
+   * (each piece is a closed ring, last vertex = first). Returns null when the
+   * costume yields nothing usable, so the caller falls back to the hull.
+   * @param {import('scratch-render').Drawable} drawable
+   * @returns {Point[][]|null}
+   */
+  const traceCostumePolygon = (drawable) => {
+    const skin = drawable && drawable.skin;
+    if (!skin || typeof skin.isTouchingLinear !== "function") return null;
+
+    const sampled = polySampleSilhouette(drawable);
+    if (sampled.opaqueCount === 0) return null;
+
+    const groups = polyGroupContours(
+      polyMarchingSquares(sampled.grid, sampled.gx, sampled.gy)
+    );
+    if (groups.length === 0) return null;
+
+    const size = skin.size;
+    const offset = skin.rotationCenter;
+    const scaleX = drawable.scale[0] / 100;
+    const scaleY = drawable.scale[1] / -100; // Flip Y for hulls
+    const gxI = sampled.gxI;
+    const gyI = sampled.gyI;
+
+    // Simplify, then clamp into interior indices 1..gxI / 1..gyI — without
+    // this, the midpoint rule leaves outlines half a cell out into the padding.
+    const prep = (loop) => {
+      const simplified = polyRdpLoop(loop, POLY_RDP_EPSILON);
+      for (let s = 0; s < simplified.length; s++) {
+        simplified[s] = {
+          x: clamp(simplified[s].x, 1, gxI),
+          y: clamp(simplified[s].y, 1, gyI),
+        };
+      }
+      return simplified;
+    };
+
+    const result = [];
+    for (let g = 0; g < groups.length; g++) {
+      // Don't let one malformed region abort the whole costume.
+      try {
+        const outer = prep(groups[g].outer);
+        if (outer.length < 3) continue;
+
+        const holes = [];
+        for (let h = 0; h < groups[g].holes.length; h++) {
+          const hole = prep(groups[g].holes[h]);
+          if (hole.length >= 3) holes.push(hole);
+        }
+
+        const pieces = polyDecomposeWithHoles(outer, holes);
+        for (let p = 0; p < pieces.length; p++) {
+          const capped = polyLimitVertices(pieces[p], POLY_MAX_VERTS);
+          for (let c = 0; c < capped.length; c++) {
+            let piece = capped[c];
+            if (piece.length < 3) continue;
+
+            // Force CCW: the Y-flip below reverses winding, then
+            // definePolyFromHull reverses again, leaving CCW for Box2D —
+            // matching what the "this costume" hull path produces.
+            if (signedArea(piece) < 0) piece = piece.slice().reverse();
+
+            const transformed = [];
+            for (let v = 0; v < piece.length; v++) {
+              // Strip padding, normalise to [0,1], scale to skin pixels, then
+              // recentre and apply sprite scale (negative scaleY flips Y).
+              const px = ((piece[v].x - 1) / (gxI - 1)) * size[0];
+              const py = ((piece[v].y - 1) / (gyI - 1)) * size[1];
+              transformed.push({
+                x: (px - offset[0]) * scaleX,
+                y: (py - offset[1]) * scaleY,
+              });
+            }
+
+            const cleaned = polyDedupe(transformed);
+            if (cleaned.length < 3) continue;
+            if (Math.abs(signedArea(cleaned)) < 1e-3) continue;
+            // definePolyFromHull expects last vertex = first.
+            cleaned.push({ x: cleaned[0].x, y: cleaned[0].y });
+            result.push(cleaned);
+          }
+        }
+      } catch (e) {
+        // Other groups and the hull fallback still apply.
+      }
+    }
+    // Too many fixtures collide slowly; fall back to the single hull.
+    if (result.length > POLY_MAX_FIXTURES) return null;
+    return result.length > 0 ? result : null;
+  };
+
+  const _placeBody = function (id, x, y, dir) {
+    // Replacing the body destroys its pin, so remember to make a new one.
+    const wasPinned = !!pinned[id];
+    _removeBody(id);
 
     fixDef.filter.categoryBits = bodyCategoryBits;
     fixDef.filter.maskBits = bodyMaskBits;
@@ -12243,7 +12912,23 @@
     body.uid = id;
     body.CreateFixture(fixDef);
     bodies[id] = body;
+
+    if (wasPinned) {
+      pinned[id] = _pinBodyToWorld(id);
+    }
     return body;
+  };
+
+  const _removeBody = function (id) {
+    const body = bodies[id];
+    if (!body) return;
+
+    // Box2D destroys every joint attached to a body along with it, so the pins
+    // have to be sorted out first or they'd be left dangling in `pinned`.
+    _releasePinsTo(body);
+    world.DestroyBody(body);
+    delete bodies[id];
+    delete prevPos[id];
   };
 
   const _applyForce = function (id, ftype, x, y, dir, pow) {
@@ -12363,6 +13048,66 @@
   };
 
   /**
+   * Pin a sprite where it currently is, holding it against the world rather
+   * than against some other sprite.
+   * @param {*} id the target ID of an existing body.
+   * @returns {?Object} the new joint.
+   */
+  const _pinBodyToWorld = function (id) {
+    const body = bodies[id];
+    if (!body) return null;
+
+    const pos = body.GetPosition();
+    return _createJointOfType(
+      null,
+      "Rotating",
+      id,
+      0,
+      0,
+      null,
+      pos.x * zoom,
+      pos.y * zoom
+    );
+  };
+
+  /**
+   * Deal with the pins that are about to be destroyed along with a body.
+   * Sprites pinned to it would otherwise silently come loose and start falling,
+   * so they get pinned to the world in the same place instead.
+   * @param {!Object} body the body that is about to be destroyed.
+   */
+  const _releasePinsTo = function (body) {
+    for (const id in pinned) {
+      const joint = pinned[id];
+      if (!joint) {
+        delete pinned[id];
+        continue;
+      }
+      if (joint.GetBodyA() !== body && joint.GetBodyB() !== body) continue;
+
+      world.DestroyJoint(joint);
+      delete pinned[id];
+      // The body being destroyed loses its own pin for good; anything else
+      // stays pinned, just to the world from now on.
+      if (bodies[id] && bodies[id] !== body) {
+        pinned[id] = _pinBodyToWorld(id);
+      }
+    }
+  };
+
+  /**
+   * Destroy the pin holding a sprite in place, if it has one.
+   * @param {*} id the target ID.
+   */
+  const _unpinBody = function (id) {
+    const joint = pinned[id];
+    if (!joint) return;
+
+    world.DestroyJoint(joint);
+    delete pinned[id];
+  };
+
+  /**
    * Set the X and Y coordinates (No Fencing)
    * @param {!RenderedTarget} rt the renderedTarget.
    * @param {!number} x New X coordinate, in Scratch coordinates.
@@ -12414,28 +13159,51 @@
     fixDef.shape = new b2PolygonShape();
     bodyDef.angle = 0;
 
+    const { stageWidth, stageHeight } = Scratch.vm.runtime;
+    const stageBounds = {
+      left: -stageWidth / 2,
+      right: stageWidth / 2,
+      top: stageHeight / 2,
+      bottom: -stageHeight / 2,
+    };
+
     if (type === STAGE_TYPE_OPTIONS.BOXED) {
-      fixDef.shape.SetAsBox(250 / zoom, 10 / zoom);
-      bodyDef.position.Set(0, -190 / zoom);
+      // For the ceiling boxes...
+      // use a width equivalent to the stage width + 10, with a thickness of 10
+      fixDef.shape.SetAsBox((stageWidth + 10) / zoom, 10 / zoom);
+      // create one such box at the bottom of the stage, accounting for thickness...
+      bodyDef.position.Set(0, (stageBounds.bottom - 10) / zoom);
       createStageBody();
-      bodyDef.position.Set(0, 1000 / zoom);
+      // and one 820 units above the top of the stage.
+      bodyDef.position.Set(0, (stageBounds.top + 820) / zoom);
       createStageBody();
-      fixDef.shape.SetAsBox(10 / zoom, 800 / zoom);
-      bodyDef.position.Set(-250 / zoom, 540 / zoom);
+      // For the left & right wall boxes...
+      // use a height equivalent to the stage height + 820, with a thickness of 10
+      fixDef.shape.SetAsBox(10 / zoom, (stageHeight + 820) / zoom);
+      // create a box at the left of the stage...
+      bodyDef.position.Set((stageBounds.left - 10) / zoom, 0);
       createStageBody();
-      bodyDef.position.Set(250 / zoom, 540 / zoom);
+      // and one at the right of the stage.
+      bodyDef.position.Set((stageBounds.right + 10) / zoom, 0);
       createStageBody();
     } else if (type === STAGE_TYPE_OPTIONS.FLOOR) {
-      fixDef.shape.SetAsBox(5000 / zoom, 100 / zoom);
-      bodyDef.position.Set(0, -280 / zoom);
+      // All floor boxes are positioned at the bottom of the stage, accounting for
+      // the thickness of 100.
+      const floorY = (stageBounds.bottom - 100) / zoom;
+
+      // The floor boxes have a width of the stage width + 4520 units, and a
+      // thickness of 100 units.
+      fixDef.shape.SetAsBox((stageWidth + 4520) / zoom, 100 / zoom);
+      // Floor boxes are created at different intervals throughout the bottom of the stage.
+      bodyDef.position.Set(0, floorY);
       createStageBody();
-      bodyDef.position.Set(-10000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.left - 5000, floorY);
       createStageBody();
-      bodyDef.position.Set(10000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.right + 5000, floorY);
       createStageBody();
-      bodyDef.position.Set(-20000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.left - 15000, floorY);
       createStageBody();
-      bodyDef.position.Set(20000, -280 / zoom);
+      bodyDef.position.Set(stageBounds.right + 15000, floorY);
       createStageBody();
     }
 
@@ -12445,6 +13213,10 @@
       bodies[bodyID].SetAwake(true);
     }
   };
+
+  /* eslint-enable */
+
+  let tickRate = 30;
 
   const blockIconURI =
     "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiDQoJIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOmE9Imh0dHA6Ly9ucy5hZG9iZS5jb20vQWRvYmVTVkdWaWV3ZXJFeHRlbnNpb25zLzMuMC8iDQoJIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSItMy43IC0zLjcgNDAgNDAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgLTMuNyAtMy43IDQwIDQwIg0KCSB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxkZWZzPg0KPC9kZWZzPg0KPHJlY3QgeD0iOC45IiB5PSIxLjUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxLjUiIHk9IjE2LjMiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzE2OUZCMCIgc3Ryb2tlLXdpZHRoPSIzIiB3aWR0aD0iMTQuOCIgaGVpZ2h0PSIxNC44Ii8+DQo8cmVjdCB4PSIxNi4zIiB5PSIxNi4zIiBmaWxsPSIjRkZGRkZGIiBzdHJva2U9IiMxNjlGQjAiIHN0cm9rZS13aWR0aD0iMyIgd2lkdGg9IjE0LjgiIGhlaWdodD0iMTQuOCIvPg0KPC9zdmc+";
@@ -12463,6 +13235,11 @@
       // Clear target motion state values when the project starts.
       this.runtime.on("PROJECT_START", this.reset.bind(this));
 
+      // Waiting until the next simulation step to notice that a sprite is gone
+      // would leave its body sitting in the world in the meantime, where new
+      // sprites can still collide with it or get pinned to it.
+      this.runtime.on("targetWasRemoved", (target) => _removeBody(target.id));
+
       world = new b2World(
         new b2Vec2(0, -10), // gravity (10)
         true // allow sleep
@@ -12477,18 +13254,66 @@
       fixDef.restitution = 0.2; // 0.2
 
       _setStageType(STAGE_TYPE_OPTIONS.BOXED);
+
+      // Patch vm.stopDrag & vm.startDrag so drag-dropped sprites with physics behave.
+      // The body stays in `bodies` (so other blocks never create a duplicate body),
+      // but is pinned to the sprite and has its velocity zeroed while dragged.
+      this._ogStartDrag = vm.startDrag;
+      vm.startDrag = (...args) => {
+        this._ogStartDrag.call(vm, ...args);
+
+        const spriteID = args[0];
+        if (bodies[spriteID] !== undefined) {
+          draggedIds.add(spriteID);
+        }
+      };
+
+      this._ogStopDrag = vm.stopDrag;
+      vm.stopDrag = (...args) => {
+        this._ogStopDrag.call(vm, ...args);
+
+        const spriteID = args[0];
+        if (draggedIds.delete(spriteID)) {
+          const body = bodies[spriteID];
+          const target = this.runtime.getTargetById(spriteID);
+          if (body && target) {
+            this._setPosition(
+              body,
+              new b2Vec2(
+                (target.x + _scroll.x) / zoom,
+                (target.y + _scroll.y) / zoom
+              )
+            );
+            body.SetLinearVelocity(new b2Vec2(0, 0));
+            body.SetAngularVelocity(0);
+            body.SetAwake(true);
+            prevPos[spriteID] = {
+              x: target.x,
+              y: target.y,
+              dir: target.direction,
+            };
+          }
+        }
+      };
     }
 
     reset() {
       for (const body in bodies) {
-        if (pinned[body.uid]) {
-          world.DestroyJoint(pinned[body.uid]);
-          delete pinned[body.uid];
-        }
+        // Destroying the body destroys its joints too, so the pins only need
+        // to be forgotten about, not destroyed a second time.
+        delete pinned[body];
         world.DestroyBody(bodies[body]);
         delete bodies[body];
         delete prevPos[body];
       }
+
+      // Pins belonging to sprites that are already gone would otherwise be
+      // left behind pointing at destroyed joints.
+      for (const id in pinned) {
+        delete pinned[id];
+      }
+
+      tickRate = 30;
       // todo: delete joins?
     }
 
@@ -12506,7 +13331,7 @@
     getInfo() {
       return {
         id: "griffpatch",
-        name: formatMessage({
+        name: Scratch.translate({
           id: "griffpatch.categoryName",
           default: "Physics",
           description: "Label for the Griffpatch extension category",
@@ -12520,7 +13345,7 @@
           {
             opcode: "setStage",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setStage",
               default: "set stage boundaries to [stageType]",
               description: "Set the stage type",
@@ -12536,7 +13361,7 @@
           {
             opcode: "setGravity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setGravity",
               default: "set gravity to x: [gx] y: [gy]",
               description: "Set the gravity",
@@ -12555,7 +13380,7 @@
           {
             opcode: "getGravityX",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getGravityX",
               default: "gravity x",
               description: "Get the gravity's x value",
@@ -12564,7 +13389,7 @@
           {
             opcode: "getGravityY",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getGravityY",
               default: "gravity y",
               description: "Get the gravity's y value",
@@ -12576,7 +13401,7 @@
           {
             opcode: "setPhysics",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setPhysics",
               default: "enable for [shape] mode [mode]",
               description: "Enable Physics for this Sprite",
@@ -12595,10 +13420,21 @@
             },
             filter: [Scratch.TargetType.SPRITE],
           },
+          {
+            opcode: "disablePhysics",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate({
+              id: "griffpatch.disablePhysics",
+              default: "disable physics for this sprite",
+              description: "Disable Physics for this Sprite",
+            }),
+            arguments: {},
+            filter: [Scratch.TargetType.SPRITE],
+          },
           // {
           //     opcode: 'setPhysics',
           //     blockType: BlockType.COMMAND,
-          //     text: formatMessage({
+          //     text: Scratch.translate({
           //         id: 'griffpatch.setPhysics',
           //         default: 'enable physics for sprite [shape]',
           //         description: 'Enable Physics for this Sprite'
@@ -12614,7 +13450,7 @@
           // {
           //     opcode: 'setPhysicsAll',
           //     blockType: BlockType.COMMAND,
-          //     text: formatMessage({
+          //     text: Scratch.translate({
           //         id: 'griffpatch.setPhysicsAll',
           //         default: 'enable physics for all sprites',
           //         description: 'Enable Physics For All Sprites'
@@ -12626,10 +13462,36 @@
           {
             opcode: "doTick",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.doTick",
               default: "step simulation",
               description: "Run a single tick of the physics simulation",
+            }),
+          },
+          {
+            opcode: "setTickRate",
+            blockType: BlockType.COMMAND,
+            text: Scratch.translate({
+              id: "griffpatch.setTickRate",
+              default: "set simulation rate to [rate]/s",
+              description:
+                "Set the number of physics simulation steps to run per second",
+            }),
+            arguments: {
+              rate: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 30,
+              },
+            },
+          },
+          {
+            opcode: "getTickRate",
+            blockType: BlockType.REPORTER,
+            text: Scratch.translate({
+              id: "griffpatch.getTickRate",
+              default: "simulation rate",
+              description:
+                "Get the number of physics simulation steps to run per second",
             }),
           },
 
@@ -12638,7 +13500,7 @@
           {
             opcode: "setPosition",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setPosition",
               default: "go to x: [x] y: [y] [space]",
               description: "Position Sprite",
@@ -12669,7 +13531,7 @@
           {
             opcode: "setVelocity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setVelocity",
               default: "set velocity to sx: [sx] sy: [sy]",
               description: "Set Velocity",
@@ -12689,7 +13551,7 @@
           {
             opcode: "changeVelocity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.changeVelocity",
               default: "change velocity by sx: [sx] sy: [sy]",
               description: "Change Velocity",
@@ -12708,7 +13570,7 @@
           },
           {
             opcode: "getVelocityX",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getVelocityX",
               default: "x velocity",
               description: "get the x velocity",
@@ -12718,7 +13580,7 @@
           },
           {
             opcode: "getVelocityY",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getVelocityY",
               default: "y velocity",
               description: "get the y velocity",
@@ -12732,7 +13594,7 @@
           {
             opcode: "applyForce",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.applyForce",
               default: "push with force [force] in direction [dir]",
               description: "Push this object in a given direction",
@@ -12752,7 +13614,7 @@
           {
             opcode: "applyAngForce",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.applyAngForce",
               default: "spin with force [force]",
               description: "Push this object in a given direction",
@@ -12771,7 +13633,7 @@
           {
             opcode: "setAngVelocity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setAngVelocity",
               default: "set angular velocity to [force]",
               description: "Set the angular velocity of the sprite",
@@ -12787,7 +13649,7 @@
           {
             opcode: "getAngVelocity",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getAngVelocity",
               default: "angular velocity",
               description: "Get the angular velocity of the sprite",
@@ -12800,7 +13662,7 @@
           {
             opcode: "setStatic",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setStatic",
               default: "set fixed to [static]",
               description: "Sets whether this block is static or dynamic",
@@ -12816,7 +13678,7 @@
           },
           {
             opcode: "getStatic",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getStatic",
               default: "fixed?",
               description: "get whether this sprite is fixed",
@@ -12831,7 +13693,7 @@
           {
             opcode: "setDensity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setDensity",
               default: "set density to [density]",
               description: "Set the density of the object",
@@ -12849,7 +13711,7 @@
             opcode: "setDensityValue",
             func: "setDensity",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setDensityValue",
               default: "set density to [density]",
               description: "Set the density of the object",
@@ -12865,7 +13727,7 @@
           {
             opcode: "getDensity",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getDensity",
               default: "density",
               description: "Get the density of the object",
@@ -12878,7 +13740,7 @@
           {
             opcode: "setFriction",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setFriction",
               default: "set friction to [friction]",
               description: "Set the friction of the object",
@@ -12896,7 +13758,7 @@
             opcode: "setFrictionValue",
             func: "setFriction",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setFrictionValue",
               default: "set friction to [friction]",
               description: "Set the friction value of the object",
@@ -12912,7 +13774,7 @@
           {
             opcode: "getFriction",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getFriction",
               default: "friction",
               description: "Get the friction of the object",
@@ -12925,7 +13787,7 @@
           {
             opcode: "setRestitution",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setRestitution",
               default: "set bounce to [restitution]",
               description: "Set the bounce of the object",
@@ -12943,7 +13805,7 @@
             opcode: "setRestitutionValue",
             func: "setRestitution",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setRestitutionValue",
               default: "set bounce to [restitution]",
               description: "Set the bounce value of the object",
@@ -12959,7 +13821,7 @@
           {
             opcode: "getRestitution",
             blockType: BlockType.REPORTER,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getRestitution",
               default: "bounce",
               description: "Get the bounce value of the object",
@@ -12972,7 +13834,7 @@
           {
             opcode: "setProperties",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setProperties",
               default:
                 "set density [density] roughness [friction] bounce [restitution]",
@@ -13001,7 +13863,7 @@
           // {
           //     opcode: 'pinSprite',
           //     blockType: BlockType.COMMAND,
-          //     text: formatMessage({
+          //     text: Scratch.translate({
           //         id: 'griffpatch.pinSprite',
           //         default: 'pin to world at sprite\'s x: [x] y: [y]',
           //         description: 'Pin the sprite'
@@ -13022,7 +13884,7 @@
 
           {
             opcode: "getTouching",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getTouching",
               default: "list sprites touching [where]",
               description: "get the name of any sprites we are touching",
@@ -13045,7 +13907,7 @@
           {
             opcode: "setScroll",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.setScroll",
               default: "set scroll to x: [ox] y: [oy]",
               description: "Sets whether this block is static or dynamic",
@@ -13064,7 +13926,7 @@
           {
             opcode: "changeScroll",
             blockType: BlockType.COMMAND,
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.changeScroll",
               default: "change scroll by x: [ox] y: [oy]",
               description: "Sets whether this block is static or dynamic",
@@ -13082,7 +13944,7 @@
           },
           {
             opcode: "getScrollX",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getScrollX",
               default: "x scroll",
               description: "get the x scroll",
@@ -13091,7 +13953,7 @@
           },
           {
             opcode: "getScrollY",
-            text: formatMessage({
+            text: Scratch.translate({
               id: "griffpatch.getScrollY",
               default: "y scroll",
               description: "get the y scroll",
@@ -13141,7 +14003,10 @@
       return [
         { text: "this costume", value: SHAPE_TYPE_OPTIONS.COSTUME },
         { text: "this circle", value: SHAPE_TYPE_OPTIONS.CIRCLE },
-        // { text: "this polygon", value: SHAPE_TYPE_OPTIONS.SVG_POLYGON },
+        {
+          text: "this polygon",
+          value: SHAPE_TYPE_OPTIONS.POLYGON,
+        },
         { text: "all sprites", value: SHAPE_TYPE_OPTIONS.ALL },
       ];
     }
@@ -13221,7 +14086,7 @@
       this._checkMoved();
 
       // world.Step(1 / 30, 10, 10);
-      world.Step(1 / 30, 10, 10);
+      world.Step(1 / tickRate, 10, 10);
       world.ClearForces();
 
       for (const targetID in bodies) {
@@ -13229,13 +14094,20 @@
         const target = this.runtime.getTargetById(targetID);
         if (!target) {
           // Drop target from simulation
-          world.DestroyBody(body);
-          delete bodies[targetID];
-          delete prevPos[targetID];
+          _removeBody(targetID);
           continue;
         }
 
         const position = body.GetPosition();
+
+        if (draggedIds.has(targetID)) {
+          prevPos[targetID] = {
+            x: target.x,
+            y: target.y,
+            dir: target.direction,
+          };
+          continue;
+        }
 
         _setXY(
           target,
@@ -13250,21 +14122,50 @@
       }
     }
 
+    setTickRate(args) {
+      let rate = Cast.toNumber(args.rate);
+      if (Number.isNaN(rate) || rate === Infinity) rate = 30;
+      rate = Math.max(rate, 0.01);
+
+      tickRate = rate;
+    }
+
+    getTickRate() {
+      return tickRate;
+    }
+
     _checkMoved() {
       for (const targetID in bodies) {
         const body = bodies[targetID];
         const target = this.runtime.getTargetById(targetID);
         if (!target) {
           // Drop target from simulation
-          world.DestroyBody(body);
-          delete bodies[targetID];
-          delete prevPos[targetID];
+          _removeBody(targetID);
           continue;
         }
 
         const prev = prevPos[targetID];
         const fixedRotation =
           target.rotationStyle !== ROTATION_STYLE_ALL_AROUND;
+
+        if (draggedIds.has(targetID)) {
+          // Follow the sprite every tick, even if it's held still, and kill any
+          // velocity so nothing accumulates while dragging.
+          this._setPosition(
+            body,
+            new b2Vec2(
+              (target.x + _scroll.x) / zoom,
+              (target.y + _scroll.y) / zoom
+            )
+          );
+          if (!fixedRotation) {
+            body.SetAngle((90 - target.direction) * toRad);
+          }
+          body.SetLinearVelocity(new b2Vec2(0, 0));
+          body.SetAngularVelocity(0);
+          body.SetAwake(true);
+          continue;
+        }
 
         if (prev && (prev.x !== target.x || prev.y !== target.y)) {
           const pos = new b2Vec2(
@@ -13301,8 +14202,8 @@
 
     /**
      * Play a drum sound for some number of beats.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @property {string} shape - the shape
      */
     setPhysics(args, util) {
@@ -13345,11 +14246,23 @@
       //     hullPoints.push({x: points[i][0] - target.x, y: points[i][1] - target.y});
       // }
 
-      const points = drawable._convexHullPoints;
+      let points = drawable._convexHullPoints;
       const scaleX = drawable.scale[0] / 100;
       const scaleY = drawable.scale[1] / -100; // Flip Y for hulls
       const offset = drawable.skin.rotationCenter;
       let allHulls = null;
+
+      if (points.length === 0) {
+        // The sprite is hidden. To avoid errors, enter fallback hull points
+        // instead of exiting early. All blocks rely on this function to work.
+        // Create a shallow copy to avoid accidentally editing the drawable hull.
+        points = [...points];
+        points.push([1, 1]);
+        points.push([0, 1]);
+        points.push([0, 0]);
+        points.push([1, 0]);
+        points.push([1, 1]);
+      }
 
       if (shape === SHAPE_TYPE_OPTIONS.CIRCLE) {
         fixDef.shape = new b2CircleShape();
@@ -13358,25 +14271,30 @@
           (size[0] * Math.abs(scaleX) + size[1] * Math.abs(scaleY)) / 4.0 / zoom
         );
         // fixDef.shape.SetRadius((drawable.getBounds().width / 2) / zoom);
-      } else if (shape === SHAPE_TYPE_OPTIONS.SVG_POLYGON) {
-        const svg = drawable._skin._svgRenderer._svgTag;
-
-        // recurse through childNodes of type 'g', looking for type 'path'
-
-        const hullPoints = [];
-        if (svg) {
-          this._fetchPolygonPointsFromSVG(
-            svg,
-            hullPoints,
-            offset[0],
-            offset[1],
-            scaleX,
-            scaleY
-          );
+      } else if (shape === SHAPE_TYPE_OPTIONS.POLYGON) {
+        // Trace the costume silhouette into convex polygons (concave-capable).
+        let traced = null;
+        try {
+          traced = traceCostumePolygon(drawable);
+        } catch (e) {
+          traced = null;
         }
 
-        _definePolyFromHull(hullPoints[0]);
-        allHulls = hullPoints;
+        if (traced && traced.length > 0) {
+          definePolyFromHull(traced[0]);
+          allHulls = traced;
+        } else {
+          // Tracing produced nothing usable (empty or degenerate costume):
+          // fall back to the convex hull, same as "this costume" mode.
+          const hullPoints = [];
+          for (const i in points) {
+            hullPoints.push({
+              x: (points[i][0] - offset[0]) * scaleX,
+              y: (points[i][1] - offset[1]) * scaleY,
+            });
+          }
+          definePolyFromHull(hullPoints);
+        }
       } else {
         const hullPoints = [];
         for (const i in points) {
@@ -13386,7 +14304,7 @@
           });
         }
 
-        _definePolyFromHull(hullPoints);
+        definePolyFromHull(hullPoints);
       }
 
       const fixedRotation = target.rotationStyle !== ROTATION_STYLE_ALL_AROUND;
@@ -13402,7 +14320,7 @@
 
       if (allHulls) {
         for (let i = 1; i < allHulls.length; i++) {
-          _definePolyFromHull(allHulls[i]);
+          definePolyFromHull(allHulls[i]);
           body.CreateFixture(fixDef);
         }
       }
@@ -13410,58 +14328,8 @@
       return body;
     }
 
-    /**
-     *
-     * @param svg the svg element
-     * @param {Array} hullPointsList array of points
-     * @private
-     */
-    _fetchPolygonPointsFromSVG(svg, hullPointsList, ox, oy, scaleX, scaleY) {
-      if (svg.tagName === "g" || svg.tagName === "svg") {
-        if (svg.hasChildNodes()) {
-          for (const node of svg.childNodes) {
-            this._fetchPolygonPointsFromSVG(
-              node,
-              hullPointsList,
-              ox,
-              oy,
-              scaleX,
-              scaleY
-            );
-          }
-        }
-        return;
-      }
-
-      if (svg.tagName !== "path") {
-        return;
-      }
-      // This is it boys! Get that svg data :)
-      // <path xmlns="http://www.w3.org/2000/svg" d="M 1 109.7118 L 1 1.8097 L 60.3049 38.0516 L 117.9625 1.8097 L 117.9625 109.7118 L 59.8931 73.8817 Z "
-      //  data-paper-data="{&quot;origPos&quot;:null}" stroke-width="2" fill="#9966ff"/>
-
-      let fx;
-      let fy;
-
-      const hullPoints = [];
-      hullPointsList.push(hullPoints);
-
-      const tokens = svg.getAttribute("d").split(" ");
-      for (let i = 0; i < tokens.length; ) {
-        const token = tokens[i++];
-        if (token === "M" || token === "L") {
-          const x = Cast.toNumber(tokens[i++]);
-          const y = Cast.toNumber(tokens[i++]);
-          hullPoints.push({ x: (x - ox) * scaleX, y: (y - oy) * scaleY });
-          if (token === "M") {
-            fx = x;
-            fy = y;
-          }
-        }
-        if (token === "Z") {
-          hullPoints.push({ x: (fx - ox) * scaleX, y: (fy - oy) * scaleY });
-        }
-      }
+    disablePhysics(args, util) {
+      _removeBody(util.target.id);
     }
 
     applyForce(args, util) {
@@ -13514,7 +14382,7 @@
     getDensity(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 100;
       }
 
       return body.GetFixtureList().GetDensity() * 100;
@@ -13533,7 +14401,7 @@
     getFriction(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 50;
       }
 
       return body.GetFixtureList().GetFriction() * 100;
@@ -13545,16 +14413,17 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      body
-        .GetFixtureList()
-        .SetRestitution(Cast.toNumber(args.restitution) / 100.0);
-      body.ResetMassData();
+      const value = Cast.toNumber(args.restitution);
+      if (value !== this.getRestitution(args, util)) {
+        body.GetFixtureList().SetRestitution(value / 100.0);
+        body.ResetMassData();
+      }
     }
 
     getRestitution(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 20;
       }
 
       return body.GetFixtureList().GetRestitution() * 100;
@@ -13596,8 +14465,8 @@
 
     /**
      * Set's the sprites position.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @property {number} x - x offset.
      * @property {number} y - y offset.
      * @property {string} space - Space type (SPACE_TYPE_OPTIONS)
@@ -13618,7 +14487,7 @@
           }
           break;
         case SPACE_TYPE_OPTIONS.RELATIVE: {
-          _setXY(util.target, util.target.x + x, util.target.x + y);
+          _setXY(util.target, util.target.x + x, util.target.y + y);
           if (body) {
             const pos = body.GetPosition();
             const pos2 = new b2Vec2(pos.x + x / zoom, pos.y + y / zoom);
@@ -13657,8 +14526,8 @@
 
     /**
      * Set the sprites velocity.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @property {number} sx - speed x.
      * @property {number} sy - speed y.
      */
@@ -13679,8 +14548,8 @@
 
     /**
      * Change the sprites velocity.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @property {number} sx - speed x.
      * @property {number} sy - speed y.
      */
@@ -13702,8 +14571,8 @@
 
     /**
      * Get the current tempo.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @return {boolean} - the current tempo, in beats per minute.
      */
     getStatic(args, util) {
@@ -13717,8 +14586,8 @@
 
     /**
      * Get the current tempo.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @return {number} - the current x velocity.
      */
     getVelocityX(args, util) {
@@ -13732,8 +14601,8 @@
 
     /**
      * Get the current tempo.
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @return {boolean} - the current y velocity.
      */
     getVelocityY(args, util) {
@@ -13747,8 +14616,8 @@
 
     /**
      * Sets the static property
-     * @param {object} args - the block arguments.
-     * @param {object} util - utility object provided by the runtime.
+     * @param {object} args the block arguments.
+     * @param {object} util utility object provided by the runtime.
      * @property {string} static - static or not
      */
     setStatic(args, util) {
@@ -13771,6 +14640,10 @@
         fixedRotation ? 0 : (90 - target.direction) * toRad
       );
 
+      // Whatever the sprite was pinned to before, that pin is replaced here.
+      // Leaving it in place would stack up joints that nothing destroys.
+      _unpinBody(target.id);
+
       if (args.static === "pinned") {
         // Find what's behind the sprite (pin to that)
         const point = new b2AABB();
@@ -13780,7 +14653,11 @@
         world.QueryAABB((fixture) => {
           const body2 = fixture.GetBody();
           if (body2 !== body && fixture.TestPoint(pos.x, pos.y)) {
-            body2ID = body2.uid;
+            // Only sprites can be pinned to. The stage edges have no ID, and
+            // anything not in `bodies` no longer belongs to the simulation.
+            if (bodies[body2.uid] === body2) {
+              body2ID = body2.uid;
+            }
             return false;
           }
           return true;
@@ -13796,19 +14673,12 @@
           null,
           null
         );
-      } else {
-        const pin = pinned[target.id];
-        if (pin) {
-          world.DestroyJoint(pin);
-          // delete joints[pin.I];
-          delete pinned[target.id];
-        }
       }
     }
 
     /**
      * Sets the sprite offset
-     * @param {object} args - the block arguments.
+     * @param {object} args the block arguments.
      * @property {number} ox - x offset.
      * @property {number} oy - y offset.
      */
@@ -13821,7 +14691,7 @@
 
     /**
      * Sets the sprite offset
-     * @param {object} args - the block arguments.
+     * @param {object} args the block arguments.
      * @property {number} ox - x offset.
      * @property {number} oy - y offset.
      */
@@ -13944,7 +14814,7 @@
 
     /**
      * Sets the stage
-     * @param {object} args - the block arguments.
+     * @param {object} args the block arguments.
      * @property {number} stageType - Stage Type.
      */
     setStage(args) {
@@ -13953,7 +14823,7 @@
 
     /**
      * Sets the gravity
-     * @param {object} args - the block arguments.
+     * @param {object} args the block arguments.
      * @property {number} gx - Gravity x.
      * @property {number} gy - Gravity y.
      */

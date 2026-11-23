@@ -1,7 +1,9 @@
 // Name: Ping Cloud Data
 // ID: clouddataping
 // Description: Determine whether a cloud variable server is probably up.
+// By: GarboMuffin
 // Original: TheShovel
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -33,7 +35,7 @@
     let ws;
     try {
       // Permission is checked earlier.
-      // eslint-disable-next-line no-restricted-syntax
+      // eslint-disable-next-line extension/check-can-fetch
       ws = new WebSocket(uri);
     } catch (e) {
       return {
@@ -97,12 +99,12 @@
     getInfo() {
       return {
         id: "clouddataping",
-        name: "Ping Cloud Data",
+        name: Scratch.translate("Ping Cloud Data"),
         blocks: [
           {
             opcode: "ping",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is cloud data server [SERVER] up?",
+            text: Scratch.translate("is cloud data server [SERVER] up?"),
             arguments: {
               SERVER: {
                 type: Scratch.ArgumentType.STRING,

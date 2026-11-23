@@ -1,6 +1,8 @@
 // Name: Pointerlock
 // ID: pointerlock
 // Description: Adds blocks for mouse locking. Mouse x & y blocks will report the change since the previous frame while the pointer is locked. Replaces the pointerlock experiment.
+// By: GarboMuffin
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -29,7 +31,7 @@
     mouse._clientX = x;
     mouse._scratchX = mouse.runtime.stageWidth * (x / width - 0.5);
     mouse._clientY = y;
-    mouse._scratchY = mouse.runtime.stageWidth * (y / height - 0.5);
+    mouse._scratchY = mouse.runtime.stageHeight * (y / height - 0.5);
     if (typeof isDown === "boolean") {
       const data = {
         button: e.button,
@@ -45,6 +47,23 @@
     if (!isPointerLockEnabled) {
       return originalPostIOData(data);
     }
+  };
+
+  // We want to disable rounding when pointerlock is active so that high framerates don't dramatically
+  // limit the project's input precision.
+  const originalGetScratchX = mouseDevice.getScratchX.bind(mouseDevice);
+  const originalGetScratchY = mouseDevice.getScratchY.bind(mouseDevice);
+  mouseDevice.getScratchX = () => {
+    if (isPointerLockEnabled) {
+      return mouse._scratchX;
+    }
+    return originalGetScratchX();
+  };
+  mouseDevice.getScratchY = () => {
+    if (isPointerLockEnabled) {
+      return mouse._scratchY;
+    }
+    return originalGetScratchY();
   };
 
   document.addEventListener(
@@ -87,7 +106,6 @@
     isLocked = document.pointerLockElement === canvas;
   });
   document.addEventListener("pointerlockerror", (e) => {
-    // eslint-disable-next-line no-console
     console.error("Pointer lock error", e);
   });
 
@@ -104,16 +122,23 @@
     return ret;
   };
 
+  vm.runtime.on("PROJECT_LOADED", () => {
+    isPointerLockEnabled = false;
+    if (isLocked) {
+      document.exitPointerLock();
+    }
+  });
+
   class Pointerlock {
     getInfo() {
       return {
         id: "pointerlock",
-        name: "Pointerlock",
+        name: Scratch.translate("Pointerlock"),
         blocks: [
           {
             opcode: "setLocked",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set pointer lock [enabled]",
+            text: Scratch.translate("set pointer lock [enabled]"),
             arguments: {
               enabled: {
                 type: Scratch.ArgumentType.STRING,
@@ -125,7 +150,7 @@
           {
             opcode: "isLocked",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "pointer locked?",
+            text: Scratch.translate("pointer locked?"),
           },
         ],
         menus: {
@@ -133,11 +158,11 @@
             acceptReporters: true,
             items: [
               {
-                text: "enabled",
+                text: Scratch.translate("enabled"),
                 value: "true",
               },
               {
-                text: "disabled",
+                text: Scratch.translate("disabled"),
                 value: "false",
               },
             ],
@@ -147,7 +172,7 @@
     }
 
     setLocked(args) {
-      isPointerLockEnabled = args.enabled === "true";
+      isPointerLockEnabled = Scratch.Cast.toBoolean(args.enabled) === true;
       if (!isPointerLockEnabled && isLocked) {
         document.exitPointerLock();
       }

@@ -1,6 +1,9 @@
 // Name: Iframe
 // ID: iframe
 // Description: Display webpages or HTML over the stage.
+// By: GarboMuffin
+// Context: "iframe" is an HTML element that lets websites embed other websites.
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -51,6 +54,10 @@
   let height = -1; // negative means default
   let interactive = true;
   let resizeBehavior = "scale";
+  /** @type {string|number|boolean} */
+  let latestMessage = "";
+  /** @type {string|number|boolean} */
+  let latestParentMessage = "";
 
   const updateFrameAttributes = () => {
     if (!iframe) {
@@ -78,8 +85,12 @@
       iframe.style.height = `${(effectiveHeight / stageHeight) * 100}%`;
 
       iframe.style.transform = "";
-      iframe.style.top = `${(0.5 - effectiveHeight / 2 / stageHeight) * 100}%`;
-      iframe.style.left = `${(0.5 - effectiveWidth / 2 / stageWidth) * 100}%`;
+      iframe.style.top = `${
+        (0.5 - effectiveHeight / 2 / stageHeight - y / stageHeight) * 100
+      }%`;
+      iframe.style.left = `${
+        (0.5 - effectiveWidth / 2 / stageWidth + x / stageWidth) * 100
+      }%`;
     }
   };
 
@@ -100,25 +111,66 @@
         .join("; ")
     );
     iframe.setAttribute("allowtransparency", "true");
-    iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("src", src);
 
     overlay = Scratch.renderer.addOverlay(iframe, getOverlayMode());
     updateFrameAttributes();
   };
 
+  const closeFrame = () => {
+    if (iframe) {
+      Scratch.renderer.removeOverlay(iframe);
+      iframe = null;
+      overlay = null;
+    }
+  };
+
+  /** @param {unknown} data */
+  const normalizeMessage = (data) =>
+    typeof data === "string" ||
+    typeof data === "number" ||
+    typeof data === "boolean"
+      ? data
+      : JSON.stringify(data);
+
+  /**
+   * @returns {Window|null}
+   */
+  const getParentWindow = () => {
+    // if no parent, window.parent is us. which is not useful
+    if (window.parent !== window) {
+      return window.parent;
+    }
+    if (window.opener) {
+      return window.opener;
+    }
+    return null;
+  };
+
+  window.addEventListener("message", (e) => {
+    if (iframe && iframe.contentWindow && e.source === iframe.contentWindow) {
+      latestMessage = normalizeMessage(e.data);
+      Scratch.vm.runtime.startHats("iframe_whenMessage");
+    } else if (e.source === getParentWindow()) {
+      latestParentMessage = normalizeMessage(e.data);
+      Scratch.vm.runtime.startHats("iframe_whenMessageParent");
+    }
+  });
+
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateFrameAttributes);
+
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", closeFrame);
 
   class IframeExtension {
     getInfo() {
       return {
-        name: "Iframe",
+        name: Scratch.translate("Iframe"),
         id: "iframe",
         blocks: [
           {
             opcode: "display",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show website [URL]",
+            text: Scratch.translate("show website [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -129,11 +181,11 @@
           {
             opcode: "displayHTML",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show HTML [HTML]",
+            text: Scratch.translate("show HTML [HTML]"),
             arguments: {
               HTML: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue: "<h1>It works!</h1>",
+                defaultValue: `<h1>${Scratch.translate("It works!")}</h1>`,
               },
             },
           },
@@ -141,23 +193,23 @@
           {
             opcode: "show",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show iframe",
+            text: Scratch.translate("show iframe"),
           },
           {
             opcode: "hide",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide iframe",
+            text: Scratch.translate("hide iframe"),
           },
           {
             opcode: "close",
             blockType: Scratch.BlockType.COMMAND,
-            text: "close iframe",
+            text: Scratch.translate("close iframe"),
           },
           "---",
           {
             opcode: "get",
             blockType: Scratch.BlockType.REPORTER,
-            text: "iframe [MENU]",
+            text: Scratch.translate("iframe [MENU]"),
             arguments: {
               MENU: {
                 type: Scratch.ArgumentType.STRING,
@@ -168,7 +220,7 @@
           {
             opcode: "setX",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe x position to [X]",
+            text: Scratch.translate("set iframe x position to [X]"),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -179,7 +231,7 @@
           {
             opcode: "setY",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe y position to [Y]",
+            text: Scratch.translate("set iframe y position to [Y]"),
             arguments: {
               Y: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -190,7 +242,7 @@
           {
             opcode: "setWidth",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe width to [WIDTH]",
+            text: Scratch.translate("set iframe width to [WIDTH]"),
             arguments: {
               WIDTH: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -201,7 +253,7 @@
           {
             opcode: "setHeight",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe height to [HEIGHT]",
+            text: Scratch.translate("set iframe height to [HEIGHT]"),
             arguments: {
               HEIGHT: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -212,7 +264,7 @@
           {
             opcode: "setInteractive",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe interactive to [INTERACTIVE]",
+            text: Scratch.translate("set iframe interactive to [INTERACTIVE]"),
             arguments: {
               INTERACTIVE: {
                 type: Scratch.ArgumentType.STRING,
@@ -223,7 +275,7 @@
           {
             opcode: "setResize",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set iframe resize behavior to [RESIZE]",
+            text: Scratch.translate("set iframe resize behavior to [RESIZE]"),
             arguments: {
               RESIZE: {
                 type: Scratch.ArgumentType.STRING,
@@ -231,42 +283,101 @@
               },
             },
           },
+          "---",
+          {
+            opcode: "sendMessage",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("send message [MESSAGE] to iframe"),
+            arguments: {
+              MESSAGE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello",
+              },
+            },
+          },
+          {
+            opcode: "whenMessage",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when message received from iframe"),
+            isEdgeActivated: false,
+          },
+          {
+            opcode: "iframeMessage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("iframe message"),
+          },
+          "---",
+          {
+            opcode: "sendMessageParent",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("send message [MESSAGE] to parent window"),
+            arguments: {
+              MESSAGE: {
+                type: Scratch.ArgumentType.STRING,
+                defaultValue: "hello",
+              },
+            },
+          },
+          {
+            opcode: "whenMessageParent",
+            blockType: Scratch.BlockType.EVENT,
+            text: Scratch.translate("when message received from parent window"),
+            isEdgeActivated: false,
+          },
+          {
+            opcode: "parentMessage",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("parent window message"),
+          },
         ],
         menus: {
           getMenu: {
             acceptReporters: true,
             items: [
-              "url",
-              "visible",
+              Scratch.translate("url"),
+              Scratch.translate("visible"),
               "x",
               "y",
-              "width",
-              "height",
-              "interactive",
-              "resize behavior",
+              Scratch.translate("width"),
+              Scratch.translate("height"),
+              Scratch.translate("interactive"),
+              Scratch.translate("resize behavior"),
             ],
           },
           interactiveMenu: {
             acceptReporters: true,
-            items: ["true", "false"],
+            items: [
+              // The getter blocks will return English regardless of translating these
+              "true",
+              "false",
+            ],
           },
           resizeMenu: {
             acceptReporters: true,
-            items: ["scale", "viewport"],
+            items: [
+              {
+                text: Scratch.translate("scale"),
+                value: "scale",
+              },
+              {
+                text: Scratch.translate("viewport"),
+                value: "viewport",
+              },
+            ],
           },
         },
       };
     }
 
     async display({ URL }) {
-      this.close();
+      closeFrame();
       if (await Scratch.canEmbed(URL)) {
         createFrame(Scratch.Cast.toString(URL));
       }
     }
 
     async displayHTML({ HTML }) {
-      this.close();
+      closeFrame();
       const url = `data:text/html;,${encodeURIComponent(
         Scratch.Cast.toString(HTML)
       )}`;
@@ -288,11 +399,7 @@
     }
 
     close() {
-      if (iframe) {
-        Scratch.renderer.removeOverlay(iframe);
-        iframe = null;
-        overlay = null;
-      }
+      closeFrame();
     }
 
     get({ MENU }) {
@@ -353,6 +460,27 @@
           updateFrameAttributes();
         }
       }
+    }
+
+    sendMessage({ MESSAGE }) {
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.postMessage(MESSAGE, "*");
+      }
+    }
+
+    sendMessageParent({ MESSAGE }) {
+      const parentWindow = getParentWindow();
+      if (parentWindow) {
+        parentWindow.postMessage(MESSAGE, "*");
+      }
+    }
+
+    iframeMessage() {
+      return latestMessage;
+    }
+
+    parentMessage() {
+      return latestParentMessage;
     }
   }
 

@@ -2,6 +2,7 @@
 // ID: nkcontrols
 // Description: Show and hide the project's controls.
 // By: NamelessCat <https://scratch.mit.edu/users/NexusKitten/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -42,11 +43,40 @@
       document.querySelector(".stop-all-button");
   };
 
+  const highlightAnimation = (outlineColor, backgroundColor) => [
+    [
+      { outline: "#0000 2px solid" },
+      {
+        outline: outlineColor + " 2px solid",
+        backgroundColor: backgroundColor,
+      },
+      { outline: "#0000 2px solid" },
+      { outline: outlineColor + " 2px solid" },
+      { outline: "#0000 2px solid" },
+      {
+        outline: outlineColor + " 2px solid",
+        backgroundColor: backgroundColor,
+      },
+      { outline: "#0000 2px solid" },
+    ],
+    { duration: 1700 },
+  ];
+
   class controlcontrols {
+    constructor() {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        getButtons();
+        for (const button of [fullScreen, greenFlag, pauseButton, stopButton]) {
+          if (button) {
+            button.style.display = "block";
+          }
+        }
+      });
+    }
     getInfo() {
       return {
         id: "nkcontrols",
-        name: "Control Controls",
+        name: Scratch.translate("Control Controls"),
         color1: "#ffab19",
         color2: "#ec9c13",
         color3: "#b87d17",
@@ -54,54 +84,88 @@
           {
             opcode: "showOption",
             blockType: Scratch.BlockType.COMMAND,
-            text: "show [OPTION]",
+            text: Scratch.translate("show [OPTION]"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           {
             opcode: "hideOption",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide [OPTION]",
+            text: Scratch.translate("hide [OPTION]"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
           "---",
           {
             opcode: "optionShown",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[OPTION] shown?",
+            text: Scratch.translate("[OPTION] shown?"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
+          },
+          "---",
+          {
+            opcode: "highlightOption",
+            blockType: Scratch.BlockType.COMMAND,
+            text: Scratch.translate("highlight [OPTION]"),
+            arguments: {
+              OPTION: {
+                type: Scratch.ArgumentType.STRING,
+                menu: "OPTION",
+              },
+            },
+            extensions: ["colours_control"],
           },
           "---",
           {
             opcode: "optionExists",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "[OPTION] exists?",
+            text: Scratch.translate("[OPTION] exists?"),
             arguments: {
               OPTION: {
                 type: Scratch.ArgumentType.STRING,
                 menu: "OPTION",
               },
             },
+            extensions: ["colours_control"],
           },
         ],
         menus: {
           OPTION: {
             acceptReporters: true,
-            items: ["green flag", "pause", "stop", "fullscreen"],
+            items: [
+              {
+                text: Scratch.translate("green flag"),
+                value: "green flag",
+              },
+              {
+                text: Scratch.translate("pause"),
+                value: "pause",
+              },
+              {
+                text: Scratch.translate("stop"),
+                value: "stop",
+              },
+              {
+                text: Scratch.translate("fullscreen"),
+                value: "fullscreen",
+              },
+            ],
           },
         },
       };
@@ -130,6 +194,24 @@
         stopButton.style.display = "none";
       } else if (args.OPTION === "fullscreen" && fullScreen) {
         fullScreen.style.display = "none";
+      }
+    }
+
+    highlightOption(args) {
+      getButtons();
+      if (args.OPTION === "green flag" && greenFlag) {
+        greenFlag.animate(...highlightAnimation("#45993d", "#45993d2e"));
+      } else if (args.OPTION === "pause" && pauseButton) {
+        pauseButton.animate(...highlightAnimation("#d89400", "#d894002e"));
+      } else if (args.OPTION === "stop" && stopButton) {
+        stopButton.animate(...highlightAnimation("#b84848", "#b848482e"));
+      } else if (args.OPTION === "fullscreen" && fullScreen) {
+        fullScreen.animate(
+          ...highlightAnimation(
+            "#666",
+            "var(--ui-tertiary, hsla(215, 50%, 90%, 1))"
+          )
+        );
       }
     }
 

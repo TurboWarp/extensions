@@ -1,6 +1,9 @@
 // Name: Mouse Cursor
 // ID: MouseCursor
 // Description: Use custom cursors or hide the cursor. Also allows replacing the cursor with any costume image.
+// By: Samq64
+// By: GarboMuffin
+// License: MIT AND MPL-2.0
 
 (function (Scratch) {
   "use strict";
@@ -140,7 +143,23 @@
     return [+a || 0, +b || 0];
   };
 
-  const cursors = [
+  /**
+   * @param {string} size eg. "48x84"
+   * @returns {string}
+   */
+  const formatUnreliableSize = (size) =>
+    Scratch.translate(
+      {
+        default: "{size} (unreliable)",
+        description: "[size] is replaced with a size in pixels such as '48x48'",
+      },
+      { size }
+    );
+
+  const ALL_ALLOWED_CURSORS = [
+    // This list includes "none" while the dropdown's list does not
+    "none",
+
     "default",
     "pointer",
     "move",
@@ -178,15 +197,22 @@
   ];
 
   class MouseCursor {
+    constructor() {
+      Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+        this.setCur({
+          cur: "default",
+        });
+      });
+    }
     getInfo() {
       return {
         id: "MouseCursor",
-        name: "Mouse Cursor",
+        name: Scratch.translate("Mouse Cursor"),
         blocks: [
           {
             opcode: "setCur",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set cursor to [cur]",
+            text: Scratch.translate("set cursor to [cur]"),
             arguments: {
               cur: {
                 type: Scratch.ArgumentType.STRING,
@@ -198,7 +224,9 @@
           {
             opcode: "setCursorImage",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set cursor to current costume center: [position] max size: [size]",
+            text: Scratch.translate(
+              "set cursor to current costume center: [position] max size: [size]"
+            ),
             arguments: {
               position: {
                 type: Scratch.ArgumentType.STRING,
@@ -215,28 +243,301 @@
           {
             opcode: "hideCur",
             blockType: Scratch.BlockType.COMMAND,
-            text: "hide cursor",
+            text: Scratch.translate("hide cursor"),
           },
           {
             opcode: "getCur",
             blockType: Scratch.BlockType.REPORTER,
-            text: "cursor",
+            text: Scratch.translate("cursor"),
           },
         ],
         menus: {
           cursors: {
             acceptReporters: true,
-            items: cursors,
+            items: [
+              {
+                text: Scratch.translate({
+                  default: "default",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "default",
+              },
+              {
+                text: Scratch.translate({
+                  default: "pointer",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "pointer",
+              },
+              {
+                text: Scratch.translate({
+                  default: "move",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "move",
+              },
+              {
+                text: Scratch.translate({
+                  default: "grab",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "grab",
+              },
+              {
+                text: Scratch.translate({
+                  default: "grabbing",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "grabbing",
+              },
+              {
+                text: Scratch.translate({
+                  default: "text",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "text",
+              },
+              {
+                text: Scratch.translate({
+                  default: "vertical-text",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "vertical-text",
+              },
+              {
+                text: Scratch.translate({
+                  default: "wait",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "wait",
+              },
+              {
+                text: Scratch.translate({
+                  default: "progress",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "progress",
+              },
+              {
+                text: Scratch.translate({
+                  default: "help",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "help",
+              },
+              {
+                text: Scratch.translate({
+                  default: "context-menu",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "context-menu",
+              },
+              {
+                text: Scratch.translate({
+                  default: "zoom-in",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "zoom-in",
+              },
+              {
+                text: Scratch.translate({
+                  default: "zoom-out",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "zoom-out",
+              },
+              {
+                text: Scratch.translate({
+                  default: "crosshair",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "crosshair",
+              },
+              {
+                text: Scratch.translate({
+                  default: "cell",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "cell",
+              },
+              {
+                text: Scratch.translate({
+                  default: "not allowed",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "not-allowed",
+              },
+              {
+                text: Scratch.translate({
+                  default: "copy",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "copy",
+              },
+              {
+                text: Scratch.translate({
+                  default: "alias",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "alias",
+              },
+              {
+                text: Scratch.translate({
+                  default: "no drop",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "no-drop",
+              },
+              {
+                text: Scratch.translate({
+                  default: "all-scroll",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "all-scroll",
+              },
+              {
+                text: Scratch.translate({
+                  default: "col-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "col-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "row-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "row-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "n-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "n-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "e-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "e-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "s-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "s-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "w-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "w-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "ne-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "ne-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "nw-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "nw-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "se-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "se-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "sw-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "sw-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "ew-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "ew-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "ns-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "ns-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "nesw-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "nesw-resize",
+              },
+              {
+                text: Scratch.translate({
+                  default: "nwse-resize",
+                  description:
+                    "Part of cursor dropdown. See https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/cursor#keyword",
+                }),
+                value: "nwse-resize",
+              },
+            ],
           },
           imagePositions: {
             acceptReporters: true,
             items: [
               // [x, y] where x is [0=left, 100=right] and y is [0=top, 100=bottom]
-              { text: "top left", value: "0,0" },
-              { text: "top right", value: "100,0" },
-              { text: "bottom left", value: "0,100" },
-              { text: "bottom right", value: "100,100" },
-              { text: "center", value: "50,50" },
+              { text: Scratch.translate("top left"), value: "0,0" },
+              { text: Scratch.translate("top right"), value: "100,0" },
+              { text: Scratch.translate("bottom left"), value: "0,100" },
+              { text: Scratch.translate("bottom right"), value: "100,100" },
+              { text: Scratch.translate("center"), value: "50,50" },
             ],
           },
           imageSizes: {
@@ -246,13 +547,13 @@
               // Browsers ignore cursor images >128 in any dimension (https://searchfox.org/mozilla-central/rev/43ee5e789b079e94837a21336e9ce2420658fd19/widget/gtk/nsWindow.cpp#3393-3402)
               // Browsers may refuse to display a cursor near window borders for images >32 in any dimension
               { text: "4x4", value: "4x4" },
-              { text: "8x8", value: "8x4" },
+              { text: "8x8", value: "8x8" },
               { text: "12x12", value: "12x12" },
               { text: "16x16", value: "16x16" },
               { text: "32x32", value: "32x32" },
-              { text: "48x48 (unreliable)", value: "48x48" },
-              { text: "64x64 (unreliable)", value: "64x64" },
-              { text: "128x128 (unreliable)", value: "128x128" },
+              { text: formatUnreliableSize("48x48"), value: "48x48" },
+              { text: formatUnreliableSize("64x64"), value: "64x64" },
+              { text: formatUnreliableSize("128x128"), value: "128x128" },
             ],
           },
         },
@@ -262,7 +563,7 @@
     setCur(args) {
       const newCursor = Scratch.Cast.toString(args.cur);
       // Prevent setting cursor to "url(...), default" from causing fetch.
-      if (cursors.includes(newCursor) || newCursor === "none") {
+      if (ALL_ALLOWED_CURSORS.includes(newCursor)) {
         nativeCursor = newCursor;
         customCursorImageName = null;
         currentCanvasCursor = newCursor;

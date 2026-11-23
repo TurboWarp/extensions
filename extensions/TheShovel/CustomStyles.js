@@ -2,6 +2,7 @@
 // ID: shovelcss
 // Description: Customize the appearance of variable monitors and prompts in your project.
 // By: TheShovel
+// License: MIT
 
 // Thanks LilyMakesThings for the awesome banner!
 (function (Scratch) {
@@ -13,6 +14,7 @@
   let monitorBackgroundColor = "";
   let variableValueBackground = "";
   let variableValueTextColor = "";
+  let variableSliderColor = "";
   let listFooterBackground = "";
   let listHeaderBackground = "";
   let listValueText = "";
@@ -32,7 +34,9 @@
   let askInputBorderWidth = -1;
   let askBoxIcon = "";
   let askInputText = "";
-  let askButtonImage = "";
+  let askQuestionText = "";
+  let askButtonImage = ""; // User-provided URL, unchanged
+  let askButtonImageCSS = ""; // URL-resolved version of askButtonImage that actually gets fetched via CSS
   let askInputBorder = "";
 
   // CSS selectors
@@ -48,6 +52,7 @@
   let askBoxBG;
   let askBoxButton;
   let askBoxInner;
+  let askBoxText;
   let askBoxBorderMain;
   let askBoxBorderOuter;
   if (typeof scaffolding !== "undefined") {
@@ -63,6 +68,7 @@
     askBoxBG = ".sc-question-inner";
     askBoxButton = ".sc-question-submit-button";
     askBoxInner = ".sc-question-input";
+    askBoxText = ".sc-question-text";
     askBoxBorderMain = ".sc-question-input:hover";
     askBoxBorderOuter = ".sc-question-input:focus";
   } else {
@@ -80,6 +86,8 @@
     askBoxButton = 'button[class^="question_question-submit-button_"]';
     askBoxInner =
       '[class^="question_question-container_"] input[class^="input_input-form_"]';
+    askBoxText =
+      '[class^="question_question-container_"] div[class^="question_question-label_"]';
     askBoxIcon = 'img[class^="question_question-submit-button-icon_"]';
     askBoxBorderMain =
       '[class^="question_question-input_"] input:focus, [class^="question_question-input_"] input:hover';
@@ -114,7 +122,7 @@
     // We assume all values are sanitized when they are set, so then we can just use them as-is here.
 
     if (monitorText) {
-      css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorText}; }`;
+      css += `${monitorRoot}, ${monitorListFooter}, ${monitorListHeader}, ${monitorRowIndex} { color: ${monitorText} !important; }`;
     }
     if (monitorBackgroundColor) {
       css += `${monitorRoot}, ${monitorRowsInner} { background: ${monitorBackgroundColor}; }`;
@@ -132,7 +140,10 @@
       css += `${monitorValue}, ${monitorValueLarge} { background: ${variableValueBackground} !important; }`;
     }
     if (variableValueTextColor) {
-      css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor}; }`;
+      css += `${monitorValue}, ${monitorValueLarge} { color: ${variableValueTextColor} !important; }`;
+    }
+    if (variableSliderColor) {
+      css += `${monitorRoot} { accent-color: ${variableSliderColor} !important; }`;
     }
     if (variableValueRoundness >= 0) {
       css += `${monitorValue} { border-radius: ${variableValueRoundness}px; }`;
@@ -141,13 +152,13 @@
       css += `${monitorListHeader} { background: ${listHeaderBackground}; }`;
     }
     if (listFooterBackground) {
-      css += `${monitorListFooter} { background: ${listHeaderBackground}; }`;
+      css += `${monitorListFooter} { background: ${listFooterBackground}; }`;
     }
     if (listValueBackground) {
       css += `${monitorRowValueOuter} { background: ${listValueBackground} !important; }`;
     }
     if (listValueText) {
-      css += `${monitorRowValueOuter} { color: ${listValueText}; }`;
+      css += `${monitorRowValueOuter} { color: ${listValueText} !important; }`;
     }
     if (listValueRoundness >= 0) {
       css += `${monitorRowValueOuter} { border-radius: ${listValueRoundness}px; }`;
@@ -177,16 +188,17 @@
     if (askInputText) {
       css += `${askBoxInner} { color: ${askInputText} !important; }`;
     }
+    if (askQuestionText) {
+      css += `${askBoxText} { color: ${askQuestionText} !important; }`;
+    }
     if (askInputRoundness >= 0) {
       css += `${askBoxInner} { border-radius: ${askInputRoundness}px !important; }`;
     }
     if (askInputBorderWidth >= 0) {
       css += `${askBoxInner} { border-width: ${askInputBorderWidth}px !important; }`;
     }
-    if (askButtonImage) {
-      css += `${askBoxButton} { background-image: url("${encodeURI(
-        askButtonImage
-      )}") !important; background-repeat: no-repeat; background-size: contain; }`;
+    if (askButtonImageCSS) {
+      css += `${askBoxButton} { background-image: url("${escapeCSSString(askButtonImageCSS)}") !important; background-repeat: no-repeat; background-size: contain; }`;
       css += `${askBoxIcon} { visibility: hidden; }`;
     }
     if (askInputBorder) {
@@ -195,6 +207,40 @@
     }
 
     stylesheet.textContent = css;
+  };
+
+  const resetStyles = () => {
+    monitorText = "";
+    monitorBorder = "";
+    monitorBackgroundColor = "";
+    variableValueBackground = "";
+    variableValueTextColor = "";
+    variableSliderColor = "";
+    listFooterBackground = "";
+    listHeaderBackground = "";
+    listValueText = "";
+    listValueBackground = "";
+    variableValueRoundness = -1;
+    listValueRoundness = -1;
+    monitorBackgroundRoundness = -1;
+    monitorBackgroundBorderWidth = -1;
+    allowScrolling = "";
+    askBackground = "";
+    askBackgroundRoundness = -1;
+    askBackgroundBorderWidth = -1;
+    askButtonBackground = "";
+    askButtonRoundness = -1;
+    askInputBackground = "";
+    askInputRoundness = -1;
+    askInputBorderWidth = -1;
+    askBoxIcon = "";
+    askInputText = "";
+    askQuestionText = "";
+    askButtonImage = "";
+    askButtonImageCSS = "";
+    askInputBorder = "";
+
+    applyCSS();
   };
 
   const getMonitorRoot = (id) => {
@@ -237,6 +283,9 @@
     }
   };
 
+  const escapeCSSString = (str) =>
+    str.replace(/["\\\n\r\f]/g, (c) => `\\${c.charCodeAt(0).toString(16)} `);
+
   const parseColor = (color, callback) => {
     color = Scratch.Cast.toString(color);
 
@@ -249,8 +298,8 @@
       return;
     }
 
-    // Simple linear gradient
-    if (/^linear-gradient\(\d+deg,#?[a-z0-9]+,#?[a-z0-9]+\)$/.test(color)) {
+    // General gradient pattern
+    if (/^[a-z-]+-gradient\([a-z0-9,#%. ]+\)$/i.test(color)) {
       callback(color);
       return;
     }
@@ -271,11 +320,13 @@
     console.error("Invalid color", color);
   };
 
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", resetStyles);
+
   class MonitorStyles {
     getInfo() {
       return {
         id: "shovelcss",
-        name: "Custom Styles",
+        name: Scratch.translate("Custom Styles"),
         menuIconURI: extensionIcon,
         color1: "#0072d6",
         color2: "#0064bc",
@@ -285,7 +336,7 @@
             blockIconURI: ColorIcon,
             opcode: "changecss",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set [COLORABLE] to [COLOR]",
+            text: Scratch.translate("set [COLORABLE] to [COLOR]"),
             arguments: {
               COLORABLE: {
                 type: Scratch.ArgumentType.STRING,
@@ -301,7 +352,9 @@
             blockIconURI: GradientIcon,
             opcode: "gradientAngle",
             blockType: Scratch.BlockType.REPORTER,
-            text: "make a gradient with [COLOR1] and [COLOR2] at angle [ANGLE]",
+            text: Scratch.translate(
+              "make a gradient with [COLOR1] and [COLOR2] at angle [ANGLE]"
+            ),
             arguments: {
               COLOR1: {
                 type: Scratch.ArgumentType.COLOR,
@@ -322,14 +375,14 @@
             disableMonitor: true,
             opcode: "transparentinput",
             blockType: Scratch.BlockType.REPORTER,
-            text: "transparent",
+            text: Scratch.translate("transparent"),
           },
           {
             blockIconURI: PictureIcon,
             disableMonitor: true,
             opcode: "pictureinput",
             blockType: Scratch.BlockType.REPORTER,
-            text: "image [URL]",
+            text: Scratch.translate("image [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -343,7 +396,7 @@
             disableMonitor: true,
             opcode: "setAskURI",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set ask prompt button image to [URL]",
+            text: Scratch.translate("set ask prompt button image to [URL]"),
             arguments: {
               URL: {
                 type: Scratch.ArgumentType.STRING,
@@ -356,7 +409,7 @@
             blockIconURI: BorderIcon,
             opcode: "setbordersize",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set border width of [BORDER] to [SIZE]",
+            text: Scratch.translate("set border width of [BORDER] to [SIZE]"),
             arguments: {
               BORDER: {
                 type: Scratch.ArgumentType.STRING,
@@ -372,7 +425,7 @@
             blockIconURI: BorderIcon,
             opcode: "setborderradius",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set roundness of [CORNER] to [SIZE]",
+            text: Scratch.translate("set roundness of [CORNER] to [SIZE]"),
             arguments: {
               SIZE: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -389,14 +442,14 @@
             blockIconURI: ResetIcon,
             opcode: "clearCSS",
             blockType: Scratch.BlockType.COMMAND,
-            text: "reset styles",
+            text: Scratch.translate("reset styles"),
           },
           "---",
           {
             blockIconURI: miscIcon,
             opcode: "allowscrollrule",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set list scrolling to [SCROLLRULE]",
+            text: Scratch.translate("set list scrolling to [SCROLLRULE]"),
             arguments: {
               SCROLLRULE: {
                 type: Scratch.ArgumentType.STRING,
@@ -408,7 +461,7 @@
             blockIconURI: miscIcon,
             opcode: "getValue",
             blockType: Scratch.BlockType.REPORTER,
-            text: "get [ITEM]",
+            text: Scratch.translate("[ITEM]"),
             arguments: {
               ITEM: {
                 type: Scratch.ArgumentType.STRING,
@@ -421,7 +474,9 @@
             blockIconURI: miscIcon,
             opcode: "setvarpos",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set position of variable [NAME] to x: [X] y: [Y]",
+            text: Scratch.translate(
+              "set position of variable [NAME] to x: [X] y: [Y]"
+            ),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -441,7 +496,9 @@
             blockIconURI: miscIcon,
             opcode: "setlistpos",
             blockType: Scratch.BlockType.COMMAND,
-            text: "set position of list [NAME] to x: [X] y: [Y]",
+            text: Scratch.translate(
+              "set position of list [NAME] to x: [X] y: [Y]"
+            ),
             arguments: {
               X: {
                 type: Scratch.ArgumentType.NUMBER,
@@ -463,73 +520,233 @@
           COLORABLE_MENU: {
             acceptReporters: true,
             items: [
-              "monitor text",
-              "monitor background",
-              "monitor border",
-              "variable value background",
-              "variable value text",
-              "list header background",
-              "list footer background",
-              "list value background",
-              "list value text",
-              "ask prompt background",
-              "ask prompt button background",
-              "ask prompt input background",
-              "ask prompt input text",
-              "ask prompt input border",
+              {
+                text: Scratch.translate("monitor text"),
+                value: "monitor text",
+              },
+              {
+                text: Scratch.translate("monitor background"),
+                value: "monitor background",
+              },
+              {
+                text: Scratch.translate("monitor border"),
+                value: "monitor border",
+              },
+              {
+                text: Scratch.translate("variable value background"),
+                value: "variable value background",
+              },
+              {
+                text: Scratch.translate("variable value text"),
+                value: "variable value text",
+              },
+              {
+                text: Scratch.translate("variable slider color"),
+                value: "variable slider color",
+              },
+              {
+                text: Scratch.translate("list header background"),
+                value: "list header background",
+              },
+              {
+                text: Scratch.translate("list footer background"),
+                value: "list footer background",
+              },
+              {
+                text: Scratch.translate("list value background"),
+                value: "list value background",
+              },
+              {
+                text: Scratch.translate("list value text"),
+                value: "list value text",
+              },
+              {
+                text: Scratch.translate("ask prompt background"),
+                value: "ask prompt background",
+              },
+              {
+                text: Scratch.translate("ask prompt button background"),
+                value: "ask prompt button background",
+              },
+              {
+                text: Scratch.translate("ask prompt input background"),
+                value: "ask prompt input background",
+              },
+              {
+                text: Scratch.translate("ask prompt question text"),
+                value: "ask prompt question text",
+              },
+              {
+                text: Scratch.translate("ask prompt input text"),
+                value: "ask prompt input text",
+              },
+              {
+                text: Scratch.translate("ask prompt input border"),
+                value: "ask prompt input border",
+              },
             ],
           },
           BORDER_WIDTH_MENU: {
             acceptReporters: true,
             items: [
-              "monitor background",
-              "ask prompt background",
-              "ask prompt input",
+              {
+                text: Scratch.translate("monitor background"),
+                value: "monitor background",
+              },
+              {
+                text: Scratch.translate("ask prompt background"),
+                value: "ask prompt background",
+              },
+              {
+                text: Scratch.translate("ask prompt input"),
+                value: "ask prompt input",
+              },
             ],
           },
           BORDER_ROUNDNESS_MENU: {
             acceptReporters: true,
             items: [
-              "monitor background",
-              "variable value",
-              "list value",
-              "ask prompt background",
-              "ask prompt button",
-              "ask prompt input",
+              {
+                text: Scratch.translate("monitor background"),
+                value: "monitor background",
+              },
+              {
+                text: Scratch.translate("variable value"),
+                value: "variable value",
+              },
+              { text: Scratch.translate("list value"), value: "list value" },
+              {
+                text: Scratch.translate("ask prompt background"),
+                value: "ask prompt background",
+              },
+              {
+                text: Scratch.translate("ask prompt button"),
+                value: "ask prompt button",
+              },
+              {
+                text: Scratch.translate("ask prompt input"),
+                value: "ask prompt input",
+              },
             ],
           },
           SCROLL_MENU: {
             acceptReporters: true,
-            items: ["enabled", "disabled"],
+            items: [
+              { text: Scratch.translate("enabled"), value: "enabled" },
+              { text: Scratch.translate("disabled"), value: "disabled" },
+            ],
           },
           VALUEGET_LIST: {
             acceptReporters: true,
             items: [
-              "monitor text",
-              "monitor background",
-              "monitor border color",
-              "variable value background",
-              "variable value text",
-              "list header background",
-              "list footer background",
-              "list value background",
-              "list value text",
-              "ask prompt background",
-              "ask prompt button background",
-              "ask prompt input background",
-              "ask prompt input text",
-              "ask prompt input border",
-              "monitor background border width",
-              "ask prompt background border width",
-              "ask prompt input border width",
-              "monitor background roundness",
-              "variable value roundness",
-              "list value roundness",
-              "ask prompt background roundness",
-              "ask prompt button roundness",
-              "ask prompt input roundness",
-              "ask prompt button image",
-              "list scroll rule",
+              {
+                text: Scratch.translate("monitor text"),
+                value: "monitor text",
+              },
+              {
+                text: Scratch.translate("monitor background"),
+                value: "monitor background",
+              },
+              {
+                text: Scratch.translate("monitor border color"),
+                value: "monitor border color",
+              },
+              {
+                text: Scratch.translate("variable value background"),
+                value: "variable value background",
+              },
+              {
+                text: Scratch.translate("variable value text"),
+                value: "variable value text",
+              },
+              {
+                text: Scratch.translate("variable slider color"),
+                value: "variable slider color",
+              },
+              {
+                text: Scratch.translate("list header background"),
+                value: "list header background",
+              },
+              {
+                text: Scratch.translate("list footer background"),
+                value: "list footer background",
+              },
+              {
+                text: Scratch.translate("list value background"),
+                value: "list value background",
+              },
+              {
+                text: Scratch.translate("list value text"),
+                value: "list value text",
+              },
+              {
+                text: Scratch.translate("ask prompt background"),
+                value: "ask prompt background",
+              },
+              {
+                text: Scratch.translate("ask prompt button background"),
+                value: "ask prompt button background",
+              },
+              {
+                text: Scratch.translate("ask prompt input background"),
+                value: "ask prompt input background",
+              },
+              {
+                text: Scratch.translate("ask prompt question text"),
+                value: "ask prompt question text",
+              },
+              {
+                text: Scratch.translate("ask prompt input text"),
+                value: "ask prompt input text",
+              },
+              {
+                text: Scratch.translate("ask prompt input border"),
+                value: "ask prompt input border",
+              },
+              {
+                text: Scratch.translate("monitor background border width"),
+                value: "monitor background border width",
+              },
+              {
+                text: Scratch.translate("ask prompt background border width"),
+                value: "ask prompt background border width",
+              },
+              {
+                text: Scratch.translate("ask prompt input border width"),
+                value: "ask prompt input border width",
+              },
+              {
+                text: Scratch.translate("monitor background roundness"),
+                value: "monitor background roundness",
+              },
+              {
+                text: Scratch.translate("variable value roundness"),
+                value: "variable value roundness",
+              },
+              {
+                text: Scratch.translate("list value roundness"),
+                value: "list value roundness",
+              },
+              {
+                text: Scratch.translate("ask prompt background roundness"),
+                value: "ask prompt background roundness",
+              },
+              {
+                text: Scratch.translate("ask prompt button roundness"),
+                value: "ask prompt button roundness",
+              },
+              {
+                text: Scratch.translate("ask prompt input roundness"),
+                value: "ask prompt input roundness",
+              },
+              {
+                text: Scratch.translate("ask prompt button image"),
+                value: "ask prompt button image",
+              },
+              {
+                text: Scratch.translate("list scrolling"),
+                value: "list scrolling",
+              },
             ],
           },
         },
@@ -548,6 +765,8 @@
           variableValueBackground = color;
         } else if (args.COLORABLE === "variable value text") {
           variableValueTextColor = color;
+        } else if (args.COLORABLE === "variable slider color") {
+          variableSliderColor = color;
         } else if (args.COLORABLE === "list header background") {
           listHeaderBackground = color;
         } else if (args.COLORABLE === "list footer background") {
@@ -562,6 +781,8 @@
           askButtonBackground = color;
         } else if (args.COLORABLE === "ask prompt input background") {
           askInputBackground = color;
+        } else if (args.COLORABLE === "ask prompt question text") {
+          askQuestionText = color;
         } else if (args.COLORABLE === "ask prompt input text") {
           askInputText = color;
         } else if (args.COLORABLE === "ask prompt input border") {
@@ -658,33 +879,7 @@
     }
 
     clearCSS() {
-      monitorText = "";
-      monitorBorder = "";
-      monitorBackgroundColor = "";
-      variableValueBackground = "";
-      variableValueTextColor = "";
-      listFooterBackground = "";
-      listHeaderBackground = "";
-      listValueText = "";
-      listValueBackground = "";
-      variableValueRoundness = -1;
-      listValueRoundness = -1;
-      monitorBackgroundRoundness = -1;
-      monitorBackgroundBorderWidth = -1;
-      allowScrolling = "";
-      askBackground = "";
-      askBackgroundRoundness = -1;
-      askBackgroundBorderWidth = -1;
-      askButtonBackground = "";
-      askButtonRoundness = -1;
-      askInputBackground = "";
-      askInputRoundness = -1;
-      askInputBorderWidth = -1;
-      askBoxIcon = "";
-      askInputText = "";
-      askButtonImage = "";
-      askInputBorder = "";
-      applyCSS();
+      resetStyles();
     }
 
     getValue(args) {
@@ -698,6 +893,8 @@
         return variableValueBackground;
       } else if (args.ITEM === "variable value text") {
         return variableValueTextColor;
+      } else if (args.ITEM === "variable slider color") {
+        return variableSliderColor;
       } else if (args.ITEM === "list header background") {
         return listHeaderBackground;
       } else if (args.ITEM === "list footer background") {
@@ -712,6 +909,8 @@
         return askButtonBackground;
       } else if (args.ITEM === "ask prompt input background") {
         return askInputBackground;
+      } else if (args.ITEM === "ask prompt question text") {
+        return askQuestionText;
       } else if (args.ITEM === "ask prompt input text") {
         return askInputText;
       } else if (args.ITEM === "ask prompt input border") {
@@ -736,20 +935,44 @@
         return askInputRoundness;
       } else if (args.ITEM === "ask prompt button image") {
         return askButtonImage;
-      } else if (args.ITEM === "list scrolling") {
-        if (allowScrolling === "auto") {
-          return "enabled";
-        } else {
+      } else if (
+        args.ITEM === "list scrolling" ||
+        // Old version of this extension had "list scroll rule" in the menu so
+        // we'll support either.
+        // https://github.com/TurboWarp/extensions/pull/2262
+        args.ITEM === "list scroll rule"
+      ) {
+        if (allowScrolling === "hidden") {
           return "disabled";
+        } else {
+          return "enabled";
         }
       }
       return "";
     }
 
     setAskURI(args) {
-      return Scratch.canFetch(args.URL).then((allowed) => {
+      const rawURL = Scratch.Cast.toString(args.URL);
+
+      // Empty URL removes the image. Don't let new URL() resolve it to the page itself.
+      if (!rawURL) {
+        askButtonImage = "";
+        askButtonImageCSS = "";
+        applyCSS();
+        return;
+      }
+
+      let cssURL;
+      try {
+        cssURL = new URL(encodeURI(rawURL), location.href).href;
+      } catch (e) {
+        return;
+      }
+
+      return Scratch.canFetch(cssURL).then((allowed) => {
         if (allowed) {
-          askButtonImage = args.URL;
+          askButtonImage = rawURL;
+          askButtonImageCSS = cssURL;
           applyCSS();
         }
       });

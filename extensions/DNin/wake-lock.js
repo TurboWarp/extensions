@@ -2,6 +2,7 @@
 // ID: dninwakelock
 // Description: Prevent the computer from falling asleep.
 // By: D-ScratchNinja <https://scratch.mit.edu/users/D-ScratchNinja/>
+// License: MIT
 
 (function (Scratch) {
   "use strict";
@@ -19,18 +20,31 @@
     constructor(runtime) {
       this.runtime = runtime;
       this.runtime.on("PROJECT_STOP_ALL", this.stopAll.bind(this));
+
+      document.addEventListener("visibilitychange", () => {
+        // If enabled, reacquire wake lock when document becomes visible again
+        if (wakeLock !== null && document.visibilityState === "visible") {
+          latestEnabled = false;
+          this.setWakeLock({
+            enabled: true,
+          });
+        }
+      });
     }
 
     getInfo() {
       return {
         id: "dninwakelock",
-        name: "Wake Lock",
+        name: Scratch.translate("Wake Lock"),
         docsURI: "https://extensions.turbowarp.org/DNin/wake-lock",
         blocks: [
           {
             opcode: "setWakeLock",
             blockType: Scratch.BlockType.COMMAND,
-            text: "turn wake lock [enabled]",
+            text: Scratch.translate({
+              default: "turn wake lock [enabled]",
+              description: "[enabled] is a drop down with items 'on' and 'off'",
+            }),
             arguments: {
               enabled: {
                 type: Scratch.ArgumentType.STRING,
@@ -42,7 +56,7 @@
           {
             opcode: "isLocked",
             blockType: Scratch.BlockType.BOOLEAN,
-            text: "is wake lock active?",
+            text: Scratch.translate("is wake lock active?"),
           },
         ],
         menus: {
@@ -50,11 +64,11 @@
             acceptReporters: true,
             items: [
               {
-                text: "on",
+                text: Scratch.translate("on"),
                 value: "true",
               },
               {
-                text: "off",
+                text: Scratch.translate("off"),
                 value: "false",
               },
             ],
@@ -74,14 +88,26 @@
         // Not supported in this browser.
         return;
       }
+      const enable = Scratch.Cast.toBoolean(args.enabled);
+      if (enable && document.visibilityState === "hidden") {
+        // Can't request wake lock while document is hidden.
+        return;
+      }
 
       const previousEnabled = latestEnabled;
-      latestEnabled = Scratch.Cast.toBoolean(args.enabled);
+      latestEnabled = enable;
       if (latestEnabled && !previousEnabled) {
         promise = promise
           .then(() => navigator.wakeLock.request("screen"))
           .then((sentinel) => {
             wakeLock = sentinel;
+            wakeLock.addEventListener("release", () => {
+              if (document.visibilityState === "visible") {
+                // If the document is hidden, wake lock should be reacquired when it's visible again.
+                wakeLock = null;
+                latestEnabled = false;
+              }
+            });
           })
           .catch((error) => {
             console.error(error);

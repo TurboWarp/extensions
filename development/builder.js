@@ -1,42 +1,120 @@
-const fs = require("fs");
-const AdmZip = require("adm-zip");
-const pathUtil = require("path");
-const compatibilityAliases = require("./compatibility-aliases");
-const parseMetadata = require("./parse-extension-metadata");
-const featuredExtensionSlugs = require("../extensions/extensions.json");
+import * as fs from "node:fs";
+import * as fsPromises from "node:fs/promises";
+import * as pathUtil from "node:path";
+import * as urlUtil from "node:url";
+import AdmZip from "adm-zip";
+import chokidar from "chokidar";
+import spdxParser from "spdx-expression-parse";
+import { imageSize } from "image-size";
+import ExtendedJSON from "@turbowarp/json";
+import compatibilityAliases from "./compatibility-aliases.js";
+import parseMetadata from "./parse-extension-metadata.js";
+import parseTranslations from "./parse-extension-translations.js";
+import renderTemplate from "./render-template.js";
+import renderDocs from "./render-docs.js";
+import { mkdirp, recursiveReadDirectory } from "./fs-utils.js";
+import {
+  fetchAllDependencies,
+  parseExtensionDependencies,
+  rewriteExternalToInline,
+  synchronizeDependencyList,
+  validateImports,
+} from "./dependency-management.js";
+import generateBuildSnippetJS from "./build-snippets.js";
 
 /**
  * @typedef {'development'|'production'|'desktop'} Mode
  */
 
 /**
- * Recursively read a directory.
- * @param {string} directory
- * @returns {Array<[string, string]>} List of tuples [name, absolutePath].
- * The return result includes files in subdirectories, but not the subdirectories themselves.
+ * @typedef TranslatableString
+ * @property {string} string The English version of the string
+ * @property {string} developer_comment Helper text to help translators
  */
-const recursiveReadDirectory = (directory) => {
-  const result = [];
-  for (const name of fs.readdirSync(directory)) {
-    if (name.startsWith(".")) {
-      // Ignore .eslintrc.js, .DS_Store, etc.
-      continue;
-    }
-    const absolutePath = pathUtil.join(directory, name);
-    const stat = fs.statSync(absolutePath);
-    if (stat.isDirectory()) {
-      for (const [
-        relativeToChildName,
-        childAbsolutePath,
-      ] of recursiveReadDirectory(absolutePath)) {
-        // This always needs to use / on all systems
-        result.push([`${name}/${relativeToChildName}`, childAbsolutePath]);
+
+/**
+ * @param {Record<string, Record<string, string>>} allTranslations
+ * @param {string} idPrefix
+ * @returns {Record<string, Record<string, string>>|null}
+ */
+const filterTranslationsByPrefix = (allTranslations, idPrefix) => {
+  let translationsEmpty = true;
+  const filteredTranslations = {};
+
+  for (const [locale, strings] of Object.entries(allTranslations)) {
+    let localeEmpty = true;
+    const filteredStrings = {};
+
+    for (const [id, string] of Object.entries(strings)) {
+      if (id.startsWith(idPrefix)) {
+        filteredStrings[id.substring(idPrefix.length)] = string;
+        localeEmpty = false;
       }
-    } else {
-      result.push([name, absolutePath]);
+    }
+
+    if (!localeEmpty) {
+      filteredTranslations[locale] = filteredStrings;
+      translationsEmpty = false;
     }
   }
-  return result;
+
+  return translationsEmpty ? null : filteredTranslations;
+};
+
+/**
+ * @param {Record<string, Record<string, string>>} allTranslations
+ * @param {string} idFilter
+ * @returns {Record<string, string>}
+ */
+const filterTranslationsByID = (allTranslations, idFilter) => {
+  let stringsEmpty = true;
+  const result = {};
+
+  for (const [locale, strings] of Object.entries(allTranslations)) {
+    const translated = strings[idFilter];
+    if (translated) {
+      result[locale] = translated;
+      stringsEmpty = false;
+    }
+  }
+
+  return stringsEmpty ? null : result;
+};
+
+/**
+ * @param {string} oldCode
+ * @param {string} insertCode
+ */
+const insertAfterCommentsBeforeCode = (oldCode, insertCode) => {
+  let index = 0;
+  while (true) {
+    if (oldCode.substring(index, index + 2) === "//") {
+      // Line comment
+      const end = oldCode.indexOf("\n", index);
+      if (end === -1) {
+        // This file is only line comments
+        index = oldCode.length;
+        break;
+      }
+      index = end;
+    } else if (oldCode.substring(index, index + 2) === "/*") {
+      // Block comment
+      const end = oldCode.indexOf("*/", index);
+      if (end === -1) {
+        throw new Error("Block comment never ends");
+      }
+      index = end + 2;
+    } else if (/\s/.test(oldCode.charAt(index))) {
+      // Whitespace
+      index++;
+    } else {
+      break;
+    }
+  }
+
+  const before = oldCode.substring(0, index);
+  const after = oldCode.substring(index);
+  return before + insertCode + after;
 };
 
 class BuildFile {
@@ -53,18 +131,86 @@ class BuildFile {
   }
 
   read() {
-    return fs.readFileSync(this.sourcePath);
+    return fsPromises.readFile(this.sourcePath);
   }
 
   validate() {
     // no-op by default
+    return Promise.resolve();
+  }
+
+  /**
+   * @returns {Record<string, Record<string, TranslatableString>>|null}
+   */
+  getStrings() {
+    // no-op by default, to be overridden
+    return null;
+  }
+
+  /**
+   * @returns {Promise<string[]>}
+   */
+  getDependencies() {
+    // no-op by default, to be overridden
+    return Promise.resolve([]);
   }
 }
 
 class ExtensionFile extends BuildFile {
-  constructor(absolutePath, featured) {
+  /**
+   * @param {string} absolutePath Full path to the .js file, eg. /home/.../extensions/fetch.js
+   * @param {string} slug Just the extension ID from the path, eg. fetch
+   * @param {boolean} featured true if the extension is the homepage
+   * @param {Record<string, Record<string, string>>} allTranslations All extension runtime translations
+   * @param {Mode} mode
+   */
+  constructor(absolutePath, slug, featured, allTranslations, mode) {
     super(absolutePath);
+    /** @type {string} */
+    this.slug = slug;
+    /** @type {boolean} */
     this.featured = featured;
+    /** @type {Record<string, Record<string, string>>} */
+    this.allTranslations = allTranslations;
+    /** @type {Mode} */
+    this.mode = mode;
+  }
+
+  async read() {
+    let data = await fsPromises.readFile(this.sourcePath, "utf-8");
+
+    if (this.mode !== "development") {
+      const dependenciesJS = rewriteExternalToInline(data);
+      data = dependenciesJS.js;
+
+      let prefixJS = "";
+      let suffixJS = "";
+
+      const translations = filterTranslationsByPrefix(
+        this.allTranslations,
+        `${this.slug}@`
+      );
+      if (translations !== null) {
+        prefixJS += `/* generated l10n code */Scratch.translate.setup(${JSON.stringify(
+          translations
+        )});/* end generated l10n code */`;
+      }
+
+      if (dependenciesJS.snippets.size > 0) {
+        const snippetJS = generateBuildSnippetJS(dependenciesJS.snippets);
+        prefixJS += snippetJS.prefix;
+        suffixJS += snippetJS.suffix;
+      }
+
+      if (prefixJS) {
+        data = insertAfterCommentsBeforeCode(data, prefixJS);
+      }
+      if (suffixJS) {
+        data = data + suffixJS;
+      }
+    }
+
+    return data;
   }
 
   getMetadata() {
@@ -72,12 +218,13 @@ class ExtensionFile extends BuildFile {
     return parseMetadata(data);
   }
 
-  validate() {
+  async validate() {
     if (!this.featured) {
       return;
     }
 
-    const metadata = this.getMetadata();
+    const js = await fsPromises.readFile(this.sourcePath, "utf-8");
+    const metadata = parseMetadata(js);
 
     if (!metadata.id) {
       throw new Error("Missing // ID:");
@@ -102,7 +249,30 @@ class ExtensionFile extends BuildFile {
       );
     }
 
-    for (const person of [...metadata.by, ...metadata.original]) {
+    if (!metadata.license) {
+      throw new Error(
+        "Missing // License: -- We recommend using // License: MPL-2.0"
+      );
+    }
+
+    try {
+      // Don't care about the result for now -- just see if it parses.
+      spdxParser(metadata.license);
+    } catch (e) {
+      throw new Error(
+        `${metadata.license} is not a valid SPDX license. Did you typo it? It is case sensitive. We recommend using // License: MPL-2.0`
+      );
+    }
+
+    const allCredits = [...metadata.by, ...metadata.original];
+
+    if (allCredits.length === 0) {
+      throw new Error(
+        "Missing credits. Add a // By: or // Original: comment to the header."
+      );
+    }
+
+    for (const person of allCredits) {
       if (!person.name) {
         throw new Error("Person is missing name");
       }
@@ -115,18 +285,77 @@ class ExtensionFile extends BuildFile {
         );
       }
     }
+
+    validateImports(js);
+  }
+
+  getStrings() {
+    if (!this.featured) {
+      return null;
+    }
+
+    const metadata = this.getMetadata();
+    const slug = this.slug;
+
+    const getMetadataDescription = (part) => {
+      let result = `${part} of the '${metadata.name}' extension in the extension gallery.`;
+      if (metadata.context) {
+        result += ` ${metadata.context}`;
+      }
+      return result;
+    };
+    const metadataStrings = {
+      [`${slug}@name`]: {
+        string: metadata.name,
+        developer_comment: getMetadataDescription("Name"),
+      },
+      [`${slug}@description`]: {
+        string: metadata.description,
+        developer_comment: getMetadataDescription("Description"),
+      },
+    };
+
+    const jsCode = fs.readFileSync(this.sourcePath, "utf-8");
+    const unprefixedRuntimeStrings = parseTranslations(jsCode);
+    const runtimeStrings = Object.fromEntries(
+      Object.entries(unprefixedRuntimeStrings).map(([key, value]) => [
+        `${slug}@${key}`,
+        value,
+      ])
+    );
+
+    return {
+      "extension-metadata": metadataStrings,
+      "extension-runtime": runtimeStrings,
+    };
+  }
+
+  async getDependencies() {
+    return parseExtensionDependencies(
+      await fsPromises.readFile(this.sourcePath, "utf-8")
+    );
   }
 }
 
 class HomepageFile extends BuildFile {
-  constructor(extensionFiles, extensionImages, withDocs, samples, mode) {
-    super(pathUtil.join(__dirname, "homepage-template.ejs"));
+  constructor(
+    extensionFiles,
+    extensionImages,
+    featuredSlugs,
+    withDocs,
+    samples,
+    mode
+  ) {
+    super(pathUtil.join(import.meta.dirname, "homepage-template.ejs"));
 
     /** @type {Record<string, ExtensionFile>} */
     this.extensionFiles = extensionFiles;
 
     /** @type {Record<string, string>} */
     this.extensionImages = extensionImages;
+
+    /** @type {string[]} */
+    this.featuredSlugs = featuredSlugs;
 
     /** @type {Map<string, SampleFile[]>} */
     this.withDocs = withDocs;
@@ -171,15 +400,13 @@ class HomepageFile extends BuildFile {
   }
 
   read() {
-    const renderTemplate = require("./render-template");
-
     const mostRecentExtensions = Object.entries(this.extensionFiles)
       .sort((a, b) => b[1].getLastModified() - a[1].getLastModified())
       .slice(0, 5)
       .map((i) => i[0]);
 
     const extensionMetadata = Object.fromEntries(
-      featuredExtensionSlugs.map((slug) => [
+      this.featuredSlugs.map((slug) => [
         slug,
         {
           ...this.extensionFiles[slug].getMetadata(),
@@ -203,7 +430,14 @@ class HomepageFile extends BuildFile {
 }
 
 class JSONMetadataFile extends BuildFile {
-  constructor(extensionFiles, extensionImages, withDocs, samples) {
+  constructor(
+    extensionFiles,
+    extensionImages,
+    featuredSlugs,
+    withDocs,
+    samples,
+    allTranslations
+  ) {
     super(null);
 
     /** @type {Record<string, ExtensionFile>} */
@@ -212,11 +446,17 @@ class JSONMetadataFile extends BuildFile {
     /** @type {Record<string, string>} */
     this.extensionImages = extensionImages;
 
+    /** @type {string[]} */
+    this.featuredSlugs = featuredSlugs;
+
     /** @type {Set<string>} */
     this.withDocs = withDocs;
 
     /** @type {Map<string, SampleFile[]>} */
     this.samples = samples;
+
+    /** @type {Record<string, Record<string, string>>} */
+    this.allTranslations = allTranslations;
   }
 
   getType() {
@@ -225,7 +465,7 @@ class JSONMetadataFile extends BuildFile {
 
   read() {
     const extensions = [];
-    for (const extensionSlug of featuredExtensionSlugs) {
+    for (const extensionSlug of this.featuredSlugs) {
       const extension = {};
       const file = this.extensionFiles[extensionSlug];
       const metadata = file.getMetadata();
@@ -233,8 +473,28 @@ class JSONMetadataFile extends BuildFile {
 
       extension.slug = extensionSlug;
       extension.id = metadata.id;
+
+      // English fields
       extension.name = metadata.name;
       extension.description = metadata.description;
+
+      // For other languages, translations go here.
+      // This system is a bit silly to avoid backwards-incompatible JSON changes.
+      const nameTranslations = filterTranslationsByID(
+        this.allTranslations,
+        `${extensionSlug}@name`
+      );
+      if (nameTranslations) {
+        extension.nameTranslations = nameTranslations;
+      }
+      const descriptionTranslations = filterTranslationsByID(
+        this.allTranslations,
+        `${extensionSlug}@description`
+      );
+      if (descriptionTranslations) {
+        extension.descriptionTranslations = descriptionTranslations;
+      }
+
       if (image) {
         extension.image = image;
       }
@@ -251,6 +511,9 @@ class JSONMetadataFile extends BuildFile {
       if (samples) {
         extension.samples = samples.map((i) => i.getTitle());
       }
+      if (metadata.scratchCompatible) {
+        extension.scratchCompatible = true;
+      }
 
       extensions.push(extension);
     }
@@ -263,10 +526,9 @@ class JSONMetadataFile extends BuildFile {
 }
 
 class ImageFile extends BuildFile {
-  validate() {
-    const sizeOfImage = require("image-size");
-    const contents = this.read();
-    const { width, height } = sizeOfImage(contents);
+  async validate() {
+    const contents = await this.read();
+    const { width, height } = imageSize(contents);
     const aspectRatio = width / height;
     if (aspectRatio !== 2) {
       throw new Error(
@@ -279,15 +541,15 @@ class ImageFile extends BuildFile {
 }
 
 class SVGFile extends ImageFile {
-  validate() {
-    const contents = this.read();
+  async validate() {
+    const contents = await this.read();
     if (contents.includes("<text")) {
       throw new Error(
         "SVG must not contain <text> elements -- please convert the text to a path. This ensures it will display correctly on all devices."
       );
     }
 
-    super.validate();
+    await super.validate();
   }
 }
 
@@ -334,9 +596,8 @@ class DocsFile extends BuildFile {
     this.extensionSlug = extensionSlug;
   }
 
-  read() {
-    const renderDocs = require("./render-docs");
-    const markdown = super.read().toString("utf-8");
+  async read() {
+    const markdown = (await super.read()).toString("utf-8");
     return renderDocs(markdown, this.extensionSlug);
   }
 
@@ -385,6 +646,7 @@ class SampleFile extends BuildFile {
 
 class Build {
   constructor() {
+    /** @type {Record<string, BuildFile>} */
     this.files = {};
   }
 
@@ -397,24 +659,81 @@ class Build {
     );
   }
 
-  export(root) {
-    try {
-      fs.rmSync(root, {
-        recursive: true,
-      });
-    } catch (e) {
-      if (e.code !== "ENOENT") {
-        throw e;
-      }
-    }
+  async export(root) {
+    mkdirp(root);
 
     for (const [relativePath, file] of Object.entries(this.files)) {
       const directoryName = pathUtil.dirname(relativePath);
-      fs.mkdirSync(pathUtil.join(root, directoryName), {
-        recursive: true,
-      });
-      fs.writeFileSync(pathUtil.join(root, relativePath), file.read());
+      await mkdirp(pathUtil.join(root, directoryName));
+      await fsPromises.writeFile(
+        pathUtil.join(root, relativePath),
+        await file.read()
+      );
     }
+  }
+
+  /**
+   * @returns {Record<string, Record<string, TranslatableString>>}
+   */
+  generateL10N() {
+    const allStrings = {};
+
+    for (const [filePath, file] of Object.entries(this.files)) {
+      let fileStrings;
+      try {
+        fileStrings = file.getStrings();
+      } catch (error) {
+        console.error(error);
+        throw new Error(
+          `Error getting translations from ${filePath}: ${error}, see above`
+        );
+      }
+      if (!fileStrings) {
+        continue;
+      }
+
+      for (const [group, strings] of Object.entries(fileStrings)) {
+        if (!allStrings[group]) {
+          allStrings[group] = {};
+        }
+
+        for (const [key, value] of Object.entries(strings)) {
+          if (allStrings[key]) {
+            throw new Error(
+              `L10N collision: multiple instances of ${key} in group ${group}`
+            );
+          }
+          allStrings[group][key] = value;
+        }
+      }
+    }
+
+    return allStrings;
+  }
+
+  /**
+   * @param {string} root
+   */
+  async exportL10N(root) {
+    await mkdirp(root);
+
+    const groups = this.generateL10N();
+    for (const [name, strings] of Object.entries(groups)) {
+      const filename = pathUtil.join(root, `exported-${name}.json`);
+      await fsPromises.writeFile(filename, JSON.stringify(strings, null, 2));
+    }
+  }
+
+  async checkForNewImports() {
+    const allImports = new Set();
+    for (const file of Object.values(this.files)) {
+      const fileImports = await file.getDependencies();
+      for (const imp of fileImports) {
+        allImports.add(imp);
+      }
+    }
+
+    await synchronizeDependencyList(allImports);
   }
 }
 
@@ -434,19 +753,50 @@ class Builder {
       this.mode = mode;
     }
 
-    this.extensionsRoot = pathUtil.join(__dirname, "../extensions");
-    this.websiteRoot = pathUtil.join(__dirname, "../website");
-    this.imagesRoot = pathUtil.join(__dirname, "../images");
-    this.docsRoot = pathUtil.join(__dirname, "../docs");
-    this.samplesRoot = pathUtil.join(__dirname, "../samples");
+    this.extensionsRoot = pathUtil.join(import.meta.dirname, "../extensions");
+    this.websiteRoot = pathUtil.join(import.meta.dirname, "../website");
+    this.imagesRoot = pathUtil.join(import.meta.dirname, "../images");
+    this.docsRoot = pathUtil.join(import.meta.dirname, "../docs");
+    this.samplesRoot = pathUtil.join(import.meta.dirname, "../samples");
+    this.translationsRoot = pathUtil.join(
+      import.meta.dirname,
+      "../translations"
+    );
   }
 
-  build() {
+  async build() {
     const build = new Build(this.mode);
+
+    if (this.mode !== "development") {
+      await fetchAllDependencies();
+    }
+
+    const featuredExtensionSlugs = ExtendedJSON.parse(
+      await fsPromises.readFile(
+        pathUtil.join(this.extensionsRoot, "extensions.json"),
+        "utf-8"
+      )
+    );
+
+    /**
+     * Look up by [group][locale][id]
+     * @type {Record<string, Record<string, Record<string, string>>>}
+     */
+    const translations = {};
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
+      this.translationsRoot
+    )) {
+      if (!filename.endsWith(".json")) {
+        continue;
+      }
+      const group = filename.split(".")[0];
+      const data = JSON.parse(await fsPromises.readFile(absolutePath, "utf-8"));
+      translations[group] = data;
+    }
 
     /** @type {Record<string, ExtensionFile>} */
     const extensionFiles = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.extensionsRoot
     )) {
       if (!filename.endsWith(".js")) {
@@ -454,14 +804,20 @@ class Builder {
       }
       const extensionSlug = filename.split(".")[0];
       const featured = featuredExtensionSlugs.includes(extensionSlug);
-      const file = new ExtensionFile(absolutePath, featured);
+      const file = new ExtensionFile(
+        absolutePath,
+        extensionSlug,
+        featured,
+        translations["extension-runtime"],
+        this.mode
+      );
       extensionFiles[extensionSlug] = file;
       build.files[`/${filename}`] = file;
     }
 
     /** @type {Record<string, ImageFile>} */
     const extensionImages = {};
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.imagesRoot
     )) {
       const extension = pathUtil.extname(filename);
@@ -481,7 +837,7 @@ class Builder {
 
     /** @type {Map<string, SampleFile[]>} */
     const samples = new Map();
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.samplesRoot
     )) {
       if (!filename.endsWith(".sb3")) {
@@ -500,49 +856,51 @@ class Builder {
       build.files[`/samples/${filename}`] = file;
     }
 
-    for (const [filename, absolutePath] of recursiveReadDirectory(
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
       this.websiteRoot
     )) {
       build.files[`/${filename}`] = new BuildFile(absolutePath);
     }
 
-    if (this.mode !== "desktop") {
-      for (const [filename, absolutePath] of recursiveReadDirectory(
-        this.docsRoot
-      )) {
-        if (!filename.endsWith(".md")) {
-          continue;
-        }
-        const extensionSlug = filename.split(".")[0];
-        const file = new DocsFile(absolutePath, extensionSlug);
-        extensionsWithDocs.add(extensionSlug);
-        build.files[`/${extensionSlug}.html`] = file;
+    for (const [filename, absolutePath] of await recursiveReadDirectory(
+      this.docsRoot
+    )) {
+      if (!filename.endsWith(".md")) {
+        continue;
       }
-
-      const scratchblocksPath = pathUtil.join(
-        __dirname,
-        "../node_modules/@turbowarp/scratchblocks/build/scratchblocks.min.js"
-      );
-      build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
-        scratchblocksPath
-      );
-
-      build.files["/index.html"] = new HomepageFile(
-        extensionFiles,
-        extensionImages,
-        extensionsWithDocs,
-        samples,
-        this.mode
-      );
-      build.files["/sitemap.xml"] = new SitemapFile(build);
+      const extensionSlug = filename.split(".")[0];
+      const file = new DocsFile(absolutePath, extensionSlug);
+      extensionsWithDocs.add(extensionSlug);
+      build.files[`/${extensionSlug}.html`] = file;
     }
+
+    // Don't rely on node_modules being stored in a specific location or having a specific structure
+    // so that this works when we are a dependency in a bigger npm tree.
+    const scratchblocksPath = urlUtil.fileURLToPath(
+      import.meta.resolve("@turbowarp/scratchblocks")
+    );
+    build.files["/docs-internal/scratchblocks.js"] = new BuildFile(
+      scratchblocksPath
+    );
+
+    build.files["/index.html"] = new HomepageFile(
+      extensionFiles,
+      extensionImages,
+      featuredExtensionSlugs,
+      extensionsWithDocs,
+      samples,
+      this.mode
+    );
+    build.files["/sitemap.xml"] = new SitemapFile(build);
 
     build.files["/generated-metadata/extensions-v0.json"] =
       new JSONMetadataFile(
         extensionFiles,
         extensionImages,
+        featuredExtensionSlugs,
         extensionsWithDocs,
-        samples
+        samples,
+        translations["extension-metadata"]
       );
 
     for (const [oldPath, newPath] of Object.entries(compatibilityAliases)) {
@@ -552,12 +910,12 @@ class Builder {
     return build;
   }
 
-  tryBuild(...args) {
+  async tryBuild(...args) {
     const start = new Date();
     process.stdout.write(`[${start.toLocaleTimeString()}] Building... `);
 
     try {
-      const build = this.build(...args);
+      const build = await this.build(...args);
       const time = Date.now() - start.getTime();
       console.log(`done in ${time}ms`);
       return build;
@@ -569,37 +927,56 @@ class Builder {
     return null;
   }
 
-  startWatcher(callback) {
-    // Load chokidar lazily.
-    const chokidar = require("chokidar");
-    callback(this.tryBuild());
+  async startWatcher(callback) {
+    // Call for initial build.
+    await callback(await this.tryBuild());
+
+    // Make a watcher for all future builds.
+    let isBuildInProgress = false;
+    let wasBuildRequestDuringBuild = false;
+
     chokidar
       .watch(
         [
-          `${this.extensionsRoot}/**/*`,
-          `${this.imagesRoot}/**/*`,
-          `${this.websiteRoot}/**/*`,
-          `${this.docsRoot}/**/*`,
-          `${this.samplesRoot}/**/*`,
+          this.extensionsRoot,
+          this.imagesRoot,
+          this.websiteRoot,
+          this.docsRoot,
+          this.samplesRoot,
+          this.translationsRoot,
         ],
         {
           ignoreInitial: true,
         }
       )
-      .on("all", () => {
-        callback(this.tryBuild());
+      .on("all", async () => {
+        if (isBuildInProgress) {
+          wasBuildRequestDuringBuild = true;
+        } else {
+          isBuildInProgress = true;
+
+          do {
+            wasBuildRequestDuringBuild = false;
+            await callback(await this.tryBuild());
+          } while (wasBuildRequestDuringBuild);
+
+          isBuildInProgress = false;
+        }
       });
   }
 
-  validate() {
+  async validate() {
     const errors = [];
-    const build = this.build();
-    for (const [fileName, file] of Object.entries(build.files)) {
+    const build = await this.build();
+    for (const [outputFileName, file] of Object.entries(build.files)) {
       try {
-        file.validate();
+        await file.validate();
+        await file.read();
+        file.getStrings();
       } catch (e) {
         errors.push({
-          fileName,
+          outputFileName,
+          inputFilePath: file.sourcePath,
           error: e,
         });
       }
@@ -608,4 +985,4 @@ class Builder {
   }
 }
 
-module.exports = Builder;
+export default Builder;
