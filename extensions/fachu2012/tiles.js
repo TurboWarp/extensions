@@ -1010,6 +1010,9 @@
     }
 
     setTilesetCostume(args) {
+      const id = Math.round(Scratch.Cast.toNumber(args.ID));
+      if (!Number.isInteger(id) || id <= 0) return;
+
       const entry = {
         targetName: Scratch.Cast.toString(args.SPRITE),
         costumeName: Scratch.Cast.toString(args.COSTUME),
@@ -1017,17 +1020,20 @@
         costume: null,
       };
       bindEntry(entry);
-      state.tileset.set(Math.round(Scratch.Cast.toNumber(args.ID)), entry);
+      state.tileset.set(id, entry);
       state.scaleCache.clear();
       markDirty();
     }
 
     setTile(args) {
+      const id = Math.round(Scratch.Cast.toNumber(args.ID));
+      if (!Number.isInteger(id) || id <= 0) return;
+
       const column = Math.round(Scratch.Cast.toNumber(args.COLUMN));
       const row = Math.round(Scratch.Cast.toNumber(args.ROW));
       const index = indexFor(column, row);
       if (index === -1) return;
-      state.grid[index] = Math.round(Scratch.Cast.toNumber(args.ID));
+      state.grid[index] = id;
       markDirty();
     }
 
@@ -1101,6 +1107,8 @@
 
     fillTiles(args) {
       const id = Math.round(Scratch.Cast.toNumber(args.ID));
+      if (!Number.isInteger(id) || id <= 0) return;
+
       let column1 = Math.round(Scratch.Cast.toNumber(args.COLUMN1));
       let column2 = Math.round(Scratch.Cast.toNumber(args.COLUMN2));
       let row1 = Math.round(Scratch.Cast.toNumber(args.ROW1));
