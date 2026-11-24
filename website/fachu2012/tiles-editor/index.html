@@ -1540,7 +1540,8 @@ const originalTileSizeInput = document.getElementById("originalTileSize");
             const tiles = [];
             const tileIds = new Map();
             const cells = mapData.map((tile) => {
-                if (!tile) return null;
+                // ID 0 is reserved for empty cells; real tiles start at 1.
+                if (!tile) return 0;
 
                 const key = JSON.stringify([
                     tile.spriteName || "",
@@ -1548,7 +1549,7 @@ const originalTileSizeInput = document.getElementById("originalTileSize");
                     tile.name || ""
                 ]);
                 if (!tileIds.has(key)) {
-                    const id = tiles.length;
+                    const id = tiles.length + 1;
                     tileIds.set(key, id);
                     const properties = getTileProperties(tile);
                     tiles.push({
@@ -1718,11 +1719,12 @@ const originalTileSizeInput = document.getElementById("originalTileSize");
             });
 
             const restoredCells = data.cells.map((tileId) => {
-                if (tileId === null) return null;
-                if (!Number.isInteger(tileId) || tileId < 0 || tileId >= restoredTiles.length) {
+                // ID 0 represents an empty cell; tile IDs are 1-based.
+                if (tileId === 0) return null;
+                if (!Number.isInteger(tileId) || tileId < 1 || tileId > restoredTiles.length) {
                     throw new Error("The file contains an invalid cell reference.");
                 }
-                return restoredTiles[tileId];
+                return restoredTiles[tileId - 1];
             });
 
             return {

@@ -178,7 +178,7 @@
         attributes: Array.from(state.attributes.get(id) || []),
       };
 
-      tileIds.set(id, tiles.length);
+      tileIds.set(id, tiles.length + 1);
       tiles.push(tile);
     }
 
@@ -190,7 +190,7 @@
       tileSize: state.tileSize,
       tiles,
       cells: Array.from(state.grid, (id) =>
-        id === 0 ? null : tileIds.has(id) ? tileIds.get(id) : null
+        id === 0 ? 0 : tileIds.has(id) ? tileIds.get(id) : 0
       ),
     };
   }
@@ -1027,7 +1027,7 @@
 
     setTile(args) {
       const id = Math.round(Scratch.Cast.toNumber(args.ID));
-      if (!Number.isInteger(id) || id <= 0) return;
+      if (!Number.isInteger(id) || id <= 0 || !state.tileset.has(id)) return;
 
       const column = Math.round(Scratch.Cast.toNumber(args.COLUMN));
       const row = Math.round(Scratch.Cast.toNumber(args.ROW));
@@ -1107,7 +1107,7 @@
 
     fillTiles(args) {
       const id = Math.round(Scratch.Cast.toNumber(args.ID));
-      if (!Number.isInteger(id) || id <= 0) return;
+      if (!Number.isInteger(id) || id <= 0 || !state.tileset.has(id)) return;
 
       let column1 = Math.round(Scratch.Cast.toNumber(args.COLUMN1));
       let column2 = Math.round(Scratch.Cast.toNumber(args.COLUMN2));
@@ -1236,20 +1236,20 @@
           });
 
           data.cells.forEach((cell) => {
-            if (cell === null) {
+            if (cell === 0) {
               grid.push(0);
               return;
             }
 
             if (
               !Number.isInteger(cell) ||
-              cell < 0 ||
-              cell >= data.tiles.length
+              cell < 1 ||
+              cell > data.tiles.length
             ) {
               throw new Error("Invalid cell data.");
             }
 
-            grid.push(cell + 1);
+            grid.push(cell);
           });
 
           tilemap = {
@@ -1342,20 +1342,16 @@
         }
 
         for (const cell of data.cells) {
-          if (cell === null) {
+          if (cell === 0) {
             grid.push(0);
             continue;
           }
 
-          if (
-            !Number.isInteger(cell) ||
-            cell < 0 ||
-            cell >= data.tiles.length
-          ) {
+          if (!Number.isInteger(cell) || cell < 1 || cell > data.tiles.length) {
             return;
           }
 
-          grid.push(cell + 1);
+          grid.push(cell);
         }
 
         tilemap = {
