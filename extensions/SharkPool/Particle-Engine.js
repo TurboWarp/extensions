@@ -294,8 +294,6 @@
   let deltaTime = 0;
   let prevTime = 0;
 
-  const allEngines = new Map();
-
   // Constants
   const EPSILON = 1e-6;
   const MAX_INT = 1e5;
@@ -577,78 +575,6 @@ void main() {
     ]);
 
     engine.skin.emitWasAltered();
-    runtime.requestRedraw();
-  };
-
-  const makeEngine = (target) => {
-    const width = runtime.stageWidth || 480;
-    const height = runtime.stageHeight || 360;
-
-    const drawableId = render.createDrawable("sprite");
-    const drawable = render._allDrawables[drawableId];
-    const skinId = render._nextSkinId++;
-    const skin = new ParticleSkin(skinId, render, width, height);
-    render._allSkins[skinId] = skin;
-
-    const engine = {
-      drawableId,
-      drawable,
-      skinId,
-      skin,
-      target,
-      targetId: target.id,
-      disposed: false,
-      stageWidth: width,
-      stageHeight: height,
-      renderWidth: width,
-      renderHeight: height,
-      drawableScale: [100, -100],
-      emitters: new Map(),
-      emitterNameTokens: new Map(),
-      interpolate: runtime.interpolationEnabled,
-      paused: false,
-      noTrails: true,
-      dirtyCanvas: false,
-      errored: false,
-    };
-    target[engineTag] = engine;
-    allEngines.set(engine.targetId, engine);
-
-    drawable.interactive = false;
-    render.updateDrawableSkinId(drawableId, skinId);
-    drawable.customDrawableName = `${target.getName()} Particle Engine (SP)`;
-    drawable[engineTag] = "default";
-    drawable.getUniforms = engineGetUniforms;
-
-    engine.onStageSizeChange = (event) => {
-      const [w, h] = event.newSize;
-      engine.stageWidth = w;
-      engine.stageHeight = h;
-      applyEngineResolution(engine);
-    };
-
-    applyEngineResolution(engine);
-
-    render.on("NativeSizeChanged", engine.onStageSizeChange);
-    runtime.requestRedraw();
-  };
-
-  const disposeEngine = (target) => {
-    const engine = target[engineTag];
-    if (!engine) return;
-
-    target[engineTag] = undefined;
-    allEngines.delete(engine.targetId);
-    engine.disposed = true;
-    for (const emitter of engine.emitters.values()) {
-      releaseEmitter(emitter);
-    }
-
-    engine.emitters.clear();
-    render.removeListener("NativeSizeChanged", engine.onStageSizeChange);
-
-    render.destroyDrawable(engine.drawableId, "sprite");
-    render.destroySkin(engine.skinId);
     runtime.requestRedraw();
   };
 
@@ -936,100 +862,93 @@ void main() {
     }
   };
 
-  const releaseAllEmitters = () => {
-    allEngines.forEach((engine) => {
-      engine.emitterNameTokens.clear();
-      for (const entry of engine.emitters) {
-        engine.emitters.delete(entry[0]);
-        releaseEmitter(entry[1]);
-      }
-    });
-  };
-  runtime.on("PROJECT_START", releaseAllEmitters);
-  runtime.on("PROJECT_STOP_ALL", releaseAllEmitters);
-  runtime.on("PROJECT_LOADED", releaseAllEmitters);
-  runtime.on("INTERPOLATION_CHANGED", (isEnabled) => {
-    // toggle interpolation for all engines
-    allEngines.forEach((engine) => {
-      engine.interpolate = isEnabled;
-    });
-  });
-  runtime.on("targetWasRemoved", (target) => {
-    // Remove engines from a deleted sprite.
-    if (target.isOriginal) disposeEngine(target);
-  });
-  vm.on("targetsUpdate", () => {
-    // Fix engine drawable names after sprite rename
-    allEngines.forEach((engine) => {
-      engine.drawable.customDrawableName = `${engine.target.getName()} Particle Engine (SP)`;
-    });
-  });
-
-  // Update non-interpolated engines.
-  runtime.on("AFTER_EXECUTE", () => {
-    if (runtime.ioDevices.clock._paused) return;
-    allEngines.forEach((engine) => {
-      if (
-        engine.paused ||
-        engine.interpolate ||
-        runtime.frameLoop.framerate === 0
-      ) {
-        return;
-      }
-
-      // 30 FPS is a normal delta, anything else would need normalization
-      const normalizedDelta = runtime.currentStepTime / FPS_NORM;
-      safeUpdateEngine(engine, normalizedDelta);
-    });
-  });
-
-  // Update interpolated engines.
-  let lastCanvasWidth = gl.canvas.width;
-  let lastCanvasHeight = gl.canvas.height;
-  function interpolateEngines(deltaFrame) {
-    requestAnimationFrame(interpolateEngines);
-
-    // The renderer has no event for canvas resizes, so check every frame
-    if (
-      gl.canvas.width !== lastCanvasWidth ||
-      gl.canvas.height !== lastCanvasHeight
-    ) {
-      lastCanvasWidth = gl.canvas.width;
-      lastCanvasHeight = gl.canvas.height;
-      allEngines.forEach((engine) => applyEngineResolution(engine));
-    }
-
-    if (runtime.ioDevices.clock._paused) {
-      prevTime = deltaFrame;
-      return;
-    }
-
-    deltaTime =
-      prevTime === 0
-        ? 0
-        : Math.min((deltaFrame - prevTime) / FPS_NORM, MAX_DELTA);
-    prevTime = deltaFrame;
-
-    let hasReasonToRefresh = false;
-    allEngines.forEach((engine) => {
-      if (
-        engine.paused ||
-        (!engine.interpolate && runtime.frameLoop.framerate > 0)
-      ) {
-        return;
-      }
-
-      const engineChanged = safeUpdateEngine(engine, deltaTime);
-      if (engineChanged) hasReasonToRefresh = true;
-    });
-
-    if (hasReasonToRefresh) render.dirty = true;
-  }
-  requestAnimationFrame(interpolateEngines);
-
   const color1 = "#2474ff";
 
   class SPpartEngine {
+    constructor() {
+      if (!(this?.allEngines ?? false)) this.allEngines = new Map();
+      runtime.on("PROJECT_START", () => { this.releaseAllEmitters() });
+      runtime.on("PROJECT_STOP_ALL", () => { this.releaseAllEmitters() });
+      runtime.on("PROJECT_LOADED", () => { this.releaseAllEmitters() });
+      runtime.on("INTERPOLATION_CHANGED", (isEnabled) => {
+        // toggle interpolation for all engines
+        this.allEngines.forEach((engine) => {
+          engine.interpolate = isEnabled;
+        });
+      });
+      runtime.on("targetWasRemoved", (target) => {
+        // Remove engines from a deleted sprite.
+        if (target.isOriginal) this.disposeEngine(target);
+      });
+      vm.on("targetsUpdate", () => {
+        // Fix engine drawable names after sprite rename
+        this.allEngines.forEach((engine) => {
+          engine.drawable.customDrawableName = `${engine.target.getName()} Particle Engine (SP)`;
+        });
+      });
+
+      // Update non-interpolated engines.
+      runtime.on("AFTER_EXECUTE", () => {
+        if (runtime.ioDevices.clock._paused) return;
+        this.allEngines.forEach((engine) => {
+          if (
+            engine.paused ||
+            engine.interpolate ||
+            runtime.frameLoop.framerate === 0
+          ) {
+            return;
+          }
+
+          // 30 FPS is a normal delta, anything else would need normalization
+          const normalizedDelta = runtime.currentStepTime / FPS_NORM;
+          safeUpdateEngine(engine, normalizedDelta);
+        });
+      });
+
+      // Update interpolated engines.
+      let lastCanvasWidth = gl.canvas.width;
+      let lastCanvasHeight = gl.canvas.height;
+      function interpolateEngines(deltaFrame) {
+        requestAnimationFrame(interpolateEngines);
+
+        // The renderer has no event for canvas resizes, so check every frame
+        if (
+          gl.canvas.width !== lastCanvasWidth ||
+          gl.canvas.height !== lastCanvasHeight
+        ) {
+          lastCanvasWidth = gl.canvas.width;
+          lastCanvasHeight = gl.canvas.height;
+          this.allEngines.forEach((engine) => applyEngineResolution(engine));
+        }
+
+        if (runtime.ioDevices.clock._paused) {
+          prevTime = deltaFrame;
+          return;
+        }
+
+        deltaTime =
+        prevTime === 0
+        ? 0
+        : Math.min((deltaFrame - prevTime) / FPS_NORM, MAX_DELTA);
+        prevTime = deltaFrame;
+
+        let hasReasonToRefresh = false;
+        if (this?.allEngines) this?.allEngines?.forEach((engine) => {
+          if (
+            engine.paused ||
+            (!engine.interpolate && runtime.frameLoop.framerate > 0)
+          ) {
+            return;
+          }
+
+          const engineChanged = safeUpdateEngine(engine, deltaTime);
+          if (engineChanged) hasReasonToRefresh = true;
+        });
+
+        if (hasReasonToRefresh) render.dirty = true;
+      }
+      requestAnimationFrame(interpolateEngines);
+    }
     getInfo() {
       return {
         id: "SPpartEngine",
@@ -1334,6 +1253,12 @@ void main() {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
             },
           },
+          {
+            opcode: "listAllEmitters",
+            blockType: Scratch.BlockType.REPORTER,
+            text: Scratch.translate("get emitter names for all targets"),
+            disableMonitor: true,
+          },
         ],
         menus: {
           TARGETS: { acceptReporters: true, items: "getTargets" },
@@ -1407,6 +1332,86 @@ void main() {
     }
 
     // Helper Funcs
+    makeEngine(target) {
+      const width = runtime.stageWidth || 480;
+      const height = runtime.stageHeight || 360;
+      
+      const drawableId = render.createDrawable("sprite");
+      const drawable = render._allDrawables[drawableId];
+      const skinId = render._nextSkinId++;
+      const skin = new ParticleSkin(skinId, render, width, height);
+      render._allSkins[skinId] = skin;
+      
+      const engine = {
+        drawableId,
+        drawable,
+        skinId,
+        skin,
+        target,
+        targetId: target.id,
+        disposed: false,
+        stageWidth: width,
+        stageHeight: height,
+        renderWidth: width,
+        renderHeight: height,
+        drawableScale: [100, -100],
+        emitters: new Map(),
+        emitterNameTokens: new Map(),
+        interpolate: runtime.interpolationEnabled,
+        paused: false,
+        noTrails: true,
+        dirtyCanvas: false,
+        errored: false,
+      };
+      target[engineTag] = engine;
+      this.allEngines.set(engine.targetId, engine);
+      
+      drawable.interactive = false;
+      render.updateDrawableSkinId(drawableId, skinId);
+      drawable.customDrawableName = `${target.getName()} Particle Engine (SP)`;
+      drawable[engineTag] = "default";
+      drawable.getUniforms = engineGetUniforms;
+      
+      engine.onStageSizeChange = (event) => {
+        const [w, h] = event.newSize;
+        engine.stageWidth = w;
+        engine.stageHeight = h;
+        applyEngineResolution(engine);
+      };
+      
+      applyEngineResolution(engine);
+      
+      render.on("NativeSizeChanged", engine.onStageSizeChange);
+      runtime.requestRedraw();
+    }
+    disposeEngine(target){
+      const engine = target[engineTag];
+      if (!engine) return;
+      
+      target[engineTag] = undefined;
+      this.allEngines.delete(engine.targetId);
+      engine.disposed = true;
+      for (const emitter of engine.emitters.values()) {
+        releaseEmitter(emitter);
+      }
+      
+      engine.emitters.clear();
+      render.removeListener("NativeSizeChanged", engine.onStageSizeChange);
+      
+      render.destroyDrawable(engine.drawableId, "sprite");
+      render.destroySkin(engine.skinId);
+      runtime.requestRedraw();
+    }
+    releaseAllEmitters() {
+      this.allEngines.forEach((engine) => {
+        engine.emitterNameTokens.clear();
+        for (const entry of engine.emitters) {
+          engine.emitters.delete(entry[0]);
+          releaseEmitter(entry[1]);
+        }
+      });
+    }
+    
     getTargets() {
       const items = [{ text: Scratch.translate("Stage"), value: "_stage_" }];
       const targets = runtime.targets;
@@ -1415,8 +1420,7 @@ void main() {
         if (target.isOriginal) {
           items.push({ text: target.getName(), value: target.getName() });
         }
-      }
-
+      }      
       return items.length > 0 ? items : [""];
     }
 
@@ -1427,7 +1431,6 @@ void main() {
         { text: Scratch.translate("all"), value: "_all_" },
         ...items.slice(1, items.length),
       ];
-
       return items;
     }
 
@@ -1492,7 +1495,7 @@ void main() {
 
     getEngines(target) {
       // Return all engines for "_all_", otherwise the single engine of a target
-      if (target === "_all_") return Array.from(allEngines.values());
+      if (target === "_all_") return Array.from(this.allEngines.values());
       const engine = this.getEngine(target);
       return engine ? [engine] : [];
     }
@@ -1515,18 +1518,18 @@ void main() {
       const target = this.getSprite(args.TARGET);
       if (!target || target === "_all_") return;
       if (target[engineTag] === undefined) {
-        makeEngine(target);
+        this.makeEngine(target);
       }
     }
 
     deleteEngine(args) {
       const target = this.getSprite(args.TARGET);
       if (target === "_all_") {
-        allEngines.forEach((engine) => disposeEngine(engine.target));
+        this.allEngines.forEach((engine) => this.disposeEngine(engine.target));
         return;
       }
       if (target && target[engineTag] !== undefined) {
-        disposeEngine(target);
+        this.disposeEngine(target);
       }
     }
 
@@ -1540,7 +1543,6 @@ void main() {
 
         return true;
       }
-
       return false;
     }
 
@@ -1550,7 +1552,6 @@ void main() {
       for (const engine of this.getEngines(target)) {
         engine.drawable.updateVisible(isVisible);
       }
-
       runtime.requestRedraw();
     }
 
@@ -1598,8 +1599,7 @@ void main() {
       const engine = this.getEngine(target);
       if (engine) {
         return render.getDrawableOrder(engine.drawableId);
-      }
-
+      }      
       return "";
     }
 
@@ -1610,12 +1610,12 @@ void main() {
       for (const engine of this.getEngines(target)) {
         switch (args.OPT) {
           case "freeze":
-            engine.paused = toggle;
-            if (toggle) flushDeletingEmitters(engine);
-            break;
+          engine.paused = toggle;
+          if (toggle) flushDeletingEmitters(engine);
+          break;
           case "trails":
-            engine.noTrails = !toggle;
-            break;
+          engine.noTrails = !toggle;
+          break;
         }
       }
     }
@@ -1627,24 +1627,19 @@ void main() {
       for (const engine of this.getEngines(target)) {
         engine.drawable[engineTag] = mode;
       }
-
       runtime.requestRedraw();
     }
 
     createEmitter(args) {
       const target = this.getSprite(args.TARGET);
       const engine = this.getEngine(target);
-      if (!engine || engine.disposed) return;
-
+      if (!engine || engine.disposed) return;      
       const name = Cast.toString(args.NAME);
       const emitters = engine.emitters;
-
       const token = (engine.emitterNameTokens.get(name) || 0) + 1;
       engine.emitterNameTokens.set(name, token);
-
       const oldEmitter = emitters.get(name);
       if (oldEmitter) releaseEmitter(oldEmitter);
-
       const emitter = {
         pos: [0, 0],
         rawPos: [0, 0],
@@ -1735,7 +1730,6 @@ void main() {
       if (emitter) {
         return emitter.rawPos[args.TYPE === "x" ? 0 : 1];
       }
-
       return "";
     }
 
@@ -1746,7 +1740,6 @@ void main() {
       const token = ++emitter._texToken;
       newTexture(Cast.toString(args.IMG), (texture) => {
         if (!texture) return;
-
         if (
           emitter.released ||
           engine.disposed ||
@@ -1755,11 +1748,9 @@ void main() {
           gl.deleteTexture(texture.texture);
           return;
         }
-
         if (emitter.texture) gl.deleteTexture(emitter.texture.texture);
         emitter.texture = texture;
       });
-
       runtime.requestRedraw();
     }
 
@@ -1825,6 +1816,14 @@ void main() {
       const { emitter } = this.getEmitterCtx(args);
       if (emitter) return JSON.stringify(emitter.opts);
       else return "{}";
+    }
+
+    listAllEmitters() {
+      let catalog = Object.create(null);
+      this.allEngines.forEach((data, id) => {
+        catalog[data.target.sprite.name] = Array.from(data.emitters?.keys() ?? []);
+      })
+      return JSON.stringify(catalog, null, 1).replace(/\n\s*/g," ").replace(/\s\s+/g," ");
     }
   }
 
