@@ -867,9 +867,15 @@ void main() {
   class SPpartEngine {
     constructor() {
       if (!(this?.allEngines ?? false)) this.allEngines = new Map();
-      runtime.on("PROJECT_START", () => { this.releaseAllEmitters() });
-      runtime.on("PROJECT_STOP_ALL", () => { this.releaseAllEmitters() });
-      runtime.on("PROJECT_LOADED", () => { this.releaseAllEmitters() });
+      runtime.on("PROJECT_START", () => {
+        this.releaseAllEmitters();
+      });
+      runtime.on("PROJECT_STOP_ALL", () => {
+        this.releaseAllEmitters();
+      });
+      runtime.on("PROJECT_LOADED", () => {
+        this.releaseAllEmitters();
+      });
       runtime.on("INTERPOLATION_CHANGED", (isEnabled) => {
         // toggle interpolation for all engines
         this.allEngines.forEach((engine) => {
@@ -927,23 +933,24 @@ void main() {
         }
 
         deltaTime =
-        prevTime === 0
-        ? 0
-        : Math.min((deltaFrame - prevTime) / FPS_NORM, MAX_DELTA);
+          prevTime === 0
+            ? 0
+            : Math.min((deltaFrame - prevTime) / FPS_NORM, MAX_DELTA);
         prevTime = deltaFrame;
 
         let hasReasonToRefresh = false;
-        if (this?.allEngines) this?.allEngines?.forEach((engine) => {
-          if (
-            engine.paused ||
-            (!engine.interpolate && runtime.frameLoop.framerate > 0)
-          ) {
-            return;
-          }
+        if (this?.allEngines)
+          this?.allEngines?.forEach((engine) => {
+            if (
+              engine.paused ||
+              (!engine.interpolate && runtime.frameLoop.framerate > 0)
+            ) {
+              return;
+            }
 
-          const engineChanged = safeUpdateEngine(engine, deltaTime);
-          if (engineChanged) hasReasonToRefresh = true;
-        });
+            const engineChanged = safeUpdateEngine(engine, deltaTime);
+            if (engineChanged) hasReasonToRefresh = true;
+          });
 
         if (hasReasonToRefresh) render.dirty = true;
       }
@@ -1335,13 +1342,13 @@ void main() {
     makeEngine(target) {
       const width = runtime.stageWidth || 480;
       const height = runtime.stageHeight || 360;
-      
+
       const drawableId = render.createDrawable("sprite");
       const drawable = render._allDrawables[drawableId];
       const skinId = render._nextSkinId++;
       const skin = new ParticleSkin(skinId, render, width, height);
       render._allSkins[skinId] = skin;
-      
+
       const engine = {
         drawableId,
         drawable,
@@ -1365,39 +1372,39 @@ void main() {
       };
       target[engineTag] = engine;
       this.allEngines.set(engine.targetId, engine);
-      
+
       drawable.interactive = false;
       render.updateDrawableSkinId(drawableId, skinId);
       drawable.customDrawableName = `${target.getName()} Particle Engine (SP)`;
       drawable[engineTag] = "default";
       drawable.getUniforms = engineGetUniforms;
-      
+
       engine.onStageSizeChange = (event) => {
         const [w, h] = event.newSize;
         engine.stageWidth = w;
         engine.stageHeight = h;
         applyEngineResolution(engine);
       };
-      
+
       applyEngineResolution(engine);
-      
+
       render.on("NativeSizeChanged", engine.onStageSizeChange);
       runtime.requestRedraw();
     }
-    disposeEngine(target){
+    disposeEngine(target) {
       const engine = target[engineTag];
       if (!engine) return;
-      
+
       target[engineTag] = undefined;
       this.allEngines.delete(engine.targetId);
       engine.disposed = true;
       for (const emitter of engine.emitters.values()) {
         releaseEmitter(emitter);
       }
-      
+
       engine.emitters.clear();
       render.removeListener("NativeSizeChanged", engine.onStageSizeChange);
-      
+
       render.destroyDrawable(engine.drawableId, "sprite");
       render.destroySkin(engine.skinId);
       runtime.requestRedraw();
@@ -1411,7 +1418,7 @@ void main() {
         }
       });
     }
-    
+
     getTargets() {
       const items = [{ text: Scratch.translate("Stage"), value: "_stage_" }];
       const targets = runtime.targets;
@@ -1420,7 +1427,7 @@ void main() {
         if (target.isOriginal) {
           items.push({ text: target.getName(), value: target.getName() });
         }
-      }      
+      }
       return items.length > 0 ? items : [""];
     }
 
@@ -1599,7 +1606,7 @@ void main() {
       const engine = this.getEngine(target);
       if (engine) {
         return render.getDrawableOrder(engine.drawableId);
-      }      
+      }
       return "";
     }
 
@@ -1610,12 +1617,12 @@ void main() {
       for (const engine of this.getEngines(target)) {
         switch (args.OPT) {
           case "freeze":
-          engine.paused = toggle;
-          if (toggle) flushDeletingEmitters(engine);
-          break;
+            engine.paused = toggle;
+            if (toggle) flushDeletingEmitters(engine);
+            break;
           case "trails":
-          engine.noTrails = !toggle;
-          break;
+            engine.noTrails = !toggle;
+            break;
         }
       }
     }
@@ -1633,7 +1640,7 @@ void main() {
     createEmitter(args) {
       const target = this.getSprite(args.TARGET);
       const engine = this.getEngine(target);
-      if (!engine || engine.disposed) return;      
+      if (!engine || engine.disposed) return;
       const name = Cast.toString(args.NAME);
       const emitters = engine.emitters;
       const token = (engine.emitterNameTokens.get(name) || 0) + 1;
@@ -1821,9 +1828,13 @@ void main() {
     listAllEmitters() {
       let catalog = Object.create(null);
       this.allEngines.forEach((data, id) => {
-        catalog[data.target.sprite.name] = Array.from(data.emitters?.keys() ?? []);
-      })
-      return JSON.stringify(catalog, null, 1).replace(/\n\s*/g," ").replace(/\s\s+/g," ");
+        catalog[data.target.sprite.name] = Array.from(
+          data.emitters?.keys() ?? []
+        );
+      });
+      return JSON.stringify(catalog, null, 1)
+        .replace(/\n\s*/g, " ")
+        .replace(/\s\s+/g, " ");
     }
   }
 
