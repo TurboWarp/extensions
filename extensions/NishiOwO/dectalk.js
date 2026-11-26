@@ -1,48 +1,35 @@
-// Name: DECtalk Text to Speech
+// Name: SharpVox Text to Speech
 // ID: nishiowoDectalk
-// Description: Text to speech powered by DECtalk. Does not use an internet connection, so it works offline. English only.
+// Description: Text to speech powered by SharpVox (previously DECtalk). Does not use an internet connection, so it works offline. English only.
 // By: NishiOwO
 // License: BSD-3-Clause
-// Context: Don't translate "DECtalk" - it's the name of the text-to-speech library.
-
-// Repository is at https://github.com/dectalk/tw-dectalk
+// Context: Don't translate "SharpVox" - it's the name of the text-to-speech library.
 
 (async function (Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
-    throw new Error("DECtalk must be run unsandboxed");
+    throw new Error("SharpVox must be run unsandboxed");
   }
 
-  let Module, speak, speak_init;
-  let g_buffer = {};
   let g_sources = [];
-  let embedded = false;
-  var DECtalkMini;
 
-  /* DO NOT REMOVE THE COMMENT BELOW!!! */
-  /* EMBED DTC.JS HERE */
+  const SharpVoxModule = (
+    await Scratch.external.importModule(
+      "https://cdn.jsdelivr.net/gh/TurboWarp/SharpVoxTTS@4571ba7cc95f5522d57fa3655406619993a46fc6/platform/web/dist/sharpvox.mjs"
+    )
+  ).default;
+  const wasmBinary = await (
+    await Scratch.external.fetch(
+      "https://cdn.jsdelivr.net/gh/TurboWarp/SharpVoxTTS@4571ba7cc95f5522d57fa3655406619993a46fc6/platform/web/dist/sharpvox.wasm"
+    )
+  ).arrayBuffer();
 
-  let dtc;
-  if (embedded) {
-    dtc = DECtalkMini;
-  } else {
-    dtc = await Scratch.external.evalAndReturn(
-      "https://raw.githubusercontent.com/dectalk/tw-dectalk/b387df5a1133dd08a8f3af94d7899dec3f507fd8/dtc.js",
-      "DECtalkMini"
-    );
-  }
-
-  // @ts-ignore
-  window.onDECtalkAudioCallback = function (tts, buffer, length, phoneme) {
-    let arr_r = new Int16Array(Module.HEAP16.buffer, buffer, length);
-    let arr = new Int16Array(length);
-
-    for (let i = 0; i < arr.length; i++) arr[i] = arr_r[i];
-
-    if (!g_buffer[tts]) g_buffer[tts] = [];
-    g_buffer[tts].push(arr);
-  };
+  const Module = await SharpVoxModule({
+    wasmBinary: new Uint8Array(wasmBinary),
+    locateFile: () => "",
+  });
+  const tts = Module._sv_create();
 
   class DECtalk {
     getInfo() {
@@ -51,7 +38,7 @@
 
       return {
         id: "nishiowoDectalk",
-        name: Scratch.translate("DECtalk Text to Speech"),
+        name: Scratch.translate("SharpVox Text to Speech"),
         blockIconURI: blockIconURI,
         color1: "#b3353f",
         blocks: [
@@ -80,29 +67,20 @@
       return new Promise(function (res, rej) {
         const audioContext = Scratch.vm.runtime.audioEngine.audioContext;
         const str = Module.stringToNewUTF8(Scratch.Cast.toString(args.WORDS));
-        const tts = speak(str);
+        const length = Module._sv_speak(tts, str, 22050);
         Module._free(str);
 
-        let b = 0;
-        if (g_buffer[tts]) {
-          for (let i = 0; i < g_buffer[tts].length; i++) {
-            b += g_buffer[tts][i].length;
-          }
-        } else {
+        if (length <= 0) {
           res();
           return;
         }
 
-        const audioBuffer = audioContext.createBuffer(1, b, 11025);
+        const audioBuffer = audioContext.createBuffer(1, length, 22050);
         const channelData = audioBuffer.getChannelData(0);
+        const samples = Module._sv_samples(tts) >> 1;
 
-        b = 0;
-
-        for (let i = 0; i < g_buffer[tts].length; i++) {
-          for (let j = 0; j < g_buffer[tts][i].length; j++) {
-            channelData[b + j] = g_buffer[tts][i][j] / 32767;
-          }
-          b += g_buffer[tts][i].length;
+        for (let i = 0; i < length; i++) {
+          channelData[i] = Module.HEAP16[samples + i] / 32767;
         }
 
         const currentSource = audioContext.createBufferSource();
@@ -117,8 +95,6 @@
         };
 
         currentSource.start();
-
-        if (g_buffer[tts]) delete g_buffer[tts];
       });
     }
 
@@ -129,12 +105,6 @@
       g_sources = [];
     }
   }
-
-  Module = await dtc();
-  speak_init = Module.cwrap("speak_init", null, []);
-  speak = Module.cwrap("speak", "number", ["number"]);
-
-  speak_init();
 
   Scratch.extensions.register(new DECtalk());
 })(Scratch);
