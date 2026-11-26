@@ -1337,11 +1337,11 @@ void main() {
           {
             opcode: "listEmitters",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get emitter names in [TARGET]"),
+            text: Scratch.translate("get emitters in [TARGET]"),
+            disableMonitor: true,
             arguments: {
               TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
             },
-            disableMonitor: true,
           },
         ],
         menus: {
@@ -1840,7 +1840,7 @@ void main() {
       const target = this.getSprite(args.TARGET);
       const data = this.getEngine(target);
       try {
-        let names = Array.from(data.emitters.keys());
+        const names = Array.from(data.emitters.keys());
         return JSON.stringify(names);
       } catch (e) {
         console.warn(e);
