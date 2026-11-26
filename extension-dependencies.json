@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "https://cdn.jsdelivr.net/gh/TurboWarp/SharpVoxTTS@4571ba7cc95f5522d57fa3655406619993a46fc6/platform/web/dist/sharpvox.mjs": {
+      "sha256": "b6a2a1984bae9baee9ae2e6e0d3ce3b15329a4f1315d77467dc92b341156af92",
+      "contentType": "application/javascript; charset=utf-8"
+    },
+    "https://cdn.jsdelivr.net/gh/TurboWarp/SharpVoxTTS@4571ba7cc95f5522d57fa3655406619993a46fc6/platform/web/dist/sharpvox.wasm": {
+      "sha256": "47668c62741ed3f5e48d577a5d655dadd08a67dc1963e6f78b0dee46c74b749d",
+      "contentType": "application/wasm"
+    },
     "https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4.1646425229/face_detection.js": {
       "sha256": "464efd192f197f1000ab60bedde235f349b8ee2967e1443cc3a29cebf42cbce2",
       "contentType": "application/javascript; charset=utf-8"
@@ -51,10 +59,6 @@
     "https://raw.githubusercontent.com/SharkPool-SP/pizzicato/5c6ef4e1caa37ca4a3e579d6444188617460e214/distr/Pizzicato.min.js": {
       "sha256": "6518882687ffbbb43c3af5a5a4f4381ca2a2efb0d2db4d456d232af0f08a0b07",
       "contentType": "text/plain; charset=utf-8"
-    },
-    "https://raw.githubusercontent.com/dectalk/tw-dectalk/b387df5a1133dd08a8f3af94d7899dec3f507fd8/dtc.js": {
-      "sha256": "de29c298d3e260d348e9f8eed74e644258e8222fdf741a55665400d560876e8b",
-      "contentType": "application/octet-stream"
     }
   }
 }
