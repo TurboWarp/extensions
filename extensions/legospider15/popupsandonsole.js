@@ -76,7 +76,7 @@
                         arguments: {
                             TEXT: {
                                 type: Scratch.ArgumentType.STRING,
-                                defaultValue: "Some people might not like TW",
+                                defaultValue: "Some people might not like TW.",
                             }
                         },
                     },
