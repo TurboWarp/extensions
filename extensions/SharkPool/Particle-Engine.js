@@ -1840,10 +1840,12 @@ void main() {
       const target = this.getSprite(args.TARGET);
       const catalog = Object.create(null);
       try {
-        if (target === '_all_') {
+        if (target === "_all_") {
           allEngines.forEach((data, id) => {
-            catalog[data.target.sprite.name] = Array.from(data.emitters?.keys() ?? []);
-          })
+            catalog[data.target.sprite.name] = Array.from(
+              data.emitters?.keys() ?? []
+            );
+          });
           return JSON.stringify(catalog);
         } else {
           Object.assign(catalog, this.getEngine(target));
@@ -1851,7 +1853,7 @@ void main() {
           return JSON.stringify(names);
         }
       } catch (e) {
-        return (target === '_all_' ? "{}" : "[]");
+        return target === "_all_" ? "{}" : "[]";
       }
     }
   }
