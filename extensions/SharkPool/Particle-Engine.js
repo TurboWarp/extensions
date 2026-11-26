@@ -1836,9 +1836,7 @@ void main() {
           const data = this.allEngines.get(targetId);
           let names = new Array();
           if (data) {
-            names = Array.from(
-              data.emitters?.keys() ?? []
-            );
+            names = Array.from(data.emitters?.keys() ?? []);
             for (let i of names) catalog.push(i);
           }
           return JSON.stringify(catalog);
