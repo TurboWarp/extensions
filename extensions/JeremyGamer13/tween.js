@@ -12,6 +12,16 @@
   const ArgumentType = Scratch.ArgumentType;
   const Cast = Scratch.Cast;
 
+  const regeneratedReporters = ["jeremygamerTweening_inlineTweenVal"];
+  if (Scratch.gui)
+    Scratch.gui.getBlockly().then((SB) => {
+      const originalCheck = SB.scratchBlocksUtils.isShadowArgumentReporter;
+      SB.scratchBlocksUtils.isShadowArgumentReporter = function (block) {
+        if (originalCheck(block)) return true;
+        return block.isShadow() && regeneratedReporters.includes(block.type);
+      };
+    });
+
   /**
    * @param {number} time should be 0-1
    * @param {number} a value at 0
@@ -374,6 +384,56 @@
               },
             },
           },
+          "---",
+          {
+            blockType: Scratch.BlockType.XML,
+            xml: `
+            <block type="jeremygamerTweening_inlineTween">
+              <value name="CHANGE"><shadow type="jeremygamerTweening_inlineTweenVal"></shadow></value>
+              <value name="SEC"><shadow type="math_number"><field name="NUM">1</field></shadow></value>
+              <value name="START"><shadow type="math_number"><field name="NUM">0</field></shadow></value>
+              <value name="END"><shadow type="math_number"><field name="NUM">100</field></shadow></value>
+              <value name="MODE"><shadow type="jeremygamerTweening_menu_modes"><field name="modes">linear</field></shadow></value>
+              <value name="DIRECTION"><shadow type="jeremygamerTweening_menu_direction"><field name="direction">in</field></shadow></value>
+            </block>`,
+          },
+          {
+            opcode: "inlineTween",
+            blockType: Scratch.BlockType.LOOP,
+            text: Scratch.translate(
+              "[MODE] ease [DIRECTION] [CHANGE] [START] to [END] in [SEC] secs"
+            ),
+            hideFromPalette: true,
+            arguments: {
+              MODE: {
+                type: ArgumentType.STRING,
+                menu: "modes",
+              },
+              DIRECTION: {
+                type: ArgumentType.STRING,
+                menu: "direction",
+              },
+              CHANGE: {},
+              START: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 0,
+              },
+              END: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 100,
+              },
+              SEC: {
+                type: ArgumentType.NUMBER,
+                defaultValue: 1,
+              },
+            },
+          },
+          {
+            opcode: "inlineTweenVal",
+            blockType: Scratch.BlockType.REPORTER,
+            hideFromPalette: true,
+            text: Scratch.translate("tween value"),
+          },
         ],
         menus: {
           modes: {
@@ -593,6 +653,103 @@
       } else if (args.PROPERTY === "size") {
         util.target.setSize(value);
       }
+    }
+
+    inlineTween(args, util) {
+      const stackFrame = util.stackFrame;
+      const threadStackFrame = util.thread.stackFrames[0];
+      if (threadStackFrame.inlineTweenQueue === undefined) {
+        threadStackFrame.inlineTweenQueue = [];
+      }
+
+      const queue = threadStackFrame.inlineTweenQueue;
+      if (stackFrame.tweenStatus === undefined) {
+        // init the loop
+        const start = Cast.toNumber(args.START);
+        const end = Cast.toNumber(args.END);
+        const easeDirection = Cast.toString(args.DIRECTION);
+        let easeMethod = Cast.toString(args.MODE);
+        if (!Object.prototype.hasOwnProperty.call(EasingMethods, easeMethod)) {
+          easeMethod = "linear";
+        }
+
+        if (util.stackTimerNeedsInit()) {
+          const durationMS = Math.max(0, 1000 * Cast.toNumber(args.SEC));
+          if (durationMS <= 0) return;
+          util.startStackTimer(durationMS);
+        }
+
+        stackFrame.tweenStatus = "running";
+        queue.push({
+          easeDirection,
+          easingFunction: EasingMethods[easeMethod],
+          start,
+          end,
+          value: start,
+        });
+        util.startBranch(1, true);
+      } else if (stackFrame.tweenStatus === "done") {
+        // Done
+        queue.pop();
+        return;
+      } else {
+        // Still running
+        const frame = queue[queue.length - 1];
+        const progress = Math.min(
+          1,
+          util.stackFrame.timer.timeElapsed() / util.stackFrame.duration
+        );
+        const tweened = frame.easingFunction(progress, frame.easeDirection);
+        frame.value = interpolate(tweened, frame.start, frame.end);
+
+        // Instead of checking if the timer ended, we clamp the progress to 1 so that
+        // the loop iterates one extra time at the ending value, not the value before.
+        if (progress === 1) {
+          stackFrame.tweenStatus = "done";
+        }
+
+        util.startBranch(1, true);
+      }
+    }
+
+    inlineTweenVal(_, util) {
+      const queue = util.thread.stackFrames[0]?.inlineTweenQueue;
+      if (queue) {
+        const lastFrame = queue[this._getQueueIndex(util)];
+        return lastFrame ? lastFrame.value : 0;
+      }
+
+      return 0;
+    }
+
+    _getQueueIndex(util) {
+      // We cannot reliably use the last item of the queue since early exits from inline
+      // tween loops in custom blocks ('stop this script' or 'return') will abandoned it.
+      // Fix by looking at the block stack and determining how deep we are in loop.
+      const container = util.thread.blockContainer;
+      const thread = util.thread;
+      const id = thread.isCompiled
+        ? thread.peekStack()
+        : thread.peekStackFrame().op.id;
+
+      let index = -1;
+      let block = container.getBlock(id);
+      let prevBlockId;
+      while (true) {
+        prevBlockId = block.id;
+        block = container.getBlock(block.parent);
+        if (!block) break;
+
+        if (block.opcode === "jeremygamerTweening_inlineTween") {
+          const innerBlock = container.getBranch(block.id, 1);
+          if (innerBlock === prevBlockId) {
+            // We were in this substack.
+            index++;
+          }
+        }
+      }
+
+      return index;
     }
   }
 
