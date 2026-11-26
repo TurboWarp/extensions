@@ -1,0 +1,133 @@
+// Name: Popups & Console
+// ID: legopopupsandonsole
+// Description: Use popups and the console.
+// By: legospider15
+// License: MIT
+
+(function (Scratch) {
+    "use strict";
+
+    const make_label = (text) => ({
+        blockType: 'label',
+        text: text,
+    })
+
+    class Extension {
+        getInfo() {
+            return {
+                id: "legopopupsandonsole",
+                name: Scratch.translate("Popups & Console"),
+                color1: '#515151',
+                blocks: [
+                    make_label("Popups"),
+                    {
+                        opcode: "alert_",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: Scratch.translate("alert [TEXT]"),
+                        arguments: {
+                            TEXT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Hello from TW!",
+                            }
+                        },
+                    },
+                    {
+                        opcode: "confirm_",
+                        blockType: Scratch.BlockType.BOOLEAN,
+                        text: Scratch.translate("confirm [TEXT]"),
+                        arguments: {
+                            TEXT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Confirm that TW is cool.",
+                            }
+                        },
+                    },
+                    {
+                        opcode: "prompt_",
+                        blockType: Scratch.BlockType.REPORTER,
+                        text: Scratch.translate("prompt [TEXT] with placeholder [PLACEHOLDER]"),
+                        arguments: {
+                            TEXT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "What do you think of TW?",
+                            },
+                            PLACEHOLDER: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "It is cool",
+                            }
+                        },
+                    },
+                    make_label("Console"),
+                    {
+                        opcode: "log",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: Scratch.translate("log [TEXT] in the console"),
+                        arguments: {
+                            TEXT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "TW is cool.",
+                            }
+                        },
+                    },
+                    {
+                        opcode: "warn",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: Scratch.translate("put warning [TEXT] in the console"),
+                        arguments: {
+                            TEXT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Some people might not like TW",
+                            }
+                        },
+                    },
+                    {
+                        opcode: "error",
+                        blockType: Scratch.BlockType.COMMAND,
+                        text: Scratch.translate("put error [TEXT] in the console"),
+                        arguments: {
+                            TEXT: {
+                                type: Scratch.ArgumentType.STRING,
+                                defaultValue: "Some people don't like TW.",
+                            }
+                        },
+                    },
+                ],
+                menus: {
+                },
+                
+            }
+        }
+
+    alert_(args) {
+        alert(args.TEXT)
+    }
+    
+    confirm_(args) {
+        return confirm(args.TEXT)
+    }
+    
+    prompt_(args) {
+                const ansr = prompt(args.TEXT, args.PLACEHOLDER)
+
+        if (ansr !== null) {
+            return ansr
+        }
+        return ""
+    }
+    
+    log(args) {
+        console.log(args.TEXT)
+    }
+    
+    warn(args) {
+        console.warn(args.TEXT)
+    }
+
+    error(args) {
+        console.error(args.TEXT)
+    }
+
+    }
+
+  Scratch.extensions.register(new Extension());
+})(Scratch);
