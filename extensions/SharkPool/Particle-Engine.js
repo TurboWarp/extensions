@@ -1849,6 +1849,7 @@ void main() {
         return "[]";
       }
     }
+  }
 
   if (Scratch.gui)
     Scratch.gui.getBlockly().then((SB) => {
