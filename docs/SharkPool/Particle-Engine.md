@@ -192,3 +192,8 @@ This block will not work if JSON is malformed, not in the right format (see the 
 (export emitter [emit-1] in (Stage v) ::#2474ff)
 ```
 This block will return JSON representing the behaviour settings for a specified emitter in an engine.
+
+```scratch
+(get emitters in (Stage v) ::#2474ff)
+```
+This block will return a list containing the names of the emitters in the specified engine.
