@@ -1840,9 +1840,7 @@ void main() {
       const target = this.getSprite(args.TARGET);
       const data = this.getEngine(target);
       try {
-        let names = new Array();
-        names = Array.from(data.emitters.keys());
-        console.log({target, data, names});
+        let names = Array.from(data.emitters.keys());
         return JSON.stringify(names);
       } catch (e) {
         console.warn(e);
