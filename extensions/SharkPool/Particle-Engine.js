@@ -1261,9 +1261,12 @@ void main() {
             },
           },
           {
-            opcode: "listAllEmitters",
+            opcode: "listEmitters",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("get emitter names for all targets"),
+            text: Scratch.translate("get emitter names in [TARGET]"),
+            arguments: {
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGETS" },
+            },
             disableMonitor: true,
           },
         ],
@@ -1825,18 +1828,27 @@ void main() {
       else return "{}";
     }
 
-    listAllEmitters() {
-      let catalog = Object.create(null);
-      this.allEngines.forEach((data, id) => {
-        catalog[data.target.sprite.name] = Array.from(
-          data.emitters?.keys() ?? []
-        );
-      });
-      return JSON.stringify(catalog, null, 1)
-        .replace(/\n\s*/g, " ")
-        .replace(/\s\s+/g, " ");
+    listEmitters(args) {
+      let catalog = new Array();
+      const targetId = this.getSprite(args.TARGET)?.id;
+      try {
+        if (targetId) {
+          const data = this.allEngines.get(targetId);
+          let names = new Array();
+          if (data) {
+            names = Array.from(
+              data.emitters?.keys() ?? []
+            );
+            for (let i of names) catalog.push(i);
+          }
+          return JSON.stringify(catalog);
+        } else {
+          return "[]";
+        }
+      } catch (e) {
+        return "[]";
+      }
     }
-  }
 
   if (Scratch.gui)
     Scratch.gui.getBlockly().then((SB) => {
