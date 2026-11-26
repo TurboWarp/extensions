@@ -194,6 +194,6 @@ This block will not work if JSON is malformed, not in the right format (see the 
 This block will return JSON representing the behaviour settings for a specified emitter in an engine.
 
 ```scratch
-(get emitter names in (Stage v) ::#2474ff)
+(get emitters in (Stage v) ::#2474ff)
 ```
-This block will return JSON listing the names of the emitters in the specified target.
+This block will return a list containing the names of the emitters in the specified engine.
