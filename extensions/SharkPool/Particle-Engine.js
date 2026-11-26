@@ -1838,7 +1838,7 @@ void main() {
 
     listEmitters(args) {
       const target = this.getSprite(args.TARGET);
-      const data = this.getEngines(target);
+      const data = this.getEngine(target);
       try {
         let names = new Array();
         names = Array.from(data.emitters.keys());
