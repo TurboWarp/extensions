@@ -1,29 +1,11 @@
 {
-  "compilerOptions": {
-    "target": "es2022",
-    "noEmit": true,
-    "allowJs": true,
-    "checkJs": true,
-    "removeComments": false,
-    "sourceMap": true,
-    "inlineSources": true,
-    "paths": {
-      // See https://github.com/turboWarp/types#using-from-npm
-      "scratch-vm": ["./node_modules/@turbowarp/types/index.d.ts"],
-      "scratch-render": ["./node_modules/@turbowarp/types/index.d.ts"],
-      "scratch-svg-renderer": ["./node_modules/@turbowarp/types/index.d.ts"],
-      "scratch-render-fonts": ["./node_modules/@turbowarp/types/index.d.ts"],
-      "scratch-storage": ["./node_modules/@turbowarp/types/index.d.ts"],
-      "scratch-audio": ["./node_modules/@turbowarp/types/index.d.ts"],
-      "scratch-parser": ["./node_modules/@turbowarp/types/index.d.ts"],
-      "scratch-blocks": ["./node_modules/@turbowarp/types/index.d.ts"]
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig/tsconfig.ts.json"
+    },
+    {
+      "path": "./tsconfig/tsconfig.js.json"
     }
-  },
-  "include": [
-    "node_modules/@turbowarp/types/types/scratch-vm-extension.d.ts",
-    "node_modules/@turbowarp/types/types/scratchx-extension.d.ts",
-    "globals.d.ts",
-    "extensions/**/*",
-    "website/**/*"
   ]
 }

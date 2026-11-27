@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "strict": true
+  },
+  "include": [
+    "../node_modules/@turbowarp/types/types/scratch-vm-extension.d.ts",
+    "../node_modules/@turbowarp/types/types/scratchx-extension.d.ts",
+    "../globals.d.ts",
+    "../extensions/**/*.ts"
+  ]
+}
