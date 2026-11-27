@@ -89,11 +89,17 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("enter"),
+                text: Scratch.translate({
+                  default: "enter",
+                  description: "As in 'enter fullscreen'",
+                }),
                 value: "enter",
               },
               {
-                text: Scratch.translate("exit"),
+                text: Scratch.translate({
+                  default: "exit",
+                  description: "As in 'exit fullscreen'",
+                }),
                 value: "exit",
               },
             ],
