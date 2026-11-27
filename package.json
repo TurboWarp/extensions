@@ -6,6 +6,9 @@
     "./builder": "./development/builder.js"
   },
   "type": "module",
+  "engines": {
+    "node": "^22.13.0 || >=23.2.0"
+  },
   "scripts": {
     "start": "node development/server.js",
     "dev": "node development/server.js",
@@ -14,6 +17,7 @@
     "lint": "eslint development extensions --max-warnings=0",
     "format": "prettier . --write",
     "check-format": "prettier . --check",
+    "typecheck": "node development/typecheck.js",
     "upload-translations": "node development/upload-translations.js",
     "download-translations": "node development/download-translations.js"
   },
@@ -44,7 +48,7 @@
     "@transifex/api": "^7.1.5",
     "prettier": "^3.6.0",
     "spdx-expression-parse": "^4.0.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "private": true
 }

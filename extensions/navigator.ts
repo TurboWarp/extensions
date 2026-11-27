@@ -5,11 +5,11 @@
 // Context: "Navigator" refers to someone's browser
 // License: MIT AND MPL-2.0
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
-  class NavigatorInfo {
-    getInfo() {
+  class NavigatorInfo implements Scratch.Extension {
+    getInfo(): Scratch.Info {
       return {
         id: "navigatorinfo",
         name: Scratch.translate("Navigator Info"),
@@ -105,16 +105,14 @@
     }
 
     getMemory() {
-      // @ts-expect-error
       if (navigator.deviceMemory == undefined) {
         return "Unsupported";
       } else {
-        // @ts-expect-error
         return navigator.deviceMemory;
       }
     }
 
-    getPreferredColorScheme(args) {
+    getPreferredColorScheme(args: { THEME: unknown }) {
       return (
         window.matchMedia("(prefers-color-scheme: dark)").matches ===
         (args.THEME === "dark")

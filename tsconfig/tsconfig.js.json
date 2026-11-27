@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    // Enable type warnings in JS
+    "allowJs": true,
+    "checkJs": true,
+    // But because these are in JS and were not built with strict type checking in mind,
+    // we have to be a bit more lenient with them.
+    "strict": false,
+  },
+  "include": [
+    "../node_modules/@turbowarp/types/types/scratch-vm-extension.d.ts",
+    "../node_modules/@turbowarp/types/types/scratchx-extension.d.ts",
+    "../globals.d.ts",
+    "../extensions/**/*.js",
+    "../website/**/*.js"
+  ]
+}

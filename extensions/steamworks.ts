@@ -5,15 +5,14 @@
 // License: MPL-2.0
 // Context: Probably don't translate the word "Steamworks".
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
-  /* globals Steamworks */
+  const steamworks =
+    window.Steamworks && window.Steamworks.ok() ? window.Steamworks : null;
 
-  const canUseSteamworks = typeof Steamworks !== "undefined" && Steamworks.ok();
-
-  class SteamworksExtension {
-    getInfo() {
+  class SteamworksExtension implements Scratch.Extension {
+    getInfo(): Scratch.Info {
       return {
         id: "steamworks",
         // eslint-disable-next-line extension/should-translate
@@ -186,55 +185,61 @@
     }
 
     hasSteamworks() {
-      return canUseSteamworks;
+      return !!steamworks;
     }
 
-    getUserInfo({ THING }) {
-      if (!canUseSteamworks) return "Steamworks unavailable";
+    getUserInfo({ THING }: { THING: unknown }) {
+      if (!steamworks) return "Steamworks unavailable";
       switch (THING) {
         case "name":
-          return Steamworks.localplayer.getName();
+          return steamworks.localplayer.getName();
         case "level":
-          return Steamworks.localplayer.getLevel();
+          return steamworks.localplayer.getLevel();
         case "IP country":
-          return Steamworks.localplayer.getIpCountry();
+          return steamworks.localplayer.getIpCountry();
         case "steam ID":
-          return Steamworks.localplayer.getSteamId().steamId64;
+          return String(steamworks.localplayer.getSteamId().steamId64);
       }
       return "???";
     }
 
-    setAchievement({ ACHIEVEMENT, STATUS }) {
-      if (!canUseSteamworks) return;
+    setAchievement({
+      ACHIEVEMENT,
+      STATUS,
+    }: {
+      ACHIEVEMENT: unknown;
+      STATUS: unknown;
+    }) {
+      if (!steamworks) return;
       if (Scratch.Cast.toBoolean(STATUS)) {
-        Steamworks.achievement.activate(Scratch.Cast.toString(ACHIEVEMENT));
+        steamworks.achievement.activate(Scratch.Cast.toString(ACHIEVEMENT));
       } else {
-        Steamworks.achievement.clear(Scratch.Cast.toString(ACHIEVEMENT));
+        steamworks.achievement.clear(Scratch.Cast.toString(ACHIEVEMENT));
       }
     }
 
-    getAchievement({ ACHIEVEMENT }) {
-      if (!canUseSteamworks) return false;
-      return Steamworks.achievement.isActivated(
+    getAchievement({ ACHIEVEMENT }: { ACHIEVEMENT: unknown }) {
+      if (!steamworks) return false;
+      return steamworks.achievement.isActivated(
         Scratch.Cast.toString(ACHIEVEMENT)
       );
     }
 
-    getInstalled({ TYPE, ID }) {
-      if (!canUseSteamworks) return false;
+    getInstalled({ TYPE, ID }: { TYPE: unknown; ID: unknown }) {
+      if (!steamworks) return false;
       if (TYPE === "DLC") {
-        return Steamworks.apps.isDlcInstalled(Scratch.Cast.toNumber(ID));
+        return steamworks.apps.isDlcInstalled(Scratch.Cast.toNumber(ID));
       }
       return false;
     }
 
-    openInOverlay({ TYPE, DATA }) {
+    openInOverlay({ TYPE, DATA }: { TYPE: unknown; DATA: unknown }) {
       if (TYPE === "URL") {
         const url = Scratch.Cast.toString(DATA);
-        if (canUseSteamworks) {
+        if (steamworks) {
           // This will always be a packaged environment so don't need to bother
           // with canOpenWindow()
-          Steamworks.overlay.activateToWebPage(DATA);
+          steamworks.overlay.activateToWebPage(url);
         } else {
           // Don't await result, we don't care
           Scratch.openWindow(url);
