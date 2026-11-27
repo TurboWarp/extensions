@@ -22,7 +22,7 @@ This block is required for all requests to work.
 Opens/closes a game session.
 - You must ping the session to keep it open and you must close it when you're done with it.
 
-When you login the session is opened automatically.
+When you login, or set the game ID while logged in, the session is opened automatically.
 
 ---
 ```scratch

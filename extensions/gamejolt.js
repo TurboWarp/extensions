@@ -260,7 +260,7 @@
     GJAPI.iLogStack = 20;
 
     GJAPI.asQueryParam = (() => {
-      var asOutput = {};
+      var asOutput = Object.create(null);
       var asList = window.location.search.substring(1).split("&");
 
       // loop through all parameters
@@ -297,6 +297,20 @@
       console.trace();
     };
 
+    /**
+     * Turn empty or invalid responses into an error
+     * @param {*} sResponse
+     */
+    GJAPI.ParseResponse = (sResponse) => {
+      // canFetch() was denied
+      if (typeof sResponse !== "string") return sResponse;
+      try {
+        const pResponse = JSON.parse(sResponse).response;
+        if (pResponse) return pResponse;
+      } catch (e) {}
+      return GJAPI.err.get("Request failed.");
+    };
+
     // **************
     // Main functions
     GJAPI.SEND_FOR_USER = true;
@@ -323,7 +337,7 @@
       // add main URL, game ID and format type
       sURL =
         GJAPI.sAPI +
-        encodeURI(sURL) +
+        sURL +
         (sURL.indexOf("/?") === -1 ? "?" : "&") +
         "game_id=" +
         GJAPI.iGameID +
@@ -340,12 +354,11 @@
 
       // send off the request
       __CreateAjax(sURL, sBodyData, (sResponse) => {
-        console.info(GJAPI.sLogName + " <" + sURL + "> " + sResponse);
-        if (sResponse === "" || typeof pCallback !== "function") return;
+        if (typeof pCallback !== "function") return;
 
         switch (sFormat) {
           case "json":
-            pCallback(JSON.parse(sResponse).response);
+            pCallback(GJAPI.ParseResponse(sResponse));
             break;
 
           case "dump":
@@ -378,7 +391,6 @@
     GJAPI.sUserToken = GJAPI.bLoggedIn ? GJAPI.asQueryParam["gjapi_token"] : "";
 
     // send some information to the console
-    console.info(GJAPI.asQueryParam);
     console.info(
       GJAPI.sLogName +
         (GJAPI.bOnGJ ? " E" : " Not e") +
@@ -423,7 +435,7 @@
       // send open-session request
       GJAPI.SendRequest("/sessions/open/", GJAPI.SEND_FOR_USER, (pResponse) => {
         // check for success
-        if (pResponse.success == "true") {
+        if (pResponse.success == "true" && !GJAPI.iSessionHandle) {
           // add automatic session ping and close
           GJAPI.iSessionHandle = window.setInterval(GJAPI.SessionPing, 30000);
           window.addEventListener("beforeunload", GJAPI.SessionClose, false);
@@ -473,9 +485,6 @@
       GJAPI.SendRequest("/sessions/close/", GJAPI.SEND_FOR_USER, pCallback);
     };
 
-    // automatically start player session
-    if (GJAPI.bLoggedIn) GJAPI.SessionOpen();
-
     // **************
     // User functions
 
@@ -490,8 +499,6 @@
         GJAPI.LogTrace(
           "UserLoginManual(" +
             sUserName +
-            ", " +
-            sUserToken +
             ") failed: user " +
             GJAPI.sUserName +
             " already logged in"
@@ -501,7 +508,11 @@
       }
 
       GJAPI.SendRequest(
-        "/users/auth/" + "?username=" + sUserName + "&user_token=" + sUserToken,
+        "/users/auth/" +
+          "?username=" +
+          encodeURIComponent(sUserName) +
+          "&user_token=" +
+          encodeURIComponent(sUserToken),
         GJAPI.SEND_GENERAL,
         (pResponse) => {
           // check for success
@@ -564,7 +575,7 @@
      */
     GJAPI.UserFetchName = (sUserName, pCallback) => {
       GJAPI.SendRequest(
-        "/users/?username=" + sUserName,
+        "/users/?username=" + encodeURIComponent(sUserName),
         GJAPI.SEND_GENERAL,
         pCallback
       );
@@ -745,10 +756,10 @@
         "/scores/add/?sort=" +
           iScoreValue +
           "&score=" +
-          sScoreText +
-          (bIsGuest ? "&guest=" + sGuestName : "") +
+          encodeURIComponent(sScoreText) +
+          (bIsGuest ? "&guest=" + encodeURIComponent(sGuestName) : "") +
           (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
-          (sExtraData ? "&extra_data=" + sExtraData : ""),
+          (sExtraData ? "&extra_data=" + encodeURIComponent(sExtraData) : ""),
         bIsGuest ? GJAPI.SEND_GENERAL : GJAPI.SEND_FOR_USER,
         pCallback
       );
@@ -793,6 +804,15 @@
     GJAPI.DATA_STORE_USER = true;
     GJAPI.DATA_STORE_GLOBAL = false;
 
+    // Don't use the global data store when no user is logged in
+    GJAPI.DataStoreCheckUser = (iStore, pCallback) => {
+      if (iStore && !GJAPI.bLoggedIn) {
+        pCallback(GJAPI.err.get("noLogin"));
+        return false;
+      }
+      return true;
+    };
+
     /**
      * Send set-data request
      * @param {number} iStore
@@ -801,8 +821,12 @@
      * @param {function} pCallback
      */
     GJAPI.DataStoreSet = (iStore, sKey, sData, pCallback) => {
+      if (!GJAPI.DataStoreCheckUser(iStore, pCallback)) return;
       GJAPI.SendRequest(
-        "/data-store/set/?key=" + sKey + "&data=" + sData,
+        "/data-store/set/?key=" +
+          encodeURIComponent(sKey) +
+          "&data=" +
+          encodeURIComponent(sData),
         iStore,
         pCallback
       );
@@ -815,7 +839,11 @@
      * @param {function} pCallback
      */
     GJAPI.DataStoreFetch = (iStore, sKey, pCallback) => {
-      GJAPI.SendRequest("/data-store/?key=" + sKey, iStore, pCallback);
+      GJAPI.SendRequest(
+        "/data-store/?key=" + encodeURIComponent(sKey),
+        iStore,
+        pCallback
+      );
     };
 
     /**
@@ -827,13 +855,14 @@
      * @param {function} pCallback
      */
     GJAPI.DataStoreUpdate = (iStore, sKey, sOperation, sValue, pCallback) => {
+      if (!GJAPI.DataStoreCheckUser(iStore, pCallback)) return;
       GJAPI.SendRequest(
         "/data-store/update/?key=" +
-          sKey +
+          encodeURIComponent(sKey) +
           "&operation=" +
           sOperation +
           "&value=" +
-          sValue,
+          encodeURIComponent(sValue),
         iStore,
         pCallback
       );
@@ -846,8 +875,13 @@
      * @param {function} pCallback
      */
     GJAPI.DataStoreRemove = (iStore, sKey, pCallback) => {
+      if (!GJAPI.DataStoreCheckUser(iStore, pCallback)) return;
       // send remove-data request
-      GJAPI.SendRequest("/data-store/remove/?key=" + sKey, iStore, pCallback);
+      GJAPI.SendRequest(
+        "/data-store/remove/?key=" + encodeURIComponent(sKey),
+        iStore,
+        pCallback
+      );
     };
 
     /**
@@ -856,6 +890,7 @@
      * @param {function} pCallback
      */
     GJAPI.DataStoreGetKeys = (iStore, pCallback) => {
+      if (!GJAPI.DataStoreCheckUser(iStore, pCallback)) return;
       GJAPI.SendRequest("/data-store/get-keys/", iStore, pCallback);
     };
 
@@ -947,11 +982,6 @@
         pCallback(GJAPI.err.get("noLogin"));
         return;
       }
-      // Check if the trophy is not achieved
-      if (!GJAPI.abTrophyCache[iTrophyID]) {
-        pCallback(GJAPI.err.get("Trophy already achieved."));
-        return;
-      }
       GJAPI.SendRequest(
         "/trophies/remove-achieved/?game_id=" +
           GJAPI.iGameID +
@@ -1038,24 +1068,7 @@
           pCallback({ success: true });
           return;
         }
-        GJAPI.SendRequest(
-          "/sessions/open/",
-          GJAPI.SEND_FOR_USER,
-          function (pResponse) {
-            if (pResponse.success == "true") {
-              GJAPI.iSessionHandle = window.setInterval(
-                GJAPI.SessionPing,
-                30000
-              );
-              window.addEventListener(
-                "beforeunload",
-                GJAPI.SessionClose,
-                false
-              );
-            }
-          }
-        );
-        if (typeof pCallback == "function") pCallback({ success: true });
+        GJAPI.SessionOpen(pCallback);
         return;
       }
       if (GJAPI.iSessionHandle) {
@@ -1075,7 +1088,9 @@
      */
     GJAPI.UserFetchComb = (bIsUsername, sValue, pCallback) => {
       GJAPI.SendRequest(
-        "/users/" + (bIsUsername ? "?username=" : "?user_id=") + sValue,
+        "/users/" +
+          (bIsUsername ? "?username=" : "?user_id=") +
+          encodeURIComponent(sValue),
         GJAPI.SEND_GENERAL,
         pCallback
       );
@@ -1142,7 +1157,7 @@
           iLimit +
           (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
           "&guest=" +
-          sName,
+          encodeURIComponent(sName),
         GJAPI.SEND_GENERAL,
         pCallback
       );
@@ -1172,7 +1187,7 @@
           iLimit +
           (iScoreTableID ? "&table_id=" + iScoreTableID : "") +
           "&guest=" +
-          sName +
+          encodeURIComponent(sName) +
           (bBetterOrWorse ? "&better_than=" : "&worse_than=") +
           iValue,
         GJAPI.SEND_GENERAL,
@@ -1267,8 +1282,9 @@
      * @param {function} pCallback
      */
     GJAPI.DataStoreGetKeysEx = (iStore, sPattern, pCallback) => {
+      if (!GJAPI.DataStoreCheckUser(iStore, pCallback)) return;
       GJAPI.SendRequest(
-        "/data-store/get-keys/?pattern=" + sPattern,
+        "/data-store/get-keys/?pattern=" + encodeURIComponent(sPattern),
         iStore,
         pCallback
       );
@@ -1284,7 +1300,7 @@
      * @param {function} pCallback
      */
     GJAPI.SendBatchRequest = (sRequests, sParam, pCallback) => {
-      if (!sRequests) {
+      if (!sRequests || !sRequests.length) {
         pCallback(GJAPI.err.get("No requests found."));
         return;
       }
@@ -1293,9 +1309,7 @@
         sFinalURL +=
           "&requests[]=" +
           encodeURIComponent(
-            encodeURI(sRequests[i]) +
-              "&signature=" +
-              md5(sRequests[i] + GJAPI.sGameKey)
+            sRequests[i] + "&signature=" + md5(sRequests[i] + GJAPI.sGameKey)
           );
       }
       switch (sParam) {
@@ -1313,8 +1327,7 @@
       sFinalURL += "&signature=" + md5(sFinalURL + GJAPI.sGameKey);
 
       __CreateAjax(sFinalURL, "", (sResponse) => {
-        console.info(GJAPI.sLogName + " <" + sFinalURL + "> " + sResponse);
-        pCallback(JSON.parse(sResponse).response);
+        pCallback(GJAPI.ParseResponse(sResponse));
       });
     };
 
@@ -1348,6 +1361,10 @@
      */
     show: (text) => (err.debug ? "Error: " + text : ""),
   };
+
+  // Fetched values can be falsy, like 0 or ""
+  const valueOrNoData = (value) =>
+    value === undefined || value === null ? err.get("noData") : value;
 
   /**
    * Used for storing API response objects
@@ -1384,6 +1401,15 @@
   };
 
   const docs = "https://extensions.turbowarp.org/gamejolt";
+
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    if (GameJolt.iSessionHandle) GameJolt.SessionClose(() => {});
+    GameJolt.iGameID = 0;
+    GameJolt.sGameKey = "";
+    data = {};
+    err.last = "";
+    err.debug = true;
+  });
 
   /**
    * Mostly visual stuff for Scratch GUI
@@ -2432,6 +2458,9 @@
     setGame({ ID, key }) {
       GameJolt.iGameID = ID;
       GameJolt.sGameKey = key;
+      // Open the session now that requests can be signed
+      if (GameJolt.bLoggedIn && !GameJolt.iSessionHandle)
+        GameJolt.SessionOpen();
     }
     session({ openOrClose }) {
       return new Promise((resolve) =>
@@ -2539,7 +2568,7 @@
     }
     returnUserData({ userDataType }) {
       if (!data.user) return err.get("user");
-      return data.user[userDataType] || err.get("noData");
+      return valueOrNoData(data.user[userDataType]);
     }
     returnUserDataJson() {
       return JSON.stringify(data.user) || err.get("user") || "{}";
@@ -2555,7 +2584,7 @@
       });
       if (!data.friends) return err.get("friends");
       if (!data.friends[index]) return err.get("noIndex");
-      return data.friends[index].friend_id || err.get("noData");
+      return valueOrNoData(data.friends[index].friend_id);
     }
     friendsFetchNew() {
       return new Promise((resolve) =>
@@ -2575,7 +2604,7 @@
     friendsReturn({ index }) {
       if (!data.friends) return err.get("friends");
       if (!data.friends[Math.floor(index)]) return err.get("noIndex");
-      return data.friends[Math.floor(index)].friend_id || err.get("noData");
+      return valueOrNoData(data.friends[Math.floor(index)].friend_id);
     }
     friendsReturnJson() {
       return JSON.stringify(data.friends) || err.get("friends") || "{}";
@@ -2616,9 +2645,9 @@
       if (!data.trophies) return err.get("trophies");
       if (indexOrID) {
         if (!data.trophies[value]) return err.get("noIndex");
-        return data.trophies[value][trophyDataType] || err.get("noData");
+        return valueOrNoData(data.trophies[value][trophyDataType]);
       }
-      return data.trophies[trophyDataType] || err.get("noData");
+      return valueOrNoData(data.trophies[trophyDataType]);
     }
     trophyFetchAll({ trophyFetchGroup }) {
       return new Promise((resolve) =>
@@ -2656,9 +2685,7 @@
     trophyReturn({ trophyDataType, index }) {
       if (!data.trophies) return err.get("trophies");
       if (!data.trophies[Math.floor(index)]) return err.get("noIndex");
-      return (
-        data.trophies[Math.floor(index)][trophyDataType] || err.get("noData")
-      );
+      return valueOrNoData(data.trophies[Math.floor(index)][trophyDataType]);
     }
     trophyReturnJson() {
       return JSON.stringify(data.trophies) || err.get("trophies") || "{}";
@@ -2788,7 +2815,7 @@
           data.scores[index].guest ||
           err.get("noData")
         );
-      return data.scores[index][scoreDataType] || err.get("noData");
+      return valueOrNoData(data.scores[index][scoreDataType]);
     }
     returnScoreDataJson() {
       return JSON.stringify(data.scores) || err.get("scores") || "{}";
@@ -2815,7 +2842,7 @@
       });
       if (!data.tables) return err.get("tables");
       if (!data.tables[index]) return err.get("noIndex");
-      return data.tables[index][tableDataType] || err.get("noData");
+      return valueOrNoData(data.tables[index][tableDataType]);
     }
     scoreFetchTables() {
       return new Promise((resolve) =>
@@ -2835,7 +2862,7 @@
     scoreReturnTables({ tableDataType, index }) {
       if (!data.tables) return err.get("tables");
       if (!data.tables[Math.floor(index)]) return err.get("noIndex");
-      return data.tables[Math.floor(index)][tableDataType] || err.get("noData");
+      return valueOrNoData(data.tables[Math.floor(index)][tableDataType]);
     }
     scoreReturnTablesJson() {
       return JSON.stringify(data.tables) || err.get("tables") || "{}";
@@ -2923,7 +2950,7 @@
       );
       if (!data.keys) return err.get("keys");
       if (!data.keys[index]) return err.get("noIndex");
-      return data.keys[index].key || err.get("noData");
+      return valueOrNoData(data.keys[index].key);
     }
     dataStoreFetchKeys({ globalOrPerUser }) {
       return new Promise((resolve) =>
@@ -2974,7 +3001,7 @@
     dataStoreReturnKeys({ index }) {
       if (!data.keys) return err.get("keys");
       if (!data.keys[Math.floor(index)]) return err.get("noIndex");
-      return data.keys[Math.floor(index)].key || err.get("noData");
+      return valueOrNoData(data.keys[Math.floor(index)].key);
     }
     dataStoreReturnKeysJson() {
       return JSON.stringify(data.keys) || err.get("keys") || "{}";
@@ -3009,7 +3036,7 @@
     }
     timeReturn({ timeType }) {
       if (!data.time) return err.get("time");
-      return data.time[timeType] || err.get("noData");
+      return valueOrNoData(data.time[timeType]);
     }
     timeReturnJson() {
       return JSON.stringify(data.time) || err.get("time") || "{}";
@@ -3037,7 +3064,7 @@
     batchCall({ parameter }) {
       return new Promise((resolve) =>
         GameJolt.SendBatchRequest(
-          data.batchRequests.map(
+          (data.batchRequests || []).map(
             (I) =>
               `/${I.namespace
                 .split("/")
