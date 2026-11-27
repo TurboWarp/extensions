@@ -393,10 +393,10 @@
     }
 
     setDimensions({ width, height }: { width: unknown; height: unknown }) {
-      Scratch.vm.setStageSize(
-        Scratch.Cast.toNumber(width),
-        Scratch.Cast.toNumber(height)
-      );
+      const w = Scratch.Cast.toNumber(width);
+      const h = Scratch.Cast.toNumber(height);
+      if (!Number.isFinite(w) || !Number.isFinite(h)) return;
+      Scratch.vm.setStageSize(w, h);
     }
 
     setUsername({ username }: { username: unknown }) {
