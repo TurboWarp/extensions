@@ -4,16 +4,15 @@
 // By: GarboMuffin
 // License: MIT AND MPL-2.0
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
-  /** @type {Promise<BatteryManager>|null} */
-  let getBatteryPromise = null;
-  /** @type {BatteryManager|null} */
-  let cachedBattery = null;
-  /** @type {boolean} */
+  let getBatteryPromise: Promise<BatteryManager | null> | null = null;
+  let cachedBattery: BatteryManager | null = null;
   let batteryError = false;
-  const withBattery = (callback) => {
+  const withBattery = <T>(
+    callback: (battery: BatteryManager | null) => T
+  ): T | Promise<T> => {
     // Getting the BatteryManager is async the first time. Usually it's very fast, but we shouldn't assume that it is.
     // All the logic here lets us return values immediately when we have already got the battery instead of forcing
     // a delay by returning a promise.
@@ -30,20 +29,20 @@
           getBatteryPromise = null;
           cachedBattery = battery;
 
-          cachedBattery.addEventListener("chargingchange", () => {
+          battery.addEventListener("chargingchange", () => {
             Scratch.vm.runtime.startHats("battery_chargingChanged");
           });
-          cachedBattery.addEventListener("levelchange", () => {
+          battery.addEventListener("levelchange", () => {
             Scratch.vm.runtime.startHats("battery_levelChanged");
           });
-          cachedBattery.addEventListener("chargingtimechange", () => {
+          battery.addEventListener("chargingtimechange", () => {
             Scratch.vm.runtime.startHats("battery_chargeTimeChanged");
           });
-          cachedBattery.addEventListener("dischargingtimechange", () => {
+          battery.addEventListener("dischargingtimechange", () => {
             Scratch.vm.runtime.startHats("battery_dischargeTimeChanged");
           });
 
-          return cachedBattery;
+          return battery;
         })
         .catch((error) => {
           getBatteryPromise = null;
@@ -60,8 +59,8 @@
   // Try to get the battery immediately so that event blocks work.
   withBattery(() => {});
 
-  class BatteryExtension {
-    getInfo() {
+  class BatteryExtension implements Scratch.Extension {
+    getInfo(): Scratch.Info {
       return {
         name: Scratch.translate("Battery"),
         id: "battery",

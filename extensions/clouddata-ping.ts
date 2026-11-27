@@ -5,25 +5,18 @@
 // Original: TheShovel
 // License: MIT AND MPL-2.0
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
-  /**
-   * @typedef CacheEntry
-   * @property {number} expires
-   * @property {boolean} value
-   */
+  interface CacheEntry {
+    expires: number;
+    value: boolean;
+  }
 
-  /** @type {Map<string, Promise<CacheEntry>>} */
-  const computing = new Map();
-  /** @type {Map<string, CacheEntry>} */
-  const computed = new Map();
+  const computing = new Map<string, Promise<CacheEntry>>();
+  const computed = new Map<string, CacheEntry>();
 
-  /**
-   * @param {string} uri
-   * @returns {Promise<CacheEntry>}
-   */
-  const pingWebSocket = async (uri) => {
+  const pingWebSocket = async (uri: string): Promise<CacheEntry> => {
     if (!(await Scratch.canFetch(uri))) {
       return {
         expires: 0,
@@ -31,8 +24,7 @@
       };
     }
 
-    /** @type {WebSocket} */
-    let ws;
+    let ws: WebSocket;
     try {
       // Permission is checked earlier.
       // eslint-disable-next-line extension/check-can-fetch
@@ -44,8 +36,8 @@
       };
     }
 
-    let timeoutId;
-    const isUp = await new Promise((resolve) => {
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    const isUp = await new Promise<boolean>((resolve) => {
       ws.onopen = () => {
         setTimeout(() => {
           resolve(true);
@@ -71,11 +63,7 @@
     };
   };
 
-  /**
-   * @param {string} uri
-   * @returns {boolean|Promise<boolean>}
-   */
-  const cachedPingWebSocket = (uri) => {
+  const cachedPingWebSocket = (uri: string): boolean | Promise<boolean> => {
     const computingEntry = computing.get(uri);
     if (computingEntry) {
       return computingEntry.then((entry) => entry.value);
@@ -95,8 +83,8 @@
     });
   };
 
-  class PingUtil {
-    getInfo() {
+  class PingUtil implements Scratch.Extension {
+    getInfo(): Scratch.Info {
       return {
         id: "clouddataping",
         name: Scratch.translate("Ping Cloud Data"),
@@ -116,8 +104,8 @@
       };
     }
 
-    ping({ SERVER }) {
-      return cachedPingWebSocket(SERVER);
+    ping({ SERVER }: { SERVER: unknown }) {
+      return cachedPingWebSocket(Scratch.Cast.toString(SERVER));
     }
   }
 

@@ -4,7 +4,7 @@
 // By: GarboMuffin
 // License: MIT AND MPL-2.0
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
@@ -23,7 +23,7 @@
     rect = canvas.getBoundingClientRect();
   });
 
-  const postMouseData = (e, isDown) => {
+  const postMouseData = (e: MouseEvent, isDown?: boolean) => {
     const { movementX, movementY } = e;
     const { width, height } = rect;
     const x = mouse._clientX + movementX;
@@ -69,8 +69,7 @@
   document.addEventListener(
     "mousedown",
     (e) => {
-      // @ts-expect-error
-      if (canvas.contains(e.target)) {
+      if (canvas.contains(e.target as Node | null)) {
         if (isLocked) {
           postMouseData(e, true);
         } else if (isPointerLockEnabled) {
@@ -85,8 +84,10 @@
     (e) => {
       if (isLocked) {
         postMouseData(e, false);
-        // @ts-expect-error
-      } else if (isPointerLockEnabled && canvas.contains(e.target)) {
+      } else if (
+        isPointerLockEnabled &&
+        canvas.contains(e.target as Node | null)
+      ) {
         canvas.requestPointerLock();
       }
     },
@@ -110,7 +111,10 @@
   });
 
   const oldStep = vm.runtime._step;
-  vm.runtime._step = function (...args) {
+  vm.runtime._step = function (
+    this: VM.Runtime,
+    ...args: Parameters<typeof oldStep>
+  ) {
     const ret = oldStep.call(this, ...args);
     if (isPointerLockEnabled) {
       const { width, height } = rect;
@@ -129,8 +133,8 @@
     }
   });
 
-  class Pointerlock {
-    getInfo() {
+  class Pointerlock implements Scratch.Extension {
+    getInfo(): Scratch.Info {
       return {
         id: "pointerlock",
         name: Scratch.translate("Pointerlock"),
@@ -171,7 +175,7 @@
       };
     }
 
-    setLocked(args) {
+    setLocked(args: { enabled: unknown }) {
       isPointerLockEnabled = Scratch.Cast.toBoolean(args.enabled) === true;
       if (!isPointerLockEnabled && isLocked) {
         document.exitPointerLock();

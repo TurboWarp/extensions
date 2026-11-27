@@ -4,17 +4,13 @@
 // By: GarboMuffin
 // License: MPL-2.0
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
   const textEncoder = new TextEncoder();
   const textDecoder = new TextDecoder();
 
-  /**
-   * @param {Uint8Array} bytes
-   * @returns {string}
-   */
-  const encodeBinary = (bytes) => {
+  const encodeBinary = (bytes: Uint8Array): string => {
     // Pre-allocating buffer seems to be much faster than string concatenation
     const buffer = new Uint8Array(Math.ceil((bytes.length * 8) / 3));
     let ptr = 0;
@@ -64,11 +60,7 @@
     return textDecoder.decode(buffer);
   };
 
-  /**
-   * @param {string} string
-   * @returns {Uint8Array}
-   */
-  const decodeBinary = (string) => {
+  const decodeBinary = (string: string): Uint8Array => {
     const encodedBytes = Math.floor((string.length * 3) / 8);
     const result = new Uint8Array(encodedBytes);
     let ptr = 0;
@@ -118,17 +110,10 @@
     return result;
   };
 
-  /**
-   * @param {string} text
-   * @returns {string}
-   */
-  const encodeText = (text) => encodeBinary(textEncoder.encode(text));
+  const encodeText = (text: string): string =>
+    encodeBinary(textEncoder.encode(text));
 
-  /**
-   * @param {string} text
-   * @returns {string}
-   */
-  const decodeText = (text) => {
+  const decodeText = (text: string): string => {
     // All characters must be in range [1, 8]
     for (let i = 0; i < text.length; i++) {
       const ch = text.charCodeAt(i);
@@ -165,8 +150,8 @@
   console.timeEnd('validate');
   */
 
-  class NumericalEncodingV2 {
-    getInfo() {
+  class NumericalEncodingV2 implements Scratch.Extension {
+    getInfo(): Scratch.Info {
       const example = Scratch.translate({
         default: "Hello",
         description:
@@ -203,11 +188,11 @@
       };
     }
 
-    encode({ TEXT }) {
+    encode({ TEXT }: { TEXT: unknown }) {
       return encodeText(Scratch.Cast.toString(TEXT));
     }
 
-    decode({ TEXT }) {
+    decode({ TEXT }: { TEXT: unknown }) {
       return decodeText(Scratch.Cast.toString(TEXT));
     }
   }

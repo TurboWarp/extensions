@@ -89,8 +89,56 @@ interface NetworkInformation {
     | "unknown";
 }
 
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/API/BatteryManager
+ */
+interface BatteryManager extends EventTarget {
+  readonly charging: boolean;
+  readonly chargingTime: number;
+  readonly dischargingTime: number;
+  readonly level: number;
+}
+
 interface Navigator {
   connection?: NetworkInformation;
+  /**
+   * https://developer.mozilla.org/en-US/docs/Web/API/Navigator/deviceMemory
+   */
+  deviceMemory?: number;
+  /**
+   * https://developer.mozilla.org/en-US/docs/Web/API/Navigator/getBattery
+   */
+  getBattery?(): Promise<BatteryManager>;
+}
+
+interface Window {
+  /**
+   * https://github.com/TurboWarp/packager/blob/master/src/packager/packager.js
+   */
+  Steamworks?: {
+    ok(): boolean;
+    achievement: {
+      activate(achievement: string): Promise<unknown>;
+      clear(achievement: string): Promise<unknown>;
+      isActivated(achievement: string): boolean;
+    };
+    apps: {
+      isDlcInstalled(dlc: number): boolean;
+    };
+    localplayer: {
+      getName(): string;
+      getLevel(): number;
+      getIpCountry(): string;
+      getSteamId(): {
+        steamId64: bigint;
+        steamId32: string;
+        accountId: number;
+      };
+    };
+    overlay: {
+      activateToWebPage(url: string): Promise<unknown>;
+    };
+  };
 }
 
 declare namespace Scratch.extensions {
