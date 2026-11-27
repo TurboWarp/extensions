@@ -570,7 +570,12 @@
       args: { position: unknown; size: unknown },
       util: VM.BlockUtility
     ) {
-      const [sizeX, sizeY] = parseTuple(Scratch.Cast.toString(args.size));
+      const sizeString = Scratch.Cast.toString(args.size);
+      let [sizeX, sizeY] = parseTuple(sizeString);
+      if (!/[ ,x]/.test(sizeString)) {
+        // Treat "32" as "32x32"
+        sizeY = sizeX;
+      }
       const maxWidth = Math.max(0, sizeX);
       const maxHeight = Math.max(0, sizeY);
 
