@@ -21,6 +21,8 @@ Converts the input from decimal to binary and returns the result.
 
 Note: All other blocks except for `is () binary?` and `() to number` will treat this result as a decimal number, so make sure to convert it back to decimal before you perform operations on it.
 
+Note: Numbers that aren't integers are converted to fractional binary (for example, `1.5` becomes `1.1`).
+
 ---
 
 ```scratch
@@ -42,6 +44,8 @@ The sign will be preserved, so negative numbers will stay negative.
 
 This is essentially the same thing as dividing by 2^*y* and rounding down to the nearest integer.
 
+Only the last 5 bits of _y_ are used (_y_ is taken modulo 32), so `x >> 32` is the same as `x >> 0`.
+
 ---
 
 ```scratch
@@ -55,6 +59,8 @@ Sign may flip as the higher bits will be discarded.
 
 This is essentially the same thing as multiplying by 2^*y*.
 
+Only the last 5 bits of _y_ are used (_y_ is taken modulo 32), so `x << 32` is the same as `x << 0`.
+
 ---
 
 ```scratch
@@ -63,6 +69,8 @@ This is essentially the same thing as multiplying by 2^*y*.
 Logically shifts each bit of the binary representation of _x_ to the right _y_ times and returns the result.
 
 This also moves the sign bit, so it can result in negative numbers becoming positive.
+
+Only the last 5 bits of _y_ are used (_y_ is taken modulo 32), so `x >>> 32` is the same as `x >>> 0`.
 
 ---
 

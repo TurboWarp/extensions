@@ -17,13 +17,24 @@
     return Scratch.Cast.toNumber(number).toString(2);
   };
   const bits2number = (bits) => {
-    return /^-?[01]+$/.test(bits) ? parseInt(bits, 2) || 0 : 0;
+    const s = String(bits);
+    // Also accept fractional binary and Infinity, which number2bits can return
+    const m = /^(-?)([01]+)(?:\.([01]*))?$/.exec(s);
+    if (!m) return /^-?Infinity$/.test(s) ? Number(s) : 0;
+    let n = parseInt(m[2], 2);
+    const frac = m[3] || "";
+    for (let i = 0; i < frac.length; i++) {
+      if (frac[i] === "1") n += 2 ** -(i + 1);
+    }
+    return (m[1] ? -n : n) || 0;
   };
 
   const circularRightShift = (number, k) => {
+    k = k | 0;
     return (number >>> k) | (number << (32 - k));
   };
   const circularLeftShift = (number, k) => {
+    k = k | 0;
     return (number << k) | (number >>> (32 - k));
   };
 
