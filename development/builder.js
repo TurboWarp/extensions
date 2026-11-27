@@ -204,7 +204,7 @@ class ExtensionFile extends BuildFile {
 
       if (this.sourcePath.endsWith(".ts")) {
         prefixJS +=
-          "/* transpiled from TypeScript - see repository for original version with types */";
+          "/* transpiled from TypeScript */";
       }
 
       const translations = filterTranslationsByPrefix(
