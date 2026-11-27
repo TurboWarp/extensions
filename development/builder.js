@@ -182,22 +182,18 @@ class ExtensionFile extends BuildFile {
   }
 
   /**
-   * @returns {{jsCode: string; sourceMap: string | null}}
+   * @returns {Promise<string>} JavaScript source code, transpiled from TypeScript if needed
    */
   async transpile() {
-    const sourceMap = this.mode === "development";
     const source = await fsPromises.readFile(this.sourcePath, "utf-8");
     if (this.sourcePath.endsWith(".ts")) {
-      return transpileTypeScript(source, this.slug, !!sourceMap);
+      return transpileTypeScript(source, this.slug);
     }
-    return {
-      jsCode: source,
-      sourceMap: null,
-    };
+    return source;
   }
 
   async read() {
-    let data = (await this.transpile()).jsCode;
+    let data = await this.transpile();
 
     if (this.mode !== "development") {
       const dependenciesJS = rewriteExternalToInline(data);
@@ -311,7 +307,7 @@ class ExtensionFile extends BuildFile {
       }
     }
 
-    validateImports((await this.transpile()).jsCode);
+    validateImports(await this.transpile());
   }
 
   async getStrings() {
@@ -340,7 +336,7 @@ class ExtensionFile extends BuildFile {
       },
     };
 
-    const jsCode = (await this.transpile()).jsCode;
+    const jsCode = await this.transpile();
     const unprefixedRuntimeStrings = parseTranslations(jsCode);
     const runtimeStrings = Object.fromEntries(
       Object.entries(unprefixedRuntimeStrings).map(([key, value]) => [
@@ -356,26 +352,7 @@ class ExtensionFile extends BuildFile {
   }
 
   async getDependencies() {
-    return parseExtensionDependencies((await this.transpile()).jsCode);
-  }
-}
-
-class ExtensionSourceMapFile extends BuildFile {
-  /**
-   * @param {ExtensionFile} extensionFile
-   */
-  constructor(extensionFile) {
-    super(extensionFile.sourcePath);
-    /** @type {ExtensionFile} */
-    this.extensionFile = extensionFile;
-  }
-
-  getType() {
-    return ".json";
-  }
-
-  async read() {
-    return (await this.extensionFile.transpile()).sourceMap;
+    return parseExtensionDependencies(await this.transpile());
   }
 }
 
@@ -861,14 +838,6 @@ class Builder {
       );
       extensionFiles[extensionSlug] = extensionFile;
       build.files[`/${extensionSlug}.js`] = extensionFile;
-
-      // Sourcemaps are only accurate in development builds as production builds will insert strings
-      // and cached dependencies.
-      if (isTypeScript && this.mode === "development") {
-        build.files[`/${extensionSlug}.js.map`] = new ExtensionSourceMapFile(
-          extensionFile
-        );
-      }
     }
 
     /** @type {Record<string, ImageFile>} */
