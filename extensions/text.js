@@ -25,6 +25,19 @@
   let splitCache;
   let matchCache;
 
+  /**
+   * @param {string} string
+   * @param {boolean} exact If true, the rest of each word is made lowercase.
+   * @returns {string}
+   */
+  const toTitleCase = (string, exact) =>
+    string.replace(
+      /[\p{L}\p{M}\p{N}_]+(?:['’][\p{L}\p{M}\p{N}_]+)*/gu,
+      (word) =>
+        word[0].toUpperCase() +
+        (exact ? word.substring(1).toLowerCase() : word.substring(1))
+    );
+
   class StringsExt {
     constructor() {}
 
@@ -532,11 +545,15 @@
 
     unicodeof(args, util) {
       const chars = Array.from(Cast.toString(args.STRING));
-      return chars.map((char) => char.charCodeAt(0)).join(" ");
+      return chars.map((char) => char.codePointAt(0)).join(" ");
     }
 
     unicodefrom(args, util) {
-      return String.fromCharCode(Cast.toNumber(args.NUM));
+      const num = Cast.toNumber(args.NUM);
+      if (Number.isInteger(num) && num >= 0 && num <= 0x10ffff) {
+        return String.fromCodePoint(num);
+      }
+      return String.fromCharCode(num);
     }
 
     letters_of(args, util) {
@@ -617,7 +634,12 @@
       if (repeat < 0 || !Number.isFinite(repeat)) {
         return "";
       }
-      return string.repeat(repeat);
+      try {
+        return string.repeat(repeat);
+      } catch (e) {
+        // Result is too long
+        return "";
+      }
     }
 
     replaceRegex(args, util) {
@@ -663,6 +685,7 @@
         return matchCache.arr[item - 1] || "";
       } catch (e) {
         console.error(e);
+        matchCache = null;
         return "";
       }
     }
@@ -695,6 +718,7 @@
         return JSON.stringify(matchCache.arr) || "[]";
       } catch (e) {
         console.error(e);
+        matchCache = null;
         return "";
       }
     }
@@ -704,7 +728,7 @@
       // (ITEM is casted into 0,
       // but we don't care about the return value)
       this.matchRegex(args, util);
-      return matchCache.arr.length || 0;
+      return matchCache ? matchCache.arr.length : 0;
     }
 
     testRegex(args, util) {
@@ -733,24 +757,17 @@
             string.toUpperCase() === string || string.toLowerCase() === string
           );
         case CaseParam.TITLECASE:
-          return string.split(/\b/g).every((word) => {
-            if (!word) return true;
-            const titleCased = word[0].toUpperCase() + word.substring(1);
-            return word === titleCased;
-          });
+          return toTitleCase(string, false) === string;
         case CaseParam.EXACTTITLECASE:
-          return string.split(/\b/g).every((word) => {
-            if (!word) return true;
-            const titleCased =
-              word[0].toUpperCase() + word.substring(1).toLowerCase();
-            return word === titleCased;
-          });
+          return toTitleCase(string, true) === string;
         case CaseParam.CAMELCASE:
           return /^[^A-Z\s][^\s]*$/.test(string);
         case CaseParam.RANDOMCASE:
           return true;
         case CaseParam.SENTENCECASE:
-          return /^[A-Z][^?.!]*(?:[?.!]\s+[A-Z][^?.!]*)*$/.test(string);
+          return /^\p{Lu}[^?.!]*(?:[?.!]+\s+\p{Lu}[^?.!]*)*[?.!]*\s*$/u.test(
+            string
+          );
         default:
           return false;
       }
@@ -773,21 +790,9 @@
             )
             .join("");
         case CaseParam.TITLECASE:
-          return string
-            .split(/\b/g)
-            .map((word) => {
-              if (!word) return "";
-              return word[0].toUpperCase() + word.substring(1);
-            })
-            .join("");
+          return toTitleCase(string, false);
         case CaseParam.EXACTTITLECASE:
-          return string
-            .split(/\b/g)
-            .map((word) => {
-              if (!word) return "";
-              return word[0].toUpperCase() + word.substring(1).toLowerCase();
-            })
-            .join("");
+          return toTitleCase(string, true);
         case CaseParam.SENTENCECASE:
           for (let i = 0; i < string.length; i++) {
             if (
@@ -814,15 +819,18 @@
             }
           }
           return workingText;
-        case CaseParam.CAMELCASE:
-          for (let i = 0; i < string.length; i++) {
-            if (/^\s*$/.test(string[i - 1] ?? "x")) {
-              workingText += string[i].toUpperCase();
+        case CaseParam.CAMELCASE: {
+          // Leading whitespace would otherwise capitalize the first word
+          const trimmed = string.trimStart();
+          for (let i = 0; i < trimmed.length; i++) {
+            if (/^\s*$/.test(trimmed[i - 1] ?? "x")) {
+              workingText += trimmed[i].toUpperCase();
             } else {
-              workingText += string[i].toLowerCase();
+              workingText += trimmed[i].toLowerCase();
             }
           }
           return workingText.replace(/\s/g, "");
+        }
         default:
           return string;
       }
