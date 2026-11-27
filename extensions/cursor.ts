@@ -76,6 +76,9 @@
     maxHeight: number
   ): { uri: string; width: number; height: number } => {
     const skin = Scratch.vm.renderer._allSkins[costume.skinId];
+    if (!skin) {
+      throw new Error(`Costume has no skin: ${costume.skinId}`);
+    }
     const imageURI = encodeSkinToURL(skin);
 
     let width = skin.size[0];
@@ -133,7 +136,7 @@
    */
   const parseTuple = (string: string): [number, number] => {
     const [a, b] = ("" + string).split(/[ ,x]/);
-    return [+a || 0, +b || 0];
+    return [Number(a) || 0, Number(b) || 0];
   };
 
   /**
@@ -567,12 +570,15 @@
       args: { position: unknown; size: unknown },
       util: VM.BlockUtility
     ) {
-      const [maxWidth, maxHeight] = parseTuple(
-        Scratch.Cast.toString(args.size)
-      ).map((i) => Math.max(0, i));
+      const [sizeX, sizeY] = parseTuple(Scratch.Cast.toString(args.size));
+      const maxWidth = Math.max(0, sizeX);
+      const maxHeight = Math.max(0, sizeY);
 
       const currentCostume =
         util.target.getCostumes()[util.target.currentCostume];
+      if (!currentCostume) {
+        return;
+      }
       const costumeName = currentCostume.name;
 
       let encodedCostume;
@@ -584,9 +590,11 @@
       }
 
       if (encodedCostume) {
-        const [percentX, percentY] = parseTuple(
+        const [positionX, positionY] = parseTuple(
           Scratch.Cast.toString(args.position)
-        ).map((i) => Math.max(0, Math.min(100, i)) / 100);
+        );
+        const percentX = Math.max(0, Math.min(100, positionX)) / 100;
+        const percentY = Math.max(0, Math.min(100, positionY)) / 100;
         const x = percentX * encodedCostume.width;
         const y = percentY * encodedCostume.height;
 

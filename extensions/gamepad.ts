@@ -59,8 +59,8 @@
 
       // Each pair of axes is given a circular deadzone.
       for (let i = 0; i < gamepad.axes.length; i += 2) {
-        const x = gamepad.axes[i];
-        const y = i + 1 >= gamepad.axes.length ? 0 : gamepad.axes[i + 1];
+        const x = gamepad.axes[i] ?? 0;
+        const y = gamepad.axes[i + 1] ?? 0;
         const magnitude = Math.sqrt(x ** 2 + y ** 2);
 
         if (magnitude > axisDeadzone) {
@@ -76,20 +76,20 @@
           // Set both axes to 0. Use the old direction state, if it exists, so that using the direction
           // inside of something like "point in direction" won't reset when no inputs.
           // If we have no information at all, default to 90 degrees, like new sprites.
-          const oldDirection = oldResult ? oldResult.axisDirections[i] : 90;
+          const oldDirection = oldResult?.axisDirections[i] ?? 90;
           result.axisDirections.push(oldDirection, oldDirection);
           result.axisMagnitudes.push(0, 0);
           result.axisValues.push(0, 0);
         }
       }
 
-      for (let i = 0; i < gamepad.buttons.length; i++) {
-        let value = gamepad.buttons[i].value;
+      for (const button of gamepad.buttons) {
+        let value = button.value;
         if (value < BUTTON_DEADZONE) {
           value = 0;
         }
         result.buttonValues.push(value);
-        result.buttonPressed.push(gamepad.buttons[i].pressed);
+        result.buttonPressed.push(button.pressed);
       }
 
       return result;
@@ -564,9 +564,12 @@
 
       // if no sticks are far enough out, instead we'll return the last direction
       // of the most recently modified gamepad
-      if (greatestMagnitude === 0 && gamepads.length > 0) {
+      if (greatestMagnitude === 0) {
         gamepads.sort((a, b) => b.timestamp - a.timestamp);
-        direction = getAxisPairDirection(gamepads[0], axis);
+        const mostRecentGamepad = gamepads[0];
+        if (mostRecentGamepad) {
+          direction = getAxisPairDirection(mostRecentGamepad, axis);
+        }
       }
 
       return direction;
