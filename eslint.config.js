@@ -1,6 +1,8 @@
 import js from "@eslint/js";
 import globals from "globals";
 import esquery from "esquery";
+import * as espree from "espree";
+import transpileTypeScript from "./development/transpile-typescript.js";
 
 const reportQueryMatches = (context, ast, selector, message) => {
   const parsedSelector = esquery.parse(selector);
@@ -26,6 +28,24 @@ const createQueryRule = (rules) => ({
     },
   }),
 });
+
+/**
+ * We don't need to use a full typescript parser. What we ultimately ship is just type-stripped code
+ * so for now this is good enough and brings in no new dependencies.
+ */
+const typescriptParser = {
+  meta: {
+    name: "tw-ts-transpiler",
+  },
+  parse: (code, options) =>
+    espree.parse(transpileTypeScript(code), {
+      ...options,
+      range: true,
+      loc: true,
+      tokens: true,
+      comment: true,
+    }),
+};
 
 export default [
   // Base on eslint recommended
@@ -317,6 +337,14 @@ export default [
       "extension/no-translate-alias": "error",
       "extension/should-translate": "error",
       "extension/should-not-translate": "error",
+    },
+  },
+
+  // For TypeScript extensions
+  {
+    files: ["extensions/**/*.ts"],
+    languageOptions: {
+      parser: typescriptParser,
     },
   },
 ];

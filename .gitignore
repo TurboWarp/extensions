@@ -20,4 +20,7 @@ desktop.ini
 # Translate download workflow
 download-warnings.txt
 
+# TypeScript build cache
+*.tsbuildinfo
+
 # Tip: .git/info/exclude is your personal gitignore for things that don't belong here

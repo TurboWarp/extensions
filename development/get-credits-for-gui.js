@@ -66,7 +66,9 @@ const run = async () => {
   for (const [name, absolutePath] of await fsUtils.recursiveReadDirectory(
     extensionRoot
   )) {
-    if (!name.endsWith(".js")) {
+    const isExtension =
+      name.endsWith(".js") || (name.endsWith(".ts") && !name.endsWith(".d.ts"));
+    if (!isExtension) {
       continue;
     }
 
