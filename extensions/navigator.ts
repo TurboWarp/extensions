@@ -115,7 +115,7 @@
     getPreferredColorScheme(args: { THEME: unknown }) {
       return (
         window.matchMedia("(prefers-color-scheme: dark)").matches ===
-        (args.THEME === "dark")
+        (Scratch.Cast.compare(args.THEME, "dark") === 0)
       );
     }
 
