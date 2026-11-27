@@ -394,7 +394,14 @@
     }
 
     regexReplace({ STRING, REGEX, NEWSTRING }) {
-      return STRING.toString().replace(new RegExp(REGEX, "gi"), NEWSTRING);
+      const str = Scratch.Cast.toString(STRING);
+      let regex;
+      try {
+        regex = new RegExp(Scratch.Cast.toString(REGEX), "gi");
+      } catch (e) {
+        return str;
+      }
+      return str.replace(regex, Scratch.Cast.toString(NEWSTRING));
     }
   }
 
