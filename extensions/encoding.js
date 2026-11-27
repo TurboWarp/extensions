@@ -574,7 +574,7 @@
         case "Base64":
           return this._btoa(string);
         case "URL":
-          return encodeURIComponent(string);
+          return encodeURIComponent(this._toWellFormed(string));
       }
       return "";
     }
@@ -589,7 +589,11 @@
             return "";
           }
         case "URL":
-          return decodeURIComponent(string);
+          try {
+            return decodeURIComponent(string);
+          } catch (error) {
+            return "";
+          }
       }
       return "";
     }
@@ -597,7 +601,7 @@
       string = Scratch.Cast.toString(string);
       switch (hash) {
         case "MD5":
-          return md5(string);
+          return md5(this._toWellFormed(string));
       }
       return "";
     }
@@ -605,19 +609,31 @@
       string = Scratch.Cast.toString(string);
       switch (CodeList) {
         case "UNICODE":
-          return string.charCodeAt(0);
+          if (string === "") {
+            return "";
+          }
+          return string.codePointAt(0);
       }
       return 0;
     }
     Restorecode({ string, CodeList }) {
       switch (CodeList) {
-        case "UNICODE":
+        case "UNICODE": {
+          const codePoint = Scratch.Cast.toNumber(string);
+          if (
+            Number.isInteger(codePoint) &&
+            codePoint > 0xffff &&
+            codePoint <= 0x10ffff
+          ) {
+            return String.fromCodePoint(codePoint);
+          }
           return String.fromCharCode(string);
+        }
       }
       return "";
     }
     Randomstrings({ position }) {
-      position = Scratch.Cast.toNumber(position) || 32;
+      position = this._getRandomLength(position);
       if (!Number.isFinite(position)) {
         return "";
       }
@@ -630,17 +646,37 @@
       return string;
     }
     Fontgenerationstring({ wordbank, position }) {
-      position = Scratch.Cast.toNumber(position) || 32;
+      position = this._getRandomLength(position);
       if (!Number.isFinite(position)) {
         return "";
       }
-      let t = Scratch.Cast.toString(wordbank);
+      let t = Array.from(Scratch.Cast.toString(wordbank));
       let a = t.length;
+      if (a === 0) {
+        return "";
+      }
       let string = "";
       for (let i = 0; i < position; i++) {
-        string += t.charAt(Math.floor(Math.random() * a));
+        string += t[Math.floor(Math.random() * a)];
       }
       return string;
+    }
+    _getRandomLength(position) {
+      // Empty and non-numeric inputs have always meant 32
+      if (
+        Scratch.Cast.isWhiteSpace(position) ||
+        Number.isNaN(Number(position))
+      ) {
+        return 32;
+      }
+      return Scratch.Cast.toNumber(position);
+    }
+    _toWellFormed(string) {
+      // Replace lone surrogates with U+FFFD, like TextEncoder does
+      return string.replace(
+        /[\uD800-\uDBFF][\uDC00-\uDFFF]|[\uD800-\uDFFF]/g,
+        (match) => (match.length === 2 ? match : "\uFFFD")
+      );
     }
     _btoa(unicode) {
       let bytes = new TextEncoder().encode(unicode);
