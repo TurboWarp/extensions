@@ -1962,6 +1962,9 @@ Other various small fixes
   function hexToRgb(hex) {
     if (typeof hex === "string") {
       const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      if (!splitHex) {
+        return Scratch.Cast.toRgbColorObject(hex);
+      }
       return {
         r: parseInt(splitHex[1], 16),
         g: parseInt(splitHex[2], 16),
@@ -1977,7 +1980,12 @@ Other various small fixes
 
   function getspritecostume(util, c) {
     let target = util.target;
-    let dataURI = target.sprite.costumes[c - 1].asset.encodeDataURI();
+    const costume =
+      target.sprite.costumes[Math.round(Scratch.Cast.toNumber(c)) - 1];
+    if (!costume || !costume.asset) {
+      return "";
+    }
+    let dataURI = costume.asset.encodeDataURI();
     return dataURI;
   }
 
@@ -2507,7 +2515,7 @@ Other various small fixes
       V = V / 100;
       S = Math.min(Math.max(S, 0), 1);
       V = Math.min(Math.max(V, 0), 1);
-      H = H % 360;
+      H = ((H % 360) + 360) % 360;
       const C = V * S;
       const X = C * (1 - Math.abs(((H / 60) % 2) - 1));
       const M = V - C;
@@ -2547,6 +2555,7 @@ Other various small fixes
     }
 
     converttocanvascoords({ coordmenu, scrcoord, coordTypes }) {
+      scrcoord = Scratch.Cast.toNumber(scrcoord);
       if (coordTypes == "Canvas") {
         if (coordmenu == "x") {
           return scrcoord + runtime.stageWidth / 2;
@@ -2563,7 +2572,7 @@ Other various small fixes
     }
 
     offsetStamp({ Anchor }) {
-      stampOffset = Anchor.split(",");
+      stampOffset = Scratch.Cast.toString(Anchor).split(",");
     }
 
     setCoordSpace({ space }) {
@@ -2608,6 +2617,10 @@ Other various small fixes
     }
 
     drawLine({ x1, y1, x2, y2 }) {
+      x1 = Scratch.Cast.toNumber(x1);
+      y1 = Scratch.Cast.toNumber(y1);
+      x2 = Scratch.Cast.toNumber(x2);
+      y2 = Scratch.Cast.toNumber(y2);
       var scalemultiplyer = canvas.width / runtime.stageWidth;
       let tempColors = triangleColors;
       triangleColors = [
@@ -2680,12 +2693,12 @@ Other various small fixes
       if (!textures.hasOwnProperty(url)) {
         textures[url] = loadImageAndCreateTextureInfo(url, true);
       }
-      var pointsarray = trianglepoints.split(",");
+      var pointsarray = Scratch.Cast.toString(trianglepoints).split(",");
       var pointslen = pointsarray.length;
       for (var i = 0; i < pointslen; i++) {
         pointsarray[i] = pointsarray[i] * scalemultiplyer;
       }
-      var uvarray = triangleuvs.split(",");
+      var uvarray = Scratch.Cast.toString(triangleuvs).split(",");
       drawTexturedTri(textures[url].texture, pointsarray, uvarray);
     }
 
