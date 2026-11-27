@@ -22,6 +22,12 @@
     }
   });
 
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    count = 0;
+    isMeasure = false;
+    time = 0;
+  });
+
   class RixxyX {
     getInfo() {
       return {
@@ -361,14 +367,14 @@
       return false;
     }
     ifElseString(args) {
-      if (args.BOOL) {
+      if (Scratch.Cast.toBoolean(args.BOOL)) {
         return args.TEXT_1;
       } else {
         return args.TEXT_2;
       }
     }
     ifString(args) {
-      if (args.BOOL) {
+      if (Scratch.Cast.toBoolean(args.BOOL)) {
         return args.TEXT;
       } else {
         return "";
@@ -376,7 +382,10 @@
     }
     extractTextBetweenToCharacters(args) {
       var txt = args.TEXT.toString();
-      var char1 = args.NUM_1 - 1;
+      var char1 = Scratch.Cast.toNumber(args.NUM_1) - 1;
+      if (char1 === -1) {
+        char1 = 0;
+      }
       var char2 = args.NUM_2;
       return txt.slice(char1, char2);
     }
@@ -387,14 +396,8 @@
       return typeof args.TEXT_1 == typeof args.TEXT_2;
     }
     reverseTxt(args) {
-      var emptyStr = "";
       var txt = args.TEXT.toString();
-      var localCount = txt.length - 1;
-      while (localCount != -1) {
-        emptyStr = emptyStr + txt.charAt(localCount);
-        localCount -= 1;
-      }
-      return emptyStr;
+      return Array.from(txt).reverse().join("");
     }
     returnCount(args) {
       return count;
@@ -404,14 +407,15 @@
         count.toString().indexOf("-") == -1 ||
         args.NUM.toString().indexOf("-") == -1
       ) {
-        count += Math.floor(args.NUM);
+        count += Math.floor(Scratch.Cast.toNumber(args.NUM));
       } else {
         count = 0;
       }
     }
     decrementCountByNum(args) {
-      if ((count - Math.floor(args.NUM)).toString().indexOf("-") == -1) {
-        count -= Math.floor(args.NUM);
+      const num = Math.floor(Scratch.Cast.toNumber(args.NUM));
+      if ((count - num).toString().indexOf("-") == -1) {
+        count -= num;
       } else {
         count = 0;
       }
@@ -424,7 +428,7 @@
         count.toString().indexOf("-") == -1 &&
         args.NUM.toString().indexOf("-") == -1
       ) {
-        count = Math.floor(args.NUM);
+        count = Math.floor(Scratch.Cast.toNumber(args.NUM));
       } else {
         count = 0;
       }
@@ -454,13 +458,19 @@
       var binary = args.BIN.toString();
       return binary
         .split(" ")
-        .map((x) => (x = String.fromCharCode(parseInt(x, 2))))
+        .filter((x) => x !== "")
+        .map((x) => {
+          const code = parseInt(x, 2);
+          return code >= 0 && code <= 0x10ffff
+            ? String.fromCodePoint(code)
+            : String.fromCharCode(code);
+        })
         .join("");
     }
     txtToBin(args) {
       var text = args.TEXT.toString();
       return Array.from(text)
-        .map((each) => each.charCodeAt(0).toString(2))
+        .map((each) => each.codePointAt(0).toString(2))
         .join(" ");
     }
     repeatTxtTimes(args) {
@@ -468,7 +478,11 @@
       if (times < 0 || !Number.isFinite(times)) {
         return "";
       }
-      return Scratch.Cast.toString(args.TEXT).repeat(times);
+      try {
+        return Scratch.Cast.toString(args.TEXT).repeat(times);
+      } catch (e) {
+        return "";
+      }
     }
     jsonParse(args) {
       try {
@@ -480,9 +494,11 @@
         ) {
           return parsed;
         }
+        if (parsed !== null && !Array.isArray(parsed)) {
+          return JSON.stringify(parsed);
+        }
         return Scratch.Cast.toString(parsed);
       } catch (e) {
-        console.error(e);
         return Scratch.Cast.toString((e && e.message) || e);
       }
     }
