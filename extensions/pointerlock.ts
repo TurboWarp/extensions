@@ -18,20 +18,17 @@
   let isLocked = false;
   let isPointerLockEnabled = false;
 
-  let rect = canvas.getBoundingClientRect();
-  window.addEventListener("resize", () => {
-    rect = canvas.getBoundingClientRect();
-  });
-
   const postMouseData = (e: MouseEvent, isDown?: boolean) => {
     const { movementX, movementY } = e;
-    const { width, height } = rect;
-    const x = mouse._clientX + movementX;
-    const y = mouse._clientY - movementY;
-    mouse._clientX = x;
-    mouse._scratchX = mouse.runtime.stageWidth * (x / width - 0.5);
-    mouse._clientY = y;
-    mouse._scratchY = mouse.runtime.stageHeight * (y / height - 0.5);
+    const { width, height } = canvas.getBoundingClientRect();
+    if (width > 0 && height > 0) {
+      const x = mouse._clientX + movementX;
+      const y = mouse._clientY + movementY;
+      mouse._clientX = x;
+      mouse._scratchX = mouse.runtime.stageWidth * (x / width - 0.5);
+      mouse._clientY = y;
+      mouse._scratchY = -mouse.runtime.stageHeight * (y / height - 0.5);
+    }
     if (typeof isDown === "boolean") {
       const data = {
         button: e.button,
@@ -46,6 +43,13 @@
   mouseDevice.postData = (data) => {
     if (!isPointerLockEnabled) {
       return originalPostIOData(data);
+    }
+    // Still let buttons be released, otherwise mouse down can get stuck.
+    if (data.isDown === false) {
+      originalPostIOData({
+        button: data.button ?? 0,
+        isDown: false,
+      });
     }
   };
 
@@ -117,7 +121,7 @@
   ) {
     const ret = oldStep.call(this, ...args);
     if (isPointerLockEnabled) {
-      const { width, height } = rect;
+      const { width, height } = canvas.getBoundingClientRect();
       mouse._clientX = width / 2;
       mouse._clientY = height / 2;
       mouse._scratchX = 0;
