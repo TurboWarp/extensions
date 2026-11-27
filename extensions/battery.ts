@@ -122,7 +122,8 @@
     level() {
       return withBattery((battery) => {
         if (!battery) return 100;
-        return battery.level * 100;
+        // Avoid results like 0.29 * 100 = 28.999999999999996
+        return Math.round(battery.level * 10000) / 100;
       });
     }
     chargeTime() {

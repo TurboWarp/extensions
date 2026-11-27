@@ -34,6 +34,10 @@
 
   let lastPastedText = "";
 
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    lastPastedText = "";
+  });
+
   window.addEventListener("copy", (event) => {
     Scratch.vm.runtime.startHats("clipboard_whenCopied");
   });
@@ -43,6 +47,17 @@
     const pastedText = clipboardData.getData("Text");
     lastPastedText = pastedText;
   });
+
+  /**
+   * @param {string} text
+   */
+  const writeClipboard = (text) => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch((error) => {
+        console.warn("Could not write to clipboard", error);
+      });
+    }
+  };
 
   class Clipboard {
     getInfo() {
@@ -99,11 +114,11 @@
     }
 
     setClipboard(args) {
-      navigator.clipboard.writeText(args.TEXT);
+      writeClipboard(Scratch.Cast.toString(args.TEXT));
     }
 
     resetClipboard() {
-      navigator.clipboard.writeText("");
+      writeClipboard("");
     }
 
     clipboard() {
