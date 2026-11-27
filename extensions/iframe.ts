@@ -114,7 +114,11 @@
     updateFrameAttributes();
   };
 
+  // Lets a show block that is waiting for permission know the frame was closed
+  let frameRequest = 0;
+
   const closeFrame = () => {
+    frameRequest++;
     if (iframe) {
       Scratch.renderer.removeOverlay(iframe);
       iframe = null;
@@ -127,7 +131,7 @@
     typeof data === "number" ||
     typeof data === "boolean"
       ? data
-      : JSON.stringify(data);
+      : (JSON.stringify(data) ?? "");
 
   const getParentWindow = (): Window | null => {
     // if no parent, window.parent is us. which is not useful
@@ -152,7 +156,17 @@
 
   Scratch.vm.on("STAGE_SIZE_CHANGED", updateFrameAttributes);
 
-  Scratch.vm.runtime.on("RUNTIME_DISPOSED", closeFrame);
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    closeFrame();
+    x = 0;
+    y = 0;
+    width = -1;
+    height = -1;
+    interactive = true;
+    resizeBehavior = "scale";
+    latestMessage = "";
+    latestParentMessage = "";
+  });
 
   class IframeExtension implements Scratch.Extension {
     getInfo(): Scratch.Info {
@@ -327,14 +341,32 @@
           getMenu: {
             acceptReporters: true,
             items: [
-              Scratch.translate("url"),
-              Scratch.translate("visible"),
+              {
+                text: Scratch.translate("url"),
+                value: "url",
+              },
+              {
+                text: Scratch.translate("visible"),
+                value: "visible",
+              },
               "x",
               "y",
-              Scratch.translate("width"),
-              Scratch.translate("height"),
-              Scratch.translate("interactive"),
-              Scratch.translate("resize behavior"),
+              {
+                text: Scratch.translate("width"),
+                value: "width",
+              },
+              {
+                text: Scratch.translate("height"),
+                value: "height",
+              },
+              {
+                text: Scratch.translate("interactive"),
+                value: "interactive",
+              },
+              {
+                text: Scratch.translate("resize behavior"),
+                value: "resize behavior",
+              },
             ],
           },
           interactiveMenu: {
@@ -364,18 +396,20 @@
 
     async display({ URL }: { URL: unknown }) {
       closeFrame();
+      const request = frameRequest;
       const url = Scratch.Cast.toString(URL);
-      if (await Scratch.canEmbed(url)) {
+      if ((await Scratch.canEmbed(url)) && request === frameRequest) {
         createFrame(url);
       }
     }
 
     async displayHTML({ HTML }: { HTML: unknown }) {
       closeFrame();
+      const request = frameRequest;
       const url = `data:text/html;,${encodeURIComponent(
         Scratch.Cast.toString(HTML)
       )}`;
-      if (await Scratch.canEmbed(url)) {
+      if ((await Scratch.canEmbed(url)) && request === frameRequest) {
         createFrame(url);
       }
     }
