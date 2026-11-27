@@ -9,6 +9,8 @@
 (function (Scratch) {
   "use strict";
 
+  const Cast = Scratch.Cast;
+
   const CaseParam = {
     LOWERCASE: "lowercase",
     UPPERCASE: "uppercase",
@@ -529,18 +531,18 @@
     }
 
     unicodeof(args, util) {
-      const chars = Array.from(Scratch.Cast.toString(args.STRING));
+      const chars = Array.from(Cast.toString(args.STRING));
       return chars.map((char) => char.charCodeAt(0)).join(" ");
     }
 
     unicodefrom(args, util) {
-      return String.fromCharCode(Number(args.NUM) || 0);
+      return String.fromCharCode(Cast.toNumber(args.NUM));
     }
 
     letters_of(args, util) {
-      const string = Scratch.Cast.toString(args.STRING);
-      const letter1 = Scratch.Cast.toNumber(args.LETTER1);
-      const letter2 = Scratch.Cast.toNumber(args.LETTER2);
+      const string = Cast.toString(args.STRING);
+      const letter1 = Cast.toNumber(args.LETTER1);
+      const letter2 = Cast.toNumber(args.LETTER2);
       return string.substring(letter1 - 1, letter2);
     }
 
@@ -549,9 +551,9 @@
     }
 
     split(args, util) {
-      const string = Scratch.Cast.toString(args.STRING);
-      const split = Scratch.Cast.toString(args.SPLIT);
-      const item = Scratch.Cast.toNumber(args.ITEM);
+      const string = Cast.toString(args.STRING);
+      const split = Cast.toString(args.SPLIT);
+      const item = Cast.toNumber(args.ITEM);
 
       // Cache the last split
       if (
@@ -586,9 +588,9 @@
     }
 
     replace(args, util) {
-      const string = Scratch.Cast.toString(args.STRING);
-      const substring = Scratch.Cast.toString(args.SUBSTRING);
-      const replace = Scratch.Cast.toString(args.REPLACE);
+      const string = Cast.toString(args.STRING);
+      const substring = Cast.toString(args.SUBSTRING);
+      const replace = Cast.toString(args.REPLACE);
 
       const regex = this._caseInsensitiveRegex(substring);
 
@@ -597,8 +599,8 @@
 
     indexof(args, util) {
       // .toLowerCase() for case insensitivity
-      const string = Scratch.Cast.toString(args.STRING).toLowerCase();
-      const substring = Scratch.Cast.toString(args.SUBSTRING).toLowerCase();
+      const string = Cast.toString(args.STRING).toLowerCase();
+      const substring = Cast.toString(args.SUBSTRING).toLowerCase();
 
       // Since both arguments are casted to strings beforehand,
       // we don't have to worry about type differences
@@ -610,8 +612,8 @@
     }
 
     repeat(args, util) {
-      const string = Scratch.Cast.toString(args.STRING);
-      const repeat = Math.floor(Scratch.Cast.toNumber(args.REPEAT));
+      const string = Cast.toString(args.STRING);
+      const repeat = Math.floor(Cast.toNumber(args.REPEAT));
       if (repeat < 0 || !Number.isFinite(repeat)) {
         return "";
       }
@@ -620,10 +622,10 @@
 
     replaceRegex(args, util) {
       try {
-        const string = Scratch.Cast.toString(args.STRING);
-        const replacer = Scratch.Cast.toString(args.REPLACE);
-        const regex = Scratch.Cast.toString(args.REGEX);
-        const flags = Scratch.Cast.toString(args.FLAGS);
+        const string = Cast.toString(args.STRING);
+        const replacer = Cast.toString(args.REPLACE);
+        const regex = Cast.toString(args.REGEX);
+        const flags = Cast.toString(args.FLAGS);
 
         return string.replace(new RegExp(regex, flags), replacer);
       } catch (e) {
@@ -634,10 +636,10 @@
 
     matchRegex(args, util) {
       try {
-        const string = Scratch.Cast.toString(args.STRING);
-        const uncleanRegex = Scratch.Cast.toString(args.REGEX);
-        const flags = Scratch.Cast.toString(args.FLAGS);
-        const item = Scratch.Cast.toNumber(args.ITEM);
+        const string = Cast.toString(args.STRING);
+        const uncleanRegex = Cast.toString(args.REGEX);
+        const flags = Cast.toString(args.FLAGS);
+        const item = Cast.toNumber(args.ITEM);
 
         // Cache the last matched string
         if (
@@ -667,9 +669,9 @@
     matchRegexJSON(args, util) {
       // matchRegex but it returns an array
       try {
-        const string = Scratch.Cast.toString(args.STRING);
-        const uncleanRegex = Scratch.Cast.toString(args.REGEX);
-        const flags = Scratch.Cast.toString(args.FLAGS);
+        const string = Cast.toString(args.STRING);
+        const uncleanRegex = Cast.toString(args.REGEX);
+        const flags = Cast.toString(args.FLAGS);
 
         // Cache the last matched string
         if (
@@ -707,9 +709,9 @@
 
     testRegex(args, util) {
       try {
-        const string = Scratch.Cast.toString(args.STRING);
-        const regex = Scratch.Cast.toString(args.REGEX);
-        const flags = Scratch.Cast.toString(args.FLAGS);
+        const string = Cast.toString(args.STRING);
+        const regex = Cast.toString(args.REGEX);
+        const flags = Cast.toString(args.FLAGS);
 
         return new RegExp(regex, flags).test(string);
       } catch (e) {
@@ -719,8 +721,8 @@
     }
 
     isCase(args, util) {
-      const string = Scratch.Cast.toString(args.STRING);
-      const textCase = Scratch.Cast.toString(args.TEXTCASE);
+      const string = Cast.toString(args.STRING);
+      const textCase = Cast.toString(args.TEXTCASE);
       switch (textCase) {
         case CaseParam.LOWERCASE:
           return string.toLowerCase() === string;
@@ -755,8 +757,8 @@
     }
 
     toCase(args, util) {
-      const string = Scratch.Cast.toString(args.STRING);
-      const textCase = Scratch.Cast.toString(args.TEXTCASE);
+      const string = Cast.toString(args.STRING);
+      const textCase = Cast.toString(args.TEXTCASE);
       let workingText = "";
       let sentenceCapitalFlag = false;
       switch (textCase) {
@@ -826,19 +828,19 @@
       }
     }
     posWith(args) {
-      const STRING = Scratch.Cast.toString(args.STRING);
-      const SUBSTRING = Scratch.Cast.toString(args.SUBSTRING);
-      if (Scratch.Cast.toString(args.POSITION) === "starts") {
+      const STRING = Cast.toString(args.STRING);
+      const SUBSTRING = Cast.toString(args.SUBSTRING);
+      if (Cast.toString(args.POSITION) === "starts") {
         return STRING.startsWith(SUBSTRING);
       }
       return STRING.endsWith(SUBSTRING);
     }
     reverse(args) {
-      return Array.from(Scratch.Cast.toString(args.STRING)).reverse().join("");
+      return Array.from(Cast.toString(args.STRING)).reverse().join("");
     }
     trim(args) {
-      const STRING = Scratch.Cast.toString(args.STRING);
-      switch (Scratch.Cast.toString(args.METHOD)) {
+      const STRING = Cast.toString(args.STRING);
+      switch (Cast.toString(args.METHOD)) {
         case "start":
           return STRING.trimStart();
         case "end":

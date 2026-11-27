@@ -12124,14 +12124,11 @@
   var i;
   for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
 
+  const Cast = Scratch.Cast;
   const ArgumentType = Scratch.ArgumentType;
   const BlockType = Scratch.BlockType;
   // const MathUtil = require('../../util/math-util');
   // const Clone = require('../../util/clone');
-  const Cast = {
-    toNumber: (n) => +n || 0,
-  };
-  // const Cast = require('../../util/cast');
   // const Runtime = require('../../engine/runtime');
   // const RenderedTarget = require('../../sprites/rendered-target');
   // const MathUtil = require('../../util/math-util');
@@ -12170,6 +12167,9 @@
   // let ujidSeq = 0;
 
   const prevPos = {};
+
+  const draggedIds = new Set();
+
   /**
    * Active b2Body/s in the world.
    * @type {Object.<string,*>}
@@ -12897,9 +12897,9 @@
   };
 
   const _placeBody = function (id, x, y, dir) {
-    if (bodies[id]) {
-      world.DestroyBody(bodies[id]);
-    }
+    // Replacing the body destroys its pin, so remember to make a new one.
+    const wasPinned = !!pinned[id];
+    _removeBody(id);
 
     fixDef.filter.categoryBits = bodyCategoryBits;
     fixDef.filter.maskBits = bodyMaskBits;
@@ -12912,13 +12912,21 @@
     body.uid = id;
     body.CreateFixture(fixDef);
     bodies[id] = body;
+
+    if (wasPinned) {
+      pinned[id] = _pinBodyToWorld(id);
+    }
     return body;
   };
 
   const _removeBody = function (id) {
-    if (!bodies[id]) return;
+    const body = bodies[id];
+    if (!body) return;
 
-    world.DestroyBody(bodies[id]);
+    // Box2D destroys every joint attached to a body along with it, so the pins
+    // have to be sorted out first or they'd be left dangling in `pinned`.
+    _releasePinsTo(body);
+    world.DestroyBody(body);
     delete bodies[id];
     delete prevPos[id];
   };
@@ -13037,6 +13045,66 @@
     // }
     // joints[jName] = joint;
     return joint;
+  };
+
+  /**
+   * Pin a sprite where it currently is, holding it against the world rather
+   * than against some other sprite.
+   * @param {*} id the target ID of an existing body.
+   * @returns {?Object} the new joint.
+   */
+  const _pinBodyToWorld = function (id) {
+    const body = bodies[id];
+    if (!body) return null;
+
+    const pos = body.GetPosition();
+    return _createJointOfType(
+      null,
+      "Rotating",
+      id,
+      0,
+      0,
+      null,
+      pos.x * zoom,
+      pos.y * zoom
+    );
+  };
+
+  /**
+   * Deal with the pins that are about to be destroyed along with a body.
+   * Sprites pinned to it would otherwise silently come loose and start falling,
+   * so they get pinned to the world in the same place instead.
+   * @param {!Object} body the body that is about to be destroyed.
+   */
+  const _releasePinsTo = function (body) {
+    for (const id in pinned) {
+      const joint = pinned[id];
+      if (!joint) {
+        delete pinned[id];
+        continue;
+      }
+      if (joint.GetBodyA() !== body && joint.GetBodyB() !== body) continue;
+
+      world.DestroyJoint(joint);
+      delete pinned[id];
+      // The body being destroyed loses its own pin for good; anything else
+      // stays pinned, just to the world from now on.
+      if (bodies[id] && bodies[id] !== body) {
+        pinned[id] = _pinBodyToWorld(id);
+      }
+    }
+  };
+
+  /**
+   * Destroy the pin holding a sprite in place, if it has one.
+   * @param {*} id the target ID.
+   */
+  const _unpinBody = function (id) {
+    const joint = pinned[id];
+    if (!joint) return;
+
+    world.DestroyJoint(joint);
+    delete pinned[id];
   };
 
   /**
@@ -13167,6 +13235,11 @@
       // Clear target motion state values when the project starts.
       this.runtime.on("PROJECT_START", this.reset.bind(this));
 
+      // Waiting until the next simulation step to notice that a sprite is gone
+      // would leave its body sitting in the world in the meantime, where new
+      // sprites can still collide with it or get pinned to it.
+      this.runtime.on("targetWasRemoved", (target) => _removeBody(target.id));
+
       world = new b2World(
         new b2Vec2(0, -10), // gravity (10)
         true // allow sleep
@@ -13181,18 +13254,65 @@
       fixDef.restitution = 0.2; // 0.2
 
       _setStageType(STAGE_TYPE_OPTIONS.BOXED);
+
+      // Patch vm.stopDrag & vm.startDrag so drag-dropped sprites with physics behave.
+      // The body stays in `bodies` (so other blocks never create a duplicate body),
+      // but is pinned to the sprite and has its velocity zeroed while dragged.
+      this._ogStartDrag = vm.startDrag;
+      vm.startDrag = (...args) => {
+        this._ogStartDrag.call(vm, ...args);
+
+        const spriteID = args[0];
+        if (bodies[spriteID] !== undefined) {
+          draggedIds.add(spriteID);
+        }
+      };
+
+      this._ogStopDrag = vm.stopDrag;
+      vm.stopDrag = (...args) => {
+        this._ogStopDrag.call(vm, ...args);
+
+        const spriteID = args[0];
+        if (draggedIds.delete(spriteID)) {
+          const body = bodies[spriteID];
+          const target = this.runtime.getTargetById(spriteID);
+          if (body && target) {
+            this._setPosition(
+              body,
+              new b2Vec2(
+                (target.x + _scroll.x) / zoom,
+                (target.y + _scroll.y) / zoom
+              )
+            );
+            body.SetLinearVelocity(new b2Vec2(0, 0));
+            body.SetAngularVelocity(0);
+            body.SetAwake(true);
+            prevPos[spriteID] = {
+              x: target.x,
+              y: target.y,
+              dir: target.direction,
+            };
+          }
+        }
+      };
     }
 
     reset() {
       for (const body in bodies) {
-        if (pinned[body.uid]) {
-          world.DestroyJoint(pinned[body.uid]);
-          delete pinned[body.uid];
-        }
+        // Destroying the body destroys its joints too, so the pins only need
+        // to be forgotten about, not destroyed a second time.
+        delete pinned[body];
         world.DestroyBody(bodies[body]);
         delete bodies[body];
         delete prevPos[body];
       }
+
+      // Pins belonging to sprites that are already gone would otherwise be
+      // left behind pointing at destroyed joints.
+      for (const id in pinned) {
+        delete pinned[id];
+      }
+
       tickRate = 30;
       // todo: delete joins?
     }
@@ -13974,13 +14094,20 @@
         const target = this.runtime.getTargetById(targetID);
         if (!target) {
           // Drop target from simulation
-          world.DestroyBody(body);
-          delete bodies[targetID];
-          delete prevPos[targetID];
+          _removeBody(targetID);
           continue;
         }
 
         const position = body.GetPosition();
+
+        if (draggedIds.has(targetID)) {
+          prevPos[targetID] = {
+            x: target.x,
+            y: target.y,
+            dir: target.direction,
+          };
+          continue;
+        }
 
         _setXY(
           target,
@@ -13996,7 +14123,7 @@
     }
 
     setTickRate(args) {
-      let rate = Scratch.Cast.toNumber(args.rate);
+      let rate = Cast.toNumber(args.rate);
       if (Number.isNaN(rate) || rate === Infinity) rate = 30;
       rate = Math.max(rate, 0.01);
 
@@ -14013,15 +14140,32 @@
         const target = this.runtime.getTargetById(targetID);
         if (!target) {
           // Drop target from simulation
-          world.DestroyBody(body);
-          delete bodies[targetID];
-          delete prevPos[targetID];
+          _removeBody(targetID);
           continue;
         }
 
         const prev = prevPos[targetID];
         const fixedRotation =
           target.rotationStyle !== ROTATION_STYLE_ALL_AROUND;
+
+        if (draggedIds.has(targetID)) {
+          // Follow the sprite every tick, even if it's held still, and kill any
+          // velocity so nothing accumulates while dragging.
+          this._setPosition(
+            body,
+            new b2Vec2(
+              (target.x + _scroll.x) / zoom,
+              (target.y + _scroll.y) / zoom
+            )
+          );
+          if (!fixedRotation) {
+            body.SetAngle((90 - target.direction) * toRad);
+          }
+          body.SetLinearVelocity(new b2Vec2(0, 0));
+          body.SetAngularVelocity(0);
+          body.SetAwake(true);
+          continue;
+        }
 
         if (prev && (prev.x !== target.x || prev.y !== target.y)) {
           const pos = new b2Vec2(
@@ -14102,11 +14246,23 @@
       //     hullPoints.push({x: points[i][0] - target.x, y: points[i][1] - target.y});
       // }
 
-      const points = drawable._convexHullPoints;
+      let points = drawable._convexHullPoints;
       const scaleX = drawable.scale[0] / 100;
       const scaleY = drawable.scale[1] / -100; // Flip Y for hulls
       const offset = drawable.skin.rotationCenter;
       let allHulls = null;
+
+      if (points.length === 0) {
+        // The sprite is hidden. To avoid errors, enter fallback hull points
+        // instead of exiting early. All blocks rely on this function to work.
+        // Create a shallow copy to avoid accidentally editing the drawable hull.
+        points = [...points];
+        points.push([1, 1]);
+        points.push([0, 1]);
+        points.push([0, 0]);
+        points.push([1, 0]);
+        points.push([1, 1]);
+      }
 
       if (shape === SHAPE_TYPE_OPTIONS.CIRCLE) {
         fixDef.shape = new b2CircleShape();
@@ -14226,7 +14382,7 @@
     getDensity(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 100;
       }
 
       return body.GetFixtureList().GetDensity() * 100;
@@ -14245,7 +14401,7 @@
     getFriction(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 50;
       }
 
       return body.GetFixtureList().GetFriction() * 100;
@@ -14257,16 +14413,17 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      body
-        .GetFixtureList()
-        .SetRestitution(Cast.toNumber(args.restitution) / 100.0);
-      body.ResetMassData();
+      const value = Cast.toNumber(args.restitution);
+      if (value !== this.getRestitution(args, util)) {
+        body.GetFixtureList().SetRestitution(value / 100.0);
+        body.ResetMassData();
+      }
     }
 
     getRestitution(args, util) {
       let body = bodies[util.target.id];
       if (!body) {
-        body = this.setPhysicsFor(util.target);
+        return 20;
       }
 
       return body.GetFixtureList().GetRestitution() * 100;
@@ -14483,6 +14640,10 @@
         fixedRotation ? 0 : (90 - target.direction) * toRad
       );
 
+      // Whatever the sprite was pinned to before, that pin is replaced here.
+      // Leaving it in place would stack up joints that nothing destroys.
+      _unpinBody(target.id);
+
       if (args.static === "pinned") {
         // Find what's behind the sprite (pin to that)
         const point = new b2AABB();
@@ -14492,7 +14653,11 @@
         world.QueryAABB((fixture) => {
           const body2 = fixture.GetBody();
           if (body2 !== body && fixture.TestPoint(pos.x, pos.y)) {
-            body2ID = body2.uid;
+            // Only sprites can be pinned to. The stage edges have no ID, and
+            // anything not in `bodies` no longer belongs to the simulation.
+            if (bodies[body2.uid] === body2) {
+              body2ID = body2.uid;
+            }
             return false;
           }
           return true;
@@ -14508,13 +14673,6 @@
           null,
           null
         );
-      } else {
-        const pin = pinned[target.id];
-        if (pin) {
-          world.DestroyJoint(pin);
-          // delete joints[pin.I];
-          delete pinned[target.id];
-        }
       }
     }
 

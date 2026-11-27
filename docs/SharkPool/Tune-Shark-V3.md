@@ -1,6 +1,8 @@
 # Tune Shark V3
+
 Tune Shark V3 is a powerful audio engine that is built to give you full control over your sounds. It allows you to apply numerous audio effects, precisely measure sound outputs, and more!
-This is a remaster of the now deprecated Tune Shark extension by SharkPool.
+
+This is a remaster of the now-deprecated Tune Shark extension by SharkPool.
 
 ## General Setup
 
@@ -23,6 +25,7 @@ Alternatively, you can import "Tune Shark" sounds from pre-existing sounds from 
 ```
 
 This block simply creates a copy of the first inputted sound and gives it the name of the second inputted sound.
+
 Granted, you could just use the `import sound from url` block, but this block removes the wait time to import.
 
 ```scratch
@@ -37,6 +40,7 @@ This **does not** go the same way in reverse.
 ```scratch
 🎵 start sound [MySound] ::#666666
 ```
+
 Similar to Scratch, this will start a sound from the beginning.
 
 ```scratch
@@ -49,7 +53,7 @@ You can also start sounds at certain times (in seconds) in the track using this 
 🎵 start sound [MySound] at time (0) and stop at (2) ::#666666
 ```
 
-Similar to the above block, this block will start a sound at a certain point, then **waits** until the sound reaches the stopping point.
+Similar to the above block, this block will start a sound at a certain point, then **wait** until the sound reaches the stopping point.
 
 ```scratch
 🎵 stop sound [MySound] ::#666666
@@ -92,7 +96,7 @@ Normally, you can only play one instance of a sound at a time.
 ⚙️ toggle sound [MySound] reverse mode [on v] ::#666666
 ```
 
-Toggling this operator on will make the inputted ound play in reverse. Toggling it off will return it back to normal.
+Toggling this operator on will make the inputted sound play in reverse. Toggling it off will return it back to normal.
 
 ```scratch
 ⚙️ toggle sound [MySound] looping [on v] ::#666666
@@ -141,7 +145,7 @@ This event block runs whenever the inputted sound starts or ends.
 ```
 
 Returns various information of a sound:
-Options | What they Check for
+Options | What They Check for
 --- | ---
 exists | if the sound exists
 playing | if the sound is playing
@@ -156,7 +160,7 @@ binded | if the sound is binded to another
 ```
 
 Returns various information of a sound:
-Options | What they Do
+Options | What They Do
 --- | ---
 length | sound length (in seconds)
 current time | current position in a sound
@@ -164,7 +168,7 @@ source | source URL/URI of a sound
 estimated bpm | estimated beats-per-minute
 channels | the number of [channels](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Audio_concepts) in a sound
 sample rate | sample rate of a sound
-fft data | a live Array of loudness values across all frequencies
+fft data | a live array of loudness values across all frequencies
 binds | an array of sound names binded to this sound
 *...various audio effects* | returns the inputted parameters for the effect
 
@@ -176,10 +180,9 @@ You can read sound outputs using this block.
 
 If you select **"loudness"**, it returns a normalized volume of the outputted noise at a specific point in the sound.
 
-Similarly, **"raw noise"** returns the outputted volume, but its *not normalized*
+Similarly, **"raw noise"** returns the outputted volume, but it's *not normalized*
 
 Selecting **"tone"** will return the outputted pitch of a sound at a specific point.
-
 
 The channel input selects which [sound channel](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Audio_concepts) to extract the output data from.
 Typically, if there are 2 channels, channel 1 is "Left Ear" and channel 2 is "Right Ear".
@@ -214,14 +217,15 @@ This block resets the values of each audio effect in a sound to the default (not
 🎛️ set (pitch v) of sound [MySound] to (0) ::#666666
 ```
 
-Sets the effect of a selected sound to a inputted value.
-Effect List | What they Do
+Sets the effect of a selected sound to an inputted value.
+
+Effect List | What They Do
 --- | ---
 pitch | changes the speed and tone of the sound
 detune | changes the speed and semitone of the sound
 speed | changes the speed of the sound without affecting pitch
 pan | shifts sound to the left (negative) or right (positive) ear
-gain | boosts the sounds volume beyond 100
+gain | boosts the sound's volume beyond 100
 distortion | distorts/crushes sound
 attack | fade-in time when sound starts
 release | fade-out time when sound stops
@@ -232,8 +236,9 @@ release | fade-out time when sound stops
 
 Adds reverb to an inputted sound.
 
-**Warning:** Initializing reverb can cause framerate drops as its heavy to setup. For dynamic on/off use, you can use the Delay effect
-Parameters | What they Do
+**Warning:** Initializing reverb can cause framerate drops, as it's heavy to set up. For dynamic on/off use, you can use the Delay effect.
+
+Parameters | What They Do
 --- | ---
 time | the length or room size (ms)
 decay	| how long the reverb fades over time (%)
@@ -245,7 +250,7 @@ mix	| percentage of how dry or wet the sound is (%)
 
 Adds an echoing delay effect to a sound.
 
-Parameters | What they Do
+Parameters | What They Do
 --- | ---
 time | interval between each echo (ms)
 feedback | intensity of each subsequent echo (%)
@@ -257,7 +262,7 @@ mix	| percentage of the original sound and the delayed sound (%)
 
 Modulates the pan of a sound in a 3D space.
 
-Parameters | What they Do
+Parameters | What They Do
 --- | ---
 x | pan left/right
 y | pan top/bottom
@@ -269,7 +274,7 @@ z	| pan close/far
 
 Modulates the volume of a sound periodically, creating a tremolo effect.
 
-Parameters | What they Do
+Parameters | What They Do
 --- | ---
 speed | how fast the volume fluctuates (Hz)
 depth | intensity of the volume variation. A higher depth means more dramatic volume changes (%)
@@ -281,7 +286,7 @@ mix	| amount of the tremolo effect applied (%)
 
 Applies a fuzzy distortion to a sound.
 
-Parameters | What they Do
+Parameters | What They Do
 --- | ---
 low	| amount of distortion applied to low frequencies (%)
 med-low	| amount of distortion applied to mid-low frequencies (%)
@@ -295,7 +300,7 @@ mix	| proportion of unfuzzed sound and fuzzed sound (%)
 
 Reduces a sound's resolution and frequency, creating a chiptune-like, retro effect.
 
-Parameters | What they Do
+Parameters | What They Do
 --- | ---
 bits | bit depth. Lower values result in more distortion
 freq | Sample rate (Hz). Lower values create a grittier effect
@@ -304,11 +309,11 @@ freq | Sample rate (Hz). Lower values create a grittier effect
 🎛️ set [highpass v] of sound [MySound] to frequency (400) peak (10) ::#666666
 ```
 
-Highpass: Filters out lower frequencies _below_ a specified cutoff, allowing higher frequencies to pass through.
+Highpass: Filters out lower frequencies *below* a specified cutoff, allowing higher frequencies to pass through.
 
-Lowpass: Filters out higher frequencies _above_ a specified cutoff, allowing lower frequencies to pass through.
+Lowpass: Filters out higher frequencies *above* a specified cutoff, allowing lower frequencies to pass through.
 
-Parameters | What they Do
+Parameters | What They Do
 --- | ---
 frequency | cutoff frequency for the filter (Hz)
 peak | resonance at the cutoff frequency
@@ -319,7 +324,7 @@ peak | resonance at the cutoff frequency
 
 Combines the original sound with a delayed version, creating a sweeping, "jet-like" sound.
 
-Parameters | What they Do
+Parameters | What They Do
 --- | ---
 time | delay time for the effect (ms)
 speed	| modulation controlling how quickly it oscillates (Hz)
@@ -333,7 +338,7 @@ mix	| proportion of the original and flanged sound (%)
 
 Compresses the dynamic range of a sound, making quiet sounds louder and loud sounds quieter.
 
-Parameters | What they Do
+Parameters | What They Do
 --- | ---
 threshold | volume level at which compression begins
 knee | smoothness of the transition into compression
@@ -347,7 +352,7 @@ ratio	| amount of compression applied
 
 Adjusts the balance between different frequency bands of the sound. This is a 3-Band Equalizer.
 
-Parameters | What they Do
+Parameters | What They Do
 --- | ---
 gain low | gain applied to low frequencies
 gain med | gain applied to mid frequencies

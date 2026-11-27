@@ -259,8 +259,8 @@
       willDrawPenWithTarget(target);
       onTargetMoved.call(this, target, oldX, oldY, isForce);
     };
-    // Existing tragets may still have old onTargetMoved
-    for (let target in runtime.tragets) {
+    // Existing targets may still have old onTargetMoved
+    for (let target of runtime.targets) {
       if (target.onTargetMoved == onTargetMoved) {
         target.onTargetMoved = ext_pen._onTargetMoved;
       }

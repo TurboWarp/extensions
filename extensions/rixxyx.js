@@ -418,6 +418,9 @@
     }
     setCount(args) {
       if (
+        // Logically, checking for count being negative makes no sense, but it was there for
+        // a while and we don't want remove it for compatibility. No one should be using this
+        // in new projects.
         count.toString().indexOf("-") == -1 &&
         args.NUM.toString().indexOf("-") == -1
       ) {

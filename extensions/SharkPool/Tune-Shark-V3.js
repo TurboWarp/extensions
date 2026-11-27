@@ -1715,7 +1715,7 @@
       if (sound) {
         this.handleEffect(sound, "DELAY", args, {
           time: clamp(0, 1, Cast.toNumber(args.TIME) / 100),
-          decay: Cast.toNumber(args.FEED) / 100,
+          feedback: Cast.toNumber(args.FEED) / 100,
           mix: Cast.toNumber(args.MIX) / 100,
         });
       }

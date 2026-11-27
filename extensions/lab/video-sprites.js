@@ -180,8 +180,8 @@
     constructor(id, target) {
       super(id, renderer);
 
-      // Don't set private = true because we make all touching operations occur against the parent skin, not us
-      // Thus, the private video data is not visible to the project.
+      // We don't set private = true because that would make the renderer ignore the entire sprite, not just
+      // the video parts. Instead, getTexture() only returns the video when it is safe to do so.
 
       /** @type {import('scratch-vm').Target} */
       this.target = target;
@@ -191,6 +191,24 @@
        * @type {Uint8ClampedArray|null}
        */
       this._outData = null;
+
+      /**
+       * True if the camera texture needs to be regenerated.
+       * @type {boolean}
+       */
+      this._textureDirty = true;
+
+      /**
+       * The silhouette data that the camera texture was last generated from. If the parent's silhouette
+       * changes (new costume, different resolution, etc.), we need to regenerate the texture.
+       * @type {Uint8ClampedArray|null}
+       */
+      this._textureSilhouetteData = null;
+    }
+
+    emitWasAltered() {
+      this._textureDirty = true;
+      super.emitWasAltered();
     }
 
     dispose() {
@@ -240,6 +258,27 @@
 
     getTexture(scale) {
       const parentTexture = this._getParentTexture(scale);
+
+      const framebuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+
+      // The video is private data, so we must make sure it is only visible to the user and not the project.
+      // We can't use the private field because that would break touching, so for GPU-path touching and
+      // screenshots, we need to handle that ourselves here. We can tell if we're rendering to the stage
+      // because the framebuffer is null and there's no callbacks waiting for a snapshot. Eventually we
+      // should make a renderer API to support this properly.
+      if (
+        renderer._snapshotCallbacks.length > 0 ||
+        (!renderer.allowPrivateSkinAccess && framebuffer !== null)
+      ) {
+        return parentTexture;
+      }
+
+      // Touching queries on the CPU only see the parent skin's silhouette, so make the GPU path
+      // (which renders to the query buffer) consistent with that.
+      if (framebuffer === renderer._queryBufferInfo?.framebuffer) {
+        return parentTexture;
+      }
+
       const parent = this._getParentSkin();
 
       const state = getState(this.target);
@@ -256,6 +295,14 @@
       const height = silhouette?._height;
       if (!width || !height || !silhouetteData) {
         return parentTexture;
+      }
+
+      if (
+        this._texture &&
+        !this._textureDirty &&
+        this._textureSilhouetteData === silhouetteData
+      ) {
+        return this._texture;
       }
 
       if (workCanvas.width !== width || workCanvas.height !== height) {
@@ -340,6 +387,9 @@
       );
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
 
+      this._textureDirty = false;
+      this._textureSilhouetteData = silhouetteData;
+
       return this._texture;
     }
   }
@@ -348,6 +398,11 @@
    * @param {import("scratch-vm").Target} target
    */
   const attach = (target) => {
+    // The target may have been deleted by the time we get here
+    if (!renderer._allDrawables[target.drawableID]) {
+      return;
+    }
+
     const state = getOrCreateState(target);
     if (!state.skin) {
       const id = renderer._nextSkinId++;
@@ -435,13 +490,15 @@
   const originalMakeClone = RenderedTarget.prototype.makeClone;
   RenderedTarget.prototype.makeClone = function () {
     const newClone = originalMakeClone.call(this);
-    const originalState = getState(this);
-    if (originalState && originalState.skin) {
-      const newState = getOrCreateState(newClone);
-      newState.zoom = originalState.zoom;
-      newState.mode = originalState.mode;
-      newState.maskColor = originalState.maskColor;
-      attach(newClone);
+    if (newClone) {
+      const originalState = getState(this);
+      if (originalState && originalState.skin) {
+        const newState = getOrCreateState(newClone);
+        newState.zoom = originalState.zoom;
+        newState.mode = originalState.mode;
+        newState.maskColor = originalState.maskColor;
+        attach(newClone);
+      }
     }
     return newClone;
   };
@@ -510,25 +567,28 @@
     }
 
     async videoSpriteFillSprite(args, util) {
+      const target = util.target;
       if (!(await ensureCamera())) {
         return;
       }
 
-      const state = getOrCreateState(util.target);
+      const state = getOrCreateState(target);
       state.mode = "mask";
       state.maskColor = null;
-      attach(util.target);
+      attach(target);
     }
 
     async videoSpriteFillColor(args, util) {
+      const target = util.target;
+      const color = Scratch.Cast.toRgbColorList(args.COLOR);
       if (!(await ensureCamera())) {
         return;
       }
 
-      const state = getOrCreateState(util.target);
+      const state = getOrCreateState(target);
       state.mode = "color";
-      state.maskColor = Scratch.Cast.toRgbColorList(args.COLOR);
-      attach(util.target);
+      state.maskColor = color;
+      attach(target);
     }
 
     changeCameraBy(args, util) {

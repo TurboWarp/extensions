@@ -177,6 +177,7 @@ All images in this folder are licensed under the [GNU General Public License ver
 
 ## obviousAlexC/SensingPlus.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
+ - Touching finger icon based on https://fonts.google.com/icons?selected=Material+Icons:touch_app:&icon.set=Material+Icons&icon.style=Filled under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 ## lab/text.svg
  - Created by [@LilyMakesThings](https://scratch.mit.edu/users/LilyMakesThings/).
@@ -313,9 +314,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## Clay/htmlEncode.svg
  - Created by [@clay-rip](https://github.com/clay-rip) in https://github.com/TurboWarp/extensions/issues/90#issuecomment-1849825710
 
-## CST1229/images.svg
- - Created by [@wiktorlaskowski](https://github.com/wiktorlaskowski) in https://github.com/TurboWarp/extensions/pull/2144
-
 ## shreder95ua/resolution.svg
  - Created by [@xTvii](https://github.com/xTvii) in https://github.com/TurboWarp/extensions/issues/1079#issue-1926845796
 
@@ -328,3 +326,6 @@ All images in this folder are licensed under the [GNU General Public License ver
 ## NishiOwO/dectalk.png
  - Created by [@Dogo6647](https://github.com/Dogo6647)
  - Used Arimo from Google Fonts.
+
+## LukeAnimationss/MoreRandomness.png
+ - Created by [@LukeAnimationss](https://scratch.mit.edu/users/LukeAnimationss/)

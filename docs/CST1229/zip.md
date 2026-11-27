@@ -31,7 +31,7 @@ Creates and opens an empty archive with nothing in it. The name is used for deal
 ---
 
 ```scratch
-open archive from zip from (URL v) [https://extensions.turbowarp.org] named [archive] :: #a49a3a
+open archive from zip from (URL v) [https://extensions.turbowarp.org/hello.zip] named [archive] :: #a49a3a
 ```
 Creates and opens an archive from a .zip (or .sb3 or .sprite3...) file.
 

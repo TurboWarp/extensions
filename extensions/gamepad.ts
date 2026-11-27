@@ -557,6 +557,7 @@
       for (const gamepad of gamepads) {
         const magnitude = getAxisPairMagnitude(gamepad, axis);
         if (magnitude > greatestMagnitude) {
+          greatestMagnitude = magnitude;
           direction = getAxisPairDirection(gamepad, axis);
         }
       }

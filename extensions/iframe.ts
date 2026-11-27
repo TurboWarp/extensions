@@ -108,7 +108,6 @@
         .join("; ")
     );
     iframe.setAttribute("allowtransparency", "true");
-    iframe.setAttribute("allowtransparency", "true");
     iframe.setAttribute("src", src);
 
     overlay = Scratch.renderer.addOverlay(iframe, getOverlayMode());
