@@ -39,7 +39,7 @@
 
     const oldState = gamepadState;
 
-    gamepadState = gamepads.map((gamepad) => {
+    gamepadState = gamepads.map((gamepad, index) => {
       if (!gamepad) {
         return null;
       }
@@ -55,7 +55,8 @@
         buttonPressed: [],
       };
 
-      const oldResult = oldState.find((i) => i !== null && i.id === gamepad.id);
+      const old = oldState[index];
+      const oldResult = old && old.id === gamepad.id ? old : null;
 
       // Each pair of axes is given a circular deadzone.
       for (let i = 0; i < gamepad.axes.length; i += 2) {
@@ -100,6 +101,19 @@
     updateState();
   });
 
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    axisDeadzone = DEFAULT_AXIS_DEADZONE;
+  });
+
+  Scratch.vm.runtime.on("PROJECT_STOP_ALL", () => {
+    for (const gamepad of gamepadState) {
+      const actuator = gamepad?.realGamepad.vibrationActuator;
+      if (actuator && actuator.reset) {
+        actuator.reset().catch(() => {});
+      }
+    }
+  });
+
   /**
    * @param index 1-indexed index or 'any'
    */
@@ -129,13 +143,16 @@
   };
 
   /**
-   * @param buttonIndex 1-indexed index
+   * @param buttonIndex 1-indexed index or 'any'
    * @returns 0 if button does not exist
    */
   const getButtonValue = (
     gamepad: InternalGamepadState,
     buttonIndex: unknown
   ): number => {
+    if (buttonIndex === "any") {
+      return Math.max(0, ...gamepad.buttonValues);
+    }
     const value = gamepad.buttonValues[Scratch.Cast.toNumber(buttonIndex) - 1];
     return value || 0;
   };
@@ -592,15 +609,19 @@
     }
 
     rumble({ s, w, t, i }: { s: unknown; w: unknown; t: unknown; i: unknown }) {
+      const clamp01 = (v: unknown) =>
+        Math.min(1, Math.max(0, Scratch.Cast.toNumber(v)));
       const gamepads = getGamepads(i);
       for (const { realGamepad } of gamepads) {
         if (realGamepad.vibrationActuator) {
-          realGamepad.vibrationActuator.playEffect("dual-rumble", {
-            startDelay: 0,
-            duration: Scratch.Cast.toNumber(t) * 1000,
-            weakMagnitude: Scratch.Cast.toNumber(w),
-            strongMagnitude: Scratch.Cast.toNumber(s),
-          });
+          realGamepad.vibrationActuator
+            .playEffect("dual-rumble", {
+              startDelay: 0,
+              duration: Math.max(0, Scratch.Cast.toNumber(t) * 1000),
+              weakMagnitude: clamp01(w),
+              strongMagnitude: clamp01(s),
+            })
+            .catch(() => {});
         }
       }
     }
