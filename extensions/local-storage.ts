@@ -142,7 +142,7 @@
     if (!valid && Date.now() - lastNamespaceWarning > 3000) {
       alert(
         Scratch.translate(
-          'Local Storage extension: project must run the "set storage namespace ID" block before it can use other blocks'
+          'Local Storage extension: run the "set namespace to" block first.'
         )
       );
       lastNamespaceWarning = Date.now();
@@ -273,7 +273,11 @@
       if (!validNamespace()) {
         return "";
       }
-      namespaceValues[Scratch.Cast.toString(KEY)] = VALUE;
+      // JSON can't store NaN or Infinity
+      namespaceValues[Scratch.Cast.toString(KEY)] =
+        typeof VALUE === "number" && !Number.isFinite(VALUE)
+          ? Scratch.Cast.toString(VALUE)
+          : VALUE;
       saveToLocalStorage();
     }
 
