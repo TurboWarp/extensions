@@ -6,6 +6,9 @@
     "./builder": "./development/builder.js"
   },
   "type": "module",
+  "engines": {
+    "node": "^22.13.0 || >=23.2.0"
+  },
   "scripts": {
     "start": "node development/server.js",
     "dev": "node development/server.js",
