@@ -25,6 +25,7 @@
   let isPackaged = false;
 
   let arFail = "uninitialized";
+  let arSupportPromise = null;
   let xrSession = null;
   let xrState = false;
   let xrRefSpace;
@@ -67,16 +68,19 @@
     gl.makeXRCompatible().catch((error) => {
       console.error((arFail = "gl.makeXRCompatible rejected with: " + error));
     });
-    navigator.xr.isSessionSupported("immersive-ar").then((supported) => {
-      if (!supported) {
-        console.error(
-          (arFail =
-            "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported (it can only work on mobile)")
-        );
-      } else {
-        arFail = null;
-      }
-    });
+    arSupportPromise = navigator.xr
+      .isSessionSupported("immersive-ar")
+      .then((supported) => {
+        if (!supported) {
+          console.error(
+            (arFail =
+              "WebXR exists in the browser you are using, but 'immersive-ar' session type is not supported (it can only work on mobile)")
+          );
+        } else if (arFail === "uninitialized") {
+          // Don't overwrite an error from makeXRCompatible
+          arFail = null;
+        }
+      });
   }
 
   const onSuccess = function (session) {
@@ -94,6 +98,8 @@
     });
     session.addEventListener("end", () => {
       xrSession = null;
+      poseAvailable = false;
+      hitPositionAvailable = false;
       updateState();
     });
     session.requestReferenceSpace("local").then((refSpace) => {
@@ -167,8 +173,8 @@
         scLayers.style["transform"] = null;
         stageWrapper.style["align-items"] = null;
         stageWrapper.style["justify-content"] = null;
-        runtime.setStageSize(oldWidth, oldHeight);
       }
+      runtime.setStageSize(oldWidth, oldHeight);
       stageWrapper.style = "";
       stageWrapperParent.append(stageWrapper);
 
@@ -323,12 +329,14 @@
         }
       }
       hitPositionAvailable = false;
-      if (xrHitTestSource) {
+      if (xrHitTestSource && xrRefSpace) {
         const hitTestResults = frame.getHitTestResults(xrHitTestSource);
         if (hitTestResults.length > 0) {
-          hitPositionAvailable = true;
-          hitPosition =
-            hitTestResults[0].getPose(xrRefSpace).transform.position;
+          const hitPose = hitTestResults[0].getPose(xrRefSpace);
+          if (hitPose) {
+            hitPositionAvailable = true;
+            hitPosition = hitPose.transform.position;
+          }
         }
       }
       callback();
@@ -353,7 +361,10 @@
       cancel,
     };
   };
+  const originalStart = frameLoop.start;
   const start = function () {
+    // Outside of AR, use the VM's own implementation
+    if (!this.inXR) return originalStart.call(this);
     this.running = true;
     if (this.inXR) {
       if (this.framerate === 0) {
@@ -456,8 +467,11 @@
   // If something else calls it directly, it may cause problems.
   const postDataOriginal = mouse.postData.bind(mouse);
   mouse.postData = function (data) {
-    this._canvasWidth = data.canvasWidth;
-    this._canvasHeight = data.canvasHeight;
+    // Some callers, like the Pointer Lock extension, don't include the canvas size
+    if (data.canvasWidth) {
+      this._canvasWidth = data.canvasWidth;
+      this._canvasHeight = data.canvasHeight;
+    }
     postDataOriginal(data);
   }.bind(mouse);
 
@@ -494,6 +508,9 @@
           console.error(
             (arFail = "Failed to get the div element of the stage")
           );
+          // [enter AR] blocks should continue after failure
+          enterARDone.forEach((fn) => fn());
+          enterARDone = [];
           return;
         }
         isPackaged = true;
@@ -510,6 +527,15 @@
       // If (event) is null, it was called directly, and might've been rejected due to lack of user interaction.
     }
   };
+
+  // Don't enter AR on a later tap after the project is stopped
+  const cancelPendingEnterAR = () => {
+    canvas.removeEventListener("pointerup", enterAR);
+    enterARDone.forEach((fn) => fn());
+    enterARDone = [];
+  };
+  runtime.on("PROJECT_STOP_ALL", cancelPendingEnterAR);
+  runtime.on("RUNTIME_DISPOSED", cancelPendingEnterAR);
 
   class ARExtension {
     getInfo() {
@@ -741,20 +767,28 @@
       };
     }
     enterAR() {
+      if (arFail === "uninitialized" && arSupportPromise) {
+        // Support check hasn't finished yet
+        return arSupportPromise.then(() => this.enterAR());
+      }
       if (arFail) {
         if (arFail !== "shown") {
           // AR is used on mobile, where accessing browser console to see what's wrong can be an issue
           alert(
-            "AR is not available because: " +
-              arFail +
-              ". This message will only be shown once."
+            Scratch.translate(
+              "AR is not available because: {reason}. This message will only be shown once.",
+              { reason: arFail }
+            )
           );
           arFail = "shown";
         }
       } else {
         if (!xrSession) {
-          if (enterARDone.length === 0) enterAR(null);
-          return new Promise((resolve) => enterARDone.push(resolve));
+          const shouldRequest = enterARDone.length === 0;
+          // Register before requesting, since enterAR() may fail synchronously
+          const promise = new Promise((resolve) => enterARDone.push(resolve));
+          if (shouldRequest) enterAR(null);
+          return promise;
         }
       }
     }
@@ -834,6 +868,10 @@
     isFeatureAvailible(args) {
       switch (args.FEATURE) {
         case "ar":
+          if (arFail === "uninitialized" && arSupportPromise) {
+            // Support check hasn't finished yet
+            return arSupportPromise.then(() => !arFail);
+          }
           return !arFail;
         case "pose":
           return poseAvailable;
@@ -844,7 +882,9 @@
       }
     }
     setResolution(args) {
-      arResolution = Math.max(0.1, Math.min(1, +args.RESOLUTION || 0));
+      const newResolution = Math.max(0.1, Math.min(1, +args.RESOLUTION || 0));
+      if (newResolution === arResolution) return;
+      arResolution = newResolution;
       if (xrSession) {
         xrSession.updateRenderState({
           baseLayer: new XRWebGLLayer(xrSession, gl, {
