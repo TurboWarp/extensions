@@ -7,7 +7,7 @@ This extension allows you to easily implement proper physics using a physics lib
 Adjust the physics of all sprites.
 
 ```scratch
-setup stage boundaries to [boxed stage v] :: #0FBD8C
+set stage boundaries to [boxed stage v] :: #0FBD8C
 ```
 Choose a type of containment to keep sprites within the stage.
 
@@ -163,20 +163,20 @@ If there are multiple sprites touching, it will return a comma-separated list of
 Move the camera around the world.
 
 ```scratch
-set scroll x: [0] y: [0] :: #0FBD8C
+set scroll to x: [0] y: [0] :: #0FBD8C
 ```
 
 Scroll to the desired location.
 
 You can get the current screen position with the (x scroll) and (y scroll) reporters.
 
-This will not affect the world boundaries set by the [setup stage] block.
+This will not affect the world boundaries set by the [set stage boundaries] block.
 
 ## Example
 
 ```scratch
 when flag clicked
-setup stage boundaries to [boxed stage v] :: #0FBD8C
+set stage boundaries to [boxed stage v] :: #0FBD8C
 set gravity to x: [0] y: [-10] :: #0FBD8C
 create clone of (myself v)
 repeat [20]

@@ -12125,6 +12125,15 @@
   for (i = 0; i < Box2D.postDefs.length; ++i) Box2D.postDefs[i]();
 
   const Cast = Scratch.Cast;
+  /**
+   * Infinity would turn into NaN inside the simulation.
+   * @param {*} value
+   * @returns {number}
+   */
+  const toFiniteNumber = (value) => {
+    const n = Cast.toNumber(value);
+    return Number.isFinite(n) ? n : 0;
+  };
   const ArgumentType = Scratch.ArgumentType;
   const BlockType = Scratch.BlockType;
   // const MathUtil = require('../../util/math-util');
@@ -13145,7 +13154,11 @@
     stageBodies.push(body);
   };
 
+  let currentStageType = STAGE_TYPE_OPTIONS.BOXED;
+
   const _setStageType = function (type) {
+    currentStageType = type;
+
     // Clear down previous stage
     if (stageBodies.length > 0) {
       for (const stageBodyID in stageBodies) {
@@ -13239,6 +13252,20 @@
       // would leave its body sitting in the world in the meantime, where new
       // sprites can still collide with it or get pinned to it.
       this.runtime.on("targetWasRemoved", (target) => _removeBody(target.id));
+
+      // Loading a new project should start from the same state as a new tab
+      this.runtime.on("RUNTIME_DISPOSED", () => {
+        this.reset();
+        draggedIds.clear();
+        world.SetGravity(new b2Vec2(0, -10));
+        _scroll.x = 0;
+        _scroll.y = 0;
+        _setStageType(STAGE_TYPE_OPTIONS.BOXED);
+      });
+
+      this.runtime.on("STAGE_SIZE_CHANGED", () => {
+        _setStageType(currentStageType);
+      });
 
       world = new b2World(
         new b2Vec2(0, -10), // gravity (10)
@@ -13617,7 +13644,7 @@
             text: Scratch.translate({
               id: "griffpatch.applyAngForce",
               default: "spin with force [force]",
-              description: "Push this object in a given direction",
+              description: "Spin this object with a given force",
             }),
             arguments: {
               force: {
@@ -13838,7 +13865,8 @@
               id: "griffpatch.setProperties",
               default:
                 "set density [density] roughness [friction] bounce [restitution]",
-              description: "Set the density of the object",
+              description:
+                "Set the density, friction, and bounce of the object",
             }),
             arguments: {
               density: {
@@ -13910,7 +13938,7 @@
             text: Scratch.translate({
               id: "griffpatch.setScroll",
               default: "set scroll to x: [ox] y: [oy]",
-              description: "Sets whether this block is static or dynamic",
+              description: "Set the scroll position of the world",
             }),
             arguments: {
               ox: {
@@ -13929,7 +13957,7 @@
             text: Scratch.translate({
               id: "griffpatch.changeScroll",
               default: "change scroll by x: [ox] y: [oy]",
-              description: "Sets whether this block is static or dynamic",
+              description: "Change the scroll position of the world",
             }),
             arguments: {
               ox: {
@@ -14338,8 +14366,8 @@
         "Impulse",
         0,
         0,
-        Cast.toNumber(args.dir),
-        Cast.toNumber(args.force)
+        toFiniteNumber(args.dir),
+        toFiniteNumber(args.force)
       );
     }
 
@@ -14349,7 +14377,7 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      body.ApplyTorque(-Cast.toNumber(args.force));
+      body.ApplyTorque(-toFiniteNumber(args.force));
     }
 
     setAngVelocity(args, util) {
@@ -14357,7 +14385,7 @@
       if (!body) {
         body = this.setPhysicsFor(util.target);
       }
-      body.SetAngularVelocity(-Cast.toNumber(args.force));
+      body.SetAngularVelocity(-toFiniteNumber(args.force));
     }
 
     getAngVelocity(args, util) {
@@ -14375,7 +14403,10 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      body.GetFixtureList().SetDensity(Cast.toNumber(args.density) / 100.0);
+      const density = toFiniteNumber(args.density) / 100.0;
+      for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
+        f.SetDensity(density);
+      }
       body.ResetMassData();
     }
 
@@ -14394,7 +14425,10 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      body.GetFixtureList().SetFriction(Cast.toNumber(args.friction) / 100.0);
+      const friction = toFiniteNumber(args.friction) / 100.0;
+      for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
+        f.SetFriction(friction);
+      }
       body.ResetMassData();
     }
 
@@ -14413,9 +14447,11 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      const value = Cast.toNumber(args.restitution);
+      const value = toFiniteNumber(args.restitution);
       if (value !== this.getRestitution(args, util)) {
-        body.GetFixtureList().SetRestitution(value / 100.0);
+        for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
+          f.SetRestitution(value / 100.0);
+        }
         body.ResetMassData();
       }
     }
@@ -14435,11 +14471,14 @@
         body = this.setPhysicsFor(util.target);
       }
 
-      body.GetFixtureList().SetDensity(Cast.toNumber(args.density) / 100.0);
-      body.GetFixtureList().SetFriction(Cast.toNumber(args.friction) / 100.0);
-      body
-        .GetFixtureList()
-        .SetRestitution(Cast.toNumber(args.restitution) / 100.0);
+      const density = toFiniteNumber(args.density) / 100.0;
+      const friction = toFiniteNumber(args.friction) / 100.0;
+      const restitution = toFiniteNumber(args.restitution) / 100.0;
+      for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
+        f.SetDensity(density);
+        f.SetFriction(friction);
+        f.SetRestitution(restitution);
+      }
       body.ResetMassData();
     }
 
@@ -14448,8 +14487,8 @@
         this.setPhysicsFor(util.target);
       }
 
-      const x = Cast.toNumber(args.x);
-      const y = Cast.toNumber(args.y);
+      const x = toFiniteNumber(args.x);
+      const y = toFiniteNumber(args.y);
 
       _createJointOfType(
         null,
@@ -14472,8 +14511,8 @@
      * @property {string} space - Space type (SPACE_TYPE_OPTIONS)
      */
     setPosition(args, util) {
-      const x = Cast.toNumber(args.x);
-      const y = Cast.toNumber(args.y);
+      const x = toFiniteNumber(args.x);
+      const y = toFiniteNumber(args.y);
       const body = bodies[util.target.id];
 
       switch (args.space) {
@@ -14539,8 +14578,8 @@
 
       body.SetAwake(true);
 
-      const x = Cast.toNumber(args.sx);
-      const y = Cast.toNumber(args.sy);
+      const x = toFiniteNumber(args.sx);
+      const y = toFiniteNumber(args.sy);
       const force = new b2Vec2(x, y);
       force.Multiply(30 / zoom);
       body.SetLinearVelocity(force);
@@ -14561,8 +14600,8 @@
 
       body.SetAwake(true);
 
-      const x = Cast.toNumber(args.sx);
-      const y = Cast.toNumber(args.sy);
+      const x = toFiniteNumber(args.sx);
+      const y = toFiniteNumber(args.sy);
       const force = new b2Vec2(x, y);
       force.Multiply(30 / zoom);
       force.Add(body.GetLinearVelocity());
@@ -14652,7 +14691,7 @@
         let body2ID = null;
         world.QueryAABB((fixture) => {
           const body2 = fixture.GetBody();
-          if (body2 !== body && fixture.TestPoint(pos.x, pos.y)) {
+          if (body2 !== body && fixture.TestPoint(pos)) {
             // Only sprites can be pinned to. The stage edges have no ID, and
             // anything not in `bodies` no longer belongs to the simulation.
             if (bodies[body2.uid] === body2) {
@@ -14684,8 +14723,8 @@
      */
     setScroll(args) {
       this._checkMoved();
-      _scroll.x = Cast.toNumber(args.ox);
-      _scroll.y = Cast.toNumber(args.oy);
+      _scroll.x = toFiniteNumber(args.ox);
+      _scroll.y = toFiniteNumber(args.oy);
       this._repositionBodies();
     }
 
@@ -14697,8 +14736,8 @@
      */
     changeScroll(args) {
       this._checkMoved();
-      _scroll.x += Cast.toNumber(args.ox);
-      _scroll.y += Cast.toNumber(args.oy);
+      _scroll.x += toFiniteNumber(args.ox);
+      _scroll.y += toFiniteNumber(args.oy);
       this._repositionBodies();
     }
 
@@ -14780,13 +14819,15 @@
             //     continue;
             // }
 
-            const fixture = body.GetFixtureList();
+            // Polygon mode bodies can have many fixtures
+            let lowerY = Infinity;
+            let upperY = -Infinity;
+            for (let f = body.GetFixtureList(); f; f = f.GetNext()) {
+              lowerY = Math.min(lowerY, f.m_aabb.lowerBound.y);
+              upperY = Math.max(upperY, f.m_aabb.upperBound.y);
+            }
             const y = man.m_points[0].y;
-            if (
-              y >
-              fixture.m_aabb.lowerBound.y * 0.75 +
-                fixture.m_aabb.upperBound.y * 0.25
-            ) {
+            if (y > lowerY * 0.75 + upperY * 0.25) {
               continue;
             }
 
@@ -14829,7 +14870,7 @@
      */
     setGravity(args) {
       world.SetGravity(
-        new b2Vec2(Cast.toNumber(args.gx), Cast.toNumber(args.gy))
+        new b2Vec2(toFiniteNumber(args.gx), toFiniteNumber(args.gy))
       );
       for (const bodyID in bodies) {
         bodies[bodyID].SetAwake(true);
