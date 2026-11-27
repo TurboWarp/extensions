@@ -48,6 +48,17 @@
     lastPastedText = pastedText;
   });
 
+  /**
+   * @param {string} text
+   */
+  const writeClipboard = (text) => {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).catch((error) => {
+        console.warn("Could not write to clipboard", error);
+      });
+    }
+  };
+
   class Clipboard {
     getInfo() {
       return {
@@ -102,20 +113,12 @@
       };
     }
 
-    _writeClipboard(text) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).catch((error) => {
-          console.warn("Could not write to clipboard", error);
-        });
-      }
-    }
-
     setClipboard(args) {
-      this._writeClipboard(Scratch.Cast.toString(args.TEXT));
+      writeClipboard(Scratch.Cast.toString(args.TEXT));
     }
 
     resetClipboard() {
-      this._writeClipboard("");
+      writeClipboard("");
     }
 
     clipboard() {
