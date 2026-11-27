@@ -42,8 +42,12 @@
 
   let data = {};
 
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    data = {};
+  });
+
   let err = () => {
-    if (!data.errors) return Scratch.translate("Error: Data not found.");
+    if (!data.errors?.[0]) return Scratch.translate("Error: Data not found.");
     let output = data.errors[1]
       ? Scratch.translate({
           id: "itchio_errors",
@@ -339,13 +343,13 @@
       return JSON.stringify(data);
     }
     returnGameData(game) {
-      return data[game.data] || err();
+      return data[game.data] ?? err();
     }
     gameBool() {
       return data.id ? true : false;
     }
     returnGameRewards({ index, rewards }) {
-      return data.rewards?.[index]?.[rewards] || err();
+      return data.rewards?.[index]?.[rewards] ?? err();
     }
     rewardsLenght() {
       return data.rewards?.length || 0;
@@ -354,7 +358,7 @@
       return data.rewards ? true : false;
     }
     returnGameSubProducts({ subProducts, index }) {
-      return data.sub_products?.[index]?.[subProducts] || err();
+      return data.sub_products?.[index]?.[subProducts] ?? err();
     }
     subProductsLength() {
       return data.sub_products?.length || 0;
@@ -363,7 +367,7 @@
       return data.sub_products ? true : false;
     }
     returnGameSale({ sale }) {
-      return data.sale?.[sale] || err();
+      return data.sale?.[sale] ?? err();
     }
     saleBool() {
       return data.sale ? true : false;
