@@ -203,8 +203,7 @@ class ExtensionFile extends BuildFile {
       let suffixJS = "";
 
       if (this.sourcePath.endsWith(".ts")) {
-        prefixJS +=
-          "/* transpiled from TypeScript */";
+        prefixJS += "/* transpiled from TypeScript */";
       }
 
       const translations = filterTranslationsByPrefix(
