@@ -1,11 +1,12 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    // We handle emitting ourselves
-    "noEmit": true,
     // Enable type warnings in JS
     "allowJs": true,
-    "checkJs": true
+    "checkJs": true,
+    // But because these are in JS and were not built with strict type checking in mind,
+    // we have to be a bit more lenient with them.
+    "strict": false,
   },
   "include": [
     "../node_modules/@turbowarp/types/types/scratch-vm-extension.d.ts",

@@ -19,32 +19,40 @@ const check = async () => {
   console.log(Array.from(changedFiles).sort().join("\n"));
   console.log("");
 
-  const tsconfigPath = pathUtil.join(rootDir, "tsconfig.json");
-  const commandLine = ts.getParsedCommandLineOfConfigFile(
-    tsconfigPath,
-    {},
-    ts.sys
-  );
+  const diagnostics = [];
+  for (const [configName, isBlocker] of [
+    ["tsconfig/tsconfig.ts.json", true],
+    ["tsconfig/tsconfig.js.json", false],
+  ]) {
+    const tsconfigPath = pathUtil.join(rootDir, configName);
+    const commandLine = ts.getParsedCommandLineOfConfigFile(
+      tsconfigPath,
+      {},
+      ts.sys
+    );
 
-  const program = ts.createProgram({
-    rootNames: commandLine.fileNames,
-    options: commandLine.options,
-  });
-  const emitted = program.emit();
+    const program = ts.createProgram({
+      rootNames: commandLine.fileNames,
+      options: commandLine.options,
+    });
+    const emitted = program.emit();
 
-  const diagnostics = [
-    ...ts.getPreEmitDiagnostics(program),
-    ...emitted.diagnostics,
-  ];
+    for (const diagnostic of [
+      ...commandLine.errors,
+      ...ts.getPreEmitDiagnostics(program),
+      ...emitted.diagnostics,
+    ]) {
+      diagnostics.push({ diagnostic, isBlocker, tsconfigPath });
+    }
+  }
 
   let numWarnings = 0;
   let numErrors = 0;
 
-  for (const diagnostic of diagnostics) {
-    const isBlocker = diagnostic.file.fileName.endsWith(".ts");
-
+  for (const { diagnostic, isBlocker, tsconfigPath } of diagnostics) {
     if (
       !isBlocker &&
+      diagnostic.file &&
       !changedFilesAbsolute.includes(diagnostic.file.fileName)
     ) {
       // Warning in a file not touched by the PR: ignore
@@ -57,14 +65,23 @@ const check = async () => {
       numWarnings++;
     }
 
-    const startPosition = ts.getLineAndCharacterOfPosition(
-      diagnostic.file,
-      diagnostic.start
-    );
-    const endPosition = ts.getLineAndCharacterOfPosition(
-      diagnostic.file,
-      diagnostic.start
-    );
+    // Diagnostics such as tsconfig errors may not be attached to any file
+    const position = {};
+    if (diagnostic.file && diagnostic.start !== undefined) {
+      const startPosition = ts.getLineAndCharacterOfPosition(
+        diagnostic.file,
+        diagnostic.start
+      );
+      const endPosition = ts.getLineAndCharacterOfPosition(
+        diagnostic.file,
+        diagnostic.start + (diagnostic.length ?? 0)
+      );
+      position.line = startPosition.line + 1;
+      position.col = startPosition.character + 1;
+      position.endLine = endPosition.line + 1;
+      position.endCol = endPosition.character + 1;
+    }
+
     // Won't be the most readable, but it's probably fine.
     const flattened = ts.flattenDiagnosticMessageText(
       diagnostic.messageText,
@@ -74,15 +91,12 @@ const check = async () => {
 
     createAnnotation({
       type: isBlocker ? "error" : "warning",
-      file: diagnostic.file.fileName,
+      file: diagnostic.file ? diagnostic.file.fileName : tsconfigPath,
       title: isBlocker
         ? "Type error - must be fixed"
         : "Type warning - may indicate a bug - ignore if no bug",
       message: flattened,
-      line: startPosition.line + 1,
-      col: startPosition.character + 1,
-      endLine: endPosition.line + 1,
-      endCol: endPosition.character + 1,
+      ...position,
     });
   }
 

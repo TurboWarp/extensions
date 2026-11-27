@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2022",
+    // We handle emitting ourselves
+    "noEmit": true,
     // We use stripTypeScriptTypes to build the extensions that get released so enforce not using features that
     // would generate code.
     "erasableSyntaxOnly": true,
