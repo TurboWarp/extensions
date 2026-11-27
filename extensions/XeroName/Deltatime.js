@@ -25,7 +25,10 @@
     if (previousTime === 0) {
       // First frame. We used to always return 0 here, but that can break projects that
       // expect delta time to always be non-zero. Instead we'll make our best guess.
-      deltaTime = 1 / vm.runtime.frameLoop.framerate;
+      const framerate = vm.runtime.frameLoop.framerate;
+      // framerate is 0 when using the screen refresh rate
+      deltaTime =
+        framerate > 0 ? 1 / framerate : vm.runtime.currentStepTime / 1000;
     } else {
       deltaTime = (now - previousTime) / 1000;
     }
