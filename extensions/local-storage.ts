@@ -5,20 +5,27 @@
 // By: GarboMuffin
 // License: MIT AND MPL-2.0
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
   if (!Scratch.extensions.unsandboxed) {
     throw new Error("Local Storage must be run unsandboxed");
   }
 
-  const getNamespace = () =>
-    Scratch.vm.runtime.extensionStorage["localstorage"]?.namespace;
+  const getNamespace = (): string | undefined => {
+    const storage = Scratch.vm.runtime.extensionStorage["localstorage"];
+    if (
+      storage &&
+      typeof storage === "object" &&
+      !Array.isArray(storage) &&
+      storage.namespace
+    ) {
+      return Scratch.Cast.toString(storage.namespace);
+    }
+    return undefined;
+  };
 
-  /**
-   * @param {string} newNamespace
-   */
-  const setNamespace = (newNamespace) => {
+  const setNamespace = (newNamespace: string) => {
     Scratch.vm.runtime.extensionStorage["localstorage"] = {
       namespace: newNamespace,
     };
@@ -33,11 +40,12 @@
   const STORAGE_PREFIX = "extensions.turbowarp.org/local-storage:";
   const getStorageKey = () => `${STORAGE_PREFIX}${getNamespace()}`;
 
+  type StoredValue = string | number | boolean;
+
   /**
    * Cached in memory for performance.
-   * @type {Record<string, string|number|boolean>}
    */
-  let namespaceValues = Object.create(null);
+  let namespaceValues: Record<string, StoredValue> = Object.create(null);
 
   const readFromStorage = () => {
     namespaceValues = Object.create(null);
@@ -142,8 +150,9 @@
     return valid;
   };
 
-  class LocalStorage {
-    getInfo() {
+  class LocalStorage implements Scratch.Extension {
+    getInfo(): Scratch.Info {
+      const namespace = getNamespace();
       return {
         id: "localstorage",
         name: Scratch.translate("Local Storage"),
@@ -151,13 +160,13 @@
         blocks: [
           {
             blockType: Scratch.BlockType.LABEL,
-            text: getNamespace()
+            text: namespace
               ? Scratch.translate(
                   {
                     default: "Namespace: {namespace}",
                   },
                   {
-                    namespace: getNamespace(),
+                    namespace,
                   }
                 )
               : Scratch.translate("No namespace set"),
@@ -237,8 +246,7 @@
             arguments: {
               ID: {
                 type: Scratch.ArgumentType.STRING,
-                defaultValue:
-                  getNamespace() || Scratch.translate("project title"),
+                defaultValue: namespace || Scratch.translate("project title"),
               },
             },
           },
@@ -246,22 +254,22 @@
       };
     }
 
-    setProjectId({ ID }) {
+    setProjectId({ ID }: { ID: unknown }) {
       setNamespace(Scratch.Cast.toString(ID));
     }
 
-    get({ KEY }) {
+    get({ KEY }: { KEY: unknown }) {
       if (!validNamespace()) {
         return "";
       }
-      KEY = Scratch.Cast.toString(KEY);
-      if (!Object.prototype.hasOwnProperty.call(namespaceValues, KEY)) {
+      const key = Scratch.Cast.toString(KEY);
+      if (!Object.prototype.hasOwnProperty.call(namespaceValues, key)) {
         return "";
       }
-      return namespaceValues[KEY];
+      return namespaceValues[key];
     }
 
-    set({ KEY, VALUE }) {
+    set({ KEY, VALUE }: { KEY: unknown; VALUE: StoredValue }) {
       if (!validNamespace()) {
         return "";
       }
@@ -269,7 +277,7 @@
       saveToLocalStorage();
     }
 
-    remove({ KEY }) {
+    remove({ KEY }: { KEY: unknown }) {
       if (!validNamespace()) {
         return "";
       }
@@ -301,7 +309,7 @@
       return Object.keys(namespaceValues).length;
     }
 
-    itemOfKey(args) {
+    itemOfKey(args: { NUM: unknown }) {
       if (!validNamespace()) {
         return "";
       }

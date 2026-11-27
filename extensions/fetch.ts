@@ -4,11 +4,11 @@
 // By: GarboMuffin
 // License: MIT AND MPL-2.0
 
-(function (Scratch) {
+(function (Scratch: typeof globalThis.Scratch) {
   "use strict";
 
-  class Fetch {
-    getInfo() {
+  class Fetch implements Scratch.Extension {
+    getInfo(): Scratch.Info {
       return {
         id: "fetch",
         name: Scratch.translate("Fetch"),
@@ -29,8 +29,8 @@
       };
     }
 
-    get(args) {
-      return Scratch.fetch(args.URL)
+    get(args: { URL: unknown }) {
+      return Scratch.fetch(Scratch.Cast.toString(args.URL))
         .then((r) => r.text())
         .catch(() => "");
     }
