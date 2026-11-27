@@ -8,7 +8,8 @@
   "use strict";
 
   const textEncoder = new TextEncoder();
-  const textDecoder = new TextDecoder();
+  // Don't remove a U+FEFF at the start of the text
+  const textDecoder = new TextDecoder("utf-8", { ignoreBOM: true });
 
   const encodeBinary = (bytes: Uint8Array): string => {
     // Pre-allocating buffer seems to be much faster than string concatenation
