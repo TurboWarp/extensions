@@ -9,6 +9,10 @@
 
   let enabled = false;
 
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    enabled = false;
+  });
+
   window.addEventListener("beforeunload", (e) => {
     if (enabled) {
       e.preventDefault();
