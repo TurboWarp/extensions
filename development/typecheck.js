@@ -16,9 +16,7 @@ const check = async () => {
   );
 
   if (isCI()) {
-    console.log(
-      `(ci-only) Checking these files for type warnings:`
-    );
+    console.log(`(ci-only) Checking these files for type warnings:`);
     console.log(Array.from(changedFiles).sort().join("\n") || "(none)");
   }
   console.log("");
