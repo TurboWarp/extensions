@@ -14,6 +14,7 @@
     "lint": "eslint development extensions --max-warnings=0",
     "format": "prettier . --write",
     "check-format": "prettier . --check",
+    "typecheck": "node development/typecheck.js",
     "upload-translations": "node development/upload-translations.js",
     "download-translations": "node development/download-translations.js"
   },

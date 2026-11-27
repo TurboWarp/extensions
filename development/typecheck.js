@@ -15,8 +15,9 @@ const check = async () => {
     pathUtil.join(rootDir, f)
   );
 
-  console.log(`${changedFiles.length} changed files:`);
-  console.log(Array.from(changedFiles).sort().join("\n"));
+  console.log(`Errors will be checked in all TypeScript extensions.`);
+  console.log(`Warnings will only be checked in these JavaScript extensions:`);
+  console.log(Array.from(changedFiles).sort().join("\n") || "(none)");
   console.log("");
 
   const diagnostics = [];
@@ -46,6 +47,13 @@ const check = async () => {
     }
   }
 
+  /** @type {ts.FormatDiagnosticsHost} */
+  const formatHost = {
+    getCurrentDirectory: () => rootDir,
+    getCanonicalFileName: (fileName) => fileName,
+    getNewLine: () => "\n",
+  };
+
   let numWarnings = 0;
   let numErrors = 0;
 
@@ -63,6 +71,20 @@ const check = async () => {
       numErrors++;
     } else {
       numWarnings++;
+    }
+
+    if (!isCI()) {
+      const humanDiagnostic = {
+        ...diagnostic,
+        category: isBlocker
+          ? ts.DiagnosticCategory.Error
+          : ts.DiagnosticCategory.Warning,
+      };
+      const format = process.stdout.isTTY
+        ? ts.formatDiagnosticsWithColorAndContext
+        : ts.formatDiagnostics;
+      console.log(format([humanDiagnostic], formatHost));
+      continue;
     }
 
     // Diagnostics such as tsconfig errors may not be attached to any file
@@ -102,18 +124,11 @@ const check = async () => {
 
   console.log(`Errors: ${numErrors}`);
   console.log(`Warnings in changed files: ${numWarnings}`);
-  console.log(`Total errors+warnings in all files: ${diagnostics.length}`);
+  console.log(`Total errors + warnings in all files: ${diagnostics.length}`);
 
   return numErrors === 0;
 };
 
-if (isCI()) {
-  check().then((success) => {
-    process.exit(success ? 0 : 1);
-  });
-} else {
-  console.error(
-    "This script is only intended to be used in CI. For development, use normal TypeScript CLI instead."
-  );
-  process.exit(1);
-}
+check().then((success) => {
+  process.exit(success ? 0 : 1);
+});
