@@ -98,12 +98,20 @@
       };
     }
 
+    _writeClipboard(text) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch((error) => {
+          console.warn("Could not write to clipboard", error);
+        });
+      }
+    }
+
     setClipboard(args) {
-      navigator.clipboard.writeText(args.TEXT);
+      this._writeClipboard(Scratch.Cast.toString(args.TEXT));
     }
 
     resetClipboard() {
-      navigator.clipboard.writeText("");
+      this._writeClipboard("");
     }
 
     clipboard() {
