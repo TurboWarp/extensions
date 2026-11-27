@@ -530,11 +530,11 @@
     }
 
     faceTilt() {
-      return lastFace ? lastFace.tilt : 0;
+      return lastFace ? lastFace.tilt : 90;
     }
 
     faceSize() {
-      return lastFace ? lastFace.size : 0;
+      return lastFace ? lastFace.size : 100;
     }
   }
 
