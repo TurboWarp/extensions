@@ -187,7 +187,7 @@ class ExtensionFile extends BuildFile {
   async transpile() {
     const source = await fsPromises.readFile(this.sourcePath, "utf-8");
     if (this.sourcePath.endsWith(".ts")) {
-      return transpileTypeScript(source, this.slug);
+      return transpileTypeScript(source);
     }
     return source;
   }

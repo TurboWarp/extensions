@@ -2,7 +2,7 @@ import js from "@eslint/js";
 import globals from "globals";
 import esquery from "esquery";
 import * as espree from "espree";
-import { stripTypeScriptTypes } from "node:module";
+import transpileTypeScript from "./development/transpile-typescript.js";
 
 const reportQueryMatches = (context, ast, selector, message) => {
   const parsedSelector = esquery.parse(selector);
@@ -35,10 +35,10 @@ const createQueryRule = (rules) => ({
  */
 const typescriptParser = {
   meta: {
-    name: "strip-types-espree",
+    name: "tw-ts-transpiler",
   },
   parse: (code, options) =>
-    espree.parse(stripTypeScriptTypes(code, { mode: "strip" }), {
+    espree.parse(transpileTypeScript(code), {
       ...options,
       range: true,
       loc: true,
