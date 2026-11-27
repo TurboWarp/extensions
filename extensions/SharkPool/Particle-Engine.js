@@ -1337,10 +1337,10 @@ void main() {
           {
             opcode: "listEmitters",
             blockType: Scratch.BlockType.REPORTER,
-            text: Scratch.translate("[TARGET] emitters"),
+            text: Scratch.translate("get emitters in [TARGET]"), // Scratch.translate("[TARGET] emitters"),
             disableMonitor: true,
             arguments: {
-              TARGET: { type: Scratch.ArgumentType.STRING, menu: "ALL_TARG" },
+              TARGET: { type: Scratch.ArgumentType.STRING, menu: "TARGERS" }, // menu: "ALL_TARG"
             },
           },
         ],
@@ -1851,7 +1851,7 @@ void main() {
           return JSON.stringify(names);
         }
       } catch (e) {
-        return (target === '_all_' ? "{}" : "[]");
+        return "[]"; // (target === '_all_' ? "{}" : "[]");
       }
     }
   }

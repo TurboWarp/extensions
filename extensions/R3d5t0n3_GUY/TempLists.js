@@ -347,7 +347,7 @@
               //CURRENTLY TRYING TO FIX
               opcode: "loopFlowControl",
               blockType: Scratch.BlockType.COMMAND,
-              text: Scratch.translate("this is currently under maintenance!"), //"[MODE] [ICON]",
+              text: Scratch.translate("[MODE] [ICON]"),
               hideFromPalette: true, //this.isDependencyNotLoaded(),
               isTerminal: true,
               arguments: {
@@ -928,8 +928,8 @@
         }
       }
       loopFlowControl(args, util) {
-        //Credit for this goes to SharkPool
-        /* if (!this.isDependencyNotLoaded()) {
+        //Credit for this goes to SharkPool; PLEASE FIX ME, R3d5t0n3_GUY!!
+        if (!this.isDependencyNotLoaded()) {
           const thread = util.thread;
           const wasCompiled = thread.isCompiled.valueOf();
           const willContinue = Scratch.Cast.toString(args.MODE) == "continue";
@@ -956,8 +956,6 @@
             thread.isCompiled = wasCompiled;
           }
         }
-        */
-        //De-listed for strange inconsistencies; FIX ME, R3d5t0n3_GUY!!!
       }
 
       // MISC
