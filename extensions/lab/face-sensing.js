@@ -449,11 +449,17 @@
             acceptReporters: false, // compatibility with Scratch
             items: [
               {
-                text: Scratch.translate("left"),
+                text: Scratch.translate({
+                  default: "left",
+                  description: "Option in 'when face tilts [DIRECTION]' block",
+                }),
                 value: "left",
               },
               {
-                text: Scratch.translate("right"),
+                text: Scratch.translate({
+                  default: "right",
+                  description: "Option in 'when face tilts [DIRECTION]' block",
+                }),
                 value: "right",
               },
             ],
