@@ -15,9 +15,12 @@ const check = async () => {
     pathUtil.join(rootDir, f)
   );
 
-  console.log(`Errors will be checked in all TypeScript extensions.`);
-  console.log(`Warnings will only be checked in these JavaScript extensions:`);
-  console.log(Array.from(changedFiles).sort().join("\n") || "(none)");
+  if (isCI()) {
+    console.log(
+      `(ci-only) Checking these files for type warnings:`
+    );
+    console.log(Array.from(changedFiles).sort().join("\n") || "(none)");
+  }
   console.log("");
 
   const diagnostics = [];
@@ -25,6 +28,10 @@ const check = async () => {
     ["tsconfig/tsconfig.ts.json", true],
     ["tsconfig/tsconfig.js.json", false],
   ]) {
+    if (!isBlocker && !isCI()) {
+      continue;
+    }
+
     const tsconfigPath = pathUtil.join(rootDir, configName);
     const commandLine = ts.getParsedCommandLineOfConfigFile(
       tsconfigPath,
@@ -123,8 +130,11 @@ const check = async () => {
   }
 
   console.log(`Errors: ${numErrors}`);
-  console.log(`Warnings in changed files: ${numWarnings}`);
-  console.log(`Total errors + warnings in all files: ${diagnostics.length}`);
+
+  if (isCI()) {
+    console.log(`Warnings in changed files: ${numWarnings}`);
+    console.log(`Total errors + warnings in all files: ${diagnostics.length}`);
+  }
 
   return numErrors === 0;
 };
