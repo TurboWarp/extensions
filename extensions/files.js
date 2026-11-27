@@ -21,18 +21,27 @@
   ];
   let openFileSelectorMode = MODE_MODAL;
 
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    openFileSelectorMode = MODE_MODAL;
+  });
+
   const AS_TEXT = "text";
   const AS_DATA_URL = "url";
 
   /**
-   * @param {HTMLInputElement} input
    * @returns {boolean}
    */
-  const isCancelEventSupported = (input) => {
-    if ("oncancel" in input) {
-      // Chrome 113+, Safari 16.4+
-      return true;
-    }
+  const isCancelEventSupported = () => {
+    // Can't feature detect this as "oncancel" exists on all elements, even in browsers
+    // where file inputs don't fire cancel, such as Chrome before 113.
+    const userAgent = navigator.userAgent;
+    // Chrome 113+
+    const chrome = userAgent.match(/Chrom(?:e|ium)\/(\d+)/);
+    if (chrome) return +chrome[1] >= 113;
+    // Safari 16.4+
+    const safari = userAgent.match(/Version\/(\d+)\.(\d+).*Safari/);
+    if (safari)
+      return +safari[1] > 16 || (+safari[1] === 16 && +safari[2] >= 4);
     // Firefox is weird. cancel is supported since Firefox 91, but oncancel doesn't exist.
     // Firefox 91 is from August 2021. That's old enough to not care about previous versions.
     return navigator.userAgent.includes("Firefox");
@@ -153,7 +162,6 @@
       modal.addEventListener("click", () => {
         input.click();
       });
-      modal.focus();
       outer.appendChild(modal);
 
       const input = document.createElement("input");
@@ -174,7 +182,13 @@
       modal.appendChild(title);
 
       const subtitle = document.createElement("div");
-      const formattedAccept = accept || Scratch.translate("any");
+      const formattedAccept =
+        accept ||
+        Scratch.translate({
+          default: "any",
+          description:
+            "Shown instead of a list of file types when any file type is accepted",
+        });
       subtitle.textContent = Scratch.translate(
         {
           default: "Accepted formats: {formats}",
@@ -187,28 +201,31 @@
       );
       modal.appendChild(subtitle);
 
-      // To avoid the script getting stalled forever, if cancel isn't supported, we'll just forcibly
-      // show our modal.
+      // To avoid the script getting stalled forever, if cancel isn't supported or the selector
+      // can't be opened without user activation, we'll just forcibly show our modal.
+      let mode = openFileSelectorMode;
       if (
-        openFileSelectorMode === MODE_ONLY_SELECTOR &&
-        !isCancelEventSupported(input)
+        mode === MODE_ONLY_SELECTOR &&
+        (!isCancelEventSupported() ||
+          (navigator.userActivation && !navigator.userActivation.isActive))
       ) {
-        openFileSelectorMode = MODE_IMMEDIATELY_SHOW_SELECTOR;
+        mode = MODE_IMMEDIATELY_SHOW_SELECTOR;
       }
 
-      if (openFileSelectorMode !== MODE_ONLY_SELECTOR) {
+      if (mode !== MODE_ONLY_SELECTOR) {
         const overlay = Scratch.vm.renderer.addOverlay(outer, "scale");
         overlay.container.style.zIndex = "100";
+        modal.focus();
       }
 
       if (
-        openFileSelectorMode === MODE_IMMEDIATELY_SHOW_SELECTOR ||
-        openFileSelectorMode === MODE_ONLY_SELECTOR
+        mode === MODE_IMMEDIATELY_SHOW_SELECTOR ||
+        mode === MODE_ONLY_SELECTOR
       ) {
         input.click();
       }
 
-      if (openFileSelectorMode === MODE_ONLY_SELECTOR) {
+      if (mode === MODE_ONLY_SELECTOR) {
         // Note that browser support for cancel is currently quite bad
         input.addEventListener("cancel", () => {
           callback("");
@@ -369,7 +386,11 @@
             acceptReporters: true,
             items: [
               {
-                text: Scratch.translate("text"),
+                text: Scratch.translate({
+                  default: "text",
+                  description:
+                    "Menu option to read the opened file as plain text (as opposed to a data: URL)",
+                }),
                 value: AS_TEXT,
               },
               {
