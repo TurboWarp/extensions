@@ -34,6 +34,10 @@
 
   let lastPastedText = "";
 
+  Scratch.vm.runtime.on("RUNTIME_DISPOSED", () => {
+    lastPastedText = "";
+  });
+
   window.addEventListener("copy", (event) => {
     Scratch.vm.runtime.startHats("clipboard_whenCopied");
   });
