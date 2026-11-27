@@ -35,6 +35,18 @@
 
       return result;
     };
+
+    // targetWasCreated gives the original sprite, not the clone that is being cloned
+    const originalMakeClone = target.makeClone;
+    target.makeClone = function () {
+      const clone = originalMakeClone.call(this);
+      if (clone) {
+        clone[STRETCH_X] = this[STRETCH_X];
+        clone[STRETCH_Y] = this[STRETCH_Y];
+        forceUpdateDirectionAndScale(clone);
+      }
+      return clone;
+    };
   };
   vm.runtime.targets.forEach((target) => implementStretchForTarget(target));
   vm.runtime.on("targetWasCreated", (target, originalTarget) =>
@@ -90,6 +102,7 @@
                 defaultValue: 0,
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
 
           "---",
@@ -128,6 +141,7 @@
                 defaultValue: 10,
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
           {
             opcode: "changeStretchY",
@@ -139,6 +153,7 @@
                 defaultValue: 10,
               },
             },
+            filter: [Scratch.TargetType.SPRITE],
           },
 
           "---",
