@@ -1,7 +1,7 @@
 // Name: BilibiliToy JS SDK
 // ID: bilibilitoy
 // Description: An unofficial extension for using BilibiliToy's Toy JS SDK in TurboWarp projects and for using cloud storage. It is compatible with BilibiliToy's projects when they are packaged as HTML with TurboWarp Packager.
-// By: MC_mrjone <https://scratch.mit.edu/users/MC_mrjone/>
+// By: MC_mrjone <https://space.bilibili.com/3632300000545187/>
 // License: MPL-2.0
 
 (function () {
@@ -754,7 +754,7 @@
       try {
         if (typeof location === "undefined") return false;
         return String(location.href).startsWith(
-          "https://www.bilibili.com/toy/"
+          "https://www.bilibilitoy.com/toy/"
         );
       } catch (e) {
         return false;
